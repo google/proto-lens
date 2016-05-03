@@ -1,0 +1,34 @@
+// LINT: LEGACY_NAMES
+syntax = "proto2";
+
+package keyword;
+
+message TestKeywordFields {
+  optional int32 required = 1;
+  optional int32 message = 2;
+  optional int32 enum = 3;
+  optional int32 optional = 4;
+  optional int32 repeated = 5;
+  optional int32 map = 6;
+  optional int32 oneof = 7;
+  optional int32 syntax = 8;
+  optional int32 package = 9;
+  optional int32 option = 10;
+  optional int32 import = 11;
+}
+
+message syntax {
+  optional int32 foo = 1;
+}
+message package {
+  optional int32 foo = 1;
+}
+message import {
+  optional int32 foo = 1;
+}
+
+message TestKeywordTypes {
+  optional syntax syntax = 1;
+  optional package package = 2;
+  optional import import = 3;
+}

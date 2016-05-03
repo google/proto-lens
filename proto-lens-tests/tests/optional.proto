@@ -1,0 +1,9 @@
+syntax = "proto2";
+
+package optional;
+
+message Foo {
+  optional int32 a = 1;
+  optional int32 b = 2 [default=42];
+}
+

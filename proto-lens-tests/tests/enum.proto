@@ -1,0 +1,26 @@
+syntax = "proto2";
+
+package enums;
+
+enum Bar {
+  BAR3 = 3;
+  BAR5 = 5;
+  // This needs to come after BAR5 so that we can test that `Bounded` is
+  // implemented correctly.
+  NEGATIVE = -1;
+}
+
+message Foo {
+  // TODO: clash name with external
+  enum Baz {
+    BAZ2 = 2;
+    BAZ4 = 4;
+  }
+
+  optional Bar bar = 1;
+  optional Baz baz = 2;
+  optional Bar bar_defaulted = 3 [default = BAR5];
+  optional Baz baz_defaulted = 4 [default = BAZ4];
+  optional bool true_defaulted = 5 [default = true];
+  optional bool false_defaulted = 6 [default = false];
+}

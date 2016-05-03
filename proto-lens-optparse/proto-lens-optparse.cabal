@@ -1,0 +1,25 @@
+name:                proto-lens-optparse
+version:             0.1.0.0
+synopsis:            Adapting proto-lens to optparse-applicative ReadMs.
+description:
+   A package adapting proto-lens to optparse-applicative ReadMs.
+   This gives an easy way to define options and arguments for
+   text-format protobuf types.
+
+homepage:            https://github.com/google/proto-lens
+license:             BSD3
+license-file:        LICENSE
+author:              Andrew Pritchard
+maintainer:          awpr+protolens@google.com
+copyright:           Google Inc.
+category:            Data
+build-type:          Simple
+cabal-version:       >=1.8
+
+library
+  hs-source-dirs: src
+  exposed-modules:     Data.ProtoLens.Optparse
+  build-depends:  proto-lens == 0.1.*
+                , base == 4.8.*
+                , optparse-applicative == 0.12.*
+                , text == 1.2.*

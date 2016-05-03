@@ -1,0 +1,23 @@
+// LINT: LEGACY_NAMES
+syntax = "proto2";
+
+package names;
+
+message Names {
+  // Field names that conflict with the Prelude.
+  optional int32 head = 1;
+  optional int32 span = 2;
+
+  // Field names that need to be case-munged.
+  optional int32 multi_word_name = 3;
+  optional int32 FOO_multi_WORD_name = 4;
+  optional int32 _multi_word_name = 5;
+
+  // Names that conflict with keywords
+  optional int32 type = 6;
+}
+
+// A message whose name conflicts with the Prelude.
+message Maybe {
+  optional int32 maybe = 1;
+}

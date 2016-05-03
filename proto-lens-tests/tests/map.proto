@@ -1,0 +1,8 @@
+syntax = "proto2";
+
+package map_test;
+option java_package = "map";
+
+message Foo {
+  map<int32, string> bar = 1;
+}

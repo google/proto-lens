@@ -1,0 +1,17 @@
+syntax = "proto2";
+
+package repeat;
+
+// The proto fields in this file cover the four wire types (varint, fixed32/64,
+// and string).
+
+message Bar {
+  repeated fixed32 d = 3;
+  repeated fixed64 e = 4;
+}
+
+message Foo {
+  repeated int32 a = 1;
+  repeated string b = 2;
+  repeated Bar c = 3;
+}

@@ -1,0 +1,7 @@
+syntax = "proto2";
+
+package transitive;
+
+message TransitiveDep2 {
+  optional int32 x = 1;
+}

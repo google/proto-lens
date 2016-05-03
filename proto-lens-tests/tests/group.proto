@@ -1,0 +1,23 @@
+// LINT: ALLOW_GROUPS
+
+syntax = "proto2";
+
+package group;
+
+message Simple {
+  optional group Grp = 1 {
+    optional int32 int = 2 [default=42];
+  }
+}
+
+message Complicated {
+  repeated group Grp = 1 {
+    optional Simple msg = 2;
+    repeated int32 repeat = 3;
+    repeated int64 packed_repeat = 4 [packed=true];
+    required string str = 5;
+    optional group Nested = 6 {
+      required int32 int = 7;
+    }
+  }
+}

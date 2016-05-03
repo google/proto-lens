@@ -1,0 +1,8 @@
+syntax = "proto2";
+
+package test;
+
+message Foo {
+  repeated int32 a = 1;
+  repeated int32 b = 2 [packed=true];
+}

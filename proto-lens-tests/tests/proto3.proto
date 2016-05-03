@@ -1,0 +1,28 @@
+syntax = "proto3";
+
+package proto3;
+
+message Foo {
+  int32 a = 1;
+  repeated string b = 2;
+  oneof bar {
+    float c = 3;
+    bytes d = 4;
+  }
+
+  message Sub {
+    int32 e = 1;
+  }
+  Sub sub = 5;
+
+  enum FooEnum {
+    Enum1 = 0;
+    Enum2 = 1;
+  }
+  FooEnum enum = 6;
+}
+
+message Strings {
+  bytes bytes = 1;
+  string string = 2;
+}

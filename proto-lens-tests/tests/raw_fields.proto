@@ -1,0 +1,37 @@
+syntax = "proto2";
+
+package rawfields;
+
+message Raw {
+  optional int32 a = 1;
+  optional int64 b = 2;
+  optional fixed32 c = 3;
+  optional fixed64 d = 4;
+  optional float e = 5;
+  optional double f = 6;
+  optional bool g = 7;
+  optional string h = 8;
+  optional bytes i = 9;
+  optional uint32 j = 10;
+  optional uint64 k = 11;
+  optional sint32 l = 12;
+  optional sint64 m = 13;
+  optional sfixed32 n = 14;
+  optional sfixed64 o = 15;
+}
+
+// A message that's not wire-compatible with Raw; we use it to check that
+// decoding errors are handled properly.
+message Bad {
+  optional string a = 1;  // Different type than Raw::a
+  optional int32 z = 100;  // Tag not present
+}
+
+message Defaults {
+  optional int32 int_defaulted = 1 [default=-123];
+  optional fixed32 fixed_defaulted = 2 [default=123];
+  optional float float_defaulted = 3 [default=1.2e3];
+  optional double nan_defaulted = 4 [default=nan];
+  optional float inf_defaulted = 5 [default=inf];
+  optional float ninf_defaulted = 6 [default=-inf];
+}

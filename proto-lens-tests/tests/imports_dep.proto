@@ -1,0 +1,12 @@
+syntax = "proto2";
+
+// Test that nested package names can be parsed and imported.
+package dep.pkg;
+
+import public "imports_transitive.proto";
+
+message DepPkg {
+  optional int32 x = 1;
+  optional transitive.TransitiveDep y = 2;
+  optional transitive.TransitiveDep2 z = 3;
+}

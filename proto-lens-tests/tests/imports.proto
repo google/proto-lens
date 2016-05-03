@@ -1,0 +1,23 @@
+syntax = "proto2";
+
+package imports_test;
+
+import "enum.proto";
+import "imports_dep.proto";
+import "nested.proto";
+
+// Note that this clashes with the name "Foo" from enums; however, since they're
+// in different modules/packages, it should still compile.
+message Foo {
+  optional nested.A a = 1;
+  optional nested.A.B b = 2;
+  // Make sure that field defaults can refer to imported enum values.
+  optional enums.Bar bar = 3 [default = BAR5];
+  optional enums.Foo.Baz baz = 4 [default = BAZ4];
+}
+
+message UseDep {
+  optional dep.pkg.DepPkg foo = 1;
+  optional transitive.TransitiveDep bar = 2;
+  optional transitive.TransitiveDep2 baz = 3;
+}

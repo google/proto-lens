@@ -1,0 +1,10 @@
+syntax = "proto2";
+
+package transitive;
+
+import public "imports_transitive2.proto";
+
+message TransitiveDep {
+  optional int32 x = 1;
+  optional TransitiveDep2 y = 2;
+}

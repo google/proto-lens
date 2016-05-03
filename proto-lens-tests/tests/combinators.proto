@@ -1,0 +1,16 @@
+syntax = "proto2";
+
+package combinators;
+
+message Foo {
+  optional int32 quux = 1;
+
+  message Bar {
+    optional int32 fizz = 1;
+    optional string buzz = 2;
+  }
+
+  optional Bar foo = 2;
+  optional Bar bar = 3;
+  optional Bar baz = 4;
+}

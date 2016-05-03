@@ -1,0 +1,24 @@
+// Test that we can resolve the names in this file correctly and produce a
+// buildable Haskell file.
+syntax = "proto2";
+
+package nested;
+
+message A {
+  optional int32 x = 1;
+
+  message B {
+    optional int32 y = 2;
+  }
+
+  optional A.B q = 3;
+  optional nested.A.B r = 4;
+  optional B s = 5;
+  // Not allowed:
+  // optional nested.B t = 6;
+}
+
+message C {
+  optional A.B x = 1;
+  optional nested.A.B y = 2;
+}
