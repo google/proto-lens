@@ -24,6 +24,7 @@ import Data.Char (toUpper)
 import qualified Data.Map as Map
 import Data.Maybe (fromMaybe)
 import Data.Monoid
+import qualified Data.Set as Set
 import Data.Text (Text, cons, splitOn, toLower, uncons, unpack)
 import qualified Data.Text as T
 import Language.Haskell.Exts.Syntax (Name(..), QName(..), ModuleName(..))
@@ -152,7 +153,7 @@ fieldName = unpack . disambiguate . camelCase
   where
     disambiguate s
         -- TODO: use a more comprehensive blacklist of Haskell keywords.
-        | s `elem` ["type", "data", "import", "let"] = s <> "'"
+        | s `Set.member` reservedIds = s <> "'"
         | otherwise = s
     camelCase s
         -- Preserve any initial underlines (e.g., "_foo_bar" -> "_fooBar").
@@ -163,6 +164,33 @@ fieldName = unpack . disambiguate . camelCase
                                 ++ show rest
                 [""] -> error "camelCase: name consists only of underscores"
                 s':ss -> T.concat $ underlines : toLower s' : map capitalize ss
+
+-- | A list of reserved keywords in Haskell2010.
+reservedIds :: Set.Set Text
+reservedIds = Set.fromList
+    [ "case"
+    , "class"
+    , "data"
+    , "default"
+    , "deriving"
+    , "do"
+    , "else"
+    , "foreign"
+    , "if"
+    , "import"
+    , "in"
+    , "infix"
+    , "infixl"
+    , "infixr"
+    , "instance"
+    , "let"
+    , "module"
+    , "newtype"
+    , "of"
+    , "then"
+    , "type"
+    , "where"
+    ]
 
 -- | Generate the definition for an enum type.
 enumDef :: Text -> String -> EnumDescriptorProto
