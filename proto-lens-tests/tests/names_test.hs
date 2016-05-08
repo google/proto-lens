@@ -52,7 +52,7 @@ testFields name defValue fields = testGroup name
 
 -- | Wraps a Lens' (which is a higher-order type) so it can be used in a list
 -- without ImpredicativeTypes.
-data SomeLens a b = SomeLens (Lens' a b)
+newtype SomeLens a b = SomeLens (Lens' a b)
 
 testNames = testFields "names" (def :: Names)
     [ SomeLens head
