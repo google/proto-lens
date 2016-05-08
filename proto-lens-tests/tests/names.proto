@@ -12,12 +12,76 @@ message Names {
   optional int32 multi_word_name = 3;
   optional int32 FOO_multi_WORD_name = 4;
   optional int32 _multi_word_name = 5;
-
-  // Names that conflict with keywords
-  optional int32 type = 6;
 }
 
 // A message whose name conflicts with the Prelude.
 message Maybe {
   optional int32 maybe = 1;
+}
+
+// Names that conflict with Haskell keywords.
+message HaskellKeywords {
+  // Haskell2010
+  optional int32 case = 1;
+  optional int32 class = 2;
+  optional int32 data = 3;
+  optional int32 default = 4;
+  optional int32 deriving = 5;
+  optional int32 do = 6;
+  optional int32 else = 7;
+  optional int32 foreign = 8;
+  optional int32 if = 9;
+  optional int32 import = 10;
+  optional int32 in = 11;
+  optional int32 infix = 12;
+  optional int32 infixl = 13;
+  optional int32 infixr = 14;
+  optional int32 instance = 15;
+  optional int32 let = 16;
+  optional int32 module = 17;
+  optional int32 newtype = 18;
+  optional int32 of = 19;
+  optional int32 then = 20;
+  optional int32 type = 21;
+  optional int32 where = 22;
+  // Extensions
+  optional int32 mdo = 23;
+  optional int32 rec = 24;
+  optional int32 proc = 25;
+  // Haskell keywords which are valid as variable names
+  optional int32 as = 26;
+  optional int32 forall = 27;
+  optional int32 hiding = 28;
+}
+
+// Names that conflict with proto keywords.
+message ProtoKeywords {
+  optional int32 required = 1;
+  optional int32 message = 2;
+  optional int32 enum = 3;
+  optional int32 optional = 4;
+  optional int32 repeated = 5;
+  optional int32 map = 6;
+  optional int32 oneof = 7;
+  optional int32 syntax = 8;
+  optional int32 package = 9;
+  optional int32 option = 10;
+  optional int32 import = 11;
+}
+
+// Messages whose name conflicts with a proto keyword.
+message syntax {
+  optional int32 foo = 1;
+}
+message package {
+  optional int32 foo = 1;
+}
+message import {
+  optional int32 foo = 1;
+}
+
+message ProtoKeywordTypes {
+  optional syntax syntax = 1;
+  optional package package = 2;
+  optional import import = 3;
 }
