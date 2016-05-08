@@ -39,6 +39,8 @@ install:
       cabal --version
       travis_retry cabal update
       cabal install --only-dependencies --enable-tests --force-reinstalls $PACKAGES
+      ;;
+  esac
 
 script:
   case "$BUILD" in
@@ -47,3 +49,5 @@ script:
       ;;
     cabal)
       cabal install --enable-tests --force-reinstalls $PACKAGES
+      ;;
+  esac
