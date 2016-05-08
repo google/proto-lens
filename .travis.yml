@@ -7,25 +7,43 @@ sudo: false
 cache:
   directories:
   - $HOME/.ghc
+  - $HOME/.cabal
   - $HOME/.stack
 
 matrix:
   include:
-  - env: GHCVER=7.10.3 CABALVER=1.22
+  - env: BUILD=cabal GHCVER=7.10.3 CABALVER=1.22
     addons: {apt: {packages: [cabal-install-1.22,ghc-7.10.3], sources: [hvr-ghc]}}
+  - env: BUILD=stack
+    addons: {apt: {packages: [ghc-7.10.3], sources: [hvr-ghc]}}
 
 before_install:
-  - mkdir -p $HOME/.local/bin
-  - export PATH=$HOME/.local/bin:$PATH
-  - curl -L https://github.com/commercialhaskell/stack/releases/download/v1.0.4.3/stack-1.0.4.3-linux-x86_64.tar.gz | tar xz --wildcards --strip-components=1 -C $HOME/.local/bin '*/stack'
-  - curl -L https://github.com/google/protobuf/releases/download/v3.0.0-beta-2/protoc-3.0.0-beta-2-linux-x86_64.zip > protoc-release.zip
-  - unzip -p protoc-release.zip protoc > $HOME/.local/bin/protoc
-  - chmod a+x $HOME/.local/bin/protoc
-  - rm protoc-release.zip
+- mkdir -p $HOME/.local/bin
+- export PATH=$HOME/.local/bin:$PATH
+- curl -L https://github.com/commercialhaskell/stack/releases/download/v1.0.4.3/stack-1.0.4.3-linux-x86_64.tar.gz | tar xz --wildcards --strip-components=1 -C $HOME/.local/bin '*/stack'
+- curl -L https://github.com/google/protobuf/releases/download/v3.0.0-beta-2/protoc-3.0.0-beta-2-linux-x86_64.zip > protoc-release.zip
+- unzip -p protoc-release.zip protoc > $HOME/.local/bin/protoc
+- chmod a+x $HOME/.local/bin/protoc
+- rm protoc-release.zip
+- PACKAGES=$(stack query locals | grep '^[^ ]' | sed 's/:$//')
+
 
 install:
-  - stack setup --no-terminal
-  - stack build --only-snapshot --no-terminal
+- |
+  case "$BUILD" in
+    stack)
+      stack setup --no-terminal
+      stack build --only-snapshot --no-terminal
+      ;;
+    cabal)
+      cabal --version
+      travis_retry cabal update
+      cabal install --only-dependencies --enable-tests --force-reinstalls $PACKAGES
 
 script:
-  - stack test --haddock --no-haddock-deps
+  case "$BUILD" in
+    stack)
+      stack test --no-terminal --haddock --no-haddock-deps
+      ;;
+    cabal)
+      cabal install --enable-tests --force-reinstalls $PACKAGES
