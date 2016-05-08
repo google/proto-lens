@@ -21,6 +21,7 @@ message Maybe {
 
 // Names that conflict with Haskell keywords.
 message HaskellKeywords {
+  // Haskell2010
   optional int32 case = 1;
   optional int32 class = 2;
   optional int32 data = 3;
@@ -43,6 +44,14 @@ message HaskellKeywords {
   optional int32 then = 20;
   optional int32 type = 21;
   optional int32 where = 22;
+  // Extensions
+  optional int32 mdo = 23;
+  optional int32 rec = 24;
+  optional int32 proc = 25;
+  // Haskell keywords which are valid as variable names
+  optional int32 as = 26;
+  optional int32 forall = 27;
+  optional int32 hiding = 28;
 }
 
 // Names that conflict with proto keywords.

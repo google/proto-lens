@@ -153,7 +153,7 @@ fieldName = unpack . disambiguate . camelCase
   where
     disambiguate s
         -- TODO: use a more comprehensive blacklist of Haskell keywords.
-        | s `Set.member` reservedIds = s <> "'"
+        | s `Set.member` reservedKeywords = s <> "'"
         | otherwise = s
     camelCase s
         -- Preserve any initial underlines (e.g., "_foo_bar" -> "_fooBar").
@@ -165,9 +165,13 @@ fieldName = unpack . disambiguate . camelCase
                 [""] -> error "camelCase: name consists only of underscores"
                 s':ss -> T.concat $ underlines : toLower s' : map capitalize ss
 
--- | A list of reserved keywords in Haskell2010.
-reservedIds :: Set.Set Text
-reservedIds = Set.fromList
+-- | A list of reserved keywords that aren't valid as variable names.
+reservedKeywords :: Set.Set Text
+reservedKeywords = Set.fromList $
+    -- Haskell2010 keywords:
+    -- https://www.haskell.org/onlinereport/haskell2010/haskellch2.html#x7-180002.4
+    -- We don't include keywords that are allowed to be variable names,
+    -- in particular: "as", "forall", and "hiding".
     [ "case"
     , "class"
     , "data"
@@ -190,6 +194,11 @@ reservedIds = Set.fromList
     , "then"
     , "type"
     , "where"
+    ]
+    ++  -- Nonstandard extensions
+    [ "mdo"   -- RecursiveDo
+    , "rec"   -- Arrows, RecursiveDo
+    , "proc"  -- Arrows
     ]
 
 -- | Generate the definition for an enum type.

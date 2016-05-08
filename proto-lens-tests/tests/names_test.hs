@@ -87,6 +87,14 @@ testHaskellKeywords = testFields "haskellKeywords" (def :: HaskellKeywords)
     , SomeLens then'
     , SomeLens type'
     , SomeLens where'
+    , SomeLens mdo'
+    , SomeLens rec'
+    , SomeLens proc'
+    -- Haskell keywords taht shouldn't get an apostrophe (since they're valid
+    -- as variable names):
+    , SomeLens as
+    , SomeLens forall
+    , SomeLens hiding
     ]
 
 testProtoKeywords = testFields "protoKeywords" (def :: ProtoKeywords)
