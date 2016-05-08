@@ -38,7 +38,12 @@ install:
     cabal)
       cabal --version
       travis_retry cabal update
-      cabal install --only-dependencies --enable-tests --force-reinstalls $PACKAGES
+      for p in $PACKAGES
+      do
+        cd $p
+        cabal install --only-dependencies --enable-tests --force-reinstalls
+        cd ..
+      done
       ;;
   esac
 
