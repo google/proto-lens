@@ -90,7 +90,7 @@ testHaskellKeywords = testFields "haskellKeywords" (def :: HaskellKeywords)
     , SomeLens mdo'
     , SomeLens rec'
     , SomeLens proc'
-    -- Haskell keywords taht shouldn't get an apostrophe (since they're valid
+    -- Haskell keywords that shouldn't get an apostrophe (since they're valid
     -- as variable names):
     , SomeLens as
     , SomeLens forall
