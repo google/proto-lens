@@ -48,6 +48,10 @@ script:
       stack test --no-terminal --haddock --no-haddock-deps
       ;;
     cabal)
-      cabal install --enable-tests --force-reinstalls $PACKAGES
+      for p in $PACKAGES
+      do
+        cd $p
+        cabal install --enable-tests --force-reinstalls
+        cd ..
       ;;
   esac
