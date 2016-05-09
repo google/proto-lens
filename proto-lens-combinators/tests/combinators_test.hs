@@ -12,13 +12,12 @@ import Data.ProtoLens.Combinators
 import Lens.Family2 ((^.), (.~), (&))
 import Lens.Family2.State ((.=), (<~), use, zoom)
 import Proto.Combinators
+import Test.Framework (defaultMain)
 import Test.Framework.Providers.HUnit (hUnitTestToTests)
 import Test.HUnit ((~:), (~?=))
 
-import TestUtil(testMain)
-
 main :: IO ()
-main = testMain $ hUnitTestToTests $ "" ~:
+main = defaultMain $ hUnitTestToTests $ "" ~:
     [ let proto = def & quux .~ 1 & foo .~ def :: Foo
       in "has" ~:
           [ "True" ~: proto ^. has maybe'quux ~?= True
