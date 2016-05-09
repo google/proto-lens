@@ -123,22 +123,6 @@ Test-Suite text_format_test
                , test-framework
                , test-framework-hunit
 
-Test-Suite combinators_test
-  default-language: Haskell2010
-  type: exitcode-stdio-1.0
-  main-is: combinators_test.hs
-  hs-source-dirs: tests
-  other-modules: Proto.Combinators
-  build-depends: HUnit
-               , base
-               , bytestring
-               , lens-family
-               , proto-lens-combinators
-               , proto-lens-protoc
-               , proto-lens-tests
-               , test-framework
-               , test-framework-hunit
-
 Test-Suite enum_test
   default-language: Haskell2010
   type: exitcode-stdio-1.0

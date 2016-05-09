@@ -5,7 +5,5 @@
 -- https://developers.google.com/open-source/licenses/bsd
 
 import Data.ProtoLens.Setup
-import System.Directory
-import System.FilePath
 
 main = defaultMainGeneratingProtos "tests"
