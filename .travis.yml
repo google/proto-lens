@@ -28,4 +28,7 @@ install:
   - stack build --only-snapshot --no-terminal
 
 script:
+  # Separate build from test, since build by itself hits some edge cases around
+  # custom Setup.hs script dependencies.
+  - stack build --haddock --no-haddock-deps
   - stack test --haddock --no-haddock-deps
