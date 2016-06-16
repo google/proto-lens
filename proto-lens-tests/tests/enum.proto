@@ -3,11 +3,21 @@ syntax = "proto2";
 package enums;
 
 enum Bar {
-  BAR3 = 3;
+  // This order is intentional and important for tests.
   BAR5 = 5;
-  // This needs to come after BAR5 so that we can test that `Bounded` is
-  // implemented correctly.
+  BAR3 = 3;
   NEGATIVE = -1;
+}
+
+enum Baz {
+  BAZ1 = 1;
+  BAZ2 = 2;
+  BAZ3 = 4;
+  BAZ4 = 6;
+  BAZ5 = 7;
+  BAZ6 = 9;
+  BAZ7 = 10;
+  BAZ8 = 12;
 }
 
 message Foo {

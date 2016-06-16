@@ -5,6 +5,7 @@
 module Bootstrap.Proto.Google.Protobuf.Descriptor where
 import qualified Prelude
 import qualified Data.ProtoLens
+import qualified Data.ProtoLens.Message.Enum
 import qualified Lens.Family2
 import qualified Lens.Family2.Unchecked
 import qualified Data.Default.Class
@@ -1027,8 +1028,13 @@ data FieldDescriptorProto'Label = FieldDescriptorProto'LABEL_OPTIONAL
                                 | FieldDescriptorProto'LABEL_REPEATED
                                 deriving (Prelude.Show, Prelude.Eq)
 
-instance Data.ProtoLens.Default FieldDescriptorProto'Label where
+instance Data.Default.Class.Default FieldDescriptorProto'Label
+         where
         def = FieldDescriptorProto'LABEL_OPTIONAL
+
+instance Data.ProtoLens.FieldDefault FieldDescriptorProto'Label
+         where
+        fieldDefault = FieldDescriptorProto'LABEL_OPTIONAL
 
 instance Data.ProtoLens.MessageEnum FieldDescriptorProto'Label
          where
@@ -1058,6 +1064,28 @@ instance Prelude.Enum FieldDescriptorProto'Label where
         fromEnum FieldDescriptorProto'LABEL_OPTIONAL = 1
         fromEnum FieldDescriptorProto'LABEL_REQUIRED = 2
         fromEnum FieldDescriptorProto'LABEL_REPEATED = 3
+        succ FieldDescriptorProto'LABEL_REPEATED
+          = Prelude.error
+              "Ident \"FieldDescriptorProto'Label\".Ident \"succ\": bad argument Ident \"FieldDescriptorProto'LABEL_REPEATED\". This value would be out of bounds."
+        succ FieldDescriptorProto'LABEL_OPTIONAL
+          = FieldDescriptorProto'LABEL_REQUIRED
+        succ FieldDescriptorProto'LABEL_REQUIRED
+          = FieldDescriptorProto'LABEL_REPEATED
+        pred FieldDescriptorProto'LABEL_OPTIONAL
+          = Prelude.error
+              "Ident \"FieldDescriptorProto'Label\".Ident \"pred\": bad argument Ident \"FieldDescriptorProto'LABEL_OPTIONAL\". This value would be out of bounds."
+        pred FieldDescriptorProto'LABEL_REQUIRED
+          = FieldDescriptorProto'LABEL_OPTIONAL
+        pred FieldDescriptorProto'LABEL_REPEATED
+          = FieldDescriptorProto'LABEL_REQUIRED
+        enumFrom = Data.ProtoLens.Message.Enum.messageEnumFrom
+        enumFromTo = Data.ProtoLens.Message.Enum.messageEnumFromTo
+        enumFromThen = Data.ProtoLens.Message.Enum.messageEnumFromThen
+        enumFromThenTo = Data.ProtoLens.Message.Enum.messageEnumFromThenTo
+
+instance Prelude.Bounded FieldDescriptorProto'Label where
+        minBound = FieldDescriptorProto'LABEL_OPTIONAL
+        maxBound = FieldDescriptorProto'LABEL_REPEATED
 
 data FieldDescriptorProto'Type = FieldDescriptorProto'TYPE_DOUBLE
                                | FieldDescriptorProto'TYPE_FLOAT
@@ -1079,8 +1107,12 @@ data FieldDescriptorProto'Type = FieldDescriptorProto'TYPE_DOUBLE
                                | FieldDescriptorProto'TYPE_SINT64
                                deriving (Prelude.Show, Prelude.Eq)
 
-instance Data.ProtoLens.Default FieldDescriptorProto'Type where
+instance Data.Default.Class.Default FieldDescriptorProto'Type where
         def = FieldDescriptorProto'TYPE_DOUBLE
+
+instance Data.ProtoLens.FieldDefault FieldDescriptorProto'Type
+         where
+        fieldDefault = FieldDescriptorProto'TYPE_DOUBLE
 
 instance Data.ProtoLens.MessageEnum FieldDescriptorProto'Type where
         maybeToEnum 1 = Prelude.Just FieldDescriptorProto'TYPE_DOUBLE
@@ -1182,6 +1214,88 @@ instance Prelude.Enum FieldDescriptorProto'Type where
         fromEnum FieldDescriptorProto'TYPE_SFIXED64 = 16
         fromEnum FieldDescriptorProto'TYPE_SINT32 = 17
         fromEnum FieldDescriptorProto'TYPE_SINT64 = 18
+        succ FieldDescriptorProto'TYPE_SINT64
+          = Prelude.error
+              "Ident \"FieldDescriptorProto'Type\".Ident \"succ\": bad argument Ident \"FieldDescriptorProto'TYPE_SINT64\". This value would be out of bounds."
+        succ FieldDescriptorProto'TYPE_DOUBLE
+          = FieldDescriptorProto'TYPE_FLOAT
+        succ FieldDescriptorProto'TYPE_FLOAT
+          = FieldDescriptorProto'TYPE_INT64
+        succ FieldDescriptorProto'TYPE_INT64
+          = FieldDescriptorProto'TYPE_UINT64
+        succ FieldDescriptorProto'TYPE_UINT64
+          = FieldDescriptorProto'TYPE_INT32
+        succ FieldDescriptorProto'TYPE_INT32
+          = FieldDescriptorProto'TYPE_FIXED64
+        succ FieldDescriptorProto'TYPE_FIXED64
+          = FieldDescriptorProto'TYPE_FIXED32
+        succ FieldDescriptorProto'TYPE_FIXED32
+          = FieldDescriptorProto'TYPE_BOOL
+        succ FieldDescriptorProto'TYPE_BOOL
+          = FieldDescriptorProto'TYPE_STRING
+        succ FieldDescriptorProto'TYPE_STRING
+          = FieldDescriptorProto'TYPE_GROUP
+        succ FieldDescriptorProto'TYPE_GROUP
+          = FieldDescriptorProto'TYPE_MESSAGE
+        succ FieldDescriptorProto'TYPE_MESSAGE
+          = FieldDescriptorProto'TYPE_BYTES
+        succ FieldDescriptorProto'TYPE_BYTES
+          = FieldDescriptorProto'TYPE_UINT32
+        succ FieldDescriptorProto'TYPE_UINT32
+          = FieldDescriptorProto'TYPE_ENUM
+        succ FieldDescriptorProto'TYPE_ENUM
+          = FieldDescriptorProto'TYPE_SFIXED32
+        succ FieldDescriptorProto'TYPE_SFIXED32
+          = FieldDescriptorProto'TYPE_SFIXED64
+        succ FieldDescriptorProto'TYPE_SFIXED64
+          = FieldDescriptorProto'TYPE_SINT32
+        succ FieldDescriptorProto'TYPE_SINT32
+          = FieldDescriptorProto'TYPE_SINT64
+        pred FieldDescriptorProto'TYPE_DOUBLE
+          = Prelude.error
+              "Ident \"FieldDescriptorProto'Type\".Ident \"pred\": bad argument Ident \"FieldDescriptorProto'TYPE_DOUBLE\". This value would be out of bounds."
+        pred FieldDescriptorProto'TYPE_FLOAT
+          = FieldDescriptorProto'TYPE_DOUBLE
+        pred FieldDescriptorProto'TYPE_INT64
+          = FieldDescriptorProto'TYPE_FLOAT
+        pred FieldDescriptorProto'TYPE_UINT64
+          = FieldDescriptorProto'TYPE_INT64
+        pred FieldDescriptorProto'TYPE_INT32
+          = FieldDescriptorProto'TYPE_UINT64
+        pred FieldDescriptorProto'TYPE_FIXED64
+          = FieldDescriptorProto'TYPE_INT32
+        pred FieldDescriptorProto'TYPE_FIXED32
+          = FieldDescriptorProto'TYPE_FIXED64
+        pred FieldDescriptorProto'TYPE_BOOL
+          = FieldDescriptorProto'TYPE_FIXED32
+        pred FieldDescriptorProto'TYPE_STRING
+          = FieldDescriptorProto'TYPE_BOOL
+        pred FieldDescriptorProto'TYPE_GROUP
+          = FieldDescriptorProto'TYPE_STRING
+        pred FieldDescriptorProto'TYPE_MESSAGE
+          = FieldDescriptorProto'TYPE_GROUP
+        pred FieldDescriptorProto'TYPE_BYTES
+          = FieldDescriptorProto'TYPE_MESSAGE
+        pred FieldDescriptorProto'TYPE_UINT32
+          = FieldDescriptorProto'TYPE_BYTES
+        pred FieldDescriptorProto'TYPE_ENUM
+          = FieldDescriptorProto'TYPE_UINT32
+        pred FieldDescriptorProto'TYPE_SFIXED32
+          = FieldDescriptorProto'TYPE_ENUM
+        pred FieldDescriptorProto'TYPE_SFIXED64
+          = FieldDescriptorProto'TYPE_SFIXED32
+        pred FieldDescriptorProto'TYPE_SINT32
+          = FieldDescriptorProto'TYPE_SFIXED64
+        pred FieldDescriptorProto'TYPE_SINT64
+          = FieldDescriptorProto'TYPE_SINT32
+        enumFrom = Data.ProtoLens.Message.Enum.messageEnumFrom
+        enumFromTo = Data.ProtoLens.Message.Enum.messageEnumFromTo
+        enumFromThen = Data.ProtoLens.Message.Enum.messageEnumFromThen
+        enumFromThenTo = Data.ProtoLens.Message.Enum.messageEnumFromThenTo
+
+instance Prelude.Bounded FieldDescriptorProto'Type where
+        minBound = FieldDescriptorProto'TYPE_DOUBLE
+        maxBound = FieldDescriptorProto'TYPE_SINT64
 
 data FieldOptions = FieldOptions{_FieldOptions'ctype ::
                                  Prelude.Maybe FieldOptions'CType,
@@ -1381,8 +1495,11 @@ data FieldOptions'CType = FieldOptions'STRING
                         | FieldOptions'STRING_PIECE
                         deriving (Prelude.Show, Prelude.Eq)
 
-instance Data.ProtoLens.Default FieldOptions'CType where
+instance Data.Default.Class.Default FieldOptions'CType where
         def = FieldOptions'STRING
+
+instance Data.ProtoLens.FieldDefault FieldOptions'CType where
+        fieldDefault = FieldOptions'STRING
 
 instance Data.ProtoLens.MessageEnum FieldOptions'CType where
         maybeToEnum 0 = Prelude.Just FieldOptions'STRING
@@ -1408,14 +1525,35 @@ instance Prelude.Enum FieldOptions'CType where
         fromEnum FieldOptions'STRING = 0
         fromEnum FieldOptions'CORD = 1
         fromEnum FieldOptions'STRING_PIECE = 2
+        succ FieldOptions'STRING_PIECE
+          = Prelude.error
+              "Ident \"FieldOptions'CType\".Ident \"succ\": bad argument Ident \"FieldOptions'STRING_PIECE\". This value would be out of bounds."
+        succ FieldOptions'STRING = FieldOptions'CORD
+        succ FieldOptions'CORD = FieldOptions'STRING_PIECE
+        pred FieldOptions'STRING
+          = Prelude.error
+              "Ident \"FieldOptions'CType\".Ident \"pred\": bad argument Ident \"FieldOptions'STRING\". This value would be out of bounds."
+        pred FieldOptions'CORD = FieldOptions'STRING
+        pred FieldOptions'STRING_PIECE = FieldOptions'CORD
+        enumFrom = Data.ProtoLens.Message.Enum.messageEnumFrom
+        enumFromTo = Data.ProtoLens.Message.Enum.messageEnumFromTo
+        enumFromThen = Data.ProtoLens.Message.Enum.messageEnumFromThen
+        enumFromThenTo = Data.ProtoLens.Message.Enum.messageEnumFromThenTo
+
+instance Prelude.Bounded FieldOptions'CType where
+        minBound = FieldOptions'STRING
+        maxBound = FieldOptions'STRING_PIECE
 
 data FieldOptions'JSType = FieldOptions'JS_NORMAL
                          | FieldOptions'JS_STRING
                          | FieldOptions'JS_NUMBER
                          deriving (Prelude.Show, Prelude.Eq)
 
-instance Data.ProtoLens.Default FieldOptions'JSType where
+instance Data.Default.Class.Default FieldOptions'JSType where
         def = FieldOptions'JS_NORMAL
+
+instance Data.ProtoLens.FieldDefault FieldOptions'JSType where
+        fieldDefault = FieldOptions'JS_NORMAL
 
 instance Data.ProtoLens.MessageEnum FieldOptions'JSType where
         maybeToEnum 0 = Prelude.Just FieldOptions'JS_NORMAL
@@ -1441,6 +1579,24 @@ instance Prelude.Enum FieldOptions'JSType where
         fromEnum FieldOptions'JS_NORMAL = 0
         fromEnum FieldOptions'JS_STRING = 1
         fromEnum FieldOptions'JS_NUMBER = 2
+        succ FieldOptions'JS_NUMBER
+          = Prelude.error
+              "Ident \"FieldOptions'JSType\".Ident \"succ\": bad argument Ident \"FieldOptions'JS_NUMBER\". This value would be out of bounds."
+        succ FieldOptions'JS_NORMAL = FieldOptions'JS_STRING
+        succ FieldOptions'JS_STRING = FieldOptions'JS_NUMBER
+        pred FieldOptions'JS_NORMAL
+          = Prelude.error
+              "Ident \"FieldOptions'JSType\".Ident \"pred\": bad argument Ident \"FieldOptions'JS_NORMAL\". This value would be out of bounds."
+        pred FieldOptions'JS_STRING = FieldOptions'JS_NORMAL
+        pred FieldOptions'JS_NUMBER = FieldOptions'JS_STRING
+        enumFrom = Data.ProtoLens.Message.Enum.messageEnumFrom
+        enumFromTo = Data.ProtoLens.Message.Enum.messageEnumFromTo
+        enumFromThen = Data.ProtoLens.Message.Enum.messageEnumFromThen
+        enumFromThenTo = Data.ProtoLens.Message.Enum.messageEnumFromThenTo
+
+instance Prelude.Bounded FieldOptions'JSType where
+        minBound = FieldOptions'JS_NORMAL
+        maxBound = FieldOptions'JS_NUMBER
 
 data FileDescriptorProto = FileDescriptorProto{_FileDescriptorProto'name
                                                :: Prelude.Maybe Data.Text.Text,
@@ -2198,8 +2354,11 @@ data FileOptions'OptimizeMode = FileOptions'SPEED
                               | FileOptions'LITE_RUNTIME
                               deriving (Prelude.Show, Prelude.Eq)
 
-instance Data.ProtoLens.Default FileOptions'OptimizeMode where
+instance Data.Default.Class.Default FileOptions'OptimizeMode where
         def = FileOptions'SPEED
+
+instance Data.ProtoLens.FieldDefault FileOptions'OptimizeMode where
+        fieldDefault = FileOptions'SPEED
 
 instance Data.ProtoLens.MessageEnum FileOptions'OptimizeMode where
         maybeToEnum 1 = Prelude.Just FileOptions'SPEED
@@ -2225,6 +2384,24 @@ instance Prelude.Enum FileOptions'OptimizeMode where
         fromEnum FileOptions'SPEED = 1
         fromEnum FileOptions'CODE_SIZE = 2
         fromEnum FileOptions'LITE_RUNTIME = 3
+        succ FileOptions'LITE_RUNTIME
+          = Prelude.error
+              "Ident \"FileOptions'OptimizeMode\".Ident \"succ\": bad argument Ident \"FileOptions'LITE_RUNTIME\". This value would be out of bounds."
+        succ FileOptions'SPEED = FileOptions'CODE_SIZE
+        succ FileOptions'CODE_SIZE = FileOptions'LITE_RUNTIME
+        pred FileOptions'SPEED
+          = Prelude.error
+              "Ident \"FileOptions'OptimizeMode\".Ident \"pred\": bad argument Ident \"FileOptions'SPEED\". This value would be out of bounds."
+        pred FileOptions'CODE_SIZE = FileOptions'SPEED
+        pred FileOptions'LITE_RUNTIME = FileOptions'CODE_SIZE
+        enumFrom = Data.ProtoLens.Message.Enum.messageEnumFrom
+        enumFromTo = Data.ProtoLens.Message.Enum.messageEnumFromTo
+        enumFromThen = Data.ProtoLens.Message.Enum.messageEnumFromThen
+        enumFromThenTo = Data.ProtoLens.Message.Enum.messageEnumFromThenTo
+
+instance Prelude.Bounded FileOptions'OptimizeMode where
+        minBound = FileOptions'SPEED
+        maxBound = FileOptions'LITE_RUNTIME
 
 data GeneratedCodeInfo = GeneratedCodeInfo{_GeneratedCodeInfo'annotation
                                            :: [GeneratedCodeInfo'Annotation]}

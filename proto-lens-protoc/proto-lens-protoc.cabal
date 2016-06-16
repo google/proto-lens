@@ -35,6 +35,7 @@ library
       , Data.Default.Class
       , Data.Map
       , Data.ProtoLens
+      , Data.ProtoLens.Message.Enum
       , Data.Text
       , Lens.Family2
       , Lens.Family2.Unchecked

@@ -19,10 +19,12 @@ import qualified Data.Foldable as F
 import qualified Data.List as List
 import qualified Data.Map as Map
 import Data.Maybe (isNothing)
+import Data.Ord (comparing)
 import qualified Data.Set as Set
 import Data.String (fromString)
 import Data.Text (unpack)
 import qualified Data.Text as T
+import Data.Tuple (swap)
 import Language.Haskell.Exts.Syntax as Syntax
 import Language.Haskell.Exts.SrcLoc (noLoc)
 import Lens.Family2 ((^.))
@@ -81,8 +83,8 @@ generateModule modName imports syntaxType definitions importedEnv
                    -- cause a name conflict between field accessors.
           (map importDecl
               -- Note: we import Prelude explicitly to make it qualified.
-              $ [ "Prelude", "Data.ProtoLens", "Lens.Family2"
-                , "Lens.Family2.Unchecked", "Data.Default.Class"
+              $ [ "Prelude", "Data.ProtoLens", "Data.ProtoLens.Message.Enum"
+                , "Lens.Family2", "Lens.Family2.Unchecked", "Data.Default.Class"
                 , "Data.Text", "Data.Int"
                 , "Data.Word", "Data.Map" , "Data.ByteString"
                 ]
@@ -224,16 +226,43 @@ generateEnumDecls info =
     --    fromEnum Foo1 = 1
     --    fromEnum Foo2 = 2
     --    ..
-    , InstDecl noLoc Nothing [] [] "Prelude.Enum" [dataType] $
-        (InsDecl $ FunBind
+    --    succ FooN = error "Foo.succ: bad argument FooN."
+    --    succ Foo1 = Foo2
+    --    succ Foo2 = Foo3
+    --    ..
+    --    pred Foo1 = error "Foo.succ: bad argument Foo1."
+    --    pred Foo2 = Foo1
+    --    pred Foo3 = Foo2
+    --    ..
+    --    enumFrom = messageEnumFrom
+    --    enumFromTo = messageEnumFromTo
+    --    enumFromThen = messageEnumFromThen
+    --    enumFromThenTo = messageEnumFromThenTo
+    , InstDecl noLoc Nothing [] [] "Prelude.Enum" [dataType]
+        [ InsDecl $ FunBind
             [ match "toEnum" ["k__"]
                   $ "Prelude.maybe" @@ errorMessageExpr @@ "Prelude.id"
                         @@ ("Data.ProtoLens.maybeToEnum" @@ "k__")
-            ])
-        :
-        [ InsDecl $ FunBind
+            ]
+        , InsDecl $ FunBind
             [ match "fromEnum" [PApp (UnQual c) []] $ litInt k
             | (c, k) <- values
+            ]
+        , succDecl "succ" maxBoundName succPairs
+        , succDecl "pred" minBoundName $ map swap succPairs
+        , alias "enumFrom" "Data.ProtoLens.Message.Enum.messageEnumFrom"
+        , alias "enumFromTo" "Data.ProtoLens.Message.Enum.messageEnumFromTo"
+        , alias "enumFromThen" "Data.ProtoLens.Message.Enum.messageEnumFromThen"
+        , alias "enumFromThenTo"
+            "Data.ProtoLens.Message.Enum.messageEnumFromThenTo"
+        ]
+    -- instance Bounded Foo where
+    --    minBound = Foo1
+    --    maxBound = FooN
+    , InstDecl noLoc Nothing [] [] "Prelude.Bounded" [dataType]
+        [ InsDecl $ FunBind
+            [ match "minBound" [] $ Con $ UnQual minBoundName
+            , match "maxBound" [] $ Con $ UnQual maxBoundName
             ]
         ]
     ]
@@ -246,8 +275,26 @@ generateEnumDecls info =
         } = info
     namesAndValues = zip valueNames (ed ^. value)
     names = map (second (^. name)) namesAndValues
-    values = map (second (fromIntegral . (^. number))) namesAndValues
-    defaultCon = Con $ UnQual $ fst $ head values
+    values = List.sortBy (comparing snd) $
+        map (second (fromIntegral . (^. number))) namesAndValues
+    minBoundName = fst $ head values
+    maxBoundName = fst $ last values
+
+    succPairs = zip ctorNames $ tail ctorNames
+      where ctorNames = map fst values
+    succDecl funName boundName thePairs = InsDecl $ FunBind $
+        match funName [PApp (UnQual boundName) []] (
+            "Prelude.error" @@ Lit (Syntax.String $ concat
+                [ show dataName, ".", show funName, ": bad argument "
+                , show boundName, ". This value would be out of bounds."
+                ]))
+        :
+        [ match funName [PApp (UnQual from) []] $ Con $ UnQual to
+        | (from, to) <- thePairs
+        ]
+    alias funName implName = InsDecl $ FunBind [match funName [] implName]
+
+    defaultCon = Con $ UnQual $ fst $ head names
     errorMessageExpr = "Prelude.error"
                           @@ ("Prelude.++" @@ Lit (Syntax.String errorMessage)
                               @@ ("Prelude.show" @@ "k__"))

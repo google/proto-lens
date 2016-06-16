@@ -24,6 +24,7 @@ library
                        Data.ProtoLens.Encoding
                        Data.ProtoLens.Field
                        Data.ProtoLens.Message
+                       Data.ProtoLens.Message.Enum
                        Data.ProtoLens.TextFormat
   other-modules:       Data.ProtoLens.Encoding.Bytes
                        Data.ProtoLens.Encoding.Wire
