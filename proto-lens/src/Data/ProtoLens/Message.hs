@@ -169,7 +169,7 @@ data FieldTypeDescriptor value where
 deriving instance Show (FieldTypeDescriptor value)
 
 -- | A class for protocol buffer enums that enables safe decoding.
-class Enum a => MessageEnum a where
+class (Enum a, Bounded a) => MessageEnum a where
     -- | Convert the given 'Int' to an enum value.  Returns 'Nothing' if
     -- no corresponding value was defined in the .proto file.
     maybeToEnum :: Int -> Maybe a

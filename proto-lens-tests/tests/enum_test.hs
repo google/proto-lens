@@ -10,9 +10,10 @@ module Main where
 import Proto.Enum
 import Data.ProtoLens
 import Lens.Family2 ((&), (.~), (^.))
-import Test.Framework (testGroup)
+import Test.Framework (plusTestOptions, testGroup)
+import Test.Framework.Options (topt_timeout)
 import Test.Framework.Providers.HUnit (testCase)
-import Test.HUnit ((@=?))
+import Test.HUnit ((@?=))
 import Data.Monoid (mempty)
 
 import TestUtil
@@ -28,6 +29,9 @@ main = testMain
     , testBadEnumValues
     , testNamedEnumValues
     , testRoundTrip
+    , testBounded
+    , testMaybeSuccAndPred
+    , testEnumFromThenTo
     ]
 
 testExternalEnum = testGroup "external"
@@ -50,10 +54,10 @@ testNestedEnum = testGroup "nested"
     ]
 
 testDefaults = testGroup "defaults"
-    [ testCase "external" $ defFoo  ^. barDefaulted @=? BAR5
-    , testCase "nested" $ defFoo  ^. bazDefaulted @=? Foo'BAZ4
-    , testCase "true" $ defFoo ^. trueDefaulted @=? True
-    , testCase "false" $ defFoo  ^. falseDefaulted @=? False
+    [ testCase "external" $ defFoo  ^. barDefaulted @?= BAR5
+    , testCase "nested" $ defFoo  ^. bazDefaulted @?= Foo'BAZ4
+    , testCase "true" $ defFoo ^. trueDefaulted @?= True
+    , testCase "false" $ defFoo  ^. falseDefaulted @?= False
     ]
 
 testBadEnumValues = testGroup "badEnumValues"
@@ -68,3 +72,43 @@ testNamedEnumValues = testGroup "namedEnumValues"
 
 testRoundTrip =
     runTypedTest (roundTripTest "roundtrip" :: TypedTest Foo)
+
+testBounded = testGroup "bounded"
+    [ testCase "minBound" $ (minBound :: Bar) @?= NEGATIVE
+    , testCase "maxBound" $ (maxBound :: Bar) @?= BAR5
+    ]
+
+testMaybeSuccAndPred = testGroup "succPred"
+    [ testGroup "succ"
+        [ testCase "min" $ succ (minBound :: Bar) @?= BAR3
+        , testCase "BAR3" $ succ BAR3 @?= BAR5
+        ]
+    , testGroup "pred"
+        [ testCase "BAR3" $ pred BAR3 @?= NEGATIVE
+        , testCase "max" $ pred (maxBound :: Bar) @?= BAR3
+        ]
+    ]
+
+testEnumFromThenTo = plusTestOptions testOptions $ testGroup "enumFromThenTo"
+    [ testCaseEnum "[min ..]" [minBound :: Baz ..]
+        [BAZ1, BAZ2, BAZ3, BAZ4, BAZ5, BAZ6, BAZ7, BAZ8]
+    , testCaseEnum "[3..5]" [BAZ3 .. BAZ5] [BAZ3, BAZ4, BAZ5]
+    , testCaseEnum "[4..4]" [BAZ4 .. BAZ4] [BAZ4]
+    , testCaseEnum "[5..1]" [BAZ5 .. BAZ1] []
+    , testCaseEnum "[2,5..]" [BAZ2, BAZ5 ..] [BAZ2, BAZ5, BAZ8]
+    , testCaseEnum "[8,6..]" [BAZ8, BAZ6 ..] [BAZ8, BAZ6, BAZ4, BAZ2]
+    , testCaseEnum "[8,6..2]" [BAZ8, BAZ6 .. BAZ2] [BAZ8, BAZ6, BAZ4, BAZ2]
+    , testCaseEnum "[1,3..2]" [BAZ1, BAZ3 .. BAZ2] [BAZ1]
+    , testCaseEnum "[6,5..7]" [BAZ6, BAZ5 .. BAZ7] []
+    , testCaseEnum "[2,2..]" [BAZ2, BAZ2 ..] $ replicate 10 BAZ2
+    , testCaseEnum "[2,2..2]" [BAZ2, BAZ2 .. BAZ2] $ replicate 10 BAZ2
+    , testCaseEnum "[2,2..1]" [BAZ2, BAZ2 .. BAZ1] []
+    ]
+  where
+    -- One second timeout in µs in case there's an infinite loop.
+    testOptions = mempty {topt_timeout = Just $ Just 1000000}
+    testCaseEnum name actual expected =
+        -- We limit the actual to 10 in case of accidental infinite sequences.
+        -- Note that there are only 10 values, so this should happen rarely.
+        testCase name $ take 10 actual @?= expected
+

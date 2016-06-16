@@ -5,6 +5,7 @@
 module Bootstrap.Proto.Google.Protobuf.Compiler.Plugin where
 import qualified Prelude
 import qualified Data.ProtoLens
+import qualified Data.ProtoLens.Message.Enum
 import qualified Lens.Family2
 import qualified Lens.Family2.Unchecked
 import qualified Data.Default.Class
