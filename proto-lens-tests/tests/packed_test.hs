@@ -11,7 +11,7 @@ import Lens.Family2 ((&), (.~))
 import Data.ProtoLens
 import Data.Monoid (mconcat, mempty, (<>))
 
-import TestUtil
+import Data.ProtoLens.TestUtil
 
 defFoo :: Foo
 defFoo = def

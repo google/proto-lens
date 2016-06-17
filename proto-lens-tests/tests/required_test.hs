@@ -13,7 +13,7 @@ import Lens.Family2 ((&), (.~))
 import Proto.Required (Foo, a, b)
 import Test.Framework (testGroup)
 
-import TestUtil
+import Data.ProtoLens.TestUtil
 
 defFoo :: Foo
 defFoo = def
