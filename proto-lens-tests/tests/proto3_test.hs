@@ -35,7 +35,7 @@ import Test.Framework (testGroup)
 import Test.Framework.Providers.HUnit (testCase)
 import Test.HUnit ((@=?))
 
-import TestUtil
+import Data.ProtoLens.TestUtil
 
 main = testMain
   [ testGroup "Foo"

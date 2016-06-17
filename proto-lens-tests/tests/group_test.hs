@@ -12,7 +12,7 @@ import Proto.Group
 import Data.ProtoLens
 import Lens.Family2 ((&), (.~))
 
-import TestUtil
+import Data.ProtoLens.TestUtil
 
 main = testMain
            [ serializeSimple

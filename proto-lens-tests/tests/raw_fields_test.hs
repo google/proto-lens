@@ -26,7 +26,7 @@ import Data.Text.Encoding (encodeUtf8)
 import Data.Monoid (mempty)
 import Data.ByteString.Builder (Builder, byteString)
 
-import TestUtil
+import Data.ProtoLens.TestUtil
 
 deserializeFails :: String -> Bad -> Test
 deserializeFails name bad = deserializeFrom name expected $ buildMessage bad

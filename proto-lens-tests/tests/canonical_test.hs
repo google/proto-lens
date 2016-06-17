@@ -9,7 +9,8 @@
 -- https://developers.google.com/protocol-buffers/docs/encoding
 --
 -- These tests compare directly to byte sequences, rather than using
--- TestUtil.tagged, to sanity-check that tagged is implemented correctly.
+-- Data.ProtoLens.TestUtil.tagged, to sanity-check that tagged is implemented
+-- correctly.
 module Main where
 
 import Lens.Family2 ((&), (.~))
@@ -21,7 +22,7 @@ import Data.ByteString.Builder (word8)
 import Data.Monoid (mconcat)
 import Data.Word (Word8)
 
-import TestUtil
+import Data.ProtoLens.TestUtil
 
 main = testMain
            [int32Test, stringTest, embeddedTest, packedIntsTest, roundTripTests]

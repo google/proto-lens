@@ -16,7 +16,7 @@ extra-source-files: tests/*.proto
 
 library
   hs-source-dirs: src
-  exposed-modules:     TestUtil
+  exposed-modules:     Data.ProtoLens.TestUtil
   default-language: Haskell2010
   build-depends: proto-lens-arbitrary == 0.1.*
                , proto-lens-protoc == 0.1.*
