@@ -15,7 +15,7 @@ import Data.ByteString.Builder (Builder, byteString)
 import Data.Monoid (mempty, (<>))
 import Data.Word (Word64)
 
-import TestUtil
+import Data.ProtoLens.TestUtil
 
 defFoo :: Foo
 defFoo = def

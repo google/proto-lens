@@ -15,7 +15,7 @@ import Test.Framework.Providers.HUnit (testCase)
 import Test.HUnit ((@=?))
 import Data.Monoid (mempty)
 
-import TestUtil
+import Data.ProtoLens.TestUtil
 
 defFoo :: Foo
 defFoo = def

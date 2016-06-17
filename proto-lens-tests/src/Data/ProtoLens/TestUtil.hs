@@ -5,7 +5,7 @@
 -- https://developers.google.com/open-source/licenses/bsd
 
 {-# LANGUAGE ScopedTypeVariables #-}
-module TestUtil(
+module Data.ProtoLens.TestUtil(
     testMain,
     Test,
     serializeTo,

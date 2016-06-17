@@ -15,7 +15,7 @@ import Test.Framework.Providers.HUnit (testCase)
 import Test.HUnit ((@=?))
 import Text.PrettyPrint (renderStyle, style, lineLength)
 
-import TestUtil
+import Data.ProtoLens.TestUtil
 
 def1 :: Test1
 def1 = def
