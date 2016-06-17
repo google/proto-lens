@@ -44,8 +44,8 @@ import System.Process (callProcess)
 -- the @.cabal@ file under @extra-source-files@ which are located under the
 -- given root directory.
 --
--- Writes the generated files to the autogen directory (@dist/build/autogen@
--- for Cabal, and @.stack-work/dist/.../build/autogen@ for stack).
+-- Writes the generated files to the autogen directory (@dist\/build\/autogen@
+-- for Cabal, and @.stack-work\/dist\/...\/build\/autogen@ for stack).
 --
 -- Throws an exception if the @proto-lens-protoc@ executable is not on the PATH.
 defaultMainGeneratingProtos
@@ -58,8 +58,8 @@ defaultMainGeneratingProtos root
 -- .proto files listed in the @.cabal@ file under @extra-source-files@ which
 -- are located under the given root directory.
 --
--- Writes the generated files to the autogen directory (@dist/build/autogen@
--- for Cabal, and @.stack-work/dist/.../build/autogen@ for stack).
+-- Writes the generated files to the autogen directory (@dist\/build\/autogen@
+-- for Cabal, and @.stack-work\/dist\/...\/build\/autogen@ for stack).
 --
 -- Throws an exception if the @proto-lens-protoc@ executable is not on the PATH.
 generatingProtos
@@ -89,8 +89,8 @@ isSubdirectoryOf root f
 
 -- | Run the proto compiler to generate Haskell files from the given .proto files.
 --
--- Writes the generated files to the autogen directory (@dist/build/autogen@ for
--- Cabal, and @.stack-work/dist/.../build/autogen@ for stack).
+-- Writes the generated files to the autogen directory (@dist\/build\/autogen@
+-- for Cabal, and @.stack-work\/dist\/...\/build\/autogen@ for stack).
 --
 -- Throws an exception if the @proto-lens-protoc@ executable is not on the PATH.
 generateProtos
