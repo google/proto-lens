@@ -19,8 +19,17 @@ module Data.ProtoLens.Setup
     , generateProtos
     ) where
 
-import Distribution.PackageDescription (extraSrcFiles)
+import Distribution.PackageDescription
+    ( PackageDescription(..)
+    , benchmarkBuildInfo
+    , buildInfo
+    , extraSrcFiles
+    , hsSourceDirs
+    , libBuildInfo
+    , testBuildInfo
+    )
 import Distribution.Simple.BuildPaths (autogenModulesDir)
+import Distribution.Simple.LocalBuildInfo (LocalBuildInfo)
 import Distribution.Simple.Program (knownPrograms, ConfiguredProgram(..))
 import Distribution.Simple.Program.Types (simpleProgram)
 import Distribution.Simple.Utils (matchFileGlob)
@@ -68,7 +77,11 @@ generatingProtos
 generatingProtos root hooks = hooks
     { buildHook = \p l h f -> generateSources p l >> buildHook hooks p l h f
     , haddockHook = \p l h f -> generateSources p l >> haddockHook hooks p l h f
-    -- TODO: add a hook for sdist.
+    , sDistHook = \p maybe_l h f -> case maybe_l of
+            Nothing -> error "Can't run protoc; run 'cabal configure' first."
+            Just l -> do
+                        generateSources p l
+                        sDistHook hooks (fudgePackageDesc l p) maybe_l h f
     }
   where
     generateSources p l = do
@@ -78,6 +91,29 @@ generatingProtos root hooks = hooks
             $ filter (isSubdirectoryOf root)
             $ filter (\f -> takeExtension f == ".proto")
                 files
+
+-- | Add the autogen directory to the hs-source-dirs of all the targets in the
+-- .cabal file.  Used to fool 'sdist' by pointing it to the generated source
+-- files.
+fudgePackageDesc :: LocalBuildInfo -> PackageDescription -> PackageDescription
+fudgePackageDesc lbi p = p
+    { library =
+        (\lib -> lib { libBuildInfo = fudgeBuildInfo (libBuildInfo lib) })
+            <$> library p
+    , executables =
+        (\exe -> exe { buildInfo = fudgeBuildInfo (buildInfo exe) })
+            <$> executables p
+    , testSuites =
+        (\test -> test { testBuildInfo = fudgeBuildInfo (testBuildInfo test) })
+            <$> testSuites p
+    , benchmarks =
+        (\bench -> bench { benchmarkBuildInfo =
+                              fudgeBuildInfo (benchmarkBuildInfo bench) })
+            <$> benchmarks p
+    }
+  where
+    fudgeBuildInfo bi =
+        bi { hsSourceDirs = autogenModulesDir lbi : hsSourceDirs bi }
 
 -- | Returns whether the @root@ is a parent folder of @f@.
 isSubdirectoryOf :: FilePath -> FilePath -> Bool
