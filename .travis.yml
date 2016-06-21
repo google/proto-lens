@@ -1,34 +1,52 @@
 # Use a lightweight base image; we provide our own build tools.
 language: c
 
-# Use Travis containers to enable caching.
-sudo: false
+# Docker builds make GHC much slower for some reason:
+# https://github.com/travis-ci/travis-ci/issues/5623
+sudo: true
 
 cache:
   directories:
   - $HOME/.ghc
   - $HOME/.stack
+  - $HOME/.cabal
 
 matrix:
   include:
-  - env: GHCVER=7.10.3 CABALVER=1.22
+  - env: BUILD=cabal GHCVER=7.10.3 CABALVER=1.22
     addons: {apt: {packages: [cabal-install-1.22,ghc-7.10.3], sources: [hvr-ghc]}}
+  - env: BUILD=stack GHCVER=7.10.3 CABALVER=1.22
+    addons: {apt: {packages: [ghc-7.10.3], sources: [hvr-ghc]}}
 
 before_install:
   - mkdir -p $HOME/.local/bin
-  - export PATH=$HOME/.local/bin:$PATH
-  - curl -L https://github.com/commercialhaskell/stack/releases/download/v1.0.4.3/stack-1.0.4.3-linux-x86_64.tar.gz | tar xz --wildcards --strip-components=1 -C $HOME/.local/bin '*/stack'
+  - case "$BUILD" in
+      stack)
+        export PATH=/opt/ghc/$GHCVER/bin:/opt/cabal/$CABALVER/bin:$HOME/.local/bin:$PATH;
+      cabal)
+        export PATH=/opt/ghc/$GHCVER/bin:/opt/cabal/$CABALVER/bin:$HOME/.local/bin:$HOME/.cabal/bin:$PATH;;
+    esac
+  - curl -L https://github.com/commercialhaskell/stack/releases/download/v1.0.4.3/stack-1.0.4.3-linux-x86_64.tar.gz | tar xz --wildcards --strip-components=1 -C $HOME/.local/bin '*/stack';;
   - curl -L https://github.com/google/protobuf/releases/download/v3.0.0-beta-2/protoc-3.0.0-beta-2-linux-x86_64.zip > protoc-release.zip
   - unzip -p protoc-release.zip protoc > $HOME/.local/bin/protoc
   - chmod a+x $HOME/.local/bin/protoc
   - rm protoc-release.zip
 
 install:
-  - stack setup --no-terminal
-  - stack build --only-snapshot --no-terminal
+  - case "$BUILD" in
+      stack)
+        stack setup --no-terminal;
+        stack build --only-snapshot --no-terminal;;
+      cabal)
+        cabal update;;
+    esac
 
 script:
-  # Separate build from test, since build by itself hits some edge cases around
-  # custom Setup.hs script dependencies.
-  - stack build --haddock --no-haddock-deps
-  - stack test --haddock --no-haddock-deps
+  # Separate stack's build and test commands, since build by itself hits some
+  # edge cases around custom Setup.hs script dependencies.
+  - case "$BUILD" in
+      stack)
+        stack build --haddock --no-haddock-deps && stack test --haddock --no-haddock-deps;;
+      cabal)
+        ./travis-cabal.sh;;
+    esac
