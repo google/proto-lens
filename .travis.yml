@@ -8,6 +8,7 @@ cache:
   directories:
   - $HOME/.ghc
   - $HOME/.stack
+  - $HOME/.cabal
 
 matrix:
   include:
@@ -16,7 +17,7 @@ matrix:
 
 before_install:
   - mkdir -p $HOME/.local/bin
-  - export PATH=$HOME/.local/bin:$PATH
+  - export PATH=/opt/ghc/$GHCVER/bin:/opt/cabal/$CABALVER/bin:$HOME/.local/bin:$HOME/.cabal/bin:$PATH
   - curl -L https://github.com/commercialhaskell/stack/releases/download/v1.0.4.3/stack-1.0.4.3-linux-x86_64.tar.gz | tar xz --wildcards --strip-components=1 -C $HOME/.local/bin '*/stack'
   - curl -L https://github.com/google/protobuf/releases/download/v3.0.0-beta-2/protoc-3.0.0-beta-2-linux-x86_64.zip > protoc-release.zip
   - unzip -p protoc-release.zip protoc > $HOME/.local/bin/protoc
@@ -26,9 +27,12 @@ before_install:
 install:
   - stack setup --no-terminal
   - stack build --only-snapshot --no-terminal
+  - cabal --version
+  - cabal update
 
 script:
   # Separate build from test, since build by itself hits some edge cases around
   # custom Setup.hs script dependencies.
   - stack build --haddock --no-haddock-deps
   - stack test --haddock --no-haddock-deps
+  - ./travis-cabal.sh
