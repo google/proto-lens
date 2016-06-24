@@ -25,6 +25,10 @@ do
   ghc-pkg unregister --force $p || true
 done
 
+which ghc
+ghc --info
+ghc +RTS --info
+
 for p in $PACKAGES
 do
     echo "Cabal building $p"
@@ -36,7 +40,7 @@ do
         date
         cabal configure --enable-tests
         date
-        cabal build
+        cabal build -v3
         date
         cabal sdist
         date
