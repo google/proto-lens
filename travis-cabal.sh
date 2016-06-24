@@ -29,15 +29,22 @@ for p in $PACKAGES
 do
     echo "Cabal building $p"
     (cd $p &&
+        date
         cabal clean
+        date
         cabal install --enable-tests --only-dependencies
+        date
         cabal configure --enable-tests
+        date
         cabal build
+        date
         cabal sdist
+        date
         SRC_TGZ=$(cabal info . | awk '{print $2 ".tar.gz";exit}')
         cd dist
         if [ -f "$SRC_TGZ" ]; then
             cabal install --force-reinstalls "$SRC_TGZ"
+        date
         else
             echo "expected '$SRC_TGZ' not found"
             exit 1
