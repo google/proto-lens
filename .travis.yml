@@ -1,8 +1,7 @@
 # Use a lightweight base image; we provide our own build tools.
 language: c
 
-# Use Travis containers to enable caching.
-sudo: false
+sudo: true
 
 cache:
   directories:
