@@ -40,7 +40,7 @@ do
         date
         cabal configure --enable-tests
         date
-        cabal build -v3
+        cabal build -v
         date
         cabal sdist
         date
