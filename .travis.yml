@@ -1,6 +1,8 @@
 # Use a lightweight base image; we provide our own build tools.
 language: c
 
+# Docker builds make GHC much slower for some reason:
+# https://github.com/travis-ci/travis-ci/issues/5623
 sudo: true
 
 cache:
@@ -28,9 +30,10 @@ before_install:
 install:
   - case "$BUILD" in
       stack)
-        stack setup --no-terminal && stack build --only-snapshot --no-terminal
+        stack setup --no-terminal;
+        stack build --only-snapshot --no-terminal;;
       cabal)
-        cabal update
+        cabal update;;
     esac
 
 script:
@@ -38,7 +41,7 @@ script:
   # custom Setup.hs script dependencies.
   - case "$BUILD" in
       stack)
-        stack build --haddock --no-haddock-deps && stack test --haddock --no-haddock-deps
+        stack build --haddock --no-haddock-deps && stack test --haddock --no-haddock-deps;;
       cabal)
-        ./travis-cabal.sh
+        ./travis-cabal.sh;;
     esac
