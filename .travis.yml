@@ -11,7 +11,9 @@ cache:
 
 matrix:
   include:
-  - env: GHCVER=7.10.3 CABALVER=1.22
+  - env: BUILD=cabal GHCVER=7.10.3 CABALVER=1.22
+    addons: {apt: {packages: [cabal-install-1.22,ghc-7.10.3], sources: [hvr-ghc]}}
+  - env: BUILD=stack GHCVER=7.10.3 CABALVER=1.22
     addons: {apt: {packages: [cabal-install-1.22,ghc-7.10.3], sources: [hvr-ghc]}}
 
 before_install:
@@ -24,14 +26,19 @@ before_install:
   - rm protoc-release.zip
 
 install:
-  - stack setup --no-terminal
-  - stack build --only-snapshot --no-terminal
-  - cabal --version
-  - cabal update
+  - case "$BUILD" in
+      stack)
+        stack setup --no-terminal && stack build --only-snapshot --no-terminal
+      cabal)
+        cabal update
+    esac
 
 script:
   # Separate build from test, since build by itself hits some edge cases around
   # custom Setup.hs script dependencies.
-  - stack build --haddock --no-haddock-deps
-  - stack test --haddock --no-haddock-deps
-  - ./travis-cabal.sh
+  - case "$BUILD" in
+      stack)
+        stack build --haddock --no-haddock-deps && stack test --haddock --no-haddock-deps
+      cabal)
+        ./travis-cabal.sh
+    esac
