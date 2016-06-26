@@ -1,0 +1,16 @@
+// Test that we can handle proto files without an explicit "package"
+// declaration.
+syntax = "proto2";
+
+message Foo {
+  message Bar {
+    optional int32 a = 1;
+  }
+  map<int32, string> b = 2;
+  optional Bar c = 3;
+  optional Baz d = 4;
+}
+
+message Baz {
+  optional int32 e = 5;
+}
