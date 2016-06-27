@@ -108,7 +108,9 @@ definedFieldType fd env = fromMaybe err $ Map.lookup (fd ^. typeName) env
 -- nested in other messages), and assign Haskell names to them.
 collectDefinitions :: FileDescriptorProto -> Env Name
 collectDefinitions fd = let
-    protoPrefix = "." <> (fd ^. package) <> "."
+    protoPrefix = case fd ^. package of
+        "" -> "."
+        p -> "." <> p <> "."
     hsPrefix = ""
     in Map.fromList $ messageAndEnumDefs protoPrefix hsPrefix
                           (fd ^. messageType) (fd ^. enumType)

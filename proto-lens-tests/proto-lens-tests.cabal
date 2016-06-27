@@ -151,6 +151,20 @@ Test-Suite names_test
                , test-framework
                , test-framework-hunit
 
+Test-Suite no_package_test
+  default-language: Haskell2010
+  type: exitcode-stdio-1.0
+  main-is: no_package_test.hs
+  hs-source-dirs: tests
+  other-modules: Proto.NoPackage
+  build-depends: base
+               , bytestring
+               , proto-lens-protoc
+               , proto-lens-tests
+               , test-framework
+               , test-framework-hunit
+               , HUnit
+
 Test-Suite packed_test
   default-language: Haskell2010
   type: exitcode-stdio-1.0
