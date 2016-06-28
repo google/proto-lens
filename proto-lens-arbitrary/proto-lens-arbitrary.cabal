@@ -19,7 +19,7 @@ library
   hs-source-dirs: src
   exposed-modules:     Data.ProtoLens.Arbitrary
   build-depends:  proto-lens == 0.1.*
-                , base == 4.8.*
+                , base >= 4.8 && < 4.10
                 , bytestring == 0.10.*
                 , containers == 0.5.*
                 , text == 1.2.*

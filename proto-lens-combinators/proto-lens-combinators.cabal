@@ -22,10 +22,10 @@ library
   build-depends:  proto-lens == 0.1.*
                 -- Used by the custom Setup script (for the test-suite).
                 , proto-lens-protoc == 0.1.*
-                , base == 4.8.*
+                , base >= 4.8 && < 4.10
                 , data-default-class == 0.0.*
                 , lens-family == 1.2.*
-                , transformers == 0.4.*
+                , transformers >= 0.4 && < 0.6
 
 Test-Suite combinators_test
   default-language: Haskell2010
