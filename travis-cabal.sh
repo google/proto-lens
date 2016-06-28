@@ -3,13 +3,17 @@
 
 set -euo pipefail
 
-# List all the packages in this repo.  Put proto-lens[-protoc] first since
+# List all the packages in this repo.  Put certain ones first since
 # they're dependencies of the others.  (Unfortunately, "stack query" doesn't
 # give them to us in the right order.)
-BASE_PACKAGES="proto-lens proto-lens-protoc"
-OTHER_PACKAGES=$(stack query | sed -n 's/  \(.*\):$/\1/p' | sed '/^proto-lens$/d' | sed '/^proto-lens-protoc$/d')
-PACKAGES=$(echo $BASE_PACKAGES $OTHER_PACKAGES)
-
+PACKAGES="
+    proto-lens
+    proto-lens-protoc
+    proto-lens-arbitrary
+    proto-lens-combinators
+    proto-lens-optparse
+    proto-lens-tests
+"
 echo Building: $PACKAGES
 
 # Needed by haskell-src-exts which is a dependency of proto-lens-protoc.
