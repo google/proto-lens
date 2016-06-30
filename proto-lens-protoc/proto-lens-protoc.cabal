@@ -27,7 +27,7 @@ library
       , filepath == 1.4.*
       , lens-family == 1.2.*
       , process >= 1.2 && < 1.5
-      , proto-lens == 0.1.0.0
+      , proto-lens == 0.1.0.1
       , text == 1.2.*
   reexported-modules:
       -- Modules that are needed by the generated Haskell files:
@@ -59,7 +59,7 @@ executable proto-lens-protoc
       , lens-family == 1.2.*
       -- Specify an exact version of `proto-lens`, since it's tied closely
       -- to the generated code.
-      , proto-lens == 0.1.0.0
+      , proto-lens == 0.1.0.1
       , text == 1.2.*
   hs-source-dirs:      src
   default-language:    Haskell2010
