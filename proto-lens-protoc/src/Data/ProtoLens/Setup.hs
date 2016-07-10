@@ -77,6 +77,8 @@ generatingProtos
 generatingProtos root hooks = hooks
     { buildHook = \p l h f -> generateSources p l >> buildHook hooks p l h f
     , haddockHook = \p l h f -> generateSources p l >> haddockHook hooks p l h f
+    , replHook = \p l h f args -> generateSources p l
+                                        >> replHook hooks p l h f args
     , sDistHook = \p maybe_l h f -> case maybe_l of
             Nothing -> error "Can't run protoc; run 'cabal configure' first."
             Just l -> do
