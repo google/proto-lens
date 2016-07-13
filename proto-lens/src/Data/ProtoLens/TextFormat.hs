@@ -88,8 +88,7 @@ pprintField msg (name, FieldDescriptor _ typeDescr accessor)
 pprintFieldValue :: String -> FieldTypeDescriptor value -> value -> Doc
 pprintFieldValue name MessageField m
     = sep [text name <+> lbrace, nest 2 (pprintMessage m), rbrace]
--- TODO: make this output the enum value name by default
-pprintFieldValue name EnumField x = primField name $ fromEnum x
+pprintFieldValue name EnumField x = text name <> colon <+> text (showEnum x)
 pprintFieldValue name Int32Field x = primField name x
 pprintFieldValue name Int64Field x = primField name x
 pprintFieldValue name UInt32Field x = primField name x

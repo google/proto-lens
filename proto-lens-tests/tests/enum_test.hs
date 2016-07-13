@@ -14,6 +14,7 @@ import Test.Framework (plusTestOptions, testGroup)
 import Test.Framework.Options (topt_timeout)
 import Test.Framework.Providers.HUnit (testCase)
 import Test.HUnit ((@?=))
+import Text.PrettyPrint (text)
 import Data.Monoid (mempty)
 
 import Data.ProtoLens.TestUtil
@@ -36,21 +37,24 @@ main = testMain
 
 testExternalEnum = testGroup "external"
     [ serializeTo (show e1)
-          (defFoo & bar .~ e1) (keyed "bar" e2)
-          (tagged 1 $ VarInt $ fromIntegral e2)
+          (defFoo & bar .~ e1)
+          (keyedDoc "bar" $ text e2)
+          (tagged 1 $ VarInt e3)
     -- Use ":: Bar" to confirm that the external type doesn't have a prefix.
-    | (e1, e2) <- zip [BAR3, BAR5, NEGATIVE :: Bar]
-                      -- Use Integer to make sure that TextFormat prints
-                      -- the type as a negative value (in contrast to the VarInt
-                      -- encoding, which renders it as a large positive value).
-                      [3, 5, -1 :: Integer]
+    | (e1, e2, e3) <- zip3 [BAR3, BAR5, NEGATIVE :: Bar]
+                           ["BAR3", "BAR5", "NEGATIVE"]
+                           [3, 5, -1]
     ]
 
 testNestedEnum = testGroup "nested"
     [ serializeTo (show e1)
-          (defFoo & baz .~ e1) (keyed "baz" e2) (tagged 2 $ VarInt e2)
+          (defFoo & baz .~ e1)
+          (keyedDoc "baz" $ text e2)
+          (tagged 2 $ VarInt e3)
     -- Use ":: Foo'Baz" to confirm that the nested type has a prefix.
-    | (e1, e2) <- zip [Foo'BAZ2, Foo'BAZ4 :: Foo'Baz] [2, 4]
+    | (e1, e2, e3) <- zip3 [Foo'BAZ2, Foo'BAZ4 :: Foo'Baz]
+                           ["BAZ2", "BAZ4"]
+                           [2, 4]
     ]
 
 testDefaults = testGroup "defaults"

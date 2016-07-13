@@ -132,6 +132,7 @@ Test-Suite enum_test
   build-depends: HUnit
                , base
                , bytestring
+               , pretty
                , proto-lens-protoc
                , proto-lens-tests
                , test-framework
