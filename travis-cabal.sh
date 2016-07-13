@@ -48,3 +48,10 @@ do
         fi
     )
 done
+
+# Check that "cabal repl" works on a simple test.
+cd proto-lens-tests
+# Get rid of the previous dist/autogen to make sure "cabal repl" rebuilds it.
+cabal clean  # Get rid of previous dist/autogen
+cabal configure --enable-tests
+printf "main\n:quit\n" | cabal repl canonical_test
