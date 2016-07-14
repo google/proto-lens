@@ -34,3 +34,11 @@ message Foo {
   optional bool true_defaulted = 5 [default = true];
   optional bool false_defaulted = 6 [default = false];
 }
+
+enum Alias {
+  option allow_alias = true;
+  Alias1 = 1;
+  Alias2 = 2;
+  Alias2a = 2;
+  Alias3 = 3;
+}

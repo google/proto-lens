@@ -33,6 +33,7 @@ main = testMain
     , testBounded
     , testMaybeSuccAndPred
     , testEnumFromThenTo
+    , testAliases
     ]
 
 testExternalEnum = testGroup "external"
@@ -116,3 +117,13 @@ testEnumFromThenTo = plusTestOptions testOptions $ testGroup "enumFromThenTo"
         -- Note that there are only 10 values, so this should happen rarely.
         testCase name $ take 10 actual @?= expected
 
+testAliases = testCase "alias" $ do
+    map fromEnum [Alias1, Alias2, Alias2a, Alias3] @?= [1,2,2,3]
+    Alias2 @?= Alias2a
+    Alias2 @?= case Alias2 of
+        -- Check that this explicit list (which doesn't include Alias2) covers
+        -- all the constructor cases for this type.
+        -- We turn on warnings and -Werror for this test in the .cabal file.
+        Alias1 -> Alias1
+        Alias2 -> Alias2
+        Alias3 -> Alias3
