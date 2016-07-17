@@ -81,14 +81,15 @@ generateModule modName imports syntaxType definitions importedEnv
           Nothing  -- no explicit exports; we export everything.
                    -- TODO: Also export public imports, taking care not to
                    -- cause a name conflict between field accessors.
-          (map importDecl
+          (map importSimple
               -- Note: we import Prelude explicitly to make it qualified.
-              $ [ "Prelude", "Data.ProtoLens", "Data.ProtoLens.Message.Enum"
+              [ "Prelude", "Data.Int", "Data.Word"]
+            ++ map importReexported
+                [ "Data.ProtoLens", "Data.ProtoLens.Message.Enum"
                 , "Lens.Family2", "Lens.Family2.Unchecked", "Data.Default.Class"
-                , "Data.Text", "Data.Int"
-                , "Data.Word", "Data.Map" , "Data.ByteString"
+                , "Data.Text",  "Data.Map" , "Data.ByteString"
                 ]
-                ++ imports)
+            ++ map importSimple imports)
           (concatMap generateDecls (Map.elems definitions)
            ++ concatMap generateFieldDecls allFieldNames)
   where
@@ -102,8 +103,8 @@ generateModule modName imports syntaxType definitions importedEnv
         , i <- fieldInstances (lensInfo syntaxType env f)
         ]
 
-importDecl :: ModuleName -> ImportDecl
-importDecl m = ImportDecl
+importSimple :: ModuleName -> ImportDecl
+importSimple m = ImportDecl
     { importLoc = noLoc
     , importModule = m
     -- Import qualified to avoid clashes with names defined in this module.
@@ -114,6 +115,11 @@ importDecl m = ImportDecl
     , importAs = Nothing
     , importSpecs = Nothing
     }
+
+importReexported :: ModuleName -> ImportDecl
+importReexported m@(ModuleName s) = (importSimple m') { importAs = Just m }
+  where
+    m' = ModuleName $ "Data.ProtoLens.Reexport." ++ s
 
 generateMessageDecls :: SyntaxType -> Env QName -> MessageInfo Name -> [Decl]
 generateMessageDecls syntaxType env info =
