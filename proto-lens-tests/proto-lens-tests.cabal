@@ -19,6 +19,7 @@ library
   exposed-modules:     Data.ProtoLens.TestUtil
   default-language: Haskell2010
   build-depends: proto-lens-arbitrary == 0.1.*
+               , proto-lens == 0.1.*
                , proto-lens-protoc == 0.1.*
                , base >= 4.8 && < 4.10
                , bytestring == 0.10.*
@@ -40,6 +41,8 @@ Test-Suite canonical_test
   other-modules: Proto.Canonical
   build-depends: base
                , bytestring
+               , lens-family
+               , proto-lens
                , proto-lens-protoc
                , proto-lens-tests
                , test-framework
@@ -51,7 +54,8 @@ Test-Suite group_test
   hs-source-dirs: tests
   other-modules: Proto.Group
   build-depends: base
-               , bytestring
+               , lens-family
+               , proto-lens
                , proto-lens-protoc
                , proto-lens-tests
                , test-framework
@@ -64,6 +68,8 @@ Test-Suite map_test
   other-modules: Proto.Map
   build-depends: base
                , bytestring
+               , lens-family
+               , proto-lens
                , proto-lens-protoc
                , proto-lens-tests
                , test-framework
@@ -76,7 +82,8 @@ Test-Suite optional_test
   other-modules: Proto.Optional
   build-depends: HUnit
                , base
-               , bytestring
+               , lens-family
+               , proto-lens
                , proto-lens-protoc
                , proto-lens-tests
                , test-framework
@@ -91,6 +98,8 @@ Test-Suite proto3_test
   build-depends: HUnit
                , base
                , bytestring
+               , lens-family
+               , proto-lens
                , proto-lens-protoc
                , proto-lens-tests
                , test-framework
@@ -104,6 +113,8 @@ Test-Suite repeated_test
   other-modules: Proto.Repeated
   build-depends: base
                , bytestring
+               , lens-family
+               , proto-lens
                , proto-lens-protoc
                , proto-lens-tests
                , test-framework
@@ -116,8 +127,9 @@ Test-Suite text_format_test
   hs-source-dirs: tests
   build-depends: HUnit
                , base
-               , bytestring
+               , lens-family
                , pretty
+               , proto-lens
                , proto-lens-protoc
                , proto-lens-tests
                , test-framework
@@ -134,8 +146,9 @@ Test-Suite enum_test
   ghc-options: -fwarn-overlapping-patterns -fwarn-incomplete-patterns -Werror
   build-depends: HUnit
                , base
-               , bytestring
+               , lens-family
                , pretty
+               , proto-lens
                , proto-lens-protoc
                , proto-lens-tests
                , test-framework
@@ -149,7 +162,8 @@ Test-Suite names_test
   other-modules: Proto.Names
   build-depends: HUnit
                , base
-               , bytestring
+               , lens-family
+               , proto-lens
                , proto-lens-protoc
                , proto-lens-tests
                , test-framework
@@ -162,7 +176,8 @@ Test-Suite no_package_test
   hs-source-dirs: tests
   other-modules: Proto.NoPackage
   build-depends: base
-               , bytestring
+               , lens-family
+               , proto-lens
                , proto-lens-protoc
                , proto-lens-tests
                , test-framework
@@ -176,7 +191,8 @@ Test-Suite packed_test
   hs-source-dirs: tests
   other-modules: Proto.Packed
   build-depends: base
-               , bytestring
+               , lens-family
+               , proto-lens
                , proto-lens-protoc
                , proto-lens-tests
                , test-framework
@@ -190,6 +206,8 @@ Test-Suite raw_fields_test
   other-modules: Proto.RawFields
   build-depends: base
                , bytestring
+               , lens-family
+               , proto-lens
                , proto-lens-protoc
                , proto-lens-tests
                , test-framework
@@ -202,7 +220,9 @@ Test-Suite required_test
   hs-source-dirs: tests
   other-modules: Proto.Required
   build-depends: base
-               , bytestring
+               , data-default-class
+               , lens-family
+               , proto-lens
                , proto-lens-protoc
                , proto-lens-tests
                , test-framework

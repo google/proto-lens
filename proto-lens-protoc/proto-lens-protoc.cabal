@@ -30,15 +30,18 @@ library
       , proto-lens == 0.1.0.1
       , text == 1.2.*
   reexported-modules:
-      -- Modules that are needed by the generated Haskell files:
-        Data.ByteString
-      , Data.Default.Class
-      , Data.Map
-      , Data.ProtoLens
-      , Data.ProtoLens.Message.Enum
-      , Data.Text
-      , Lens.Family2
-      , Lens.Family2.Unchecked
+      -- Modules that are needed by the generated Haskell files.
+      -- For forwards compatibility, reexport them as new module names so that
+      -- other packages don't accidentally write non-generated code that
+      -- relies on these modules being reexported by proto-lens-protoc.
+        Data.ByteString as Data.ProtoLens.Reexport.Data.ByteString
+      , Data.Default.Class as Data.ProtoLens.Reexport.Data.Default.Class
+      , Data.Map as Data.ProtoLens.Reexport.Data.Map
+      , Data.ProtoLens as Data.ProtoLens.Reexport.Data.ProtoLens
+      , Data.ProtoLens.Message.Enum as Data.ProtoLens.Reexport.Data.ProtoLens.Message.Enum
+      , Data.Text as Data.ProtoLens.Reexport.Data.Text
+      , Lens.Family2 as Data.ProtoLens.Reexport.Lens.Family2
+      , Lens.Family2.Unchecked as Data.ProtoLens.Reexport.Lens.Family2.Unchecked
 
 executable proto-lens-protoc
   main-is:  protoc-gen-haskell.hs
