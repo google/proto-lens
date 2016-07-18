@@ -232,7 +232,7 @@ enumDef protoPrefix hsPrefix d = let
             })
 
 -- | Generate the definitions for each enum value.  In particular, decide
--- whether it's a true constructor or a PatternSynonym' to another
+-- whether it's a true constructor or a PatternSynonym to another
 -- constructor.
 --
 -- Like Java, we treat the first case of each numeric value as the "real"

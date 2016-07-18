@@ -309,7 +309,7 @@ generateEnumDecls info =
 
     succPairs = zip constructorNames $ tail constructorNames
     succDecl funName boundName thePairs = InsDecl $ FunBind $
-        match funName [PVar boundName] (
+        match funName [PApp (UnQual boundName) []] (
             "Prelude.error" @@ Lit (Syntax.String $ concat
                 [ show dataName, ".", show funName, ": bad argument "
                 , show boundName, ". This value would be out of bounds."
