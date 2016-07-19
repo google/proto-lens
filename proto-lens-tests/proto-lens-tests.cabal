@@ -141,6 +141,9 @@ Test-Suite enum_test
   main-is: enum_test.hs
   hs-source-dirs: tests
   other-modules: Proto.Enum
+  -- Check that the code generated for enum aliases and the pattern-match in the
+  -- test (aliasTest) are both warning-clean.
+  ghc-options: -fwarn-overlapping-patterns -fwarn-incomplete-patterns -Werror
   build-depends: HUnit
                , base
                , lens-family

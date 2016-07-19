@@ -14,6 +14,7 @@ module Definitions
     , MessageInfo(..)
     , FieldInfo(..)
     , EnumInfo(..)
+    , EnumValueInfo(..)
     , qualifyEnv
     , unqualifyEnv
     , collectDefinitions
@@ -21,6 +22,8 @@ module Definitions
     ) where
 
 import Data.Char (toUpper)
+import Data.Int (Int32)
+import Data.List (mapAccumL)
 import qualified Data.Map as Map
 import Data.Maybe (fromMaybe)
 import Data.Monoid
@@ -32,6 +35,7 @@ import Lens.Family2 ((^.))
 import Bootstrap.Proto.Google.Protobuf.Descriptor
     ( DescriptorProto
     , EnumDescriptorProto
+    , EnumValueDescriptorProto
     , FieldDescriptorProto
     , FileDescriptorProto
     , enumType
@@ -39,6 +43,7 @@ import Bootstrap.Proto.Google.Protobuf.Descriptor
     , messageType
     , name
     , nestedType
+    , number
     , package
     , typeName
     , value
@@ -81,9 +86,18 @@ data FieldInfo = FieldInfo
 data EnumInfo n = EnumInfo
     { enumName :: n
     , enumDescriptor :: EnumDescriptorProto
-    , enumValueNames :: [n]
-      -- ^ The Haskell name of each enum value.
-      -- This corresponds 1-1 with "value" in EnumDescriptorProto.
+    , enumValues :: [EnumValueInfo n]
+    } deriving Functor
+
+-- | Information about a single value case of a proto enum.
+data EnumValueInfo n = EnumValueInfo
+    { enumValueName :: n
+    , enumValueDescriptor :: EnumValueDescriptorProto
+    , enumAliasOf :: Maybe Name
+        -- ^ If 'Nothing', we turn value into a normal constructor of the enum.
+        -- If @'Just' n@, we're treating it as an alias of the constructor @n@
+        -- (a PatternSynonym in Haskell).  This mirrors the behavior of the
+        -- Java API.
     } deriving Functor
 
 mapEnv :: (n -> n') -> Env n -> Env n'
@@ -200,6 +214,7 @@ reservedKeywords = Set.fromList $
     ++  -- Nonstandard extensions
     [ "mdo"   -- RecursiveDo
     , "rec"   -- Arrows, RecursiveDo
+    , "pattern"  -- PatternSynonyms
     , "proc"  -- Arrows
     ]
 
@@ -213,8 +228,29 @@ enumDef protoPrefix hsPrefix d = let
        , Enum EnumInfo
             { enumName = mkHsName (d ^. name)
             , enumDescriptor = d
-            , enumValueNames = fmap (mkHsName . (^. name)) (d ^. value)
+            , enumValues = collectEnumValues mkHsName $ d ^. value
             })
+
+-- | Generate the definitions for each enum value.  In particular, decide
+-- whether it's a true constructor or a PatternSynonym to another
+-- constructor.
+--
+-- Like Java, we treat the first case of each numeric value as the "real"
+-- constructor, and subsequent cases as synonyms.
+collectEnumValues :: (Text -> Name) -> [EnumValueDescriptorProto]
+                  -> [EnumValueInfo Name]
+collectEnumValues mkHsName = snd . mapAccumL helper Map.empty
+  where
+    helper :: Map.Map Int32 Name -> EnumValueDescriptorProto
+           -> (Map.Map Int32 Name, EnumValueInfo Name)
+    helper seenNames v
+        | Just n' <- Map.lookup k seenNames = (seenNames, mkValue (Just n'))
+        | otherwise = (Map.insert k hsName seenNames, mkValue Nothing)
+      where
+        mkValue = EnumValueInfo hsName v
+        hsName = mkHsName n
+        n = v ^. name
+        k = v ^. number
 
 -- Haskell types must start with an uppercase letter, so we capitalize message
 -- and enum names.

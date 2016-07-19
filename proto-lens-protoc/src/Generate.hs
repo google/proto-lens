@@ -29,7 +29,8 @@ import Language.Haskell.Exts.Syntax as Syntax
 import Language.Haskell.Exts.SrcLoc (noLoc)
 import Lens.Family2 ((^.))
 import Bootstrap.Proto.Google.Protobuf.Descriptor
-    ( FieldDescriptorProto
+    ( EnumValueDescriptorProto
+    , FieldDescriptorProto
     , FieldDescriptorProto'Label(..)
     , FieldDescriptorProto'Type(..)
     , FileDescriptorProto
@@ -72,7 +73,8 @@ generateModule modName imports syntaxType definitions importedEnv
     = Module noLoc modName
           [ LanguagePragma noLoc $ map Ident
               ["ScopedTypeVariables", "DataKinds", "TypeFamilies",
-               "MultiParamTypeClasses", "FlexibleContexts", "FlexibleInstances"]
+               "MultiParamTypeClasses", "FlexibleContexts", "FlexibleInstances",
+               "PatternSynonyms"]
               -- Allow unused imports in case we don't import anything from
               -- Data.Text, Data.Int, etc.
           , OptionsPragma noLoc (Just GHC) "-fno-warn-unused-imports"
@@ -179,7 +181,7 @@ generateMessageDecls syntaxType env info =
 generateEnumDecls :: EnumInfo Name -> [Decl]
 generateEnumDecls info =
     [ DataDecl noLoc DataType [] dataName []
-        [QualConDecl noLoc [] [] $ ConDecl n [] | (n, _) <- values]
+        [QualConDecl noLoc [] [] $ ConDecl n [] | n <- constructorNames]
         [(c, []) | c <- ["Prelude.Show", "Prelude.Eq"]]
     -- instance Data.Default.Class.Default Foo where
     --   def = FirstEnumValue
@@ -205,21 +207,22 @@ generateEnumDecls info =
     --    readEnum _ = Nothing
     , InstDecl noLoc Nothing [] [] "Data.ProtoLens.MessageEnum" [dataType]
         [ InsDecl $ FunBind $
-            [ match "maybeToEnum" [pLitInt k] $ "Prelude.Just" @@ Con (UnQual n)
-            | (n, k) <- values
+            [ match "maybeToEnum" [pLitInt k]
+                $ "Prelude.Just" @@ Con (UnQual n)
+            | (n, k) <- constructorNumbers
             ]
             ++
             [ match "maybeToEnum" [PWildCard] "Prelude.Nothing"
             ]
             ++
-            [ match "showEnum" [PVar n] $ Lit $ Syntax.String $ T.unpack ev
-            | (n, ev) <- names
+            [ match "showEnum" [PVar n] $ Lit $ Syntax.String $ T.unpack pn
+            | (n, pn) <- constructorProtoNames
             ]
             ++
             [ match "readEnum"
-                [PLit Signless . Syntax.String $ T.unpack ev]
+                [PLit Signless . Syntax.String $ T.unpack pn]
                 $ "Prelude.Just" @@ Con (UnQual n)
-            | (n, ev) <- names
+            | (n, pn) <- constructorProtoNames
             ]
             ++
             [ match "readEnum" [PWildCard] "Prelude.Nothing"
@@ -252,7 +255,7 @@ generateEnumDecls info =
             ]
         , InsDecl $ FunBind
             [ match "fromEnum" [PApp (UnQual c) []] $ litInt k
-            | (c, k) <- values
+            | (c, k) <- constructorNumbers
             ]
         , succDecl "succ" maxBoundName succPairs
         , succDecl "pred" minBoundName $ map swap succPairs
@@ -272,22 +275,39 @@ generateEnumDecls info =
             ]
         ]
     ]
+    ++
+    -- pattern FooAlias :: Foo
+    -- pattern FooAlias = FooConstructor
+    concat
+        [ [ PatSynSig noLoc aliasName Nothing [] [] dataType
+          , PatSyn noLoc (PVar aliasName) (PVar originalName)
+                ImplicitBidirectional
+          ]
+        | EnumValueInfo
+            { enumValueName = aliasName
+            , enumAliasOf = Just originalName
+            } <- enumValues info
+        ]
   where
     dataType = TyCon $ UnQual dataName
-    EnumInfo
-        { enumName = dataName
-        , enumValueNames = valueNames
-        , enumDescriptor = ed
-        } = info
-    namesAndValues = zip valueNames (ed ^. value)
-    names = map (second (^. name)) namesAndValues
-    values = List.sortBy (comparing snd) $
-        map (second (fromIntegral . (^. number))) namesAndValues
-    minBoundName = fst $ head values
-    maxBoundName = fst $ last values
+    EnumInfo { enumName = dataName, enumDescriptor = ed } = info
+    constructors :: [(Name, EnumValueDescriptorProto)]
+    constructors = List.sortBy (comparing ((^. number) . snd))
+                            [(n, d) | EnumValueInfo
+                                { enumValueName = n
+                                , enumValueDescriptor = d
+                                , enumAliasOf = Nothing
+                                } <- enumValues info
+                            ]
+    constructorNames = map fst constructors
+    minBoundName = head constructorNames
+    maxBoundName = last constructorNames
 
-    succPairs = zip ctorNames $ tail ctorNames
-      where ctorNames = map fst values
+    constructorProtoNames = map (second (^. name)) constructors
+    constructorNumbers = map (second (fromIntegral . (^. number)))
+                          constructors
+
+    succPairs = zip constructorNames $ tail constructorNames
     succDecl funName boundName thePairs = InsDecl $ FunBind $
         match funName [PApp (UnQual boundName) []] (
             "Prelude.error" @@ Lit (Syntax.String $ concat
@@ -300,7 +320,7 @@ generateEnumDecls info =
         ]
     alias funName implName = InsDecl $ FunBind [match funName [] implName]
 
-    defaultCon = Con $ UnQual $ fst $ head names
+    defaultCon = Con $ UnQual $ head constructorNames
     errorMessageExpr = "Prelude.error"
                           @@ ("Prelude.++" @@ Lit (Syntax.String errorMessage)
                               @@ ("Prelude.show" @@ "k__"))
@@ -475,9 +495,8 @@ hsFieldValueDefault env fd = case fd ^. type' of
     FieldDescriptorProto'TYPE_ENUM
         | T.null def -> "Data.Default.Class.def"
         | Enum e <- definedFieldType fd env
-        , Just v <- List.lookup def [ (vd ^. name, n)
-                                    | (vd, n) <- zip (enumDescriptor e ^. value)
-                                                     (enumValueNames e)
+        , Just v <- List.lookup def [ (enumValueDescriptor v ^. name, enumValueName v)
+                                    | v <- enumValues e
                                     ]
             -> Con v
         | otherwise -> errorMessage "enum"
