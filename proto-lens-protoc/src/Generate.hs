@@ -92,8 +92,12 @@ generateModule modName imports syntaxType definitions importedEnv
                 , "Data.Text",  "Data.Map" , "Data.ByteString"
                 ]
             ++ map importSimple imports)
-          (concatMap generateDecls (Map.elems definitions)
-           ++ concatMap generateFieldDecls allFieldNames)
+          (concat
+              [ [insertionPoint "imports"]
+              , concatMap generateDecls (Map.elems definitions)
+              , concatMap generateFieldDecls allFieldNames
+              , [insertionPoint "end_of_file"]
+              ])
   where
     env = Map.union (unqualifyEnv definitions) importedEnv
     generateDecls (Message m) = generateMessageDecls syntaxType env m
@@ -104,6 +108,25 @@ generateModule modName imports syntaxType definitions importedEnv
         , f <- messageFields m
         , i <- fieldInstances (lensInfo syntaxType env f)
         ]
+
+-- Create a Decl that acts as a protoc insertion point of the given name.
+--
+-- Most languages put this in a comment, but haskell-src-exts doesn't seem to
+-- be able to include comments without having exact source locations for the
+-- entire AST; so instead we put it in an unnamed string literal.  This looks
+-- like:
+--
+--     _ = "@@protoc_insertion_point(something)"
+--
+-- Some other possibilities include:
+-- - a WARNING or DEPRECATED pragma
+-- - an ANN pragma for the module
+-- - a RULES pragma that will never fire (the rule name is an arbitrary string)
+-- - a no-op TH splice or quasiquoter expression
+insertionPoint :: String -> Decl
+insertionPoint nm = PatBind noLoc PWildCard
+    (UnGuardedRhs (Lit (String ("@@protoc_insertion_point("++nm++")"))))
+    Nothing
 
 importSimple :: ModuleName -> ImportDecl
 importSimple m = ImportDecl
