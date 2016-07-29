@@ -125,7 +125,7 @@ generateModule modName imports syntaxType definitions importedEnv
 -- - a no-op TH splice or quasiquoter expression
 insertionPoint :: String -> Decl
 insertionPoint nm = PatBind noLoc PWildCard
-    (UnGuardedRhs (Lit (String ("@@protoc_insertion_point("++nm++")"))))
+    (UnGuardedRhs (Lit (String ("@@protoc_insertion_point(" ++ nm ++ ")"))))
     Nothing
 
 importSimple :: ModuleName -> ImportDecl
