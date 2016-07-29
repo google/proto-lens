@@ -75,8 +75,9 @@ generateModule modName imports syntaxType definitions importedEnv
               ["ScopedTypeVariables", "DataKinds", "TypeFamilies",
                "MultiParamTypeClasses", "FlexibleContexts", "FlexibleInstances",
                "PatternSynonyms"]
-              -- Allow unused imports in case we don't import anything from
-              -- Data.Text, Data.Int, etc.
+          , insertionPointPragma "pragmas"
+          -- Allow unused imports in case we don't import anything from
+          -- Data.Text, Data.Int, etc.
           , OptionsPragma noLoc (Just GHC) "-fno-warn-unused-imports"
           ]
           Nothing  -- no warning text
@@ -93,10 +94,10 @@ generateModule modName imports syntaxType definitions importedEnv
                 ]
             ++ map importSimple imports)
           (concat
-              [ [insertionPoint "imports"]
+              [ [insertionPointDecl "imports"]
               , concatMap generateDecls (Map.elems definitions)
               , concatMap generateFieldDecls allFieldNames
-              , [insertionPoint "end_of_file"]
+              , [insertionPointDecl "end_of_file"]
               ])
   where
     env = Map.union (unqualifyEnv definitions) importedEnv
@@ -108,6 +109,13 @@ generateModule modName imports syntaxType definitions importedEnv
         , f <- messageFields m
         , i <- fieldInstances (lensInfo syntaxType env f)
         ]
+
+-- Make a protoc insertion point of the given name.
+--
+-- Note it still has to be inserted into the source text somehow; see
+-- 'insertionPointDecl' and 'insertionPointPragma' below.
+insertionPoint :: String -> String
+insertionPoint nm = "@@protoc_insertion_point(" ++ nm ++ ")"
 
 -- Create a Decl that acts as a protoc insertion point of the given name.
 --
@@ -123,10 +131,16 @@ generateModule modName imports syntaxType definitions importedEnv
 -- - an ANN pragma for the module
 -- - a RULES pragma that will never fire (the rule name is an arbitrary string)
 -- - a no-op TH splice or quasiquoter expression
-insertionPoint :: String -> Decl
-insertionPoint nm = PatBind noLoc PWildCard
-    (UnGuardedRhs (Lit (String ("@@protoc_insertion_point(" ++ nm ++ ")"))))
+insertionPointDecl :: String -> Decl
+insertionPointDecl nm = PatBind noLoc PWildCard
+    (UnGuardedRhs (Lit (String (insertionPoint nm))))
     Nothing
+
+-- Create a ModulePragma that acts as a protoc insertion point.
+insertionPointPragma :: String -> ModulePragma
+insertionPointPragma nm = OptionsPragma noLoc
+    (Just (UnknownTool "fake_options_pragma"))
+    (insertionPoint nm)
 
 importSimple :: ModuleName -> ImportDecl
 importSimple m = ImportDecl
