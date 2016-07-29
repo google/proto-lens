@@ -75,6 +75,8 @@ generateModule modName imports syntaxType definitions importedEnv
               ["ScopedTypeVariables", "DataKinds", "TypeFamilies",
                "MultiParamTypeClasses", "FlexibleContexts", "FlexibleInstances",
                "PatternSynonyms"]
+          -- The insertion point below is an unrecognised pragma; don't warn.
+          , OptionsPragma noLoc (Just GHC) "-fno-warn-unrecognised-pragmas"
           , insertionPointPragma "pragmas"
           -- Allow unused imports in case we don't import anything from
           -- Data.Text, Data.Int, etc.
