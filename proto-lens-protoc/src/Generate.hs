@@ -75,8 +75,11 @@ generateModule modName imports syntaxType definitions importedEnv
               ["ScopedTypeVariables", "DataKinds", "TypeFamilies",
                "MultiParamTypeClasses", "FlexibleContexts", "FlexibleInstances",
                "PatternSynonyms"]
-              -- Allow unused imports in case we don't import anything from
-              -- Data.Text, Data.Int, etc.
+          -- The insertion point below is an unrecognised pragma; don't warn.
+          , OptionsPragma noLoc (Just GHC) "-fno-warn-unrecognised-pragmas"
+          , insertionPointPragma "pragmas"
+          -- Allow unused imports in case we don't import anything from
+          -- Data.Text, Data.Int, etc.
           , OptionsPragma noLoc (Just GHC) "-fno-warn-unused-imports"
           ]
           Nothing  -- no warning text
@@ -92,8 +95,12 @@ generateModule modName imports syntaxType definitions importedEnv
                 , "Data.Text",  "Data.Map" , "Data.ByteString"
                 ]
             ++ map importSimple imports)
-          (concatMap generateDecls (Map.elems definitions)
-           ++ concatMap generateFieldDecls allFieldNames)
+          (concat
+              [ [insertionPointDecl "imports"]
+              , concatMap generateDecls (Map.elems definitions)
+              , concatMap generateFieldDecls allFieldNames
+              , [insertionPointDecl "end_of_file"]
+              ])
   where
     env = Map.union (unqualifyEnv definitions) importedEnv
     generateDecls (Message m) = generateMessageDecls syntaxType env m
@@ -104,6 +111,38 @@ generateModule modName imports syntaxType definitions importedEnv
         , f <- messageFields m
         , i <- fieldInstances (lensInfo syntaxType env f)
         ]
+
+-- Make a protoc insertion point of the given name.
+--
+-- Note it still has to be inserted into the source text somehow; see
+-- 'insertionPointDecl' and 'insertionPointPragma' below.
+insertionPoint :: String -> String
+insertionPoint nm = "@@protoc_insertion_point(" ++ nm ++ ")"
+
+-- Create a Decl that acts as a protoc insertion point of the given name.
+--
+-- Most languages put this in a comment, but haskell-src-exts doesn't seem to
+-- be able to include comments without having exact source locations for the
+-- entire AST; so instead we put it in an unnamed string literal.  This looks
+-- like:
+--
+--     _ = "@@protoc_insertion_point(something)"
+--
+-- Some other possibilities include:
+-- - a WARNING or DEPRECATED pragma
+-- - an ANN pragma for the module
+-- - a RULES pragma that will never fire (the rule name is an arbitrary string)
+-- - a no-op TH splice or quasiquoter expression
+insertionPointDecl :: String -> Decl
+insertionPointDecl nm = PatBind noLoc PWildCard
+    (UnGuardedRhs (Lit (String (insertionPoint nm))))
+    Nothing
+
+-- Create a ModulePragma that acts as a protoc insertion point.
+insertionPointPragma :: String -> ModulePragma
+insertionPointPragma nm = OptionsPragma noLoc
+    (Just (UnknownTool "fake_options_pragma"))
+    (insertionPoint nm)
 
 importSimple :: ModuleName -> ImportDecl
 importSimple m = ImportDecl
