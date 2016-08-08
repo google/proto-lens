@@ -10,7 +10,6 @@ maintainer:          awpr+protolens@google.com
 copyright:           Google Inc.
 category:            Data
 build-type:          Simple
-extra-source-files:  ChangeLog.md
 cabal-version:       >=1.10
 
 library

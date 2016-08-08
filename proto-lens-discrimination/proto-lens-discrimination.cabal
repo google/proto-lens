@@ -17,8 +17,9 @@ build-type:          Simple
 cabal-version:       >=1.10
 
 library
-  exposed-modules:     Data.ProtoLens.Sort, Data.ProtoLens.Group
-  other-modules:       Data.ProtoLens.Discrimination
+  exposed-modules:     Data.ProtoLens.Sort
+                     , Data.ProtoLens.Group
+                     , Data.ProtoLens.Discrimination
   build-depends:       base >=4.8 && <4.9
                      , data-default >=0.5 && <0.6
                      , bytestring >=0.10.6

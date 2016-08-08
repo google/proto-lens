@@ -33,14 +33,14 @@ discFloat = contramap sortableFloat32
 discDouble :: Contravariant f => f Word64 -> f Double
 discDouble = contramap sortableFloat64
 
-groupFloat :: Group Float
-groupFloat = discFloat grouping
+groupingFloat :: Group Float
+groupingFloat = discFloat grouping
 
-groupDouble :: Group Double
-groupDouble = discDouble grouping
+groupingDouble :: Group Double
+groupingDouble = discDouble grouping
 
-sortFloat :: Sort Float
-sortFloat = discFloat sorting
+sortingFloat :: Sort Float
+sortingFloat = discFloat sorting
 
-sortDouble :: Sort Double
-sortDouble = discDouble sorting
+sortingDouble :: Sort Double
+sortingDouble = discDouble sorting
