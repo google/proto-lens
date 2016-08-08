@@ -5,7 +5,6 @@
 -- This orders -0.0 < 0.0, and imposes unspecified ordering and distinction
 -- between NaNs.
 
-{-# LANGUAGE CPP #-}
 module Data.Discrimination.IEEE754 where
 
 import Data.Binary.IEEE754 (floatToWord, doubleToWord)
@@ -45,15 +44,3 @@ sortFloat = discFloat sorting
 
 sortDouble :: Sort Double
 sortDouble = discDouble sorting
-
-#ifdef ORPHAN_DISCRIMINATION_INSTANCES
-instance Grouping Float where
-  grouping = groupFloat
-instance Sorting Float where
-  sorting = sortFloat
-
-instance Grouping Double where
-  grouping = groupDouble
-instance Sorting Double where
-  sorting = sortDouble
-#endif
