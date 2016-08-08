@@ -67,13 +67,13 @@ descriptorGroup = fDescriptor fieldValueGroup grouping1 grouping1
 
 -- | Group values on a single field.
 --
--- Note that if you don't need the ability to compare on different fields
--- dynamically, you can probably 'contramap' a specific comparison instead.
--- For example, to sort by a message or group field:
--- >>> sortBy (getComparison $ view mySubmessage >$< messageComparison) protos
+-- Note that if you don't need the ability to group on different fields
+-- dynamically, you can probably 'contramap' a specific Group instead.
+-- For example, a Group by a message or group field:
+-- >>> view mySubmessage >$< messageGroup
 --
--- Or to sort by an integer field:
--- >>> sortOn (view myIntField) protos
+-- Or to group by an integer field:
+-- >>> runGroup grouping $ map (view myIntField &&& id) protos
 fieldGroup :: FieldDescriptor a -> Group a
 fieldGroup = fField fieldValueGroup grouping1 grouping1
 

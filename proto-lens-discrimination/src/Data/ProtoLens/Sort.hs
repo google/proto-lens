@@ -75,13 +75,13 @@ descriptorSort = fDescriptor fieldValueSort sorting1 sorting1
 
 -- | Sort values on a single field.
 --
--- Note that if you don't need the ability to compare on different fields
--- dynamically, you can probably 'contramap' a specific comparison instead.
--- For example, to sort by a message or group field:
--- >>> sortBy (getComparison $ view mySubmessage >$< messageComparison) protos
+-- Note that if you don't need the ability to sort on different fields
+-- dynamically, you can probably 'contramap' a specific Sort instead.
+-- For example, a Sort by a message or group field:
+-- >>> view mySubmessage >$< messageSort
 --
 -- Or to sort by an integer field:
--- >>> sortOn (view myIntField) protos
+-- >>> sortWith (view myIntField) protos
 fieldSort :: FieldDescriptor a -> Sort a
 fieldSort = fField fieldValueSort sorting1 sorting1
 
