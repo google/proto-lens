@@ -77,8 +77,8 @@ descriptorGroup = fDescriptor fieldValueGroup grouping1 grouping1
 fieldGroup :: FieldDescriptor a -> Group a
 fieldGroup = fField fieldValueGroup grouping1 grouping1
 
--- | Group values of a single field of a protobuf according to their
--- 'Message' or 'Grouping' instances.
+-- | Group values of a single field of a protobuf according to their 'Message'
+-- or 'Grouping' instances.
 fieldValueGroup :: FieldTypeDescriptor v -> Group v
 fieldValueGroup ty = case ty of
     MessageField  -> messageGroup

@@ -85,8 +85,8 @@ descriptorSort = fDescriptor fieldValueSort sorting1 sorting1
 fieldSort :: FieldDescriptor a -> Sort a
 fieldSort = fField fieldValueSort sorting1 sorting1
 
--- | Sort values of a single field of a protobuf according to their
--- 'Message' or 'Ord' instances.
+-- | Sort values of a single field of a protobuf according to their 'Message'
+-- or 'Sorting' instances.
 fieldValueSort :: FieldTypeDescriptor v -> Sort v
 fieldValueSort ty = case ty of
     MessageField  -> messageSort
