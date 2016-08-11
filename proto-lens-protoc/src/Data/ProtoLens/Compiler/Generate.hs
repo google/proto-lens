@@ -7,7 +7,7 @@
 -- | This module builds the actual, generated Haskell file
 -- for a given input .proto file.
 {-# LANGUAGE OverloadedStrings #-}
-module Generate(
+module Data.ProtoLens.Compiler.Generate(
     generateModule,
     fileSyntaxType,
     ) where
@@ -45,11 +45,10 @@ import Bootstrap.Proto.Google.Protobuf.Descriptor
     , syntax
     , type'
     , typeName
-    , value
     )
 
-import Combinators
-import Definitions
+import Data.ProtoLens.Compiler.Combinators
+import Data.ProtoLens.Compiler.Definitions
 
 data SyntaxType = Proto2 | Proto3
     deriving Eq

@@ -12,7 +12,7 @@
 -- datatypes, with some intelligence about Haskell names.  For example, @"foo"
 -- :: Exp@ is treated as a variable and @"Foo" :: Exp@ is treated as a
 -- constructor.
-module Combinators where
+module Data.ProtoLens.Compiler.Combinators where
 
 import Data.Char (isAlphaNum, isUpper)
 import Data.String (IsString(..))
