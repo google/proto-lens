@@ -2,8 +2,10 @@
 --
 -- This technique is described by http://stereopsis.com/radix.html.
 --
--- This orders -0.0 < 0.0, and imposes unspecified ordering and distinction
--- between NaNs.
+-- This orders floating-point numbers according to the IEEE754 floating-point
+-- total order.  -NaN < -Infinity < ... < -0 < 0 < ... < +Infinity < +NaN.
+-- NaNs with positive sign are ordered by the value of their payload, and NaNs
+-- with negative sign are reverse-ordered by the value of their payload.
 
 module Data.Discrimination.IEEE754 where
 
@@ -12,8 +14,6 @@ import Data.Bits (xor, setBit, shift)
 import Data.Discrimination (Grouping(..), Group, Sorting(..), Sort)
 import Data.Functor.Contravariant (Contravariant(contramap))
 import Data.Word (Word32, Word64)
-
--- TODO(awpr): Do these agree with the IEEE754 "total ordering"?
 
 sortableFloat32 :: Float -> Word32
 sortableFloat32 x = w `xor` mask
