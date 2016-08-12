@@ -1,11 +1,13 @@
 resolver: lts-5.12
 packages:
+- discrimination-ieee754
 - proto-lens
 - proto-lens-protoc
 - proto-lens-arbitrary
 - proto-lens-combinators
 - proto-lens-optparse
 - proto-lens-tests
+- proto-lens-discrimination
 
 # Allow our custom Setup.hs scripts to import Data.ProtoLens.Setup from the version of
 # `proto-lens-protoc` in stack's local DB.  This makes things simpler when developing

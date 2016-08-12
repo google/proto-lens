@@ -7,12 +7,14 @@ set -euo pipefail
 # they're dependencies of the others.  (Unfortunately, "stack query" doesn't
 # give them to us in the right order.)
 PACKAGES="
+    discrimination-ieee754
     proto-lens
     proto-lens-protoc
     proto-lens-arbitrary
     proto-lens-combinators
     proto-lens-optparse
     proto-lens-tests
+    proto-lens-discrimination
 "
 echo Building: $PACKAGES
 
