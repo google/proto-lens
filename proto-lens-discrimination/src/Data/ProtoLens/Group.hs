@@ -4,14 +4,16 @@
 {-# LANGUAGE Rank2Types #-}
 {-# LANGUAGE ScopedTypeVariables #-}
 module Data.ProtoLens.Group
+    (
     -- * Comparing Protobuf Messages
-    ( eqMessage
+      eqMessage
 
     -- * 'Group's for Messages
     , groupingMessage
     , groupingDescriptor
     , groupingField
 
+    -- * 'Group' for individual field values
     , groupingFieldValue
     ) where
 

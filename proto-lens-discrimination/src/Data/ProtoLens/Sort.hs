@@ -4,14 +4,16 @@
 {-# LANGUAGE Rank2Types #-}
 {-# LANGUAGE ScopedTypeVariables #-}
 module Data.ProtoLens.Sort
+    (
     -- * Comparing Protobuf Messages
-    ( compareMessage
+      compareMessage
 
     -- * 'Sort's for Messages
     , sortingMessage
     , sortingDescriptor
     , sortingField
 
+    -- * 'Sort' for individual field values
     , sortingFieldValue
     ) where
 

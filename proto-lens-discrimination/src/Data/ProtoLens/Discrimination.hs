@@ -8,7 +8,6 @@ module Data.ProtoLens.Discrimination
     , discField
     , discText
     , discByteString
-
     , discProtoMapAssocs
     ) where
 
