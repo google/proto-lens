@@ -47,26 +47,6 @@ Test-Suite canonical_test
                , proto-lens-tests
                , test-framework
 
-Test-Suite discrimination_test
-  default-language: Haskell2010
-  type: exitcode-stdio-1.0
-  main-is: disc_test.hs
-  hs-source-dirs: tests
-  other-modules: Proto.Canonical
-  build-depends: base
-               , containers
-               , data-default
-               , discrimination
-               , lens-family
-               , HUnit
-               , proto-lens
-               , proto-lens-protoc
-               , proto-lens-arbitrary
-               , proto-lens-discrimination
-               , test-framework
-               , test-framework-quickcheck2
-               , test-framework-hunit
-
 Test-Suite group_test
   default-language: Haskell2010
   type: exitcode-stdio-1.0
