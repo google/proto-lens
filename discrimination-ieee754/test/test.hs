@@ -77,7 +77,8 @@ makeDoubleNaN sign payload =
 -- properties for the cases involving NaNs.
 nansTestGroup
     -- Do I get a medal for the most constraints in one function?
-    :: (RealFloat a, Arbitrary a, Show a, Ord a, Arbitrary b, FiniteBits b, Show b, Ord b)
+    :: ( Arbitrary a, RealFloat a, Ord a, Show a
+       , Arbitrary b, FiniteBits b, Ord b, Show b)
     => Sort a -> (a -> b) -> (Bool -> b -> a) -> (b -> b) -> Test
 nansTestGroup s toWord makeNaN makePayload = testGroup "NaNs" $
     [ testProperty "-NaN < everything" $ \x payload ->
