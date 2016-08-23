@@ -40,6 +40,8 @@ data ProtoFile = ProtoFile
   { descriptor :: FileDescriptorProto
   , haskellModule :: ModuleName
   , definitions :: Env Name
+  -- | The names of proto files exported (transitively, via "import public"
+  -- decl) by this file.
   , exports :: [ProtoFileName]
   , exportedEnv :: Env QName
   }
@@ -71,8 +73,9 @@ analyzeProtoFiles modulePrefix files =
       where
         n = f ^. name
 
-buildEnv :: [Text] -> Map ProtoFileName ProtoFile -> Env QName
-buildEnv deps filesByName = unions $ fmap (exportedEnv . (filesByName !)) deps
+collectEnvFromDeps :: [ProtoFileName] -> Map ProtoFileName ProtoFile -> Env QName
+collectEnvFromDeps deps filesByName =
+    unions $ fmap (exportedEnv . (filesByName !)) deps
 
 -- | Get the output file path (for CodeGeneratorResponse.File) for a Haskell
 -- ModuleName.
