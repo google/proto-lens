@@ -11,7 +11,7 @@ module Data.ProtoLens.Compiler.Plugin
     ( ProtoFileName
     , ProtoFile(..)
     , analyzeProtoFiles
-    , buildEnv
+    , collectEnvFromDeps
     , outputFilePath
     , moduleName
     , moduleNameStr
