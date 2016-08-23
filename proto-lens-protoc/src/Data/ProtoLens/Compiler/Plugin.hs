@@ -37,14 +37,14 @@ import Data.ProtoLens.Compiler.Definitions
 type ProtoFileName = Text
 
 data ProtoFile = ProtoFile
-  { descriptor :: FileDescriptorProto
-  , haskellModule :: ModuleName
-  , definitions :: Env Name
-  -- | The names of proto files exported (transitively, via "import public"
-  -- decl) by this file.
-  , exports :: [ProtoFileName]
-  , exportedEnv :: Env QName
-  }
+    { descriptor :: FileDescriptorProto
+    , haskellModule :: ModuleName
+    , definitions :: Env Name
+    -- | The names of proto files exported (transitively, via "import public"
+    -- decl) by this file.
+    , exports :: [ProtoFileName]
+    , exportedEnv :: Env QName
+    }
 
 -- Given a list of FileDescriptorProtos, collect information about each file
 -- into a map of 'ProtoFile's keyed by 'ProtoFileName'.
