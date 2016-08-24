@@ -18,7 +18,7 @@ import qualified Data.Text as T
 import Data.Text (Text, pack)
 import Data.ProtoLens (decodeMessage, def, encodeMessage)
 import Language.Haskell.Exts.Pretty (prettyPrint)
-import Language.Haskell.Exts.Syntax (ModuleName(..))
+import Language.Haskell.Exts.Syntax (ModuleName(..), Name(..), QName(..))
 import Lens.Family2
 import Bootstrap.Proto.Google.Protobuf.Compiler.Plugin
     ( CodeGeneratorRequest
@@ -37,8 +37,9 @@ import System.IO as IO
 import System.FilePath (dropExtension, replaceExtension, splitDirectories)
 
 
-import Definitions
-import Generate
+import Data.ProtoLens.Compiler.Definitions
+import Data.ProtoLens.Compiler.Generate
+import Data.ProtoLens.Compiler.Plugin
 
 main = do
     contents <- B.getContents
@@ -61,82 +62,27 @@ makeResponse prog request = let
                      | (outputName, outputContent) <- outputFiles
                      ]
 
--- | The filename of an input .proto file.
-type ProtoFileName = Text
 
 generateFiles :: Text -> (FileDescriptorProto -> Text) -> [FileDescriptorProto]
               -> [ProtoFileName] -> [(Text, Text)]
 generateFiles modulePrefix header files toGenerate = let
-  filesByName = Map.fromList [(f ^. name, f) | f <- files]
-  moduleNames = fmap (moduleName modulePrefix) filesByName
-  -- The definitions in each input proto file, indexed by filename.
-  definitions = fmap collectDefinitions filesByName
-  -- The exports from each .proto file (including any "public import"
-  -- dependencies), as they appear to other modules that are importing them;
-  -- i.e., qualified by module name.
-  exports = transitiveExports files
-  localExports = Map.intersectionWith qualifyEnv moduleNames definitions
-  exportedEnvs = fmap (\es -> unions [localExports ! e | e <- es]) exports
+  filesByName = analyzeProtoFiles modulePrefix files
   -- The contents of the generated Haskell file for a given .proto file.
-  buildFile fileName = let
-      f = filesByName ! fileName
-      deps = f ^. dependency
-      env = unions $ fmap (exportedEnvs !) deps
+  buildFile file = let
+      deps = descriptor file ^. dependency
       imports = Set.toAscList $ Set.fromList
-                  [ moduleNames ! exportName
+                  [ haskellModule (filesByName ! exportName)
                   | dep <- deps
-                  , exportName <- exports ! dep
+                  , exportName <- exports (filesByName ! dep)
                   ]
-      in generateModule (moduleNames ! fileName) imports (fileSyntaxType f)
-              (definitions ! fileName) env
-  in [ ( outputFilePath (moduleNames ! f)
-       , header fd <> pack (prettyPrint $ buildFile f)
+      in generateModule (haskellModule file) imports
+             (fileSyntaxType (descriptor file))
+             (definitions file)
+             (collectEnvFromDeps deps filesByName)
+  in [ ( outputFilePath . (\(ModuleName n) -> n) . haskellModule $ file
+       , header (descriptor file) <> pack (prettyPrint $ buildFile file)
        )
-     | f <- toGenerate
-     , let fd = filesByName ! f
+     | fileName <- toGenerate
+     , let file = filesByName ! fileName
      ]
-
--- | Given a list of .proto files (topologically sorted), determine which
--- files' definitions are exported by which files.
---
--- Files only export their own definitions, along with the definitions exported
--- by any "import public" declarations.
-transitiveExports :: [FileDescriptorProto] -> Map ProtoFileName [ProtoFileName]
--- Accumulate the transitive dependencies by folding over the files in
--- topological order.
-transitiveExports = foldl' setExportsFromFile Map.empty
-  where
-    setExportsFromFile :: Map ProtoFileName [ProtoFileName]
-                       -> FileDescriptorProto
-                       -> Map ProtoFileName [ProtoFileName]
-    setExportsFromFile prevExports fd
-        = flip (Map.insert n) prevExports $
-            n : concat [ prevExports ! ((fd ^. dependency) !! fromIntegral i)
-                       -- Note that publicDependency is a list of indices into
-                       -- the dependency list.
-                       | i <- fd ^. publicDependency
-                       ]
-      where n = fd ^. name
-
-outputFilePath :: ModuleName -> Text
-outputFilePath (ModuleName n) = T.replace "." "/" (T.pack n) <> ".hs"
-
--- | Get the module name of a .proto file.
-moduleName :: Text -> FileDescriptorProto -> ModuleName
-moduleName modulePrefix fd = ModuleName $ fixModuleName rawModuleName
-  where
-    path = fd ^. name
-    prefix
-        | T.null modulePrefix = "Proto"
-        | otherwise = modulePrefix
-    fixModuleName "" = ""
-    -- Characters allowed in Bazel filenames but not in module names:
-    fixModuleName ('.':c:cs) = '.' : toUpper c : fixModuleName cs
-    fixModuleName ('_':c:cs) = toUpper c : fixModuleName cs
-    fixModuleName ('-':c:cs) = toUpper c : fixModuleName cs
-    fixModuleName (c:cs) = c : fixModuleName cs
-    rawModuleName = intercalate "." $ (T.unpack prefix :)
-                        $ splitDirectories $ dropExtension
-                        $ T.unpack path
-
 

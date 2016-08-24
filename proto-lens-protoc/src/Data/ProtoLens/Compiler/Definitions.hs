@@ -8,7 +8,7 @@
 -- and assigning Haskell names to all of the defined things (messages, enums
 -- and field names).
 {-# LANGUAGE DeriveFunctor, OverloadedStrings #-}
-module Definitions
+module Data.ProtoLens.Compiler.Definitions
     ( Env
     , Definition(..)
     , MessageInfo(..)

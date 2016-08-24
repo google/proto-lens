@@ -4,6 +4,9 @@ synopsis:            Protocol buffer compiler for the proto-lens library.
 description:
   Turn protocol buffer files (.proto) into Haskell files (.hs) which
   can be used with the proto-lens package.
+
+  The library component of this package contains compiler code (namely
+  Data.ProtoLens.Compiler.*) that is not guaranteed to have stable APIs.
 license:             BSD3
 license-file:        LICENSE
 author:              Judah Jacobson
@@ -14,7 +17,14 @@ build-type:          Simple
 cabal-version:       >=1.21
 
 library
-  exposed-modules:   Data.ProtoLens.Setup
+  exposed-modules:
+      Data.ProtoLens.Setup
+      Data.ProtoLens.Compiler.Combinators
+      Data.ProtoLens.Compiler.Definitions
+      Data.ProtoLens.Compiler.Generate
+      Data.ProtoLens.Compiler.Plugin
+      Bootstrap.Proto.Google.Protobuf.Compiler.Plugin
+      Bootstrap.Proto.Google.Protobuf.Descriptor
   default-language:  Haskell2010
   hs-source-dirs:    src
   build-depends:
@@ -25,6 +35,7 @@ library
       , data-default-class == 0.0.*
       , directory == 1.2.*
       , filepath == 1.4.*
+      , haskell-src-exts == 1.17.*
       , lens-family == 1.2.*
       , process >= 1.2 && < 1.5
       , proto-lens == 0.1.0.1
@@ -45,12 +56,6 @@ library
 
 executable proto-lens-protoc
   main-is:  protoc-gen-haskell.hs
-  other-modules:
-      Bootstrap.Proto.Google.Protobuf.Compiler.Plugin
-      Bootstrap.Proto.Google.Protobuf.Descriptor
-      Combinators
-      Definitions
-      Generate
 
   build-depends:
         base >= 4.8 && < 4.10
