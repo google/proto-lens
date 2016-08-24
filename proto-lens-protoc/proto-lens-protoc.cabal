@@ -18,13 +18,13 @@ cabal-version:       >=1.21
 
 library
   exposed-modules:
-      Data.ProtoLens.Setup
+      Bootstrap.Proto.Google.Protobuf.Compiler.Plugin
+      Bootstrap.Proto.Google.Protobuf.Descriptor
       Data.ProtoLens.Compiler.Combinators
       Data.ProtoLens.Compiler.Definitions
       Data.ProtoLens.Compiler.Generate
       Data.ProtoLens.Compiler.Plugin
-      Bootstrap.Proto.Google.Protobuf.Compiler.Plugin
-      Bootstrap.Proto.Google.Protobuf.Descriptor
+      Data.ProtoLens.Setup
   default-language:  Haskell2010
   hs-source-dirs:    src
   build-depends:
@@ -70,4 +70,12 @@ executable proto-lens-protoc
       , proto-lens == 0.1.0.1
       , text == 1.2.*
   hs-source-dirs:      src
+  other-modules:
+      Bootstrap.Proto.Google.Protobuf.Compiler.Plugin
+      Bootstrap.Proto.Google.Protobuf.Descriptor
+      Data.ProtoLens.Compiler.Combinators
+      Data.ProtoLens.Compiler.Definitions
+      Data.ProtoLens.Compiler.Generate
+      Data.ProtoLens.Compiler.Plugin
+
   default-language:    Haskell2010
