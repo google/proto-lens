@@ -1,5 +1,5 @@
 name:                proto-lens-combinators
-version:             0.1.0.1
+version:             0.1.0.2
 synopsis:            Utilities functions to proto-lens.
 description:
   Useful things for working with protos.
