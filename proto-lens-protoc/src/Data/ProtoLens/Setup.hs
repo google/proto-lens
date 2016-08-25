@@ -35,8 +35,6 @@ import Distribution.PackageDescription
     )
 import Distribution.Simple.BuildPaths (autogenModulesDir)
 import Distribution.Simple.LocalBuildInfo (LocalBuildInfo)
-import Distribution.Simple.Program (knownPrograms, ConfiguredProgram(..))
-import Distribution.Simple.Program.Types (simpleProgram)
 import Distribution.Simple.Utils (matchFileGlob)
 import Distribution.Simple
     ( defaultMainWithHooks
