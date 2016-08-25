@@ -13,11 +13,16 @@
 -- `build-dependencies`.
 --
 -- See @README.md@ for instructions on how to use proto-lens with Cabal.
+{-# LANGUAGE CPP #-}
 module Data.ProtoLens.Setup
     ( defaultMainGeneratingProtos
     , generatingProtos
     , generateProtos
     ) where
+
+#if __GLASGOW_HASKELL__ < 709
+import Data.Functor ((<$>))
+#endif
 
 import Distribution.PackageDescription
     ( PackageDescription(..)
