@@ -9,6 +9,10 @@ packages:
 - proto-lens-tests
 - proto-lens-discrimination
 
+extra-deps:
+- discrimination-0.2.1
+- promises-0.3
+
 # Allow our custom Setup.hs scripts to import Data.ProtoLens.Setup from the version of
 # `proto-lens-protoc` in stack's local DB.  This makes things simpler when developing
 # `proto-lens-proto` and `proto-lens-tests` at the same time.
