@@ -1,11 +1,17 @@
 resolver: nightly-2016-06-27
 packages:
+- discrimination-ieee754
 - proto-lens
 - proto-lens-protoc
 - proto-lens-arbitrary
 - proto-lens-combinators
 - proto-lens-optparse
 - proto-lens-tests
+- proto-lens-discrimination
+
+extra-deps:
+- discrimination-0.2.1
+- promises-0.3
 
 # Allow our custom Setup.hs scripts to import Data.ProtoLens.Setup from the version of
 # `proto-lens-protoc` in stack's local DB.  This makes things simpler when developing
