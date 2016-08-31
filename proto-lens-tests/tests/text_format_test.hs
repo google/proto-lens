@@ -57,6 +57,8 @@ main = testMain
     , testCase "Render multiple lines" $
         "d: 1\nd: 2\nd: 3" @=?
             showMessageWithLineLength 3 (def4 & d .~ [1, 2, 3])
+    , testCase "Render with escape sequences" $
+        "b: \"abc\\x80\\x0\"" @=? showMessageShort (def2 & b .~ "abc\x80\x0")
     , let kNums = [0..99]  -- The default line limit is 100 so we exceed it.
           kExpected = unwords $ map (("d: " ++) . show) kNums
       in testCase "Render single line for debugString" $
