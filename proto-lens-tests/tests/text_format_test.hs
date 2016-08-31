@@ -7,6 +7,11 @@
 {-# LANGUAGE OverloadedStrings #-}
 module Main where
 
+import qualified Data.ByteString
+import Data.Char (ord)
+import Data.Monoid ((<>))
+import qualified Data.Text.Lazy
+import Data.Word (Word8)
 import Data.ProtoLens (
     def, Message, showMessage, showMessageShort, pprintMessage)
 import Lens.Family2 ((&), (.~))
@@ -28,6 +33,9 @@ def3 = def
 
 def4 :: Test4
 def4 = def
+
+def5 :: Test5
+def5 = def
 
 failed1 :: Maybe Test1
 failed1 = Nothing
@@ -57,8 +65,24 @@ main = testMain
     , testCase "Render multiple lines" $
         "d: 1\nd: 2\nd: 3" @=?
             showMessageWithLineLength 3 (def4 & d .~ [1, 2, 3])
+    , testCase "Render string with escape sequences" $
+        escapeRendered @=? showMessageShort escapeMessage
+    , readFrom "String with escape sequences"
+               (Just escapeMessage) (Data.Text.Lazy.pack escapeRendered)
+    , testCase "Render bytes" $
+         invalidUTF8BytesRendered @=? showMessage invalidUTF8BytesMessage
+    , readFrom "Non-UTF8 bytes"
+         (Just invalidUTF8BytesMessage)
+         (Data.Text.Lazy.pack invalidUTF8BytesRendered)
     , let kNums = [0..99]  -- The default line limit is 100 so we exceed it.
           kExpected = unwords $ map (("d: " ++) . show) kNums
       in testCase "Render single line for debugString" $
           kExpected @=? showMessageShort (def4 & d .~ kNums)
     ]
+  where
+    escapeMessage  = def2 & b .~ ("abc\x12" <> "a\x1\x0")
+    escapeRendered = "b: \"abc\\x12\" \"a\\x1\" \"\\x0\" \"\""
+    invalidUTF8BytesMessage =
+        def5 & e .~ Data.ByteString.pack (map (fromIntegral . ord) "abc\x0G\x1"
+            ++ [0x80::Word8])
+    invalidUTF8BytesRendered = "e: \"abc\\x0\" \"G\\x1\" \"\\x80\" \"\""
