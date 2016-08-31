@@ -7,6 +7,11 @@
 {-# LANGUAGE OverloadedStrings #-}
 module Main where
 
+import qualified Data.ByteString
+import Data.Char (ord)
+import Data.Monoid ((<>))
+import qualified Data.Text.Lazy
+import Data.Word (Word8)
 import Data.ProtoLens (
     def, Message, showMessage, showMessageShort, pprintMessage)
 import Lens.Family2 ((&), (.~))
@@ -28,6 +33,9 @@ def3 = def
 
 def4 :: Test4
 def4 = def
+
+def5 :: Test5
+def5 = def
 
 failed1 :: Maybe Test1
 failed1 = Nothing
@@ -57,8 +65,40 @@ main = testMain
     , testCase "Render multiple lines" $
         "d: 1\nd: 2\nd: 3" @=?
             showMessageWithLineLength 3 (def4 & d .~ [1, 2, 3])
+    , readFrom
+         "Parse string with escape sequences"
+          -- '\o172' == '\x7a' == 'z'
+         (Just $ def2 & b .~ "\o1\o12\o123\x2\o172z3z3")
+         (Data.Text.Lazy.pack "b: \"\\001\\012\\123\\002\\172\\x7a3\\1723\"")
+    , testCase "Render string with escape sequences" $
+        escapeRendered @=? showMessageShort escapeMessage
+    , readFrom "Parse rendered string with escape sequences"
+               (Just escapeMessage) (Data.Text.Lazy.pack escapeRendered)
+    , testCase "Render bytes" $
+         invalidUTF8BytesRendered @=? showMessage invalidUTF8BytesMessage
+    , readFrom "Parse single-quote-delimited string"
+         (Just $ def2 & b .~ "ab\o2") "b: \'ab\2\'"
+    , readFrom "Non-UTF8 bytes"
+         (Just invalidUTF8BytesMessage)
+         (Data.Text.Lazy.pack invalidUTF8BytesRendered)
     , let kNums = [0..99]  -- The default line limit is 100 so we exceed it.
           kExpected = unwords $ map (("d: " ++) . show) kNums
       in testCase "Render single line for debugString" $
           kExpected @=? showMessageShort (def4 & d .~ kNums)
     ]
+  where
+    escapeMessage  = def2 & b
+        .~ ("a\r\n\t\"\'\\" <> "bc\o030" <> "1" <> "\o109" <> "¢" <> "\o1")
+    escapeRendered =
+        -- All the special escapes:
+        "b: \"a\\r\\n\\t\\\"\\\'\\\\"
+        ++ "bc\\0301"      -- The last digit is a separate character, not part
+                           -- of the escape.
+        ++ "\\010" ++ "9"  -- Note that the 9 is a separate character
+        ++ "\\302\\242"    -- UTF-8 for the cent symbol, '¢'.
+        ++ "\\001"         -- Works fine at EOL.
+        ++ "\""
+    invalidUTF8BytesMessage =
+        def5 & e .~ Data.ByteString.pack (map (fromIntegral . ord) "abc"
+            ++ [0xC0, 0xC0, 0x0])  -- Invalid UTF8.
+    invalidUTF8BytesRendered = "e: \"abc\\300\\300\\000\""

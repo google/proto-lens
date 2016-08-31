@@ -55,7 +55,7 @@ main = testMain
             $ tagged 3 $ Fixed32 0x40d55555
         , serializeTo "bytes"
             (def & d .~ "a\0b" :: Foo)
-            "d: \"a\\NULb\""
+            "d: \"a\\000b\""
             $ tagged 4 $ Lengthy "a\0b"
         -- Scalar "oneof" fields should have a "maybe" selector.
         , testCase "maybe" $ do

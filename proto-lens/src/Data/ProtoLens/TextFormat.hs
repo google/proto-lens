@@ -20,13 +20,15 @@ module Data.ProtoLens.TextFormat(
 import Lens.Family2 ((&),(^.),(.~), set, over)
 import Control.Applicative ((<$>))
 import Control.Arrow (left)
-import qualified Data.ByteString.Char8 as B
+import qualified Data.ByteString
+import Data.Char (isPrint, isAscii, chr)
 import Data.Foldable (foldlM, foldl')
 import Data.Maybe (catMaybes)
 import qualified Data.Map as Map
 import qualified Data.Set as Set
-import qualified Data.Text as Text
+import qualified Data.Text.Encoding as Text
 import qualified Data.Text.Lazy as Lazy
+import Numeric (showOct)
 import Text.Parsec (parse)
 import Text.PrettyPrint
 
@@ -102,10 +104,34 @@ pprintFieldValue name SFixed64Field x = primField name x
 pprintFieldValue name FloatField x = primField name x
 pprintFieldValue name DoubleField x = primField name x
 pprintFieldValue name BoolField x = text name <> colon <+> boolValue x
-pprintFieldValue name StringField x = primField name x
-pprintFieldValue name BytesField x = primField name x
+pprintFieldValue name StringField x = pprintByteString name (Text.encodeUtf8 x)
+pprintFieldValue name BytesField x = pprintByteString name x
 pprintFieldValue name GroupField m
     = text name <+> lbrace $$ nest 2 (pprintMessage m) $$ rbrace
+
+-- | Formats a string in a way that mostly matches the C-compatible escaping
+-- used by the Protocol Buffer distribution.  We depart a bit by escaping all
+-- non-ASCII characters, which depending on the locale, the distribution might
+-- not do.
+--
+-- This uses three-digit octal escapes, e.g. "\011" plus \n, \r,, \t, \', \",
+-- and \\ only.  Note that Haskell string-literal syntax calls for "\011" to be
+-- interpreted as decimal 11, rather than the decimal 9 it actually represent,
+-- so you can't use Prelude.read to parse the strings created here.
+pprintByteString :: String -> Data.ByteString.ByteString -> Doc
+pprintByteString name x = text name <> colon <+> char '\"'
+    <> text (concatMap escape $ Data.ByteString.unpack x) <> char '\"'
+  where escape w8 | ch == '\n'               = "\\n"
+                  | ch == '\r'               = "\\r"
+                  | ch == '\t'               = "\\t"
+                  | ch == '\"'               = "\\\""
+                  | ch == '\''               = "\\\'"
+                  | ch == '\\'               = "\\\\"
+                  | isPrint ch && isAscii ch = ch : ""
+                  | otherwise                = "\\" ++ pad (showOct w8 "")
+          where
+            ch = chr $ fromIntegral w8
+            pad str = replicate (3 - length str) '0' ++ str
 
 primField :: Show value => String -> value -> Doc
 primField name x = text name <> colon <+> text (show x)
@@ -202,8 +228,8 @@ makeValue BoolField (Parser.EnumValue x)
     | x == "true" = Right True
     | x == "false" = Right False
     | otherwise = Left $ "Unrecognized bool value " ++ show x
-makeValue StringField (Parser.StringValue x) = Right (Text.pack x)
-makeValue BytesField (Parser.StringValue x) = Right (B.pack x)
+makeValue StringField (Parser.ByteStringValue x) = Right (Text.decodeUtf8 x)
+makeValue BytesField (Parser.ByteStringValue x) = Right x
 makeValue EnumField (Parser.IntValue x) =
     maybe (Left $ "Unrecognized enum value " ++ show x) Right
         (maybeToEnum $ fromInteger x)
