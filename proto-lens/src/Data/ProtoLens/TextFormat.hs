@@ -112,7 +112,8 @@ pprintFieldValue name GroupField m
     = text name <+> lbrace $$ nest 2 (pprintMessage m) $$ rbrace
 
 -- | Formats a string in a way that's consistent with C and Haskell escaping
--- conventions.
+-- conventions.  Note that for escapes, the output is multiple string literals
+-- which are expected to be concatenated as C does.
 pprintByteString :: String -> Data.ByteString.ByteString -> Doc
 pprintByteString name x = text name <> colon <+> char '\"'
     <> text (concatMap escape $ Data.ByteString.unpack x) <> char '\"'
