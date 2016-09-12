@@ -36,14 +36,18 @@ protoBenchmark groupName proto =
         [ bench "encode" $ nf encodeMessage proto
         , bgroup
               "decode"
-              [ bench "whnf" $ whnf decodeMessage' encodedProto
-              , bench "nf" $ nf decodeMessage' encodedProto
+              [ bench "whnf" $ whnf decodeMessageOrDie' encodedProto
+              , bench "nf" $ nf decodeMessageOrDie' encodedProto
               ]
         ]
   where
     -- We must indicate to the compiler that we want to decode to the same
     -- message type as the input proto.
-    decodeMessage' bytes = (decodeMessage bytes :: Either String a)
+    -- We use decodeMessageOrDie here (instead of decodeMessage) so that if
+    -- a bug is introduced that causes decoding to fail, the benchmark will
+    -- fail with an error, instead of silently reporting a misleading value
+    -- (the amount of time required to determine that proto decoding failed).
+    decodeMessageOrDie' bytes = (decodeMessageOrDie bytes :: a)
     encodedProto = encodeMessage proto
     fullGroupName =
         groupName ++ "(" ++ prettySize (BS.length encodedProto) ++ ")"
