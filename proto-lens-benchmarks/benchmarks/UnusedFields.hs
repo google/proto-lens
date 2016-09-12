@@ -43,7 +43,8 @@ populateFooWithUnusedFields n k = def & field .~ replicate n k
 
 benchmaker :: Int -> [Benchmark]
 benchmaker size =
-        [ protoBenchmark "no-unused" (populateFoo size 5)
-        , protoBenchmark "with-unused" (populateFooWithUnusedFields size 5)]
+    [ protoBenchmark "no-unused" (populateFoo size 5)
+    , protoBenchmark "with-unused" (populateFooWithUnusedFields size 5)
+    ]
 
 main = benchmarkMain defaultNumInt32s benchmaker

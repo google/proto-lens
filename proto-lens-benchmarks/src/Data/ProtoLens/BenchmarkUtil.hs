@@ -37,7 +37,9 @@ protoBenchmark groupName proto =
         , bgroup
               "decode"
               [ bench "whnf" $ whnf decodeMessage' encodedProto
-              , bench "nf" $ nf decodeMessage' encodedProto]]
+              , bench "nf" $ nf decodeMessage' encodedProto
+              ]
+        ]
   where
     -- We must indicate to the compiler that we want to decode to the same
     -- message type as the input proto.

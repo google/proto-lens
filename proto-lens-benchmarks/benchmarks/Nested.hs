@@ -53,6 +53,7 @@ populateNested n = def & sub .~ replicate n subMessage
 benchmaker :: Int -> [Benchmark]
 benchmaker size =
     [ protoBenchmark "flat" (populateFlat size)
-    , protoBenchmark "nested" (populateNested size)]
+    , protoBenchmark "nested" (populateNested size)
+    ]
 
 main = benchmarkMain defaultNumValues benchmaker

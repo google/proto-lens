@@ -42,6 +42,7 @@ populatePacked n k = def & num .~ replicate n k
 benchmaker :: Int -> [Benchmark]
 benchmaker size =
     [ protoBenchmark "int32-unpacked" (populateUnpacked size 5 :: FooUnpacked)
-    , protoBenchmark "int32-packed" (populatePacked size 5 :: FooPacked)]
+    , protoBenchmark "int32-packed" (populatePacked size 5 :: FooPacked)
+    ]
 
 main = benchmarkMain defaultNumInt32s benchmaker
