@@ -1,0 +1,43 @@
+syntax = "proto3";
+
+package unused_fields;
+
+message Foo {
+  repeated int32 field = 1;
+}
+
+message FooWithUnusedFields {
+  repeated int32 field = 1;
+  int32 unused_02 = 2;
+  int32 unused_03 = 3;
+  int32 unused_04 = 4;
+  int32 unused_05 = 5;
+  int32 unused_06 = 6;
+  int32 unused_07 = 7;
+  int32 unused_08 = 8;
+  int32 unused_09 = 9;
+  int32 unused_10 = 10;
+  int32 unused_11 = 11;
+  int32 unused_12 = 12;
+  int32 unused_13 = 13;
+  int32 unused_14 = 14;
+  int32 unused_15 = 15;
+  int32 unused_16 = 16;
+  int32 unused_17 = 17;
+  int32 unused_18 = 18;
+  int32 unused_19 = 19;
+  int32 unused_20 = 20;
+  int32 unused_21 = 21;
+  int32 unused_22 = 22;
+  int32 unused_23 = 23;
+  int32 unused_24 = 24;
+  int32 unused_25 = 25;
+  int32 unused_26 = 26;
+  int32 unused_27 = 27;
+  int32 unused_28 = 28;
+  int32 unused_29 = 29;
+  int32 unused_30 = 30;
+  int32 unused_31 = 31;
+  int32 unused_32 = 32;
+}
+
