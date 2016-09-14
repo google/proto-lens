@@ -20,13 +20,17 @@ module Data.ProtoLens.TextFormat(
 import Lens.Family2 ((&),(^.),(.~), set, over)
 import Control.Applicative ((<$>))
 import Control.Arrow (left)
-import qualified Data.ByteString.Char8 as B
+import qualified Data.ByteString
+import qualified Data.ByteString.Char8
+import Data.Char (isPrint, isAscii, chr)
 import Data.Foldable (foldlM, foldl')
 import Data.Maybe (catMaybes)
 import qualified Data.Map as Map
 import qualified Data.Set as Set
 import qualified Data.Text as Text
+import qualified Data.Text.Encoding as Text
 import qualified Data.Text.Lazy as Lazy
+import Numeric (showHex)
 import Text.Parsec (parse)
 import Text.PrettyPrint
 
@@ -102,10 +106,21 @@ pprintFieldValue name SFixed64Field x = primField name x
 pprintFieldValue name FloatField x = primField name x
 pprintFieldValue name DoubleField x = primField name x
 pprintFieldValue name BoolField x = text name <> colon <+> boolValue x
-pprintFieldValue name StringField x = primField name x
-pprintFieldValue name BytesField x = primField name x
+pprintFieldValue name StringField x = pprintByteString name (Text.encodeUtf8 x)
+pprintFieldValue name BytesField x = pprintByteString name x
 pprintFieldValue name GroupField m
     = text name <+> lbrace $$ nest 2 (pprintMessage m) $$ rbrace
+
+-- | Formats a string in a way that's consistent with C and Haskell escaping
+-- conventions.  For strings with escape sequences, the output consists of
+-- multiple string literals which are expected to be concatenated as C does.
+pprintByteString :: String -> Data.ByteString.ByteString -> Doc
+pprintByteString name x = text name <> colon <+> char '\"'
+    <> text (concatMap escape $ Data.ByteString.unpack x) <> char '\"'
+  where escape w8 | isPrint ch && isAscii ch = ch : ""
+                  | otherwise                = "\\x" ++ showHex w8 "\" \""
+          where
+            ch = chr $ fromIntegral w8
 
 primField :: Show value => String -> value -> Doc
 primField name x = text name <> colon <+> text (show x)
@@ -203,7 +218,8 @@ makeValue BoolField (Parser.EnumValue x)
     | x == "false" = Right False
     | otherwise = Left $ "Unrecognized bool value " ++ show x
 makeValue StringField (Parser.StringValue x) = Right (Text.pack x)
-makeValue BytesField (Parser.StringValue x) = Right (B.pack x)
+makeValue BytesField (Parser.StringValue x) =
+    Right (Data.ByteString.Char8.pack x)
 makeValue EnumField (Parser.IntValue x) =
     maybe (Left $ "Unrecognized enum value " ++ show x) Right
         (maybeToEnum $ fromInteger x)
