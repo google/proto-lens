@@ -13,6 +13,7 @@ PACKAGES="
     proto-lens-combinators
     proto-lens-optparse
     proto-lens-tests
+    proto-lens-benchmarks
 "
 echo Building: $PACKAGES
 
