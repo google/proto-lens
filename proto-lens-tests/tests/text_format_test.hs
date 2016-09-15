@@ -96,7 +96,7 @@ main = testMain
     escapeMessage  = def2 & b
         .~ ("a\r\n\t\"\'\\" <> "bc\o030" <> "1" <> "\o109" <> "¢" <> "\o1")
     escapeRendered =
-        -- 'a' followed by all the non-numerica escapes we emit:
+        -- 'a' followed by all the non-numeric escapes we emit:
         "b: \"a\\r\\n\\t\\\"\\\'\\\\"
         ++ "bc\\0301"      -- The last digit is a separate character, not part
                            -- of the escape.
