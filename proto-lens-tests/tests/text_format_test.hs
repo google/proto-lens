@@ -66,10 +66,16 @@ main = testMain
         "d: 1\nd: 2\nd: 3" @=?
             showMessageWithLineLength 3 (def4 & d .~ [1, 2, 3])
     , readFrom
-         "Parse string with escape sequences"
+         ("Parse string with numeric escape sequences"
+             ++ " (including ones we do not emit)")
           -- '\o172' == '\x7a' == 'z'
          (Just $ def2 & b .~ "\o1\o12\o123\x2\o172z3z3")
          (Data.Text.Lazy.pack "b: \"\\001\\012\\123\\002\\172\\x7a3\\1723\"")
+    , readFrom
+         ("Parse string with non-numeric escape sequences"
+             ++ " (including ones we do not emit)")
+         (Just $ def2 & b .~ "\a\b\f\n\r\t\v\\\'\"")
+         (Data.Text.Lazy.pack "b: \"\a\b\f\n\r\t\v\\\\\\\'\\\"\"")
     , testCase "Render string with escape sequences" $
         escapeRendered @=? showMessageShort escapeMessage
     , readFrom "Parse rendered string with escape sequences"
@@ -90,7 +96,7 @@ main = testMain
     escapeMessage  = def2 & b
         .~ ("a\r\n\t\"\'\\" <> "bc\o030" <> "1" <> "\o109" <> "¢" <> "\o1")
     escapeRendered =
-        -- All the special escapes:
+        -- 'a' followed by all the non-numerica escapes we emit:
         "b: \"a\\r\\n\\t\\\"\\\'\\\\"
         ++ "bc\\0301"      -- The last digit is a separate character, not part
                            -- of the escape.
