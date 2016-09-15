@@ -1,0 +1,18 @@
+syntax = "proto3";
+
+package nested;
+
+message FooFlat {
+  repeated int32 int_field = 1;
+  repeated string str_field = 2;
+}
+
+message FooNested {
+  message Sub {
+    int32 int_field = 1;
+    string str_field = 2;
+  }
+
+  repeated Sub sub = 1;
+}
+
