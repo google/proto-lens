@@ -223,4 +223,3 @@ integralFieldWireType w = simpleFieldWireType w fromIntegral fromIntegral
 stringizeError :: Either UnicodeException a -> Either String a
 stringizeError (Left e) = Left (show e)
 stringizeError (Right a) = Right a
-

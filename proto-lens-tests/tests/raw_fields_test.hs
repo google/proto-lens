@@ -56,6 +56,7 @@ main = testMain
     , testDouble
     , testBool
     , testString
+    , testUnicode
     , testBytes
     , testFailedDecoding
     ]
@@ -220,17 +221,26 @@ testString = testRawValues "string" h
      , ("longer", "abcde")
      -- stress-test the encoding of the length
      , ("very long", Text.replicate 12345 "x")
-     , ("unicode-char", "α")
-     , ("unicode-string", "aαbβcαβ")
      ] :: [(String, Text)])
+
+testUnicode = testGroup "unicode"
+    [ test "unicode-char"   "α"       "h: \"\\316\\261\""
+    , test "unicode-string" "aαbβcαβ"
+           "h: \"a\\316\\261b\\316\\262c\\316\\261\\316\\262\""
+    ]
+  where
+     test name value text =
+         serializeTo name ((def :: Raw) & h .~ value) text
+                     ((tagged 8 . Lengthy . byteString . encodeUtf8) value)
+
 
 testBytes = testRawValues "bytes" i
     (keyed "i")
     (tagged 9 . Lengthy . byteString)
     (fmap (second B.pack)
         [ ("empty", [])
-        , ("small", [42])
-        , ("longer", [1..10])
+        , ("small", [42])       -- Chosen to be ASCII.
+        , ("longer", [42..52])  -- Chosen to be ASCII.
         -- stress-test the encoding of the length
         , ("very long", replicate 12345 42)
         ])
