@@ -2,15 +2,14 @@
 
 ## v0.1.0.3
 - In printing and parsing protocol buffers use/interpret escape
-  sequences in a way compatible with the Protocol Buffer
-  distribution's C/C++ escaping style, closing Issues #44 and
-  #45. This makes the text output incompatible with previous
-  versions; earlier versions will misinterpret text written by this
-  version and this version will misinterpret text written by
-  previous versions.
-
+sequences in a way compatible with the Protocol Buffer
+distribution's C/C++ escaping style, closing Issues #44 and
+#45. This makes the text output incompatible with previous
+versions; earlier versions will misinterpret text written by this
+version and this version will misinterpret text written by
+previous versions.
 - Support reading text protocol buffers with single quote characters
-  (') for string delimiters, closing Issue #20.
+(') for string delimiters, closing Issue #20.
 
 ## v0.1.0.2
 - Expose more of protoc-gen-haskell to plugins.
