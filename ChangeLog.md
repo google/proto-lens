@@ -1,5 +1,9 @@
 # ChangeLog
 
+## v0.1.0.3
+- C++ compatible printing and parsing of text format. It is incompatible
+  with previous versions of itself.
+
 ## v0.1.0.2
 - Expose more of protoc-gen-haskell to plugins.
 - Support enum aliases.
