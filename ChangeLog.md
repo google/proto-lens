@@ -1,5 +1,9 @@
 # ChangeLog
 
+## v0.1.0.4
+- Relaxed dependency constraints on data-default-class for
+new stackage LTS.
+
 ## v0.1.0.3
 - In printing and parsing protocol buffers use/interpret escape
 sequences in a way compatible with the Protocol Buffer
