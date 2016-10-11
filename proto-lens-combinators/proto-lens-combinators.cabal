@@ -23,7 +23,7 @@ library
                 -- Used by the custom Setup script (for the test-suite).
                 , proto-lens-protoc == 0.1.*
                 , base >= 4.8 && < 4.10
-                , data-default-class == 0.0.*
+                , data-default-class >= 0.0 && < 0.2
                 , lens-family == 1.2.*
                 , transformers >= 0.4 && < 0.6
 

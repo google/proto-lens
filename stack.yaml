@@ -1,4 +1,4 @@
-resolver: lts-5.12
+resolver: lts-6.20
 packages:
 - proto-lens
 - proto-lens-protoc
