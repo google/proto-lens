@@ -126,7 +126,7 @@ manyReversedTill p end = loop []
   where
     loop xs = (end >> return xs) <|> (p >>= \x -> loop (x:xs))
 
--- | Encode a message to the wire format.
+-- | Encode a message to the wire format as a strict 'ByteString'.
 encodeMessage :: Message msg => msg -> B.ByteString
 encodeMessage = L.toStrict . toLazyByteString . buildMessage
 
