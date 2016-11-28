@@ -23,7 +23,7 @@ source files from the original protocol buffer specifications (`.proto` files).
 
 First, edit the `.cabal` file of your project to:
 
-* Specify `build-type: Custom`.
+* Specify `build-type: Custom` and list `proto-lens-protoc` in `setup-depends`.
 * List the .proto files in `extra-source-files`.  Note that the field belongs
   at the top level of the `.cabal` file, rather than once per
   library/executable/etc.
@@ -31,16 +31,26 @@ First, edit the `.cabal` file of your project to:
   or `other-modules` of the rule(s) that use them (e.g. the library or
   executables).
 * Add `proto-lens-protoc` to the build-depends of those rules.
+* If using stack, enable `explicit-setup-deps` for your package.
 
-For example:
+For example, in `foo-bar-proto.cabal`:
 
     ...
     build-type: Custom
+    custom-setup
+        setup-depends: proto-lens-protoc
     extra-source-files: src/foo/bar.proto
     ...
     library
         exposed-modules: Proto.Foo.Bar
         build-depends: proto-lens-protoc, ...
+
+And in `stack.yaml`:
+
+    ...
+    explicit-setup-deps:
+        foo-bar-proto: true
+    ...
 
 Next, write a `Setup.hs` file that uses `Data.ProtoLens.Setup` and specifies the
 directory containing the `.proto` files.  For example:
