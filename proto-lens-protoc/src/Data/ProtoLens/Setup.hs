@@ -16,7 +16,9 @@
 {-# LANGUAGE CPP #-}
 module Data.ProtoLens.Setup
     ( defaultMainGeneratingProtos
+    , defaultMainGeneratingSpecificProtos
     , generatingProtos
+    , generatingSpecificProtos
     , generateProtos
     ) where
 
@@ -66,6 +68,22 @@ defaultMainGeneratingProtos
 defaultMainGeneratingProtos root
     = defaultMainWithHooks $ generatingProtos root simpleUserHooks
 
+-- | This behaves the same as 'Distribution.Simple.defaultMain', but
+-- auto-generates Haskell files from the .proto files listed. The given .proto
+-- files should be under the given root directory.
+--
+-- Writes the generated files to the autogen directory (@dist\/build\/autogen@
+-- for Cabal, and @.stack-work\/dist\/...\/build\/autogen@ for stack).
+--
+-- Throws an exception if the @proto-lens-protoc@ executable is not on the PATH.
+defaultMainGeneratingSpecificProtos
+    :: FilePath -- ^ The root directory under which .proto files can be found.
+    -> [FilePath] -- ^ The .proto files under @root@
+    -> IO ()
+defaultMainGeneratingSpecificProtos root files
+    = defaultMainWithHooks
+    $ generatingSpecificProtos root (pure . const files) simpleUserHooks
+
 -- | Augment the given 'UserHooks' to auto-generate Haskell files from the
 -- .proto files listed in the @.cabal@ file under @extra-source-files@ which
 -- are located under the given root directory.
@@ -77,7 +95,29 @@ defaultMainGeneratingProtos root
 generatingProtos
     :: FilePath -- ^ The root directory under which .proto files can be found.
     -> UserHooks -> UserHooks
-generatingProtos root hooks = hooks
+generatingProtos root = generatingSpecificProtos root getProtos
+  where
+    getProtos p = do
+      -- Replicate Cabal's own logic for parsing file globs.
+      files <- concat <$> mapM matchFileGlob (extraSrcFiles p)
+      pure $ filter (isSubdirectoryOf root)
+           $ filter (\f -> takeExtension f == ".proto")
+               files
+
+-- | Augment the given 'UserHooks' to auto-generate Haskell files from the
+-- .proto files returned by a function @getProtos@.
+--
+-- Writes the generated files to the autogen directory (@dist\/build\/autogen@
+-- for Cabal, and @.stack-work\/dist\/...\/build\/autogen@ for stack).
+--
+-- Throws an exception if the @proto-lens-protoc@ executable is not on the PATH.
+generatingSpecificProtos
+    :: FilePath -- ^ The root directory under which .proto files can be found.
+    -> (PackageDescription -> IO [FilePath]) -- ^ A function to return a list of
+                                             -- .proto files. The cabal package
+                                             -- description is provided
+    -> UserHooks -> UserHooks
+generatingSpecificProtos root getProtos hooks = hooks
     { buildHook = \p l h f -> generateSources p l >> buildHook hooks p l h f
     , haddockHook = \p l h f -> generateSources p l >> haddockHook hooks p l h f
     , replHook = \p l h f args -> generateSources p l
@@ -90,12 +130,8 @@ generatingProtos root hooks = hooks
     }
   where
     generateSources p l = do
-        -- Replicate Cabal's own logic for parsing file globs.
-        files <- concat <$> mapM matchFileGlob (extraSrcFiles p)
-        generateProtos root (autogenModulesDir l)
-            $ filter (isSubdirectoryOf root)
-            $ filter (\f -> takeExtension f == ".proto")
-                files
+        files <- getProtos p
+        generateProtos root (autogenModulesDir l) files
 
 -- | Add the autogen directory to the hs-source-dirs of all the targets in the
 -- .cabal file.  Used to fool 'sdist' by pointing it to the generated source
