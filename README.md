@@ -21,9 +21,10 @@ named something like `protoc-*-.zip`.)
 `proto-lens` can be used as part of a Cabal project to auto-generate Haskell
 source files from the original protocol buffer specifications (`.proto` files).
 
-First, edit the `.cabal` file of your project to:
+First, edit the `.cabal` and (if using stack) `stack.yaml` files of your project
+to:
 
-* Specify `build-type: Custom` and list `proto-lens-protoc` in `setup-depends`.
+* Specify `build-type: Custom`.
 * List the .proto files in `extra-source-files`.  Note that the field belongs
   at the top level of the `.cabal` file, rather than once per
   library/executable/etc.
@@ -37,8 +38,6 @@ For example, in `foo-bar-proto.cabal`:
 
     ...
     build-type: Custom
-    custom-setup
-        setup-depends: proto-lens-protoc
     extra-source-files: src/foo/bar.proto
     ...
     library
