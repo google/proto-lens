@@ -78,11 +78,14 @@ defaultMainGeneratingProtos root
 -- Throws an exception if the @proto-lens-protoc@ executable is not on the PATH.
 defaultMainGeneratingSpecificProtos
     :: FilePath -- ^ The root directory under which .proto files can be found.
-    -> [FilePath] -- ^ The .proto files under @root@
+    -> (PackageDescription -> IO [FilePath])
+    -- ^ A function to return a list of .proto files. Takes the Cabal package
+    -- description as input. Non-absolute paths are treated as relative to the
+    -- provided root directory.
     -> IO ()
-defaultMainGeneratingSpecificProtos root files
+defaultMainGeneratingSpecificProtos root getProtos
     = defaultMainWithHooks
-    $ generatingSpecificProtos root (pure . const files) simpleUserHooks
+    $ generatingSpecificProtos root getProtos simpleUserHooks
 
 -- | Augment the given 'UserHooks' to auto-generate Haskell files from the
 -- .proto files listed in the @.cabal@ file under @extra-source-files@ which
@@ -100,7 +103,8 @@ generatingProtos root = generatingSpecificProtos root getProtos
     getProtos p = do
       -- Replicate Cabal's own logic for parsing file globs.
       files <- concat <$> mapM matchFileGlob (extraSrcFiles p)
-      pure $ filter (isSubdirectoryOf root)
+      pure $ map (makeRelative root)
+           $ filter (isSubdirectoryOf root)
            $ filter (\f -> takeExtension f == ".proto")
                files
 
@@ -113,9 +117,10 @@ generatingProtos root = generatingSpecificProtos root getProtos
 -- Throws an exception if the @proto-lens-protoc@ executable is not on the PATH.
 generatingSpecificProtos
     :: FilePath -- ^ The root directory under which .proto files can be found.
-    -> (PackageDescription -> IO [FilePath]) -- ^ A function to return a list of
-                                             -- .proto files. The cabal package
-                                             -- description is provided
+    -> (PackageDescription -> IO [FilePath])
+    -- ^ A function to return a list of .proto files. Takes the Cabal package
+    -- description as input. Non-absolute paths are treated as relative to the
+    -- provided root directory.
     -> UserHooks -> UserHooks
 generatingSpecificProtos root getProtos hooks = hooks
     { buildHook = \p l h f -> generateSources p l >> buildHook hooks p l h f
@@ -130,7 +135,12 @@ generatingSpecificProtos root getProtos hooks = hooks
     }
   where
     generateSources p l = do
-        files <- getProtos p
+        -- `makeAbsolute f` returns the absolute path of f as though it were
+        -- specified relative to root.
+        let makeAbsolute f = if isRelative f
+                               then root </> f
+                               else f
+        files <- map makeAbsolute <$> getProtos p
         generateProtos root (autogenModulesDir l) files
 
 -- | Add the autogen directory to the hs-source-dirs of all the targets in the
