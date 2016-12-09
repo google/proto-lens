@@ -7,6 +7,9 @@ packages:
 - proto-lens-optparse
 - proto-lens-tests
 - proto-lens-benchmarks
+- location:
+    git: https://github.com/haskell-suite/haskell-src-exts.git
+    commit: 18173100c8cd704e16fd92e8a888e1eedc82c04e
 
 # Allow our custom Setup.hs scripts to import Data.ProtoLens.Setup from the version of
 # `proto-lens-protoc` in stack's local DB.  This makes things simpler when developing

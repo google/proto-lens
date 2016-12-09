@@ -79,7 +79,7 @@ generateFiles modulePrefix header files toGenerate = let
              (fileSyntaxType (descriptor file))
              (definitions file)
              (collectEnvFromDeps deps filesByName)
-  in [ ( outputFilePath . (\(ModuleName n) -> n) . haskellModule $ file
+  in [ ( outputFilePath . (\(ModuleName () n) -> n) . haskellModule $ file
        , header (descriptor file) <> pack (prettyPrint $ buildFile file)
        )
      | fileName <- toGenerate

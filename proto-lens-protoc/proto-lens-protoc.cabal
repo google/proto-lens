@@ -35,7 +35,7 @@ library
       , data-default-class >= 0.0 && < 0.2
       , directory == 1.2.*
       , filepath == 1.4.*
-      , haskell-src-exts == 1.17.*
+      , haskell-src-exts == 1.19.*
       , lens-family == 1.2.*
       , process >= 1.2 && < 1.5
       , proto-lens == 0.1.0.4
@@ -63,7 +63,7 @@ executable proto-lens-protoc
       , containers == 0.5.*
       , data-default-class >= 0.0 && < 0.2
       , filepath == 1.4.*
-      , haskell-src-exts == 1.17.*
+      , haskell-src-exts == 1.19.*
       , lens-family == 1.2.*
       -- Specify an exact version of `proto-lens`, since it's tied closely
       -- to the generated code.
