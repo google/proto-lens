@@ -156,6 +156,21 @@ Test-Suite enum_test
                , test-framework
                , test-framework-hunit
 
+Test-Suite memory_test
+  default-language: Haskell2010
+  type: exitcode-stdio-1.0
+  main-is: memory_test.hs
+  hs-source-dirs: tests
+  other-modules: Proto.Packed
+  build-depends: base
+               , lens-family
+               , proto-lens
+               , proto-lens-protoc
+               , proto-lens-tests
+               , test-framework
+               , test-framework-hunit
+               , text
+
 Test-Suite names_test
   default-language: Haskell2010
   type: exitcode-stdio-1.0
