@@ -135,12 +135,8 @@ generatingSpecificProtos root getProtos hooks = hooks
     }
   where
     generateSources p l = do
-        -- `makeAbsolute f` returns the absolute path of f as though it were
-        -- specified relative to root.
-        let makeAbsolute f = if isRelative f
-                               then root </> f
-                               else f
-        files <- map makeAbsolute <$> getProtos p
+        -- Applying 'root </>' does nothing if the path is already absolute.
+        files <- map (root </>) <$> getProtos p
         generateProtos root (autogenModulesDir l) files
 
 -- | Add the autogen directory to the hs-source-dirs of all the targets in the
