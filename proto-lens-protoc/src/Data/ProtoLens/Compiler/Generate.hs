@@ -15,18 +15,19 @@ module Data.ProtoLens.Compiler.Generate(
 
 import Control.Applicative ((<$>))
 import Control.Arrow (second)
+import Control.Monad (join)
 import qualified Data.Foldable as F
 import qualified Data.List as List
 import qualified Data.Map as Map
 import Data.Maybe (isNothing)
 import Data.Ord (comparing)
+import Data.Semigroup
 import qualified Data.Set as Set
 import Data.String (fromString)
 import Data.Text (unpack)
 import qualified Data.Text as T
 import Data.Tuple (swap)
 import Language.Haskell.Exts.Syntax as Syntax
-import Language.Haskell.Exts.SrcLoc (noLoc)
 import Lens.Family2 ((^.))
 import Bootstrap.Proto.Google.Protobuf.Descriptor
     ( EnumValueDescriptorProto
@@ -62,26 +63,30 @@ fileSyntaxType f = case f ^. syntax of
 
 -- | Generate a Haskell module for the given input file(s).
 -- input contains all defined names, incl. those in this module
-generateModule :: ModuleName
-               -> [ModuleName]  -- ^ The imported modules
+generateModule :: ModuleName ()
+               -> [ModuleName ()] -- ^ The imported modules
                -> SyntaxType
-               -> Env Name      -- ^ Definitions in this file
-               -> Env QName     -- ^ Definitions in the imported modules
-               -> Module
+               -> Env (Name ())   -- ^ Definitions in this file
+               -> Env (QName ())  -- ^ Definitions in the imported modules
+               -> Module ()
 generateModule modName imports syntaxType definitions importedEnv
-    = Module noLoc modName
-          [ LanguagePragma noLoc $ map Ident
+    = Module ()
+          (Just $ ModuleHead
+            ()
+            modName
+            Nothing  -- no warning text
+            Nothing  -- no explicit exports; we export everything.
+                     -- TODO: Also export public imports, taking care not to
+                     -- cause a name conflict between field accessors.
+          )
+          [ LanguagePragma () $ map (Ident ())
               ["ScopedTypeVariables", "DataKinds", "TypeFamilies",
                "MultiParamTypeClasses", "FlexibleContexts", "FlexibleInstances",
                "PatternSynonyms"]
               -- Allow unused imports in case we don't import anything from
               -- Data.Text, Data.Int, etc.
-          , OptionsPragma noLoc (Just GHC) "-fno-warn-unused-imports"
+          , OptionsPragma () (Just GHC) "-fno-warn-unused-imports"
           ]
-          Nothing  -- no warning text
-          Nothing  -- no explicit exports; we export everything.
-                   -- TODO: Also export public imports, taking care not to
-                   -- cause a name conflict between field accessors.
           (map importSimple
               -- Note: we import Prelude explicitly to make it qualified.
               [ "Prelude", "Data.Int", "Data.Word"]
@@ -104,9 +109,9 @@ generateModule modName imports syntaxType definitions importedEnv
         , i <- fieldInstances (lensInfo syntaxType env f)
         ]
 
-importSimple :: ModuleName -> ImportDecl
+importSimple :: ModuleName () -> ImportDecl ()
 importSimple m = ImportDecl
-    { importLoc = noLoc
+    { importAnn = ()
     , importModule = m
     -- Import qualified to avoid clashes with names defined in this module.
     , importQualified = True
@@ -117,24 +122,27 @@ importSimple m = ImportDecl
     , importSpecs = Nothing
     }
 
-importReexported :: ModuleName -> ImportDecl
-importReexported m@(ModuleName s) = (importSimple m') { importAs = Just m }
+importReexported :: ModuleName () -> ImportDecl ()
+importReexported m@(ModuleName () s) = (importSimple m') { importAs = Just m }
   where
-    m' = ModuleName $ "Data.ProtoLens.Reexport." ++ s
+    m' = ModuleName () $ "Data.ProtoLens.Reexport." ++ s
 
-generateMessageDecls :: SyntaxType -> Env QName -> MessageInfo Name -> [Decl]
+generateMessageDecls :: SyntaxType
+                     -> Env (QName ())
+                     -> MessageInfo (Name ())
+                     -> [Decl ()]
 generateMessageDecls syntaxType env info =
     -- data Bar = Bar {
     --    foo :: Baz
     -- }
-    [ DataDecl noLoc DataType [] dataName []
-        [QualConDecl noLoc [] [] $ RecDecl dataName
-                  [([recordFieldName f],
-                        internalType (lensInfo syntaxType env f))
+    [ DataDecl () (DataType ()) Nothing (DHead () dataName)
+        [QualConDecl () Nothing Nothing $ RecDecl () dataName
+                  [FieldDecl () [recordFieldName f]
+                     (internalType (lensInfo syntaxType env f))
                   | f <- fields
                   ]
         ]
-        [("Prelude.Show", []), ("Prelude.Eq", [])]
+        (Just $ simpleDeriving ["Prelude.Show", "Prelude.Eq"])
     ]
     ++
     -- type instance Field.Field "foo" Bar = Baz
@@ -143,54 +151,52 @@ generateMessageDecls syntaxType env info =
     -- Note: for optional fields, this generates an instance both for "foo" and
     -- for "maybe'foo" (see lensInfo below).
     concat
-        [ [ TypeInsDecl noLoc
+        [ [ TypeInsDecl ()
               ("Data.ProtoLens.Field" @@ sym @@ dataType)
               (fieldTypeInstance i)
-          , InstDecl noLoc Nothing [] [] "Data.ProtoLens.HasField"
-              [sym, dataType, dataType]
-              [InsDecl $ FunBind [match "field" [PWildCard] $ fieldAccessor i]]
+          , simpleInstance "Data.ProtoLens.HasField" [sym, dataType, dataType]
+              [InsDecl () $ FunBind () [match "field" [PWildCard ()] $ fieldAccessor i]]
           ]
         | f <- fields
         , i <- fieldInstances (lensInfo syntaxType env f)
-        , let sym = TyPromoted $ PromotedString $ fieldSymbol i
+        , let sym = TyPromoted () $ PromotedString () (fieldSymbol i) (fieldSymbol i)
         ]
     ++
     -- instance Data.Default.Class.Default Bar where
-    [ InstDecl noLoc Nothing [] [] "Data.Default.Class.Default" [dataType]
-        -- def = Bar { _Bar_foo = 0 }
-        [ InsDecl $ FunBind
-            [ match "def" []
-                $ RecConstr (UnQual dataName)
-                      [ FieldUpdate (UnQual $ recordFieldName f)
-                            (hsFieldDefault syntaxType env (fieldDescriptor f))
-                      | f <- fields
-                      ]
-            ]
-        ]
+    [ simpleInstance "Data.Default.Class.Default" [dataType]
+          [ InsDecl () $ FunBind ()
+              [ match "def" []
+                  $ RecConstr () (UnQual () dataName)
+                        [ FieldUpdate () (UnQual () $ recordFieldName f)
+                              (hsFieldDefault syntaxType env (fieldDescriptor f))
+                        | f <- fields
+                        ]
+              ]
+          ]
     -- instance Message.Message Bar where
-    , InstDecl noLoc Nothing [] [] "Data.ProtoLens.Message" [dataType]
-        [ InsDecl $ FunBind
+    , simpleInstance "Data.ProtoLens.Message" [dataType]
+        [ InsDecl () $ FunBind ()
             [ match "descriptor" [] $ descriptorExpr syntaxType env info]
         ]
     ]
   where
-    dataType = TyCon $ UnQual dataName
+    dataType = TyCon () $ UnQual () dataName
     MessageInfo { messageName = dataName, messageFields = fields} = info
 
-generateEnumDecls :: EnumInfo Name -> [Decl]
+generateEnumDecls :: EnumInfo (Name ()) -> [Decl ()]
 generateEnumDecls info =
-    [ DataDecl noLoc DataType [] dataName []
-        [QualConDecl noLoc [] [] $ ConDecl n [] | n <- constructorNames]
-        [(c, []) | c <- ["Prelude.Show", "Prelude.Eq"]]
+    [ DataDecl () (DataType ()) Nothing (DHead () dataName)
+        [QualConDecl () Nothing Nothing $ ConDecl () n [] | n <- constructorNames]
+        (Just $ simpleDeriving ["Prelude.Show", "Prelude.Eq"])
     -- instance Data.Default.Class.Default Foo where
     --   def = FirstEnumValue
-    , InstDecl noLoc Nothing [] [] "Data.Default.Class.Default" [dataType]
-        [ InsDecl $ FunBind [match "def" [] defaultCon]
+    , simpleInstance "Data.Default.Class.Default" [dataType]
+        [ InsDecl () $ FunBind () [match "def" [] defaultCon]
         ]
     -- instance Data.ProtoLens.FieldDefault Foo where
     --   fieldDefault = FirstEnumValue
-    , InstDecl noLoc Nothing [] [] "Data.ProtoLens.FieldDefault" [dataType]
-        [ InsDecl $ FunBind [match "fieldDefault" [] defaultCon]
+    , simpleInstance "Data.ProtoLens.FieldDefault" [dataType]
+        [ InsDecl () $ FunBind () [match "fieldDefault" [] defaultCon]
         ]
     -- instance MessageEnum Foo where
     --    maybeToEnum 1 = Just Foo1
@@ -204,27 +210,27 @@ generateEnumDecls info =
     --    readEnum "Foo2" = Just Foo2
     --    ...
     --    readEnum _ = Nothing
-    , InstDecl noLoc Nothing [] [] "Data.ProtoLens.MessageEnum" [dataType]
-        [ InsDecl $ FunBind $
+    , simpleInstance "Data.ProtoLens.MessageEnum" [dataType]
+        [ InsDecl () $ FunBind () $
             [ match "maybeToEnum" [pLitInt k]
-                $ "Prelude.Just" @@ Con (UnQual n)
+                $ "Prelude.Just" @@ Con () (UnQual () n)
             | (n, k) <- constructorNumbers
             ]
             ++
-            [ match "maybeToEnum" [PWildCard] "Prelude.Nothing"
+            [ match "maybeToEnum" [PWildCard ()] "Prelude.Nothing"
             ]
             ++
-            [ match "showEnum" [PVar n] $ Lit $ Syntax.String $ T.unpack pn
+            [ match "showEnum" [PVar () n] $ syntaxString pn
             | (n, pn) <- constructorProtoNames
             ]
             ++
             [ match "readEnum"
-                [PLit Signless . Syntax.String $ T.unpack pn]
-                $ "Prelude.Just" @@ Con (UnQual n)
+                [PLit () (Signless ()) $ syntaxStringLit pn]
+                $ "Prelude.Just" @@ Con () (UnQual () n)
             | (n, pn) <- constructorProtoNames
             ]
             ++
-            [ match "readEnum" [PWildCard] "Prelude.Nothing"
+            [ match "readEnum" [PWildCard ()] "Prelude.Nothing"
             ]
         ]
     -- instance Enum Foo where
@@ -246,14 +252,14 @@ generateEnumDecls info =
     --    enumFromTo = messageEnumFromTo
     --    enumFromThen = messageEnumFromThen
     --    enumFromThenTo = messageEnumFromThenTo
-    , InstDecl noLoc Nothing [] [] "Prelude.Enum" [dataType]
-        [ InsDecl $ FunBind
+    , simpleInstance "Prelude.Enum" [dataType]
+        [ InsDecl () $ FunBind ()
             [ match "toEnum" ["k__"]
                   $ "Prelude.maybe" @@ errorMessageExpr @@ "Prelude.id"
                         @@ ("Data.ProtoLens.maybeToEnum" @@ "k__")
             ]
-        , InsDecl $ FunBind
-            [ match "fromEnum" [PApp (UnQual c) []] $ litInt k
+        , InsDecl () $ FunBind ()
+            [ match "fromEnum" [PApp () (UnQual () c) []] $ litInt k
             | (c, k) <- constructorNumbers
             ]
         , succDecl "succ" maxBoundName succPairs
@@ -267,10 +273,10 @@ generateEnumDecls info =
     -- instance Bounded Foo where
     --    minBound = Foo1
     --    maxBound = FooN
-    , InstDecl noLoc Nothing [] [] "Prelude.Bounded" [dataType]
-        [ InsDecl $ FunBind
-            [ match "minBound" [] $ Con $ UnQual minBoundName
-            , match "maxBound" [] $ Con $ UnQual maxBoundName
+    , simpleInstance "Prelude.Bounded" [dataType]
+        [ InsDecl () $ FunBind ()
+            [ match "minBound" [] $ Con () $ UnQual () minBoundName
+            , match "maxBound" [] $ Con () $ UnQual () maxBoundName
             ]
         ]
     ]
@@ -278,8 +284,8 @@ generateEnumDecls info =
     -- pattern FooAlias :: Foo
     -- pattern FooAlias = FooConstructor
     concat
-        [ [ PatSynSig noLoc aliasName Nothing [] [] dataType
-          , PatSyn noLoc (PVar aliasName) (PVar originalName)
+        [ [ PatSynSig () aliasName Nothing Nothing Nothing dataType
+          , PatSyn () (PVar () aliasName) (PVar () originalName)
                 ImplicitBidirectional
           ]
         | EnumValueInfo
@@ -288,9 +294,9 @@ generateEnumDecls info =
             } <- enumValues info
         ]
   where
-    dataType = TyCon $ UnQual dataName
+    dataType = TyCon () $ UnQual () dataName
     EnumInfo { enumName = dataName, enumDescriptor = ed } = info
-    constructors :: [(Name, EnumValueDescriptorProto)]
+    constructors :: [(Name (), EnumValueDescriptorProto)]
     constructors = List.sortBy (comparing ((^. number) . snd))
                             [(n, d) | EnumValueInfo
                                 { enumValueName = n
@@ -307,70 +313,74 @@ generateEnumDecls info =
                           constructors
 
     succPairs = zip constructorNames $ tail constructorNames
-    succDecl funName boundName thePairs = InsDecl $ FunBind $
-        match funName [PApp (UnQual boundName) []] (
-            "Prelude.error" @@ Lit (Syntax.String $ concat
+    succDecl funName boundName thePairs = InsDecl () $ FunBind () $
+        match funName [PApp () (UnQual () boundName) []] (
+            "Prelude.error" @@ (syntaxString . T.pack $ concat
                 [ show dataName, ".", show funName, ": bad argument "
                 , show boundName, ". This value would be out of bounds."
                 ]))
         :
-        [ match funName [PApp (UnQual from) []] $ Con $ UnQual to
+        [ match funName [PApp () (UnQual () from) []] $ Con () $ UnQual () to
         | (from, to) <- thePairs
         ]
-    alias funName implName = InsDecl $ FunBind [match funName [] implName]
+    alias funName implName = InsDecl () $ FunBind () [match funName [] implName]
 
-    defaultCon = Con $ UnQual $ head constructorNames
+    defaultCon = Con () $ UnQual () $ head constructorNames
+    errorMessageExpr :: Exp ()
     errorMessageExpr = "Prelude.error"
-                          @@ ("Prelude.++" @@ Lit (Syntax.String errorMessage)
+                          @@ ("Prelude.++" @@ syntaxString errorMessage
                               @@ ("Prelude.show" @@ "k__"))
-    errorMessage = "toEnum: unknown value for enum " ++ unpack (ed ^. name)
-                      ++ ": "
+    errorMessage = "toEnum: unknown value for enum " <> (ed ^. name)
+                      <> ": "
 
-generateFieldDecls :: String -> [Decl]
+generateFieldDecls :: String -> [Decl ()]
 generateFieldDecls fStr =
     -- foo :: forall msg msg' . Field.HasField "foo" msg msg'
     --        => Lens.Lens msg msg' (Field.Field "foo" msg)
     --                              (Field.Field "foo" msg')
     -- foo = Field.field (Field.ProxySym :: Field.Proxy "foo")
-    [ TypeSig noLoc [f]
-          $ TyForall (Just ["msg", "msg'"])
-                  [ClassA "Data.ProtoLens.HasField" [fSym, "msg", "msg'"]]
+    [ TypeSig () [f]
+          $ TyForall () (Just ["msg", "msg'"])
+                  (Just $ CxSingle ()
+                      (ClassA () "Data.ProtoLens.HasField" [fSym, "msg", "msg'"]
+                      )
+                  )
                   $ "Lens.Family2.Lens" @@ "msg" @@ "msg'"
                     @@ ("Data.ProtoLens.Field" @@ fSym @@ "msg")
                     @@ ("Data.ProtoLens.Field" @@ fSym @@ "msg'")
-    , FunBind [match f []
-                  $ "Data.ProtoLens.field"
-                      @@ ExpTypeSig noLoc "Data.ProtoLens.ProxySym"
-                          ("Data.ProtoLens.ProxySym" @@ fSym)
-              ]
+    , FunBind () [match f []
+                     $ "Data.ProtoLens.field"
+                         @@ ExpTypeSig () "Data.ProtoLens.ProxySym"
+                             ("Data.ProtoLens.ProxySym" @@ fSym)
+                 ]
     ]
   where
-    f = Ident fStr
-    fSym = TyPromoted $ PromotedString fStr
+    f = Ident () fStr
+    fSym = TyPromoted () $ PromotedString () fStr fStr
 
 ------------------------------------------
 
 -- | The Haskell types and lenses for an individual field of a message.
 -- This is used to generate both the data record Decl and the instances of
 -- HasField.
-data LensInfo = LensInfo
-    { internalType :: Type  -- ^ Internal type in the record
-    , fieldInstances :: [FieldInstanceInfo]  -- ^ All instances of Field/HasField
+data LensInfo l = LensInfo
+    { internalType :: Type  l -- ^ Internal type in the record
+    , fieldInstances :: [FieldInstanceInfo l] -- ^ All instances of Field/HasField
     }
 
-data FieldInstanceInfo = FieldInstanceInfo
-    { fieldSymbol :: String      -- ^ The name of the Symbol corresponding to
-                                 --   this field.
-    , fieldTypeInstance :: Type  -- ^ The type instance for Field, i.e.,
-                                 --     type instance Field "foo" Bar = ...
-    , fieldAccessor :: Exp       -- ^ The value of the "field" lens for this
-                                 --   field, i.e.,
-                                 --     field _ = ...
+data FieldInstanceInfo l = FieldInstanceInfo
+    { fieldSymbol :: String       -- ^ The name of the Symbol corresponding to
+                                  --   this field.
+    , fieldTypeInstance :: Type l -- ^ The type instance for Field, i.e.,
+                                  --     type instance Field "foo" Bar = ...
+    , fieldAccessor :: Exp l      -- ^ The value of the "field" lens for this
+                                  --   field, i.e.,
+                                  --     field _ = ...
     }
 
 -- | Compile information about the record field type and type/class instances
 -- for this particular field.
-lensInfo :: SyntaxType -> Env QName -> FieldInfo -> LensInfo
+lensInfo :: SyntaxType -> Env (QName ()) -> FieldInfo -> LensInfo ()
 lensInfo syntaxType env f = case fd ^. label of
     -- data Foo = Foo { _Foo_bar :: Bar }
     -- type instance Field "bar" Foo = Bar
@@ -427,16 +437,16 @@ lensInfo syntaxType env f = case fd ^. label of
     baseName = overloadedField f
     fd = fieldDescriptor f
     baseType = hsFieldType env fd
-    listType = TyList baseType
+    listType = TyList () baseType
     maybeType = "Prelude.Maybe" @@ baseType
     maybeName = "maybe'" ++ baseName
     maybeAccessor = "Prelude.." @@ fromString maybeName
                         @@ ("Data.ProtoLens.maybeLens"
                                 @@ hsFieldValueDefault env fd)
-    rawAccessor = rawFieldAccessor $ UnQual $ recordFieldName f
+    rawAccessor = rawFieldAccessor $ UnQual () $ recordFieldName f
 
 -- Get the key/value types of this type, if it is really a map.
-getMapFields :: Env QName -> FieldDescriptorProto
+getMapFields :: Env (QName ()) -> FieldDescriptorProto
              -> Maybe (FieldInfo, FieldInfo)
 getMapFields env f
     | f ^. type' == FieldDescriptorProto'TYPE_MESSAGE
@@ -445,7 +455,7 @@ getMapFields env f
     , [f1, f2] <- messageFields m = Just (f1, f2)
     | otherwise = Nothing
 
-hsFieldType :: Env QName -> FieldDescriptorProto -> Type
+hsFieldType :: Env (QName ()) -> FieldDescriptorProto -> Type ()
 hsFieldType env fd = case fd ^. type' of
     FieldDescriptorProto'TYPE_DOUBLE -> "Prelude.Double"
     FieldDescriptorProto'TYPE_FLOAT -> "Prelude.Float"
@@ -457,17 +467,17 @@ hsFieldType env fd = case fd ^. type' of
     FieldDescriptorProto'TYPE_BOOL -> "Prelude.Bool"
     FieldDescriptorProto'TYPE_STRING -> "Data.Text.Text"
     FieldDescriptorProto'TYPE_GROUP
-        | Message m <- definedFieldType fd env -> TyCon $ messageName m
+        | Message m <- definedFieldType fd env -> TyCon () $ messageName m
         | otherwise -> error $ "expected TYPE_GROUP for type name"
                               ++ unpack (fd ^. typeName)
     FieldDescriptorProto'TYPE_MESSAGE
-        | Message m <- definedFieldType fd env -> TyCon $ messageName m
+        | Message m <- definedFieldType fd env -> TyCon () $ messageName m
         | otherwise -> error $ "expected TYPE_MESSAGE for type name"
                               ++ unpack (fd ^. typeName)
     FieldDescriptorProto'TYPE_BYTES -> "Data.ByteString.ByteString"
     FieldDescriptorProto'TYPE_UINT32 -> "Data.Word.Word32"
     FieldDescriptorProto'TYPE_ENUM
-        | Enum e <- definedFieldType fd env -> TyCon $ enumName e
+        | Enum e <- definedFieldType fd env -> TyCon () $ enumName e
         | otherwise -> error $ "expected TYPE_ENUM for type name"
                               ++ unpack (fd ^. typeName)
     FieldDescriptorProto'TYPE_SFIXED32 -> "Data.Int.Int32"
@@ -475,7 +485,7 @@ hsFieldType env fd = case fd ^. type' of
     FieldDescriptorProto'TYPE_SINT32 -> "Data.Int.Int32"
     FieldDescriptorProto'TYPE_SINT64 -> "Data.Int.Int64"
 
-hsFieldDefault :: SyntaxType -> Env QName -> FieldDescriptorProto -> Exp
+hsFieldDefault :: SyntaxType -> Env (QName ()) -> FieldDescriptorProto -> Exp ()
 hsFieldDefault syntaxType env fd
     = case fd ^. label of
           FieldDescriptorProto'LABEL_OPTIONAL
@@ -483,11 +493,11 @@ hsFieldDefault syntaxType env fd
               | otherwise -> "Prelude.Nothing"
           FieldDescriptorProto'LABEL_REPEATED
               | Just _ <- getMapFields env fd -> "Data.Map.empty"
-              | otherwise -> List []
+              | otherwise -> List () []
           -- TODO: More sensible initialization of required fields.
           FieldDescriptorProto'LABEL_REQUIRED -> hsFieldValueDefault env fd
 
-hsFieldValueDefault :: Env QName -> FieldDescriptorProto -> Exp
+hsFieldValueDefault :: Env (QName ()) -> FieldDescriptorProto -> Exp ()
 hsFieldValueDefault env fd = case fd ^. type' of
     FieldDescriptorProto'TYPE_MESSAGE -> "Data.Default.Class.def"
     FieldDescriptorProto'TYPE_GROUP -> "Data.Default.Class.def"
@@ -497,7 +507,7 @@ hsFieldValueDefault env fd = case fd ^. type' of
         , Just v <- List.lookup def [ (enumValueDescriptor v ^. name, enumValueName v)
                                     | v <- enumValues e
                                     ]
-            -> Con v
+            -> Con () v
         | otherwise -> errorMessage "enum"
     -- The rest of the cases are for scalar fields that have a fieldDefault
     -- instance.
@@ -507,10 +517,10 @@ hsFieldValueDefault env fd = case fd ^. type' of
         | def == "false" -> "Prelude.False"
         | otherwise -> errorMessage "bool"
     FieldDescriptorProto'TYPE_STRING
-        -> "Data.Text.pack" @@ Lit (String $ T.unpack def)
+        -> "Data.Text.pack" @@ Lit () (join (String ()) $ T.unpack def)
     FieldDescriptorProto'TYPE_BYTES
         -> "Data.ByteString.pack"
-                @@ List ((mkByte . fromEnum) <$> T.unpack def)
+                @@ List () ((mkByte . fromEnum) <$> T.unpack def)
       where mkByte c
               | c > 0 && c < 255 = litInt $ fromIntegral c
               | otherwise = errorMessage "bytes"
@@ -540,14 +550,14 @@ hsFieldValueDefault env fd = case fd ^. type' of
 -- | A lens to access an internal field.
 --
 --   lens _Foo_bar (\x__ y__ -> x__ { _Foo_bar = y__ })
-rawFieldAccessor :: QName -> Exp
+rawFieldAccessor :: QName () -> Exp ()
 rawFieldAccessor f = "Lens.Family2.Unchecked.lens" @@ getter @@ setter
   where
-    getter = Var f
-    setter = Lambda noLoc ["x__", "y__"]
-                    $ RecUpdate "x__" [FieldUpdate f "y__"]
+    getter = Var () f
+    setter = Lambda () ["x__", "y__"]
+                    $ RecUpdate () "x__" [FieldUpdate () f "y__"]
 
-descriptorExpr :: SyntaxType -> Env QName -> MessageInfo Name -> Exp
+descriptorExpr :: SyntaxType -> Env (QName ()) -> MessageInfo (Name ()) -> Exp ()
 descriptorExpr syntaxType env m
     -- let foo__field_descriptor = ...
     --     ...
@@ -557,13 +567,13 @@ descriptorExpr syntaxType env m
     --
     -- (Note that the two maps have the same elements but different keys.  We
     -- use the "let" expression to share elements between the two maps.)
-    = Let (BDecls $ map fieldDescriptorVarBind $ messageFields m)
+    = Let () (BDecls () $ map fieldDescriptorVarBind $ messageFields m)
         $ "Data.ProtoLens.MessageDescriptor"
-          @@ ("Data.Map.fromList" @@ List fieldsByTag)
-          @@ ("Data.Map.fromList" @@ List fieldsByTextFormatName)
+          @@ ("Data.Map.fromList" @@ List () fieldsByTag)
+          @@ ("Data.Map.fromList" @@ List () fieldsByTextFormatName)
   where
     fieldsByTag =
-        [Tuple Boxed
+        [Tuple () Boxed
               [ t, fieldDescriptorVar f ]
               | f <- messageFields m
               , let t = "Data.ProtoLens.Tag"
@@ -571,17 +581,17 @@ descriptorExpr syntaxType env m
                                       $ fieldDescriptor f ^. number)
               ]
     fieldsByTextFormatName =
-        [Tuple Boxed
+        [Tuple () Boxed
               [ t, fieldDescriptorVar f ]
               | f <- messageFields m
-              , let t = Lit $ Syntax.String $ T.unpack
-                            $ textFormatFieldName env (fieldDescriptor f)
+              , let t = syntaxString
+                        $ textFormatFieldName env (fieldDescriptor f)
               ]
     fieldDescriptorVar = fromString . fieldDescriptorName
     fieldDescriptorName f
         = fromString $ overloadedField f ++ "__field_descriptor"
     fieldDescriptorVarBind f
-        = FunBind
+        = FunBind ()
               [match (fromString $ fieldDescriptorName f) []
                   $ fieldDescriptorExpr syntaxType env f
               ]
@@ -589,7 +599,7 @@ descriptorExpr syntaxType env m
 -- | Get the name of the field when used in a text format proto. Groups are
 -- special because their text format field name is the name of their type,
 -- not the name of the field in the descriptor (e.g. "Foo", not "foo").
-textFormatFieldName :: Env QName -> FieldDescriptorProto -> T.Text
+textFormatFieldName :: Env (QName ()) -> FieldDescriptorProto -> T.Text
 textFormatFieldName env descr = case descr ^. type' of
     FieldDescriptorProto'TYPE_GROUP
         | Message msg <- definedFieldType descr env
@@ -598,24 +608,24 @@ textFormatFieldName env descr = case descr ^. type' of
                            ++ T.unpack (descr ^. typeName)
     _ -> descr ^. name
 
-fieldDescriptorExpr :: SyntaxType -> Env QName -> FieldInfo
-                    -> Exp
+fieldDescriptorExpr :: SyntaxType -> Env (QName ()) -> FieldInfo
+                    -> Exp ()
 fieldDescriptorExpr syntaxType env f
     = "Data.ProtoLens.FieldDescriptor"
         -- Record the original .proto name for text format
-        @@ Lit (Syntax.String (T.unpack $ fd ^. name))
+        @@ syntaxString (fd ^. name)
         -- Force the type signature since it can't be inferred for Map entry
         -- types.
-        @@ ExpTypeSig noLoc (fieldTypeDescriptorExpr (fd ^. type'))
+        @@ ExpTypeSig () (fieldTypeDescriptorExpr (fd ^. type'))
                       ("Data.ProtoLens.FieldTypeDescriptor"
                           @@ hsFieldType env fd)
         @@ fieldAccessorExpr syntaxType env f
   where
     fd = fieldDescriptor f
 
-fieldAccessorExpr :: SyntaxType -> Env QName -> FieldInfo -> Exp
+fieldAccessorExpr :: SyntaxType -> Env (QName ()) -> FieldInfo -> Exp ()
 -- (PlainField Required foo), (OptionalField foo), etc...
-fieldAccessorExpr syntaxType env f = accessorCon @@ Var (UnQual hsFieldName)
+fieldAccessorExpr syntaxType env f = accessorCon @@ Var () (UnQual () hsFieldName)
   where
     fd = fieldDescriptor f
     accessorCon = case fd ^. label of
@@ -635,7 +645,7 @@ fieldAccessorExpr syntaxType env f = accessorCon @@ Var (UnQual hsFieldName)
                         then "Data.ProtoLens.Packed"
                         else "Data.ProtoLens.Unpacked"
     hsFieldName
-        = Ident $ case fd ^. label of
+        = Ident () $ case fd ^. label of
               FieldDescriptorProto'LABEL_OPTIONAL
                   | not (isDefaultingOptional syntaxType fd)
                       -> "maybe'" ++ overloadedField f
@@ -649,7 +659,7 @@ isDefaultingOptional syntaxType f
           -- For now, we treat oneof's like proto2 optional fields.
           && isNothing (f ^. maybe'oneofIndex)
 
-fieldTypeDescriptorExpr :: FieldDescriptorProto'Type -> Exp
+fieldTypeDescriptorExpr :: FieldDescriptorProto'Type -> Exp ()
 fieldTypeDescriptorExpr =
     (\n -> fromString $ "Data.ProtoLens." ++ n ++ "Field") . \t -> case t of
     FieldDescriptorProto'TYPE_DOUBLE -> "Double"

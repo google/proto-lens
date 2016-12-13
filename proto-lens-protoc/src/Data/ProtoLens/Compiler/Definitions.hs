@@ -76,7 +76,7 @@ data FieldInfo = FieldInfo
     { overloadedField :: String
       -- ^ The Haskell overloaded name of this field; may be shared between two
       -- different message data types.
-    , recordFieldName :: Name
+    , recordFieldName :: Name ()
       -- ^ The Haskell name of this internal record field.  Unique within each
       -- module.
     , fieldDescriptor :: FieldDescriptorProto
@@ -93,7 +93,7 @@ data EnumInfo n = EnumInfo
 data EnumValueInfo n = EnumValueInfo
     { enumValueName :: n
     , enumValueDescriptor :: EnumValueDescriptorProto
-    , enumAliasOf :: Maybe Name
+    , enumAliasOf :: Maybe (Name ())
         -- ^ If 'Nothing', we turn value into a normal constructor of the enum.
         -- If @'Just' n@, we're treating it as an alias of the constructor @n@
         -- (a PatternSynonym in Haskell).  This mirrors the behavior of the
@@ -104,15 +104,15 @@ mapEnv :: (n -> n') -> Env n -> Env n'
 mapEnv f = fmap $ fmap f
 
 -- Lift a set of local definitions into references to a specific module.
-qualifyEnv :: ModuleName -> Env Name -> Env QName
-qualifyEnv m = mapEnv (Qual m)
+qualifyEnv :: ModuleName () -> Env (Name ()) -> Env (QName ())
+qualifyEnv m = mapEnv (Qual () m)
 
 -- Lift a set of local definitions into references to the current module.
-unqualifyEnv :: Env Name -> Env QName
-unqualifyEnv = mapEnv UnQual
+unqualifyEnv :: Env (Name ()) -> Env (QName ())
+unqualifyEnv = mapEnv (UnQual ())
 
 -- | Look up the type definition for a given field.
-definedFieldType :: FieldDescriptorProto -> Env QName -> Definition QName
+definedFieldType :: FieldDescriptorProto -> Env (QName l) -> Definition (QName l)
 definedFieldType fd env = fromMaybe err $ Map.lookup (fd ^. typeName) env
   where
     err = error $ "definedFieldType: Field type " ++ unpack (fd ^. typeName)
@@ -120,7 +120,7 @@ definedFieldType fd env = fromMaybe err $ Map.lookup (fd ^. typeName) env
 
 -- | Collect all the definitions in the given file (including definitions
 -- nested in other messages), and assign Haskell names to them.
-collectDefinitions :: FileDescriptorProto -> Env Name
+collectDefinitions :: FileDescriptorProto -> Env (Name ())
 collectDefinitions fd = let
     protoPrefix = case fd ^. package of
         "" -> "."
@@ -130,27 +130,28 @@ collectDefinitions fd = let
                           (fd ^. messageType) (fd ^. enumType)
 
 messageAndEnumDefs :: Text -> String -> [DescriptorProto]
-                   -> [EnumDescriptorProto] -> [(Text, Definition Name)]
+                   -> [EnumDescriptorProto] -> [(Text, Definition (Name ()))]
 messageAndEnumDefs protoPrefix hsPrefix messages enums
     = concatMap (messageDefs protoPrefix hsPrefix) messages
         ++ map (enumDef protoPrefix hsPrefix) enums
 
 -- | Generate the definitions for a message and its nested types (if any).
 messageDefs :: Text -> String -> DescriptorProto
-            -> [(Text, Definition Name)]
+            -> [(Text, Definition (Name ()))]
 messageDefs protoPrefix hsPrefix d
     = thisDef : subDefs
   where
     protoName = d ^. name
     hsName = unpack $ capitalize $ d ^. name
+    thisDef :: (Text, Definition (Name ()))
     thisDef = (protoPrefix <> protoName
               , Message MessageInfo
-                  { messageName = Ident $ hsPrefix ++ hsName
+                  { messageName = Ident () $ hsPrefix ++ hsName
                   , messageDescriptor = d
                   , messageFields =
                       [ FieldInfo
                           { overloadedField = n
-                          , recordFieldName = Ident $ "_" ++ hsPrefix' ++ n
+                          , recordFieldName = Ident () $ "_" ++ hsPrefix' ++ n
                           , fieldDescriptor = f
                           }
                       | f <- d ^. field
@@ -220,10 +221,10 @@ reservedKeywords = Set.fromList $
 
 -- | Generate the definition for an enum type.
 enumDef :: Text -> String -> EnumDescriptorProto
-          -> (Text, Definition Name)
+          -> (Text, Definition (Name ()))
 enumDef protoPrefix hsPrefix d = let
     mkText n = protoPrefix <> n
-    mkHsName n = Ident $ hsPrefix ++ unpack n
+    mkHsName n = Ident () $ hsPrefix ++ unpack n
     in (mkText (d ^. name)
        , Enum EnumInfo
             { enumName = mkHsName (d ^. name)
@@ -237,12 +238,12 @@ enumDef protoPrefix hsPrefix d = let
 --
 -- Like Java, we treat the first case of each numeric value as the "real"
 -- constructor, and subsequent cases as synonyms.
-collectEnumValues :: (Text -> Name) -> [EnumValueDescriptorProto]
-                  -> [EnumValueInfo Name]
+collectEnumValues :: (Text -> (Name ())) -> [EnumValueDescriptorProto]
+                  -> [EnumValueInfo (Name ())]
 collectEnumValues mkHsName = snd . mapAccumL helper Map.empty
   where
-    helper :: Map.Map Int32 Name -> EnumValueDescriptorProto
-           -> (Map.Map Int32 Name, EnumValueInfo Name)
+    helper :: Map.Map Int32 (Name ()) -> EnumValueDescriptorProto
+           -> (Map.Map Int32 (Name ()), EnumValueInfo (Name ()))
     helper seenNames v
         | Just n' <- Map.lookup k seenNames = (seenNames, mkValue (Just n'))
         | otherwise = (Map.insert k hsName seenNames, mkValue Nothing)

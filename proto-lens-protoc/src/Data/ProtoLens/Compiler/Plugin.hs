@@ -38,12 +38,12 @@ type ProtoFileName = Text
 
 data ProtoFile = ProtoFile
     { descriptor :: FileDescriptorProto
-    , haskellModule :: ModuleName
-    , definitions :: Env Name
+    , haskellModule :: ModuleName ()
+    , definitions :: Env (Name ())
     -- | The names of proto files exported (transitively, via "import public"
     -- decl) by this file.
     , exports :: [ProtoFileName]
-    , exportedEnv :: Env QName
+    , exportedEnv :: Env (QName ())
     }
 
 -- Given a list of FileDescriptorProtos, collect information about each file
@@ -73,7 +73,7 @@ analyzeProtoFiles modulePrefix files =
       where
         n = f ^. name
 
-collectEnvFromDeps :: [ProtoFileName] -> Map ProtoFileName ProtoFile -> Env QName
+collectEnvFromDeps :: [ProtoFileName] -> Map ProtoFileName ProtoFile -> Env (QName ())
 collectEnvFromDeps deps filesByName =
     unions $ fmap (exportedEnv . (filesByName !)) deps
 
@@ -83,8 +83,8 @@ outputFilePath :: String -> Text
 outputFilePath n = T.replace "." "/" (T.pack n) <> ".hs"
 
 -- | Get the Haskell 'ModuleName' corresponding to a given .proto file.
-moduleName :: Text -> FileDescriptorProto -> ModuleName
-moduleName modulePrefix fd = ModuleName (moduleNameStr modulePrefix fd)
+moduleName :: Text -> FileDescriptorProto -> ModuleName ()
+moduleName modulePrefix fd = ModuleName () (moduleNameStr modulePrefix fd)
 
 -- | Get the Haskell module name corresponding to a given .proto file.
 moduleNameStr :: Text -> FileDescriptorProto -> String
