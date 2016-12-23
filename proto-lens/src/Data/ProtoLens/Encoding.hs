@@ -89,15 +89,15 @@ parseAndAddField :: msg
 parseAndAddField
     msg
     (FieldDescriptor name typeDescriptor accessor)
-    (TaggedValue tag (WireValue wt val))
+    (TaggedValue tag (WireValue (wt :: WireType w) val))
     = case fieldWireType typeDescriptor of
-        FieldWireType fieldWt _ get -> let
+        (FieldWireType fieldWt _ get :: FieldWireType a) -> let
           getSimpleVal = do
               Equal <- equalWireTypes name fieldWt wt
               get val
           -- Get a block of packed values, reversed.
+          getPackedVals :: w ~ B.ByteString => Either String [a]
           getPackedVals = do
-              Equal <- equalWireTypes name Lengthy wt
               let getElt = getWireValue fieldWt tag >>= runEither . get
               parseOnly (manyReversedTill getElt endOfInput) val
           in case accessor of
@@ -107,12 +107,20 @@ parseAndAddField
               OptionalField f -> do
                   x <- getSimpleVal
                   return $ set f (Just x) msg
-              RepeatedField Unpacked f -> do
-                  x <- getSimpleVal
-                  return $ over f (x:) msg
-              RepeatedField Packed f -> do
-                  xs <- getPackedVals
-                  return $ over f (xs++) msg
+              RepeatedField _ f
+                    -- Parse either a packed or unpacked representation,
+                    -- depending on how it was encoded.
+                    -- Note that if fieldWt is Lengthy (e.g., "string" or
+                    -- message) we should always parse it as unpacked.
+                    | Right Equal <- equalWireTypes name wt fieldWt -> do
+                        x <- get val
+                        return $ over f (x:) msg
+                    | Right Equal <- equalWireTypes name wt Lengthy -> do
+                        xs <- getPackedVals
+                        return $ over f (xs++) msg
+                    | otherwise -> fail $ "Field " ++ name
+                        ++ "expects a repeated field wire type but found "
+                        ++ show wt
               MapField keyLens valueLens f -> do
                   entry <- getSimpleVal
                   return $ over f
@@ -153,16 +161,15 @@ messageFieldToVals (FieldDescriptor _ typeDescriptor accessor) msg =
                 Just src -> [WireValue wt (convert src)]
                 _ -> mempty
             RepeatedField Unpacked f
-                -> [ WireValue wt (convert src)
-                   | src <- toList (msg ^. f)
-                   ]
+                -> [WireValue wt (convert src) | src <- msg ^. f]
             RepeatedField Packed f
-                -> [WireValue Lengthy v]
-                     where v = L.toStrict $ toLazyByteString
-                               $ mconcat
-                                 [ putWireValue wt (convert src)
-                                 | src <- toList (msg ^. f)
-                                 ]
+                | null srcs -> []
+                | otherwise -> [WireValue Lengthy v]
+                     where
+                        srcs = msg ^. f
+                        v = L.toStrict $ toLazyByteString
+                           $ mconcat
+                             [putWireValue wt (convert src) | src <- srcs]
             MapField keyLens valueLens f ->
                 [ WireValue wt v
                 | (key, value) <- Map.toList (msg ^. f)

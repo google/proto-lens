@@ -20,6 +20,8 @@ message Foo {
     Enum2 = 1;
   }
   FooEnum enum = 6;
+
+  repeated int32 f = 7;
 }
 
 message Strings {
