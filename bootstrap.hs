@@ -6,29 +6,28 @@
 
 -- To regenerate the bootstrapping proto bindings:
 -- $ runghc bootstrap.hs
+-- Note: if this doesn't work, you may need to edit the "location" field in
+-- stack-boostrap.yaml.
 import Control.Applicative ((<$>))
 import System.FilePath ((</>))
 import System.Process (callProcess, readProcess)
 
 protoRoot = "google/protobuf/src"
-protoc = protoRoot </> "protoc"
-modulePrefix = "Bootstrap.Proto"
-bootstrapModuleRoot = "proto-lens-protoc/src"
+protoc = "protoc"
+bootstrapModuleRoot = "proto-lens-descriptors/src"
+useBootstrappingYaml = "--stack-yaml=stack-bootstrap.yaml"
 
 main = do
   [installRoot] <- lines <$> readProcess "stack"
-                                ["path", "--local-install-root"] ""
-  -- TODO: use Data.ProtoLens.Setup (but use the locally built proto-lens-protoc)
+                    [useBootstrappingYaml, "path", "--local-install-root"] ""
   let protocGenHaskell = installRoot </> "bin/proto-lens-protoc"
-  callProcess "stack" ["build"]
+  callProcess "stack" [useBootstrappingYaml, "build", "proto-lens-protoc"]
   callProcess protoc $
       [ "--plugin=protoc-gen-haskell=" ++ protocGenHaskell
-      , "--haskell_out=" ++ modulePrefix ++ ":" ++ bootstrapModuleRoot
+      , "--haskell_out=UseOriginal:" ++ bootstrapModuleRoot
       , "--proto_path=" ++ protoRoot
       ]
       ++ map (protoRoot </>)
           [ "google/protobuf/descriptor.proto"
           , "google/protobuf/compiler/plugin.proto"
           ]
-
-

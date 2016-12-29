@@ -1,17 +1,18 @@
 {- This file was auto-generated from google/protobuf/descriptor.proto by the proto-lens-protoc program. -}
 {-# LANGUAGE ScopedTypeVariables, DataKinds, TypeFamilies,
-  MultiParamTypeClasses, FlexibleContexts, FlexibleInstances #-}
+  MultiParamTypeClasses, FlexibleContexts, FlexibleInstances,
+  PatternSynonyms #-}
 {-# OPTIONS_GHC -fno-warn-unused-imports#-}
-module Bootstrap.Proto.Google.Protobuf.Descriptor where
+module Proto.Google.Protobuf.Descriptor where
 import qualified Prelude
+import qualified Data.Int
+import qualified Data.Word
 import qualified Data.ProtoLens
 import qualified Data.ProtoLens.Message.Enum
 import qualified Lens.Family2
 import qualified Lens.Family2.Unchecked
 import qualified Data.Default.Class
 import qualified Data.Text
-import qualified Data.Int
-import qualified Data.Word
 import qualified Data.Map
 import qualified Data.ByteString
 

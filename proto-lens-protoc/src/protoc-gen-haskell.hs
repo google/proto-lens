@@ -20,7 +20,7 @@ import Data.ProtoLens (decodeMessage, def, encodeMessage)
 import Language.Haskell.Exts.Pretty (prettyPrint)
 import Language.Haskell.Exts.Syntax (ModuleName(..), Name(..), QName(..))
 import Lens.Family2
-import Bootstrap.Proto.Google.Protobuf.Compiler.Plugin
+import Proto.Google.Protobuf.Compiler.Plugin
     ( CodeGeneratorRequest
     , CodeGeneratorResponse
     , content
@@ -29,28 +29,36 @@ import Bootstrap.Proto.Google.Protobuf.Compiler.Plugin
     , parameter
     , protoFile
     )
-import Bootstrap.Proto.Google.Protobuf.Descriptor
+import Proto.Google.Protobuf.Descriptor
     (FileDescriptorProto, name, dependency, publicDependency)
 import System.Environment (getProgName)
 import System.Exit (exitWith, ExitCode(..))
 import System.IO as IO
 import System.FilePath (dropExtension, replaceExtension, splitDirectories)
-
+import Text.Read (readEither)
 
 import Data.ProtoLens.Compiler.Definitions
 import Data.ProtoLens.Compiler.Generate
 import Data.ProtoLens.Compiler.Plugin
+import System.Environment (getArgs)
 
 main = do
     contents <- B.getContents
     progName <- getProgName
+    args <- getArgs
     case decodeMessage contents of
         Left e -> IO.hPutStrLn stderr e >> exitWith (ExitFailure 1)
         Right x -> B.putStr $ encodeMessage $ makeResponse progName x
 
 makeResponse :: String -> CodeGeneratorRequest -> CodeGeneratorResponse
 makeResponse prog request = let
-    outputFiles = generateFiles (request ^. parameter) header
+    useReexport = case T.unpack $ request ^. parameter of
+                    "" -> UseReexport
+                    p -> case readEither p of
+                            Left err -> error $ "Error reading parameter: "
+                                            ++ err
+                            Right x -> x
+    outputFiles = generateFiles useReexport header
                       (request ^. protoFile)
                       (request ^. fileToGenerate)
     header :: FileDescriptorProto -> Text
@@ -63,9 +71,10 @@ makeResponse prog request = let
                      ]
 
 
-generateFiles :: Text -> (FileDescriptorProto -> Text) -> [FileDescriptorProto]
+generateFiles :: UseReexport -> (FileDescriptorProto -> Text) -> [FileDescriptorProto]
               -> [ProtoFileName] -> [(Text, Text)]
-generateFiles modulePrefix header files toGenerate = let
+generateFiles useReexport header files toGenerate = let
+  modulePrefix = "Proto"
   filesByName = analyzeProtoFiles modulePrefix files
   -- The contents of the generated Haskell file for a given .proto file.
   buildFile file = let
@@ -77,6 +86,7 @@ generateFiles modulePrefix header files toGenerate = let
                   ]
       in generateModule (haskellModule file) imports
              (fileSyntaxType (descriptor file))
+             useReexport
              (definitions file)
              (collectEnvFromDeps deps filesByName)
   in [ ( outputFilePath . (\(ModuleName n) -> n) . haskellModule $ file
