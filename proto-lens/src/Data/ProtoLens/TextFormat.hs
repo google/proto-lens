@@ -70,11 +70,10 @@ pprintMessage' descr msg
     -- for each field.  We use a single "sep" for all fields (and all elements
     -- of all the repeated fields) to avoid putting some repeated fields on one
     -- line and other fields on multiple lines, which is less readable.
-    = sep $ concatMap (pprintField msg) $ Map.toList
-        $ fieldsByTextFormatName descr
+    = sep $ concatMap (pprintField msg) $ Map.elems $ fieldsByTag descr
 
-pprintField :: msg -> (String, FieldDescriptor msg) -> [Doc]
-pprintField msg (name, FieldDescriptor _ typeDescr accessor)
+pprintField :: msg -> FieldDescriptor msg -> [Doc]
+pprintField msg (FieldDescriptor name typeDescr accessor)
     = map (pprintFieldValue name typeDescr) $ case accessor of
         PlainField d f
             | Optional <- d, val == fieldDefault -> []
