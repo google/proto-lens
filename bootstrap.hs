@@ -24,7 +24,7 @@ main = do
   callProcess "stack" [useBootstrappingYaml, "build", "proto-lens-protoc"]
   callProcess protoc $
       [ "--plugin=protoc-gen-haskell=" ++ protocGenHaskell
-      , "--haskell_out=UseOriginal:" ++ bootstrapModuleRoot
+      , "--haskell_out=no-reexports:" ++ bootstrapModuleRoot
       , "--proto_path=" ++ protoRoot
       ]
       ++ map (protoRoot </>)

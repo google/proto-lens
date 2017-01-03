@@ -10,7 +10,8 @@
 module Data.ProtoLens.Compiler.Generate(
     generateModule,
     fileSyntaxType,
-    UseReexport(..),
+    ImportDecl,
+    reexported,
     ) where
 
 
@@ -71,11 +72,11 @@ data UseReexport = UseReexport | UseOriginal
 generateModule :: ModuleName
                -> [ModuleName]  -- ^ The imported modules
                -> SyntaxType
-               -> UseReexport
+               -> (ImportDecl -> ImportDecl)
                -> Env Name      -- ^ Definitions in this file
                -> Env QName     -- ^ Definitions in the imported modules
                -> Module
-generateModule modName imports syntaxType useReexport definitions importedEnv
+generateModule modName imports syntaxType modifyImport definitions importedEnv
     = Module noLoc modName
           [ LanguagePragma noLoc $ map Ident
               ["ScopedTypeVariables", "DataKinds", "TypeFamilies",
@@ -92,7 +93,7 @@ generateModule modName imports syntaxType useReexport definitions importedEnv
           (map importSimple
               -- Note: we import Prelude explicitly to make it qualified.
               [ "Prelude", "Data.Int", "Data.Word"]
-            ++ map (importReexported useReexport)
+            ++ map (modifyImport . importSimple)
                 [ "Data.ProtoLens", "Data.ProtoLens.Message.Enum"
                 , "Lens.Family2", "Lens.Family2.Unchecked", "Data.Default.Class"
                 , "Data.Text",  "Data.Map" , "Data.ByteString"
@@ -124,10 +125,9 @@ importSimple m = ImportDecl
     , importSpecs = Nothing
     }
 
-importReexported :: UseReexport -> ModuleName -> ImportDecl
-importReexported UseOriginal m = importSimple m
-importReexported UseReexport m@(ModuleName s)
-    = (importSimple m') { importAs = Just m }
+reexported :: ImportDecl -> ImportDecl
+reexported imp@ImportDecl {importModule = m@(ModuleName s)}
+    = imp { importAs = Just m, importModule = m' }
   where
     m' = ModuleName $ "Data.ProtoLens.Reexport." ++ s
 

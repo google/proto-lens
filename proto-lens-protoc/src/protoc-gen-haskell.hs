@@ -53,11 +53,9 @@ main = do
 makeResponse :: String -> CodeGeneratorRequest -> CodeGeneratorResponse
 makeResponse prog request = let
     useReexport = case T.unpack $ request ^. parameter of
-                    "" -> UseReexport
-                    p -> case readEither p of
-                            Left err -> error $ "Error reading parameter: "
-                                            ++ err
-                            Right x -> x
+                    "" -> reexported
+                    "no-reexports" -> id
+                    p -> error $ "Error reading parameter: " ++ show p
     outputFiles = generateFiles useReexport header
                       (request ^. protoFile)
                       (request ^. fileToGenerate)
@@ -71,9 +69,9 @@ makeResponse prog request = let
                      ]
 
 
-generateFiles :: UseReexport -> (FileDescriptorProto -> Text) -> [FileDescriptorProto]
-              -> [ProtoFileName] -> [(Text, Text)]
-generateFiles useReexport header files toGenerate = let
+generateFiles :: (ImportDecl -> ImportDecl) -> (FileDescriptorProto -> Text)
+              -> [FileDescriptorProto] -> [ProtoFileName] -> [(Text, Text)]
+generateFiles modifyImports header files toGenerate = let
   modulePrefix = "Proto"
   filesByName = analyzeProtoFiles modulePrefix files
   -- The contents of the generated Haskell file for a given .proto file.
@@ -86,7 +84,7 @@ generateFiles useReexport header files toGenerate = let
                   ]
       in generateModule (haskellModule file) imports
              (fileSyntaxType (descriptor file))
-             useReexport
+             modifyImports
              (definitions file)
              (collectEnvFromDeps deps filesByName)
   in [ ( outputFilePath . (\(ModuleName n) -> n) . haskellModule $ file
