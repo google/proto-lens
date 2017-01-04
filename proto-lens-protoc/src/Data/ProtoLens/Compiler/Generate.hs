@@ -10,7 +10,7 @@
 module Data.ProtoLens.Compiler.Generate(
     generateModule,
     fileSyntaxType,
-    ImportDecl,
+    ModifyImports,
     reexported,
     ) where
 
@@ -72,7 +72,7 @@ data UseReexport = UseReexport | UseOriginal
 generateModule :: ModuleName
                -> [ModuleName]  -- ^ The imported modules
                -> SyntaxType
-               -> (ImportDecl -> ImportDecl)
+               -> ModifyImports
                -> Env Name      -- ^ Definitions in this file
                -> Env QName     -- ^ Definitions in the imported modules
                -> Module
@@ -125,7 +125,9 @@ importSimple m = ImportDecl
     , importSpecs = Nothing
     }
 
-reexported :: ImportDecl -> ImportDecl
+type ModifyImports = ImportDecl -> ImportDecl
+
+reexported :: ModifyImports
 reexported imp@ImportDecl {importModule = m@(ModuleName s)}
     = imp { importAs = Just m, importModule = m' }
   where

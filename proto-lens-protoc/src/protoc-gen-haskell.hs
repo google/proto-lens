@@ -69,7 +69,7 @@ makeResponse prog request = let
                      ]
 
 
-generateFiles :: (ImportDecl -> ImportDecl) -> (FileDescriptorProto -> Text)
+generateFiles :: ModifyImports -> (FileDescriptorProto -> Text)
               -> [FileDescriptorProto] -> [ProtoFileName] -> [(Text, Text)]
 generateFiles modifyImports header files toGenerate = let
   modulePrefix = "Proto"
