@@ -10,6 +10,8 @@
 module Data.ProtoLens.Compiler.Generate(
     generateModule,
     fileSyntaxType,
+    ModifyImports,
+    reexported,
     ) where
 
 
@@ -28,7 +30,7 @@ import Data.Tuple (swap)
 import Language.Haskell.Exts.Syntax as Syntax
 import Language.Haskell.Exts.SrcLoc (noLoc)
 import Lens.Family2 ((^.))
-import Bootstrap.Proto.Google.Protobuf.Descriptor
+import Proto.Google.Protobuf.Descriptor
     ( EnumValueDescriptorProto
     , FieldDescriptorProto
     , FieldDescriptorProto'Label(..)
@@ -60,15 +62,21 @@ fileSyntaxType f = case f ^. syntax of
     "" -> Proto2  -- The proto compiler doesn't set syntax for proto2 files.
     s -> error $ "Unknown syntax type " ++ show s
 
+-- Whether to import the "Reexport" modules or the originals;
+-- e.g., Data.ProtoLens.Reexport.Data.Map vs Data.Map.
+data UseReexport = UseReexport | UseOriginal
+    deriving (Eq, Read)
+
 -- | Generate a Haskell module for the given input file(s).
 -- input contains all defined names, incl. those in this module
 generateModule :: ModuleName
                -> [ModuleName]  -- ^ The imported modules
                -> SyntaxType
+               -> ModifyImports
                -> Env Name      -- ^ Definitions in this file
                -> Env QName     -- ^ Definitions in the imported modules
                -> Module
-generateModule modName imports syntaxType definitions importedEnv
+generateModule modName imports syntaxType modifyImport definitions importedEnv
     = Module noLoc modName
           [ LanguagePragma noLoc $ map Ident
               ["ScopedTypeVariables", "DataKinds", "TypeFamilies",
@@ -85,7 +93,7 @@ generateModule modName imports syntaxType definitions importedEnv
           (map importSimple
               -- Note: we import Prelude explicitly to make it qualified.
               [ "Prelude", "Data.Int", "Data.Word"]
-            ++ map importReexported
+            ++ map (modifyImport . importSimple)
                 [ "Data.ProtoLens", "Data.ProtoLens.Message.Enum"
                 , "Lens.Family2", "Lens.Family2.Unchecked", "Data.Default.Class"
                 , "Data.Text",  "Data.Map" , "Data.ByteString"
@@ -117,8 +125,11 @@ importSimple m = ImportDecl
     , importSpecs = Nothing
     }
 
-importReexported :: ModuleName -> ImportDecl
-importReexported m@(ModuleName s) = (importSimple m') { importAs = Just m }
+type ModifyImports = ImportDecl -> ImportDecl
+
+reexported :: ModifyImports
+reexported imp@ImportDecl {importModule = m@(ModuleName s)}
+    = imp { importAs = Just m, importModule = m' }
   where
     m' = ModuleName $ "Data.ProtoLens.Reexport." ++ s
 

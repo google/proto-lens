@@ -16,10 +16,18 @@ category:            Data
 build-type:          Simple
 cabal-version:       >=1.21
 
+-- Work around stack bug, since we don't want to build the library
+-- during bootstrapping:
+-- https://github.com/commercialhaskell/stack/issues/1406
+flag only-executable
+    Description: Only build the executable.  Used for bootstrapping.
+    Default: False
+
 library
+  if flag(only-executable) {
+      buildable: False
+  }
   exposed-modules:
-      Bootstrap.Proto.Google.Protobuf.Compiler.Plugin
-      Bootstrap.Proto.Google.Protobuf.Descriptor
       Data.ProtoLens.Compiler.Combinators
       Data.ProtoLens.Compiler.Definitions
       Data.ProtoLens.Compiler.Generate
@@ -39,6 +47,7 @@ library
       , lens-family == 1.2.*
       , process >= 1.2 && < 1.5
       , proto-lens == 0.1.0.4
+      , proto-lens-descriptors == 0.1.0.4
       , text == 1.2.*
   reexported-modules:
       -- Modules that are needed by the generated Haskell files.
@@ -68,11 +77,10 @@ executable proto-lens-protoc
       -- Specify an exact version of `proto-lens`, since it's tied closely
       -- to the generated code.
       , proto-lens == 0.1.0.4
+      , proto-lens-descriptors == 0.1.0.4
       , text == 1.2.*
   hs-source-dirs:      src
   other-modules:
-      Bootstrap.Proto.Google.Protobuf.Compiler.Plugin
-      Bootstrap.Proto.Google.Protobuf.Descriptor
       Data.ProtoLens.Compiler.Combinators
       Data.ProtoLens.Compiler.Definitions
       Data.ProtoLens.Compiler.Generate

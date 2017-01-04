@@ -1,0 +1,22 @@
+resolver: lts-7.4
+packages:
+- proto-lens-protoc
+# Build the current HEAD proto-lens-protoc against older revisions of proto-lens
+# and proto-lens-descriptors that are consistent with each other.
+- location:
+    commit: master
+    # To use the github master:
+    # TODO(judahjacobson): Switch to this after we push
+    # proto-lens-descriptors to github.
+    # git: https://github.com/google/proto-lens
+    # To use the current repository:
+    git: ../..  # stack runs 'git clone' in a subdirectory
+  subdirs:
+  - proto-lens
+  - proto-lens-descriptors
+  extra-dep: True
+flags:
+  proto-lens-protoc:
+    # Skip the library; it's not needed for the executable, and the modules
+    # that it reexports may change between versions of proto-lens.
+    only-executable: True
