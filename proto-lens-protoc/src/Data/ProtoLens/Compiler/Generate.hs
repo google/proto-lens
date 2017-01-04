@@ -602,8 +602,8 @@ fieldDescriptorExpr :: SyntaxType -> Env QName -> FieldInfo
                     -> Exp
 fieldDescriptorExpr syntaxType env f
     = "Data.ProtoLens.FieldDescriptor"
-        -- Record the original .proto name for text format
-        @@ Lit (Syntax.String (T.unpack $ fd ^. name))
+        -- Record the .proto field name as used in text format
+        @@ Lit (Syntax.String $ T.unpack $ textFormatFieldName env fd)
         -- Force the type signature since it can't be inferred for Map entry
         -- types.
         @@ ExpTypeSig noLoc (fieldTypeDescriptorExpr (fd ^. type'))

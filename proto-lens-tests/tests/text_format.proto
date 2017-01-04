@@ -1,0 +1,16 @@
+syntax = "proto2";
+
+package text_format;
+
+message Test1 {
+  // Note: the field tag numbers are intentionally ordered differently
+  // than the names, to make sure we print ordered by tag number.
+  optional int32 a = 4;
+  optional string b = 1;
+  repeated int32 d = 2 [packed=true];
+  optional bytes e = 3;
+}
+
+message Test2 {
+  optional Test1 c = 1;
+}
