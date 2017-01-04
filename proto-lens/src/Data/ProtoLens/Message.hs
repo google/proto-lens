@@ -64,7 +64,9 @@ newtype Tag = Tag { unTag :: Int}
 
 -- | A description of a specific field of a protocol buffer.
 --
--- The 'String' parameter is the original name of the field in the .proto file.
+-- The 'String' parameter is the name of the field from the .proto file,
+-- as used in TextFormat, with the same behavior for groups as
+-- 'fieldsByTextFormatName'.
 -- (Haddock doesn't support per-argument docs for GADTs.)
 data FieldDescriptor msg where
     FieldDescriptor :: String
