@@ -25,7 +25,7 @@ import Data.ProtoLens.Encoding.Bytes
 import Data.ProtoLens.Encoding.Wire
 
 import Control.Applicative ((<|>), (<$>))
-import Control.Monad (foldM, join)
+import Control.Monad (foldM, guard, join)
 import Data.Attoparsec.ByteString as Parse
 import Data.Bool (bool)
 import Data.Text.Encoding (encodeUtf8, decodeUtf8')
@@ -46,17 +46,13 @@ import Data.Functor.Identity (Identity(..))
 -- | Decode a message from its wire format.  Returns 'Left' if the decoding
 -- fails.
 decodeMessage :: Message msg => B.ByteString -> Either String msg
-decodeMessage input = parseOnly (parseMessage end) input
-  where
-    end = endOfInput *> pure Nothing
+decodeMessage input = parseOnly (parseMessage endOfInput) input
 
 -- | Parse a message with the given ending delimiter (which will be EndGroup in
--- the case of a group, and end-of-input otherwise).  The ending delimiter
--- Parser returns (Just err) if it encountered an unrecoverable error; in
--- particular, if it found an EndGroup with an unexpected tag number.
-parseMessage :: forall msg . Message msg => Parser (Maybe String) -> Parser msg
+-- the case of a group, and end-of-input otherwise).
+parseMessage :: forall msg . Message msg => Parser () -> Parser msg
 parseMessage end = do
-    (msg, unsetFields) <- join $ loop def requiredFields
+    (msg, unsetFields) <- loop def requiredFields
     if Map.null unsetFields
         then return $ reverseRepeatedFields fields msg
         else fail $ "Missing required fields "
@@ -66,14 +62,8 @@ parseMessage end = do
     fields = fieldsByTag descriptor
     requiredFields = Map.filter isRequired fields
     loop :: msg -> Map.Map Tag (FieldDescriptor msg)
-            -> Parser (Parser (msg, Map.Map Tag (FieldDescriptor msg)))
-    -- Note that the following won't work:
-    -- end >>= \case {Just err -> fail err; ...}
-    -- since otherwise the below <|> will cause us to ignore an error that's
-    -- supposed to be unrecoverable.
-    loop msg unsetFields = (end >>= pure . \case
-                                Nothing -> pure (msg, unsetFields)
-                                Just err -> fail err)
+            -> Parser (msg, Map.Map Tag (FieldDescriptor msg))
+    loop msg unsetFields = (end >> pure (msg, unsetFields))
                 <|> do
                     tv@(TaggedValue tag _) <- getTaggedValue
                     case Map.lookup (Tag tag) fields of
@@ -90,8 +80,7 @@ decodeMessageOrDie bs = case decodeMessage bs of
     Right x -> x
 
 runEither :: Either String a -> Parser a
-runEither (Left x) = fail x
-runEither (Right x) = return x
+runEither = either fail return
 
 parseAndAddField :: msg
                  -> FieldDescriptor msg
@@ -167,36 +156,34 @@ messageFieldToVals tag (FieldDescriptor _ typeDescriptor accessor) msg =
         embed src
             = case fieldWireType typeDescriptor of
                 FieldWireType wt convert _
-                    -> [TaggedValue tag $ WireValue wt
-                                            (convert src)]
+                    -> [TaggedValue tag $ WireValue wt (convert src)]
                 GroupFieldType
                     -> TaggedValue tag (WireValue StartGroup ())
                             : messageToTaggedValues src
                                 ++ [TaggedValue tag $ WireValue EndGroup ()]
         embedPacked src
             = case fieldWireType typeDescriptor of
-                GroupFieldType -> fail "packged GroupFieldType"
+                GroupFieldType -> error "GroupFieldType can't be packed"
                 FieldWireType wt convert _ -> let
                     v = L.toStrict $ toLazyByteString
                         $ mconcat [putWireValue wt (convert x) | x <- src]
                     in [TaggedValue tag $ WireValue Lengthy v]
     in case accessor of
             PlainField d f
+                -- proto3 optional scalar field:
                 | Optional <- d, src == fieldDefault -> []
+                -- proto3 optional non-scalar field, or proto2 required field:
                 | otherwise -> embed src
               where src = msg ^. f
-            OptionalField f -> case msg ^. f of
-                                Just src -> embed src
-                                _ -> mempty
-            RepeatedField Unpacked f
-                -> mconcat [embed src | src <- toList (msg ^. f)]
-            RepeatedField Packed f
-                -> embedPacked (msg ^. f)
+            -- proto2 optional field:
+            OptionalField f -> foldMap embed (msg ^. f)
+            -- Note: using 'concatMap' instead of 'foldMap' below
+            -- seems to allow better list fusion.
+            RepeatedField Unpacked f -> concatMap embed (msg ^. f)
+            RepeatedField Packed f -> embedPacked (msg ^. f)
             MapField keyLens valueLens f ->
-                mconcat [ embed entry
-                | (key, value) <- Map.toList (msg ^. f)
-                , let entry = def & set keyLens key & set valueLens value
-                ]
+                concatMap (\(k, v) -> embed $ def & set keyLens k & set valueLens v)
+                    $ Map.toList (msg ^. f)
 
 data FieldWireType value where
     FieldWireType :: WireType w -> (value -> w) -> (w -> Either String value)
@@ -234,16 +221,11 @@ fieldWireType MessageField = FieldWireType Lengthy encodeMessage
                                 decodeMessage
 fieldWireType GroupField = GroupFieldType
 
--- TODO: check it's the same tag, and if not then fail the *whole* computation.
-endOfGroup :: String -> Int -> Parser (Maybe String)
+endOfGroup :: String -> Int -> Parser ()
 endOfGroup name tag = do
     TaggedValue tag' (WireValue wt _) <- getTaggedValue
     Equal <- equalWireTypes name EndGroup wt
-    return $ if tag == tag'
-                then Nothing
-                else Just $ "endOfGroup: unexpected tag " ++ show tag'
-                                            ++ " for field " ++ show name
-                                                ++ ", expected " ++ show tag
+    guard (tag == tag')
 
 -- | Helper function to define a field type whose decoding operation can't fail.
 simpleFieldWireType :: WireType w -> (value -> w) -> (w -> value)

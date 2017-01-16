@@ -72,8 +72,6 @@ getWireValue VarInt _ = getVarInt
 getWireValue Fixed64 _ = anyBits
 getWireValue Fixed32 _ = anyBits
 getWireValue Lengthy _ = getVarInt >>= Parse.take . fromIntegral
--- Precompute the final EndGroup tag and keep parsing key-value pairs until
--- we reach the EndGroup.
 getWireValue StartGroup tag = return ()
 getWireValue EndGroup tag = return ()
 

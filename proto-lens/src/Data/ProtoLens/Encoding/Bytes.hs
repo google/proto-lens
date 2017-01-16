@@ -39,7 +39,6 @@ import System.IO.Unsafe (unsafePerformIO)
 getVarInt :: Parser Word64
 getVarInt = loop 1 0
   where
-  -- TODO: bang pattern?
     loop !s !n = do
         b <- anyWord8
         let n' = n + s * fromIntegral (b .&. 127)
