@@ -1,6 +1,7 @@
 resolver: lts-7.4
 packages:
 - proto-lens
+- proto-lens-descriptors
 - proto-lens-protoc
 - proto-lens-arbitrary
 - proto-lens-combinators

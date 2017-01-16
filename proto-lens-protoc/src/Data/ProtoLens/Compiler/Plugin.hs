@@ -26,7 +26,7 @@ import qualified Data.Text as T
 import Data.Text (Text)
 import Language.Haskell.Exts.Syntax (ModuleName(..), Name(..), QName(..))
 import Lens.Family2
-import Bootstrap.Proto.Google.Protobuf.Descriptor
+import Proto.Google.Protobuf.Descriptor
     (FileDescriptorProto, name, dependency, publicDependency)
 import System.FilePath (dropExtension, splitDirectories)
 
@@ -88,12 +88,9 @@ moduleName modulePrefix fd = ModuleName (moduleNameStr modulePrefix fd)
 
 -- | Get the Haskell module name corresponding to a given .proto file.
 moduleNameStr :: Text -> FileDescriptorProto -> String
-moduleNameStr modulePrefix fd = fixModuleName rawModuleName
+moduleNameStr prefix fd = fixModuleName rawModuleName
   where
     path = fd ^. name
-    prefix
-        | T.null modulePrefix = "Proto"
-        | otherwise = modulePrefix
     fixModuleName "" = ""
     -- Characters allowed in Bazel filenames but not in module names:
     fixModuleName ('.':c:cs) = '.' : toUpper c : fixModuleName cs
