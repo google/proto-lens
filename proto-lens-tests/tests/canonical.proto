@@ -19,8 +19,3 @@ message Test3 {
 message Test4 {
     repeated int32 d = 4 [packed=true];
 }
-
-message Test5 {
-    required bytes e = 1;
-}
-

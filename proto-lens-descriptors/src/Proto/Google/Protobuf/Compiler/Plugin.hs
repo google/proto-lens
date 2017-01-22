@@ -1,27 +1,28 @@
 {- This file was auto-generated from google/protobuf/compiler/plugin.proto by the proto-lens-protoc program. -}
 {-# LANGUAGE ScopedTypeVariables, DataKinds, TypeFamilies,
-  MultiParamTypeClasses, FlexibleContexts, FlexibleInstances #-}
+  MultiParamTypeClasses, FlexibleContexts, FlexibleInstances,
+  PatternSynonyms #-}
 {-# OPTIONS_GHC -fno-warn-unused-imports#-}
-module Bootstrap.Proto.Google.Protobuf.Compiler.Plugin where
+module Proto.Google.Protobuf.Compiler.Plugin where
 import qualified Prelude
+import qualified Data.Int
+import qualified Data.Word
 import qualified Data.ProtoLens
 import qualified Data.ProtoLens.Message.Enum
 import qualified Lens.Family2
 import qualified Lens.Family2.Unchecked
 import qualified Data.Default.Class
 import qualified Data.Text
-import qualified Data.Int
-import qualified Data.Word
 import qualified Data.Map
 import qualified Data.ByteString
-import qualified Bootstrap.Proto.Google.Protobuf.Descriptor
+import qualified Proto.Google.Protobuf.Descriptor
 
 data CodeGeneratorRequest = CodeGeneratorRequest{_CodeGeneratorRequest'fileToGenerate
                                                  :: [Data.Text.Text],
                                                  _CodeGeneratorRequest'parameter ::
                                                  Prelude.Maybe Data.Text.Text,
                                                  _CodeGeneratorRequest'protoFile ::
-                                                 [Bootstrap.Proto.Google.Protobuf.Descriptor.FileDescriptorProto]}
+                                                 [Proto.Google.Protobuf.Descriptor.FileDescriptorProto]}
                           deriving (Prelude.Show, Prelude.Eq)
 
 type instance
@@ -54,7 +55,7 @@ instance Data.ProtoLens.HasField "maybe'parameter"
               (\ x__ y__ -> x__{_CodeGeneratorRequest'parameter = y__})
 
 type instance Data.ProtoLens.Field "protoFile" CodeGeneratorRequest
-     = [Bootstrap.Proto.Google.Protobuf.Descriptor.FileDescriptorProto]
+     = [Proto.Google.Protobuf.Descriptor.FileDescriptorProto]
 
 instance Data.ProtoLens.HasField "protoFile" CodeGeneratorRequest
          CodeGeneratorRequest where
@@ -85,7 +86,7 @@ instance Data.ProtoLens.Message CodeGeneratorRequest where
                   = Data.ProtoLens.FieldDescriptor "proto_file"
                       (Data.ProtoLens.MessageField ::
                          Data.ProtoLens.FieldTypeDescriptor
-                           Bootstrap.Proto.Google.Protobuf.Descriptor.FileDescriptorProto)
+                           Proto.Google.Protobuf.Descriptor.FileDescriptorProto)
                       (Data.ProtoLens.RepeatedField Data.ProtoLens.Unpacked protoFile)
               in
               Data.ProtoLens.MessageDescriptor
