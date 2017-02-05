@@ -63,7 +63,7 @@ parseMessage end = do
     requiredFields = Map.filter isRequired fields
     loop :: msg -> Map.Map Tag (FieldDescriptor msg)
             -> Parser (msg, Map.Map Tag (FieldDescriptor msg))
-    loop msg unsetFields = (end >> pure (msg, unsetFields))
+    loop msg unsetFields = ((msg, unsetFields) <$ end)
                 <|> do
                     tv@(TaggedValue tag _) <- getTaggedValue
                     case Map.lookup (Tag tag) fields of
