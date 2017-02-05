@@ -38,8 +38,8 @@ data WireType a where
     Fixed64 :: WireType Word64
     Fixed32 :: WireType Word32
     Lengthy :: WireType B.ByteString
-    StartGroup :: WireType [TaggedValue]
-    EndGroup :: WireType Void
+    StartGroup :: WireType ()
+    EndGroup :: WireType ()
 
 -- A value read from the wire
 data WireValue = forall a . WireValue !(WireType a) !a
@@ -54,16 +54,17 @@ data Equal a b where
 
 -- Assert that two wire types are the same, or fail with a message about this
 -- field.
-equalWireTypes :: String -> WireType a -> WireType b
-               -> Either String (Equal a b)
-equalWireTypes _ VarInt VarInt = Right Equal
-equalWireTypes _ Fixed64 Fixed64 = Right Equal
-equalWireTypes _ Fixed32 Fixed32 = Right Equal
-equalWireTypes _ Lengthy Lengthy = Right Equal
-equalWireTypes _ StartGroup StartGroup = Right Equal
-equalWireTypes _ EndGroup EndGroup = Right Equal
+{-# INLINE equalWireTypes #-}
+equalWireTypes :: Monad m => String -> WireType a -> WireType b
+               -> m (Equal a b)
+equalWireTypes _ VarInt VarInt = return Equal
+equalWireTypes _ Fixed64 Fixed64 = return Equal
+equalWireTypes _ Fixed32 Fixed32 = return Equal
+equalWireTypes _ Lengthy Lengthy = return Equal
+equalWireTypes _ StartGroup StartGroup = return Equal
+equalWireTypes _ EndGroup EndGroup = return Equal
 equalWireTypes name expected actual
-    = Left $ "Field " ++ name ++ " expects wire type " ++ show expected
+    = fail $ "Field " ++ name ++ " expects wire type " ++ show expected
         ++ " but found " ++ show actual
 
 getWireValue :: WireType a -> Int -> Parser a
@@ -71,21 +72,15 @@ getWireValue VarInt _ = getVarInt
 getWireValue Fixed64 _ = anyBits
 getWireValue Fixed32 _ = anyBits
 getWireValue Lengthy _ = getVarInt >>= Parse.take . fromIntegral
--- Precompute the final EndGroup tag and keep parsing key-value pairs until
--- we reach the EndGroup.
-getWireValue StartGroup tag = Parse.manyTill getTaggedValue end
-  where
-    typeAndTag = BL.toStrict $ toLazyByteString (putTypeAndTag EndGroup tag)
-    end = Parse.string typeAndTag
-getWireValue EndGroup tag =
-    fail $ "Encountered unexpected end of group with tag " ++ show tag
+getWireValue StartGroup tag = return ()
+getWireValue EndGroup tag = return ()
 
 putWireValue :: WireType a -> a -> Builder
 putWireValue VarInt n = putVarInt n
 putWireValue Fixed64 n = word64LE n
 putWireValue Fixed32 n = word32LE n
 putWireValue Lengthy b = putVarInt (fromIntegral $ B.length b) <> byteString b
-putWireValue StartGroup tvs = foldMap putTaggedValue tvs
+putWireValue StartGroup _ = mempty
 putWireValue EndGroup _ = mempty
 
 data SomeWireType where
@@ -126,9 +121,5 @@ getTaggedValue = do
     return $ TaggedValue tag (WireValue wt val)
 
 putTaggedValue :: TaggedValue -> Builder
-putTaggedValue (TaggedValue tag (WireValue StartGroup val)) =
-    putTypeAndTag StartGroup tag
-    <> putWireValue StartGroup val
-    <> putTypeAndTag EndGroup tag
 putTaggedValue (TaggedValue tag (WireValue wt val)) =
     putTypeAndTag wt tag <> putWireValue wt val

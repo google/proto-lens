@@ -4,6 +4,7 @@
 -- license that can be found in the LICENSE file or at
 -- https://developers.google.com/open-source/licenses/bsd
 
+{-# LANGUAGE BangPatterns #-}
 {-# LANGUAGE RankNTypes #-}
 {-# LANGUAGE ScopedTypeVariables #-}
 
@@ -38,12 +39,11 @@ import System.IO.Unsafe (unsafePerformIO)
 getVarInt :: Parser Word64
 getVarInt = loop 1 0
   where
-  -- TODO: bang pattern?
-    loop s n = do
+    loop !s !n = do
         b <- anyWord8
         let n' = n + s * fromIntegral (b .&. 127)
         if (b .&. 128) == 0
-            then return n'
+            then return $! n'
             else loop (128*s) n'
 
 -- | Little-endian decoding function.
@@ -51,7 +51,7 @@ anyBits :: forall a . (Num a, FiniteBits a) => Parser a
 anyBits = loop 0 0
   where
     size = finiteBitSize (undefined :: a)
-    loop w n
+    loop !w !n
         | n >= size = return w
         | otherwise = do
             b <- anyWord8

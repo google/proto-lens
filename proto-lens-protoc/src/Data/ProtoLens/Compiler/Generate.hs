@@ -141,7 +141,7 @@ generateMessageDecls syntaxType env info =
     [ DataDecl noLoc DataType [] dataName []
         [QualConDecl noLoc [] [] $ RecDecl dataName
                   [([recordFieldName f],
-                        internalType (lensInfo syntaxType env f))
+                        TyBang BangedTy $ internalType (lensInfo syntaxType env f))
                   | f <- fields
                   ]
         ]
