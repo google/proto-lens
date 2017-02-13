@@ -8,15 +8,16 @@
 
 module Main where
 
-import Proto.Group
 import Data.ProtoLens
+import Data.Monoid ((<>))
+import Proto.Group
 import Lens.Family2 ((&), (.~))
 
 import Data.ProtoLens.TestUtil
 
 main = testMain
            [ serializeSimple
-           , deserializeSimple
+           , deserializeEndMismatch
            , roundTripSimple
            , roundTripComplicated
            ]
@@ -25,12 +26,12 @@ serializeSimple = serializeTo
     "serialize Simple"
     (def & (grp . int) .~ 12 :: Simple)
     (braced "Grp" (keyed "int" 12))
-    (tagged 1 $ Group [(2, VarInt 12)])
+    (tagged 1 GroupStart <> tagged 2 (VarInt 12) <> tagged 1 GroupEnd)
 
-deserializeSimple = deserializeFrom
-    "Simple"
-    (Just (def & (grp . int) .~ 12 :: Simple))
-    (tagged 1 $ Group [(2, VarInt 12)])
+deserializeEndMismatch = deserializeFrom
+    "end mismatch"
+    (Nothing :: Maybe Simple)
+    (tagged 1 GroupStart <> tagged 2 (VarInt 12) <> tagged 5 GroupEnd)
 
 roundTripSimple = runTypedTest
     (roundTripTest "roundtrip Simple" :: TypedTest Simple)

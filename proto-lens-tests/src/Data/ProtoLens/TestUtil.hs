@@ -122,7 +122,8 @@ data Data
   | Fixed64 Word64
   | Fixed32 Word32
   | Lengthy Builder.Builder
-  | Group [(Word64, Data)]
+  | GroupStart
+  | GroupEnd
 
 -- | Build the binary representation of a proto field.
 -- Note that this code should be separate from anything in Data.ProtoLens.*,
@@ -135,10 +136,8 @@ tagged t (Lengthy bs) = let
     bs' = Builder.toLazyByteString bs
     in varInt (t `shiftL` 3 .|. 2) <> varInt (fromIntegral $ L.length bs')
         <> Builder.lazyByteString bs'
-tagged t (Group tvs) =
-    varInt (t `shiftL` 3 .|. 3)
-    <> foldMap (uncurry tagged) tvs
-    <> varInt (t `shiftL` 3 .|. 4)
+tagged t GroupStart = varInt (t `shiftL` 3 .|. 3)
+tagged t GroupEnd = varInt (t `shiftL` 3 .|. 4)
 
 -- | Utility to generate the text format for a single, non-message field.
 keyed :: Show a => String -> a -> PrettyPrint.Doc
