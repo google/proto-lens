@@ -101,7 +101,7 @@ parseAndAddField
           getPackedVals = case fieldWireType typeDescriptor of
             GroupFieldType -> fail "Groups can't be packed"
             FieldWireType fieldWt _ get -> runEither $ do
-              Equal <- equalWireTypes name wt Lengthy
+              Equal <- equalWireTypes name Lengthy wt
               let getElt = do
                         wv <- getWireValue fieldWt tag
                         x <- runEither $ get wv
