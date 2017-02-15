@@ -24,6 +24,7 @@ import Proto.Proto3
     , c
     , d
     , e
+    , f
     , sub
     , maybe'c
     , maybe'sub
@@ -62,6 +63,11 @@ main = testMain
             Nothing @=? (def :: Foo) ^. maybe'c
             Just 42 @=? ((def :: Foo) & c .~ 42) ^. maybe'c
         ]
+    -- Repeated scalar fields in proto3 should serialize as "packed" by default.
+    , serializeTo "packed-by-default"
+        (def & f .~ [1,2,3] :: Foo)
+        (vcat [keyed "f" x | x <- [1..3]])
+        $ tagged 7 $ Lengthy $ mconcat [varInt x | x <- [1..3]]
     , runTypedTest (roundTripTest "foo" :: TypedTest Foo)
     ]
   , testGroup "Strings"

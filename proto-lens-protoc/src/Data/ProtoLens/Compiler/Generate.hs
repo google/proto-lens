@@ -36,14 +36,15 @@ import Proto.Google.Protobuf.Descriptor
     , FieldDescriptorProto'Label(..)
     , FieldDescriptorProto'Type(..)
     , FileDescriptorProto
+    , FieldOptions
     , defaultValue
     , label
     , mapEntry
     , maybe'oneofIndex
+    , maybe'packed
     , name
     , number
     , options
-    , packed
     , syntax
     , type'
     , typeName
@@ -642,7 +643,7 @@ fieldAccessorExpr syntaxType env f = accessorCon @@ Var (UnQual hsFieldName)
                          @@ fromString (overloadedField k)
                          @@ fromString (overloadedField v)
               | otherwise -> "Data.ProtoLens.RepeatedField"
-                  @@ if fd ^. options.packed
+                  @@ if isPackedField syntaxType fd
                         then "Data.ProtoLens.Packed"
                         else "Data.ProtoLens.Unpacked"
     hsFieldName
@@ -659,6 +660,19 @@ isDefaultingOptional syntaxType f
           && f ^. type' /= FieldDescriptorProto'TYPE_MESSAGE
           -- For now, we treat oneof's like proto2 optional fields.
           && isNothing (f ^. maybe'oneofIndex)
+
+isPackedField :: SyntaxType -> FieldDescriptorProto -> Bool
+isPackedField s f = case f ^. options . maybe'packed of
+    Just t -> t
+    -- proto3 fields are packed by default.  Annoyingly, we need to
+    -- implement this logic manually rather than relying on protoc.
+    Nothing -> s == Proto3
+                && f ^. type' `notElem`
+                      [ FieldDescriptorProto'TYPE_MESSAGE
+                      , FieldDescriptorProto'TYPE_GROUP
+                      , FieldDescriptorProto'TYPE_STRING
+                      , FieldDescriptorProto'TYPE_BYTES
+                      ]
 
 fieldTypeDescriptorExpr :: FieldDescriptorProto'Type -> Exp
 fieldTypeDescriptorExpr =

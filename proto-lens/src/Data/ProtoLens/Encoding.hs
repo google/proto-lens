@@ -114,12 +114,20 @@ parseAndAddField
               OptionalField f -> do
                   !x <- getSimpleVal
                   return $! set f (Just x) msg
-              RepeatedField Unpacked f -> do
-                  !x <- getSimpleVal
-                  return $! over f (\(!xs) -> x:xs) msg
-              RepeatedField Packed f -> do
-                  xs <- getPackedVals
-                  return $! over f (\(!ys) -> xs++ys) msg
+              -- Parse either a packed or unpacked representation,
+              -- depending on how it was encoded.
+              -- Note that if fieldWt is Lengthy (e.g., "string" or
+              -- message) we should always parse it as unpacked.
+              RepeatedField _ f
+                -> (do
+                        !x <- getSimpleVal
+                        return $! over f (\(!xs) -> x:xs) msg)
+                <|> (do 
+                        xs <- getPackedVals
+                        return $! over f (\(!ys) -> xs++ys) msg)
+                <|> fail ("Field " ++ name
+                            ++ "expects a repeated field wire type but found "
+                            ++ show wt)
               MapField keyLens valueLens f -> do
                   entry <- getSimpleVal
                   let !key = entry ^. keyLens
@@ -161,6 +169,7 @@ messageFieldToVals tag (FieldDescriptor _ typeDescriptor accessor) msg =
                     -> TaggedValue tag (WireValue StartGroup ())
                             : messageToTaggedValues src
                                 ++ [TaggedValue tag $ WireValue EndGroup ()]
+        embedPacked [] = []
         embedPacked src
             = case fieldWireType typeDescriptor of
                 GroupFieldType -> error "GroupFieldType can't be packed"
