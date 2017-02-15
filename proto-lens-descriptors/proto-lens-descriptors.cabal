@@ -1,5 +1,5 @@
 name:                proto-lens-descriptors
-version:             0.1.0.4
+version:             0.1.0.5
 synopsis:            Protocol buffers for describing the definitions of messages.
 description:
     This package provides definitions for the 'proto-lens' package
@@ -27,5 +27,5 @@ library
     , lens-family == 1.2.*
     -- Specify an exact version of `proto-lens`, since it's tied closely
     -- to the generated code.
-    , proto-lens == 0.1.0.4
+    , proto-lens == 0.1.0.5
     , text == 1.2.*
