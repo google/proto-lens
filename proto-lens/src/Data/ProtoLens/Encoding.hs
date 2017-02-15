@@ -100,7 +100,7 @@ parseAndAddField
           -- Get a block of packed values, reversed.
           getPackedVals = case fieldWireType typeDescriptor of
             GroupFieldType -> fail "Groups can't be packed"
-            (FieldWireType fieldWt _ get :: FieldWireType a) -> runEither $ do
+            FieldWireType fieldWt _ get -> runEither $ do
               Equal <- equalWireTypes name wt Lengthy
               let getElt = do
                         wv <- getWireValue fieldWt tag
