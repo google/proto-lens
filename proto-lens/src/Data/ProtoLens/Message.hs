@@ -26,6 +26,8 @@ module Data.ProtoLens.Message (
     -- * Building protocol buffers
     Default(..),
     build,
+    -- * Utilities for constructing protocol buffer lenses
+    maybeLens,
     -- * Internal utilities for parsing protocol buffers
     reverseRepeatedFields,
     ) where
@@ -35,9 +37,11 @@ import Data.Default.Class
 import Data.Int
 import qualified Data.Map as Map
 import Data.Map (Map)
+import Data.Maybe (fromMaybe)
 import qualified Data.Text as T
 import Data.Word
 import Lens.Family2 (Lens', over)
+import Lens.Family2.Unchecked (lens)
 
 -- | Every protocol buffer is an instance of 'Message'.  This class enables
 -- serialization by providing reflection of all of the fields that may be used
@@ -191,6 +195,19 @@ class (Enum a, Bounded a) => MessageEnum a where
 build :: Default a => (a -> a) -> a
 build = ($ def)
 
+-- | A helper lens for accessing optional fields.
+-- This is used as part of code generation, and should generally not be needed
+-- explicitly.
+--
+-- Note that 'maybeLens' does not satisfy the lens laws, which expect that @set
+-- l (view l x) == x@.  For example,
+--
+-- > set (maybeLens 'a') (view (maybeLens 'a') Nothing) == Just 'a'
+--
+-- However, this is the behavior generally expected by users, and only matters
+-- if we're explicitly checking whether a field is set.
+maybeLens :: b -> Lens' (Maybe b) b
+maybeLens x = lens (fromMaybe x) $ const Just
 -- | Reverse every repeated (list) field in the message.
 --
 -- During parsing, we store fields temporarily in reverse order,

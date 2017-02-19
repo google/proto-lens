@@ -1,7 +1,7 @@
 {- This file was auto-generated from google/protobuf/compiler/plugin.proto by the proto-lens-protoc program. -}
 {-# LANGUAGE ScopedTypeVariables, DataKinds, TypeFamilies,
-  MultiParamTypeClasses, FlexibleContexts, FlexibleInstances,
-  PatternSynonyms #-}
+  UndecidableInstances, MultiParamTypeClasses, FlexibleContexts,
+  FlexibleInstances, PatternSynonyms, MagicHash #-}
 {-# OPTIONS_GHC -fno-warn-unused-imports#-}
 module Proto.Google.Protobuf.Compiler.Plugin where
 import qualified Prelude
@@ -15,6 +15,7 @@ import qualified Data.Default.Class
 import qualified Data.Text
 import qualified Data.Map
 import qualified Data.ByteString
+import qualified Lens.Labels
 import qualified Proto.Google.Protobuf.Descriptor
 
 data CodeGeneratorRequest = CodeGeneratorRequest{_CodeGeneratorRequest'fileToGenerate
@@ -25,41 +26,37 @@ data CodeGeneratorRequest = CodeGeneratorRequest{_CodeGeneratorRequest'fileToGen
                                                  [Proto.Google.Protobuf.Descriptor.FileDescriptorProto]}
                           deriving (Prelude.Show, Prelude.Eq)
 
-type instance
-     Data.ProtoLens.Field "fileToGenerate" CodeGeneratorRequest =
-     [Data.Text.Text]
-
-instance Data.ProtoLens.HasField "fileToGenerate"
-         CodeGeneratorRequest CodeGeneratorRequest where
-        field _
+instance (a ~ [Data.Text.Text], b ~ [Data.Text.Text],
+          Prelude.Functor f) =>
+         Lens.Labels.HasLens "fileToGenerate" f CodeGeneratorRequest
+         CodeGeneratorRequest a b where
+        lensOf _
           = Lens.Family2.Unchecked.lens _CodeGeneratorRequest'fileToGenerate
               (\ x__ y__ -> x__{_CodeGeneratorRequest'fileToGenerate = y__})
 
-type instance Data.ProtoLens.Field "parameter" CodeGeneratorRequest
-     = Data.Text.Text
-
-instance Data.ProtoLens.HasField "parameter" CodeGeneratorRequest
-         CodeGeneratorRequest where
-        field _
+instance (a ~ Data.Text.Text, b ~ Data.Text.Text,
+          Prelude.Functor f) =>
+         Lens.Labels.HasLens "parameter" f CodeGeneratorRequest
+         CodeGeneratorRequest a b where
+        lensOf _
           = (Prelude..) maybe'parameter
               (Data.ProtoLens.maybeLens Data.ProtoLens.fieldDefault)
 
-type instance
-     Data.ProtoLens.Field "maybe'parameter" CodeGeneratorRequest =
-     Prelude.Maybe Data.Text.Text
-
-instance Data.ProtoLens.HasField "maybe'parameter"
-         CodeGeneratorRequest CodeGeneratorRequest where
-        field _
+instance (a ~ Prelude.Maybe Data.Text.Text,
+          b ~ Prelude.Maybe Data.Text.Text, Prelude.Functor f) =>
+         Lens.Labels.HasLens "maybe'parameter" f CodeGeneratorRequest
+         CodeGeneratorRequest a b where
+        lensOf _
           = Lens.Family2.Unchecked.lens _CodeGeneratorRequest'parameter
               (\ x__ y__ -> x__{_CodeGeneratorRequest'parameter = y__})
 
-type instance Data.ProtoLens.Field "protoFile" CodeGeneratorRequest
-     = [Proto.Google.Protobuf.Descriptor.FileDescriptorProto]
-
-instance Data.ProtoLens.HasField "protoFile" CodeGeneratorRequest
-         CodeGeneratorRequest where
-        field _
+instance (a ~
+            [Proto.Google.Protobuf.Descriptor.FileDescriptorProto],
+          b ~ [Proto.Google.Protobuf.Descriptor.FileDescriptorProto],
+          Prelude.Functor f) =>
+         Lens.Labels.HasLens "protoFile" f CodeGeneratorRequest
+         CodeGeneratorRequest a b where
+        lensOf _
           = Lens.Family2.Unchecked.lens _CodeGeneratorRequest'protoFile
               (\ x__ y__ -> x__{_CodeGeneratorRequest'protoFile = y__})
 
@@ -77,17 +74,20 @@ instance Data.ProtoLens.Message CodeGeneratorRequest where
                          Data.ProtoLens.FieldTypeDescriptor Data.Text.Text)
                       (Data.ProtoLens.RepeatedField Data.ProtoLens.Unpacked
                          fileToGenerate)
+                      :: Data.ProtoLens.FieldDescriptor CodeGeneratorRequest
                 parameter__field_descriptor
                   = Data.ProtoLens.FieldDescriptor "parameter"
                       (Data.ProtoLens.StringField ::
                          Data.ProtoLens.FieldTypeDescriptor Data.Text.Text)
                       (Data.ProtoLens.OptionalField maybe'parameter)
+                      :: Data.ProtoLens.FieldDescriptor CodeGeneratorRequest
                 protoFile__field_descriptor
                   = Data.ProtoLens.FieldDescriptor "proto_file"
                       (Data.ProtoLens.MessageField ::
                          Data.ProtoLens.FieldTypeDescriptor
                            Proto.Google.Protobuf.Descriptor.FileDescriptorProto)
                       (Data.ProtoLens.RepeatedField Data.ProtoLens.Unpacked protoFile)
+                      :: Data.ProtoLens.FieldDescriptor CodeGeneratorRequest
               in
               Data.ProtoLens.MessageDescriptor
                 (Data.Map.fromList
@@ -105,31 +105,27 @@ data CodeGeneratorResponse = CodeGeneratorResponse{_CodeGeneratorResponse'error
                                                    [CodeGeneratorResponse'File]}
                            deriving (Prelude.Show, Prelude.Eq)
 
-type instance Data.ProtoLens.Field "error" CodeGeneratorResponse =
-     Data.Text.Text
-
-instance Data.ProtoLens.HasField "error" CodeGeneratorResponse
-         CodeGeneratorResponse where
-        field _
+instance (a ~ Data.Text.Text, b ~ Data.Text.Text,
+          Prelude.Functor f) =>
+         Lens.Labels.HasLens "error" f CodeGeneratorResponse
+         CodeGeneratorResponse a b where
+        lensOf _
           = (Prelude..) maybe'error
               (Data.ProtoLens.maybeLens Data.ProtoLens.fieldDefault)
 
-type instance
-     Data.ProtoLens.Field "maybe'error" CodeGeneratorResponse =
-     Prelude.Maybe Data.Text.Text
-
-instance Data.ProtoLens.HasField "maybe'error"
-         CodeGeneratorResponse CodeGeneratorResponse where
-        field _
+instance (a ~ Prelude.Maybe Data.Text.Text,
+          b ~ Prelude.Maybe Data.Text.Text, Prelude.Functor f) =>
+         Lens.Labels.HasLens "maybe'error" f CodeGeneratorResponse
+         CodeGeneratorResponse a b where
+        lensOf _
           = Lens.Family2.Unchecked.lens _CodeGeneratorResponse'error
               (\ x__ y__ -> x__{_CodeGeneratorResponse'error = y__})
 
-type instance Data.ProtoLens.Field "file" CodeGeneratorResponse =
-     [CodeGeneratorResponse'File]
-
-instance Data.ProtoLens.HasField "file" CodeGeneratorResponse
-         CodeGeneratorResponse where
-        field _
+instance (a ~ [CodeGeneratorResponse'File],
+          b ~ [CodeGeneratorResponse'File], Prelude.Functor f) =>
+         Lens.Labels.HasLens "file" f CodeGeneratorResponse
+         CodeGeneratorResponse a b where
+        lensOf _
           = Lens.Family2.Unchecked.lens _CodeGeneratorResponse'file
               (\ x__ y__ -> x__{_CodeGeneratorResponse'file = y__})
 
@@ -146,11 +142,13 @@ instance Data.ProtoLens.Message CodeGeneratorResponse where
                       (Data.ProtoLens.StringField ::
                          Data.ProtoLens.FieldTypeDescriptor Data.Text.Text)
                       (Data.ProtoLens.OptionalField maybe'error)
+                      :: Data.ProtoLens.FieldDescriptor CodeGeneratorResponse
                 file__field_descriptor
                   = Data.ProtoLens.FieldDescriptor "file"
                       (Data.ProtoLens.MessageField ::
                          Data.ProtoLens.FieldTypeDescriptor CodeGeneratorResponse'File)
                       (Data.ProtoLens.RepeatedField Data.ProtoLens.Unpacked file)
+                      :: Data.ProtoLens.FieldDescriptor CodeGeneratorResponse
               in
               Data.ProtoLens.MessageDescriptor
                 (Data.Map.fromList
@@ -168,66 +166,53 @@ data CodeGeneratorResponse'File = CodeGeneratorResponse'File{_CodeGeneratorRespo
                                                              Prelude.Maybe Data.Text.Text}
                                 deriving (Prelude.Show, Prelude.Eq)
 
-type instance
-     Data.ProtoLens.Field "name" CodeGeneratorResponse'File =
-     Data.Text.Text
-
-instance Data.ProtoLens.HasField "name" CodeGeneratorResponse'File
-         CodeGeneratorResponse'File where
-        field _
+instance (a ~ Data.Text.Text, b ~ Data.Text.Text,
+          Prelude.Functor f) =>
+         Lens.Labels.HasLens "name" f CodeGeneratorResponse'File
+         CodeGeneratorResponse'File a b where
+        lensOf _
           = (Prelude..) maybe'name
               (Data.ProtoLens.maybeLens Data.ProtoLens.fieldDefault)
 
-type instance
-     Data.ProtoLens.Field "maybe'name" CodeGeneratorResponse'File =
-     Prelude.Maybe Data.Text.Text
-
-instance Data.ProtoLens.HasField "maybe'name"
-         CodeGeneratorResponse'File CodeGeneratorResponse'File where
-        field _
+instance (a ~ Prelude.Maybe Data.Text.Text,
+          b ~ Prelude.Maybe Data.Text.Text, Prelude.Functor f) =>
+         Lens.Labels.HasLens "maybe'name" f CodeGeneratorResponse'File
+         CodeGeneratorResponse'File a b where
+        lensOf _
           = Lens.Family2.Unchecked.lens _CodeGeneratorResponse'File'name
               (\ x__ y__ -> x__{_CodeGeneratorResponse'File'name = y__})
 
-type instance
-     Data.ProtoLens.Field "insertionPoint" CodeGeneratorResponse'File =
-     Data.Text.Text
-
-instance Data.ProtoLens.HasField "insertionPoint"
-         CodeGeneratorResponse'File CodeGeneratorResponse'File where
-        field _
+instance (a ~ Data.Text.Text, b ~ Data.Text.Text,
+          Prelude.Functor f) =>
+         Lens.Labels.HasLens "insertionPoint" f CodeGeneratorResponse'File
+         CodeGeneratorResponse'File a b where
+        lensOf _
           = (Prelude..) maybe'insertionPoint
               (Data.ProtoLens.maybeLens Data.ProtoLens.fieldDefault)
 
-type instance
-     Data.ProtoLens.Field "maybe'insertionPoint"
-       CodeGeneratorResponse'File
-     = Prelude.Maybe Data.Text.Text
-
-instance Data.ProtoLens.HasField "maybe'insertionPoint"
-         CodeGeneratorResponse'File CodeGeneratorResponse'File where
-        field _
+instance (a ~ Prelude.Maybe Data.Text.Text,
+          b ~ Prelude.Maybe Data.Text.Text, Prelude.Functor f) =>
+         Lens.Labels.HasLens "maybe'insertionPoint" f
+         CodeGeneratorResponse'File CodeGeneratorResponse'File a b where
+        lensOf _
           = Lens.Family2.Unchecked.lens
               _CodeGeneratorResponse'File'insertionPoint
               (\ x__ y__ ->
                  x__{_CodeGeneratorResponse'File'insertionPoint = y__})
 
-type instance
-     Data.ProtoLens.Field "content" CodeGeneratorResponse'File =
-     Data.Text.Text
-
-instance Data.ProtoLens.HasField "content"
-         CodeGeneratorResponse'File CodeGeneratorResponse'File where
-        field _
+instance (a ~ Data.Text.Text, b ~ Data.Text.Text,
+          Prelude.Functor f) =>
+         Lens.Labels.HasLens "content" f CodeGeneratorResponse'File
+         CodeGeneratorResponse'File a b where
+        lensOf _
           = (Prelude..) maybe'content
               (Data.ProtoLens.maybeLens Data.ProtoLens.fieldDefault)
 
-type instance
-     Data.ProtoLens.Field "maybe'content" CodeGeneratorResponse'File =
-     Prelude.Maybe Data.Text.Text
-
-instance Data.ProtoLens.HasField "maybe'content"
-         CodeGeneratorResponse'File CodeGeneratorResponse'File where
-        field _
+instance (a ~ Prelude.Maybe Data.Text.Text,
+          b ~ Prelude.Maybe Data.Text.Text, Prelude.Functor f) =>
+         Lens.Labels.HasLens "maybe'content" f CodeGeneratorResponse'File
+         CodeGeneratorResponse'File a b where
+        lensOf _
           = Lens.Family2.Unchecked.lens _CodeGeneratorResponse'File'content
               (\ x__ y__ -> x__{_CodeGeneratorResponse'File'content = y__})
 
@@ -246,16 +231,19 @@ instance Data.ProtoLens.Message CodeGeneratorResponse'File where
                       (Data.ProtoLens.StringField ::
                          Data.ProtoLens.FieldTypeDescriptor Data.Text.Text)
                       (Data.ProtoLens.OptionalField maybe'name)
+                      :: Data.ProtoLens.FieldDescriptor CodeGeneratorResponse'File
                 insertionPoint__field_descriptor
                   = Data.ProtoLens.FieldDescriptor "insertion_point"
                       (Data.ProtoLens.StringField ::
                          Data.ProtoLens.FieldTypeDescriptor Data.Text.Text)
                       (Data.ProtoLens.OptionalField maybe'insertionPoint)
+                      :: Data.ProtoLens.FieldDescriptor CodeGeneratorResponse'File
                 content__field_descriptor
                   = Data.ProtoLens.FieldDescriptor "content"
                       (Data.ProtoLens.StringField ::
                          Data.ProtoLens.FieldTypeDescriptor Data.Text.Text)
                       (Data.ProtoLens.OptionalField maybe'content)
+                      :: Data.ProtoLens.FieldDescriptor CodeGeneratorResponse'File
               in
               Data.ProtoLens.MessageDescriptor
                 (Data.Map.fromList
@@ -268,120 +256,111 @@ instance Data.ProtoLens.Message CodeGeneratorResponse'File where
                     ("content", content__field_descriptor)])
 
 content ::
-        forall msg msg' . Data.ProtoLens.HasField "content" msg msg' =>
-          Lens.Family2.Lens msg msg' (Data.ProtoLens.Field "content" msg)
-            (Data.ProtoLens.Field "content" msg')
+        forall x f s t a b .
+          (Prelude.Functor f, Lens.Labels.HasLens "content" f s t a b) =>
+          Lens.Family2.LensLike f s t a b
 content
-  = Data.ProtoLens.field
-      (Data.ProtoLens.ProxySym :: Data.ProtoLens.ProxySym "content")
+  = Lens.Labels.lensOf
+      ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "content")
 
 error ::
-      forall msg msg' . Data.ProtoLens.HasField "error" msg msg' =>
-        Lens.Family2.Lens msg msg' (Data.ProtoLens.Field "error" msg)
-          (Data.ProtoLens.Field "error" msg')
+      forall x f s t a b .
+        (Prelude.Functor f, Lens.Labels.HasLens "error" f s t a b) =>
+        Lens.Family2.LensLike f s t a b
 error
-  = Data.ProtoLens.field
-      (Data.ProtoLens.ProxySym :: Data.ProtoLens.ProxySym "error")
+  = Lens.Labels.lensOf
+      ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "error")
 
 file ::
-     forall msg msg' . Data.ProtoLens.HasField "file" msg msg' =>
-       Lens.Family2.Lens msg msg' (Data.ProtoLens.Field "file" msg)
-         (Data.ProtoLens.Field "file" msg')
+     forall x f s t a b .
+       (Prelude.Functor f, Lens.Labels.HasLens "file" f s t a b) =>
+       Lens.Family2.LensLike f s t a b
 file
-  = Data.ProtoLens.field
-      (Data.ProtoLens.ProxySym :: Data.ProtoLens.ProxySym "file")
+  = Lens.Labels.lensOf
+      ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "file")
 
 fileToGenerate ::
-               forall msg msg' .
-                 Data.ProtoLens.HasField "fileToGenerate" msg msg' =>
-                 Lens.Family2.Lens msg msg'
-                   (Data.ProtoLens.Field "fileToGenerate" msg)
-                   (Data.ProtoLens.Field "fileToGenerate" msg')
+               forall x f s t a b .
+                 (Prelude.Functor f,
+                  Lens.Labels.HasLens "fileToGenerate" f s t a b) =>
+                 Lens.Family2.LensLike f s t a b
 fileToGenerate
-  = Data.ProtoLens.field
-      (Data.ProtoLens.ProxySym ::
-         Data.ProtoLens.ProxySym "fileToGenerate")
+  = Lens.Labels.lensOf
+      ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "fileToGenerate")
 
 insertionPoint ::
-               forall msg msg' .
-                 Data.ProtoLens.HasField "insertionPoint" msg msg' =>
-                 Lens.Family2.Lens msg msg'
-                   (Data.ProtoLens.Field "insertionPoint" msg)
-                   (Data.ProtoLens.Field "insertionPoint" msg')
+               forall x f s t a b .
+                 (Prelude.Functor f,
+                  Lens.Labels.HasLens "insertionPoint" f s t a b) =>
+                 Lens.Family2.LensLike f s t a b
 insertionPoint
-  = Data.ProtoLens.field
-      (Data.ProtoLens.ProxySym ::
-         Data.ProtoLens.ProxySym "insertionPoint")
+  = Lens.Labels.lensOf
+      ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "insertionPoint")
 
 maybe'content ::
-              forall msg msg' .
-                Data.ProtoLens.HasField "maybe'content" msg msg' =>
-                Lens.Family2.Lens msg msg'
-                  (Data.ProtoLens.Field "maybe'content" msg)
-                  (Data.ProtoLens.Field "maybe'content" msg')
+              forall x f s t a b .
+                (Prelude.Functor f,
+                 Lens.Labels.HasLens "maybe'content" f s t a b) =>
+                Lens.Family2.LensLike f s t a b
 maybe'content
-  = Data.ProtoLens.field
-      (Data.ProtoLens.ProxySym ::
-         Data.ProtoLens.ProxySym "maybe'content")
+  = Lens.Labels.lensOf
+      ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "maybe'content")
 
 maybe'error ::
-            forall msg msg' . Data.ProtoLens.HasField "maybe'error" msg msg' =>
-              Lens.Family2.Lens msg msg' (Data.ProtoLens.Field "maybe'error" msg)
-                (Data.ProtoLens.Field "maybe'error" msg')
+            forall x f s t a b .
+              (Prelude.Functor f, Lens.Labels.HasLens "maybe'error" f s t a b) =>
+              Lens.Family2.LensLike f s t a b
 maybe'error
-  = Data.ProtoLens.field
-      (Data.ProtoLens.ProxySym :: Data.ProtoLens.ProxySym "maybe'error")
+  = Lens.Labels.lensOf
+      ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "maybe'error")
 
 maybe'insertionPoint ::
-                     forall msg msg' .
-                       Data.ProtoLens.HasField "maybe'insertionPoint" msg msg' =>
-                       Lens.Family2.Lens msg msg'
-                         (Data.ProtoLens.Field "maybe'insertionPoint" msg)
-                         (Data.ProtoLens.Field "maybe'insertionPoint" msg')
+                     forall x f s t a b .
+                       (Prelude.Functor f,
+                        Lens.Labels.HasLens "maybe'insertionPoint" f s t a b) =>
+                       Lens.Family2.LensLike f s t a b
 maybe'insertionPoint
-  = Data.ProtoLens.field
-      (Data.ProtoLens.ProxySym ::
-         Data.ProtoLens.ProxySym "maybe'insertionPoint")
+  = Lens.Labels.lensOf
+      ((Lens.Labels.proxy#) ::
+         (Lens.Labels.Proxy#) "maybe'insertionPoint")
 
 maybe'name ::
-           forall msg msg' . Data.ProtoLens.HasField "maybe'name" msg msg' =>
-             Lens.Family2.Lens msg msg' (Data.ProtoLens.Field "maybe'name" msg)
-               (Data.ProtoLens.Field "maybe'name" msg')
+           forall x f s t a b .
+             (Prelude.Functor f, Lens.Labels.HasLens "maybe'name" f s t a b) =>
+             Lens.Family2.LensLike f s t a b
 maybe'name
-  = Data.ProtoLens.field
-      (Data.ProtoLens.ProxySym :: Data.ProtoLens.ProxySym "maybe'name")
+  = Lens.Labels.lensOf
+      ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "maybe'name")
 
 maybe'parameter ::
-                forall msg msg' .
-                  Data.ProtoLens.HasField "maybe'parameter" msg msg' =>
-                  Lens.Family2.Lens msg msg'
-                    (Data.ProtoLens.Field "maybe'parameter" msg)
-                    (Data.ProtoLens.Field "maybe'parameter" msg')
+                forall x f s t a b .
+                  (Prelude.Functor f,
+                   Lens.Labels.HasLens "maybe'parameter" f s t a b) =>
+                  Lens.Family2.LensLike f s t a b
 maybe'parameter
-  = Data.ProtoLens.field
-      (Data.ProtoLens.ProxySym ::
-         Data.ProtoLens.ProxySym "maybe'parameter")
+  = Lens.Labels.lensOf
+      ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "maybe'parameter")
 
 name ::
-     forall msg msg' . Data.ProtoLens.HasField "name" msg msg' =>
-       Lens.Family2.Lens msg msg' (Data.ProtoLens.Field "name" msg)
-         (Data.ProtoLens.Field "name" msg')
+     forall x f s t a b .
+       (Prelude.Functor f, Lens.Labels.HasLens "name" f s t a b) =>
+       Lens.Family2.LensLike f s t a b
 name
-  = Data.ProtoLens.field
-      (Data.ProtoLens.ProxySym :: Data.ProtoLens.ProxySym "name")
+  = Lens.Labels.lensOf
+      ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "name")
 
 parameter ::
-          forall msg msg' . Data.ProtoLens.HasField "parameter" msg msg' =>
-            Lens.Family2.Lens msg msg' (Data.ProtoLens.Field "parameter" msg)
-              (Data.ProtoLens.Field "parameter" msg')
+          forall x f s t a b .
+            (Prelude.Functor f, Lens.Labels.HasLens "parameter" f s t a b) =>
+            Lens.Family2.LensLike f s t a b
 parameter
-  = Data.ProtoLens.field
-      (Data.ProtoLens.ProxySym :: Data.ProtoLens.ProxySym "parameter")
+  = Lens.Labels.lensOf
+      ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "parameter")
 
 protoFile ::
-          forall msg msg' . Data.ProtoLens.HasField "protoFile" msg msg' =>
-            Lens.Family2.Lens msg msg' (Data.ProtoLens.Field "protoFile" msg)
-              (Data.ProtoLens.Field "protoFile" msg')
+          forall x f s t a b .
+            (Prelude.Functor f, Lens.Labels.HasLens "protoFile" f s t a b) =>
+            Lens.Family2.LensLike f s t a b
 protoFile
-  = Data.ProtoLens.field
-      (Data.ProtoLens.ProxySym :: Data.ProtoLens.ProxySym "protoFile")
+  = Lens.Labels.lensOf
+      ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "protoFile")
