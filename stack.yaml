@@ -1,5 +1,6 @@
 resolver: lts-7.4
 packages:
+- lens-labels
 - proto-lens
 - proto-lens-descriptors
 - proto-lens-protoc

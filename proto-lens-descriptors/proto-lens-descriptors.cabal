@@ -25,6 +25,7 @@ library
     , bytestring == 0.10.*
     , data-default-class >= 0.0 && < 0.2
     , lens-family == 1.2.*
+    , lens-labels == 0.1.0.0
     -- Specify an exact version of `proto-lens`, since it's tied closely
     -- to the generated code.
     , proto-lens == 0.1.0.5

@@ -45,6 +45,7 @@ library
         , filepath == 1.4.*
         , haskell-src-exts == 1.17.*
         , lens-family == 1.2.*
+        , lens-labels == 0.1.*
         , process >= 1.2 && < 1.5
         , proto-lens == 0.1.0.5
         , proto-lens-descriptors == 0.1.0.5
@@ -62,6 +63,7 @@ library
         , Data.Text as Data.ProtoLens.Reexport.Data.Text
         , Lens.Family2 as Data.ProtoLens.Reexport.Lens.Family2
         , Lens.Family2.Unchecked as Data.ProtoLens.Reexport.Lens.Family2.Unchecked
+        , Lens.Labels as Data.ProtoLens.Reexport.Lens.Labels
     }
 
 executable proto-lens-protoc

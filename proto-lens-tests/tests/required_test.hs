@@ -9,7 +9,7 @@ module Main where
 
 import Data.Default.Class (def)
 import Data.Monoid (mempty, (<>))
-import Lens.Family2 ((&), (.~))
+import Lens.Family ((&), (.~))
 import Proto.Required (Foo, a, b)
 import Test.Framework (testGroup)
 

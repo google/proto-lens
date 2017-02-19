@@ -7,6 +7,7 @@ set -euo pipefail
 # they're dependencies of the others.  (Unfortunately, "stack query" doesn't
 # give them to us in the right order.)
 PACKAGES="
+    lens-labels
     proto-lens
     proto-lens-descriptors
     proto-lens-protoc

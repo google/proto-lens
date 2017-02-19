@@ -81,8 +81,9 @@ generateModule modName imports syntaxType modifyImport definitions importedEnv
     = Module noLoc modName
           [ LanguagePragma noLoc $ map Ident
               ["ScopedTypeVariables", "DataKinds", "TypeFamilies",
+               "UndecidableInstances",
                "MultiParamTypeClasses", "FlexibleContexts", "FlexibleInstances",
-               "PatternSynonyms"]
+               "PatternSynonyms", "MagicHash"]
               -- Allow unused imports in case we don't import anything from
               -- Data.Text, Data.Int, etc.
           , OptionsPragma noLoc (Just GHC) "-fno-warn-unused-imports"
@@ -98,6 +99,7 @@ generateModule modName imports syntaxType modifyImport definitions importedEnv
                 [ "Data.ProtoLens", "Data.ProtoLens.Message.Enum"
                 , "Lens.Family2", "Lens.Family2.Unchecked", "Data.Default.Class"
                 , "Data.Text",  "Data.Map" , "Data.ByteString"
+                , "Lens.Labels"
                 ]
             ++ map importSimple imports)
           (concatMap generateDecls (Map.elems definitions)
@@ -147,25 +149,22 @@ generateMessageDecls syntaxType env info =
                   ]
         ]
         [("Prelude.Show", []), ("Prelude.Eq", [])]
-    ]
-    ++
-    -- type instance Field.Field "foo" Bar = Baz
-    -- instance Field.HasField "foo" Bar where
-    --   field _ = ...
+    ] ++
+    -- type instance (Functor f, a ~ Baz, b ~ Baz)
+    --     => HasLens "foo" f Bar Bar a b where
+    --   lensOf _ = ...
     -- Note: for optional fields, this generates an instance both for "foo" and
     -- for "maybe'foo" (see lensInfo below).
-    concat
-        [ [ TypeInsDecl noLoc
-              ("Data.ProtoLens.Field" @@ sym @@ dataType)
-              (fieldTypeInstance i)
-          , InstDecl noLoc Nothing [] [] "Data.ProtoLens.HasField"
-              [sym, dataType, dataType]
-              [InsDecl $ FunBind [match "field" [PWildCard] $ fieldAccessor i]]
-          ]
-        | f <- fields
-        , i <- fieldInstances (lensInfo syntaxType env f)
-        , let sym = TyPromoted $ PromotedString $ fieldSymbol i
-        ]
+    [ InstDecl noLoc Nothing [] [EqualP "a" t, EqualP "b" t,
+                                 ClassA "Prelude.Functor" ["f"]]
+            "Lens.Labels.HasLens"
+                [sym, "f", dataType, dataType, "a", "b"]
+            [InsDecl $ FunBind [match "lensOf" [PWildCard] $ fieldAccessor i]]
+    | f <- fields
+    , i <- fieldInstances (lensInfo syntaxType env f)
+    , let t = fieldTypeInstance i
+    , let sym = TyPromoted $ PromotedString $ fieldSymbol i
+    ]
     ++
     -- instance Data.Default.Class.Default Bar where
     [ InstDecl noLoc Nothing [] [] "Data.Default.Class.Default" [dataType]
@@ -339,26 +338,26 @@ generateEnumDecls info =
                       ++ ": "
 
 generateFieldDecls :: String -> [Decl]
-generateFieldDecls fStr =
-    -- foo :: forall msg msg' . Field.HasField "foo" msg msg'
-    --        => Lens.Lens msg msg' (Field.Field "foo" msg)
-    --                              (Field.Field "foo" msg')
-    -- foo = Field.field (Field.ProxySym :: Field.Proxy "foo")
-    [ TypeSig noLoc [f]
-          $ TyForall (Just ["msg", "msg'"])
-                  [ClassA "Data.ProtoLens.HasField" [fSym, "msg", "msg'"]]
-                  $ "Lens.Family2.Lens" @@ "msg" @@ "msg'"
-                    @@ ("Data.ProtoLens.Field" @@ fSym @@ "msg")
-                    @@ ("Data.ProtoLens.Field" @@ fSym @@ "msg'")
-    , FunBind [match f []
-                  $ "Data.ProtoLens.field"
-                      @@ ExpTypeSig noLoc "Data.ProtoLens.ProxySym"
-                          ("Data.ProtoLens.ProxySym" @@ fSym)
+generateFieldDecls xStr =
+    -- foo :: forall x f s t a b
+    --        . (Functor f, HasLens x f s t a b)
+    --        => LensLike f s t a b
+    -- foo = lensOf (Proxy# :: Proxy# x)
+    [ TypeSig noLoc [x]
+          $ TyForall (Just ["x", "f", "s", "t", "a", "b"])
+                  [ ClassA "Prelude.Functor" ["f"]
+                  , ClassA "Lens.Labels.HasLens" [xSym, "f", "s", "t", "a", "b"]
+                  ]
+                    $ "Lens.Family2.LensLike" @@ "f" @@ "s" @@ "t" @@ "a" @@ "b"
+    , FunBind [match x []
+                  $ "Lens.Labels.lensOf"
+                      @@ ExpTypeSig noLoc "Lens.Labels.proxy#"
+                          ("Lens.Labels.Proxy#" @@ xSym)
               ]
     ]
   where
-    f = Ident fStr
-    fSym = TyPromoted $ PromotedString fStr
+    x = Ident xStr
+    xSym = TyPromoted $ PromotedString xStr
 
 ------------------------------------------
 
@@ -569,7 +568,7 @@ descriptorExpr syntaxType env m
     --
     -- (Note that the two maps have the same elements but different keys.  We
     -- use the "let" expression to share elements between the two maps.)
-    = Let (BDecls $ map fieldDescriptorVarBind $ messageFields m)
+    = Let (BDecls $ map (fieldDescriptorVarBind $ messageName m) $ messageFields m)
         $ "Data.ProtoLens.MessageDescriptor"
           @@ ("Data.Map.fromList" @@ List fieldsByTag)
           @@ ("Data.Map.fromList" @@ List fieldsByTextFormatName)
@@ -592,10 +591,10 @@ descriptorExpr syntaxType env m
     fieldDescriptorVar = fromString . fieldDescriptorName
     fieldDescriptorName f
         = fromString $ overloadedField f ++ "__field_descriptor"
-    fieldDescriptorVarBind f
+    fieldDescriptorVarBind n f
         = FunBind
               [match (fromString $ fieldDescriptorName f) []
-                  $ fieldDescriptorExpr syntaxType env f
+                  $ fieldDescriptorExpr syntaxType env n f
               ]
 
 -- | Get the name of the field when used in a text format proto. Groups are
@@ -610,18 +609,21 @@ textFormatFieldName env descr = case descr ^. type' of
                            ++ T.unpack (descr ^. typeName)
     _ -> descr ^. name
 
-fieldDescriptorExpr :: SyntaxType -> Env QName -> FieldInfo
+fieldDescriptorExpr :: SyntaxType -> Env QName -> Name -> FieldInfo
                     -> Exp
-fieldDescriptorExpr syntaxType env f
-    = "Data.ProtoLens.FieldDescriptor"
-        -- Record the .proto field name as used in text format
-        @@ Lit (Syntax.String $ T.unpack $ textFormatFieldName env fd)
-        -- Force the type signature since it can't be inferred for Map entry
-        -- types.
-        @@ ExpTypeSig noLoc (fieldTypeDescriptorExpr (fd ^. type'))
-                      ("Data.ProtoLens.FieldTypeDescriptor"
-                          @@ hsFieldType env fd)
-        @@ fieldAccessorExpr syntaxType env f
+fieldDescriptorExpr syntaxType env n f
+    = ExpTypeSig noLoc
+        ("Data.ProtoLens.FieldDescriptor"
+            -- Record the original .proto name for text format
+            @@ Lit (Syntax.String $ T.unpack $ textFormatFieldName env fd)
+            -- Force the type signature since it can't be inferred for Map entry
+            -- types.
+            @@ ExpTypeSig noLoc (fieldTypeDescriptorExpr (fd ^. type'))
+                        ("Data.ProtoLens.FieldTypeDescriptor"
+                            @@ hsFieldType env fd)
+            @@ fieldAccessorExpr syntaxType env f)
+        -- TODO: why is this type sig needed?
+        ("Data.ProtoLens.FieldDescriptor" @@ TyCon (UnQual n))
   where
     fd = fieldDescriptor f
 

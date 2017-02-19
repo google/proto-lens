@@ -25,7 +25,6 @@ library
   hs-source-dirs: src
   exposed-modules:     Data.ProtoLens
                        Data.ProtoLens.Encoding
-                       Data.ProtoLens.Field
                        Data.ProtoLens.Message
                        Data.ProtoLens.Message.Enum
                        Data.ProtoLens.TextFormat

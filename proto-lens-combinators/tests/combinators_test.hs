@@ -9,8 +9,8 @@ module Main where
 
 import Data.ProtoLens (def)
 import Data.ProtoLens.Combinators
-import Lens.Family2 ((^.), (.~), (&))
-import Lens.Family2.State ((.=), (<~), use, zoom)
+import Lens.Family ((^.), (.~), (&))
+import Lens.Family.State ((.=), (<~), use, zoom)
 import Proto.Combinators
 import Test.Framework (defaultMain)
 import Test.Framework.Providers.HUnit (hUnitTestToTests)

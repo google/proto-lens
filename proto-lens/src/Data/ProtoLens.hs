@@ -8,12 +8,10 @@
 -- Haskell.
 module Data.ProtoLens (
     module Data.ProtoLens.Encoding,
-    module Data.ProtoLens.Field,
     module Data.ProtoLens.Message,
     module Data.ProtoLens.TextFormat,
     ) where
 
 import Data.ProtoLens.Encoding
-import Data.ProtoLens.Field
 import Data.ProtoLens.Message
 import Data.ProtoLens.TextFormat

@@ -36,6 +36,7 @@ Test-Suite combinators_test
   build-depends: HUnit
                , base
                , lens-family
+               , lens-family-core
                , proto-lens
                , proto-lens-combinators
                , proto-lens-protoc
