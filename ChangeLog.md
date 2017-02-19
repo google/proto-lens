@@ -1,5 +1,10 @@
 # ChangeLog
 
+## v0.1.0.5
+- Fix the handling of packed repeated fields (#38)
+- Improve space usage and time of decoding (#63)
+- Print fields ordered by tag number (#40)
+
 ## v0.1.0.4
 - Relaxed dependency constraints on data-default-class for
 new stackage LTS.
