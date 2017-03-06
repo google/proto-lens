@@ -12,6 +12,9 @@ message Names {
   optional int32 multi_word_name = 3;
   optional int32 FOO_multi_WORD_name = 4;
   optional int32 _multi_word_name = 5;
+
+  // Already camel-case; don't change it.
+  optional int32 camelCasedName = 6;
 }
 
 // A message whose name conflicts with the Prelude.
