@@ -173,14 +173,15 @@ fieldName = unpack . disambiguate . camelCase
         | otherwise = s
 
 camelCase :: Text -> Text
-camelCase s = let
+camelCase s =
     -- Preserve any initial underlines (e.g., "_foo_bar" -> "_fooBar").
-    (underlines, rest) = T.span (== '_') s
+    let (underlines, rest) = T.span (== '_') s
     in case splitOn "_" rest of
         -- splitOn always returns a list with at least one element.
         [] -> error $ "camelCase: splitOn returned empty list: "
                         ++ show rest
-        [""] -> error "camelCase: name consists only of underscores"
+        [""] -> error $ "camelCase: name consists only of underscores: "
+                            ++ show s
         s':ss -> T.concat $ underlines : lowerInitialChars s' : map capitalize ss
 
 -- | Lower-case all initial upper-case characters.
