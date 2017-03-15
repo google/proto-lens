@@ -60,6 +60,7 @@ testNames = testFields "names" (def :: Names)
     , SomeLens multiWordName
     , SomeLens fooMultiWORDName
     , SomeLens _multiWordName
+    , SomeLens camelCasedName
     ]
 
 testPreludeType = testFields "preludeType" (def :: Maybe) [SomeLens maybe]

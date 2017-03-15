@@ -21,7 +21,7 @@ module Data.ProtoLens.Compiler.Definitions
     , definedFieldType
     ) where
 
-import Data.Char (toUpper)
+import Data.Char (isUpper, toUpper)
 import Data.Int (Int32)
 import Data.List (mapAccumL)
 import qualified Data.Map as Map
@@ -171,15 +171,24 @@ fieldName = unpack . disambiguate . camelCase
         -- TODO: use a more comprehensive blacklist of Haskell keywords.
         | s `Set.member` reservedKeywords = s <> "'"
         | otherwise = s
-    camelCase s
-        -- Preserve any initial underlines (e.g., "_foo_bar" -> "_fooBar").
-        | (underlines, rest) <- T.span (== '_') s
-            = case splitOn "_" rest of
-                -- splitOn always returns a list with at least one element.
-                [] -> error $ "camelCase: splitOn returned empty list: "
-                                ++ show rest
-                [""] -> error "camelCase: name consists only of underscores"
-                s':ss -> T.concat $ underlines : toLower s' : map capitalize ss
+
+camelCase :: Text -> Text
+camelCase s =
+    -- Preserve any initial underlines (e.g., "_foo_bar" -> "_fooBar").
+    let (underlines, rest) = T.span (== '_') s
+    in case splitOn "_" rest of
+        -- splitOn always returns a list with at least one element.
+        [] -> error $ "camelCase: splitOn returned empty list: "
+                        ++ show rest
+        [""] -> error $ "camelCase: name consists only of underscores: "
+                            ++ show s
+        s':ss -> T.concat $ underlines : lowerInitialChars s' : map capitalize ss
+
+-- | Lower-case all initial upper-case characters.
+-- For example: "Foo" -> "foo", "FooBar" -> "fooBar", "FOObar" -> "foobar"
+lowerInitialChars :: Text -> Text
+lowerInitialChars s = toLower pre <> post
+  where (pre, post) = T.span isUpper s
 
 -- | A list of reserved keywords that aren't valid as variable names.
 reservedKeywords :: Set.Set Text
