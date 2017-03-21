@@ -17,10 +17,12 @@ matrix:
     addons: {apt: {packages: [cabal-install-1.22, ghc-7.10.3], sources: [hvr-ghc]}}
   - env: BUILD=cabal GHCVER=8.0.1 CABALVER=1.24
     addons: {apt: {packages: [cabal-install-1.24, ghc-8.0.1], sources: [hvr-ghc]}}
-  - env: BUILD=stack GHCVER=7.10.3 STACK_YAML=stack-7.10.yaml
-    addons: {apt: {packages: [ghc-7.10.3], sources: [hvr-ghc]}}
-  - env: BUILD=stack GHCVER=8.0.1 STACK_YAML=stack.yaml
-    addons: {apt: {packages: [ghc-8.0.1], sources: [hvr-ghc]}}
+  - env: BUILD=stack STACK='stack --resolver=lts-6.22'
+    addons: {apt: {packages: [libgmp-dev]}}
+  - env: BUILD=stack STACK='stack --resolver=lts-7.4'
+    addons: {apt: {packages: [libgmp-dev]}}
+  - env: BUILD=stack STACK=stack # use the resolver in stack.yaml
+    addons: {apt: {packages: [libgmp-dev]}}
 
 before_install:
   - mkdir -p $HOME/.local/bin
@@ -30,7 +32,7 @@ before_install:
       cabal)
         export PATH=/opt/ghc/$GHCVER/bin:/opt/cabal/$CABALVER/bin:$HOME/.local/bin:$HOME/.cabal/bin:$PATH;;
     esac
-  - curl -L https://github.com/commercialhaskell/stack/releases/download/v1.0.4.3/stack-1.0.4.3-linux-x86_64.tar.gz | tar xz --wildcards --strip-components=1 -C $HOME/.local/bin '*/stack'
+  - curl -L https://github.com/commercialhaskell/stack/releases/download/v1.4.0/stack-1.4.0-linux-x86_64.tar.gz | tar xz --wildcards --strip-components=1 -C $HOME/.local/bin '*/stack'
   - curl -L https://github.com/google/protobuf/releases/download/v3.0.0-beta-2/protoc-3.0.0-beta-2-linux-x86_64.zip > protoc-release.zip
   - unzip -p protoc-release.zip protoc > $HOME/.local/bin/protoc
   - chmod a+x $HOME/.local/bin/protoc
@@ -39,8 +41,8 @@ before_install:
 install:
   - case "$BUILD" in
       stack)
-        stack setup --no-terminal;
-        stack build --only-snapshot --no-terminal;;
+        $STACK setup --no-terminal;
+        $STACK build --only-snapshot --no-terminal;;
       cabal)
         cabal update;;
     esac
@@ -50,7 +52,7 @@ script:
   # edge cases around custom Setup.hs script dependencies.
   - case "$BUILD" in
       stack)
-        stack build --haddock --no-haddock-deps && stack test --haddock --no-haddock-deps;;
+        $STACK build --haddock --no-haddock-deps && $STACK test --haddock --no-haddock-deps;;
       cabal)
         ./travis-cabal.sh;;
     esac

@@ -5,6 +5,7 @@
 -- https://developers.google.com/open-source/licenses/bsd
 
 {-# OPTIONS_GHC -fno-warn-orphans #-}
+{-# LANGUAGE CPP #-}
 {-# LANGUAGE FlexibleInstances #-}
 -- | Some utility functions, classes and instances for nicer code generation.
 --
@@ -24,12 +25,22 @@ module Data.ProtoLens.Compiler.Combinators
 
 import Data.Char (isAlphaNum, isUpper)
 import Data.String (IsString(..))
+#if MIN_VERSION_haskell_src_exts(1,18,0)
+import qualified Language.Haskell.Exts.Syntax as Syntax
+import qualified Language.Haskell.Exts.Pretty as Pretty
+#else
 import qualified Language.Haskell.Exts.Annotated.Syntax as Syntax
 import qualified Language.Haskell.Exts.Pretty as Pretty
 import Language.Haskell.Exts.SrcLoc (SrcLoc, noLoc)
+#endif
 
+#if MIN_VERSION_haskell_src_exts(1,18,0)
+prettyPrint :: Pretty.Pretty a => a -> String
+prettyPrint = Pretty.prettyPrint
+#else
 prettyPrint :: (Functor m, Pretty.Pretty (m SrcLoc)) => m () -> String
 prettyPrint = Pretty.prettyPrint . fmap (const noLoc)
+#endif
 
 type Asst = Syntax.Asst ()
 
@@ -48,10 +59,7 @@ conDecl = Syntax.ConDecl ()
 recDecl :: Name -> [(Name, Type)] -> ConDecl
 recDecl dataName fields
     = Syntax.RecDecl () dataName
-        [ Syntax.FieldDecl () [n] (Syntax.TyBang () (Syntax.BangedTy ())
-                                        t)
-        | (n,t) <- fields
-        ]
+        [Syntax.FieldDecl () [n] (tyBang t) | (n,t) <- fields]
 
 
 type Decl = Syntax.Decl ()
@@ -204,7 +212,13 @@ tyForAll vars ctx t = Syntax.TyForall () (Just vars)
                             (Just $ Syntax.CxTuple () ctx)
                             t
 
-
+tyBang :: Type -> Type
+#if MIN_VERSION_haskell_src_exts(1,18,0)
+tyBang = Syntax.TyBang () (Syntax.BangedTy ()) (Syntax.NoUnpackPragma ())
+#else
+tyBang = Syntax.TyBang () (Syntax.BangedTy ())
+#endif
+ 
 -- | Application of a Haskell type or expression to an argument.
 -- For example, to represent @f x y@, you can write
 --
