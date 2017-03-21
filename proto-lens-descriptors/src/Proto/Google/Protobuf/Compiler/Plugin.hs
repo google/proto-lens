@@ -2,7 +2,7 @@
 {-# LANGUAGE ScopedTypeVariables, DataKinds, TypeFamilies,
   UndecidableInstances, MultiParamTypeClasses, FlexibleContexts,
   FlexibleInstances, PatternSynonyms, MagicHash #-}
-{-# OPTIONS_GHC -fno-warn-unused-imports#-}
+{-# OPTIONS_GHC -fno-warn-unused-imports #-}
 module Proto.Google.Protobuf.Compiler.Plugin where
 import qualified Prelude
 import qualified Data.Int

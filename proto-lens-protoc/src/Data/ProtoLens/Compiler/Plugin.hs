@@ -22,9 +22,9 @@ import Data.List (foldl', intercalate)
 import qualified Data.Map.Strict as Map
 import Data.Map.Strict (Map, unions, (!))
 import Data.Monoid ((<>))
+import Data.String (fromString)
 import qualified Data.Text as T
 import Data.Text (Text)
-import Language.Haskell.Exts.Syntax (ModuleName(..), Name(..), QName(..))
 import Lens.Family2
 import Proto.Google.Protobuf.Descriptor
     (FileDescriptorProto, name, dependency, publicDependency)
@@ -32,6 +32,7 @@ import System.FilePath (dropExtension, splitDirectories)
 
 
 import Data.ProtoLens.Compiler.Definitions
+import Data.ProtoLens.Compiler.Combinators (ModuleName, Name, QName)
 
 -- | The filename of an input .proto file.
 type ProtoFileName = Text
@@ -84,7 +85,7 @@ outputFilePath n = T.replace "." "/" (T.pack n) <> ".hs"
 
 -- | Get the Haskell 'ModuleName' corresponding to a given .proto file.
 moduleName :: Text -> FileDescriptorProto -> ModuleName
-moduleName modulePrefix fd = ModuleName (moduleNameStr modulePrefix fd)
+moduleName modulePrefix fd = fromString (moduleNameStr modulePrefix fd)
 
 -- | Get the Haskell module name corresponding to a given .proto file.
 moduleNameStr :: Text -> FileDescriptorProto -> String
