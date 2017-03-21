@@ -18,18 +18,18 @@ import qualified Data.ByteString
 import qualified Lens.Labels
 
 data DescriptorProto = DescriptorProto{_DescriptorProto'name ::
-                                       Prelude.Maybe Data.Text.Text,
-                                       _DescriptorProto'field :: [FieldDescriptorProto],
-                                       _DescriptorProto'extension :: [FieldDescriptorProto],
-                                       _DescriptorProto'nestedType :: [DescriptorProto],
-                                       _DescriptorProto'enumType :: [EnumDescriptorProto],
+                                       !(Prelude.Maybe Data.Text.Text),
+                                       _DescriptorProto'field :: ![FieldDescriptorProto],
+                                       _DescriptorProto'extension :: ![FieldDescriptorProto],
+                                       _DescriptorProto'nestedType :: ![DescriptorProto],
+                                       _DescriptorProto'enumType :: ![EnumDescriptorProto],
                                        _DescriptorProto'extensionRange ::
-                                       [DescriptorProto'ExtensionRange],
-                                       _DescriptorProto'oneofDecl :: [OneofDescriptorProto],
-                                       _DescriptorProto'options :: Prelude.Maybe MessageOptions,
+                                       ![DescriptorProto'ExtensionRange],
+                                       _DescriptorProto'oneofDecl :: ![OneofDescriptorProto],
+                                       _DescriptorProto'options :: !(Prelude.Maybe MessageOptions),
                                        _DescriptorProto'reservedRange ::
-                                       [DescriptorProto'ReservedRange],
-                                       _DescriptorProto'reservedName :: [Data.Text.Text]}
+                                       ![DescriptorProto'ReservedRange],
+                                       _DescriptorProto'reservedName :: ![Data.Text.Text]}
                      deriving (Prelude.Show, Prelude.Eq)
 
 instance (a ~ Data.Text.Text, b ~ Data.Text.Text,
@@ -230,10 +230,12 @@ instance Data.ProtoLens.Message DescriptorProto where
 
 data DescriptorProto'ExtensionRange = DescriptorProto'ExtensionRange{_DescriptorProto'ExtensionRange'start
                                                                      ::
-                                                                     Prelude.Maybe Data.Int.Int32,
+                                                                     !(Prelude.Maybe
+                                                                         Data.Int.Int32),
                                                                      _DescriptorProto'ExtensionRange'end
                                                                      ::
-                                                                     Prelude.Maybe Data.Int.Int32}
+                                                                     !(Prelude.Maybe
+                                                                         Data.Int.Int32)}
                                     deriving (Prelude.Show, Prelude.Eq)
 
 instance (a ~ Data.Int.Int32, b ~ Data.Int.Int32,
@@ -300,9 +302,11 @@ instance Data.ProtoLens.Message DescriptorProto'ExtensionRange
                     ("end", end__field_descriptor)])
 
 data DescriptorProto'ReservedRange = DescriptorProto'ReservedRange{_DescriptorProto'ReservedRange'start
-                                                                   :: Prelude.Maybe Data.Int.Int32,
+                                                                   ::
+                                                                   !(Prelude.Maybe Data.Int.Int32),
                                                                    _DescriptorProto'ReservedRange'end
-                                                                   :: Prelude.Maybe Data.Int.Int32}
+                                                                   ::
+                                                                   !(Prelude.Maybe Data.Int.Int32)}
                                    deriving (Prelude.Show, Prelude.Eq)
 
 instance (a ~ Data.Int.Int32, b ~ Data.Int.Int32,
@@ -368,11 +372,11 @@ instance Data.ProtoLens.Message DescriptorProto'ReservedRange where
                     ("end", end__field_descriptor)])
 
 data EnumDescriptorProto = EnumDescriptorProto{_EnumDescriptorProto'name
-                                               :: Prelude.Maybe Data.Text.Text,
+                                               :: !(Prelude.Maybe Data.Text.Text),
                                                _EnumDescriptorProto'value ::
-                                               [EnumValueDescriptorProto],
+                                               ![EnumValueDescriptorProto],
                                                _EnumDescriptorProto'options ::
-                                               Prelude.Maybe EnumOptions}
+                                               !(Prelude.Maybe EnumOptions)}
                          deriving (Prelude.Show, Prelude.Eq)
 
 instance (a ~ Data.Text.Text, b ~ Data.Text.Text,
@@ -452,9 +456,9 @@ instance Data.ProtoLens.Message EnumDescriptorProto where
                     ("options", options__field_descriptor)])
 
 data EnumOptions = EnumOptions{_EnumOptions'allowAlias ::
-                               Prelude.Maybe Prelude.Bool,
-                               _EnumOptions'deprecated :: Prelude.Maybe Prelude.Bool,
-                               _EnumOptions'uninterpretedOption :: [UninterpretedOption]}
+                               !(Prelude.Maybe Prelude.Bool),
+                               _EnumOptions'deprecated :: !(Prelude.Maybe Prelude.Bool),
+                               _EnumOptions'uninterpretedOption :: ![UninterpretedOption]}
                  deriving (Prelude.Show, Prelude.Eq)
 
 instance (a ~ Prelude.Bool, b ~ Prelude.Bool, Prelude.Functor f) =>
@@ -534,11 +538,11 @@ instance Data.ProtoLens.Message EnumOptions where
                     ("uninterpreted_option", uninterpretedOption__field_descriptor)])
 
 data EnumValueDescriptorProto = EnumValueDescriptorProto{_EnumValueDescriptorProto'name
-                                                         :: Prelude.Maybe Data.Text.Text,
+                                                         :: !(Prelude.Maybe Data.Text.Text),
                                                          _EnumValueDescriptorProto'number ::
-                                                         Prelude.Maybe Data.Int.Int32,
+                                                         !(Prelude.Maybe Data.Int.Int32),
                                                          _EnumValueDescriptorProto'options ::
-                                                         Prelude.Maybe EnumValueOptions}
+                                                         !(Prelude.Maybe EnumValueOptions)}
                               deriving (Prelude.Show, Prelude.Eq)
 
 instance (a ~ Data.Text.Text, b ~ Data.Text.Text,
@@ -628,9 +632,9 @@ instance Data.ProtoLens.Message EnumValueDescriptorProto where
                     ("options", options__field_descriptor)])
 
 data EnumValueOptions = EnumValueOptions{_EnumValueOptions'deprecated
-                                         :: Prelude.Maybe Prelude.Bool,
+                                         :: !(Prelude.Maybe Prelude.Bool),
                                          _EnumValueOptions'uninterpretedOption ::
-                                         [UninterpretedOption]}
+                                         ![UninterpretedOption]}
                       deriving (Prelude.Show, Prelude.Eq)
 
 instance (a ~ Prelude.Bool, b ~ Prelude.Bool, Prelude.Functor f) =>
@@ -686,25 +690,25 @@ instance Data.ProtoLens.Message EnumValueOptions where
                     ("uninterpreted_option", uninterpretedOption__field_descriptor)])
 
 data FieldDescriptorProto = FieldDescriptorProto{_FieldDescriptorProto'name
-                                                 :: Prelude.Maybe Data.Text.Text,
+                                                 :: !(Prelude.Maybe Data.Text.Text),
                                                  _FieldDescriptorProto'number ::
-                                                 Prelude.Maybe Data.Int.Int32,
+                                                 !(Prelude.Maybe Data.Int.Int32),
                                                  _FieldDescriptorProto'label ::
-                                                 Prelude.Maybe FieldDescriptorProto'Label,
+                                                 !(Prelude.Maybe FieldDescriptorProto'Label),
                                                  _FieldDescriptorProto'type' ::
-                                                 Prelude.Maybe FieldDescriptorProto'Type,
+                                                 !(Prelude.Maybe FieldDescriptorProto'Type),
                                                  _FieldDescriptorProto'typeName ::
-                                                 Prelude.Maybe Data.Text.Text,
+                                                 !(Prelude.Maybe Data.Text.Text),
                                                  _FieldDescriptorProto'extendee ::
-                                                 Prelude.Maybe Data.Text.Text,
+                                                 !(Prelude.Maybe Data.Text.Text),
                                                  _FieldDescriptorProto'defaultValue ::
-                                                 Prelude.Maybe Data.Text.Text,
+                                                 !(Prelude.Maybe Data.Text.Text),
                                                  _FieldDescriptorProto'oneofIndex ::
-                                                 Prelude.Maybe Data.Int.Int32,
+                                                 !(Prelude.Maybe Data.Int.Int32),
                                                  _FieldDescriptorProto'jsonName ::
-                                                 Prelude.Maybe Data.Text.Text,
+                                                 !(Prelude.Maybe Data.Text.Text),
                                                  _FieldDescriptorProto'options ::
-                                                 Prelude.Maybe FieldOptions}
+                                                 !(Prelude.Maybe FieldOptions)}
                           deriving (Prelude.Show, Prelude.Eq)
 
 instance (a ~ Data.Text.Text, b ~ Data.Text.Text,
@@ -1242,13 +1246,13 @@ instance Prelude.Bounded FieldDescriptorProto'Type where
         maxBound = FieldDescriptorProto'TYPE_SINT64
 
 data FieldOptions = FieldOptions{_FieldOptions'ctype ::
-                                 Prelude.Maybe FieldOptions'CType,
-                                 _FieldOptions'packed :: Prelude.Maybe Prelude.Bool,
-                                 _FieldOptions'jstype :: Prelude.Maybe FieldOptions'JSType,
-                                 _FieldOptions'lazy :: Prelude.Maybe Prelude.Bool,
-                                 _FieldOptions'deprecated :: Prelude.Maybe Prelude.Bool,
-                                 _FieldOptions'weak :: Prelude.Maybe Prelude.Bool,
-                                 _FieldOptions'uninterpretedOption :: [UninterpretedOption]}
+                                 !(Prelude.Maybe FieldOptions'CType),
+                                 _FieldOptions'packed :: !(Prelude.Maybe Prelude.Bool),
+                                 _FieldOptions'jstype :: !(Prelude.Maybe FieldOptions'JSType),
+                                 _FieldOptions'lazy :: !(Prelude.Maybe Prelude.Bool),
+                                 _FieldOptions'deprecated :: !(Prelude.Maybe Prelude.Bool),
+                                 _FieldOptions'weak :: !(Prelude.Maybe Prelude.Bool),
+                                 _FieldOptions'uninterpretedOption :: ![UninterpretedOption]}
                   deriving (Prelude.Show, Prelude.Eq)
 
 instance (a ~ FieldOptions'CType, b ~ FieldOptions'CType,
@@ -1527,28 +1531,28 @@ instance Prelude.Bounded FieldOptions'JSType where
         maxBound = FieldOptions'JS_NUMBER
 
 data FileDescriptorProto = FileDescriptorProto{_FileDescriptorProto'name
-                                               :: Prelude.Maybe Data.Text.Text,
+                                               :: !(Prelude.Maybe Data.Text.Text),
                                                _FileDescriptorProto'package ::
-                                               Prelude.Maybe Data.Text.Text,
-                                               _FileDescriptorProto'dependency :: [Data.Text.Text],
+                                               !(Prelude.Maybe Data.Text.Text),
+                                               _FileDescriptorProto'dependency :: ![Data.Text.Text],
                                                _FileDescriptorProto'publicDependency ::
-                                               [Data.Int.Int32],
+                                               ![Data.Int.Int32],
                                                _FileDescriptorProto'weakDependency ::
-                                               [Data.Int.Int32],
+                                               ![Data.Int.Int32],
                                                _FileDescriptorProto'messageType ::
-                                               [DescriptorProto],
+                                               ![DescriptorProto],
                                                _FileDescriptorProto'enumType ::
-                                               [EnumDescriptorProto],
+                                               ![EnumDescriptorProto],
                                                _FileDescriptorProto'service ::
-                                               [ServiceDescriptorProto],
+                                               ![ServiceDescriptorProto],
                                                _FileDescriptorProto'extension ::
-                                               [FieldDescriptorProto],
+                                               ![FieldDescriptorProto],
                                                _FileDescriptorProto'options ::
-                                               Prelude.Maybe FileOptions,
+                                               !(Prelude.Maybe FileOptions),
                                                _FileDescriptorProto'sourceCodeInfo ::
-                                               Prelude.Maybe SourceCodeInfo,
+                                               !(Prelude.Maybe SourceCodeInfo),
                                                _FileDescriptorProto'syntax ::
-                                               Prelude.Maybe Data.Text.Text}
+                                               !(Prelude.Maybe Data.Text.Text)}
                          deriving (Prelude.Show, Prelude.Eq)
 
 instance (a ~ Data.Text.Text, b ~ Data.Text.Text,
@@ -1807,7 +1811,7 @@ instance Data.ProtoLens.Message FileDescriptorProto where
                     ("syntax", syntax__field_descriptor)])
 
 data FileDescriptorSet = FileDescriptorSet{_FileDescriptorSet'file
-                                           :: [FileDescriptorProto]}
+                                           :: ![FileDescriptorProto]}
                        deriving (Prelude.Show, Prelude.Eq)
 
 instance (a ~ [FileDescriptorProto], b ~ [FileDescriptorProto],
@@ -1836,22 +1840,23 @@ instance Data.ProtoLens.Message FileDescriptorSet where
                 (Data.Map.fromList [("file", file__field_descriptor)])
 
 data FileOptions = FileOptions{_FileOptions'javaPackage ::
-                               Prelude.Maybe Data.Text.Text,
-                               _FileOptions'javaOuterClassname :: Prelude.Maybe Data.Text.Text,
-                               _FileOptions'javaMultipleFiles :: Prelude.Maybe Prelude.Bool,
+                               !(Prelude.Maybe Data.Text.Text),
+                               _FileOptions'javaOuterClassname :: !(Prelude.Maybe Data.Text.Text),
+                               _FileOptions'javaMultipleFiles :: !(Prelude.Maybe Prelude.Bool),
                                _FileOptions'javaGenerateEqualsAndHash ::
-                               Prelude.Maybe Prelude.Bool,
-                               _FileOptions'javaStringCheckUtf8 :: Prelude.Maybe Prelude.Bool,
-                               _FileOptions'optimizeFor :: Prelude.Maybe FileOptions'OptimizeMode,
-                               _FileOptions'goPackage :: Prelude.Maybe Data.Text.Text,
-                               _FileOptions'ccGenericServices :: Prelude.Maybe Prelude.Bool,
-                               _FileOptions'javaGenericServices :: Prelude.Maybe Prelude.Bool,
-                               _FileOptions'pyGenericServices :: Prelude.Maybe Prelude.Bool,
-                               _FileOptions'deprecated :: Prelude.Maybe Prelude.Bool,
-                               _FileOptions'ccEnableArenas :: Prelude.Maybe Prelude.Bool,
-                               _FileOptions'objcClassPrefix :: Prelude.Maybe Data.Text.Text,
-                               _FileOptions'csharpNamespace :: Prelude.Maybe Data.Text.Text,
-                               _FileOptions'uninterpretedOption :: [UninterpretedOption]}
+                               !(Prelude.Maybe Prelude.Bool),
+                               _FileOptions'javaStringCheckUtf8 :: !(Prelude.Maybe Prelude.Bool),
+                               _FileOptions'optimizeFor ::
+                               !(Prelude.Maybe FileOptions'OptimizeMode),
+                               _FileOptions'goPackage :: !(Prelude.Maybe Data.Text.Text),
+                               _FileOptions'ccGenericServices :: !(Prelude.Maybe Prelude.Bool),
+                               _FileOptions'javaGenericServices :: !(Prelude.Maybe Prelude.Bool),
+                               _FileOptions'pyGenericServices :: !(Prelude.Maybe Prelude.Bool),
+                               _FileOptions'deprecated :: !(Prelude.Maybe Prelude.Bool),
+                               _FileOptions'ccEnableArenas :: !(Prelude.Maybe Prelude.Bool),
+                               _FileOptions'objcClassPrefix :: !(Prelude.Maybe Data.Text.Text),
+                               _FileOptions'csharpNamespace :: !(Prelude.Maybe Data.Text.Text),
+                               _FileOptions'uninterpretedOption :: ![UninterpretedOption]}
                  deriving (Prelude.Show, Prelude.Eq)
 
 instance (a ~ Data.Text.Text, b ~ Data.Text.Text,
@@ -2281,7 +2286,7 @@ instance Prelude.Bounded FileOptions'OptimizeMode where
         maxBound = FileOptions'LITE_RUNTIME
 
 data GeneratedCodeInfo = GeneratedCodeInfo{_GeneratedCodeInfo'annotation
-                                           :: [GeneratedCodeInfo'Annotation]}
+                                           :: ![GeneratedCodeInfo'Annotation]}
                        deriving (Prelude.Show, Prelude.Eq)
 
 instance (a ~ [GeneratedCodeInfo'Annotation],
@@ -2310,13 +2315,13 @@ instance Data.ProtoLens.Message GeneratedCodeInfo where
                 (Data.Map.fromList [("annotation", annotation__field_descriptor)])
 
 data GeneratedCodeInfo'Annotation = GeneratedCodeInfo'Annotation{_GeneratedCodeInfo'Annotation'path
-                                                                 :: [Data.Int.Int32],
+                                                                 :: ![Data.Int.Int32],
                                                                  _GeneratedCodeInfo'Annotation'sourceFile
-                                                                 :: Prelude.Maybe Data.Text.Text,
+                                                                 :: !(Prelude.Maybe Data.Text.Text),
                                                                  _GeneratedCodeInfo'Annotation'begin
-                                                                 :: Prelude.Maybe Data.Int.Int32,
+                                                                 :: !(Prelude.Maybe Data.Int.Int32),
                                                                  _GeneratedCodeInfo'Annotation'end
-                                                                 :: Prelude.Maybe Data.Int.Int32}
+                                                                 :: !(Prelude.Maybe Data.Int.Int32)}
                                   deriving (Prelude.Show, Prelude.Eq)
 
 instance (a ~ [Data.Int.Int32], b ~ [Data.Int.Int32],
@@ -2425,12 +2430,12 @@ instance Data.ProtoLens.Message GeneratedCodeInfo'Annotation where
                     ("end", end__field_descriptor)])
 
 data MessageOptions = MessageOptions{_MessageOptions'messageSetWireFormat
-                                     :: Prelude.Maybe Prelude.Bool,
+                                     :: !(Prelude.Maybe Prelude.Bool),
                                      _MessageOptions'noStandardDescriptorAccessor ::
-                                     Prelude.Maybe Prelude.Bool,
-                                     _MessageOptions'deprecated :: Prelude.Maybe Prelude.Bool,
-                                     _MessageOptions'mapEntry :: Prelude.Maybe Prelude.Bool,
-                                     _MessageOptions'uninterpretedOption :: [UninterpretedOption]}
+                                     !(Prelude.Maybe Prelude.Bool),
+                                     _MessageOptions'deprecated :: !(Prelude.Maybe Prelude.Bool),
+                                     _MessageOptions'mapEntry :: !(Prelude.Maybe Prelude.Bool),
+                                     _MessageOptions'uninterpretedOption :: ![UninterpretedOption]}
                     deriving (Prelude.Show, Prelude.Eq)
 
 instance (a ~ Prelude.Bool, b ~ Prelude.Bool, Prelude.Functor f) =>
@@ -2564,17 +2569,17 @@ instance Data.ProtoLens.Message MessageOptions where
                     ("uninterpreted_option", uninterpretedOption__field_descriptor)])
 
 data MethodDescriptorProto = MethodDescriptorProto{_MethodDescriptorProto'name
-                                                   :: Prelude.Maybe Data.Text.Text,
+                                                   :: !(Prelude.Maybe Data.Text.Text),
                                                    _MethodDescriptorProto'inputType ::
-                                                   Prelude.Maybe Data.Text.Text,
+                                                   !(Prelude.Maybe Data.Text.Text),
                                                    _MethodDescriptorProto'outputType ::
-                                                   Prelude.Maybe Data.Text.Text,
+                                                   !(Prelude.Maybe Data.Text.Text),
                                                    _MethodDescriptorProto'options ::
-                                                   Prelude.Maybe MethodOptions,
+                                                   !(Prelude.Maybe MethodOptions),
                                                    _MethodDescriptorProto'clientStreaming ::
-                                                   Prelude.Maybe Prelude.Bool,
+                                                   !(Prelude.Maybe Prelude.Bool),
                                                    _MethodDescriptorProto'serverStreaming ::
-                                                   Prelude.Maybe Prelude.Bool}
+                                                   !(Prelude.Maybe Prelude.Bool)}
                            deriving (Prelude.Show, Prelude.Eq)
 
 instance (a ~ Data.Text.Text, b ~ Data.Text.Text,
@@ -2739,8 +2744,8 @@ instance Data.ProtoLens.Message MethodDescriptorProto where
                     ("server_streaming", serverStreaming__field_descriptor)])
 
 data MethodOptions = MethodOptions{_MethodOptions'deprecated ::
-                                   Prelude.Maybe Prelude.Bool,
-                                   _MethodOptions'uninterpretedOption :: [UninterpretedOption]}
+                                   !(Prelude.Maybe Prelude.Bool),
+                                   _MethodOptions'uninterpretedOption :: ![UninterpretedOption]}
                    deriving (Prelude.Show, Prelude.Eq)
 
 instance (a ~ Prelude.Bool, b ~ Prelude.Bool, Prelude.Functor f) =>
@@ -2796,7 +2801,7 @@ instance Data.ProtoLens.Message MethodOptions where
                     ("uninterpreted_option", uninterpretedOption__field_descriptor)])
 
 data OneofDescriptorProto = OneofDescriptorProto{_OneofDescriptorProto'name
-                                                 :: Prelude.Maybe Data.Text.Text}
+                                                 :: !(Prelude.Maybe Data.Text.Text)}
                           deriving (Prelude.Show, Prelude.Eq)
 
 instance (a ~ Data.Text.Text, b ~ Data.Text.Text,
@@ -2835,11 +2840,11 @@ instance Data.ProtoLens.Message OneofDescriptorProto where
                 (Data.Map.fromList [("name", name__field_descriptor)])
 
 data ServiceDescriptorProto = ServiceDescriptorProto{_ServiceDescriptorProto'name
-                                                     :: Prelude.Maybe Data.Text.Text,
+                                                     :: !(Prelude.Maybe Data.Text.Text),
                                                      _ServiceDescriptorProto'method ::
-                                                     [MethodDescriptorProto],
+                                                     ![MethodDescriptorProto],
                                                      _ServiceDescriptorProto'options ::
-                                                     Prelude.Maybe ServiceOptions}
+                                                     !(Prelude.Maybe ServiceOptions)}
                             deriving (Prelude.Show, Prelude.Eq)
 
 instance (a ~ Data.Text.Text, b ~ Data.Text.Text,
@@ -2921,8 +2926,8 @@ instance Data.ProtoLens.Message ServiceDescriptorProto where
                     ("options", options__field_descriptor)])
 
 data ServiceOptions = ServiceOptions{_ServiceOptions'deprecated ::
-                                     Prelude.Maybe Prelude.Bool,
-                                     _ServiceOptions'uninterpretedOption :: [UninterpretedOption]}
+                                     !(Prelude.Maybe Prelude.Bool),
+                                     _ServiceOptions'uninterpretedOption :: ![UninterpretedOption]}
                     deriving (Prelude.Show, Prelude.Eq)
 
 instance (a ~ Prelude.Bool, b ~ Prelude.Bool, Prelude.Functor f) =>
@@ -2978,7 +2983,7 @@ instance Data.ProtoLens.Message ServiceOptions where
                     ("uninterpreted_option", uninterpretedOption__field_descriptor)])
 
 data SourceCodeInfo = SourceCodeInfo{_SourceCodeInfo'location ::
-                                     [SourceCodeInfo'Location]}
+                                     ![SourceCodeInfo'Location]}
                     deriving (Prelude.Show, Prelude.Eq)
 
 instance (a ~ [SourceCodeInfo'Location],
@@ -3007,15 +3012,15 @@ instance Data.ProtoLens.Message SourceCodeInfo where
                 (Data.Map.fromList [("location", location__field_descriptor)])
 
 data SourceCodeInfo'Location = SourceCodeInfo'Location{_SourceCodeInfo'Location'path
-                                                       :: [Data.Int.Int32],
+                                                       :: ![Data.Int.Int32],
                                                        _SourceCodeInfo'Location'span ::
-                                                       [Data.Int.Int32],
+                                                       ![Data.Int.Int32],
                                                        _SourceCodeInfo'Location'leadingComments ::
-                                                       Prelude.Maybe Data.Text.Text,
+                                                       !(Prelude.Maybe Data.Text.Text),
                                                        _SourceCodeInfo'Location'trailingComments ::
-                                                       Prelude.Maybe Data.Text.Text,
+                                                       !(Prelude.Maybe Data.Text.Text),
                                                        _SourceCodeInfo'Location'leadingDetachedComments
-                                                       :: [Data.Text.Text]}
+                                                       :: ![Data.Text.Text]}
                              deriving (Prelude.Show, Prelude.Eq)
 
 instance (a ~ [Data.Int.Int32], b ~ [Data.Int.Int32],
@@ -3136,19 +3141,19 @@ instance Data.ProtoLens.Message SourceCodeInfo'Location where
                      leadingDetachedComments__field_descriptor)])
 
 data UninterpretedOption = UninterpretedOption{_UninterpretedOption'name
-                                               :: [UninterpretedOption'NamePart],
+                                               :: ![UninterpretedOption'NamePart],
                                                _UninterpretedOption'identifierValue ::
-                                               Prelude.Maybe Data.Text.Text,
+                                               !(Prelude.Maybe Data.Text.Text),
                                                _UninterpretedOption'positiveIntValue ::
-                                               Prelude.Maybe Data.Word.Word64,
+                                               !(Prelude.Maybe Data.Word.Word64),
                                                _UninterpretedOption'negativeIntValue ::
-                                               Prelude.Maybe Data.Int.Int64,
+                                               !(Prelude.Maybe Data.Int.Int64),
                                                _UninterpretedOption'doubleValue ::
-                                               Prelude.Maybe Prelude.Double,
+                                               !(Prelude.Maybe Prelude.Double),
                                                _UninterpretedOption'stringValue ::
-                                               Prelude.Maybe Data.ByteString.ByteString,
+                                               !(Prelude.Maybe Data.ByteString.ByteString),
                                                _UninterpretedOption'aggregateValue ::
-                                               Prelude.Maybe Data.Text.Text}
+                                               !(Prelude.Maybe Data.Text.Text)}
                          deriving (Prelude.Show, Prelude.Eq)
 
 instance (a ~ [UninterpretedOption'NamePart],
@@ -3329,9 +3334,9 @@ instance Data.ProtoLens.Message UninterpretedOption where
                     ("aggregate_value", aggregateValue__field_descriptor)])
 
 data UninterpretedOption'NamePart = UninterpretedOption'NamePart{_UninterpretedOption'NamePart'namePart
-                                                                 :: Data.Text.Text,
+                                                                 :: !Data.Text.Text,
                                                                  _UninterpretedOption'NamePart'isExtension
-                                                                 :: Prelude.Bool}
+                                                                 :: !Prelude.Bool}
                                   deriving (Prelude.Show, Prelude.Eq)
 
 instance (a ~ Data.Text.Text, b ~ Data.Text.Text,
