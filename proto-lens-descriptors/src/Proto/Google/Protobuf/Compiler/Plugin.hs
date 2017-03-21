@@ -19,11 +19,11 @@ import qualified Lens.Labels
 import qualified Proto.Google.Protobuf.Descriptor
 
 data CodeGeneratorRequest = CodeGeneratorRequest{_CodeGeneratorRequest'fileToGenerate
-                                                 :: [Data.Text.Text],
+                                                 :: ![Data.Text.Text],
                                                  _CodeGeneratorRequest'parameter ::
-                                                 Prelude.Maybe Data.Text.Text,
+                                                 !(Prelude.Maybe Data.Text.Text),
                                                  _CodeGeneratorRequest'protoFile ::
-                                                 [Proto.Google.Protobuf.Descriptor.FileDescriptorProto]}
+                                                 ![Proto.Google.Protobuf.Descriptor.FileDescriptorProto]}
                           deriving (Prelude.Show, Prelude.Eq)
 
 instance (a ~ [Data.Text.Text], b ~ [Data.Text.Text],
@@ -100,9 +100,9 @@ instance Data.ProtoLens.Message CodeGeneratorRequest where
                     ("proto_file", protoFile__field_descriptor)])
 
 data CodeGeneratorResponse = CodeGeneratorResponse{_CodeGeneratorResponse'error
-                                                   :: Prelude.Maybe Data.Text.Text,
+                                                   :: !(Prelude.Maybe Data.Text.Text),
                                                    _CodeGeneratorResponse'file ::
-                                                   [CodeGeneratorResponse'File]}
+                                                   ![CodeGeneratorResponse'File]}
                            deriving (Prelude.Show, Prelude.Eq)
 
 instance (a ~ Data.Text.Text, b ~ Data.Text.Text,
@@ -159,11 +159,11 @@ instance Data.ProtoLens.Message CodeGeneratorResponse where
                     ("file", file__field_descriptor)])
 
 data CodeGeneratorResponse'File = CodeGeneratorResponse'File{_CodeGeneratorResponse'File'name
-                                                             :: Prelude.Maybe Data.Text.Text,
+                                                             :: !(Prelude.Maybe Data.Text.Text),
                                                              _CodeGeneratorResponse'File'insertionPoint
-                                                             :: Prelude.Maybe Data.Text.Text,
+                                                             :: !(Prelude.Maybe Data.Text.Text),
                                                              _CodeGeneratorResponse'File'content ::
-                                                             Prelude.Maybe Data.Text.Text}
+                                                             !(Prelude.Maybe Data.Text.Text)}
                                 deriving (Prelude.Show, Prelude.Eq)
 
 instance (a ~ Data.Text.Text, b ~ Data.Text.Text,
