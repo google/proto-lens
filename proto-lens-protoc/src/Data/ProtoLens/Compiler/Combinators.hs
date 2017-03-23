@@ -147,7 +147,7 @@ module' modName
         (Just $ Syntax.ModuleHead () modName
                     -- no warning text
                     Nothing
-                    -- no explicit exporst; we export everything.
+                    -- no explicit exports; we export everything.
                     -- TODO: Also export public imports, taking care not to
                     -- cause a name conflict between field accessors.
                     Nothing)
