@@ -5,6 +5,7 @@
 -- https://developers.google.com/open-source/licenses/bsd
 
 {-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE PatternSynonyms #-}
 module Main where
 
 import qualified Data.ByteString as B
@@ -17,8 +18,6 @@ import qualified Data.Set as Set
 import qualified Data.Text as T
 import Data.Text (Text, pack)
 import Data.ProtoLens (decodeMessage, def, encodeMessage)
-import Language.Haskell.Exts.Pretty (prettyPrint)
-import Language.Haskell.Exts.Syntax (ModuleName(..), Name(..), QName(..))
 import Lens.Family2
 import Proto.Google.Protobuf.Compiler.Plugin
     ( CodeGeneratorRequest
@@ -37,6 +36,11 @@ import System.IO as IO
 import System.FilePath (dropExtension, replaceExtension, splitDirectories)
 import Text.Read (readEither)
 
+import Data.ProtoLens.Compiler.Combinators
+    ( ModuleName
+    , Name
+    , QName
+    , prettyPrint)
 import Data.ProtoLens.Compiler.Definitions
 import Data.ProtoLens.Compiler.Generate
 import Data.ProtoLens.Compiler.Plugin
@@ -87,7 +91,7 @@ generateFiles modifyImports header files toGenerate = let
              modifyImports
              (definitions file)
              (collectEnvFromDeps deps filesByName)
-  in [ ( outputFilePath . (\(ModuleName n) -> n) . haskellModule $ file
+  in [ ( outputFilePath . prettyPrint . haskellModule $ file
        , header (descriptor file) <> pack (prettyPrint $ buildFile file)
        )
      | fileName <- toGenerate

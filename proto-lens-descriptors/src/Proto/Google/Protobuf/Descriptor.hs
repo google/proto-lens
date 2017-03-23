@@ -2,7 +2,7 @@
 {-# LANGUAGE ScopedTypeVariables, DataKinds, TypeFamilies,
   UndecidableInstances, MultiParamTypeClasses, FlexibleContexts,
   FlexibleInstances, PatternSynonyms, MagicHash #-}
-{-# OPTIONS_GHC -fno-warn-unused-imports#-}
+{-# OPTIONS_GHC -fno-warn-unused-imports #-}
 module Proto.Google.Protobuf.Descriptor where
 import qualified Prelude
 import qualified Data.Int
@@ -1014,14 +1014,14 @@ instance Prelude.Enum FieldDescriptorProto'Label where
         fromEnum FieldDescriptorProto'LABEL_REPEATED = 3
         succ FieldDescriptorProto'LABEL_REPEATED
           = Prelude.error
-              "Ident \"FieldDescriptorProto'Label\".Ident \"succ\": bad argument Ident \"FieldDescriptorProto'LABEL_REPEATED\". This value would be out of bounds."
+              "FieldDescriptorProto'Label.succ: bad argument FieldDescriptorProto'LABEL_REPEATED. This value would be out of bounds."
         succ FieldDescriptorProto'LABEL_OPTIONAL
           = FieldDescriptorProto'LABEL_REQUIRED
         succ FieldDescriptorProto'LABEL_REQUIRED
           = FieldDescriptorProto'LABEL_REPEATED
         pred FieldDescriptorProto'LABEL_OPTIONAL
           = Prelude.error
-              "Ident \"FieldDescriptorProto'Label\".Ident \"pred\": bad argument Ident \"FieldDescriptorProto'LABEL_OPTIONAL\". This value would be out of bounds."
+              "FieldDescriptorProto'Label.pred: bad argument FieldDescriptorProto'LABEL_OPTIONAL. This value would be out of bounds."
         pred FieldDescriptorProto'LABEL_REQUIRED
           = FieldDescriptorProto'LABEL_OPTIONAL
         pred FieldDescriptorProto'LABEL_REPEATED
@@ -1164,7 +1164,7 @@ instance Prelude.Enum FieldDescriptorProto'Type where
         fromEnum FieldDescriptorProto'TYPE_SINT64 = 18
         succ FieldDescriptorProto'TYPE_SINT64
           = Prelude.error
-              "Ident \"FieldDescriptorProto'Type\".Ident \"succ\": bad argument Ident \"FieldDescriptorProto'TYPE_SINT64\". This value would be out of bounds."
+              "FieldDescriptorProto'Type.succ: bad argument FieldDescriptorProto'TYPE_SINT64. This value would be out of bounds."
         succ FieldDescriptorProto'TYPE_DOUBLE
           = FieldDescriptorProto'TYPE_FLOAT
         succ FieldDescriptorProto'TYPE_FLOAT
@@ -1201,7 +1201,7 @@ instance Prelude.Enum FieldDescriptorProto'Type where
           = FieldDescriptorProto'TYPE_SINT64
         pred FieldDescriptorProto'TYPE_DOUBLE
           = Prelude.error
-              "Ident \"FieldDescriptorProto'Type\".Ident \"pred\": bad argument Ident \"FieldDescriptorProto'TYPE_DOUBLE\". This value would be out of bounds."
+              "FieldDescriptorProto'Type.pred: bad argument FieldDescriptorProto'TYPE_DOUBLE. This value would be out of bounds."
         pred FieldDescriptorProto'TYPE_FLOAT
           = FieldDescriptorProto'TYPE_DOUBLE
         pred FieldDescriptorProto'TYPE_INT64
@@ -1459,12 +1459,12 @@ instance Prelude.Enum FieldOptions'CType where
         fromEnum FieldOptions'STRING_PIECE = 2
         succ FieldOptions'STRING_PIECE
           = Prelude.error
-              "Ident \"FieldOptions'CType\".Ident \"succ\": bad argument Ident \"FieldOptions'STRING_PIECE\". This value would be out of bounds."
+              "FieldOptions'CType.succ: bad argument FieldOptions'STRING_PIECE. This value would be out of bounds."
         succ FieldOptions'STRING = FieldOptions'CORD
         succ FieldOptions'CORD = FieldOptions'STRING_PIECE
         pred FieldOptions'STRING
           = Prelude.error
-              "Ident \"FieldOptions'CType\".Ident \"pred\": bad argument Ident \"FieldOptions'STRING\". This value would be out of bounds."
+              "FieldOptions'CType.pred: bad argument FieldOptions'STRING. This value would be out of bounds."
         pred FieldOptions'CORD = FieldOptions'STRING
         pred FieldOptions'STRING_PIECE = FieldOptions'CORD
         enumFrom = Data.ProtoLens.Message.Enum.messageEnumFrom
@@ -1513,12 +1513,12 @@ instance Prelude.Enum FieldOptions'JSType where
         fromEnum FieldOptions'JS_NUMBER = 2
         succ FieldOptions'JS_NUMBER
           = Prelude.error
-              "Ident \"FieldOptions'JSType\".Ident \"succ\": bad argument Ident \"FieldOptions'JS_NUMBER\". This value would be out of bounds."
+              "FieldOptions'JSType.succ: bad argument FieldOptions'JS_NUMBER. This value would be out of bounds."
         succ FieldOptions'JS_NORMAL = FieldOptions'JS_STRING
         succ FieldOptions'JS_STRING = FieldOptions'JS_NUMBER
         pred FieldOptions'JS_NORMAL
           = Prelude.error
-              "Ident \"FieldOptions'JSType\".Ident \"pred\": bad argument Ident \"FieldOptions'JS_NORMAL\". This value would be out of bounds."
+              "FieldOptions'JSType.pred: bad argument FieldOptions'JS_NORMAL. This value would be out of bounds."
         pred FieldOptions'JS_STRING = FieldOptions'JS_NORMAL
         pred FieldOptions'JS_NUMBER = FieldOptions'JS_STRING
         enumFrom = Data.ProtoLens.Message.Enum.messageEnumFrom
@@ -2268,12 +2268,12 @@ instance Prelude.Enum FileOptions'OptimizeMode where
         fromEnum FileOptions'LITE_RUNTIME = 3
         succ FileOptions'LITE_RUNTIME
           = Prelude.error
-              "Ident \"FileOptions'OptimizeMode\".Ident \"succ\": bad argument Ident \"FileOptions'LITE_RUNTIME\". This value would be out of bounds."
+              "FileOptions'OptimizeMode.succ: bad argument FileOptions'LITE_RUNTIME. This value would be out of bounds."
         succ FileOptions'SPEED = FileOptions'CODE_SIZE
         succ FileOptions'CODE_SIZE = FileOptions'LITE_RUNTIME
         pred FileOptions'SPEED
           = Prelude.error
-              "Ident \"FileOptions'OptimizeMode\".Ident \"pred\": bad argument Ident \"FileOptions'SPEED\". This value would be out of bounds."
+              "FileOptions'OptimizeMode.pred: bad argument FileOptions'SPEED. This value would be out of bounds."
         pred FileOptions'CODE_SIZE = FileOptions'SPEED
         pred FileOptions'LITE_RUNTIME = FileOptions'CODE_SIZE
         enumFrom = Data.ProtoLens.Message.Enum.messageEnumFrom

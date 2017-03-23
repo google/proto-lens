@@ -28,9 +28,9 @@ import qualified Data.Map as Map
 import Data.Maybe (fromMaybe)
 import Data.Monoid
 import qualified Data.Set as Set
+import Data.String (fromString)
 import Data.Text (Text, cons, splitOn, toLower, uncons, unpack)
 import qualified Data.Text as T
-import Language.Haskell.Exts.Syntax (Name(..), QName(..), ModuleName(..))
 import Lens.Family2 ((^.))
 import Proto.Google.Protobuf.Descriptor
     ( DescriptorProto
@@ -47,6 +47,14 @@ import Proto.Google.Protobuf.Descriptor
     , package
     , typeName
     , value
+    )
+
+import Data.ProtoLens.Compiler.Combinators
+    ( Name
+    , QName
+    , ModuleName
+    , qual
+    , unQual
     )
 
 -- | 'Env' contains a mapping of proto names (as specified in the .proto file)
@@ -105,11 +113,11 @@ mapEnv f = fmap $ fmap f
 
 -- Lift a set of local definitions into references to a specific module.
 qualifyEnv :: ModuleName -> Env Name -> Env QName
-qualifyEnv m = mapEnv (Qual m)
+qualifyEnv m = mapEnv (qual m)
 
 -- Lift a set of local definitions into references to the current module.
 unqualifyEnv :: Env Name -> Env QName
-unqualifyEnv = mapEnv UnQual
+unqualifyEnv = mapEnv unQual
 
 -- | Look up the type definition for a given field.
 definedFieldType :: FieldDescriptorProto -> Env QName -> Definition QName
@@ -145,12 +153,12 @@ messageDefs protoPrefix hsPrefix d
     hsName = unpack $ capitalize $ d ^. name
     thisDef = (protoPrefix <> protoName
               , Message MessageInfo
-                  { messageName = Ident $ hsPrefix ++ hsName
+                  { messageName = fromString $ hsPrefix ++ hsName
                   , messageDescriptor = d
                   , messageFields =
                       [ FieldInfo
                           { overloadedField = n
-                          , recordFieldName = Ident $ "_" ++ hsPrefix' ++ n
+                          , recordFieldName = fromString $ "_" ++ hsPrefix' ++ n
                           , fieldDescriptor = f
                           }
                       | f <- d ^. field
@@ -232,7 +240,7 @@ enumDef :: Text -> String -> EnumDescriptorProto
           -> (Text, Definition Name)
 enumDef protoPrefix hsPrefix d = let
     mkText n = protoPrefix <> n
-    mkHsName n = Ident $ hsPrefix ++ unpack n
+    mkHsName n = fromString $ hsPrefix ++ unpack n
     in (mkText (d ^. name)
        , Enum EnumInfo
             { enumName = mkHsName (d ^. name)
