@@ -4,6 +4,7 @@
 -- license that can be found in the LICENSE file or at
 -- https://developers.google.com/open-source/licenses/bsd
 
+{-# LANGUAGE CPP #-}
 {-# LANGUAGE ScopedTypeVariables #-}
 
 -- | A utility library for writing proto-lens benchmarks.
@@ -16,6 +17,9 @@ import qualified Data.ByteString as BS (length)
 import Data.Maybe (fromMaybe)
 import Data.ProtoLens
 import Options.Applicative
+#if MIN_VERSION_optparse_applicative(0,13,0)
+import Data.Monoid ((<>))
+#endif
 
 -- | Generate a group of benchmarks for encoding and decoding the given proto
 -- message. Includes benchmarks for decoding to both weak head normal form and

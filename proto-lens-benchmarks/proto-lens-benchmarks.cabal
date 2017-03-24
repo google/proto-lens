@@ -24,7 +24,7 @@ library
                , bytestring == 0.10.*
                , criterion == 1.1.*
                , deepseq == 1.4.*
-               , optparse-applicative == 0.12.*
+               , optparse-applicative >= 0.12 && < 0.14
 
 -- The build-depends in the benchmarks don't specify version bounds, since
 -- those are already constrained by the library rule.

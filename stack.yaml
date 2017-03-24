@@ -1,4 +1,4 @@
-resolver: lts-7.4
+resolver: lts-8.5
 packages:
 - lens-labels
 - proto-lens
