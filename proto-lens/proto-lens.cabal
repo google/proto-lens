@@ -1,5 +1,5 @@
 name:                proto-lens
-version:             0.1.0.5
+version:             0.2.0.0
 synopsis:            A lens-based implementation of protocol buffers in Haskell.
 description:
   The proto-lens library provides to protocol buffers using modern
@@ -15,7 +15,7 @@ homepage:            https://github.com/google/proto-lens
 license:             BSD3
 license-file:        LICENSE
 author:              Judah Jacobson
-maintainer:          judahjacobson+protolens@google.com
+maintainer:          proto-lens@googlegroups.com
 copyright:           Google Inc.
 category:            Data
 build-type:          Simple

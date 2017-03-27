@@ -1,5 +1,10 @@
 # ChangeLog
 
+## v0.2.0.0
+- Support OverloadedLabels with the new `lens-labels` package.
+- Fix codegen for field names that are already camel-cased.
+- Increase version bounds to work with Stackage lts-8.
+
 ## v0.1.0.5
 - Fix the handling of packed repeated fields (#38)
 - Improve space usage and time of decoding (#63)

@@ -7,7 +7,7 @@ homepage:            https://github.com/google/proto-lens
 license:             BSD3
 license-file:        LICENSE
 author:              Judah Jacobson
-maintainer:          judahjacobson+protolens@google.com
+maintainer:          proto-lens@googlegroups.com
 copyright:           Google Inc.
 category:            Data
 build-type:          Custom
@@ -19,8 +19,8 @@ library
   exposed-modules:     Data.ProtoLens.TestUtil
   default-language: Haskell2010
   build-depends: proto-lens-arbitrary == 0.1.*
-               , proto-lens == 0.1.*
-               , proto-lens-protoc == 0.1.*
+               , proto-lens == 0.2.*
+               , proto-lens-protoc == 0.2.*
                , base >= 4.8 && < 4.10
                , bytestring == 0.10.*
                , text == 1.2.*

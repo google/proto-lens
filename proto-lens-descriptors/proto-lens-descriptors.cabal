@@ -1,5 +1,5 @@
 name:                proto-lens-descriptors
-version:             0.1.0.5
+version:             0.2.0.0
 synopsis:            Protocol buffers for describing the definitions of messages.
 description:
     This package provides definitions for the 'proto-lens' package
@@ -7,7 +7,7 @@ description:
 license:             BSD3
 license-file:        LICENSE
 author:              Judah Jacobson
-maintainer:          judahjacobson@google.com
+maintainer:          proto-lens@googlegroups.com
 copyright:           Google Inc.
 category:            Data
 build-type:          Simple
@@ -25,8 +25,8 @@ library
     , bytestring == 0.10.*
     , data-default-class >= 0.0 && < 0.2
     , lens-family == 1.2.*
-    , lens-labels == 0.1.0.0
+    , lens-labels == 0.1.*
     -- Specify an exact version of `proto-lens`, since it's tied closely
     -- to the generated code.
-    , proto-lens == 0.1.0.5
+    , proto-lens == 0.2.0.0
     , text == 1.2.*
