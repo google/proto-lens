@@ -19,11 +19,11 @@ import Test.Framework (testGroup)
 import Data.ProtoLens
 import qualified Data.ByteString as B
 import Data.ByteString.Builder (word8)
-import Data.Monoid (mconcat)
 import Data.Word (Word8)
 
 import Data.ProtoLens.TestUtil
 
+main :: IO ()
 main = testMain
            [int32Test, stringTest, embeddedTest, packedIntsTest, roundTripTests]
 
@@ -32,6 +32,7 @@ canonicalTest :: (Show a, Eq a, Message a)
 canonicalTest name val text bytes
     = testGroup name [serializeTo "bytes" val text $ mconcat $ map word8 bytes]
 
+int32Test, stringTest, embeddedTest, packedIntsTest, roundTripTests :: Test
 int32Test = canonicalTest
     "int32"
     (def & a .~ 150 :: Test1)

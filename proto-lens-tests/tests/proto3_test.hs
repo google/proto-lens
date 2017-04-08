@@ -7,7 +7,6 @@
 {-# LANGUAGE OverloadedStrings #-}
 module Main where
 
-import Data.Monoid (mconcat)
 import Data.ProtoLens
 import Lens.Family2 ((&), (.~), (^.))
 import qualified Data.ByteString as B
@@ -38,6 +37,7 @@ import Test.HUnit ((@=?))
 
 import Data.ProtoLens.TestUtil
 
+main :: IO ()
 main = testMain
   [ testGroup "Foo"
     [ serializeTo "int32"
@@ -46,7 +46,7 @@ main = testMain
         $ tagged 1 $ VarInt 150
     , serializeTo "repeated-string"
         (def & b .~ ["one", "two"] :: Foo)
-        (vcat $ map (keyed "b") ["one", "two"])
+        (vcat $ map (keyedStr "b") ["one", "two"])
         $ mconcat (map (tagged 2 . Lengthy) ["one", "two"])
     , testGroup "oneof"
         [ serializeTo "float"
@@ -66,7 +66,7 @@ main = testMain
     -- Repeated scalar fields in proto3 should serialize as "packed" by default.
     , serializeTo "packed-by-default"
         (def & f .~ [1,2,3] :: Foo)
-        (vcat [keyed "f" x | x <- [1..3]])
+        (vcat [keyedInt "f" x | x <- [1..3]])
         $ tagged 7 $ Lengthy $ mconcat [varInt x | x <- [1..3]]
     , runTypedTest (roundTripTest "foo" :: TypedTest Foo)
     ]

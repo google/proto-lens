@@ -256,68 +256,59 @@ instance Data.ProtoLens.Message CodeGeneratorResponse'File where
                     ("content", content__field_descriptor)])
 
 content ::
-        forall x f s t a b .
-          (Prelude.Functor f, Lens.Labels.HasLens "content" f s t a b) =>
+        forall f s t a b . Lens.Labels.HasLens "content" f s t a b =>
           Lens.Family2.LensLike f s t a b
 content
   = Lens.Labels.lensOf
       ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "content")
 
 error ::
-      forall x f s t a b .
-        (Prelude.Functor f, Lens.Labels.HasLens "error" f s t a b) =>
+      forall f s t a b . Lens.Labels.HasLens "error" f s t a b =>
         Lens.Family2.LensLike f s t a b
 error
   = Lens.Labels.lensOf
       ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "error")
 
 file ::
-     forall x f s t a b .
-       (Prelude.Functor f, Lens.Labels.HasLens "file" f s t a b) =>
+     forall f s t a b . Lens.Labels.HasLens "file" f s t a b =>
        Lens.Family2.LensLike f s t a b
 file
   = Lens.Labels.lensOf
       ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "file")
 
 fileToGenerate ::
-               forall x f s t a b .
-                 (Prelude.Functor f,
-                  Lens.Labels.HasLens "fileToGenerate" f s t a b) =>
+               forall f s t a b .
+                 Lens.Labels.HasLens "fileToGenerate" f s t a b =>
                  Lens.Family2.LensLike f s t a b
 fileToGenerate
   = Lens.Labels.lensOf
       ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "fileToGenerate")
 
 insertionPoint ::
-               forall x f s t a b .
-                 (Prelude.Functor f,
-                  Lens.Labels.HasLens "insertionPoint" f s t a b) =>
+               forall f s t a b .
+                 Lens.Labels.HasLens "insertionPoint" f s t a b =>
                  Lens.Family2.LensLike f s t a b
 insertionPoint
   = Lens.Labels.lensOf
       ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "insertionPoint")
 
 maybe'content ::
-              forall x f s t a b .
-                (Prelude.Functor f,
-                 Lens.Labels.HasLens "maybe'content" f s t a b) =>
+              forall f s t a b . Lens.Labels.HasLens "maybe'content" f s t a b =>
                 Lens.Family2.LensLike f s t a b
 maybe'content
   = Lens.Labels.lensOf
       ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "maybe'content")
 
 maybe'error ::
-            forall x f s t a b .
-              (Prelude.Functor f, Lens.Labels.HasLens "maybe'error" f s t a b) =>
+            forall f s t a b . Lens.Labels.HasLens "maybe'error" f s t a b =>
               Lens.Family2.LensLike f s t a b
 maybe'error
   = Lens.Labels.lensOf
       ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "maybe'error")
 
 maybe'insertionPoint ::
-                     forall x f s t a b .
-                       (Prelude.Functor f,
-                        Lens.Labels.HasLens "maybe'insertionPoint" f s t a b) =>
+                     forall f s t a b .
+                       Lens.Labels.HasLens "maybe'insertionPoint" f s t a b =>
                        Lens.Family2.LensLike f s t a b
 maybe'insertionPoint
   = Lens.Labels.lensOf
@@ -325,41 +316,36 @@ maybe'insertionPoint
          (Lens.Labels.Proxy#) "maybe'insertionPoint")
 
 maybe'name ::
-           forall x f s t a b .
-             (Prelude.Functor f, Lens.Labels.HasLens "maybe'name" f s t a b) =>
+           forall f s t a b . Lens.Labels.HasLens "maybe'name" f s t a b =>
              Lens.Family2.LensLike f s t a b
 maybe'name
   = Lens.Labels.lensOf
       ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "maybe'name")
 
 maybe'parameter ::
-                forall x f s t a b .
-                  (Prelude.Functor f,
-                   Lens.Labels.HasLens "maybe'parameter" f s t a b) =>
+                forall f s t a b .
+                  Lens.Labels.HasLens "maybe'parameter" f s t a b =>
                   Lens.Family2.LensLike f s t a b
 maybe'parameter
   = Lens.Labels.lensOf
       ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "maybe'parameter")
 
 name ::
-     forall x f s t a b .
-       (Prelude.Functor f, Lens.Labels.HasLens "name" f s t a b) =>
+     forall f s t a b . Lens.Labels.HasLens "name" f s t a b =>
        Lens.Family2.LensLike f s t a b
 name
   = Lens.Labels.lensOf
       ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "name")
 
 parameter ::
-          forall x f s t a b .
-            (Prelude.Functor f, Lens.Labels.HasLens "parameter" f s t a b) =>
+          forall f s t a b . Lens.Labels.HasLens "parameter" f s t a b =>
             Lens.Family2.LensLike f s t a b
 parameter
   = Lens.Labels.lensOf
       ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "parameter")
 
 protoFile ::
-          forall x f s t a b .
-            (Prelude.Functor f, Lens.Labels.HasLens "protoFile" f s t a b) =>
+          forall f s t a b . Lens.Labels.HasLens "protoFile" f s t a b =>
             Lens.Family2.LensLike f s t a b
 protoFile
   = Lens.Labels.lensOf

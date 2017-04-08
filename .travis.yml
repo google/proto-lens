@@ -21,7 +21,7 @@ matrix:
     addons: {apt: {packages: [libgmp-dev]}}
   - env: BUILD=stack STACK='stack --resolver=lts-7.4'
     addons: {apt: {packages: [libgmp-dev]}}
-  - env: BUILD=stack STACK=stack # use the resolver in stack.yaml
+  - env: BUILD=stack STACK=stack # Use the resolver in stack.yaml
     addons: {apt: {packages: [libgmp-dev]}}
 
 before_install:
@@ -39,6 +39,7 @@ before_install:
   - rm protoc-release.zip
 
 install:
+  # Don't use '-Wall -Werror' to build the snapshot packages.
   - case "$BUILD" in
       stack)
         $STACK setup --no-terminal;
@@ -52,7 +53,8 @@ script:
   # edge cases around custom Setup.hs script dependencies.
   - case "$BUILD" in
       stack)
-        $STACK build --haddock --no-haddock-deps && $STACK test --haddock --no-haddock-deps;;
+        STACK_ARGS=(--haddock --no-haddock-deps --ghc-options="-Wall -Werror");
+        $STACK build "${STACK_ARGS[@]}" && $STACK test "${STACK_ARGS[@]}";;
       cabal)
         ./travis-cabal.sh;;
     esac

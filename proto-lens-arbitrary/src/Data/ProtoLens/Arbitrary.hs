@@ -14,7 +14,6 @@ module Data.ProtoLens.Arbitrary
 
 import Data.ProtoLens.Message
 
-import Control.Applicative ((<$>), pure)
 import Control.Arrow ((&&&))
 import Control.Monad (foldM)
 import qualified Data.ByteString as BS

@@ -23,7 +23,6 @@ import Data.Text (Text)
 import qualified Data.Text as Text
 import qualified Data.Text.Lazy as LT
 import Data.Text.Encoding (encodeUtf8)
-import Data.Monoid (mempty)
 import Data.ByteString.Builder (Builder, byteString)
 
 import Data.ProtoLens.TestUtil
@@ -40,6 +39,7 @@ readFails name = readFrom name (Nothing :: Maybe Raw)
 readSucceeds :: String -> Raw -> LT.Text -> Test
 readSucceeds name value = readFrom name (Just value)
 
+main :: IO ()
 main = testMain
     [ serializeTo "default" (def :: Raw) mempty mempty
     , testInt32
@@ -61,13 +61,18 @@ main = testMain
     , testFailedDecoding
     ]
 
-testRawValues :: Show a => String -> Lens' Raw a -> (a -> Doc)
+testInt32, testInt64, testUInt32, testUInt64, testSInt32, testSInt64,
+    testFixed32, testFixed64, testSFixed32, testSFixed64, testFloat,
+    testDouble, testBool, testString, testUnicode, testBytes,
+    testFailedDecoding :: Test
+
+testRawValues :: String -> Lens' Raw a -> (a -> Doc)
               -> (a -> Builder) -> [(String, a)] -> Test
 testRawValues groupName access showMsg encode values
     = testRawValuePairs groupName access showMsg encode
         [(name, x, x) | (name, x) <- values]
 
-testRawValuePairs :: Show a => String -> Lens' Raw a -> (a -> Doc)
+testRawValuePairs :: String -> Lens' Raw a -> (a -> Doc)
                   -> (b -> Builder) -> [(String, a, b)] -> Test
 testRawValuePairs groupName access showMsg encode values
     = testGroup groupName
@@ -92,12 +97,12 @@ int32Values =
     ]
 
 testInt32 = testRawValues "int32" a
-                (keyed "a")
+                (keyedShow "a")
                 (tagged 1 . VarInt . fromIntegral)
                 int32Values
 
 testSInt32 = testRawValues "sint32" l
-                (keyed "l")
+                (keyedShow "l")
                 (tagged 12 . VarInt . signed)
                 int32Values
 
@@ -109,7 +114,7 @@ signed x
     | otherwise = 1 + 2 * fromIntegral (negate $ x + 1)
 
 testSFixed32 = testRawValues "sfixed32" n
-                  (keyed "n")
+                  (keyedShow "n")
                   (tagged 14 . Fixed32 . fromIntegral)
                   int32Values
 
@@ -126,17 +131,17 @@ int64Values =
     ]
 
 testInt64 = testRawValues "int64" b
-                (keyed "b")
+                (keyedShow "b")
                 (tagged 2 . VarInt . fromIntegral)
                 int64Values
 
 testSInt64 = testRawValues "sint64" m
-                (keyed "m")
+                (keyedShow "m")
                 (tagged 13 . VarInt . signed)
                 int64Values
 
 testSFixed64 = testRawValues "sfixed64" o
-                  (keyed "o")
+                  (keyedShow "o")
                   (tagged 15 . Fixed64 . fromIntegral)
                   int64Values
 
@@ -149,12 +154,12 @@ word32Values =
     ]
 
 testUInt32 = testRawValues "uint32" j
-                (keyed "j")
+                (keyedShow "j")
                 (tagged 10 . VarInt . fromIntegral)
                 word32Values
 
 testFixed32 = testRawValues "fixed32" c
-                (keyed "c")
+                (keyedShow "c")
                 (tagged 3 . Fixed32)
                 word32Values
 
@@ -168,17 +173,17 @@ word64Values =
     ]
 
 testUInt64 = testRawValues "uint64" k
-                (keyed "k")
+                (keyedShow "k")
                 (tagged 11 . VarInt)
                 word64Values
 
 testFixed64 = testRawValues "fixed64" d
-                (keyed "d")
+                (keyedShow "d")
                 (tagged 4 . Fixed64)
                 word64Values
 
 testFloat = testRawValuePairs "float" e
-    (keyed "e")
+    (keyedShow "e")
     (tagged 5 . Fixed32)
     ([ ("zero", 0, 0x0)
      , ("simple", 27, 0x41d80000)
@@ -189,7 +194,7 @@ testFloat = testRawValuePairs "float" e
      , ("negative fractional", -(20/3), 0xc0d55555)
      ] :: [(String, Float, Word32)])
 testDouble = testRawValuePairs "double" f
-    (keyed "f")
+    (keyedShow "f")
     (tagged 6 . Fixed64)
     ([ ("zero", 0, 0x0)
      , ("simple", 27, 0x403b000000000000)
@@ -202,7 +207,7 @@ testDouble = testRawValuePairs "double" f
 
 testBool = testGroup "bool"
     [ testRawValuePairs "named" g
-        (keyedDoc "g" . (\t -> if t then "true" else "false"))
+        (keyed "g" . (\t -> if t then "true" else "false"))
         (tagged 7 . VarInt)
         [ ("true", True, 1)
         , ("false", False, 0)
@@ -214,7 +219,7 @@ testBool = testGroup "bool"
     ]
 
 testString = testRawValues "string" h
-    (keyed "h")
+    (keyedShow "h")
     (tagged 8 . Lengthy . byteString . encodeUtf8)
     ([ ("empty", "")
      , ("one-char", "x")
@@ -235,7 +240,7 @@ testUnicode = testGroup "unicode"
 
 
 testBytes = testRawValues "bytes" i
-    (keyed "i")
+    (keyedShow "i")
     (tagged 9 . Lengthy . byteString)
     (fmap (second B.pack)
         [ ("empty", [])
@@ -245,7 +250,6 @@ testBytes = testRawValues "bytes" i
         , ("very long", replicate 12345 42)
         ])
 
-testFailedDecoding :: Test
 testFailedDecoding = testGroup "failedDecoding"
     [ deserializeFails "different types" (def & a .~ fromString "foo")
     , deserializeFrom "unknown tag" (Just (def :: Raw))

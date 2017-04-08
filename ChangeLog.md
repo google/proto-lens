@@ -1,5 +1,9 @@
 # ChangeLog
 
+## v0.2.0.1
+- Make the libraries '-Wall -Werror'-clean for the latest
+  version of GHC.
+
 ## v0.2.0.0
 - Support OverloadedLabels with the new `lens-labels` package.
 - Fix codegen for field names that are already camel-cased.

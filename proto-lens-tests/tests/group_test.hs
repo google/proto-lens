@@ -15,6 +15,7 @@ import Lens.Family2 ((&), (.~))
 
 import Data.ProtoLens.TestUtil
 
+main :: IO ()
 main = testMain
            [ serializeSimple
            , deserializeEndMismatch
@@ -22,10 +23,13 @@ main = testMain
            , roundTripComplicated
            ]
 
+serializeSimple, deserializeEndMismatch, roundTripSimple,
+    roundTripComplicated :: Test
+
 serializeSimple = serializeTo
     "serialize Simple"
     (def & (grp . int) .~ 12 :: Simple)
-    (braced "Grp" (keyed "int" 12))
+    (braced "Grp" (keyedInt "int" 12))
     (tagged 1 GroupStart <> tagged 2 (VarInt 12) <> tagged 1 GroupEnd)
 
 deserializeEndMismatch = deserializeFrom
