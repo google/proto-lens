@@ -14,14 +14,13 @@ import Test.Framework (plusTestOptions, testGroup)
 import Test.Framework.Options (topt_timeout)
 import Test.Framework.Providers.HUnit (testCase)
 import Test.HUnit ((@?=))
-import Text.PrettyPrint (text)
-import Data.Monoid (mempty)
 
 import Data.ProtoLens.TestUtil
 
 defFoo :: Foo
 defFoo = def
 
+main :: IO ()
 main = testMain
     [ serializeTo "default" defFoo mempty mempty
     , testExternalEnum
@@ -36,10 +35,14 @@ main = testMain
     , testAliases
     ]
 
+testExternalEnum, testNestedEnum, testDefaults, testBadEnumValues,
+    testNamedEnumValues, testRoundTrip, testBounded, testMaybeSuccAndPred,
+    testEnumFromThenTo, testAliases :: Test
+
 testExternalEnum = testGroup "external"
     [ serializeTo (show e1)
           (defFoo & bar .~ e1)
-          (keyedDoc "bar" $ text e2)
+          (keyed "bar" e2)
           (tagged 1 $ VarInt e3)
     -- Use ":: Bar" to confirm that the external type doesn't have a prefix.
     | (e1, e2, e3) <- zip3 [BAR3, BAR5, NEGATIVE :: Bar]
@@ -50,7 +53,7 @@ testExternalEnum = testGroup "external"
 testNestedEnum = testGroup "nested"
     [ serializeTo (show e1)
           (defFoo & baz .~ e1)
-          (keyedDoc "baz" $ text e2)
+          (keyed "baz" e2)
           (tagged 2 $ VarInt e3)
     -- Use ":: Foo'Baz" to confirm that the nested type has a prefix.
     | (e1, e2, e3) <- zip3 [Foo'BAZ2, Foo'BAZ4 :: Foo'Baz]

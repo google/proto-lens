@@ -9,10 +9,7 @@
 module Main where
 
 import qualified Data.ByteString as B
-import Data.Char (toUpper)
-import Data.List (foldl', intercalate)
-import qualified Data.Map.Strict as Map
-import Data.Map.Strict (Map, unions, (!))
+import Data.Map.Strict ((!))
 import Data.Monoid ((<>))
 import qualified Data.Set as Set
 import qualified Data.Text as T
@@ -29,27 +26,19 @@ import Proto.Google.Protobuf.Compiler.Plugin
     , protoFile
     )
 import Proto.Google.Protobuf.Descriptor
-    (FileDescriptorProto, name, dependency, publicDependency)
+    (FileDescriptorProto, name, dependency)
 import System.Environment (getProgName)
 import System.Exit (exitWith, ExitCode(..))
 import System.IO as IO
-import System.FilePath (dropExtension, replaceExtension, splitDirectories)
-import Text.Read (readEither)
 
-import Data.ProtoLens.Compiler.Combinators
-    ( ModuleName
-    , Name
-    , QName
-    , prettyPrint)
-import Data.ProtoLens.Compiler.Definitions
+import Data.ProtoLens.Compiler.Combinators (prettyPrint)
 import Data.ProtoLens.Compiler.Generate
 import Data.ProtoLens.Compiler.Plugin
-import System.Environment (getArgs)
 
+main :: IO ()
 main = do
     contents <- B.getContents
     progName <- getProgName
-    args <- getArgs
     case decodeMessage contents of
         Left e -> IO.hPutStrLn stderr e >> exitWith (ExitFailure 1)
         Right x -> B.putStr $ encodeMessage $ makeResponse progName x
@@ -79,22 +68,22 @@ generateFiles modifyImports header files toGenerate = let
   modulePrefix = "Proto"
   filesByName = analyzeProtoFiles modulePrefix files
   -- The contents of the generated Haskell file for a given .proto file.
-  buildFile file = let
-      deps = descriptor file ^. dependency
+  buildFile f = let
+      deps = descriptor f ^. dependency
       imports = Set.toAscList $ Set.fromList
                   [ haskellModule (filesByName ! exportName)
                   | dep <- deps
                   , exportName <- exports (filesByName ! dep)
                   ]
-      in generateModule (haskellModule file) imports
-             (fileSyntaxType (descriptor file))
+      in generateModule (haskellModule f) imports
+             (fileSyntaxType (descriptor f))
              modifyImports
-             (definitions file)
+             (definitions f)
              (collectEnvFromDeps deps filesByName)
-  in [ ( outputFilePath . prettyPrint . haskellModule $ file
-       , header (descriptor file) <> pack (prettyPrint $ buildFile file)
+  in [ ( outputFilePath . prettyPrint . haskellModule $ f
+       , header (descriptor f) <> pack (prettyPrint $ buildFile f)
        )
      | fileName <- toGenerate
-     , let file = filesByName ! fileName
+     , let f = filesByName ! fileName
      ]
 

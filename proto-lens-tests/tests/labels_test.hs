@@ -6,7 +6,7 @@ import Prelude hiding ((.))
 import Lens.Labels ((&), (.~), (^.), (.), runLens, set)
 import qualified Lens.Family2
 import qualified Lens.Family
-import Proto.Canonical (Test1, Test2, Test3, Test4)
+import Proto.Canonical (Test1, Test3)
 
 import Data.Default.Class (def)
 import Data.ProtoLens (build)
@@ -14,6 +14,7 @@ import Data.ProtoLens.TestUtil
 import Test.HUnit ((@?=))
 import Test.Framework.Providers.HUnit (testCase)
 
+main :: IO ()
 main = testMain
     [ testCase "inside" inside
     , testCase "outside" outside

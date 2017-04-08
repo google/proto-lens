@@ -24,8 +24,8 @@ import Data.ProtoLens.Message
 import Data.ProtoLens.Encoding.Bytes
 import Data.ProtoLens.Encoding.Wire
 
-import Control.Applicative ((<|>), (<$>))
-import Control.Monad (foldM, guard, join)
+import Control.Applicative ((<|>))
+import Control.Monad (guard)
 import Data.Attoparsec.ByteString as Parse
 import Data.Bool (bool)
 import Data.Text.Encoding (encodeUtf8, decodeUtf8')
@@ -34,10 +34,7 @@ import qualified Data.ByteString as B
 import qualified Data.Map.Strict as Map
 import Data.ByteString.Lazy.Builder as Builder
 import qualified Data.ByteString.Lazy as L
-import Data.Monoid (mconcat, mempty)
-import Data.Foldable (foldMap, toList, foldl')
 import Lens.Family2 (set, over, (^.), (&))
-import Data.Functor.Identity (Identity(..))
 
 -- TODO: We could be more incremental when parsing/encoding length-based fields,
 -- rather than forcing the whole thing.  E.g., for encoding we're doing extra

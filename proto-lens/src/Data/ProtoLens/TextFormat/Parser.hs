@@ -19,7 +19,6 @@ import Data.Char (ord)
 import Data.Functor.Identity (Identity)
 import Data.List (intercalate)
 import Data.Maybe (catMaybes)
-import Data.Monoid (mconcat)
 import Data.Text.Lazy (Text)
 import Data.Word (Word8)
 import Numeric (readOct, readHex)
@@ -28,7 +27,7 @@ import Text.Parsec.Char
 import Text.Parsec.Text.Lazy (Parser)
 import Text.Parsec.Combinator (choice, eof, many1, optionMaybe, sepBy1)
 import Text.Parsec.Token hiding (octal)
-import Control.Applicative ((<*), (<|>), (*>), many)
+import Control.Applicative ((<|>), many)
 import Control.Monad (liftM, liftM2, mzero)
 
 -- | A 'TokenParser' for the protobuf text format.

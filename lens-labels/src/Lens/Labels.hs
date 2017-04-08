@@ -32,7 +32,7 @@ module Lens.Labels (
     Lens,
     -- * HasLens
     HasLens(..),
-    Proxy#(..),
+    Proxy#,
     proxy#,
     -- * Setters
     ASetter,

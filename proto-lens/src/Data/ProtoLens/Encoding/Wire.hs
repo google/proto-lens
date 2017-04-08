@@ -24,11 +24,8 @@ module Data.ProtoLens.Encoding.Wire(
 import Data.Attoparsec.ByteString as Parse
 import Data.Bits
 import qualified Data.ByteString as B
-import qualified Data.ByteString.Lazy as BL
 import Data.ByteString.Lazy.Builder as Builder
-import Data.Foldable (foldMap)
-import Data.Monoid ((<>), mempty)
-import Data.Void (Void)
+import Data.Monoid ((<>))
 import Data.Word
 
 import Data.ProtoLens.Encoding.Bytes
@@ -72,8 +69,8 @@ getWireValue VarInt _ = getVarInt
 getWireValue Fixed64 _ = anyBits
 getWireValue Fixed32 _ = anyBits
 getWireValue Lengthy _ = getVarInt >>= Parse.take . fromIntegral
-getWireValue StartGroup tag = return ()
-getWireValue EndGroup tag = return ()
+getWireValue StartGroup _ = return ()
+getWireValue EndGroup _ = return ()
 
 putWireValue :: WireType a -> a -> Builder
 putWireValue VarInt n = putVarInt n
