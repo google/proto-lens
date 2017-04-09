@@ -11,7 +11,6 @@ import qualified Data.ByteString
 import Data.Char (ord)
 import Data.Monoid ((<>))
 import qualified Data.Text.Lazy
-import Data.Word (Word8)
 import Data.ProtoLens (
     def, Message, showMessage, showMessageShort, pprintMessage)
 import Lens.Family2 ((&), (.~))
@@ -34,6 +33,7 @@ failed1 = Nothing
 showMessageWithLineLength :: Message a => Int -> a -> String
 showMessageWithLineLength n = renderStyle style {lineLength=n} . pprintMessage
 
+main :: IO ()
 main = testMain
     [ readFrom "spaces" (Just $ def1 & a .~ 5) "  a: \n5  "
     , readFrom "string concat" (Just $ def1 & b .~ "abcdef")

@@ -15,15 +15,18 @@ module Data.ProtoLens.TestUtil(
     tagged,
     varInt,
     keyed,
-    keyedDoc,
+    keyedInt,
+    keyedStr,
+    keyedShow,
     braced,
+    doubleQuotes,
     testProperty,
     textRoundTripProperty,
     wireRoundTripProperty,
     MessageProperty,
     roundTripTest,
     TypedTest(runTypedTest),
-    PrettyPrint.Doc,
+    Doc,
     PrettyPrint.vcat,
     (PrettyPrint.$+$),
     ) where
@@ -41,15 +44,16 @@ import Test.Framework.Providers.QuickCheck2 (testProperty)
 import Test.HUnit ((@=?), assertBool)
 import Data.Either (isLeft)
 import Data.Bits (shiftL, shiftR, (.|.), (.&.))
-import Data.Foldable (foldMap)
 import qualified Data.Text.Lazy as TL
 import Data.Monoid ((<>))
 import Data.Word (Word32, Word64)
 import qualified Text.PrettyPrint as PrettyPrint
 import Text.PrettyPrint
-    ( char
+    ( Doc
+    , char
     , colon
     , nest
+    , doubleQuotes
     , renderStyle
     , style
     , lineLength
@@ -61,7 +65,7 @@ testMain :: [Test] -> IO ()
 testMain = defaultMain
 
 serializeTo :: (Show a, Eq a, Message a)
-            => String -> a -> PrettyPrint.Doc -> Builder.Builder -> Test
+            => String -> a -> Doc -> Builder.Builder -> Test
 serializeTo name x text bs = testCase name $ do
     let bs' = L.toStrict $ Builder.toLazyByteString bs
     bs' @=? encodeMessage x
@@ -140,16 +144,23 @@ tagged t GroupStart = varInt (t `shiftL` 3 .|. 3)
 tagged t GroupEnd = varInt (t `shiftL` 3 .|. 4)
 
 -- | Utility to generate the text format for a single, non-message field.
-keyed :: Show a => String -> a -> PrettyPrint.Doc
-keyed k v = keyedDoc k (PrettyPrint.text (show v))
+keyed :: Doc -> Doc -> Doc
+keyed k v = (k <> colon) <+> v
 
--- | Utility to generate the text format for a single, non-message field
--- which doesn't correspond to a 'Show' instance.
-keyedDoc :: String -> PrettyPrint.Doc -> PrettyPrint.Doc
-keyedDoc k v = PrettyPrint.text k <> (colon <+> v)
+-- | A version of keyed with a showable type.
+keyedShow :: Show a => Doc -> a -> Doc
+keyedShow k = keyed k . PrettyPrint.text . show
+
+-- | A version of keyed that's specialized to integers.
+keyedInt :: Doc -> Integer -> Doc
+keyedInt k = keyed k . PrettyPrint.text . show
+
+-- | A version of keyed that's specialized to (quoted) strings.
+keyedStr :: Doc -> Doc -> Doc
+keyedStr k = keyed k . doubleQuotes
 
 -- | Utility to generate the text format for a submessage.
-braced :: String -> PrettyPrint.Doc -> PrettyPrint.Doc
+braced :: String -> Doc -> Doc
 braced k v = (PrettyPrint.text k <+> char '{')
               $+$ nest 2 v
               $+$ PrettyPrint.char '}'

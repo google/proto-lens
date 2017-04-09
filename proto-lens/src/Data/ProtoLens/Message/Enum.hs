@@ -1,3 +1,4 @@
+{-# LANGUAGE ScopedTypeVariables #-}
 -- | This internal module provides functions used to define the various
 -- @enumFrom*@ functions of 'Enum'.
 --
@@ -69,7 +70,7 @@ messageEnumFromThen start step = case comparing fromEnum start step of
     EQ -> repeat start
     GT -> messageEnumFromThenTo start step minBound
 
-messageEnumFromThenTo :: Enum a => a -> a -> a -> [a]
+messageEnumFromThenTo :: forall a . Enum a => a -> a -> a -> [a]
 messageEnumFromThenTo start step stop = case comparing fromEnum start step of
     LT -> helper succ GT
     EQ -> if stopInt >= stepInt then repeat start else []
@@ -90,6 +91,7 @@ messageEnumFromThenTo start step stop = case comparing fromEnum start step of
             | stopInt == fromEnum a = Nothing
             | otherwise = jump (n-1) $ iter a
         unfoldIter a = (a, jump skipCount a)
+        countSkips :: Integer -> a -> Integer
         countSkips n start'
             | stepInt == fromEnum start' = n
             | otherwise = countSkips (n+1) $ iter start'

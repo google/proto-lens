@@ -29,6 +29,7 @@ import Data.ProtoLens.TestUtil
     , testMain
     )
 
+main :: IO ()
 main = testMain
     [ testNames
     , testPreludeType
@@ -37,6 +38,9 @@ main = testMain
     , testProtoKeywordTypes
     , testReadReservedName
     ]
+
+testNames, testPreludeType, testHaskellKeywords, testProtoKeywords,
+    testProtoKeywordTypes, testReadReservedName :: Test
 
 -- | Test that we can get/set each individual field.
 testFields :: forall a . (Show a, Message a, Eq a)

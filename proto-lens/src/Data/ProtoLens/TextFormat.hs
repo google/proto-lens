@@ -18,7 +18,6 @@ module Data.ProtoLens.TextFormat(
     ) where
 
 import Lens.Family2 ((&),(^.),(.~), set, over)
-import Control.Applicative ((<$>))
 import Control.Arrow (left)
 import qualified Data.ByteString
 import Data.Char (isPrint, isAscii, chr)
