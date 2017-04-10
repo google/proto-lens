@@ -15,7 +15,6 @@ module Data.ProtoLens.Compiler.Generate(
     ) where
 
 
-import Control.Applicative ((<$>))
 import Control.Arrow (second)
 import qualified Data.Foldable as F
 import qualified Data.List as List
@@ -34,7 +33,6 @@ import Proto.Google.Protobuf.Descriptor
     , FieldDescriptorProto'Label(..)
     , FieldDescriptorProto'Type(..)
     , FileDescriptorProto
-    , FieldOptions
     , defaultValue
     , label
     , mapEntry
@@ -321,14 +319,12 @@ generateEnumDecls info =
 generateFieldDecls :: String -> [Decl]
 generateFieldDecls xStr =
     -- foo :: forall x f s t a b
-    --        . (Functor f, HasLens x f s t a b)
-    --        => LensLike f s t a b
+    --        . HasLens x f s t a b => LensLike f s t a b
+    -- -- Note: `Lens.Family2.LensLike f` implies Functor f.
     -- foo = lensOf (Proxy# :: Proxy# x)
     [ typeSig [x]
-          $ tyForAll ["x", "f", "s", "t", "a", "b"]
-                  [ classA "Prelude.Functor" ["f"]
-                  , classA "Lens.Labels.HasLens" [xSym, "f", "s", "t", "a", "b"]
-                  ]
+          $ tyForAll ["f", "s", "t", "a", "b"]
+                  [classA "Lens.Labels.HasLens" [xSym, "f", "s", "t", "a", "b"]]
                     $ "Lens.Family2.LensLike" @@ "f" @@ "s" @@ "t" @@ "a" @@ "b"
     , funBind [match x []
                   $ "Lens.Labels.lensOf"
