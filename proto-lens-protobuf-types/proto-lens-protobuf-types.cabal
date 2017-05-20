@@ -1,0 +1,27 @@
+name:                proto-lens-protobuf-types
+version:             0.2.0.1
+synopsis:            Basic protocol buffer message types.
+description:
+    This package provides bindings standard protocol message types,
+    for use with the proto-lens library.
+
+homepage:            https://github.com/google/proto-lens
+license:             BSD3
+license-file:        LICENSE
+author:              Judah Jacobson
+maintainer:          proto-lens@googlegroups.com
+copyright:           Google Inc.
+category:            Data
+build-type:          Custom
+cabal-version:       >=1.8
+extra-source-files:
+    proto-src/google/protobuf/any.proto
+    proto-src/google/protobuf/duration.proto
+    proto-src/google/protobuf/wrappers.proto
+
+library
+  exposed-modules:     Proto.Google.Protobuf.Any
+                       Proto.Google.Protobuf.Duration
+                       Proto.Google.Protobuf.Wrappers
+  build-depends: base >= 4.8 && < 4.10
+                , proto-lens-protoc
