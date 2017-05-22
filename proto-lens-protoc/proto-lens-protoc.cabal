@@ -55,7 +55,10 @@ library
         -- For forwards compatibility, reexport them as new module names so that
         -- other packages don't accidentally write non-generated code that
         -- relies on these modules being reexported by proto-lens-protoc.
-          Data.ByteString as Data.ProtoLens.Reexport.Data.ByteString
+          Prelude as Data.ProtoLens.Reexport.Prelude
+        , Data.Int as Data.ProtoLens.Reexport.Data.Int
+        , Data.Word as Data.ProtoLens.Reexport.Data.Word
+        , Data.ByteString as Data.ProtoLens.Reexport.Data.ByteString
         , Data.Default.Class as Data.ProtoLens.Reexport.Data.Default.Class
         , Data.Map as Data.ProtoLens.Reexport.Data.Map
         , Data.ProtoLens as Data.ProtoLens.Reexport.Data.ProtoLens
