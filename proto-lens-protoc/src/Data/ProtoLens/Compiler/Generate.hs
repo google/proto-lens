@@ -79,20 +79,18 @@ generateModule modName imports syntaxType modifyImport definitions importedEnv
               ["ScopedTypeVariables", "DataKinds", "TypeFamilies",
                "UndecidableInstances",
                "MultiParamTypeClasses", "FlexibleContexts", "FlexibleInstances",
-               "PatternSynonyms", "MagicHash"]
+               "PatternSynonyms", "MagicHash", "NoImplicitPrelude"]
               -- Allow unused imports in case we don't import anything from
               -- Data.Text, Data.Int, etc.
           , optionsGhcPragma "-fno-warn-unused-imports"
           ]
-          (map importSimple
-              -- Note: we import Prelude explicitly to make it qualified.
-              [ "Prelude", "Data.Int", "Data.Word"]
-            ++ map (modifyImport . importSimple)
-                [ "Data.ProtoLens", "Data.ProtoLens.Message.Enum"
-                , "Lens.Family2", "Lens.Family2.Unchecked", "Data.Default.Class"
-                , "Data.Text",  "Data.Map" , "Data.ByteString"
-                , "Lens.Labels"
-                ]
+          (map (modifyImport . importSimple)
+              [ "Prelude", "Data.Int", "Data.Word"
+              , "Data.ProtoLens", "Data.ProtoLens.Message.Enum"
+              , "Lens.Family2", "Lens.Family2.Unchecked", "Data.Default.Class"
+              , "Data.Text",  "Data.Map" , "Data.ByteString"
+              , "Lens.Labels"
+              ]
             ++ map importSimple imports)
           (concatMap generateDecls (Map.elems definitions)
            ++ concatMap generateFieldDecls allFieldNames)
