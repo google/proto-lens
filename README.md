@@ -17,12 +17,13 @@ downloading the corresponding file for your system from
 https://github.com/google/protobuf/releases.  (The corresponding file will be
 named something like `protoc-*-.zip`.)
 
-## Using Cabal
+## Using Cabal or Stack
 `proto-lens` can be used as part of a Cabal project to auto-generate Haskell
 source files from the original protocol buffer specifications (`.proto` files).
 
-First, edit the `.cabal` and (if using stack) `stack.yaml` files of your project
-to:
+Note: if using Stack, these instructions require `v1.4.0` or newer.
+
+First, edit the `.cabal` file of your project to:
 
 * Specify `build-type: Custom`.
 * List the .proto files in `extra-source-files`.  Note that the field belongs
@@ -32,7 +33,7 @@ to:
   or `other-modules` of the rule(s) that use them (e.g. the library or
   executables).
 * Add `proto-lens-protoc` to the build-depends of those rules.
-* If using stack, enable `explicit-setup-deps` for your package.
+* Add a `custom-setup` clause to your .cabal file.
 
 For example, in `foo-bar-proto.cabal`:
 
@@ -40,16 +41,12 @@ For example, in `foo-bar-proto.cabal`:
     build-type: Custom
     extra-source-files: src/foo/bar.proto
     ...
+    custom-setup
+      setup-depends: base, Cabal, proto-lens-protoc
+
     library
         exposed-modules: Proto.Foo.Bar
         build-depends: proto-lens-protoc, ...
-
-And in `stack.yaml`:
-
-    ...
-    explicit-setup-deps:
-        foo-bar-proto: true
-    ...
 
 Next, write a `Setup.hs` file that uses `Data.ProtoLens.Setup` and specifies the
 directory containing the `.proto` files.  For example:
