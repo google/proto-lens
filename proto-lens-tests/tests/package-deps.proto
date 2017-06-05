@@ -1,0 +1,9 @@
+syntax = "proto3";
+
+import "test-dep/foo.proto";
+
+package protobuf_types;
+
+message Bar {
+  test_dep.Foo foo = 1;
+}

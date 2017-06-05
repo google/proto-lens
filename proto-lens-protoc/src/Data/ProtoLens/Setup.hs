@@ -19,6 +19,7 @@ module Data.ProtoLens.Setup
     , defaultMainGeneratingSpecificProtos
     , generatingProtos
     , generatingSpecificProtos
+    , generateProtosWithImports
     , generateProtos
     ) where
 
@@ -26,6 +27,8 @@ module Data.ProtoLens.Setup
 import Data.Functor ((<$>))
 #endif
 
+import Control.Monad (filterM, forM_, when)
+import qualified Distribution.InstalledPackageInfo as InstalledPackageInfo
 import Distribution.PackageDescription
     ( PackageDescription(..)
     , benchmarkBuildInfo
@@ -36,21 +39,39 @@ import Distribution.PackageDescription
     , testBuildInfo
     )
 import Distribution.Simple.BuildPaths (autogenModulesDir)
-import Distribution.Simple.LocalBuildInfo (LocalBuildInfo)
-import Distribution.Simple.Utils (matchFileGlob)
+import Distribution.Simple.InstallDirs (datadir)
+import Distribution.Simple.LocalBuildInfo
+    ( LocalBuildInfo(..)
+    , absoluteInstallDirs
+    , componentPackageDeps
+    )
+import Distribution.Simple.PackageIndex (lookupSourcePackageId)
+import Distribution.Simple.Setup (fromFlag, copyDest, copyVerbosity)
+import Distribution.Simple.Utils
+    ( createDirectoryIfMissingVerbose
+    , installOrdinaryFile
+    , matchFileGlob
+    )
 import Distribution.Simple
     ( defaultMainWithHooks
     , simpleUserHooks
     , UserHooks(..)
     )
+import Distribution.Verbosity (Verbosity)
 import System.FilePath
     ( (</>)
     , equalFilePath
     , isRelative
     , makeRelative
     , takeExtension
+    , takeDirectory
     )
-import System.Directory (createDirectoryIfMissing, findExecutable)
+import System.Directory
+    ( createDirectoryIfMissing
+    , doesDirectoryExist
+    , findExecutable
+    , removeDirectoryRecursive
+    )
 import System.Process (callProcess)
 
 -- | This behaves the same as 'Distribution.Simple.defaultMain', but
@@ -123,21 +144,67 @@ generatingSpecificProtos
     -- provided root directory.
     -> UserHooks -> UserHooks
 generatingSpecificProtos root getProtos hooks = hooks
-    { buildHook = \p l h f -> generateSources p l >> buildHook hooks p l h f
-    , haddockHook = \p l h f -> generateSources p l >> haddockHook hooks p l h f
-    , replHook = \p l h f args -> generateSources p l
-                                        >> replHook hooks p l h f args
+    { buildHook = \p l h f -> generate p l >> buildHook hooks p l h f
+    , haddockHook = \p l h f -> generate p l >> haddockHook hooks p l h f
+    , replHook = \p l h f args -> generate p l >> replHook hooks p l h f args
     , sDistHook = \p maybe_l h f -> case maybe_l of
             Nothing -> error "Can't run protoc; run 'cabal configure' first."
             Just l -> do
-                        generateSources p l
+                        generate p l
                         sDistHook hooks (fudgePackageDesc l p) maybe_l h f
+    , postCopy = \a flags pkg lbi -> do
+                  let verb = fromFlag $ copyVerbosity flags
+                  let destDir = datadir (absoluteInstallDirs pkg lbi
+                                             $ fromFlag $ copyDest flags)
+                              </> protoLensImportsPrefix
+                  getProtos pkg >>= copyProtosToDataDir verb root destDir
+                  postCopy hooks a flags pkg lbi
     }
   where
-    generateSources p l = do
-        -- Applying 'root </>' does nothing if the path is already absolute.
-        files <- map (root </>) <$> getProtos p
-        generateProtos root (autogenModulesDir l) files
+    generate p l = getProtos p >>= generateSources root l
+
+-- | Generate Haskell source files for the given input .proto files.
+generateSources :: FilePath -- ^ The root directory
+                -> LocalBuildInfo
+                -> [FilePath] -- ^ Proto files relative to the root directory.
+                -> IO ()
+generateSources root l files = do
+    -- Collect import paths from build-depends of this package.
+    importDirs <- filterM doesDirectoryExist
+                     [ InstalledPackageInfo.dataDir info </> protoLensImportsPrefix
+                     | (_, c, _) <- componentsConfigs l
+                     , (_, i) <- componentPackageDeps c
+                     , info <- lookupSourcePackageId (installedPkgs l) i
+                     ]
+    generateProtosWithImports (root : importDirs) (autogenModulesDir l)
+                              -- Applying 'root </>' does nothing if the path is already
+                              -- absolute.
+                              (map (root </>) files)
+
+-- | Copy each .proto file into the installed "data-dir" path,
+-- so that it can be included by other packages that depend on this one.
+copyProtosToDataDir :: Verbosity
+                    -> FilePath -- ^ The root for source .proto files in this
+                                -- package.
+                    -> FilePath -- ^ The final location where .proto files should
+                                -- be installed.
+                    -> [FilePath] -- ^ .proto files relative to the root
+                    -> IO ()
+copyProtosToDataDir verb root destDir files = do
+    -- Make the build more hermetic by clearing the output
+    -- directory.
+    exists <- doesDirectoryExist destDir
+    when exists $ removeDirectoryRecursive destDir
+    forM_ files $ \f -> do
+        let srcFile = root </> f
+        let destFile = destDir </> f
+        createDirectoryIfMissingVerbose verb True
+            (takeDirectory destFile)
+        installOrdinaryFile verb srcFile destFile
+
+-- | Imports are stored as $datadir/proto-lens-imports/**/*.proto.
+protoLensImportsPrefix :: FilePath
+protoLensImportsPrefix = "proto-lens-imports"
 
 -- | Add the autogen directory to the hs-source-dirs of all the targets in the
 -- .cabal file.  Used to fool 'sdist' by pointing it to the generated source
@@ -181,7 +248,21 @@ generateProtos
     -> FilePath -- ^ The output directory for the generated Haskell files.
     -> [FilePath] -- ^ The .proto files to process.
     -> IO ()
-generateProtos root output files = do
+generateProtos root = generateProtosWithImports [root]
+--
+-- | Run the proto compiler to generate Haskell files from the given .proto files.
+--
+-- Writes the generated files to the autogen directory (@dist\/build\/autogen@
+-- for Cabal, and @.stack-work\/dist\/...\/build\/autogen@ for stack).
+--
+-- Throws an exception if the @proto-lens-protoc@ executable is not on the PATH.
+generateProtosWithImports
+    :: [FilePath] -- ^ Directories under which .proto files and/or files that
+                  -- they import can be found.
+    -> FilePath -- ^ The output directory for the generated Haskell files.
+    -> [FilePath] -- ^ The .proto files to process.
+    -> IO ()
+generateProtosWithImports imports output files = do
     maybeProtoLensProtoc <- findExecutable "proto-lens-protoc"
     case maybeProtoLensProtoc of
         Nothing -> error "Couldn't find executable proto-lens-protoc."
@@ -190,6 +271,6 @@ generateProtos root output files = do
             callProcess "protoc" $
                 [ "--plugin=protoc-gen-haskell=" ++ protoLensProtoc
                 , "--haskell_out=" ++ output
-                , "--proto_path=" ++ root
                 ]
+                ++ ["--proto_path=" ++ p | p <- imports]
                 ++ files
