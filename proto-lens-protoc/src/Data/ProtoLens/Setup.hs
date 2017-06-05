@@ -57,6 +57,7 @@ import Distribution.Simple
     , simpleUserHooks
     , UserHooks(..)
     )
+import Distribution.Verbosity (Verbosity)
 import System.FilePath
     ( (</>)
     , equalFilePath
@@ -72,7 +73,6 @@ import System.Directory
     , removeDirectoryRecursive
     )
 import System.Process (callProcess)
-import Distribution.Verbosity (Verbosity)
 
 -- | This behaves the same as 'Distribution.Simple.defaultMain', but
 -- auto-generates Haskell files from the .proto files listed in
@@ -173,7 +173,7 @@ generateSources root l files = do
     importDirs <- filterM doesDirectoryExist
                      [ InstalledPackageInfo.dataDir info </> protoLensImportsPrefix
                      | (_, c, _) <- componentsConfigs l
-                     , (_, i ) <- componentPackageDeps c
+                     , (_, i) <- componentPackageDeps c
                      , info <- lookupSourcePackageId (installedPkgs l) i
                      ]
     generateProtosWithImports (root : importDirs) (autogenModulesDir l)
