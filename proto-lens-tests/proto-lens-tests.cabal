@@ -21,6 +21,12 @@ library
   build-depends: proto-lens-arbitrary == 0.1.*
                , proto-lens == 0.2.*
                , proto-lens-protoc == 0.2.*
+               -- TODO: this is necessary to list explicitly here since when
+               -- --enable-tests is off, Cabal won't see the test-suite
+               -- `package-deps_test` that lists it, but we'll still try to
+               -- compile tests/package-deps.proto (since it's listed in
+               -- extra-source-files regardless).
+               , proto-lens-tests-dep
                , base >= 4.8 && < 4.10
                , bytestring == 0.10.*
                , text == 1.2.*
@@ -246,6 +252,21 @@ Test-Suite labels_test
                , lens-family
                , lens-family-core
                , proto-lens
+               , proto-lens-protoc
+               , proto-lens-tests
+               , test-framework-hunit
+
+Test-Suite package-deps_test
+  default-language: Haskell2010
+  type: exitcode-stdio-1.0
+  main-is: package-deps_test.hs
+  hs-source-dirs: tests
+  other-modules: Proto.PackageDeps
+  build-depends: base
+               , HUnit
+               , lens-family
+               , proto-lens
+               , proto-lens-tests-dep
                , proto-lens-protoc
                , proto-lens-tests
                , test-framework-hunit

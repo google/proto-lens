@@ -11,9 +11,11 @@ PACKAGES="
     proto-lens
     proto-lens-descriptors
     proto-lens-protoc
+    proto-lens-protobuf-types
     proto-lens-arbitrary
     proto-lens-combinators
     proto-lens-optparse
+    proto-lens-tests-dep
     proto-lens-tests
     proto-lens-benchmarks
 "
