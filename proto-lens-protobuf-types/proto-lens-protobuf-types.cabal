@@ -19,6 +19,11 @@ extra-source-files:
     proto-src/google/protobuf/duration.proto
     proto-src/google/protobuf/wrappers.proto
 
+custom-setup
+  setup-depends: base >= 4.8 && < 4.10
+               , Cabal
+               , proto-lens-protoc == 0.2.*
+
 library
   exposed-modules:     Proto.Google.Protobuf.Any
                        Proto.Google.Protobuf.Duration
