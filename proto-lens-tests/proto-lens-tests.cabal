@@ -14,6 +14,11 @@ build-type:          Custom
 cabal-version:       >=1.10
 extra-source-files: tests/*.proto
 
+custom-setup
+  setup-depends: base >= 4.8 && < 4.10
+               , Cabal
+               , proto-lens-protoc == 0.2.*
+
 library
   hs-source-dirs: src
   exposed-modules:     Data.ProtoLens.TestUtil
