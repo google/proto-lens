@@ -1,7 +1,8 @@
 {- This file was auto-generated from google/protobuf/descriptor.proto by the proto-lens-protoc program. -}
 {-# LANGUAGE ScopedTypeVariables, DataKinds, TypeFamilies,
   UndecidableInstances, MultiParamTypeClasses, FlexibleContexts,
-  FlexibleInstances, PatternSynonyms, MagicHash #-}
+  FlexibleInstances, PatternSynonyms, MagicHash, NoImplicitPrelude
+  #-}
 {-# OPTIONS_GHC -fno-warn-unused-imports #-}
 module Proto.Google.Protobuf.Descriptor where
 import qualified Prelude
