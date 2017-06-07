@@ -1,5 +1,11 @@
 # ChangeLog
 
+## v0.2.1.0
+- Include `base`'s modules in the reexport list.
+- Use custom-setup in packages that depend on `proto-lens-protoc`.
+- Allow `.proto` files to import between Haskell packages.
+- Add the `proto-lens-protobuf-types` package.
+
 ## v0.2.0.1
 - Make the libraries '-Wall -Werror'-clean for the latest
   version of GHC.
