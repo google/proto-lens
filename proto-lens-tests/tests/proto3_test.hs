@@ -8,6 +8,7 @@
 module Main where
 
 import Data.ProtoLens
+import Data.Int
 import Lens.Family2 ((&), (.~), (^.))
 import qualified Data.ByteString as B
 import qualified Data.ByteString.Builder as Builder
@@ -16,7 +17,7 @@ import Data.Monoid ((<>))
 import Proto.Proto3
     ( Foo
     , Foo'FooEnum(..)
-    , Foo'Sub
+    , Foo'Sub(..)
     , Strings
     , a
     , b
@@ -24,9 +25,11 @@ import Proto.Proto3
     , d
     , e
     , f
+    , s
     , sub
     , maybe'c
     , maybe'sub
+    , maybe's
     , enum
     , bytes
     , string
@@ -58,10 +61,21 @@ main = testMain
             (def & d .~ "a\0b" :: Foo)
             "d: \"a\\000b\""
             $ tagged 4 $ Lengthy "a\0b"
+        , serializeTo "overridden value"
+            (def & d .~ "a\0b" & c .~ (20 / 3) :: Foo)
+            "c: 6.6666665"
+            $ tagged 3 $ Fixed32 0x40d55555
         -- Scalar "oneof" fields should have a "maybe" selector.
         , testCase "maybe" $ do
             Nothing @=? (def :: Foo) ^. maybe'c
             Just 42 @=? ((def :: Foo) & c .~ 42) ^. maybe'c
+            Nothing @=? (def :: Foo) ^. maybe's
+        , testCase "message" $ do
+            Just 42 @=? ((def :: Foo) & s .~ (def :: Foo'Sub) & c .~ 42) ^. maybe'c
+            Nothing @=? ((def :: Foo) & s .~ (def :: Foo'Sub) & c .~ 42) ^. maybe's
+            (17 :: Int32) @=? ((def :: Foo) & s .~ ((def :: Foo'Sub) & e .~ 17)) ^. s ^. e
+            let val = (def :: Foo'Sub) & e .~ 17
+            Just val @=? ((def :: Foo) & s .~ val) ^. maybe's
         ]
     -- Repeated scalar fields in proto3 should serialize as "packed" by default.
     , serializeTo "packed-by-default"
