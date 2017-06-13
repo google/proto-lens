@@ -588,7 +588,7 @@ oneofFieldAccessor (OneofFieldInfo consName encName) =
                     (pApp "Prelude.Just" [pApp (unQual consName) [pVar "x__val"]])
                     ("Prelude.Just" @@ "x__val")
                 , alt
-                    (pVar "otherwise")
+                    (pVar "_otherwise")
                     (con "Prelude.Nothing")
                 ]
         setter = lambda ["x__", "y__"]

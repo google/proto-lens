@@ -27,7 +27,7 @@ import Data.Char (isUpper, toUpper)
 import Data.Int (Int32)
 import Data.List (mapAccumL)
 import qualified Data.Map as Map
-import Data.Maybe (fromMaybe, isJust, isNothing)
+import Data.Maybe (fromMaybe, isNothing)
 import Data.Monoid
 import qualified Data.Set as Set
 import Data.String (fromString)
@@ -48,7 +48,6 @@ import Proto.Google.Protobuf.Descriptor
     , nestedType
     , number
     , oneofDecl
-    , oneofIndex
     , package
     , typeName
     , value
@@ -187,26 +186,26 @@ messageDefs protoPrefix hsPrefix d
                       | f <- (d ^. field), p f
                       , let n = fieldName (f ^. name)
                       ]
-    recFieldName name = fromString $ "_" ++ hsPrefix' ++ name
-    fieldInfo name descriptor = FieldInfo
-        { overloadedField = name
-        , recordFieldName = recFieldName name
+    recFieldName n = fromString $ "_" ++ hsPrefix' ++ n
+    fieldInfo n descriptor = FieldInfo
+        { overloadedField = n
+        , recordFieldName = recFieldName n
         , fieldDescriptor = descriptor
         , oneofFieldInfo = Nothing
         }
-    oneofInfo name idx =
-        let typename = hsPrefix' ++ hsName name
-            encFieldName = recFieldName $ fieldName name
+    oneofInfo n idx =
+        let typename = hsPrefix' ++ hsName n
+            encFieldName = recFieldName $ fieldName n
         in OneofInfo
                { oneofTypeName = typename
                , oneofRecordFieldName = encFieldName
                , oneofFieldInfos =
-                     [ fieldInfo { oneofFieldInfo = Just $ OneofFieldInfo
-                         { oneofConstructorName = fromString $ typename ++ "'" ++ overloadedField fieldInfo
+                     [ info { oneofFieldInfo = Just $ OneofFieldInfo
+                         { oneofConstructorName = fromString $ typename ++ "'" ++ overloadedField info
                          , oneofEnclosingFieldName = encFieldName
                          }
                        }
-                     | fieldInfo <- extractFields (\f -> elem idx (f ^. maybe'oneofIndex))
+                     | info <- extractFields (\f -> elem idx (f ^. maybe'oneofIndex))
                      ]
                }
 
