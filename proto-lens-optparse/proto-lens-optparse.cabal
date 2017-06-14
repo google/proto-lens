@@ -1,5 +1,5 @@
 name:                proto-lens-optparse
-version:             0.1.0.2
+version:             0.1.0.3
 synopsis:            Adapting proto-lens to optparse-applicative ReadMs.
 description:
    A package adapting proto-lens to optparse-applicative ReadMs.
@@ -21,5 +21,5 @@ library
   exposed-modules:     Data.ProtoLens.Optparse
   build-depends:  proto-lens >= 0.1 && < 0.3
                 , base >= 4.8 && < 4.10
-                , optparse-applicative >= 0.12 && < 0.14
+                , optparse-applicative >= 0.12 && < 0.15
                 , text == 1.2.*
