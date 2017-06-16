@@ -99,7 +99,6 @@ data FieldInfo = FieldInfo
 data OneofInfo = OneofInfo
     { oneofTypeName :: String
     , oneofRecordFieldName :: Name
-    , oneofFieldInfos :: [FieldInfo]
     }
 
 data OneofFieldInfo = OneofFieldInfo
@@ -168,15 +167,18 @@ messageDefs protoPrefix hsPrefix d
   where
     protoName = d ^. name
     hsName n = unpack $ capitalize $ n
+    (ooFields, ooInfos) = mconcat [ (fs, [oo])
+                                  | (i, o) <- (zip [0..] (d ^. oneofDecl))
+                                  , let (fs, oo) = oneofInfo (o ^. name) i
+                                  ]
+    allFields = extractFields (\f -> isNothing(f ^. maybe'oneofIndex)) ++ ooFields
+
     thisDef = (protoPrefix <> protoName
               , Message MessageInfo
                   { messageName = fromString $ hsPrefix ++ hsName (d ^. name)
                   , messageDescriptor = d
-                  , messageFields = extractFields (\f -> isNothing(f ^. maybe'oneofIndex))
-                  , messageOneofFields =
-                      [ oneofInfo (o ^. name) i
-                      | (i, o) <- (zip [0..] (d ^. oneofDecl)) -- oneofs
-                      ]
+                  , messageFields = allFields
+                  , messageOneofFields = ooInfos
                   })
     subDefs = messageAndEnumDefs protoPrefix' hsPrefix'
                   (d ^. nestedType) (d ^. enumType)
@@ -196,18 +198,17 @@ messageDefs protoPrefix hsPrefix d
     oneofInfo n idx =
         let typename = hsPrefix' ++ hsName n
             encFieldName = recFieldName $ fieldName n
-        in OneofInfo
+            oneofFields = [ info { oneofFieldInfo = Just $ OneofFieldInfo
+                                    { oneofConstructorName = fromString $ typename ++ "'" ++ overloadedField info
+                                    , oneofEnclosingFieldName = encFieldName
+                                    }
+                                 }
+                          | info <- extractFields (\f -> elem idx (f ^. maybe'oneofIndex))
+                          ]
+        in (oneofFields, OneofInfo
                { oneofTypeName = typename
                , oneofRecordFieldName = encFieldName
-               , oneofFieldInfos =
-                     [ info { oneofFieldInfo = Just $ OneofFieldInfo
-                         { oneofConstructorName = fromString $ typename ++ "'" ++ overloadedField info
-                         , oneofEnclosingFieldName = encFieldName
-                         }
-                       }
-                     | info <- extractFields (\f -> elem idx (f ^. maybe'oneofIndex))
-                     ]
-               }
+               })
 
 -- | Get the name in Haskell of a proto field, taking care of camel casing and
 -- clashes with language keywords.

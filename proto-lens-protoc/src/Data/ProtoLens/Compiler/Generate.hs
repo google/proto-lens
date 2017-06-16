@@ -19,7 +19,7 @@ import Control.Arrow (second)
 import qualified Data.Foldable as F
 import qualified Data.List as List
 import qualified Data.Map as Map
-import Data.Maybe (isNothing, isJust, fromJust)
+import Data.Maybe (isNothing)
 import Data.Ord (comparing)
 import qualified Data.Set as Set
 import Data.String (fromString)
@@ -101,7 +101,7 @@ generateModule modName imports syntaxType modifyImport definitions importedEnv
     allFieldNames = F.toList $ Set.fromList
         [ fieldSymbol i
         | Message m <- Map.elems definitions
-        , f <- (messageFields m ++ (messageOneofFields m >>= oneofFieldInfos))
+        , f <- messageFields m
         , i <- fieldInstances (lensInfo syntaxType env f)
         ]
 
@@ -134,10 +134,10 @@ generateMessageDecls syntaxType env info =
     [ dataDecl dataName
         [recDecl dataName $
                   [ (recordFieldName f, internalType (lensInfo syntaxType env f))
-                  | f <- fields
+                  | f@(FieldInfo _ _ _ Nothing) <- fields
                   ] ++
                   [ (ooFieldName, "Prelude.Maybe" @@ (fromString ooTypeName))
-                  | OneofInfo ooTypeName ooFieldName _ <- oneofFields
+                  | OneofInfo ooTypeName ooFieldName <- oneofFields
                   ]
         ]
         ["Prelude.Show", "Prelude.Eq"]
@@ -154,10 +154,11 @@ generateMessageDecls syntaxType env info =
     --                       | Foo'Bar's !Sub
     [ dataDecl (fromString ooTypeName)
       [ conDecl consName [internalType (lensInfo syntaxType env f)]
-      | f @ (FieldInfo _ _ _ (Just (OneofFieldInfo consName _))) <- ooFields
+      | f @ (FieldInfo _ _ desc (Just (OneofFieldInfo consName _))) <- fields
+      , elem idx (desc ^. maybe'oneofIndex)
       ]
       ["Prelude.Show", "Prelude.Eq"]
-    | OneofInfo ooTypeName _ ooFields <- oneofFields
+    | (OneofInfo ooTypeName _, idx) <- zip oneofFields [0..]
     ] ++
 
 
@@ -170,7 +171,7 @@ generateMessageDecls syntaxType env info =
         ("Lens.Labels.HasLens" `ihApp`
             [sym, "f", dataType, dataType, "a", "b"])
             [[match "lensOf" [pWildCard] $ fieldAccessor i]]
-    | f <- (fields ++ (oneofFields >>= oneofFieldInfos))
+    | f <- fields
     , i <- fieldInstances (lensInfo syntaxType env f)
     , let t = fieldTypeInstance i
     , let sym = tyPromotedString $ fieldSymbol i
@@ -184,10 +185,10 @@ generateMessageDecls syntaxType env info =
                 $ recConstr (unQual dataName) $
                       [ fieldUpdate (unQual $ recordFieldName f)
                             (hsFieldDefault syntaxType env (fieldDescriptor f))
-                      | f <- fields
+                      | f@(FieldInfo _ _ _ Nothing) <- fields
                       ] ++
                       [ fieldUpdate (unQual $ fieldName) "Prelude.Nothing"
-                      | OneofInfo _ fieldName _ <- oneofFields
+                      | OneofInfo _ fieldName <- oneofFields
                       ]
             ]
         ]
@@ -399,7 +400,7 @@ lensInfo syntaxType env f = case fd ^. label of
                       , fieldTypeInstance = baseType
                       , fieldAccessor = rawAccessor
                       }]
-        | isOneofField syntaxType fd && isJust (oneofFieldInfo f)
+        | Just info <- oneofFieldInfo f
               -> LensInfo baseType
                     [FieldInstanceInfo
                       { fieldSymbol = baseName
@@ -409,7 +410,7 @@ lensInfo syntaxType env f = case fd ^. label of
                     , FieldInstanceInfo
                       { fieldSymbol = maybeName
                       , fieldTypeInstance = "Prelude.Maybe" @@ baseType
-                      , fieldAccessor = oneofFieldAccessor (fromJust $ oneofFieldInfo f)
+                      , fieldAccessor = oneofFieldAccessor info
                       }
                     ]
     FieldDescriptorProto'LABEL_REPEATED
@@ -580,10 +581,10 @@ rawFieldAccessor f = "Lens.Family2.Unchecked.lens" @@ getter @@ setter
 --   (\ x__ y__ -> x__{_Foo'bar = Prelude.fmap Foo'Bar'c y__})
 oneofFieldAccessor :: OneofFieldInfo -> Exp
 oneofFieldAccessor (OneofFieldInfo consName encName) =
-        ("Lens.Family2.Unchecked.lens" @@ getter @@ setter)
+        "Lens.Family2.Unchecked.lens" @@ getter @@ setter
       where
         getter = lambda ["x__"] $
-            case' (var (unQual encName) @@ var "x__" )
+            case' (var (unQual encName) @@ var "x__")
                 [ alt
                     (pApp "Prelude.Just" [pApp (unQual consName) [pVar "x__val"]])
                     ("Prelude.Just" @@ "x__val")
@@ -633,7 +634,7 @@ descriptorExpr syntaxType env m
               [match (fromString $ fieldDescriptorName f) []
                   $ fieldDescriptorExpr syntaxType env n f
               ]
-    fields = (messageFields m ++ ((messageOneofFields m) >>= oneofFieldInfos))
+    fields = messageFields m
 
 -- | Get the name of the field when used in a text format proto. Groups are
 -- special because their text format field name is the name of their type,
@@ -699,15 +700,9 @@ isDefaultingOptional syntaxType f
     = f ^. label == FieldDescriptorProto'LABEL_OPTIONAL
           && syntaxType == Proto3
           && f ^. type' /= FieldDescriptorProto'TYPE_MESSAGE
-          -- oneof fields get their own special treatment
+          -- oneof fields have the same API as proto2 optional fields,
+          -- but setting one field will automatically clear the others.
           && isNothing (f ^. maybe'oneofIndex)
-
-isOneofField :: SyntaxType -> FieldDescriptorProto -> Bool
-isOneofField syntaxType f
-    = f ^. label == FieldDescriptorProto'LABEL_OPTIONAL
-          && syntaxType == Proto3
-          && isJust (f ^. maybe'oneofIndex)
-
 
 isPackedField :: SyntaxType -> FieldDescriptorProto -> Bool
 isPackedField s f = case f ^. options . maybe'packed of
