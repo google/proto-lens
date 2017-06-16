@@ -8,7 +8,6 @@
 module Main where
 
 import Data.ProtoLens
-import Data.Int
 import Lens.Family2 ((&), (.~), (^.))
 import qualified Data.ByteString as B
 import qualified Data.ByteString.Builder as Builder
@@ -73,7 +72,7 @@ main = testMain
         , testCase "message" $ do
             Just 42 @=? ((def :: Foo) & s .~ (def :: Foo'Sub) & c .~ 42) ^. maybe'c
             Nothing @=? ((def :: Foo) & s .~ (def :: Foo'Sub) & c .~ 42) ^. maybe's
-            (17 :: Int32) @=? ((def :: Foo) & s .~ ((def :: Foo'Sub) & e .~ 17)) ^. s ^. e
+            17 @=? ((def :: Foo) & s . e .~ 17) ^. s . e
             let val = (def :: Foo'Sub) & e .~ 17
             Just val @=? ((def :: Foo) & s .~ val) ^. maybe's
         ]

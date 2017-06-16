@@ -89,7 +89,6 @@ will generate the haskell files `Proto/Project/{Foo,Bar}.hs`.
 # Current differences from the standard
 
 - Services are not supported.
-- `oneof` fields are treated the same as `optional` fields.
 - Extensions (proto2-only) are not supported.  `Any` messages (the proto3
   equivalent) can be used, but don't have any custom API support like in the C++
   libraries.
