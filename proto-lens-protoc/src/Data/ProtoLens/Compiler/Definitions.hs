@@ -171,7 +171,7 @@ messageDefs protoPrefix hsPrefix d
                                   | (i, o) <- (zip [0..] (d ^. oneofDecl))
                                   , let (fs, oo) = oneofInfo (o ^. name) i
                                   ]
-    allFields = extractFields (\f -> isNothing(f ^. maybe'oneofIndex)) ++ ooFields
+    allFields = extractFields (\f -> isNothing (f ^. maybe'oneofIndex)) ++ ooFields
 
     thisDef = (protoPrefix <> protoName
               , Message MessageInfo
