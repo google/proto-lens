@@ -85,6 +85,20 @@ Test-Suite map_test
                , proto-lens-tests
                , test-framework
 
+Test-Suite oneof_test
+  default-language: Haskell2010
+  type: exitcode-stdio-1.0
+  main-is: oneof_test.hs
+  hs-source-dirs: tests
+  other-modules: Proto.Oneof
+  build-depends: base
+               , bytestring
+               , lens-family
+               , proto-lens
+               , proto-lens-protoc
+               , proto-lens-tests
+               , test-framework
+
 Test-Suite optional_test
   default-language: Haskell2010
   type: exitcode-stdio-1.0

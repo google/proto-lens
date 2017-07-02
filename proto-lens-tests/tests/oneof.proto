@@ -1,0 +1,11 @@
+syntax = "proto2";
+
+package oneof_test;
+option java_package = "oneof";
+
+message Foo {
+  oneof bar {
+  	int32 baz = 1;
+  	string bippy = 2;
+  }
+}

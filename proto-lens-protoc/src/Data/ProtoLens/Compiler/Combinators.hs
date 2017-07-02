@@ -54,7 +54,9 @@ equalP = Syntax.EqualP ()
 type ConDecl = Syntax.ConDecl ()
 
 conDecl :: Name -> [Type] -> ConDecl
-conDecl = Syntax.ConDecl ()
+conDecl constructorName paramTypes
+    = Syntax.ConDecl () constructorName $
+        fmap tyBang paramTypes
 
 recDecl :: Name -> [(Name, Type)] -> ConDecl
 recDecl dataName fields
@@ -102,6 +104,14 @@ type Exp = Syntax.Exp ()
 
 let' :: [Decl] -> Exp -> Exp
 let' ds e = Syntax.Let () (Syntax.BDecls () ds) e
+
+type Alt = Syntax.Alt ()
+
+case' :: Exp -> [Alt] -> Exp
+case' = Syntax.Case ()
+
+alt :: Pat -> Exp -> Alt
+alt p e = Syntax.Alt () p (Syntax.UnGuardedRhs () e) Nothing
 
 stringExp :: String -> Exp
 stringExp = Syntax.Lit () . string

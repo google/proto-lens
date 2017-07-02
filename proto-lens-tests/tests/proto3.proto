@@ -8,6 +8,7 @@ message Foo {
   oneof bar {
     float c = 3;
     bytes d = 4;
+    Sub s = 8;
   }
 
   message Sub {
