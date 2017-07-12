@@ -9,9 +9,7 @@ module Main where
 
 import Data.ProtoLens
 import Lens.Family2 ((&), (.~), (^.))
-import qualified Data.ByteString as B
 import qualified Data.ByteString.Builder as Builder
-import qualified Data.ByteString.Lazy as Lazy
 import Data.Monoid ((<>))
 import Proto.Proto3
     ( Foo
@@ -85,7 +83,7 @@ main = testMain
     ]
   , testGroup "Strings"
     [ deserializeFrom "bytes"
-        (Just $ def & bytes .~ built invalidUtf8 :: Maybe Strings)
+        (Just $ def & bytes .~ toStrictByteString invalidUtf8 :: Maybe Strings)
         $ tagged 1 $ Lengthy invalidUtf8
     , deserializeFrom "string"
         (Nothing :: Maybe Strings)
@@ -110,6 +108,3 @@ main = testMain
 
 invalidUtf8 :: Builder.Builder
 invalidUtf8 = Builder.word8 0xc3 <> Builder.word8 0x28
-
-built :: Builder.Builder -> B.ByteString
-built = Lazy.toStrict . Builder.toLazyByteString

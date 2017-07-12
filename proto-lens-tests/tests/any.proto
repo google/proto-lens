@@ -1,0 +1,12 @@
+syntax = "proto3";
+package test.any;
+
+message Foo {
+  int32 a = 1;
+  string b = 2;
+}
+
+message Bar {
+  int32 a = 1;
+  string b = 2;
+}
