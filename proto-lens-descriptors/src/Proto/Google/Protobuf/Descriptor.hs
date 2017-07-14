@@ -206,6 +206,7 @@ instance Data.ProtoLens.Message DescriptorProto where
                       :: Data.ProtoLens.FieldDescriptor DescriptorProto
               in
               Data.ProtoLens.MessageDescriptor
+                (Data.Text.pack "google.protobuf.DescriptorProto")
                 (Data.Map.fromList
                    [(Data.ProtoLens.Tag 1, name__field_descriptor),
                     (Data.ProtoLens.Tag 2, field__field_descriptor),
@@ -295,6 +296,7 @@ instance Data.ProtoLens.Message DescriptorProto'ExtensionRange
                       :: Data.ProtoLens.FieldDescriptor DescriptorProto'ExtensionRange
               in
               Data.ProtoLens.MessageDescriptor
+                (Data.Text.pack "google.protobuf.DescriptorProto.ExtensionRange")
                 (Data.Map.fromList
                    [(Data.ProtoLens.Tag 1, start__field_descriptor),
                     (Data.ProtoLens.Tag 2, end__field_descriptor)])
@@ -365,6 +367,7 @@ instance Data.ProtoLens.Message DescriptorProto'ReservedRange where
                       :: Data.ProtoLens.FieldDescriptor DescriptorProto'ReservedRange
               in
               Data.ProtoLens.MessageDescriptor
+                (Data.Text.pack "google.protobuf.DescriptorProto.ReservedRange")
                 (Data.Map.fromList
                    [(Data.ProtoLens.Tag 1, start__field_descriptor),
                     (Data.ProtoLens.Tag 2, end__field_descriptor)])
@@ -447,6 +450,7 @@ instance Data.ProtoLens.Message EnumDescriptorProto where
                       :: Data.ProtoLens.FieldDescriptor EnumDescriptorProto
               in
               Data.ProtoLens.MessageDescriptor
+                (Data.Text.pack "google.protobuf.EnumDescriptorProto")
                 (Data.Map.fromList
                    [(Data.ProtoLens.Tag 1, name__field_descriptor),
                     (Data.ProtoLens.Tag 2, value__field_descriptor),
@@ -529,6 +533,7 @@ instance Data.ProtoLens.Message EnumOptions where
                       :: Data.ProtoLens.FieldDescriptor EnumOptions
               in
               Data.ProtoLens.MessageDescriptor
+                (Data.Text.pack "google.protobuf.EnumOptions")
                 (Data.Map.fromList
                    [(Data.ProtoLens.Tag 2, allowAlias__field_descriptor),
                     (Data.ProtoLens.Tag 3, deprecated__field_descriptor),
@@ -623,6 +628,7 @@ instance Data.ProtoLens.Message EnumValueDescriptorProto where
                       :: Data.ProtoLens.FieldDescriptor EnumValueDescriptorProto
               in
               Data.ProtoLens.MessageDescriptor
+                (Data.Text.pack "google.protobuf.EnumValueDescriptorProto")
                 (Data.Map.fromList
                    [(Data.ProtoLens.Tag 1, name__field_descriptor),
                     (Data.ProtoLens.Tag 2, number__field_descriptor),
@@ -683,6 +689,7 @@ instance Data.ProtoLens.Message EnumValueOptions where
                       :: Data.ProtoLens.FieldDescriptor EnumValueOptions
               in
               Data.ProtoLens.MessageDescriptor
+                (Data.Text.pack "google.protobuf.EnumValueOptions")
                 (Data.Map.fromList
                    [(Data.ProtoLens.Tag 1, deprecated__field_descriptor),
                     (Data.ProtoLens.Tag 999, uninterpretedOption__field_descriptor)])
@@ -949,6 +956,7 @@ instance Data.ProtoLens.Message FieldDescriptorProto where
                       :: Data.ProtoLens.FieldDescriptor FieldDescriptorProto
               in
               Data.ProtoLens.MessageDescriptor
+                (Data.Text.pack "google.protobuf.FieldDescriptorProto")
                 (Data.Map.fromList
                    [(Data.ProtoLens.Tag 1, name__field_descriptor),
                     (Data.ProtoLens.Tag 3, number__field_descriptor),
@@ -1406,6 +1414,7 @@ instance Data.ProtoLens.Message FieldOptions where
                       :: Data.ProtoLens.FieldDescriptor FieldOptions
               in
               Data.ProtoLens.MessageDescriptor
+                (Data.Text.pack "google.protobuf.FieldOptions")
                 (Data.Map.fromList
                    [(Data.ProtoLens.Tag 1, ctype__field_descriptor),
                     (Data.ProtoLens.Tag 2, packed__field_descriptor),
@@ -1784,6 +1793,7 @@ instance Data.ProtoLens.Message FileDescriptorProto where
                       :: Data.ProtoLens.FieldDescriptor FileDescriptorProto
               in
               Data.ProtoLens.MessageDescriptor
+                (Data.Text.pack "google.protobuf.FileDescriptorProto")
                 (Data.Map.fromList
                    [(Data.ProtoLens.Tag 1, name__field_descriptor),
                     (Data.ProtoLens.Tag 2, package__field_descriptor),
@@ -1836,6 +1846,7 @@ instance Data.ProtoLens.Message FileDescriptorSet where
                       :: Data.ProtoLens.FieldDescriptor FileDescriptorSet
               in
               Data.ProtoLens.MessageDescriptor
+                (Data.Text.pack "google.protobuf.FileDescriptorSet")
                 (Data.Map.fromList
                    [(Data.ProtoLens.Tag 1, file__field_descriptor)])
                 (Data.Map.fromList [("file", file__field_descriptor)])
@@ -2197,6 +2208,7 @@ instance Data.ProtoLens.Message FileOptions where
                       :: Data.ProtoLens.FieldDescriptor FileOptions
               in
               Data.ProtoLens.MessageDescriptor
+                (Data.Text.pack "google.protobuf.FileOptions")
                 (Data.Map.fromList
                    [(Data.ProtoLens.Tag 1, javaPackage__field_descriptor),
                     (Data.ProtoLens.Tag 8, javaOuterClassname__field_descriptor),
@@ -2311,6 +2323,7 @@ instance Data.ProtoLens.Message GeneratedCodeInfo where
                       :: Data.ProtoLens.FieldDescriptor GeneratedCodeInfo
               in
               Data.ProtoLens.MessageDescriptor
+                (Data.Text.pack "google.protobuf.GeneratedCodeInfo")
                 (Data.Map.fromList
                    [(Data.ProtoLens.Tag 1, annotation__field_descriptor)])
                 (Data.Map.fromList [("annotation", annotation__field_descriptor)])
@@ -2419,6 +2432,7 @@ instance Data.ProtoLens.Message GeneratedCodeInfo'Annotation where
                       :: Data.ProtoLens.FieldDescriptor GeneratedCodeInfo'Annotation
               in
               Data.ProtoLens.MessageDescriptor
+                (Data.Text.pack "google.protobuf.GeneratedCodeInfo.Annotation")
                 (Data.Map.fromList
                    [(Data.ProtoLens.Tag 1, path__field_descriptor),
                     (Data.ProtoLens.Tag 2, sourceFile__field_descriptor),
@@ -2553,6 +2567,7 @@ instance Data.ProtoLens.Message MessageOptions where
                       :: Data.ProtoLens.FieldDescriptor MessageOptions
               in
               Data.ProtoLens.MessageDescriptor
+                (Data.Text.pack "google.protobuf.MessageOptions")
                 (Data.Map.fromList
                    [(Data.ProtoLens.Tag 1, messageSetWireFormat__field_descriptor),
                     (Data.ProtoLens.Tag 2,
@@ -2729,6 +2744,7 @@ instance Data.ProtoLens.Message MethodDescriptorProto where
                       :: Data.ProtoLens.FieldDescriptor MethodDescriptorProto
               in
               Data.ProtoLens.MessageDescriptor
+                (Data.Text.pack "google.protobuf.MethodDescriptorProto")
                 (Data.Map.fromList
                    [(Data.ProtoLens.Tag 1, name__field_descriptor),
                     (Data.ProtoLens.Tag 2, inputType__field_descriptor),
@@ -2794,6 +2810,7 @@ instance Data.ProtoLens.Message MethodOptions where
                       :: Data.ProtoLens.FieldDescriptor MethodOptions
               in
               Data.ProtoLens.MessageDescriptor
+                (Data.Text.pack "google.protobuf.MethodOptions")
                 (Data.Map.fromList
                    [(Data.ProtoLens.Tag 33, deprecated__field_descriptor),
                     (Data.ProtoLens.Tag 999, uninterpretedOption__field_descriptor)])
@@ -2836,6 +2853,7 @@ instance Data.ProtoLens.Message OneofDescriptorProto where
                       :: Data.ProtoLens.FieldDescriptor OneofDescriptorProto
               in
               Data.ProtoLens.MessageDescriptor
+                (Data.Text.pack "google.protobuf.OneofDescriptorProto")
                 (Data.Map.fromList
                    [(Data.ProtoLens.Tag 1, name__field_descriptor)])
                 (Data.Map.fromList [("name", name__field_descriptor)])
@@ -2917,6 +2935,7 @@ instance Data.ProtoLens.Message ServiceDescriptorProto where
                       :: Data.ProtoLens.FieldDescriptor ServiceDescriptorProto
               in
               Data.ProtoLens.MessageDescriptor
+                (Data.Text.pack "google.protobuf.ServiceDescriptorProto")
                 (Data.Map.fromList
                    [(Data.ProtoLens.Tag 1, name__field_descriptor),
                     (Data.ProtoLens.Tag 2, method__field_descriptor),
@@ -2976,6 +2995,7 @@ instance Data.ProtoLens.Message ServiceOptions where
                       :: Data.ProtoLens.FieldDescriptor ServiceOptions
               in
               Data.ProtoLens.MessageDescriptor
+                (Data.Text.pack "google.protobuf.ServiceOptions")
                 (Data.Map.fromList
                    [(Data.ProtoLens.Tag 33, deprecated__field_descriptor),
                     (Data.ProtoLens.Tag 999, uninterpretedOption__field_descriptor)])
@@ -3008,6 +3028,7 @@ instance Data.ProtoLens.Message SourceCodeInfo where
                       :: Data.ProtoLens.FieldDescriptor SourceCodeInfo
               in
               Data.ProtoLens.MessageDescriptor
+                (Data.Text.pack "google.protobuf.SourceCodeInfo")
                 (Data.Map.fromList
                    [(Data.ProtoLens.Tag 1, location__field_descriptor)])
                 (Data.Map.fromList [("location", location__field_descriptor)])
@@ -3127,6 +3148,7 @@ instance Data.ProtoLens.Message SourceCodeInfo'Location where
                       :: Data.ProtoLens.FieldDescriptor SourceCodeInfo'Location
               in
               Data.ProtoLens.MessageDescriptor
+                (Data.Text.pack "google.protobuf.SourceCodeInfo.Location")
                 (Data.Map.fromList
                    [(Data.ProtoLens.Tag 1, path__field_descriptor),
                     (Data.ProtoLens.Tag 2, span__field_descriptor),
@@ -3317,6 +3339,7 @@ instance Data.ProtoLens.Message UninterpretedOption where
                       :: Data.ProtoLens.FieldDescriptor UninterpretedOption
               in
               Data.ProtoLens.MessageDescriptor
+                (Data.Text.pack "google.protobuf.UninterpretedOption")
                 (Data.Map.fromList
                    [(Data.ProtoLens.Tag 2, name__field_descriptor),
                     (Data.ProtoLens.Tag 3, identifierValue__field_descriptor),
@@ -3381,6 +3404,7 @@ instance Data.ProtoLens.Message UninterpretedOption'NamePart where
                       :: Data.ProtoLens.FieldDescriptor UninterpretedOption'NamePart
               in
               Data.ProtoLens.MessageDescriptor
+                (Data.Text.pack "google.protobuf.UninterpretedOption.NamePart")
                 (Data.Map.fromList
                    [(Data.ProtoLens.Tag 1, namePart__field_descriptor),
                     (Data.ProtoLens.Tag 2, isExtension__field_descriptor)])

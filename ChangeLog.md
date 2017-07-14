@@ -1,5 +1,9 @@
 # ChangeLog
 
+## v0.2.2.0
+- Add `Data.ProtoLens.Any` for packing/unpacking messages to `Any`.
+- Improve the behavior of oneof fields by generating sum types
+
 ## v0.2.1.0
 - Include `base`'s modules in the reexport list.
 - Use custom-setup in packages that depend on `proto-lens-protoc`.
