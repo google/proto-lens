@@ -10,7 +10,8 @@ module Data.ProtoLens.Any
 
 import Control.Exception (Exception(..))
 import Data.Monoid ((<>))
-import Data.Text (Text, breakOnEnd)
+import qualified Data.Text as Text
+import Data.Text (Text)
 import Data.Typeable (Typeable)
 import Data.ProtoLens
     ( decodeMessage
@@ -30,7 +31,6 @@ pack = packWithPrefix googleApisPrefix
 googleApisPrefix :: Text
 googleApisPrefix = "type.googleapis.com"
 
-
 -- | Packs the given message into an 'Any' using the given type URL prefix.
 packWithPrefix :: forall a . Message a => Text -> a -> Any
 packWithPrefix prefix x =
@@ -39,13 +39,14 @@ packWithPrefix prefix x =
   where
     name = messageName (descriptor :: MessageDescriptor a)
 
-
+-- | A description of a failure during `unpack` to decode an `Any` message
+-- into the expected type.
 data UnpackError
     = DifferentType
         { expectedMessageType :: Text -- ^ The expected @packagename.messagename@
         , actualUrl :: Text -- ^ The typeUrl in the 'Any' being unpacked
         }
-    | DecodingError String  -- ^ The error from decodeMessage
+    | DecodingError Text  -- ^ The error from decodeMessage
     deriving (Show, Eq, Typeable)
 
 instance Exception UnpackError
@@ -56,13 +57,13 @@ instance Exception UnpackError
 -- Ignores the type URL prefix.
 unpack :: forall a . Message a => Any -> Either UnpackError a
 unpack a
-    | expectedName /= snd (breakOnEnd "/" $ a ^. typeUrl)
+    | expectedName /= snd (Text.breakOnEnd "/" $ a ^. typeUrl)
         = Left DifferentType
               { expectedMessageType = expectedName
               , actualUrl = a ^. typeUrl
               }
     | otherwise = case decodeMessage (a ^. value) of
-        Left e -> Left $ DecodingError e
+        Left e -> Left $ DecodingError $ Text.pack e
         Right x -> Right x
   where
     expectedName = messageName (descriptor :: MessageDescriptor a)
