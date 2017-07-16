@@ -14,6 +14,7 @@ module Data.ProtoLens.TestUtil(
     Data(..),
     tagged,
     varInt,
+    toStrictByteString,
     keyed,
     keyedInt,
     keyedStr,
@@ -34,6 +35,7 @@ module Data.ProtoLens.TestUtil(
 import Data.ProtoLens
 import Data.ProtoLens.Arbitrary
 
+import qualified Data.ByteString as B
 import qualified Data.ByteString.Builder as Builder
 import qualified Data.ByteString.Lazy as L
 import qualified Data.Text.Lazy as LT
@@ -164,3 +166,6 @@ braced :: String -> Doc -> Doc
 braced k v = (PrettyPrint.text k <+> char '{')
               $+$ nest 2 v
               $+$ PrettyPrint.char '}'
+
+toStrictByteString :: Builder.Builder -> B.ByteString
+toStrictByteString = L.toStrict . Builder.toLazyByteString

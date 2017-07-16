@@ -1,5 +1,5 @@
 name:                proto-lens
-version:             0.2.1.0
+version:             0.2.2.0
 synopsis:            A lens-based implementation of protocol buffers in Haskell.
 description:
   The proto-lens library provides to protocol buffers using modern

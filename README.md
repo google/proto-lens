@@ -13,9 +13,7 @@ This is not an official Google product.
 
 ## Setup
 First, install the "protoc" binary somewhere in your PATH.  You can get it by
-downloading the corresponding file for your system from
-https://github.com/google/protobuf/releases.  (The corresponding file will be
-named something like `protoc-*-.zip`.)
+following [these instructions](docs/installing-protoc.md).
 
 ## Using Cabal or Stack
 `proto-lens` can be used as part of a Cabal project to auto-generate Haskell

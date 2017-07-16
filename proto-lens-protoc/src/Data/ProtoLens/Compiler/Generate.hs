@@ -92,18 +92,25 @@ generateModule modName imports syntaxType modifyImport definitions importedEnv
               , "Lens.Labels"
               ]
             ++ map importSimple imports)
-          (concatMap generateDecls (Map.elems definitions)
+          (concatMap generateDecls (Map.toList definitions)
            ++ concatMap generateFieldDecls allFieldNames)
   where
     env = Map.union (unqualifyEnv definitions) importedEnv
-    generateDecls (Message m) = generateMessageDecls syntaxType env m
-    generateDecls (Enum e) = generateEnumDecls e
+    generateDecls (protoName, Message m)
+        = generateMessageDecls syntaxType env (stripDotPrefix protoName) m
+    generateDecls (_, Enum e) = generateEnumDecls e
     allFieldNames = F.toList $ Set.fromList
         [ fieldSymbol i
         | Message m <- Map.elems definitions
         , f <- messageFields m
         , i <- fieldInstances (lensInfo syntaxType env f)
         ]
+    -- The Env uses the convention that Message names are prefixed with '.'
+    -- (since that's how the FileDescriptorProto refers to them).
+    -- Strip that off when defining MessageDescriptor.messageName.
+    stripDotPrefix s
+        | Just ('.', s') <- T.uncons s = s'
+        | otherwise = s
 
 importSimple :: ModuleName -> ImportDecl ()
 importSimple m = ImportDecl
@@ -126,8 +133,8 @@ reexported imp@ImportDecl {importModule = m}
   where
     m' = fromString $ "Data.ProtoLens.Reexport." ++ prettyPrint m
 
-generateMessageDecls :: SyntaxType -> Env QName -> MessageInfo Name -> [Decl]
-generateMessageDecls syntaxType env info =
+generateMessageDecls :: SyntaxType -> Env QName -> T.Text -> MessageInfo Name -> [Decl]
+generateMessageDecls syntaxType env protoName info =
     -- data Bar = Bar {
     --    foo :: Baz
     -- }
@@ -194,7 +201,7 @@ generateMessageDecls syntaxType env info =
         ]
     -- instance Message.Message Bar where
     , instDecl [] ("Data.ProtoLens.Message" `ihApp` [dataType])
-        [[match "descriptor" [] $ descriptorExpr syntaxType env info]]
+        [[match "descriptor" [] $ descriptorExpr syntaxType env protoName info]]
     ]
   where
     dataType = tyCon $ unQual dataName
@@ -596,8 +603,8 @@ oneofFieldAccessor (OneofFieldInfo consName encName) =
                     $ recUpdate "x__" [fieldUpdate (unQual encName)
                     $ ("Prelude.fmap" @@ (con $ unQual consName) @@ "y__")]
 
-descriptorExpr :: SyntaxType -> Env QName -> MessageInfo Name -> Exp
-descriptorExpr syntaxType env m
+descriptorExpr :: SyntaxType -> Env QName -> T.Text -> MessageInfo Name -> Exp
+descriptorExpr syntaxType env protoName m
     -- let foo__field_descriptor = ...
     --     ...
     -- in Message.MessageDescriptor
@@ -608,6 +615,7 @@ descriptorExpr syntaxType env m
     -- use the "let" expression to share elements between the two maps.)
     = let' (map (fieldDescriptorVarBind $ messageName m) $ fields)
         $ "Data.ProtoLens.MessageDescriptor"
+          @@ ("Data.Text.pack" @@ stringExp (T.unpack protoName))
           @@ ("Data.Map.fromList" @@ list fieldsByTag)
           @@ ("Data.Map.fromList" @@ list fieldsByTextFormatName)
   where
