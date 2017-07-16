@@ -72,6 +72,7 @@ import System.Directory
     , findExecutable
     , removeDirectoryRecursive
     )
+import System.IO (hPutStrLn, stderr)
 import System.Process (callProcess)
 
 -- | This behaves the same as 'Distribution.Simple.defaultMain', but
@@ -263,14 +264,33 @@ generateProtosWithImports
     -> [FilePath] -- ^ The .proto files to process.
     -> IO ()
 generateProtosWithImports imports output files = do
-    maybeProtoLensProtoc <- findExecutable "proto-lens-protoc"
-    case maybeProtoLensProtoc of
-        Nothing -> error "Couldn't find executable proto-lens-protoc."
-        Just protoLensProtoc -> do
-            createDirectoryIfMissing True output
-            callProcess "protoc" $
-                [ "--plugin=protoc-gen-haskell=" ++ protoLensProtoc
-                , "--haskell_out=" ++ output
-                ]
-                ++ ["--proto_path=" ++ p | p <- imports]
-                ++ files
+    protoLensProtoc
+        <- findExecutableOrDie "proto-lens-protoc"
+              $ "Please file a bug at "
+                  ++ "https://github.com/google/proto-lens/issues ."
+    protoc <- findExecutableOrDie "protoc"
+                $ "Follow the installation instructions at "
+                    ++ "https://google.github.io/proto-lens/installing-protoc.html ."
+    createDirectoryIfMissing True output
+    callProcess protoc $
+        [ "--plugin=protoc-gen-haskell=" ++ protoLensProtoc
+        , "--haskell_out=" ++ output
+        ]
+        ++ ["--proto_path=" ++ p | p <- imports]
+        ++ files
+
+-- | Search the PATH for an executable, printing an error message if it's not
+-- found.
+findExecutableOrDie :: String -> String -> IO FilePath
+findExecutableOrDie name debugMsg = do
+    maybePath <- findExecutable name
+    case maybePath of
+        Just path -> return path
+        Nothing -> do
+            let sep = "=========="
+            hPutStrLn stderr sep
+            hPutStrLn stderr $ "Error: couldn't find the executable " ++ show name
+                            ++ " in your $PATH."
+                            ++ "\n    " ++ debugMsg
+            hPutStrLn stderr sep
+            error $ "Missing executable " ++ show name
