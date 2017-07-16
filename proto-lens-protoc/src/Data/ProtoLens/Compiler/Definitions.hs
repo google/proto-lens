@@ -12,9 +12,10 @@ module Data.ProtoLens.Compiler.Definitions
     ( Env
     , Definition(..)
     , MessageInfo(..)
-    , OneofInfo(..)
-    , OneofFieldInfo(..)
     , FieldInfo(..)
+    , OneofInfo(..)
+    , OneofCase(..)
+    , FieldName(..)
     , EnumInfo(..)
     , EnumValueInfo(..)
     , qualifyEnv
@@ -25,9 +26,9 @@ module Data.ProtoLens.Compiler.Definitions
 
 import Data.Char (isUpper, toUpper)
 import Data.Int (Int32)
-import Data.List (mapAccumL)
+import Data.List (mapAccumL, foldl')
 import qualified Data.Map as Map
-import Data.Maybe (fromMaybe, isNothing)
+import Data.Maybe (fromMaybe)
 import Data.Monoid
 import qualified Data.Set as Set
 import Data.String (fromString)
@@ -78,32 +79,45 @@ data Definition n = Message (MessageInfo n) | Enum (EnumInfo n)
 data MessageInfo n = MessageInfo
     { messageName :: n  -- ^ Haskell type name
     , messageDescriptor :: DescriptorProto
-    , messageFields :: [FieldInfo]
-      -- ^ The Haskell names for each field.
+    , messageFields :: [FieldInfo] -- ^ Fields not belonging to a oneof.
     , messageOneofFields :: [OneofInfo]
-      -- This list corresponds 1-1 with "field" in messageDescriptor.
+      -- ^ The oneofs in this message, associated with the fields that
+      --   belong to them.
     } deriving Functor
 
 -- | Information about a single field of a proto message.
 data FieldInfo = FieldInfo
-    { overloadedField :: String
-      -- ^ The Haskell overloaded name of this field; may be shared between two
-      -- different message data types.
-    , recordFieldName :: Name
-      -- ^ The Haskell name of this internal record field.  Unique within each
-      -- module.
-    , fieldDescriptor :: FieldDescriptorProto
-    , oneofFieldInfo :: Maybe OneofFieldInfo
+    { fieldDescriptor  :: FieldDescriptorProto
+    , plainFieldName :: FieldName
     }
 
 data OneofInfo = OneofInfo
-    { oneofTypeName :: String
-    , oneofRecordFieldName :: Name
+    { oneofFieldName :: FieldName
+    , oneofTypeName :: Name
+      -- ^ The name of the sum type corresponding to this oneof.
+    , oneofCases :: [OneofCase]
+      -- ^ The individual fields that make up this oneof.
     }
 
-data OneofFieldInfo = OneofFieldInfo
-    { oneofConstructorName :: Name
-    , oneofEnclosingFieldName :: Name
+data OneofCase = OneofCase
+    { caseField :: FieldInfo
+    , caseConstructorName :: Name
+        -- ^ The constructor for building a 'oneofTypeName' from the
+        -- value in this field.
+    }
+
+data FieldName = FieldName
+    { overloadedName :: String
+      -- ^ The overloaded name of lenses that access this field.
+      -- For example, if the field is called "foo_bar" in the .proto
+      -- then @overloadedName == "fooBar"@ and we might generate
+      -- @fooBar@ and/or @maybe'fooBar@ lenses to access the data.
+      --
+      -- May be shared between two different message data types in the same
+      -- module.
+    , haskellRecordFieldName :: Name
+      -- ^ The Haskell name of this internal record field; for example,
+      -- "_Foo'Bar'baz.  Unique within each module.
     }
 
 -- | All the information needed to define or use a proto enum type.
@@ -135,7 +149,7 @@ qualifyEnv m = mapEnv (qual m)
 unqualifyEnv :: Env Name -> Env QName
 unqualifyEnv = mapEnv unQual
 
--- | Look up the type definition for a given field.
+-- | Look up the Haskell name for the type of a given field (message or enum).
 definedFieldType :: FieldDescriptorProto -> Env QName -> Definition QName
 definedFieldType fd env = fromMaybe err $ Map.lookup (fd ^. typeName) env
   where
@@ -163,52 +177,60 @@ messageAndEnumDefs protoPrefix hsPrefix messages enums
 messageDefs :: Text -> String -> DescriptorProto
             -> [(Text, Definition Name)]
 messageDefs protoPrefix hsPrefix d
-    = thisDef : subDefs
+    = (protoName, thisDef)
+          : messageAndEnumDefs
+                (protoName <> ".")
+                hsPrefix'
+                (d ^. nestedType)
+                (d ^. enumType)
   where
-    protoName = d ^. name
-    hsName n = unpack $ capitalize $ n
-    (ooFields, ooInfos) = mconcat [ (fs, [oo])
-                                  | (i, o) <- (zip [0..] (d ^. oneofDecl))
-                                  , let (fs, oo) = oneofInfo (o ^. name) i
-                                  ]
-    allFields = extractFields (\f -> isNothing (f ^. maybe'oneofIndex)) ++ ooFields
-
-    thisDef = (protoPrefix <> protoName
-              , Message MessageInfo
-                  { messageName = fromString $ hsPrefix ++ hsName (d ^. name)
-                  , messageDescriptor = d
-                  , messageFields = allFields
-                  , messageOneofFields = ooInfos
-                  })
-    subDefs = messageAndEnumDefs protoPrefix' hsPrefix'
-                  (d ^. nestedType) (d ^. enumType)
-    protoPrefix' = protoPrefix <> protoName <> "."
+    protoName = protoPrefix <> d ^. name
     hsPrefix' = hsPrefix ++ hsName (d ^. name) ++ "'"
-    extractFields p = [ fieldInfo n f
-                      | f <- (d ^. field), p f
-                      , let n = fieldName (f ^. name)
-                      ]
-    recFieldName n = fromString $ "_" ++ hsPrefix' ++ n
-    fieldInfo n descriptor = FieldInfo
-        { overloadedField = n
-        , recordFieldName = recFieldName n
-        , fieldDescriptor = descriptor
-        , oneofFieldInfo = Nothing
-        }
-    oneofInfo n idx =
-        let typename = hsPrefix' ++ hsName n
-            encFieldName = recFieldName $ fieldName n
-            oneofFields = [ info { oneofFieldInfo = Just $ OneofFieldInfo
-                                    { oneofConstructorName = fromString $ typename ++ "'" ++ overloadedField info
-                                    , oneofEnclosingFieldName = encFieldName
-                                    }
-                                 }
-                          | info <- extractFields (\f -> elem idx (f ^. maybe'oneofIndex))
-                          ]
-        in (oneofFields, OneofInfo
-               { oneofTypeName = typename
-               , oneofRecordFieldName = encFieldName
-               })
+    hsName n = unpack $ capitalize $ n
+    allFields = collectFieldsByOneofIndex (d ^. field)
+    thisDef =
+        Message MessageInfo
+            { messageName = fromString $ hsPrefix ++ hsName (d ^. name)
+            , messageDescriptor = d
+            , messageFields =
+                  map fieldInfo $ Map.findWithDefault [] Nothing allFields
+            , messageOneofFields =
+                  map (uncurry oneofInfo)
+                      $ zip [0..] $ map (^. name) $ d ^. oneofDecl
+            }
+    fieldInfo f = FieldInfo f $ mkFieldName $ f ^. name
+    mkFieldName n = FieldName
+                    { overloadedName = n'
+                    , haskellRecordFieldName = fromString $ "_" ++ hsPrefix' ++ n'
+                    }
+      where
+        n' = fieldName n
+    oneofInfo :: Int32 -> Text -> OneofInfo
+    oneofInfo idx n = OneofInfo
+                        { oneofFieldName = mkFieldName n
+                        , oneofTypeName = fromString $ hsPrefix' ++ hsName n
+                        , oneofCases = map oneofCase
+                                          $ Map.findWithDefault [] (Just idx)
+                                              allFields
+                        }
+    oneofCase f = OneofCase
+                        { caseField = fieldInfo f
+                        , caseConstructorName =
+                              -- Note: oneof case constructors aren't prefixed
+                              -- by the oneof name; field names (even inside
+                              -- of a oneof) are unique within a message.
+                              fromString $ hsPrefix' ++ hsName (f ^. name)
+                        }
+
+
+-- | Group fields by the index of the oneof field that they belong to.
+-- (Or 'Nothing' if they don't belong to a oneof.)
+collectFieldsByOneofIndex
+    :: [FieldDescriptorProto] -> Map.Map (Maybe Int32) [FieldDescriptorProto]
+collectFieldsByOneofIndex =
+    fmap reverse
+    . foldl' (\m f -> Map.insertWith (++) (f ^. maybe'oneofIndex) [f] m)
+           Map.empty
 
 -- | Get the name in Haskell of a proto field, taking care of camel casing and
 -- clashes with language keywords.
@@ -216,7 +238,6 @@ fieldName :: Text -> String
 fieldName = unpack . disambiguate . camelCase
   where
     disambiguate s
-        -- TODO: use a more comprehensive blacklist of Haskell keywords.
         | s `Set.member` reservedKeywords = s <> "'"
         | otherwise = s
 

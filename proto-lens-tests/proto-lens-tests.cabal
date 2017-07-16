@@ -94,10 +94,12 @@ Test-Suite oneof_test
   build-depends: base
                , bytestring
                , lens-family
+               , HUnit
                , proto-lens
                , proto-lens-protoc
                , proto-lens-tests
                , test-framework
+               , test-framework-hunit
 
 Test-Suite optional_test
   default-language: Haskell2010
