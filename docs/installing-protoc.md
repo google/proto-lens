@@ -25,8 +25,6 @@ Here are some OS-specific options for installing the binary:
       sudo unzip -o $PROTOC_ZIP -d /usr/local bin/protoc
       rm -f $PROTOC_ZIP
 
-- Alternately, manually download and install `protoc` from [here](https://github.com/google/protobuf/releases/download/v3.3.0/protoc-3.3.0-osx-x86_64.zip).
-
 ## Linux
 - Run the following commands:
 
