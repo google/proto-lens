@@ -91,6 +91,7 @@ instance Data.ProtoLens.Message CodeGeneratorRequest where
                       :: Data.ProtoLens.FieldDescriptor CodeGeneratorRequest
               in
               Data.ProtoLens.MessageDescriptor
+                (Data.Text.pack "google.protobuf.compiler.CodeGeneratorRequest")
                 (Data.Map.fromList
                    [(Data.ProtoLens.Tag 1, fileToGenerate__field_descriptor),
                     (Data.ProtoLens.Tag 2, parameter__field_descriptor),
@@ -152,6 +153,7 @@ instance Data.ProtoLens.Message CodeGeneratorResponse where
                       :: Data.ProtoLens.FieldDescriptor CodeGeneratorResponse
               in
               Data.ProtoLens.MessageDescriptor
+                (Data.Text.pack "google.protobuf.compiler.CodeGeneratorResponse")
                 (Data.Map.fromList
                    [(Data.ProtoLens.Tag 1, error__field_descriptor),
                     (Data.ProtoLens.Tag 15, file__field_descriptor)])
@@ -247,6 +249,8 @@ instance Data.ProtoLens.Message CodeGeneratorResponse'File where
                       :: Data.ProtoLens.FieldDescriptor CodeGeneratorResponse'File
               in
               Data.ProtoLens.MessageDescriptor
+                (Data.Text.pack
+                   "google.protobuf.compiler.CodeGeneratorResponse.File")
                 (Data.Map.fromList
                    [(Data.ProtoLens.Tag 1, name__field_descriptor),
                     (Data.ProtoLens.Tag 2, insertionPoint__field_descriptor),

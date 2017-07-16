@@ -51,7 +51,11 @@ class Default msg => Message msg where
 
 -- | The description of a particular protocol buffer message type.
 data MessageDescriptor msg = MessageDescriptor
-    { fieldsByTag :: Map Tag (FieldDescriptor msg)
+    {  messageName :: T.Text
+      -- ^ A unique identifier for this type, of the format
+      -- @"packagename.messagename"@.
+    , fieldsByTag :: Map Tag (FieldDescriptor msg)
+      -- ^ The fields of the proto, indexed by their (integer) tag.
     , fieldsByTextFormatName :: Map String (FieldDescriptor msg)
       -- ^ This map is keyed by the name of the field used for text format protos.
       -- This is just the field name for every field except for group fields,

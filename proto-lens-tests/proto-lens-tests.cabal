@@ -289,3 +289,22 @@ Test-Suite package-deps_test
                , proto-lens-protoc
                , proto-lens-tests
                , test-framework-hunit
+
+Test-Suite any_test
+  default-language: Haskell2010
+  type: exitcode-stdio-1.0
+  main-is: any_test.hs
+  hs-source-dirs: tests
+  other-modules: Proto.Any
+  build-depends: base
+               , HUnit
+               , lens-family
+               , proto-lens
+               , proto-lens-arbitrary
+               , proto-lens-protobuf-types
+               , proto-lens-protoc
+               , proto-lens-tests
+               , QuickCheck
+               , test-framework
+               , test-framework-hunit
+               , text
