@@ -1,5 +1,5 @@
 name:                proto-lens-arbitrary
-version:             0.1.0.3
+version:             0.1.1.0
 synopsis:            Arbitrary instances for proto-lens.
 description:
   The proto-lens-arbitrary allows generating arbitrary messages for
