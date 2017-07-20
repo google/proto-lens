@@ -7,7 +7,9 @@
 -- | This module takes care of collecting all the definitions in a .proto file
 -- and assigning Haskell names to all of the defined things (messages, enums
 -- and field names).
-{-# LANGUAGE DeriveFunctor, OverloadedStrings #-}
+{-# LANGUAGE DeriveFunctor #-}
+{-# LANGUAGE GeneralizedNewtypeDeriving #-}
+{-# LANGUAGE OverloadedStrings #-}
 module Data.ProtoLens.Compiler.Definitions
     ( Env
     , Definition(..)
@@ -16,6 +18,9 @@ module Data.ProtoLens.Compiler.Definitions
     , OneofInfo(..)
     , OneofCase(..)
     , FieldName(..)
+    , Symbol
+    , nameFromSymbol
+    , promoteSymbol
     , EnumInfo(..)
     , EnumValueInfo(..)
     , qualifyEnv
@@ -31,7 +36,7 @@ import qualified Data.Map as Map
 import Data.Maybe (fromMaybe)
 import Data.Monoid
 import qualified Data.Set as Set
-import Data.String (fromString)
+import Data.String (IsString(..))
 import Data.Text (Text, cons, splitOn, toLower, uncons, unpack)
 import qualified Data.Text as T
 import Lens.Family2 ((^.))
@@ -58,7 +63,9 @@ import Data.ProtoLens.Compiler.Combinators
     ( Name
     , QName
     , ModuleName
+    , Type
     , qual
+    , tyPromotedString
     , unQual
     )
 
@@ -107,7 +114,7 @@ data OneofCase = OneofCase
     }
 
 data FieldName = FieldName
-    { overloadedName :: String
+    { overloadedName :: Symbol
       -- ^ The overloaded name of lenses that access this field.
       -- For example, if the field is called "foo_bar" in the .proto
       -- then @overloadedName == "fooBar"@ and we might generate
@@ -119,6 +126,27 @@ data FieldName = FieldName
       -- ^ The Haskell name of this internal record field; for example,
       -- "_Foo'Bar'baz.  Unique within each module.
     }
+
+-- | A string that refers to the name (in Haskell) of a lens that accesses a
+-- field.
+--
+-- For example, in the signature of the overloaded lens
+--
+-- @
+--     foo :: HasLens "foo" ... => Lens ...
+-- @
+--
+-- a 'Symbol' is used to construct both the type-level argument to
+-- @HasLens@ and the name of the function @foo@.
+newtype Symbol = Symbol String
+    deriving (Eq, Ord, IsString, Monoid)
+
+nameFromSymbol :: Symbol -> Name
+nameFromSymbol (Symbol s) = fromString s
+
+-- | Construct a promoted, type-level string.
+promoteSymbol :: Symbol -> Type
+promoteSymbol (Symbol s) = tyPromotedString s
 
 -- | All the information needed to define or use a proto enum type.
 data EnumInfo n = EnumInfo
@@ -200,7 +228,7 @@ messageDefs protoPrefix hsPrefix d
             }
     fieldInfo f = FieldInfo f $ mkFieldName $ f ^. name
     mkFieldName n = FieldName
-                    { overloadedName = n'
+                    { overloadedName = fromString n'
                     , haskellRecordFieldName = fromString $ "_" ++ hsPrefix' ++ n'
                     }
       where

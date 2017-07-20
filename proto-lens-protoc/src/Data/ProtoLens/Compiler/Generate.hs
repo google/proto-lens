@@ -20,6 +20,7 @@ import qualified Data.Foldable as F
 import qualified Data.List as List
 import qualified Data.Map as Map
 import Data.Maybe (isNothing)
+import Data.Monoid ((<>))
 import Data.Ord (comparing)
 import qualified Data.Set as Set
 import Data.String (fromString)
@@ -186,7 +187,7 @@ generateMessageDecls syntaxType env protoName info =
     | li <- allFields
     , i <- recordFieldLenses li
     , let t = lensFieldType i
-    , let sym = tyPromotedString $ lensSymbol i
+    , let sym = promoteSymbol $ lensSymbol i
     ]
     ++
     -- instance Data.Default.Class.Default Bar where
@@ -354,7 +355,7 @@ generateEnumDecls info =
     errorMessage = "toEnum: unknown value for enum " ++ unpack (ed ^. name)
                       ++ ": "
 
-generateFieldDecls :: String -> [Decl]
+generateFieldDecls :: Symbol -> [Decl]
 generateFieldDecls xStr =
     -- foo :: forall x f s t a b
     --        . HasLens x f s t a b => LensLike f s t a b
@@ -371,8 +372,8 @@ generateFieldDecls xStr =
               ]
     ]
   where
-    x = fromString xStr
-    xSym = tyPromotedString xStr
+    x = nameFromSymbol xStr
+    xSym = promoteSymbol xStr
 
 ------------------------------------------
 
@@ -387,7 +388,7 @@ data RecordField = RecordField
 
 -- | An instance of HasLens for a particualr field.
 data LensInstance = LensInstance
-    { lensSymbol :: String
+    { lensSymbol :: Symbol
           -- ^ The overloaded name for this lens.
     , lensFieldType :: Type
           -- ^ The type pointed to from this lens.
@@ -429,7 +430,7 @@ plainRecordField syntaxType env f = case fd ^. label of
                       , lensExp = maybeAccessor
                       }
                   , LensInstance
-                      { lensSymbol = "maybe'" ++ baseName
+                      { lensSymbol = "maybe'" <> baseName
                       , lensFieldType = maybeType
                       , lensExp = rawAccessor
                       }
@@ -481,7 +482,7 @@ oneofRecordField env oneofInfo
         -- data Foo = Foo { _Foo'bar = Maybe Foo'Bar }
         -- type instance Field "maybe'bar" Foo = Maybe Foo'Bar
         [LensInstance
-          { lensSymbol = "maybe'" ++ overloadedName
+          { lensSymbol = "maybe'" <> overloadedName
                                         (oneofFieldName oneofInfo)
           , lensFieldType =
                 "Prelude.Maybe" @@ tyCon (unQual $ oneofTypeName oneofInfo)
@@ -512,7 +513,7 @@ oneofRecordField env oneofInfo
             , let f = caseField c
             , let baseName = overloadedName $ plainFieldName f
             , let baseType = hsFieldType env $ fieldDescriptor f
-            , let maybeName = "maybe'" ++ baseName
+            , let maybeName = "maybe'" <> baseName
             ]
 
 -- Get the key/value types of this type, if it is really a map.
@@ -682,12 +683,12 @@ descriptorExpr syntaxType env protoName m
               , let t = stringExp $ T.unpack $ textFormatFieldName env
                                                     (fieldDescriptor f)
               ]
-    fieldDescriptorVar = fromString . fieldDescriptorName
+    fieldDescriptorVar = var . unQual . fieldDescriptorName
     fieldDescriptorName f
-        = fromString $ overloadedName (plainFieldName f) ++ "__field_descriptor"
+        = nameFromSymbol $ overloadedName (plainFieldName f) <> "__field_descriptor"
     fieldDescriptorVarBind n f
         = funBind
-              [match (fromString $ fieldDescriptorName f) []
+              [match (fieldDescriptorName f) []
                   $ fieldDescriptorExpr syntaxType env n f
               ]
     fields = messageFields m
@@ -739,20 +740,20 @@ fieldAccessorExpr syntaxType env f = accessorCon @@ var (unQual hsFieldName)
           FieldDescriptorProto'LABEL_REPEATED
               | Just (k, v) <- getMapFields env fd
                   -> "Data.ProtoLens.MapField"
-                         @@ fromString (overloadedField k)
-                         @@ fromString (overloadedField v)
+                         @@ con (unQual $ nameFromSymbol $ overloadedField k)
+                         @@ con (unQual $ nameFromSymbol $ overloadedField v)
               | otherwise -> "Data.ProtoLens.RepeatedField"
                   @@ if isPackedField syntaxType fd
                         then "Data.ProtoLens.Packed"
                         else "Data.ProtoLens.Unpacked"
     hsFieldName
-        = fromString $ case fd ^. label of
+        = nameFromSymbol $ case fd ^. label of
               FieldDescriptorProto'LABEL_OPTIONAL
                   | not (isDefaultingOptional syntaxType fd)
-                      -> "maybe'" ++ overloadedField f
+                      -> "maybe'" <> overloadedField f
               _ -> overloadedField f
 
-overloadedField :: FieldInfo -> String
+overloadedField :: FieldInfo -> Symbol
 overloadedField = overloadedName . plainFieldName
 
 isDefaultingOptional :: SyntaxType -> FieldDescriptorProto -> Bool
