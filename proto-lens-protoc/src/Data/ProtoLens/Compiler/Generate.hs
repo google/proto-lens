@@ -212,7 +212,7 @@ generateMessageDecls syntaxType env protoName info =
     ]
   where
     dataType = tyCon $ unQual dataName
-    MessageInfo { messageName = dataName } = info
+    dataName = messageName info
     allFields = allMessageFields syntaxType env info
 
 generateEnumDecls :: EnumInfo Name -> [Decl]
@@ -400,6 +400,8 @@ data LensInstance = LensInstance
 
 -- | Compile information about the record field type and type/class instances
 -- for this particular field.
+--
+-- Used for "plain" record fields that are not part of a oneof.
 plainRecordField :: SyntaxType -> Env QName -> FieldInfo -> RecordField
 plainRecordField syntaxType env f = case fd ^. label of
     -- data Foo = Foo { _Foo_bar :: Bar }
@@ -628,7 +630,15 @@ rawFieldAccessor f = "Lens.Family2.Unchecked.lens" @@ getter @@ setter
     setter = lambda ["x__", "y__"]
                     $ recUpdate "x__" [fieldUpdate f "y__"]
 
--- | A lens to access a case of a oneof field.
+-- | A lens that maps from a oneof sum type to one of its individual cases.
+--
+-- For example, with
+--     data Foo = Bar Int32 | Baz Int64
+--
+-- this will generate a lens of type @Lens' (Maybe Foo) (Maybe Int32)@.
+--
+-- (Recall that oneofs are stored in a proto message as @Maybe Foo@, where
+-- 'Nothing' means that it's either set to an unknown value or unset.)
 --
 -- lens
 --   (\ x__ -> case x__ of
@@ -636,10 +646,10 @@ rawFieldAccessor f = "Lens.Family2.Unchecked.lens" @@ getter @@ setter
 --       otherwise -> Prelude.Nothing)
 --   (\ _ y__ -> fmap Foo'c y__
 oneofFieldAccessor :: OneofCase -> Exp
-oneofFieldAccessor
-    OneofCase { caseConstructorName = consName }
+oneofFieldAccessor o
         = "Lens.Family2.Unchecked.lens" @@ getter @@ setter
   where
+    consName = caseConstructorName o
     getter = lambda ["x__"] $
         case' "x__"
             [ alt

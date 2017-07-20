@@ -39,7 +39,7 @@ import qualified Data.Set as Set
 import Data.String (IsString(..))
 import Data.Text (Text, cons, splitOn, toLower, uncons, unpack)
 import qualified Data.Text as T
-import Lens.Family2 ((^.))
+import Lens.Family2 ((^.), (^..))
 import Proto.Google.Protobuf.Descriptor
     ( DescriptorProto
     , EnumDescriptorProto
@@ -214,7 +214,7 @@ messageDefs protoPrefix hsPrefix d
   where
     protoName = protoPrefix <> d ^. name
     hsPrefix' = hsPrefix ++ hsName (d ^. name) ++ "'"
-    hsName n = unpack $ capitalize $ n
+    hsName = unpack . capitalize
     allFields = collectFieldsByOneofIndex (d ^. field)
     thisDef =
         Message MessageInfo
@@ -223,8 +223,8 @@ messageDefs protoPrefix hsPrefix d
             , messageFields =
                   map fieldInfo $ Map.findWithDefault [] Nothing allFields
             , messageOneofFields =
-                  map (uncurry oneofInfo)
-                      $ zip [0..] $ map (^. name) $ d ^. oneofDecl
+                  zipWith oneofInfo [0..]
+                      $ d ^.. oneofDecl . traverse . name
             }
     fieldInfo f = FieldInfo f $ mkFieldName $ f ^. name
     mkFieldName n = FieldName
@@ -257,8 +257,8 @@ collectFieldsByOneofIndex
     :: [FieldDescriptorProto] -> Map.Map (Maybe Int32) [FieldDescriptorProto]
 collectFieldsByOneofIndex =
     fmap reverse
-    . foldl' (\m f -> Map.insertWith (++) (f ^. maybe'oneofIndex) [f] m)
-           Map.empty
+    . Map.fromListWith (++)
+    . fmap (\f -> (f ^. maybe'oneofIndex, [f]))
 
 -- | Get the name in Haskell of a proto field, taking care of camel casing and
 -- clashes with language keywords.
