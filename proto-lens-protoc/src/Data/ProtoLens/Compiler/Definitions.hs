@@ -31,7 +31,7 @@ module Data.ProtoLens.Compiler.Definitions
 
 import Data.Char (isUpper, toUpper)
 import Data.Int (Int32)
-import Data.List (mapAccumL, foldl')
+import Data.List (mapAccumL)
 import qualified Data.Map as Map
 import Data.Maybe (fromMaybe)
 import Data.Monoid
