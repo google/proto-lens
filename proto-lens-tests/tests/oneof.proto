@@ -5,7 +5,18 @@ option java_package = "oneof";
 
 message Foo {
   oneof bar {
-  	int32 baz = 1;
-  	string bippy = 2;
+    int32 baz = 1;
+    string bippy = 2;
+  }
+  oneof bar2 {
+    int32 baz2 = 3;
+  }
+}
+
+// A message with the same field names as Foo; tests that the record
+// field names don't clash.
+message DupeFieldNames {
+  oneof bar {
+    int32 baz = 1;
   }
 }
