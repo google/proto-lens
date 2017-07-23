@@ -9,7 +9,8 @@
 {-# LANGUAGE RankNTypes #-}
 -- | An Arbitrary instance for protocol buffer Messages to use with QuickCheck.
 module Data.ProtoLens.Arbitrary
-    ( ArbitraryMessage(..),
+    ( ArbitraryMessage(..)
+    , arbitraryMessage
     ) where
 
 import Data.ProtoLens.Message
@@ -66,8 +67,8 @@ arbitraryField (FieldDescriptor _ ftd fa) = case fa of
 
 arbitraryFieldValue :: FieldTypeDescriptor value -> Gen value
 arbitraryFieldValue ftd = case ftd of
-    MessageField -> unArbitraryMessage <$> arbitrary
-    GroupField -> unArbitraryMessage <$> arbitrary
+    MessageField -> arbitraryMessage
+    GroupField -> arbitraryMessage
     -- For enum fields, all we know is that the value is an instance of
     -- MessageEnum, meaning we can only use fromEnum, toEnum, or maybeToEnum. So
     -- we must rely on the instance of Arbitrary for Int and filter out only the
@@ -119,7 +120,7 @@ shrinkField (FieldDescriptor _ ftd fa) = case fa of
 
 shrinkFieldValue :: FieldTypeDescriptor value -> value -> [value]
 shrinkFieldValue ftd = case ftd of
-    MessageField -> map unArbitraryMessage . shrink . ArbitraryMessage
+    MessageField -> shrinkMessage
     GroupField -> map unArbitraryMessage . shrink . ArbitraryMessage
     -- Shrink to the 0-equivalent Enum value if it's both a valid Enum value
     -- and the value isn't already 0.
