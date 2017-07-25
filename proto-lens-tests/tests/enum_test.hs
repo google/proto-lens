@@ -15,7 +15,6 @@ import Lens.Family2 ((&), (.~), (^.))
 import Test.Framework (plusTestOptions, testGroup)
 import Test.Framework.Options (topt_timeout)
 import Test.Framework.Providers.HUnit (testCase)
-import Test.Framework.Providers.QuickCheck2 (testProperty)
 import Test.HUnit ((@?=))
 
 import Data.ProtoLens.TestUtil
@@ -41,7 +40,7 @@ main = testMain
 
 testExternalEnum, testNestedEnum, testDefaults, testBadEnumValues,
     testNamedEnumValues, testRoundTrip, testBounded, testMaybeSuccAndPred,
-    testEnumFromThenTo, testAliases :: Test
+    testEnumFromThenTo, testMonotonicFromEnum, testAliases :: Test
 
 testExternalEnum = testGroup "external"
     [ serializeTo (show e1)
