@@ -150,7 +150,7 @@ generateMessageDecls syntaxType env protoName info =
                   | f <- allFields
                   ]
         ]
-        ["Prelude.Show", "Prelude.Eq"]
+        ["Prelude.Show", "Prelude.Eq", "Prelude.Ord"]
     ] ++
 
     -- oneof field data type declarations
@@ -168,7 +168,7 @@ generateMessageDecls syntaxType env protoName info =
       , let f = caseField c
       , let consName = caseConstructorName c
       ]
-      ["Prelude.Show", "Prelude.Eq"]
+      ["Prelude.Show", "Prelude.Eq", "Prelude.Ord"]
     | oneofInfo <- messageOneofFields info
     ] ++
 
@@ -219,7 +219,7 @@ generateEnumDecls :: EnumInfo Name -> [Decl]
 generateEnumDecls info =
     [ dataDecl dataName
         [conDecl n [] | n <- constructorNames]
-        ["Prelude.Show", "Prelude.Eq"]
+        ["Prelude.Show", "Prelude.Eq", "Prelude.Ord"]
     -- instance Data.Default.Class.Default Foo where
     --   def = FirstEnumValue
     , instDecl [] ("Data.Default.Class.Default" `ihApp` [dataType])
