@@ -18,20 +18,22 @@ protoc = "protoc"
 bootstrapModuleRoot = "proto-lens-descriptors/src"
 useBootstrappingYaml = "--stack-yaml=stack-bootstrap.yaml"
 
-main = wrapClean $ do
-  [installRoot] <- lines <$> readProcess "stack"
-                    [useBootstrappingYaml, "path", "--local-install-root"] ""
-  let protocGenHaskell = installRoot </> "bin/proto-lens-protoc"
-  callProcess "stack" [useBootstrappingYaml, "build", "proto-lens-protoc"]
-  callProcess protoc $
-      [ "--plugin=protoc-gen-haskell=" ++ protocGenHaskell
-      , "--haskell_out=no-reexports:" ++ bootstrapModuleRoot
-      , "--proto_path=" ++ protoRoot
-      ]
-      ++ map (protoRoot </>)
-          [ "google/protobuf/descriptor.proto"
-          , "google/protobuf/compiler/plugin.proto"
+main = do
+  callProcess "stack" [useBootstrappingYaml, "setup"]
+  wrapClean $ do
+      [installRoot] <- lines <$> readProcess "stack"
+                        [useBootstrappingYaml, "path", "--local-install-root"] ""
+      let protocGenHaskell = installRoot </> "bin/proto-lens-protoc"
+      callProcess "stack" [useBootstrappingYaml, "build", "proto-lens-protoc"]
+      callProcess protoc $
+          [ "--plugin=protoc-gen-haskell=" ++ protocGenHaskell
+          , "--haskell_out=no-reexports:" ++ bootstrapModuleRoot
+          , "--proto_path=" ++ protoRoot
           ]
+          ++ map (protoRoot </>)
+              [ "google/protobuf/descriptor.proto"
+              , "google/protobuf/compiler/plugin.proto"
+              ]
 
 -- | Stack' rebuild logic doesn't seem robust enough for this case, and
 -- sometimes reuses the HEAD version of proto-lens for bootstrapping (or vice
