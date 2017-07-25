@@ -32,7 +32,7 @@ library
                        Data.ProtoLens.Encoding.Wire
                        Data.ProtoLens.TextFormat.Parser
   build-depends:  attoparsec == 0.13.*
-                , base >= 4.8 && < 4.10
+                , base >= 4.8 && < 4.11
                 , bytestring == 0.10.*
                 , containers == 0.5.*
                 , data-default-class >= 0.0 && < 0.2

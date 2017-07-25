@@ -16,7 +16,7 @@ cabal-version:       >=1.10
 extra-source-files:  tests/combinators.proto
 
 custom-setup
-  setup-depends: base >= 4.8 && < 4.10
+  setup-depends: base >= 4.8 && < 4.11
                , Cabal
                , proto-lens-protoc == 0.2.*
 
@@ -27,7 +27,7 @@ library
   build-depends:  proto-lens >= 0.1 && < 0.3
                 -- Used by the custom Setup script (for the test-suite).
                 , proto-lens-protoc >= 0.1 && < 0.3
-                , base >= 4.8 && < 4.10
+                , base >= 4.8 && < 4.11
                 , data-default-class >= 0.0 && < 0.2
                 , lens-family == 1.2.*
                 , transformers >= 0.4 && < 0.6

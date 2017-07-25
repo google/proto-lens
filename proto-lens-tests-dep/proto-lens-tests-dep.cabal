@@ -21,7 +21,7 @@ cabal-version:       >=1.10
 extra-source-files: protos/test-dep/foo.proto
 
 custom-setup
-  setup-depends: base >= 4.8 && < 4.10
+  setup-depends: base >= 4.8 && < 4.11
                , Cabal
                , proto-lens-protoc == 0.2.*
 
