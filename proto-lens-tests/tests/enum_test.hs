@@ -47,7 +47,9 @@ testExternalEnum = testGroup "external"
     -- Use ":: Bar" to confirm that the external type doesn't have a prefix.
     | (e1, e2, e3) <- zip3 [BAR3, BAR5, NEGATIVE :: Bar]
                            ["BAR3", "BAR5", "NEGATIVE"]
-                           [3, 5, -1]
+                           -- Varints store negative numbers in two's
+                           -- complement.
+                           [3, 5, maxBound]
     ]
 
 testNestedEnum = testGroup "nested"

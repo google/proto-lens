@@ -38,14 +38,17 @@ import Distribution.PackageDescription
     , libBuildInfo
     , testBuildInfo
     )
-import Distribution.Simple.BuildPaths (autogenModulesDir)
+import qualified Distribution.Simple.BuildPaths as BuildPaths
 import Distribution.Simple.InstallDirs (datadir)
 import Distribution.Simple.LocalBuildInfo
     ( LocalBuildInfo(..)
     , absoluteInstallDirs
     , componentPackageDeps
+#if MIN_VERSION_Cabal(2,0,0)
+    , allComponentsInBuildOrder
+#endif
     )
-import Distribution.Simple.PackageIndex (lookupSourcePackageId)
+import qualified Distribution.Simple.PackageIndex as PackageIndex
 import Distribution.Simple.Setup (fromFlag, copyDest, copyVerbosity)
 import Distribution.Simple.Utils
     ( createDirectoryIfMissingVerbose
@@ -173,9 +176,7 @@ generateSources root l files = do
     -- Collect import paths from build-depends of this package.
     importDirs <- filterM doesDirectoryExist
                      [ InstalledPackageInfo.dataDir info </> protoLensImportsPrefix
-                     | (_, c, _) <- componentsConfigs l
-                     , (_, i) <- componentPackageDeps c
-                     , info <- lookupSourcePackageId (installedPkgs l) i
+                     | info <- collectDeps l
                      ]
     generateProtosWithImports (root : importDirs) (autogenModulesDir l)
                               -- Applying 'root </>' does nothing if the path is already
@@ -294,3 +295,33 @@ findExecutableOrDie name debugMsg = do
                             ++ "\n    " ++ debugMsg
             hPutStrLn stderr sep
             error $ "Missing executable " ++ show name
+
+-------------------------------------------------------
+-- Compatibility layer between Cabal-1.* and Cabal-2.*
+
+-- | List all the packages that this one depends on.
+collectDeps :: LocalBuildInfo -> [InstalledPackageInfo.InstalledPackageInfo]
+#if MIN_VERSION_Cabal(2,0,0)
+collectDeps l = do
+    c <- allComponentsInBuildOrder l
+    (i,_) <- componentPackageDeps c
+    Just p <- [PackageIndex.lookupUnitId (installedPkgs l) i]
+    return p
+#else
+collectDeps l = do
+    (_, c ,_) <- componentsConfigs l
+    (_, i) <- componentPackageDeps c
+    PackageIndex.lookupSourcePackageId (installedPkgs l) i
+#endif
+
+-- | Get the package-level "autogen" directory where we're putting the
+-- generated .hs files.  (The 'BuildPaths.autogenModulesDir' file was
+-- deprecated in Cabal-2.0 in favor of module-specific directories
+-- (@autogenComponentModulesDir@), but our setup currently needs the more
+-- global location.)
+autogenModulesDir :: LocalBuildInfo -> FilePath
+#if MIN_VERSION_Cabal(2,0,0)
+autogenModulesDir = BuildPaths.autogenPackageModulesDir
+#else
+autogenModulesDir = BuildPaths.autogenModulesDir
+#endif

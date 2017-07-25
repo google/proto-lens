@@ -22,6 +22,9 @@ TODO: support more general optic types (e.g., prisms).
 {-# LANGUAGE RankNTypes #-}
 {-# LANGUAGE TypeFamilies #-}
 {-# LANGUAGE UndecidableInstances #-}
+#if __GLASGOW_HASKELL__ >= 802
+{-# LANGUAGE ScopedTypeVariables #-}
+#endif
 module Lens.Labels (
     -- * Lenses
     LensFn(..),
@@ -81,7 +84,11 @@ class HasLens (x :: Symbol) f s t a b
 instance
     (p ~ (a -> f b), q ~ (s -> f t), HasLens x f s t a b)
     => IsLabel x (LensFn p q) where
+#if __GLASGOW_HASKELL__ >= 802
+    fromLabel = LensFn $ lensOf (proxy# :: Proxy# x)
+#else
     fromLabel p = LensFn $ lensOf p
+#endif
 #endif
 
 type ASetter s t a b = LensLike Identity s t a b

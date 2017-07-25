@@ -20,6 +20,6 @@ library
   hs-source-dirs: src
   exposed-modules:     Data.ProtoLens.Optparse
   build-depends:  proto-lens >= 0.1 && < 0.3
-                , base >= 4.8 && < 4.10
+                , base >= 4.8 && < 4.11
                 , optparse-applicative >= 0.12 && < 0.15
                 , text == 1.2.*
