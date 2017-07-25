@@ -184,7 +184,6 @@ Test-Suite enum_test
                , test-framework
                , test-framework-hunit
                , test-framework-quickcheck2
-               , QuickCheck
 
 Test-Suite names_test
   default-language: Haskell2010

@@ -17,7 +17,6 @@ import Test.Framework.Options (topt_timeout)
 import Test.Framework.Providers.HUnit (testCase)
 import Test.Framework.Providers.QuickCheck2 (testProperty)
 import Test.HUnit ((@?=))
-import Test.QuickCheck
 
 import Data.ProtoLens.TestUtil
 
