@@ -178,10 +178,12 @@ Test-Suite enum_test
                , lens-family
                , pretty
                , proto-lens
+               , proto-lens-arbitrary
                , proto-lens-protoc
                , proto-lens-tests
                , test-framework
                , test-framework-hunit
+               , test-framework-quickcheck2
 
 Test-Suite names_test
   default-language: Haskell2010
