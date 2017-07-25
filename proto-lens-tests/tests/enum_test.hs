@@ -8,12 +8,16 @@
 module Main where
 
 import Proto.Enum
+import Data.Function (on)
 import Data.ProtoLens
+import Data.ProtoLens.Arbitrary
 import Lens.Family2 ((&), (.~), (^.))
 import Test.Framework (plusTestOptions, testGroup)
 import Test.Framework.Options (topt_timeout)
 import Test.Framework.Providers.HUnit (testCase)
+import Test.Framework.Providers.QuickCheck2 (testProperty)
 import Test.HUnit ((@?=))
+import Test.QuickCheck
 
 import Data.ProtoLens.TestUtil
 
@@ -32,6 +36,7 @@ main = testMain
     , testBounded
     , testMaybeSuccAndPred
     , testEnumFromThenTo
+    , testMonotonicFromEnum
     , testAliases
     ]
 
@@ -119,6 +124,16 @@ testEnumFromThenTo = plusTestOptions testOptions $ testGroup "enumFromThenTo"
         -- We limit the actual to 10 in case of accidental infinite sequences.
         -- Note that there are only 10 values, so this should happen rarely.
         testCase name $ take 10 actual @?= expected
+
+testMonotonicFromEnum = testGroup "monotonicFromEnum"
+    [ testProperty "baz" monotonicFromEnumProperty
+    ]
+  where
+    monotonicFromEnumProperty :: ArbitraryMessage TwoBazs -> Bool
+    monotonicFromEnumProperty (ArbitraryMessage twoBazs)  =
+      let b1 = twoBazs ^. baz1
+          b2 = twoBazs ^. baz2
+       in compare b1 b2 == (compare `on` fromEnum) b1 b2
 
 testAliases = testCase "alias" $ do
     map fromEnum [Alias1, Alias2, Alias2a, Alias3] @?= [1,2,2,3]

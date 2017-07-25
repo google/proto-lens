@@ -20,6 +20,13 @@ enum Baz {
   BAZ8 = 12;
 }
 
+message TwoBazs {
+  // We don't have the direct capability to generate arbitrary instances of
+  // enums, only of messages containing those enums.
+  required Baz baz1 = 1;
+  required Baz baz2 = 2;
+}
+
 message Foo {
   // TODO: clash name with external
   enum Baz {
