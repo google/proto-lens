@@ -170,6 +170,19 @@ module' modName
                     -- cause a name conflict between field accessors.
                     Nothing)
 
+setExplicitModuleReexports :: [ModuleName] -> Module -> Module
+setExplicitModuleReexports mods (Syntax.Module _ (Just (Syntax.ModuleHead _ name warning _)) pragmas imports decls)
+    = Syntax.Module ()
+        (Just $ Syntax.ModuleHead ()
+                    name
+                    warning
+                    (Just $ Syntax.ExportSpecList () $ Syntax.EModuleContents () <$> mods)
+        )
+        pragmas
+        imports
+        decls
+setExplicitModuleReexports _ m = m
+
 type ModuleName = Syntax.ModuleName ()
 type ModulePragma = Syntax.ModulePragma ()
 
@@ -228,7 +241,7 @@ tyBang = Syntax.TyBang () (Syntax.BangedTy ()) (Syntax.NoUnpackPragma ())
 #else
 tyBang = Syntax.TyBang () (Syntax.BangedTy ())
 #endif
- 
+
 -- | Application of a Haskell type or expression to an argument.
 -- For example, to represent @f x y@, you can write
 --
@@ -309,3 +322,8 @@ pLitInt n = Syntax.PLit () sign $ Syntax.Int () n' (show n')
 
 string :: String -> Syntax.Literal ()
 string s = Syntax.String () s (show s)
+
+modifyModuleName :: (String -> String) -> ModuleName -> ModuleName
+modifyModuleName f (Syntax.ModuleName _ unpacked) =
+  Syntax.ModuleName () $ f unpacked
+

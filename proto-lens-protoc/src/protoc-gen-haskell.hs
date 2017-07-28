@@ -8,6 +8,7 @@
 {-# LANGUAGE PatternSynonyms #-}
 module Main where
 
+import Control.Monad (join)
 import qualified Data.ByteString as B
 import Data.Map.Strict ((!))
 import Data.Monoid ((<>))
@@ -80,10 +81,16 @@ generateFiles modifyImports header files toGenerate = let
              modifyImports
              (definitions f)
              (collectEnvFromDeps deps filesByName)
-  in [ ( outputFilePath . prettyPrint . haskellModule $ f
-       , header (descriptor f) <> pack (prettyPrint $ buildFile f)
-       )
+  in join
+     [ [ ( outputFilePath . prettyPrint . haskellModule $ f
+         , header (descriptor f) <> pack (prettyPrint fields)
+         )
+       , ( outputFilePath . (++ "'Types") . prettyPrint . haskellModule $ f
+         , header (descriptor f) <> pack (prettyPrint types)
+         )
+       ]
      | fileName <- toGenerate
      , let f = filesByName ! fileName
+           (types, fields) = buildFile f
      ]
 
