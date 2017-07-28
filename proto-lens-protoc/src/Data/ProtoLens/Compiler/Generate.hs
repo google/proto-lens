@@ -376,11 +376,7 @@ generateFieldDecls xStr =
           $ tyForAll ["f", "s", "t", "a", "b"]
                   [classA "Lens.Labels.HasLens" [xSym, "f", "s", "t", "a", "b"]]
                     $ "Lens.Family2.LensLike" @@ "f" @@ "s" @@ "t" @@ "a" @@ "b"
-    , funBind [match x []
-                  $ "Lens.Labels.lensOf"
-                      @@ ("Lens.Labels.proxy#" @::@
-                          ("Lens.Labels.Proxy#" @@ xSym))
-              ]
+    , funBind [match x [] $ lensOfExp xStr]
     ]
   where
     x = nameFromSymbol xStr
@@ -748,7 +744,7 @@ fieldDescriptorExpr syntaxType env n f =
 
 fieldAccessorExpr :: SyntaxType -> Env QName -> FieldInfo -> Exp
 -- (PlainField Required foo), (OptionalField foo), etc...
-fieldAccessorExpr syntaxType env f = accessorCon @@ makeathing hsFieldName
+fieldAccessorExpr syntaxType env f = accessorCon @@ lensOfExp hsFieldName
 
   where
     fd = fieldDescriptor f
@@ -762,8 +758,8 @@ fieldAccessorExpr syntaxType env f = accessorCon @@ makeathing hsFieldName
           FieldDescriptorProto'LABEL_REPEATED
               | Just (k, v) <- getMapFields env fd
                   -> "Data.ProtoLens.MapField"
-                         @@ makeathing (overloadedField k)
-                         @@ makeathing (overloadedField v)
+                         @@ lensOfExp (overloadedField k)
+                         @@ lensOfExp (overloadedField v)
               | otherwise -> "Data.ProtoLens.RepeatedField"
                   @@ if isPackedField syntaxType fd
                         then "Data.ProtoLens.Packed"
@@ -774,9 +770,11 @@ fieldAccessorExpr syntaxType env f = accessorCon @@ makeathing hsFieldName
                   | not (isDefaultingOptional syntaxType fd)
                       -> "maybe'" <> overloadedField f
               _ -> overloadedField f
-    makeathing sym = ("Lens.Labels.lensOf"
-                      @@ ("Lens.Labels.proxy#" @::@
-                          ("Lens.Labels.Proxy#" @@ promoteSymbol sym)))
+
+lensOfExp :: Symbol -> Exp
+lensOfExp sym = ("Lens.Labels.lensOf"
+                  @@ ("Lens.Labels.proxy#" @::@
+                      ("Lens.Labels.Proxy#" @@ promoteSymbol sym)))
 
 overloadedField :: FieldInfo -> Symbol
 overloadedField = overloadedName . plainFieldName
