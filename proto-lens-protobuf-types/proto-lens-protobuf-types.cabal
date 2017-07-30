@@ -15,6 +15,7 @@ category:            Data
 build-type:          Custom
 cabal-version:       >=1.8
 extra-source-files:
+    Changelog.md
     proto-src/google/protobuf/any.proto
     proto-src/google/protobuf/duration.proto
     proto-src/google/protobuf/wrappers.proto
