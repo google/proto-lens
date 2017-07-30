@@ -1,6 +1,8 @@
 # Changelog for `proto-lens-optparse`
 
 ## Unreleased changes
+
+## v0.1.0.4
 - Bump the dependency on `base` to support `ghc-8.2.1`.
 
 ## 0.1.0.3
