@@ -72,6 +72,12 @@ message ProtoKeywords {
   optional int32 import = 11;
 }
 
+message odd_Cased_message {
+  oneof oneof_field {
+    int32 oneof_case = 1;
+  }
+}
+
 // Messages whose name conflicts with a proto keyword.
 message syntax {
   optional int32 foo = 1;
