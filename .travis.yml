@@ -10,6 +10,8 @@ cache:
   - $HOME/.ghc
   - $HOME/.stack
   - $HOME/.cabal
+  # TODO: remove this after we switch to an LTS for ghc-8.2.1
+  - .stack-work/install/x86_64-linux/lts-8.23/8.2.1
 
 matrix:
   include:
@@ -47,8 +49,8 @@ install:
   - case "$BUILD" in
       stack)
         $STACK setup --no-terminal;
-        $STACK build --only-snapshot --no-terminal;
-        $STACK build --no-terminal happy;;
+        $STACK build --no-terminal happy;
+        $STACK build --only-dependencies --no-terminal;;
       cabal)
         cabal update;;
     esac
