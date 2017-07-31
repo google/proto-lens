@@ -48,8 +48,10 @@ library
         , lens-family == 1.2.*
         , lens-labels == 0.1.*
         , process >= 1.2 && < 1.5
-        , proto-lens == 0.2.2.0
-        , proto-lens-descriptors == 0.2.2.0
+        -- Specify a more precise version of `proto-lens`, since it depends on
+        -- the exact definition of the Message class.
+        , proto-lens == 0.2.2.*
+        , proto-lens-descriptors == 0.2.2.*
         , text == 1.2.*
     reexported-modules:
         -- Modules that are needed by the generated Haskell files.
@@ -81,10 +83,10 @@ executable proto-lens-protoc
       , filepath >= 1.4 && < 1.6
       , haskell-src-exts >= 1.17 && < 1.20
       , lens-family == 1.2.*
-      -- Specify an exact version of `proto-lens`, since it's tied closely
-      -- to the generated code.
-      , proto-lens == 0.2.2.0
-      , proto-lens-descriptors == 0.2.2.0
+      -- Specify a more precise version of `proto-lens`, since it depends on
+      -- the exact definition of the Message class.
+      , proto-lens == 0.2.2.*
+      , proto-lens-descriptors == 0.2.2.*
       , text == 1.2.*
   hs-source-dirs:      src
   other-modules:
