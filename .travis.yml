@@ -61,7 +61,7 @@ script:
   - case "$BUILD" in
       stack)
         STACK_ARGS=(--haddock --no-haddock-deps --ghc-options="-Wall -Werror");
-        $STACK build "${STACK_ARGS[@]}" && $STACK test "${STACK_ARGS[@]}";;
+        $STACK build --bench --no-run-benchmarks "${STACK_ARGS[@]}" && $STACK test "${STACK_ARGS[@]}";;
       cabal)
         ./travis-cabal.sh;;
     esac

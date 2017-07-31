@@ -7,16 +7,19 @@
 {-# LANGUAGE DeriveGeneric #-}
 {-# LANGUAGE DeriveAnyClass #-}
 {-# LANGUAGE OverloadedStrings #-}
+{-# OPTIONS_GHC -fno-warn-orphans #-}
 
 -- | A benchmark to measure the difference between nesting fields in a repeated
 -- submessage vs. putting repeated fields directly in the top-level message.
-module Main where
+module Main (main) where
 
+import Data.Int (Int32)
 import Data.ProtoLens.BenchmarkUtil (protoBenchmark, benchmarkMain)
 import GHC.Generics (Generic)
 import Control.DeepSeq (NFData)
 import Criterion.Main (Benchmark)
-import Lens.Family2 ((&), (.~))
+import Data.Text (Text)
+import Lens.Family ((&), (.~))
 import Data.ProtoLens.Message (def)
 import Proto.Nested
 
@@ -36,8 +39,10 @@ deriving instance NFData FooNested'Sub
 defaultNumValues :: Int
 defaultNumValues = 10000
 
+intValue :: Int32
 intValue = 5
 
+strValue :: Text
 strValue = "foo"
 
 populateFlat :: Int -> FooFlat
@@ -56,4 +61,5 @@ benchmaker size =
     , protoBenchmark "nested" (populateNested size)
     ]
 
+main :: IO ()
 main = benchmarkMain defaultNumValues benchmaker

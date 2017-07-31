@@ -6,19 +6,19 @@
 {-# LANGUAGE StandaloneDeriving #-}
 {-# LANGUAGE DeriveGeneric #-}
 {-# LANGUAGE DeriveAnyClass #-}
+{-# OPTIONS_GHC -fno-warn-orphans #-}
 
 -- | A benchmark to measure the performance difference between packed and
 -- unpacked integer data.
-module Main where
+module Main (main) where
 
 import Data.ProtoLens.BenchmarkUtil (protoBenchmark, benchmarkMain)
 import GHC.Generics (Generic)
 import Control.DeepSeq (NFData)
 import Criterion.Main (Benchmark)
-import Lens.Family2 ((&), (.~))
+import Lens.Family ((&), (.~))
 import Data.Int (Int32)
-import Data.ProtoLens.Field (HasField)
-import Data.ProtoLens.Message (Message, def)
+import Data.ProtoLens (def)
 import Proto.IntPacking
 
 -- These instances are required by Criterion to benchmark proto decoding.
@@ -45,4 +45,5 @@ benchmaker size =
     , protoBenchmark "int32-packed" (populatePacked size 5 :: FooPacked)
     ]
 
+main :: IO ()
 main = benchmarkMain defaultNumInt32s benchmaker
