@@ -2,6 +2,10 @@
 
 ## Unreleased changes
 
+## v0.2.2.1
+- Fix the case where types/constructors of oneofs overlap with those of
+  submessages or subenums, by appending `"'"` to the former when required.
+
 ## v0.2.2.0
 - Bump the dependency on `base` to support `ghc-8.2.1` and `Cabal-2.0`.
 - Bump the dependency for `haskell-src-exts-0.19`.

@@ -1,5 +1,5 @@
 name:                proto-lens-protoc
-version:             0.2.2.0
+version:             0.2.2.1
 synopsis:            Protocol buffer compiler for the proto-lens library.
 description:
   Turn protocol buffer files (.proto) into Haskell files (.hs) which

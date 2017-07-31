@@ -39,7 +39,7 @@ import qualified Data.Set as Set
 import Data.String (IsString(..))
 import Data.Text (Text, cons, splitOn, toLower, uncons, unpack)
 import qualified Data.Text as T
-import Lens.Family2 ((^.), (^..))
+import Lens.Family2 ((^.), (^..), toListOf)
 import Proto.Google.Protobuf.Descriptor
     ( DescriptorProto
     , EnumDescriptorProto
@@ -214,51 +214,76 @@ messageDefs protoPrefix hsPrefix d
   where
     protoName = protoPrefix <> d ^. name
     hsPrefix' = hsPrefix ++ hsName (d ^. name) ++ "'"
-    hsName = unpack . capitalize . camelCase
-    allFields = collectFieldsByOneofIndex (d ^. field)
+    allFields = groupFieldsByOneofIndex (d ^. field)
     thisDef =
         Message MessageInfo
             { messageName = fromString $ hsPrefix ++ hsName (d ^. name)
             , messageDescriptor = d
             , messageFields =
-                  map fieldInfo $ Map.findWithDefault [] Nothing allFields
-            , messageOneofFields =
-                  zipWith oneofInfo [0..]
-                      $ d ^.. oneofDecl . traverse . name
+                  map (fieldInfo hsPrefix')
+                      $ Map.findWithDefault [] Nothing allFields
+            , messageOneofFields = collectOneofFields hsPrefix' d allFields
             }
-    fieldInfo f = FieldInfo f $ mkFieldName $ f ^. name
-    mkFieldName n = FieldName
-                    { overloadedName = fromString n'
-                    , haskellRecordFieldName = fromString $ "_" ++ hsPrefix' ++ n'
-                    }
-      where
-        n' = fieldName n
-    oneofInfo :: Int32 -> Text -> OneofInfo
-    oneofInfo idx n = OneofInfo
-                        { oneofFieldName = mkFieldName n
-                        , oneofTypeName = fromString $ hsPrefix' ++ hsName n
-                        , oneofCases = map oneofCase
-                                          $ Map.findWithDefault [] (Just idx)
-                                              allFields
-                        }
-    oneofCase f = OneofCase
-                        { caseField = fieldInfo f
-                        , caseConstructorName =
-                              -- Note: oneof case constructors aren't prefixed
-                              -- by the oneof name; field names (even inside
-                              -- of a oneof) are unique within a message.
-                              fromString $ hsPrefix' ++ hsName (f ^. name)
-                        }
 
+fieldInfo :: String -> FieldDescriptorProto -> FieldInfo
+fieldInfo hsPrefix f = FieldInfo f $ mkFieldName hsPrefix $ f ^. name
+
+collectOneofFields
+    :: String -> DescriptorProto -> Map.Map (Maybe Int32) [FieldDescriptorProto]
+    -> [OneofInfo]
+collectOneofFields hsPrefix d allFields
+    = zipWith oneofInfo [0..] $ d ^.. oneofDecl . traverse . name
+  where
+    oneofInfo idx n = OneofInfo
+        { oneofFieldName = mkFieldName hsPrefix n
+        , oneofTypeName = fromString $ hsPrefix ++ hsNameUnique subdefTypes n
+        , oneofCases = map oneofCase
+                          $ Map.findWithDefault [] (Just idx)
+                              allFields
+        }
+    oneofCase f = OneofCase
+        { caseField = fieldInfo hsPrefix f
+        , caseConstructorName =
+              -- Note: oneof case constructors aren't prefixed
+              -- by the oneof name; field names (even inside
+              -- of a oneof) are unique within a message.
+              fromString $ hsPrefix ++ hsNameUnique subdefCons (f ^. name)
+        }
+    -- Make a name that doesn't overlap with those already defined by submessages
+    -- or subenums.
+    hsNameUnique ns n
+        | n' `elem` ns = n' <> "'"
+        | otherwise = n'
+      where
+        n' = hsName n
+    -- The Haskell "type" namespace
+    subdefTypes = Set.fromList $ map hsName
+                    $ toListOf (nestedType . traverse . name) d
+                    ++ toListOf (enumType . traverse . name) d
+    -- The Haskell "expression" namespace (i.e., constructors)
+    subdefCons = Set.fromList $ map hsName
+                    $ toListOf (nestedType . traverse . name) d
+                    ++ toListOf (enumType . traverse . value . traverse . name) d
 
 -- | Group fields by the index of the oneof field that they belong to.
 -- (Or 'Nothing' if they don't belong to a oneof.)
-collectFieldsByOneofIndex
+groupFieldsByOneofIndex
     :: [FieldDescriptorProto] -> Map.Map (Maybe Int32) [FieldDescriptorProto]
-collectFieldsByOneofIndex =
+groupFieldsByOneofIndex =
     fmap reverse
     . Map.fromListWith (++)
     . fmap (\f -> (f ^. maybe'oneofIndex, [f]))
+
+hsName :: Text -> String
+hsName = unpack . capitalize . camelCase
+
+mkFieldName :: String -> Text -> FieldName
+mkFieldName hsPrefix n = FieldName
+                    { overloadedName = fromString n'
+                    , haskellRecordFieldName = fromString $ "_" ++ hsPrefix ++ n'
+                    }
+      where
+        n' = fieldName n
 
 -- | Get the name in Haskell of a proto field, taking care of camel casing and
 -- clashes with language keywords.
@@ -351,11 +376,10 @@ collectEnumValues mkHsName = snd . mapAccumL helper Map.empty
            -> (Map.Map Int32 Name, EnumValueInfo Name)
     helper seenNames v
         | Just n' <- Map.lookup k seenNames = (seenNames, mkValue (Just n'))
-        | otherwise = (Map.insert k hsName seenNames, mkValue Nothing)
+        | otherwise = (Map.insert k n seenNames, mkValue Nothing)
       where
-        mkValue = EnumValueInfo hsName v
-        hsName = mkHsName n
-        n = v ^. name
+        mkValue = EnumValueInfo n v
+        n = mkHsName (v ^. name)
         k = v ^. number
 
 -- Haskell types must start with an uppercase letter, so we capitalize message
