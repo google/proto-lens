@@ -39,7 +39,7 @@ Benchmark int-packing
     type:             exitcode-stdio-1.0
     main-is:          IntPacking.hs
     hs-source-dirs:   benchmarks
-    other-modules:    Proto.IntPacking
+    other-modules:    Proto.IntPacking, Proto.IntPacking'Types
     ghc-options:      -O2 -rtsopts
     build-depends: base
                  , criterion
@@ -54,7 +54,7 @@ Benchmark nested
     type:             exitcode-stdio-1.0
     main-is:          Nested.hs
     hs-source-dirs:   benchmarks
-    other-modules:    Proto.Nested
+    other-modules:    Proto.Nested, Proto.Nested'Types
     ghc-options:      -O2 -rtsopts
     build-depends: base
                  , criterion
@@ -70,7 +70,7 @@ Benchmark unused-fields
     type:             exitcode-stdio-1.0
     main-is:          UnusedFields.hs
     hs-source-dirs:   benchmarks
-    other-modules:    Proto.UnusedFields
+    other-modules:    Proto.UnusedFields, Proto.UnusedFields'Types
     ghc-options:      -O2 -rtsopts
     build-depends: base
                  , criterion
