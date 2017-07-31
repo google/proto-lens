@@ -33,6 +33,6 @@ library
                       Proto.Google.Protobuf.Wrappers
   build-depends: base >= 4.8 && < 4.11
                , lens-family
-               , proto-lens >= 0.2.2.0 && < 0.3
-               , proto-lens-protoc == 0.2.*
+               , proto-lens >= 0.2.2 && < 0.3
+               , proto-lens-protoc >= 0.2.2 && < 0.3
                , text == 1.2.*
