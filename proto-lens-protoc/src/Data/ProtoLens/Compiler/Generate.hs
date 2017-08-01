@@ -141,9 +141,6 @@ importSimple m = ImportDecl
     , importSpecs = Nothing
     }
 
-importUnqualified :: ModuleName -> ImportDecl ()
-importUnqualified m = (importSimple m) { importQualified = False }
-
 type ModifyImports = ImportDecl () -> ImportDecl ()
 
 reexported :: ModifyImports

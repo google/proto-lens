@@ -170,19 +170,6 @@ module' modName
                     -- cause a name conflict between field accessors.
                     Nothing)
 
-setExplicitModuleReexports :: [ModuleName] -> Module -> Module
-setExplicitModuleReexports mods (Syntax.Module _ (Just (Syntax.ModuleHead _ name warning _)) pragmas imports decls)
-    = Syntax.Module ()
-        (Just $ Syntax.ModuleHead ()
-                    name
-                    warning
-                    (Just $ Syntax.ExportSpecList () $ Syntax.EModuleContents () <$> mods)
-        )
-        pragmas
-        imports
-        decls
-setExplicitModuleReexports _ m = m
-
 getModuleName :: Module -> Maybe ModuleName
 getModuleName (Syntax.Module _ (Just (Syntax.ModuleHead _ name _ _)) _ _ _)
     = Just name
