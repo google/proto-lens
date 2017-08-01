@@ -170,6 +170,11 @@ module' modName
                     -- cause a name conflict between field accessors.
                     Nothing)
 
+getModuleName :: Module -> Maybe ModuleName
+getModuleName (Syntax.Module _ (Just (Syntax.ModuleHead _ name _ _)) _ _ _)
+    = Just name
+getModuleName _ = Nothing
+
 type ModuleName = Syntax.ModuleName ()
 type ModulePragma = Syntax.ModulePragma ()
 
@@ -228,7 +233,7 @@ tyBang = Syntax.TyBang () (Syntax.BangedTy ()) (Syntax.NoUnpackPragma ())
 #else
 tyBang = Syntax.TyBang () (Syntax.BangedTy ())
 #endif
- 
+
 -- | Application of a Haskell type or expression to an argument.
 -- For example, to represent @f x y@, you can write
 --
@@ -309,3 +314,8 @@ pLitInt n = Syntax.PLit () sign $ Syntax.Int () n' (show n')
 
 string :: String -> Syntax.Literal ()
 string s = Syntax.String () s (show s)
+
+modifyModuleName :: (String -> String) -> ModuleName -> ModuleName
+modifyModuleName f (Syntax.ModuleName _ unpacked) =
+  Syntax.ModuleName () $ f unpacked
+

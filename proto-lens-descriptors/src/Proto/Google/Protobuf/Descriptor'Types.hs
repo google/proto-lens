@@ -4,7 +4,7 @@
   FlexibleInstances, PatternSynonyms, MagicHash, NoImplicitPrelude
   #-}
 {-# OPTIONS_GHC -fno-warn-unused-imports #-}
-module Proto.Google.Protobuf.Descriptor where
+module Proto.Google.Protobuf.Descriptor'Types where
 import qualified Prelude
 import qualified Data.Int
 import qualified Data.Word

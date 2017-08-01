@@ -7,6 +7,7 @@
 module Main where
 
 import Proto.Packed
+import Proto.Packed'Fields
 import Lens.Family2 ((&), (.~))
 import Data.ProtoLens
 

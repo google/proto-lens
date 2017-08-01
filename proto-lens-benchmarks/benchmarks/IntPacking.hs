@@ -20,6 +20,7 @@ import Lens.Family ((&), (.~))
 import Data.Int (Int32)
 import Data.ProtoLens (def)
 import Proto.IntPacking
+import Proto.IntPacking'Fields
 
 -- These instances are required by Criterion to benchmark proto decoding.
 deriving instance Generic FooUnpacked

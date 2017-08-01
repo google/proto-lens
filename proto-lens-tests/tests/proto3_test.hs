@@ -16,7 +16,9 @@ import Proto.Proto3
     , Foo'FooEnum(..)
     , Foo'Sub(..)
     , Strings
-    , a
+    )
+import Proto.Proto3'Fields
+    ( a
     , b
     , c
     , d
