@@ -43,7 +43,7 @@ For example, in `foo-bar-proto.cabal`:
       setup-depends: base, Cabal, proto-lens-protoc
 
     library
-        exposed-modules: Proto.Foo.Bar
+        exposed-modules: Proto.Foo.Bar, Proto.Foo.Bar'Fields
         build-depends: proto-lens-protoc, ...
 
 Next, write a `Setup.hs` file that uses `Data.ProtoLens.Setup` and specifies the
