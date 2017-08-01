@@ -6,8 +6,9 @@ import Test.Framework.Providers.HUnit (testCase)
 import Test.HUnit ((@=?))
 
 import Data.ProtoLens.TestUtil (Test, testMain)
-import Proto.PackageDeps (Bar, foo)
-import Proto.TestDep.Foo (value)
+import Proto.PackageDeps (Bar)
+import Proto.PackageDeps'Fields (foo)
+import Proto.TestDep.Foo'Fields (value)
 
 main :: IO ()
 main = testMain [testWrapper]

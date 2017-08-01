@@ -8,6 +8,7 @@
 module Main where
 
 import Proto.Enum
+import Proto.Enum'Fields
 import Data.Function (on)
 import Data.ProtoLens
 import Data.ProtoLens.Arbitrary

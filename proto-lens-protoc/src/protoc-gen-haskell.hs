@@ -8,7 +8,6 @@
 {-# LANGUAGE PatternSynonyms #-}
 module Main where
 
-import Control.Monad (join)
 import qualified Data.ByteString as B
 import Data.Map.Strict ((!))
 import Data.Monoid ((<>))

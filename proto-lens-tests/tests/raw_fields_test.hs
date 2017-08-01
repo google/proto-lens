@@ -12,6 +12,7 @@ module Main where
 
 import Control.Arrow (second)
 import Proto.RawFields
+import Proto.RawFields'Fields
 import Data.ProtoLens
 import Lens.Family2 (Lens', (&), (.~))
 import Data.Int (Int32, Int64)
