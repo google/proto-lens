@@ -20,14 +20,16 @@ import Lens.Family2
 import Proto.Google.Protobuf.Compiler.Plugin
     ( CodeGeneratorRequest
     , CodeGeneratorResponse
-    , content
+    )
+import Proto.Google.Protobuf.Compiler.Plugin'Fields
+    ( content
     , file
     , fileToGenerate
     , parameter
     , protoFile
     )
-import Proto.Google.Protobuf.Descriptor
-    (FileDescriptorProto, name, dependency)
+import Proto.Google.Protobuf.Descriptor (FileDescriptorProto)
+import Proto.Google.Protobuf.Descriptor'Fields (name, dependency)
 import System.Environment (getProgName)
 import System.Exit (exitWith, ExitCode(..))
 import System.IO as IO

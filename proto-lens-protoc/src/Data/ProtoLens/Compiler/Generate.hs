@@ -34,7 +34,9 @@ import Proto.Google.Protobuf.Descriptor
     , FieldDescriptorProto'Label(..)
     , FieldDescriptorProto'Type(..)
     , FileDescriptorProto
-    , defaultValue
+    )
+import Proto.Google.Protobuf.Descriptor'Fields
+    ( defaultValue
     , label
     , mapEntry
     , maybe'oneofIndex
@@ -75,17 +77,17 @@ generateModule :: ModuleName
                -> Env QName     -- ^ Definitions in the imported modules
                -> [Module]
 generateModule modName imports syntaxType modifyImport definitions importedEnv
-    = [ module' typeModName
+    = [ module' modName
                 pragmas
                 sharedImports
           . concatMap generateDecls $ Map.toList definitions
-      , setExplicitModuleReexports [modName, typeModName] $ module' modName
+      , module' fieldModName
                 pragmas
-                (importUnqualified typeModName : sharedImports)
+                sharedImports
                 (concatMap generateFieldDecls allLensNames)
       ]
   where
-    typeModName = modifyModuleName (++ "'Types") modName
+    fieldModName = modifyModuleName (++ "'Fields") modName
     pragmas =
           [ languagePragma $ map fromString
               ["ScopedTypeVariables", "DataKinds", "TypeFamilies",

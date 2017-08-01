@@ -29,11 +29,11 @@ library
   hs-source-dirs:     src
   exposed-modules:    Data.ProtoLens.Any
                       Proto.Google.Protobuf.Any
-                      Proto.Google.Protobuf.Any'Types
+                      Proto.Google.Protobuf.Any'Fields
                       Proto.Google.Protobuf.Duration
-                      Proto.Google.Protobuf.Duration'Types
+                      Proto.Google.Protobuf.Duration'Fields
                       Proto.Google.Protobuf.Wrappers
-                      Proto.Google.Protobuf.Wrappers'Types
+                      Proto.Google.Protobuf.Wrappers'Fields
   build-depends: base >= 4.8 && < 4.11
                , lens-family
                , proto-lens >= 0.2.2 && < 0.3

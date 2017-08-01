@@ -46,7 +46,9 @@ import Proto.Google.Protobuf.Descriptor
     , EnumValueDescriptorProto
     , FieldDescriptorProto
     , FileDescriptorProto
-    , enumType
+    )
+import Proto.Google.Protobuf.Descriptor'Fields
+    ( enumType
     , field
     , maybe'oneofIndex
     , messageType
