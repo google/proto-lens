@@ -73,9 +73,9 @@ generateModule :: ModuleName
                -> ModifyImports
                -> Env Name      -- ^ Definitions in this file
                -> Env QName     -- ^ Definitions in the imported modules
-               -> (Module, Module)
+               -> [Module]
 generateModule modName imports syntaxType modifyImport definitions importedEnv
-    = ( module' typeModName
+    = [ module' typeModName
                 pragmas
                 sharedImports
           . concatMap generateDecls $ Map.toList definitions
@@ -83,7 +83,7 @@ generateModule modName imports syntaxType modifyImport definitions importedEnv
                 pragmas
                 (importUnqualified typeModName : sharedImports)
                 (concatMap generateFieldDecls allLensNames)
-      )
+      ]
   where
     typeModName = modifyModuleName (++ "'Types") modName
     pragmas =

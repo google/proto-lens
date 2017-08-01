@@ -32,7 +32,7 @@ import System.Environment (getProgName)
 import System.Exit (exitWith, ExitCode(..))
 import System.IO as IO
 
-import Data.ProtoLens.Compiler.Combinators (prettyPrint)
+import Data.ProtoLens.Compiler.Combinators (prettyPrint, getModuleName)
 import Data.ProtoLens.Compiler.Generate
 import Data.ProtoLens.Compiler.Plugin
 
@@ -69,7 +69,7 @@ generateFiles modifyImports header files toGenerate = let
   modulePrefix = "Proto"
   filesByName = analyzeProtoFiles modulePrefix files
   -- The contents of the generated Haskell file for a given .proto file.
-  buildFile f = let
+  modulesToBuild f = let
       deps = descriptor f ^. dependency
       imports = Set.toAscList $ Set.fromList
                   [ haskellModule (filesByName ! exportName)
@@ -81,16 +81,12 @@ generateFiles modifyImports header files toGenerate = let
              modifyImports
              (definitions f)
              (collectEnvFromDeps deps filesByName)
-  in join
-     [ [ ( outputFilePath . prettyPrint . haskellModule $ f
-         , header (descriptor f) <> pack (prettyPrint fields)
-         )
-       , ( outputFilePath . (++ "'Types") . prettyPrint . haskellModule $ f
-         , header (descriptor f) <> pack (prettyPrint types)
-         )
-       ]
+  in [ ( outputFilePath $ prettyPrint modName
+       , header (descriptor f) <> pack (prettyPrint mod)
+       )
      | fileName <- toGenerate
      , let f = filesByName ! fileName
-           (types, fields) = buildFile f
+     , mod <- modulesToBuild f
+     , let Just modName =  getModuleName mod
      ]
 

@@ -183,6 +183,11 @@ setExplicitModuleReexports mods (Syntax.Module _ (Just (Syntax.ModuleHead _ name
         decls
 setExplicitModuleReexports _ m = m
 
+getModuleName :: Module -> Maybe ModuleName
+getModuleName (Syntax.Module _ (Just (Syntax.ModuleHead _ name _ _)) _ _ _)
+    = Just name
+getModuleName _ = Nothing
+
 type ModuleName = Syntax.ModuleName ()
 type ModulePragma = Syntax.ModulePragma ()
 
