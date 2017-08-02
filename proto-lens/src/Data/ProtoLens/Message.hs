@@ -243,12 +243,13 @@ partial
   -> a  -- ^ The value to match.
   -> Bool
 partial against match =
-  all (== True) $ Map.elems (fieldsByTag $ descriptor @a) <&> \(FieldDescriptor _ _ acc) ->
-    case acc of
-      PlainField _ l    -> view l against == view l match
-      OptionalField l   -> compareMaybe (view l against) (view l match)
-      RepeatedField _ l -> view l against == view l match
-      MapField _ _ l    -> view l against == view l match
+  all (== True) $ Map.elems (fieldsByTag $ descriptor @a)
+    <&> \(FieldDescriptor _ _ acc) ->
+      case acc of
+        PlainField _ l    -> view l against == view l match
+        OptionalField l   -> compareMaybe (view l against) (view l match)
+        RepeatedField _ l -> view l against == view l match
+        MapField _ _ l    -> view l against == view l match
   where
     (<&>) = flip (<$>)
 
