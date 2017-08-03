@@ -47,7 +47,7 @@ library
         , haskell-src-exts >= 1.17 && < 1.20
         , lens-family == 1.2.*
         , lens-labels == 0.1.*
-        , process >= 1.2 && < 1.5
+        , process >= 1.2 && < 1.7
         -- Specify a more precise version of `proto-lens`, since it depends on
         -- the exact definition of the Message class.
         , proto-lens == 0.2.2.*
