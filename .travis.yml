@@ -10,8 +10,6 @@ cache:
   - $HOME/.ghc
   - $HOME/.stack
   - $HOME/.cabal
-  # TODO: remove this after we switch to an LTS for ghc-8.2.1
-  - .stack-work/install/x86_64-linux/lts-8.23/8.2.1
 
 matrix:
   include:
@@ -25,9 +23,11 @@ matrix:
     addons: {apt: {packages: [libgmp-dev]}}
   - env: BUILD=stack STACK='stack --resolver=lts-7.4'
     addons: {apt: {packages: [libgmp-dev]}}
+  - env: BUILD=stack STACK='stack --resolver=lts-8.24'
+    addons: {apt: {packages: [libgmp-dev]}}
   - env: BUILD=stack STACK=stack # Use the resolver in stack.yaml
     addons: {apt: {packages: [libgmp-dev]}}
-  - env: BUILD=stack STACK='stack --stack-yaml=stack-8.2.1.yaml'
+  - env: BUILD=stack STACK='stack --resolver=nightly-2017-07-31  # ghc-8.2.1
     addons: {apt: {packages: [libgmp-dev]}}
 
 before_install:
