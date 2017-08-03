@@ -27,7 +27,7 @@ matrix:
     addons: {apt: {packages: [libgmp-dev]}}
   - env: BUILD=stack STACK=stack # Use the resolver in stack.yaml
     addons: {apt: {packages: [libgmp-dev]}}
-  - env: BUILD=stack STACK='stack --resolver=nightly-2017-07-31  # ghc-8.2.1
+  - env: BUILD=stack STACK='stack --resolver=nightly-2017-07-31'  # ghc-8.2.1
     addons: {apt: {packages: [libgmp-dev]}}
 
 before_install:
