@@ -7,6 +7,7 @@
 module Main where
 
 import Proto.Optional
+import Proto.Optional'Fields
 import Data.ProtoLens
 import Lens.Family2 ((&), (.~), (^.))
 import Test.Framework (testGroup)

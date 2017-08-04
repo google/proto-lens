@@ -15,6 +15,7 @@ import Data.ProtoLens (
     def, Message, showMessage, showMessageShort, pprintMessage)
 import Lens.Family2 ((&), (.~))
 import Proto.TextFormat
+import Proto.TextFormat'Fields
 import Test.Framework.Providers.HUnit (testCase)
 import Test.HUnit ((@=?))
 import Text.PrettyPrint (renderStyle, style, lineLength)

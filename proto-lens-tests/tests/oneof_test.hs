@@ -2,6 +2,7 @@
 module Main (main) where
 
 import Proto.Oneof
+import Proto.Oneof'Fields
 import Data.ProtoLens
 import Lens.Family2 ((&), (.~), view)
 import Test.Framework.Providers.HUnit (testCase)

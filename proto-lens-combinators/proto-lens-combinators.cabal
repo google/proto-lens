@@ -38,7 +38,7 @@ Test-Suite combinators_test
   type: exitcode-stdio-1.0
   main-is: combinators_test.hs
   hs-source-dirs: tests
-  other-modules: Proto.Combinators
+  other-modules: Proto.Combinators, Proto.Combinators'Fields
   build-depends: HUnit
                , base
                , lens-family

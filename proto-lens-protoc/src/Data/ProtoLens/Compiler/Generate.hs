@@ -34,7 +34,9 @@ import Proto.Google.Protobuf.Descriptor
     , FieldDescriptorProto'Label(..)
     , FieldDescriptorProto'Type(..)
     , FileDescriptorProto
-    , defaultValue
+    )
+import Proto.Google.Protobuf.Descriptor'Fields
+    ( defaultValue
     , label
     , mapEntry
     , maybe'oneofIndex
@@ -73,9 +75,20 @@ generateModule :: ModuleName
                -> ModifyImports
                -> Env Name      -- ^ Definitions in this file
                -> Env QName     -- ^ Definitions in the imported modules
-               -> Module
+               -> [Module]
 generateModule modName imports syntaxType modifyImport definitions importedEnv
-    = module' modName
+    = [ module' modName
+                pragmas
+                sharedImports
+          . concatMap generateDecls $ Map.toList definitions
+      , module' fieldModName
+                pragmas
+                sharedImports
+                (concatMap generateFieldDecls allLensNames)
+      ]
+  where
+    fieldModName = modifyModuleName (++ "'Fields") modName
+    pragmas =
           [ languagePragma $ map fromString
               ["ScopedTypeVariables", "DataKinds", "TypeFamilies",
                "UndecidableInstances",
@@ -85,17 +98,14 @@ generateModule modName imports syntaxType modifyImport definitions importedEnv
               -- Data.Text, Data.Int, etc.
           , optionsGhcPragma "-fno-warn-unused-imports"
           ]
-          (map (modifyImport . importSimple)
+    sharedImports = map (modifyImport . importSimple)
               [ "Prelude", "Data.Int", "Data.Word"
               , "Data.ProtoLens", "Data.ProtoLens.Message.Enum"
               , "Lens.Family2", "Lens.Family2.Unchecked", "Data.Default.Class"
               , "Data.Text",  "Data.Map" , "Data.ByteString"
               , "Lens.Labels"
               ]
-            ++ map importSimple imports)
-          (concatMap generateDecls (Map.toList definitions)
-           ++ concatMap generateFieldDecls allLensNames)
-  where
+            ++ map importSimple imports
     env = Map.union (unqualifyEnv definitions) importedEnv
     generateDecls (protoName, Message m)
         = generateMessageDecls syntaxType env (stripDotPrefix protoName) m
@@ -365,11 +375,7 @@ generateFieldDecls xStr =
           $ tyForAll ["f", "s", "t", "a", "b"]
                   [classA "Lens.Labels.HasLens" [xSym, "f", "s", "t", "a", "b"]]
                     $ "Lens.Family2.LensLike" @@ "f" @@ "s" @@ "t" @@ "a" @@ "b"
-    , funBind [match x []
-                  $ "Lens.Labels.lensOf"
-                      @@ ("Lens.Labels.proxy#" @::@
-                          ("Lens.Labels.Proxy#" @@ xSym))
-              ]
+    , funBind [match x [] $ lensOfExp xStr]
     ]
   where
     x = nameFromSymbol xStr
@@ -737,7 +743,8 @@ fieldDescriptorExpr syntaxType env n f =
 
 fieldAccessorExpr :: SyntaxType -> Env QName -> FieldInfo -> Exp
 -- (PlainField Required foo), (OptionalField foo), etc...
-fieldAccessorExpr syntaxType env f = accessorCon @@ var (unQual hsFieldName)
+fieldAccessorExpr syntaxType env f = accessorCon @@ lensOfExp hsFieldName
+
   where
     fd = fieldDescriptor f
     accessorCon = case fd ^. label of
@@ -750,18 +757,23 @@ fieldAccessorExpr syntaxType env f = accessorCon @@ var (unQual hsFieldName)
           FieldDescriptorProto'LABEL_REPEATED
               | Just (k, v) <- getMapFields env fd
                   -> "Data.ProtoLens.MapField"
-                         @@ con (unQual $ nameFromSymbol $ overloadedField k)
-                         @@ con (unQual $ nameFromSymbol $ overloadedField v)
+                         @@ lensOfExp (overloadedField k)
+                         @@ lensOfExp (overloadedField v)
               | otherwise -> "Data.ProtoLens.RepeatedField"
                   @@ if isPackedField syntaxType fd
                         then "Data.ProtoLens.Packed"
                         else "Data.ProtoLens.Unpacked"
     hsFieldName
-        = nameFromSymbol $ case fd ^. label of
+        = case fd ^. label of
               FieldDescriptorProto'LABEL_OPTIONAL
                   | not (isDefaultingOptional syntaxType fd)
                       -> "maybe'" <> overloadedField f
               _ -> overloadedField f
+
+lensOfExp :: Symbol -> Exp
+lensOfExp sym = ("Lens.Labels.lensOf"
+                  @@ ("Lens.Labels.proxy#" @::@
+                      ("Lens.Labels.Proxy#" @@ promoteSymbol sym)))
 
 overloadedField :: FieldInfo -> Symbol
 overloadedField = overloadedName . plainFieldName

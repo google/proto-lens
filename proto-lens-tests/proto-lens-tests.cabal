@@ -49,7 +49,7 @@ Test-Suite canonical_test
   type: exitcode-stdio-1.0
   main-is: canonical_test.hs
   hs-source-dirs: tests
-  other-modules: Proto.Canonical
+  other-modules: Proto.Canonical, Proto.Canonical'Fields
   build-depends: base
                , bytestring
                , lens-family
@@ -63,7 +63,7 @@ Test-Suite group_test
   type: exitcode-stdio-1.0
   main-is: group_test.hs
   hs-source-dirs: tests
-  other-modules: Proto.Group
+  other-modules: Proto.Group, Proto.Group'Fields
   build-depends: base
                , lens-family
                , proto-lens
@@ -76,7 +76,7 @@ Test-Suite map_test
   type: exitcode-stdio-1.0
   main-is: map_test.hs
   hs-source-dirs: tests
-  other-modules: Proto.Map
+  other-modules: Proto.Map, Proto.Map'Fields
   build-depends: base
                , bytestring
                , lens-family
@@ -90,7 +90,7 @@ Test-Suite oneof_test
   type: exitcode-stdio-1.0
   main-is: oneof_test.hs
   hs-source-dirs: tests
-  other-modules: Proto.Oneof
+  other-modules: Proto.Oneof, Proto.Oneof'Fields
   build-depends: base
                , bytestring
                , lens-family
@@ -106,7 +106,7 @@ Test-Suite optional_test
   type: exitcode-stdio-1.0
   main-is: optional_test.hs
   hs-source-dirs: tests
-  other-modules: Proto.Optional
+  other-modules: Proto.Optional, Proto.Optional'Fields
   build-depends: HUnit
                , base
                , lens-family
@@ -121,7 +121,7 @@ Test-Suite proto3_test
   type: exitcode-stdio-1.0
   main-is: proto3_test.hs
   hs-source-dirs: tests
-  other-modules: Proto.Proto3
+  other-modules: Proto.Proto3, Proto.Proto3'Fields
   build-depends: HUnit
                , base
                , bytestring
@@ -137,7 +137,7 @@ Test-Suite repeated_test
   type: exitcode-stdio-1.0
   main-is: repeated_test.hs
   hs-source-dirs: tests
-  other-modules: Proto.Repeated
+  other-modules: Proto.Repeated, Proto.Repeated'Fields
   build-depends: base
                , bytestring
                , lens-family
@@ -150,7 +150,7 @@ Test-Suite text_format_test
   default-language: Haskell2010
   type: exitcode-stdio-1.0
   main-is: text_format_test.hs
-  other-modules: Proto.TextFormat
+  other-modules: Proto.TextFormat, Proto.TextFormat'Fields
   hs-source-dirs: tests
   build-depends: HUnit
                , base
@@ -169,7 +169,7 @@ Test-Suite enum_test
   type: exitcode-stdio-1.0
   main-is: enum_test.hs
   hs-source-dirs: tests
-  other-modules: Proto.Enum
+  other-modules: Proto.Enum, Proto.Enum'Fields
   -- Check that the code generated for enum aliases and the pattern-match in the
   -- test (aliasTest) are both warning-clean.
   ghc-options: -fwarn-overlapping-patterns -fwarn-incomplete-patterns -Werror
@@ -190,7 +190,7 @@ Test-Suite names_test
   type: exitcode-stdio-1.0
   main-is: names_test.hs
   hs-source-dirs: tests
-  other-modules: Proto.Names
+  other-modules: Proto.Names, Proto.Names'Fields
   build-depends: HUnit
                , base
                , lens-family
@@ -205,7 +205,7 @@ Test-Suite no_package_test
   type: exitcode-stdio-1.0
   main-is: no_package_test.hs
   hs-source-dirs: tests
-  other-modules: Proto.NoPackage
+  other-modules: Proto.NoPackage, Proto.NoPackage'Fields
   build-depends: base
                , lens-family
                , proto-lens
@@ -220,7 +220,7 @@ Test-Suite packed_test
   type: exitcode-stdio-1.0
   main-is: packed_test.hs
   hs-source-dirs: tests
-  other-modules: Proto.Packed
+  other-modules: Proto.Packed, Proto.Packed'Fields
   build-depends: base
                , lens-family
                , proto-lens
@@ -234,7 +234,7 @@ Test-Suite raw_fields_test
   type: exitcode-stdio-1.0
   main-is: raw_fields_test.hs
   hs-source-dirs: tests
-  other-modules: Proto.RawFields
+  other-modules: Proto.RawFields, Proto.RawFields'Fields
   build-depends: base
                , bytestring
                , lens-family
@@ -249,7 +249,7 @@ Test-Suite required_test
   type: exitcode-stdio-1.0
   main-is: required_test.hs
   hs-source-dirs: tests
-  other-modules: Proto.Required
+  other-modules: Proto.Required, Proto.Required'Fields
   build-depends: base
                , data-default-class
                , lens-family-core
@@ -267,7 +267,7 @@ Test-Suite labels_test
   type: exitcode-stdio-1.0
   main-is: labels_test.hs
   hs-source-dirs: tests
-  other-modules: Proto.Canonical
+  other-modules: Proto.Canonical, Proto.Canonical'Fields
   build-depends: HUnit
                , base
                , data-default-class
@@ -284,7 +284,7 @@ Test-Suite package-deps_test
   type: exitcode-stdio-1.0
   main-is: package-deps_test.hs
   hs-source-dirs: tests
-  other-modules: Proto.PackageDeps
+  other-modules: Proto.PackageDeps, Proto.PackageDeps'Fields
   build-depends: base
                , HUnit
                , lens-family
@@ -299,7 +299,7 @@ Test-Suite any_test
   type: exitcode-stdio-1.0
   main-is: any_test.hs
   hs-source-dirs: tests
-  other-modules: Proto.Any
+  other-modules: Proto.Any, Proto.Any'Fields
   build-depends: base
                , HUnit
                , lens-family

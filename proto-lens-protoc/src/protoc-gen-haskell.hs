@@ -19,19 +19,21 @@ import Lens.Family2
 import Proto.Google.Protobuf.Compiler.Plugin
     ( CodeGeneratorRequest
     , CodeGeneratorResponse
-    , content
+    )
+import Proto.Google.Protobuf.Compiler.Plugin'Fields
+    ( content
     , file
     , fileToGenerate
     , parameter
     , protoFile
     )
-import Proto.Google.Protobuf.Descriptor
-    (FileDescriptorProto, name, dependency)
+import Proto.Google.Protobuf.Descriptor (FileDescriptorProto)
+import Proto.Google.Protobuf.Descriptor'Fields (name, dependency)
 import System.Environment (getProgName)
 import System.Exit (exitWith, ExitCode(..))
 import System.IO as IO
 
-import Data.ProtoLens.Compiler.Combinators (prettyPrint)
+import Data.ProtoLens.Compiler.Combinators (prettyPrint, getModuleName)
 import Data.ProtoLens.Compiler.Generate
 import Data.ProtoLens.Compiler.Plugin
 
@@ -68,7 +70,7 @@ generateFiles modifyImports header files toGenerate = let
   modulePrefix = "Proto"
   filesByName = analyzeProtoFiles modulePrefix files
   -- The contents of the generated Haskell file for a given .proto file.
-  buildFile f = let
+  modulesToBuild f = let
       deps = descriptor f ^. dependency
       imports = Set.toAscList $ Set.fromList
                   [ haskellModule (filesByName ! exportName)
@@ -80,10 +82,12 @@ generateFiles modifyImports header files toGenerate = let
              modifyImports
              (definitions f)
              (collectEnvFromDeps deps filesByName)
-  in [ ( outputFilePath . prettyPrint . haskellModule $ f
-       , header (descriptor f) <> pack (prettyPrint $ buildFile f)
+  in [ ( outputFilePath $ prettyPrint modName
+       , header (descriptor f) <> pack (prettyPrint modul)
        )
      | fileName <- toGenerate
      , let f = filesByName ! fileName
+     , modul <- modulesToBuild f
+     , let Just modName =  getModuleName modul
      ]
 
