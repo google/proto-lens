@@ -72,10 +72,24 @@ message ProtoKeywords {
   optional int32 import = 11;
 }
 
-message odd_Cased_message {
+message odd_CAsed_message {
   oneof oneof_field {
     int32 oneof_case = 1;
   }
+
+  // TODO: odd_Cased_enum
+  enum odd_CAsed_enum {
+    // TODO: deFA_ult = 0;
+    DeFA_ult = 0;
+  }
+}
+
+message ABBREVName {}
+
+// TODO: odd_Cased_enum
+enum Odd_CAsed_enum {
+  // TODO: deFA_ult = 0;
+  DeFA_ult = 0;
 }
 
 // Messages whose name conflicts with a proto keyword.
