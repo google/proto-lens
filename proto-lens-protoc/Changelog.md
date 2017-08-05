@@ -2,6 +2,10 @@
 
 ## Unreleased changes
 
+## v0.2.2.3
+- Don't camel-case message names.  This reverts behavior which was added
+  in v0.2.2.0.
+
 ## v0.2.2.2
 - Bump the dependency for `process-1.6`.
 

@@ -254,10 +254,10 @@ collectOneofFields hsPrefix d allFields
     -- Make a name that doesn't overlap with those already defined by submessages
     -- or subenums.
     hsNameUnique ns n
-        | n' `elem` ns = n' <> "'"
+        | n' `elem` ns = n' ++ "'"
         | otherwise = n'
       where
-        n' = hsName n
+        n' = hsName $ camelCase n
     -- The Haskell "type" namespace
     subdefTypes = Set.fromList $ map hsName
                     $ toListOf (nestedType . traverse . name) d
@@ -277,7 +277,7 @@ groupFieldsByOneofIndex =
     . fmap (\f -> (f ^. maybe'oneofIndex, [f]))
 
 hsName :: Text -> String
-hsName = unpack . capitalize . camelCase
+hsName = unpack . capitalize
 
 mkFieldName :: String -> Text -> FieldName
 mkFieldName hsPrefix n = FieldName
