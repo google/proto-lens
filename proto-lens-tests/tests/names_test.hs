@@ -106,17 +106,26 @@ testHaskellKeywords = testFields "haskellKeywords" (def :: HaskellKeywords)
     , SomeLens hiding
     ]
 
+-- Don't change the name of messages and enums.  However, do still camel-case
+-- the generated oneof datatypes and constructors.
 testOddCasedMessage = testGroup "oddCasedMessage"
-    [ runTypedTest (roundTripTest "roundTrip" :: TypedTest OddCasedMessage)
+    [ runTypedTest (roundTripTest "roundTrip" :: TypedTest Odd_CAsed_message)
+    , runTypedTest (roundTripTest "roundTrip abbrev" :: TypedTest ABBREVName)
     , testCase "oneofField" $ do
           verifyLens defMsg maybe'oneofField $ Just
-                    (OddCasedMessage'OneofCase 42
-                        :: OddCasedMessage'OneofField)
+                    (Odd_CAsed_message'OneofCase 42
+                        :: Odd_CAsed_message'OneofField)
           verifyLens defMsg oneofCase 42
           verifyLens defMsg maybe'oneofCase (Just 42)
+    , testCase "enums" $ do
+          trivial (def :: Odd_CAsed_message'odd_CAsed_enum)
+          trivial (def :: Odd_CAsed_enum)
     ]
   where
-    defMsg = def :: OddCasedMessage
+    defMsg = def :: Odd_CAsed_message
+
+trivial :: (Show a, Eq a) => a -> IO ()
+trivial a = a @=? a
 
 testProtoKeywords = testFields "protoKeywords" (def :: ProtoKeywords)
     [ SomeLens required
