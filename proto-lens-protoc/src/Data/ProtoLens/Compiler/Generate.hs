@@ -181,16 +181,24 @@ generateMessageDecls syntaxType env protoName info =
       ["Prelude.Show", "Prelude.Eq", "Prelude.Ord"]
     | oneofInfo <- messageOneofFields info
     ] ++
-
-    -- type instance (Functor f, a ~ Baz, b ~ Baz)
-    --     => HasLens "foo" f Bar Bar a b where
+    -- instance (HasLens' f Foo x a, HasLens' f Foo x b, a ~ b)
+    --    => HasLens f Foo Foo x a b
+    [ instDecl [classA "Lens.Labels.HasLens'" ["f", dataType, "x", "a"],
+                equalP "a" "b"]
+          ("Lens.Labels.HasLens" `ihApp`
+              ["f", dataType, dataType, "x", "a", "b"])
+          [[match "lensOf" [] "Lens.Labels.lensOf'"]]
+    ]
+    ++
+    -- instance Functor f
+    --     => HasLens' f Foo "foo" Bar
     --   lensOf _ = ...
     -- Note: for optional fields, this generates an instance both for "foo" and
-    -- for "maybe'foo" (see lensInfo below).
-    [ instDecl [equalP "a" t, equalP "b" t, classA "Prelude.Functor" ["f"]]
-        ("Lens.Labels.HasLens" `ihApp`
-            [sym, "f", dataType, dataType, "a", "b"])
-            [[match "lensOf" [pWildCard] $
+    -- for "maybe'foo" (see plainRecordField below).
+    [ instDecl [classA "Prelude.Functor" ["f"]]
+        ("Lens.Labels.HasLens'" `ihApp`
+            ["f", dataType, sym, tyParen t])
+            [[match "lensOf'" [pWildCard] $
                 "Prelude.."
                     @@ rawFieldAccessor (unQual $ recordFieldName li)
                     @@ lensExp i]]
@@ -368,12 +376,12 @@ generateEnumDecls info =
 generateFieldDecls :: Symbol -> [Decl]
 generateFieldDecls xStr =
     -- foo :: forall x f s t a b
-    --        . HasLens x f s t a b => LensLike f s t a b
+    --        . HasLens f s t x a b => LensLike f s t a b
     -- -- Note: `Lens.Family2.LensLike f` implies Functor f.
     -- foo = lensOf (Proxy# :: Proxy# x)
     [ typeSig [x]
           $ tyForAll ["f", "s", "t", "a", "b"]
-                  [classA "Lens.Labels.HasLens" [xSym, "f", "s", "t", "a", "b"]]
+                  [classA "Lens.Labels.HasLens" ["f", "s", "t", xSym, "a", "b"]]
                     $ "Lens.Family2.LensLike" @@ "f" @@ "s" @@ "t" @@ "a" @@ "b"
     , funBind [match x [] $ lensOfExp xStr]
     ]
