@@ -118,8 +118,8 @@ testOddCasedMessage = testGroup "oddCasedMessage"
           verifyLens defMsg oneofCase 42
           verifyLens defMsg maybe'oneofCase (Just 42)
     , testCase "enums" $ do
-          trivial (def :: Odd_CAsed_message'odd_CAsed_enum)
-          trivial (def :: Odd_CAsed_enum)
+          trivial (Odd_CAsed_message'DeFA_ult :: Odd_CAsed_message'odd_CAsed_enum)
+          trivial (DeFA_ult :: Odd_CAsed_enum)
     ]
   where
     defMsg = def :: Odd_CAsed_message
