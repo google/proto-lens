@@ -150,6 +150,8 @@ type InstHead = Syntax.InstHead ()
 ihApp :: InstHead -> [Type] -> InstHead
 ihApp = foldl (Syntax.IHApp ())
 
+tyParen :: Type -> Type
+tyParen = Syntax.TyParen ()
 
 type Match = Syntax.Match ()
 
