@@ -16,6 +16,7 @@
 module Data.ProtoLens.Encoding(
     encodeMessage,
     buildMessage,
+    buildMessageDelimited,
     decodeMessage,
     decodeMessageOrDie,
     ) where
@@ -28,6 +29,7 @@ import Control.Applicative ((<|>))
 import Control.Monad (guard)
 import Data.Attoparsec.ByteString as Parse
 import Data.Bool (bool)
+import Data.Monoid ((<>))
 import Data.Text.Encoding (encodeUtf8, decodeUtf8')
 import Data.Text.Encoding.Error (UnicodeException(..))
 import qualified Data.ByteString as B
@@ -146,7 +148,17 @@ encodeMessage = L.toStrict . toLazyByteString . buildMessage
 
 -- | Encode a message to the wire format, as part of a 'Builder'.
 buildMessage :: Message msg => msg -> Builder
-buildMessage msg = foldMap putTaggedValue (messageToTaggedValues msg)
+buildMessage = foldMap putTaggedValue . messageToTaggedValues
+
+-- | Encode a message to the wire format, prefixed by its size as a VarInt,
+-- as part of a 'Builder'.
+--
+-- This can be used to build up streams of messages in the size-delimited
+-- format expected by some protocols.
+buildMessageDelimited :: Message msg => msg -> Builder
+buildMessageDelimited msg =
+  let b = L.toStrict . toLazyByteString $ buildMessage msg in
+    putVarInt (fromIntegral $ B.length b) <> byteString b
 
 -- | Encode a message as a sequence of key-value pairs.
 messageToTaggedValues :: Message msg => msg -> [TaggedValue]
