@@ -15,9 +15,17 @@ This is not an official Google product.
 First, install the "protoc" binary somewhere in your PATH.  You can get it by
 following [these instructions](docs/installing-protoc.md).
 
-## Using Cabal or Stack
-`proto-lens` can be used as part of a Cabal project to auto-generate Haskell
-source files from the original protocol buffer specifications (`.proto` files).
+## Building from HEAD
+
+To build and test this repository from HEAD, run:
+
+    git submodule update --init --recursive
+    stack test
+
+## Using in a Cabal or Stack package
+`proto-lens` is available on Hackage and Stackage.  Cabal and Stack projects can use it
+to auto-generate Haskell source files from the original
+protocol buffer specifications (`.proto` files).
 
 Note: if using Stack, these instructions require `v1.4.0` or newer.
 
