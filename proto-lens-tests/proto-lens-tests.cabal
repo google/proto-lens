@@ -32,6 +32,8 @@ library
                -- compile tests/package-deps.proto (since it's listed in
                -- extra-source-files regardless).
                , proto-lens-tests-dep
+               -- For tests/imports.proto:
+               , proto-lens-descriptors
                , base >= 4.8 && < 4.11
                , bytestring == 0.10.*
                , text == 1.2.*
