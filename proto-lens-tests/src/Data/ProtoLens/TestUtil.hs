@@ -11,6 +11,7 @@ module Data.ProtoLens.TestUtil(
     serializeTo,
     deserializeFrom,
     readFrom,
+    readFromWithRegistry,
     Data(..),
     tagged,
     varInt,
@@ -108,14 +109,18 @@ roundTripTest name = TypedTest $ testGroup name
     , testProperty "text" (textRoundTripProperty :: MessageProperty a)
     ]
 
-readFrom :: (Show a, Eq a, Message a)
-         => String -> Maybe a -> LT.Text -> Test
-readFrom name x text = testCase name $ case x of
+readFromWithRegistry :: (Show a, Eq a, Message a)
+                     => Registry -> String -> Maybe a -> LT.Text -> Test
+readFromWithRegistry reg name x text = testCase name $ case x of
     -- Check whether or not it failed without worrying about the exact error
     -- message.
     Nothing -> assertBool ("Expected failure, found " ++ show y) $ isLeft y
     Just x' -> Right x' @=? y
-  where y = readMessage text
+  where y = readMessageWithRegistry reg text
+
+readFrom :: (Show a, Eq a, Message a)
+         => String -> Maybe a -> LT.Text -> Test
+readFrom = readFromWithRegistry mempty
 
 varInt :: Word64 -> Builder.Builder
 varInt n

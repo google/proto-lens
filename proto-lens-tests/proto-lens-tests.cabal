@@ -162,6 +162,7 @@ Test-Suite text_format_test
                , proto-lens
                , proto-lens-protoc
                , proto-lens-tests
+               , proto-lens-protobuf-types
                , test-framework
                , test-framework-hunit
                , text
