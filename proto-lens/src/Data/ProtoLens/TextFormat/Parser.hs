@@ -69,7 +69,7 @@ data Key = Key String  -- ^ A standard key that is just a string.
 data Value = IntValue Integer  -- ^ An integer
   | DoubleValue Double  -- ^ Any floating point number
   | ByteStringValue ByteString    -- ^ A string or bytes literal
-  | MessageValue (Maybe StrictText.Text) Message  -- ^ A sub message
+  | MessageValue (Maybe StrictText.Text) Message  -- ^ A sub message, with an optional type URI
   | EnumValue String  -- ^ Any undelimited string (including false & true)
   deriving (Show,Ord,Eq)
 

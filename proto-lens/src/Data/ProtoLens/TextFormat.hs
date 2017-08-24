@@ -268,24 +268,21 @@ makeValue _ EnumField (Parser.IntValue x) =
 makeValue _ EnumField (Parser.EnumValue x) =
     maybe (Left $ "Unrecognized enum value " ++ show x) Right
         (readEnum x)
-makeValue reg field@MessageField val@(Parser.MessageValue typeUri x)
+makeValue reg MessageField (Parser.MessageValue Nothing x) =
+  buildMessage reg x
+makeValue reg field@MessageField val@(Parser.MessageValue (Just typeUri) x)
     | Just AnyMessageDescriptor { anyTypeUrlLens, anyValueLens } <- matchAnyMessage field =
-        case typeUri of
-          Nothing -> Left "Any field without uri"
-          Just uri ->
-            case lookupRegistered uri reg of
-              Nothing -> Left "Could not decode Any"
-              Just (SomeMessageType (Proxy :: Proxy value')) ->
-                case buildMessage reg x :: Either String value' of
-                  Left err -> Left err
-                  Right value' -> Right (def & anyTypeUrlLens .~ uri
-                                             & anyValueLens .~ encodeMessage value')
-    | otherwise =
-        case typeUri of
-          Just uri
-            | uri /= valueTypeUrl -> Left ("Type mismatch parsing explicitly typed message: " ++ show (field, val))
-          _ -> buildMessage reg x
-    where
-        valueTypeUrl = messageName (descriptor :: MessageDescriptor value)
+        case lookupRegistered typeUri reg of
+          Nothing -> Left "Could not decode Any"
+          Just (SomeMessageType (Proxy :: Proxy value')) ->
+            case buildMessage reg x :: Either String value' of
+              Left err -> Left err
+              Right value' -> Right (def & anyTypeUrlLens .~ typeUri
+                                         & anyValueLens .~ encodeMessage value')
+    | typeUri == messageName (descriptor :: MessageDescriptor value) =
+        buildMessage reg x
+    | otherwise = Left ("Type mismatch parsing explicitly typed message. Expected " ++
+                        show (messageName (descriptor :: MessageDescriptor value))  ++
+                        ", got " ++ show typeUri)
 makeValue reg GroupField (Parser.MessageValue _ x) = buildMessage reg x
 makeValue _ f val = Left $ "Type mismatch parsing text format: " ++ show (f, val)

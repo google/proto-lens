@@ -96,10 +96,15 @@ main = testMain
          "Parse any"
          (Just anyExpProto)
          anyExpText
+    , readFromWithRegistry
+         anyRegistry
+         "Parse any (explicit)"
+         (Just anyExpProto)
+         explicitAnyExpText
     , testCase "Render any" $
         Data.Text.Lazy.unpack anyExpText @=? (showMessageWithRegistry anyRegistry anyExpProto <> "\n")
     , testCase "Render any unknown" $
-        Data.Text.Lazy.unpack anyFailExpText @=? (showMessageWithRegistry test1Registry anyExpProto <> "\n")
+        Data.Text.Lazy.unpack explicitAnyExpText @=? (showMessageWithRegistry test1Registry anyExpProto <> "\n")
     , let kNums = [0..99]  -- The default line limit is 100 so we exceed it.
           kExpected = unwords $ map (("d: " ++) . show) kNums
       in testCase "Render single line for debugString" $
@@ -153,7 +158,7 @@ main = testMain
         , "  }"
         , "}"
         ]
-    anyFailExpText =
+    explicitAnyExpText =
       Data.Text.Lazy.unlines
         [ "thing1 {"
         , "  [type.googleapis.com/text_format.Test1] {"
