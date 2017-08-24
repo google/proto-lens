@@ -65,11 +65,11 @@ parseMessage end = do
     loop msg unsetFields = ((msg, unsetFields) <$ end)
                 <|> do
                     tv@(TaggedValue tag _) <- getTaggedValue
-                    case Map.lookup (Tag tag) fields of
+                    case Map.lookup tag fields of
                         Nothing -> loop msg unsetFields
                         Just field -> do
                             !msg' <- parseAndAddField msg field tv
-                            loop msg' $! Map.delete (Tag tag) unsetFields
+                            loop msg' $! Map.delete tag unsetFields
 
 -- | Decode a message from its wire format.  Throws an error if the decoding
 -- fails.
@@ -102,7 +102,7 @@ parseAndAddField
             FieldWireType fieldWt _ get -> do
               Equal <- equalWireTypes name Lengthy wt
               let getElt = do
-                        wv <- getWireValue fieldWt tag
+                        wv <- getWireValue fieldWt
                         x <- runEither $ get wv
                         return $! x
               runEither $ parseOnly (manyReversedTill getElt endOfInput) val
@@ -163,11 +163,11 @@ buildMessageDelimited msg =
 -- | Encode a message as a sequence of key-value pairs.
 messageToTaggedValues :: Message msg => msg -> [TaggedValue]
 messageToTaggedValues msg = mconcat
-    [ messageFieldToVals t fieldDescr msg
-    | (Tag t, fieldDescr) <- Map.toList (fieldsByTag descriptor)
+    [ messageFieldToVals tag fieldDescr msg
+    | (tag, fieldDescr) <- Map.toList (fieldsByTag descriptor)
     ]
 
-messageFieldToVals :: Int -> FieldDescriptor a -> a -> [TaggedValue]
+messageFieldToVals :: Tag -> FieldDescriptor a -> a -> [TaggedValue]
 messageFieldToVals tag (FieldDescriptor _ typeDescriptor accessor) msg =
     let
         embed src
@@ -239,7 +239,7 @@ fieldWireType MessageField = FieldWireType Lengthy encodeMessage
                                 decodeMessage
 fieldWireType GroupField = GroupFieldType
 
-endOfGroup :: String -> Int -> Parser ()
+endOfGroup :: String -> Tag -> Parser ()
 endOfGroup name tag = do
     TaggedValue tag' (WireValue wt _) <- getTaggedValue
     Equal <- equalWireTypes name EndGroup wt
