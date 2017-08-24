@@ -270,7 +270,7 @@ makeValue _ EnumField (Parser.EnumValue x) =
         (readEnum x)
 makeValue reg MessageField (Parser.MessageValue Nothing x) =
   buildMessage reg x
-makeValue reg field@MessageField val@(Parser.MessageValue (Just typeUri) x)
+makeValue reg field@MessageField (Parser.MessageValue (Just typeUri) x)
     | Just AnyMessageDescriptor { anyTypeUrlLens, anyValueLens } <- matchAnyMessage field =
         case lookupRegistered typeUri reg of
           Nothing -> Left "Could not decode Any"
