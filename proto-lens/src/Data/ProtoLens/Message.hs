@@ -10,6 +10,7 @@
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE ScopedTypeVariables #-}
 {-# LANGUAGE StandaloneDeriving #-}
+{-# LANGUAGE PatternGuards #-}
 -- | Datatypes for reflection of protocol buffer messages.
 module Data.ProtoLens.Message (
     -- * Reflection of Messages
@@ -261,14 +262,27 @@ reverseRepeatedFields fields x0
         = over f reverse x
     reverseListField x _ = x
 
+-- | A set of known message types. Can help encode/decode protobufs containing
+-- @Data.ProtoLens.Any@ values in a more human-readable text format.
+--
+-- Registries can be combined using their 'Monoid' instance.
+--
+-- See the @withRegistry@ functions in 'Data.ProtoLens.TextFormat'
 newtype Registry = Registry (Map.Map T.Text SomeMessageType)
     deriving Monoid
 
+-- | Build a 'Registry' containing a single proto type.
+--
+--   Example:
+-- > register (Proxy :: Proxy Proto.My.Proto.Type)
 register :: forall msg . Message msg => Proxy msg -> Registry
 register p = Registry $ Map.singleton (messageName desc) (SomeMessageType p)
   where
     desc = descriptor :: MessageDescriptor msg
 
+-- | Look up a message type by name (e.g.,
+-- @"type.googleapis.com/google.protobuf.FloatValue"@). The URL corresponds to
+-- the field @google.protobuf.Any.type_url@.
 lookupRegistered :: T.Text -> Registry -> Maybe SomeMessageType
 lookupRegistered n (Registry m) = Map.lookup (snd $ T.breakOnEnd "/" n) m
 

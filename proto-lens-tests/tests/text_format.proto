@@ -19,5 +19,8 @@ message Test2 {
 
 message AnyHolder {
   optional google.protobuf.Any thing1 = 1;
-  optional google.protobuf.Any thing2 = 2;
+  message Sub {
+    optional google.protobuf.Any thing2 = 1;
+  }
+  optional Sub sub = 2;
 }

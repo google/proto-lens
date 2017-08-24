@@ -62,7 +62,7 @@ pprintMessage :: Message msg => msg -> Doc
 pprintMessage = pprintMessageWithRegistry mempty
 
 -- | Pretty-print the given message into human-readable form, using the given
--- 'Registry' to encode @google.protobuf.Any@ values.
+-- 'Registry' to decode @google.protobuf.Any@ values.
 pprintMessageWithRegistry :: Message msg => Registry -> msg -> Doc
 pprintMessageWithRegistry reg = pprintMessage' reg descriptor
 
@@ -102,7 +102,7 @@ pprintField reg msg (FieldDescriptor name typeDescr accessor)
           where pairToMsg (x,y) = def & k .~ x
                                       & v .~ y
 
-pprintFieldValue :: forall value. Registry -> String -> FieldTypeDescriptor value -> value -> Doc
+pprintFieldValue :: Registry -> String -> FieldTypeDescriptor value -> value -> Doc
 pprintFieldValue reg name field@MessageField m
   | Just AnyMessageDescriptor { anyTypeUrlLens, anyValueLens } <- matchAnyMessage field,
     typeUri <- view anyTypeUrlLens m,
@@ -110,9 +110,10 @@ pprintFieldValue reg name field@MessageField m
     Just (SomeMessageType (Proxy :: Proxy value')) <- lookupRegistered typeUri reg,
     Right (anyValue :: value') <- decodeMessage fieldData =
       sep [ text name <+> lbrace
-          , lbrack <> text (Text.unpack typeUri) <> rbrack <+> lbrace
-          , nest 2 (pprintMessageWithRegistry reg anyValue)
-          , rbrace
+          , nest 2 $ sep
+            [ lbrack <> text (Text.unpack typeUri) <> rbrack <+> lbrace
+            , nest 2 (pprintMessageWithRegistry reg anyValue)
+            , rbrace ]
           , rbrace ]
   | otherwise =
       sep [text name <+> lbrace, nest 2 (pprintMessageWithRegistry reg m), rbrace]
