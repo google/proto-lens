@@ -38,6 +38,7 @@ import Numeric (showOct)
 import Text.Parsec (parse)
 import Text.PrettyPrint
 
+import Data.ProtoLens.Encoding.Wire
 import Data.ProtoLens.Message
 import qualified Data.ProtoLens.TextFormat.Parser as Parser
 
@@ -86,7 +87,8 @@ pprintMessage' reg descr msg
     -- for each field.  We use a single "sep" for all fields (and all elements
     -- of all the repeated fields) to avoid putting some repeated fields on one
     -- line and other fields on multiple lines, which is less readable.
-    = sep $ concatMap (pprintField reg msg) $ Map.elems $ fieldsByTag descr
+    = sep $ concatMap (pprintField reg msg) (Map.elems $ fieldsByTag descr)
+              ++ map pprintTaggedValue (msg ^. unknownFieldsLens descr)
 
 pprintField :: Registry -> msg -> FieldDescriptor msg -> [Doc]
 pprintField reg msg (FieldDescriptor name typeDescr accessor)
@@ -109,14 +111,13 @@ pprintFieldValue reg name field@MessageField m
     fieldData <- view anyValueLens m,
     Just (SomeMessageType (Proxy :: Proxy value')) <- lookupRegistered typeUri reg,
     Right (anyValue :: value') <- decodeMessage fieldData =
-      sep [ text name <+> lbrace
-          , nest 2 $ sep
+      pprintSubmessage name
+          $ sep
             [ lbrack <> text (Text.unpack typeUri) <> rbrack <+> lbrace
             , nest 2 (pprintMessageWithRegistry reg anyValue)
             , rbrace ]
-          , rbrace ]
   | otherwise =
-      sep [text name <+> lbrace, nest 2 (pprintMessageWithRegistry reg m), rbrace]
+      pprintSubmessage name (pprintMessageWithRegistry reg m)
 pprintFieldValue _ name EnumField x = text name <> colon <+> text (showEnum x)
 pprintFieldValue _ name Int32Field x = primField name x
 pprintFieldValue _ name Int64Field x = primField name x
@@ -134,7 +135,11 @@ pprintFieldValue _ name BoolField x = text name <> colon <+> boolValue x
 pprintFieldValue _ name StringField x = pprintByteString name (Text.encodeUtf8 x)
 pprintFieldValue _ name BytesField x = pprintByteString name x
 pprintFieldValue reg name GroupField m
-    = text name <+> lbrace $$ nest 2 (pprintMessageWithRegistry reg m) $$ rbrace
+    = pprintSubmessage name (pprintMessageWithRegistry reg m)
+
+pprintSubmessage :: String -> Doc -> Doc
+pprintSubmessage name contents =
+    sep [text name <+> lbrace, nest 2 contents, rbrace]
 
 -- | Formats a string in a way that mostly matches the C-compatible escaping
 -- used by the Protocol Buffer distribution.  We depart a bit by escaping all
@@ -166,6 +171,21 @@ primField name x = text name <> colon <+> text (show x)
 boolValue :: Bool -> Doc
 boolValue True = text "true"
 boolValue False = text "false"
+
+pprintTaggedValue :: TaggedValue -> Doc
+pprintTaggedValue (TaggedValue t (WireValue v x)) = case v of
+    VarInt -> primField name x
+    Fixed64 -> primField name x
+    Fixed32 -> primField name x
+    Lengthy -> case decodeFieldSet x of
+                  Left _ -> pprintByteString name x
+                  Right ts -> pprintSubmessage name
+                                $ sep $ map pprintTaggedValue ts
+    -- TODO: implement better printing for unknown groups
+    StartGroup -> text name <> colon <+> text "start_group"
+    EndGroup -> text name <> colon <+> text "end_group"
+  where
+    name = show (unTag t)
 
 --------------------------------------------------------------------------------
 -- Parsing

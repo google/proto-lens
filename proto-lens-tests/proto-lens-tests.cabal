@@ -316,3 +316,21 @@ Test-Suite any_test
                , test-framework
                , test-framework-hunit
                , text
+
+Test-Suite unknown_fields_test
+  default-language: Haskell2010
+  type: exitcode-stdio-1.0
+  main-is: unknown_fields_test.hs
+  hs-source-dirs: tests
+  other-modules: Proto.UnknownFields, Proto.UnknownFields'Fields
+  build-depends: base
+               , bytestring
+               , HUnit
+               , lens-family
+               , pretty
+               , proto-lens
+               , proto-lens-protoc
+               , proto-lens-tests
+               , test-framework
+               , test-framework-hunit
+               , text

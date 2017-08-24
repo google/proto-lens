@@ -10,6 +10,7 @@ module Data.ProtoLens.TestUtil(
     Test,
     serializeTo,
     deserializeFrom,
+    renderIndenting,
     readFrom,
     readFromWithRegistry,
     Data(..),
@@ -70,14 +71,17 @@ testMain = defaultMain
 serializeTo :: (Show a, Eq a, Message a)
             => String -> a -> Doc -> Builder.Builder -> Test
 serializeTo name x text bs = testCase name $ do
-    let bs' = L.toStrict $ Builder.toLazyByteString bs
+    let bs' = toStrictByteString bs
     bs' @=? encodeMessage x
     x @=? decodeMessageOrDie bs'
     let text' = show text
     -- For consistency in the tests, make them put each field and submessage on
     -- a separate line.
-    text' @=? renderStyle style {lineLength = 1} (pprintMessage x)
+    text' @=? renderIndenting (pprintMessage x)
     x @=? readMessageOrDie (LT.pack text')
+
+renderIndenting :: Doc -> String
+renderIndenting = renderStyle style { lineLength = 1 }
 
 deserializeFrom :: (Show a, Eq a, Message a)
                 => String -> Maybe a -> Builder.Builder -> Test
@@ -87,7 +91,7 @@ deserializeFrom name x bs = testCase name $ case x of
     Nothing -> assertBool ("Expected failure, found " ++ show y) $ isLeft y
     Just x' -> Right x' @=? y
   where
-    y = decodeMessage $ L.toStrict $ Builder.toLazyByteString bs
+    y = decodeMessage $ toStrictByteString bs
 
 type MessageProperty a = ArbitraryMessage a -> Bool
 

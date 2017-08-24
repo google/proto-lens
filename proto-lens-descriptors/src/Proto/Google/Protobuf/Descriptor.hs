@@ -30,7 +30,8 @@ data DescriptorProto = DescriptorProto{_DescriptorProto'name ::
                                        _DescriptorProto'options :: !(Prelude.Maybe MessageOptions),
                                        _DescriptorProto'reservedRange ::
                                        ![DescriptorProto'ReservedRange],
-                                       _DescriptorProto'reservedName :: ![Data.Text.Text]}
+                                       _DescriptorProto'reservedName :: ![Data.Text.Text],
+                                       _DescriptorProto'_unknownFields :: !Data.ProtoLens.FieldSet}
                      deriving (Prelude.Show, Prelude.Eq, Prelude.Ord)
 
 instance (Lens.Labels.HasLens' f DescriptorProto x a, a ~ b) =>
@@ -145,7 +146,8 @@ instance Data.Default.Class.Default DescriptorProto where
                             _DescriptorProto'oneofDecl = [],
                             _DescriptorProto'options = Prelude.Nothing,
                             _DescriptorProto'reservedRange = [],
-                            _DescriptorProto'reservedName = []}
+                            _DescriptorProto'reservedName = [],
+                            _DescriptorProto'_unknownFields = ([])}
 
 instance Data.ProtoLens.Message DescriptorProto where
         descriptor
@@ -254,6 +256,8 @@ instance Data.ProtoLens.Message DescriptorProto where
                     ("options", options__field_descriptor),
                     ("reserved_range", reservedRange__field_descriptor),
                     ("reserved_name", reservedName__field_descriptor)])
+                (Lens.Family2.Unchecked.lens _DescriptorProto'_unknownFields
+                   (\ x__ y__ -> x__{_DescriptorProto'_unknownFields = y__}))
 
 data DescriptorProto'ExtensionRange = DescriptorProto'ExtensionRange{_DescriptorProto'ExtensionRange'start
                                                                      ::
@@ -262,7 +266,9 @@ data DescriptorProto'ExtensionRange = DescriptorProto'ExtensionRange{_Descriptor
                                                                      _DescriptorProto'ExtensionRange'end
                                                                      ::
                                                                      !(Prelude.Maybe
-                                                                         Data.Int.Int32)}
+                                                                         Data.Int.Int32),
+                                                                     _DescriptorProto'ExtensionRange'_unknownFields
+                                                                     :: !Data.ProtoLens.FieldSet}
                                     deriving (Prelude.Show, Prelude.Eq, Prelude.Ord)
 
 instance (Lens.Labels.HasLens' f DescriptorProto'ExtensionRange x
@@ -311,7 +317,8 @@ instance Data.Default.Class.Default DescriptorProto'ExtensionRange
         def
           = DescriptorProto'ExtensionRange{_DescriptorProto'ExtensionRange'start
                                              = Prelude.Nothing,
-                                           _DescriptorProto'ExtensionRange'end = Prelude.Nothing}
+                                           _DescriptorProto'ExtensionRange'end = Prelude.Nothing,
+                                           _DescriptorProto'ExtensionRange'_unknownFields = ([])}
 
 instance Data.ProtoLens.Message DescriptorProto'ExtensionRange
          where
@@ -341,13 +348,19 @@ instance Data.ProtoLens.Message DescriptorProto'ExtensionRange
                 (Data.Map.fromList
                    [("start", start__field_descriptor),
                     ("end", end__field_descriptor)])
+                (Lens.Family2.Unchecked.lens
+                   _DescriptorProto'ExtensionRange'_unknownFields
+                   (\ x__ y__ ->
+                      x__{_DescriptorProto'ExtensionRange'_unknownFields = y__}))
 
 data DescriptorProto'ReservedRange = DescriptorProto'ReservedRange{_DescriptorProto'ReservedRange'start
                                                                    ::
                                                                    !(Prelude.Maybe Data.Int.Int32),
                                                                    _DescriptorProto'ReservedRange'end
                                                                    ::
-                                                                   !(Prelude.Maybe Data.Int.Int32)}
+                                                                   !(Prelude.Maybe Data.Int.Int32),
+                                                                   _DescriptorProto'ReservedRange'_unknownFields
+                                                                   :: !Data.ProtoLens.FieldSet}
                                    deriving (Prelude.Show, Prelude.Eq, Prelude.Ord)
 
 instance (Lens.Labels.HasLens' f DescriptorProto'ReservedRange x a,
@@ -395,7 +408,8 @@ instance Data.Default.Class.Default DescriptorProto'ReservedRange
         def
           = DescriptorProto'ReservedRange{_DescriptorProto'ReservedRange'start
                                             = Prelude.Nothing,
-                                          _DescriptorProto'ReservedRange'end = Prelude.Nothing}
+                                          _DescriptorProto'ReservedRange'end = Prelude.Nothing,
+                                          _DescriptorProto'ReservedRange'_unknownFields = ([])}
 
 instance Data.ProtoLens.Message DescriptorProto'ReservedRange where
         descriptor
@@ -424,13 +438,19 @@ instance Data.ProtoLens.Message DescriptorProto'ReservedRange where
                 (Data.Map.fromList
                    [("start", start__field_descriptor),
                     ("end", end__field_descriptor)])
+                (Lens.Family2.Unchecked.lens
+                   _DescriptorProto'ReservedRange'_unknownFields
+                   (\ x__ y__ ->
+                      x__{_DescriptorProto'ReservedRange'_unknownFields = y__}))
 
 data EnumDescriptorProto = EnumDescriptorProto{_EnumDescriptorProto'name
                                                :: !(Prelude.Maybe Data.Text.Text),
                                                _EnumDescriptorProto'value ::
                                                ![EnumValueDescriptorProto],
                                                _EnumDescriptorProto'options ::
-                                               !(Prelude.Maybe EnumOptions)}
+                                               !(Prelude.Maybe EnumOptions),
+                                               _EnumDescriptorProto'_unknownFields ::
+                                               !Data.ProtoLens.FieldSet}
                          deriving (Prelude.Show, Prelude.Eq, Prelude.Ord)
 
 instance (Lens.Labels.HasLens' f EnumDescriptorProto x a, a ~ b) =>
@@ -484,7 +504,8 @@ instance Data.Default.Class.Default EnumDescriptorProto where
         def
           = EnumDescriptorProto{_EnumDescriptorProto'name = Prelude.Nothing,
                                 _EnumDescriptorProto'value = [],
-                                _EnumDescriptorProto'options = Prelude.Nothing}
+                                _EnumDescriptorProto'options = Prelude.Nothing,
+                                _EnumDescriptorProto'_unknownFields = ([])}
 
 instance Data.ProtoLens.Message EnumDescriptorProto where
         descriptor
@@ -523,11 +544,14 @@ instance Data.ProtoLens.Message EnumDescriptorProto where
                    [("name", name__field_descriptor),
                     ("value", value__field_descriptor),
                     ("options", options__field_descriptor)])
+                (Lens.Family2.Unchecked.lens _EnumDescriptorProto'_unknownFields
+                   (\ x__ y__ -> x__{_EnumDescriptorProto'_unknownFields = y__}))
 
 data EnumOptions = EnumOptions{_EnumOptions'allowAlias ::
                                !(Prelude.Maybe Prelude.Bool),
                                _EnumOptions'deprecated :: !(Prelude.Maybe Prelude.Bool),
-                               _EnumOptions'uninterpretedOption :: ![UninterpretedOption]}
+                               _EnumOptions'uninterpretedOption :: ![UninterpretedOption],
+                               _EnumOptions'_unknownFields :: !Data.ProtoLens.FieldSet}
                  deriving (Prelude.Show, Prelude.Eq, Prelude.Ord)
 
 instance (Lens.Labels.HasLens' f EnumOptions x a, a ~ b) =>
@@ -578,7 +602,8 @@ instance Data.Default.Class.Default EnumOptions where
         def
           = EnumOptions{_EnumOptions'allowAlias = Prelude.Nothing,
                         _EnumOptions'deprecated = Prelude.Nothing,
-                        _EnumOptions'uninterpretedOption = []}
+                        _EnumOptions'uninterpretedOption = [],
+                        _EnumOptions'_unknownFields = ([])}
 
 instance Data.ProtoLens.Message EnumOptions where
         descriptor
@@ -618,13 +643,17 @@ instance Data.ProtoLens.Message EnumOptions where
                    [("allow_alias", allowAlias__field_descriptor),
                     ("deprecated", deprecated__field_descriptor),
                     ("uninterpreted_option", uninterpretedOption__field_descriptor)])
+                (Lens.Family2.Unchecked.lens _EnumOptions'_unknownFields
+                   (\ x__ y__ -> x__{_EnumOptions'_unknownFields = y__}))
 
 data EnumValueDescriptorProto = EnumValueDescriptorProto{_EnumValueDescriptorProto'name
                                                          :: !(Prelude.Maybe Data.Text.Text),
                                                          _EnumValueDescriptorProto'number ::
                                                          !(Prelude.Maybe Data.Int.Int32),
                                                          _EnumValueDescriptorProto'options ::
-                                                         !(Prelude.Maybe EnumValueOptions)}
+                                                         !(Prelude.Maybe EnumValueOptions),
+                                                         _EnumValueDescriptorProto'_unknownFields ::
+                                                         !Data.ProtoLens.FieldSet}
                               deriving (Prelude.Show, Prelude.Eq, Prelude.Ord)
 
 instance (Lens.Labels.HasLens' f EnumValueDescriptorProto x a,
@@ -689,7 +718,8 @@ instance Data.Default.Class.Default EnumValueDescriptorProto where
           = EnumValueDescriptorProto{_EnumValueDescriptorProto'name =
                                        Prelude.Nothing,
                                      _EnumValueDescriptorProto'number = Prelude.Nothing,
-                                     _EnumValueDescriptorProto'options = Prelude.Nothing}
+                                     _EnumValueDescriptorProto'options = Prelude.Nothing,
+                                     _EnumValueDescriptorProto'_unknownFields = ([])}
 
 instance Data.ProtoLens.Message EnumValueDescriptorProto where
         descriptor
@@ -728,11 +758,16 @@ instance Data.ProtoLens.Message EnumValueDescriptorProto where
                    [("name", name__field_descriptor),
                     ("number", number__field_descriptor),
                     ("options", options__field_descriptor)])
+                (Lens.Family2.Unchecked.lens
+                   _EnumValueDescriptorProto'_unknownFields
+                   (\ x__ y__ -> x__{_EnumValueDescriptorProto'_unknownFields = y__}))
 
 data EnumValueOptions = EnumValueOptions{_EnumValueOptions'deprecated
                                          :: !(Prelude.Maybe Prelude.Bool),
                                          _EnumValueOptions'uninterpretedOption ::
-                                         ![UninterpretedOption]}
+                                         ![UninterpretedOption],
+                                         _EnumValueOptions'_unknownFields ::
+                                         !Data.ProtoLens.FieldSet}
                       deriving (Prelude.Show, Prelude.Eq, Prelude.Ord)
 
 instance (Lens.Labels.HasLens' f EnumValueOptions x a, a ~ b) =>
@@ -768,7 +803,8 @@ instance Prelude.Functor f => Lens.Labels.HasLens' f
 instance Data.Default.Class.Default EnumValueOptions where
         def
           = EnumValueOptions{_EnumValueOptions'deprecated = Prelude.Nothing,
-                             _EnumValueOptions'uninterpretedOption = []}
+                             _EnumValueOptions'uninterpretedOption = [],
+                             _EnumValueOptions'_unknownFields = ([])}
 
 instance Data.ProtoLens.Message EnumValueOptions where
         descriptor
@@ -798,6 +834,8 @@ instance Data.ProtoLens.Message EnumValueOptions where
                 (Data.Map.fromList
                    [("deprecated", deprecated__field_descriptor),
                     ("uninterpreted_option", uninterpretedOption__field_descriptor)])
+                (Lens.Family2.Unchecked.lens _EnumValueOptions'_unknownFields
+                   (\ x__ y__ -> x__{_EnumValueOptions'_unknownFields = y__}))
 
 data FieldDescriptorProto = FieldDescriptorProto{_FieldDescriptorProto'name
                                                  :: !(Prelude.Maybe Data.Text.Text),
@@ -818,7 +856,9 @@ data FieldDescriptorProto = FieldDescriptorProto{_FieldDescriptorProto'name
                                                  _FieldDescriptorProto'jsonName ::
                                                  !(Prelude.Maybe Data.Text.Text),
                                                  _FieldDescriptorProto'options ::
-                                                 !(Prelude.Maybe FieldOptions)}
+                                                 !(Prelude.Maybe FieldOptions),
+                                                 _FieldDescriptorProto'_unknownFields ::
+                                                 !Data.ProtoLens.FieldSet}
                           deriving (Prelude.Show, Prelude.Eq, Prelude.Ord)
 
 instance (Lens.Labels.HasLens' f FieldDescriptorProto x a,
@@ -1009,7 +1049,8 @@ instance Data.Default.Class.Default FieldDescriptorProto where
                                  _FieldDescriptorProto'defaultValue = Prelude.Nothing,
                                  _FieldDescriptorProto'oneofIndex = Prelude.Nothing,
                                  _FieldDescriptorProto'jsonName = Prelude.Nothing,
-                                 _FieldDescriptorProto'options = Prelude.Nothing}
+                                 _FieldDescriptorProto'options = Prelude.Nothing,
+                                 _FieldDescriptorProto'_unknownFields = ([])}
 
 instance Data.ProtoLens.Message FieldDescriptorProto where
         descriptor
@@ -1119,6 +1160,8 @@ instance Data.ProtoLens.Message FieldDescriptorProto where
                     ("oneof_index", oneofIndex__field_descriptor),
                     ("json_name", jsonName__field_descriptor),
                     ("options", options__field_descriptor)])
+                (Lens.Family2.Unchecked.lens _FieldDescriptorProto'_unknownFields
+                   (\ x__ y__ -> x__{_FieldDescriptorProto'_unknownFields = y__}))
 
 data FieldDescriptorProto'Label = FieldDescriptorProto'LABEL_OPTIONAL
                                 | FieldDescriptorProto'LABEL_REQUIRED
@@ -1401,7 +1444,8 @@ data FieldOptions = FieldOptions{_FieldOptions'ctype ::
                                  _FieldOptions'lazy :: !(Prelude.Maybe Prelude.Bool),
                                  _FieldOptions'deprecated :: !(Prelude.Maybe Prelude.Bool),
                                  _FieldOptions'weak :: !(Prelude.Maybe Prelude.Bool),
-                                 _FieldOptions'uninterpretedOption :: ![UninterpretedOption]}
+                                 _FieldOptions'uninterpretedOption :: ![UninterpretedOption],
+                                 _FieldOptions'_unknownFields :: !Data.ProtoLens.FieldSet}
                   deriving (Prelude.Show, Prelude.Eq, Prelude.Ord)
 
 instance (Lens.Labels.HasLens' f FieldOptions x a, a ~ b) =>
@@ -1520,7 +1564,8 @@ instance Data.Default.Class.Default FieldOptions where
                          _FieldOptions'lazy = Prelude.Nothing,
                          _FieldOptions'deprecated = Prelude.Nothing,
                          _FieldOptions'weak = Prelude.Nothing,
-                         _FieldOptions'uninterpretedOption = []}
+                         _FieldOptions'uninterpretedOption = [],
+                         _FieldOptions'_unknownFields = ([])}
 
 instance Data.ProtoLens.Message FieldOptions where
         descriptor
@@ -1600,6 +1645,8 @@ instance Data.ProtoLens.Message FieldOptions where
                     ("deprecated", deprecated__field_descriptor),
                     ("weak", weak__field_descriptor),
                     ("uninterpreted_option", uninterpretedOption__field_descriptor)])
+                (Lens.Family2.Unchecked.lens _FieldOptions'_unknownFields
+                   (\ x__ y__ -> x__{_FieldOptions'_unknownFields = y__}))
 
 data FieldOptions'CType = FieldOptions'STRING
                         | FieldOptions'CORD
@@ -1731,7 +1778,9 @@ data FileDescriptorProto = FileDescriptorProto{_FileDescriptorProto'name
                                                _FileDescriptorProto'sourceCodeInfo ::
                                                !(Prelude.Maybe SourceCodeInfo),
                                                _FileDescriptorProto'syntax ::
-                                               !(Prelude.Maybe Data.Text.Text)}
+                                               !(Prelude.Maybe Data.Text.Text),
+                                               _FileDescriptorProto'_unknownFields ::
+                                               !Data.ProtoLens.FieldSet}
                          deriving (Prelude.Show, Prelude.Eq, Prelude.Ord)
 
 instance (Lens.Labels.HasLens' f FileDescriptorProto x a, a ~ b) =>
@@ -1893,7 +1942,8 @@ instance Data.Default.Class.Default FileDescriptorProto where
                                 _FileDescriptorProto'extension = [],
                                 _FileDescriptorProto'options = Prelude.Nothing,
                                 _FileDescriptorProto'sourceCodeInfo = Prelude.Nothing,
-                                _FileDescriptorProto'syntax = Prelude.Nothing}
+                                _FileDescriptorProto'syntax = Prelude.Nothing,
+                                _FileDescriptorProto'_unknownFields = ([])}
 
 instance Data.ProtoLens.Message FileDescriptorProto where
         descriptor
@@ -2023,9 +2073,13 @@ instance Data.ProtoLens.Message FileDescriptorProto where
                     ("options", options__field_descriptor),
                     ("source_code_info", sourceCodeInfo__field_descriptor),
                     ("syntax", syntax__field_descriptor)])
+                (Lens.Family2.Unchecked.lens _FileDescriptorProto'_unknownFields
+                   (\ x__ y__ -> x__{_FileDescriptorProto'_unknownFields = y__}))
 
 data FileDescriptorSet = FileDescriptorSet{_FileDescriptorSet'file
-                                           :: ![FileDescriptorProto]}
+                                           :: ![FileDescriptorProto],
+                                           _FileDescriptorSet'_unknownFields ::
+                                           !Data.ProtoLens.FieldSet}
                        deriving (Prelude.Show, Prelude.Eq, Prelude.Ord)
 
 instance (Lens.Labels.HasLens' f FileDescriptorSet x a, a ~ b) =>
@@ -2042,7 +2096,9 @@ instance Prelude.Functor f => Lens.Labels.HasLens' f
               Prelude.id
 
 instance Data.Default.Class.Default FileDescriptorSet where
-        def = FileDescriptorSet{_FileDescriptorSet'file = []}
+        def
+          = FileDescriptorSet{_FileDescriptorSet'file = [],
+                              _FileDescriptorSet'_unknownFields = ([])}
 
 instance Data.ProtoLens.Message FileDescriptorSet where
         descriptor
@@ -2060,6 +2116,8 @@ instance Data.ProtoLens.Message FileDescriptorSet where
                 (Data.Map.fromList
                    [(Data.ProtoLens.Tag 1, file__field_descriptor)])
                 (Data.Map.fromList [("file", file__field_descriptor)])
+                (Lens.Family2.Unchecked.lens _FileDescriptorSet'_unknownFields
+                   (\ x__ y__ -> x__{_FileDescriptorSet'_unknownFields = y__}))
 
 data FileOptions = FileOptions{_FileOptions'javaPackage ::
                                !(Prelude.Maybe Data.Text.Text),
@@ -2078,7 +2136,8 @@ data FileOptions = FileOptions{_FileOptions'javaPackage ::
                                _FileOptions'ccEnableArenas :: !(Prelude.Maybe Prelude.Bool),
                                _FileOptions'objcClassPrefix :: !(Prelude.Maybe Data.Text.Text),
                                _FileOptions'csharpNamespace :: !(Prelude.Maybe Data.Text.Text),
-                               _FileOptions'uninterpretedOption :: ![UninterpretedOption]}
+                               _FileOptions'uninterpretedOption :: ![UninterpretedOption],
+                               _FileOptions'_unknownFields :: !Data.ProtoLens.FieldSet}
                  deriving (Prelude.Show, Prelude.Eq, Prelude.Ord)
 
 instance (Lens.Labels.HasLens' f FileOptions x a, a ~ b) =>
@@ -2334,7 +2393,8 @@ instance Data.Default.Class.Default FileOptions where
                         _FileOptions'ccEnableArenas = Prelude.Nothing,
                         _FileOptions'objcClassPrefix = Prelude.Nothing,
                         _FileOptions'csharpNamespace = Prelude.Nothing,
-                        _FileOptions'uninterpretedOption = []}
+                        _FileOptions'uninterpretedOption = [],
+                        _FileOptions'_unknownFields = ([])}
 
 instance Data.ProtoLens.Message FileOptions where
         descriptor
@@ -2508,6 +2568,8 @@ instance Data.ProtoLens.Message FileOptions where
                     ("objc_class_prefix", objcClassPrefix__field_descriptor),
                     ("csharp_namespace", csharpNamespace__field_descriptor),
                     ("uninterpreted_option", uninterpretedOption__field_descriptor)])
+                (Lens.Family2.Unchecked.lens _FileOptions'_unknownFields
+                   (\ x__ y__ -> x__{_FileOptions'_unknownFields = y__}))
 
 data FileOptions'OptimizeMode = FileOptions'SPEED
                               | FileOptions'CODE_SIZE
@@ -2564,7 +2626,9 @@ instance Prelude.Bounded FileOptions'OptimizeMode where
         maxBound = FileOptions'LITE_RUNTIME
 
 data GeneratedCodeInfo = GeneratedCodeInfo{_GeneratedCodeInfo'annotation
-                                           :: ![GeneratedCodeInfo'Annotation]}
+                                           :: ![GeneratedCodeInfo'Annotation],
+                                           _GeneratedCodeInfo'_unknownFields ::
+                                           !Data.ProtoLens.FieldSet}
                        deriving (Prelude.Show, Prelude.Eq, Prelude.Ord)
 
 instance (Lens.Labels.HasLens' f GeneratedCodeInfo x a, a ~ b) =>
@@ -2582,7 +2646,9 @@ instance Prelude.Functor f => Lens.Labels.HasLens' f
               Prelude.id
 
 instance Data.Default.Class.Default GeneratedCodeInfo where
-        def = GeneratedCodeInfo{_GeneratedCodeInfo'annotation = []}
+        def
+          = GeneratedCodeInfo{_GeneratedCodeInfo'annotation = [],
+                              _GeneratedCodeInfo'_unknownFields = ([])}
 
 instance Data.ProtoLens.Message GeneratedCodeInfo where
         descriptor
@@ -2600,6 +2666,8 @@ instance Data.ProtoLens.Message GeneratedCodeInfo where
                 (Data.Map.fromList
                    [(Data.ProtoLens.Tag 1, annotation__field_descriptor)])
                 (Data.Map.fromList [("annotation", annotation__field_descriptor)])
+                (Lens.Family2.Unchecked.lens _GeneratedCodeInfo'_unknownFields
+                   (\ x__ y__ -> x__{_GeneratedCodeInfo'_unknownFields = y__}))
 
 data GeneratedCodeInfo'Annotation = GeneratedCodeInfo'Annotation{_GeneratedCodeInfo'Annotation'path
                                                                  :: ![Data.Int.Int32],
@@ -2608,7 +2676,9 @@ data GeneratedCodeInfo'Annotation = GeneratedCodeInfo'Annotation{_GeneratedCodeI
                                                                  _GeneratedCodeInfo'Annotation'begin
                                                                  :: !(Prelude.Maybe Data.Int.Int32),
                                                                  _GeneratedCodeInfo'Annotation'end
-                                                                 :: !(Prelude.Maybe Data.Int.Int32)}
+                                                                 :: !(Prelude.Maybe Data.Int.Int32),
+                                                                 _GeneratedCodeInfo'Annotation'_unknownFields
+                                                                 :: !Data.ProtoLens.FieldSet}
                                   deriving (Prelude.Show, Prelude.Eq, Prelude.Ord)
 
 instance (Lens.Labels.HasLens' f GeneratedCodeInfo'Annotation x a,
@@ -2685,7 +2755,8 @@ instance Data.Default.Class.Default GeneratedCodeInfo'Annotation
                                            [],
                                          _GeneratedCodeInfo'Annotation'sourceFile = Prelude.Nothing,
                                          _GeneratedCodeInfo'Annotation'begin = Prelude.Nothing,
-                                         _GeneratedCodeInfo'Annotation'end = Prelude.Nothing}
+                                         _GeneratedCodeInfo'Annotation'end = Prelude.Nothing,
+                                         _GeneratedCodeInfo'Annotation'_unknownFields = ([])}
 
 instance Data.ProtoLens.Message GeneratedCodeInfo'Annotation where
         descriptor
@@ -2734,6 +2805,10 @@ instance Data.ProtoLens.Message GeneratedCodeInfo'Annotation where
                     ("source_file", sourceFile__field_descriptor),
                     ("begin", begin__field_descriptor),
                     ("end", end__field_descriptor)])
+                (Lens.Family2.Unchecked.lens
+                   _GeneratedCodeInfo'Annotation'_unknownFields
+                   (\ x__ y__ ->
+                      x__{_GeneratedCodeInfo'Annotation'_unknownFields = y__}))
 
 data MessageOptions = MessageOptions{_MessageOptions'messageSetWireFormat
                                      :: !(Prelude.Maybe Prelude.Bool),
@@ -2741,7 +2816,8 @@ data MessageOptions = MessageOptions{_MessageOptions'messageSetWireFormat
                                      !(Prelude.Maybe Prelude.Bool),
                                      _MessageOptions'deprecated :: !(Prelude.Maybe Prelude.Bool),
                                      _MessageOptions'mapEntry :: !(Prelude.Maybe Prelude.Bool),
-                                     _MessageOptions'uninterpretedOption :: ![UninterpretedOption]}
+                                     _MessageOptions'uninterpretedOption :: ![UninterpretedOption],
+                                     _MessageOptions'_unknownFields :: !Data.ProtoLens.FieldSet}
                     deriving (Prelude.Show, Prelude.Eq, Prelude.Ord)
 
 instance (Lens.Labels.HasLens' f MessageOptions x a, a ~ b) =>
@@ -2832,7 +2908,8 @@ instance Data.Default.Class.Default MessageOptions where
                            _MessageOptions'noStandardDescriptorAccessor = Prelude.Nothing,
                            _MessageOptions'deprecated = Prelude.Nothing,
                            _MessageOptions'mapEntry = Prelude.Nothing,
-                           _MessageOptions'uninterpretedOption = []}
+                           _MessageOptions'uninterpretedOption = [],
+                           _MessageOptions'_unknownFields = ([])}
 
 instance Data.ProtoLens.Message MessageOptions where
         descriptor
@@ -2897,6 +2974,8 @@ instance Data.ProtoLens.Message MessageOptions where
                     ("deprecated", deprecated__field_descriptor),
                     ("map_entry", mapEntry__field_descriptor),
                     ("uninterpreted_option", uninterpretedOption__field_descriptor)])
+                (Lens.Family2.Unchecked.lens _MessageOptions'_unknownFields
+                   (\ x__ y__ -> x__{_MessageOptions'_unknownFields = y__}))
 
 data MethodDescriptorProto = MethodDescriptorProto{_MethodDescriptorProto'name
                                                    :: !(Prelude.Maybe Data.Text.Text),
@@ -2909,7 +2988,9 @@ data MethodDescriptorProto = MethodDescriptorProto{_MethodDescriptorProto'name
                                                    _MethodDescriptorProto'clientStreaming ::
                                                    !(Prelude.Maybe Prelude.Bool),
                                                    _MethodDescriptorProto'serverStreaming ::
-                                                   !(Prelude.Maybe Prelude.Bool)}
+                                                   !(Prelude.Maybe Prelude.Bool),
+                                                   _MethodDescriptorProto'_unknownFields ::
+                                                   !Data.ProtoLens.FieldSet}
                            deriving (Prelude.Show, Prelude.Eq, Prelude.Ord)
 
 instance (Lens.Labels.HasLens' f MethodDescriptorProto x a,
@@ -3028,7 +3109,8 @@ instance Data.Default.Class.Default MethodDescriptorProto where
                                   _MethodDescriptorProto'outputType = Prelude.Nothing,
                                   _MethodDescriptorProto'options = Prelude.Nothing,
                                   _MethodDescriptorProto'clientStreaming = Prelude.Nothing,
-                                  _MethodDescriptorProto'serverStreaming = Prelude.Nothing}
+                                  _MethodDescriptorProto'serverStreaming = Prelude.Nothing,
+                                  _MethodDescriptorProto'_unknownFields = ([])}
 
 instance Data.ProtoLens.Message MethodDescriptorProto where
         descriptor
@@ -3099,10 +3181,13 @@ instance Data.ProtoLens.Message MethodDescriptorProto where
                     ("options", options__field_descriptor),
                     ("client_streaming", clientStreaming__field_descriptor),
                     ("server_streaming", serverStreaming__field_descriptor)])
+                (Lens.Family2.Unchecked.lens _MethodDescriptorProto'_unknownFields
+                   (\ x__ y__ -> x__{_MethodDescriptorProto'_unknownFields = y__}))
 
 data MethodOptions = MethodOptions{_MethodOptions'deprecated ::
                                    !(Prelude.Maybe Prelude.Bool),
-                                   _MethodOptions'uninterpretedOption :: ![UninterpretedOption]}
+                                   _MethodOptions'uninterpretedOption :: ![UninterpretedOption],
+                                   _MethodOptions'_unknownFields :: !Data.ProtoLens.FieldSet}
                    deriving (Prelude.Show, Prelude.Eq, Prelude.Ord)
 
 instance (Lens.Labels.HasLens' f MethodOptions x a, a ~ b) =>
@@ -3136,7 +3221,8 @@ instance Prelude.Functor f => Lens.Labels.HasLens' f MethodOptions
 instance Data.Default.Class.Default MethodOptions where
         def
           = MethodOptions{_MethodOptions'deprecated = Prelude.Nothing,
-                          _MethodOptions'uninterpretedOption = []}
+                          _MethodOptions'uninterpretedOption = [],
+                          _MethodOptions'_unknownFields = ([])}
 
 instance Data.ProtoLens.Message MethodOptions where
         descriptor
@@ -3166,9 +3252,13 @@ instance Data.ProtoLens.Message MethodOptions where
                 (Data.Map.fromList
                    [("deprecated", deprecated__field_descriptor),
                     ("uninterpreted_option", uninterpretedOption__field_descriptor)])
+                (Lens.Family2.Unchecked.lens _MethodOptions'_unknownFields
+                   (\ x__ y__ -> x__{_MethodOptions'_unknownFields = y__}))
 
 data OneofDescriptorProto = OneofDescriptorProto{_OneofDescriptorProto'name
-                                                 :: !(Prelude.Maybe Data.Text.Text)}
+                                                 :: !(Prelude.Maybe Data.Text.Text),
+                                                 _OneofDescriptorProto'_unknownFields ::
+                                                 !Data.ProtoLens.FieldSet}
                           deriving (Prelude.Show, Prelude.Eq, Prelude.Ord)
 
 instance (Lens.Labels.HasLens' f OneofDescriptorProto x a,
@@ -3197,7 +3287,8 @@ instance Prelude.Functor f => Lens.Labels.HasLens' f
 instance Data.Default.Class.Default OneofDescriptorProto where
         def
           = OneofDescriptorProto{_OneofDescriptorProto'name =
-                                   Prelude.Nothing}
+                                   Prelude.Nothing,
+                                 _OneofDescriptorProto'_unknownFields = ([])}
 
 instance Data.ProtoLens.Message OneofDescriptorProto where
         descriptor
@@ -3215,13 +3306,17 @@ instance Data.ProtoLens.Message OneofDescriptorProto where
                 (Data.Map.fromList
                    [(Data.ProtoLens.Tag 1, name__field_descriptor)])
                 (Data.Map.fromList [("name", name__field_descriptor)])
+                (Lens.Family2.Unchecked.lens _OneofDescriptorProto'_unknownFields
+                   (\ x__ y__ -> x__{_OneofDescriptorProto'_unknownFields = y__}))
 
 data ServiceDescriptorProto = ServiceDescriptorProto{_ServiceDescriptorProto'name
                                                      :: !(Prelude.Maybe Data.Text.Text),
                                                      _ServiceDescriptorProto'method ::
                                                      ![MethodDescriptorProto],
                                                      _ServiceDescriptorProto'options ::
-                                                     !(Prelude.Maybe ServiceOptions)}
+                                                     !(Prelude.Maybe ServiceOptions),
+                                                     _ServiceDescriptorProto'_unknownFields ::
+                                                     !Data.ProtoLens.FieldSet}
                             deriving (Prelude.Show, Prelude.Eq, Prelude.Ord)
 
 instance (Lens.Labels.HasLens' f ServiceDescriptorProto x a,
@@ -3277,7 +3372,8 @@ instance Data.Default.Class.Default ServiceDescriptorProto where
           = ServiceDescriptorProto{_ServiceDescriptorProto'name =
                                      Prelude.Nothing,
                                    _ServiceDescriptorProto'method = [],
-                                   _ServiceDescriptorProto'options = Prelude.Nothing}
+                                   _ServiceDescriptorProto'options = Prelude.Nothing,
+                                   _ServiceDescriptorProto'_unknownFields = ([])}
 
 instance Data.ProtoLens.Message ServiceDescriptorProto where
         descriptor
@@ -3316,10 +3412,13 @@ instance Data.ProtoLens.Message ServiceDescriptorProto where
                    [("name", name__field_descriptor),
                     ("method", method__field_descriptor),
                     ("options", options__field_descriptor)])
+                (Lens.Family2.Unchecked.lens _ServiceDescriptorProto'_unknownFields
+                   (\ x__ y__ -> x__{_ServiceDescriptorProto'_unknownFields = y__}))
 
 data ServiceOptions = ServiceOptions{_ServiceOptions'deprecated ::
                                      !(Prelude.Maybe Prelude.Bool),
-                                     _ServiceOptions'uninterpretedOption :: ![UninterpretedOption]}
+                                     _ServiceOptions'uninterpretedOption :: ![UninterpretedOption],
+                                     _ServiceOptions'_unknownFields :: !Data.ProtoLens.FieldSet}
                     deriving (Prelude.Show, Prelude.Eq, Prelude.Ord)
 
 instance (Lens.Labels.HasLens' f ServiceOptions x a, a ~ b) =>
@@ -3353,7 +3452,8 @@ instance Prelude.Functor f => Lens.Labels.HasLens' f ServiceOptions
 instance Data.Default.Class.Default ServiceOptions where
         def
           = ServiceOptions{_ServiceOptions'deprecated = Prelude.Nothing,
-                           _ServiceOptions'uninterpretedOption = []}
+                           _ServiceOptions'uninterpretedOption = [],
+                           _ServiceOptions'_unknownFields = ([])}
 
 instance Data.ProtoLens.Message ServiceOptions where
         descriptor
@@ -3383,9 +3483,12 @@ instance Data.ProtoLens.Message ServiceOptions where
                 (Data.Map.fromList
                    [("deprecated", deprecated__field_descriptor),
                     ("uninterpreted_option", uninterpretedOption__field_descriptor)])
+                (Lens.Family2.Unchecked.lens _ServiceOptions'_unknownFields
+                   (\ x__ y__ -> x__{_ServiceOptions'_unknownFields = y__}))
 
 data SourceCodeInfo = SourceCodeInfo{_SourceCodeInfo'location ::
-                                     ![SourceCodeInfo'Location]}
+                                     ![SourceCodeInfo'Location],
+                                     _SourceCodeInfo'_unknownFields :: !Data.ProtoLens.FieldSet}
                     deriving (Prelude.Show, Prelude.Eq, Prelude.Ord)
 
 instance (Lens.Labels.HasLens' f SourceCodeInfo x a, a ~ b) =>
@@ -3401,7 +3504,9 @@ instance Prelude.Functor f => Lens.Labels.HasLens' f SourceCodeInfo
               Prelude.id
 
 instance Data.Default.Class.Default SourceCodeInfo where
-        def = SourceCodeInfo{_SourceCodeInfo'location = []}
+        def
+          = SourceCodeInfo{_SourceCodeInfo'location = [],
+                           _SourceCodeInfo'_unknownFields = ([])}
 
 instance Data.ProtoLens.Message SourceCodeInfo where
         descriptor
@@ -3419,6 +3524,8 @@ instance Data.ProtoLens.Message SourceCodeInfo where
                 (Data.Map.fromList
                    [(Data.ProtoLens.Tag 1, location__field_descriptor)])
                 (Data.Map.fromList [("location", location__field_descriptor)])
+                (Lens.Family2.Unchecked.lens _SourceCodeInfo'_unknownFields
+                   (\ x__ y__ -> x__{_SourceCodeInfo'_unknownFields = y__}))
 
 data SourceCodeInfo'Location = SourceCodeInfo'Location{_SourceCodeInfo'Location'path
                                                        :: ![Data.Int.Int32],
@@ -3429,7 +3536,9 @@ data SourceCodeInfo'Location = SourceCodeInfo'Location{_SourceCodeInfo'Location'
                                                        _SourceCodeInfo'Location'trailingComments ::
                                                        !(Prelude.Maybe Data.Text.Text),
                                                        _SourceCodeInfo'Location'leadingDetachedComments
-                                                       :: ![Data.Text.Text]}
+                                                       :: ![Data.Text.Text],
+                                                       _SourceCodeInfo'Location'_unknownFields ::
+                                                       !Data.ProtoLens.FieldSet}
                              deriving (Prelude.Show, Prelude.Eq, Prelude.Ord)
 
 instance (Lens.Labels.HasLens' f SourceCodeInfo'Location x a,
@@ -3511,7 +3620,8 @@ instance Data.Default.Class.Default SourceCodeInfo'Location where
                                     _SourceCodeInfo'Location'span = [],
                                     _SourceCodeInfo'Location'leadingComments = Prelude.Nothing,
                                     _SourceCodeInfo'Location'trailingComments = Prelude.Nothing,
-                                    _SourceCodeInfo'Location'leadingDetachedComments = []}
+                                    _SourceCodeInfo'Location'leadingDetachedComments = [],
+                                    _SourceCodeInfo'Location'_unknownFields = ([])}
 
 instance Data.ProtoLens.Message SourceCodeInfo'Location where
         descriptor
@@ -3574,6 +3684,9 @@ instance Data.ProtoLens.Message SourceCodeInfo'Location where
                     ("trailing_comments", trailingComments__field_descriptor),
                     ("leading_detached_comments",
                      leadingDetachedComments__field_descriptor)])
+                (Lens.Family2.Unchecked.lens
+                   _SourceCodeInfo'Location'_unknownFields
+                   (\ x__ y__ -> x__{_SourceCodeInfo'Location'_unknownFields = y__}))
 
 data UninterpretedOption = UninterpretedOption{_UninterpretedOption'name
                                                :: ![UninterpretedOption'NamePart],
@@ -3588,7 +3701,9 @@ data UninterpretedOption = UninterpretedOption{_UninterpretedOption'name
                                                _UninterpretedOption'stringValue ::
                                                !(Prelude.Maybe Data.ByteString.ByteString),
                                                _UninterpretedOption'aggregateValue ::
-                                               !(Prelude.Maybe Data.Text.Text)}
+                                               !(Prelude.Maybe Data.Text.Text),
+                                               _UninterpretedOption'_unknownFields ::
+                                               !Data.ProtoLens.FieldSet}
                          deriving (Prelude.Show, Prelude.Eq, Prelude.Ord)
 
 instance (Lens.Labels.HasLens' f UninterpretedOption x a, a ~ b) =>
@@ -3715,7 +3830,8 @@ instance Data.Default.Class.Default UninterpretedOption where
                                 _UninterpretedOption'negativeIntValue = Prelude.Nothing,
                                 _UninterpretedOption'doubleValue = Prelude.Nothing,
                                 _UninterpretedOption'stringValue = Prelude.Nothing,
-                                _UninterpretedOption'aggregateValue = Prelude.Nothing}
+                                _UninterpretedOption'aggregateValue = Prelude.Nothing,
+                                _UninterpretedOption'_unknownFields = ([])}
 
 instance Data.ProtoLens.Message UninterpretedOption where
         descriptor
@@ -3800,11 +3916,15 @@ instance Data.ProtoLens.Message UninterpretedOption where
                     ("double_value", doubleValue__field_descriptor),
                     ("string_value", stringValue__field_descriptor),
                     ("aggregate_value", aggregateValue__field_descriptor)])
+                (Lens.Family2.Unchecked.lens _UninterpretedOption'_unknownFields
+                   (\ x__ y__ -> x__{_UninterpretedOption'_unknownFields = y__}))
 
 data UninterpretedOption'NamePart = UninterpretedOption'NamePart{_UninterpretedOption'NamePart'namePart
                                                                  :: !Data.Text.Text,
                                                                  _UninterpretedOption'NamePart'isExtension
-                                                                 :: !Prelude.Bool}
+                                                                 :: !Prelude.Bool,
+                                                                 _UninterpretedOption'NamePart'_unknownFields
+                                                                 :: !Data.ProtoLens.FieldSet}
                                   deriving (Prelude.Show, Prelude.Eq, Prelude.Ord)
 
 instance (Lens.Labels.HasLens' f UninterpretedOption'NamePart x a,
@@ -3837,7 +3957,8 @@ instance Data.Default.Class.Default UninterpretedOption'NamePart
           = UninterpretedOption'NamePart{_UninterpretedOption'NamePart'namePart
                                            = Data.ProtoLens.fieldDefault,
                                          _UninterpretedOption'NamePart'isExtension =
-                                           Data.ProtoLens.fieldDefault}
+                                           Data.ProtoLens.fieldDefault,
+                                         _UninterpretedOption'NamePart'_unknownFields = ([])}
 
 instance Data.ProtoLens.Message UninterpretedOption'NamePart where
         descriptor
@@ -3866,3 +3987,7 @@ instance Data.ProtoLens.Message UninterpretedOption'NamePart where
                 (Data.Map.fromList
                    [("name_part", namePart__field_descriptor),
                     ("is_extension", isExtension__field_descriptor)])
+                (Lens.Family2.Unchecked.lens
+                   _UninterpretedOption'NamePart'_unknownFields
+                   (\ x__ y__ ->
+                      x__{_UninterpretedOption'NamePart'_unknownFields = y__}))

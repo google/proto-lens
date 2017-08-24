@@ -6,6 +6,7 @@
 
 {-# LANGUAGE GADTs #-}
 {-# LANGUAGE GeneralizedNewtypeDeriving #-}
+{-# LANGUAGE ScopedTypeVariables #-}
 {-# LANGUAGE RankNTypes #-}
 -- | Module defining the individual base wire types (e.g. VarInt, Fixed64) and
 -- how to encode/decode them.
@@ -21,6 +22,7 @@ module Data.ProtoLens.Encoding.Wire(
     putWireValue,
     Equal(..),
     equalWireTypes,
+    decodeFieldSet,
     ) where
 
 import Data.Attoparsec.ByteString as Parse
@@ -47,8 +49,17 @@ instance Show (WireType a) where
 -- A value read from the wire
 data WireValue = forall a . WireValue !(WireType a) !a
 
+instance Show WireValue where
+    show (WireValue VarInt x) = show x
+    show (WireValue Fixed64 x) = show x
+    show (WireValue Fixed32 x) = show x
+    show (WireValue Lengthy x) = show x
+    show (WireValue StartGroup x) = show x
+    show (WireValue EndGroup x) = show x
+
 -- The wire contents of a single key-value pair in a Message.
 data TaggedValue = TaggedValue !Tag !WireValue
+    deriving (Show, Eq, Ord)
 
 -- | A tag that identifies a particular field of the message when converting
 -- to/from the wire format.
@@ -56,7 +67,8 @@ newtype Tag = Tag { unTag :: Int}
     deriving (Show, Eq, Ord, Num)
 
 data Equal a b where
-    Equal :: Equal a a
+    -- TODO: move Eq/Ord instance somewhere else?
+    Equal :: (Eq a, Ord a) => Equal a a
 
 -- Assert that two wire types are the same, or fail with a message about this
 -- field.
@@ -72,6 +84,18 @@ equalWireTypes _ EndGroup EndGroup = return Equal
 equalWireTypes name expected actual
     = fail $ "Field " ++ name ++ " expects wire type " ++ show expected
         ++ " but found " ++ show actual
+
+instance Eq WireValue where
+    WireValue t v == WireValue t' v'
+        | Just Equal <- equalWireTypes "" t t'
+            = v == v'
+        | otherwise = False
+
+instance Ord WireValue where
+    WireValue t v `compare` WireValue t' v'
+        | Just Equal <- equalWireTypes "" t t'
+            = v `compare` v'
+        | otherwise = wireTypeToInt t `compare` wireTypeToInt t'
 
 getWireValue :: WireType a -> Parser a
 getWireValue VarInt = getVarInt
@@ -129,3 +153,6 @@ getTaggedValue = do
 putTaggedValue :: TaggedValue -> Builder
 putTaggedValue (TaggedValue tag (WireValue wt val)) =
     putTypeAndTag wt tag <> putWireValue wt val
+
+decodeFieldSet :: B.ByteString -> Either String [TaggedValue]
+decodeFieldSet = parseOnly (manyTill getTaggedValue endOfInput)

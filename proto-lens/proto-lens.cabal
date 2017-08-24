@@ -26,11 +26,11 @@ library
   hs-source-dirs: src
   exposed-modules:     Data.ProtoLens
                        Data.ProtoLens.Encoding
+                       Data.ProtoLens.Encoding.Wire
                        Data.ProtoLens.Message
                        Data.ProtoLens.Message.Enum
                        Data.ProtoLens.TextFormat
   other-modules:       Data.ProtoLens.Encoding.Bytes
-                       Data.ProtoLens.Encoding.Wire
                        Data.ProtoLens.TextFormat.Parser
   build-depends:  attoparsec == 0.13.*
                 , base >= 4.8 && < 4.11

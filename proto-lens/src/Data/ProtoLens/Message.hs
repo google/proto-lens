@@ -41,6 +41,11 @@ module Data.ProtoLens.Message (
     maybeLens,
     -- * Internal utilities for parsing protocol buffers
     reverseRepeatedFields,
+    -- * Unknown fields
+    FieldSet,
+    TaggedValue(..),
+    unknownFields,
+    discardUnknownFields,
     ) where
 
 import qualified Data.ByteString as B
@@ -52,10 +57,13 @@ import Data.Maybe (fromMaybe)
 import Data.Proxy (Proxy(..))
 import qualified Data.Text as T
 import Data.Word
-import Lens.Family2 (Lens', over)
+import Lens.Family2 (Lens', over, set)
 import Lens.Family2.Unchecked (lens)
 
-import Data.ProtoLens.Encoding.Wire (Tag(..))
+import Data.ProtoLens.Encoding.Wire
+    ( Tag(..)
+    , TaggedValue(..)
+    )
 
 -- | Every protocol buffer is an instance of 'Message'.  This class enables
 -- serialization by providing reflection of all of the fields that may be used
@@ -76,8 +84,10 @@ data MessageDescriptor msg = MessageDescriptor
       -- which use their Message type name in text protos instead of their
       -- field name. For example, "optional group Foo" has the field name "foo"
       -- but in this map it is stored with the key "Foo".
+    , unknownFieldsLens :: Lens' msg FieldSet
     }
 
+type FieldSet = [TaggedValue]
 
 -- | A description of a specific field of a protocol buffer.
 --
@@ -285,3 +295,11 @@ lookupRegistered n (Registry m) = Map.lookup (snd $ T.breakOnEnd "/" n) m
 
 data SomeMessageType where
     SomeMessageType :: Message msg => Proxy msg -> SomeMessageType
+
+-- TODO: recursively
+discardUnknownFields :: Message msg => msg -> msg
+discardUnknownFields = set unknownFields []
+
+-- | Access the unknown fields of a Message.
+unknownFields :: Message msg => Lens' msg FieldSet
+unknownFields = unknownFieldsLens descriptor

@@ -159,6 +159,7 @@ generateMessageDecls syntaxType env protoName info =
                   [ (recordFieldName f, recordFieldType f)
                   | f <- allFields
                   ]
+                  ++ [(messageUnknownFields info, "Data.ProtoLens.FieldSet")]
         ]
         ["Prelude.Show", "Prelude.Eq", "Prelude.Ord"]
     ] ++
@@ -221,7 +222,9 @@ generateMessageDecls syntaxType env protoName info =
                       [ fieldUpdate (unQual $ haskellRecordFieldName $ oneofFieldName o)
                             "Prelude.Nothing"
                       | o <- messageOneofFields info
-                      ]
+                      ] ++
+                      [ fieldUpdate (unQual $ messageUnknownFields info)
+                            "[]"]
             ]
         ]
     -- instance Message.Message Bar where
@@ -691,6 +694,7 @@ descriptorExpr syntaxType env protoName m
           @@ ("Data.Text.pack" @@ stringExp (T.unpack protoName))
           @@ ("Data.Map.fromList" @@ list fieldsByTag)
           @@ ("Data.Map.fromList" @@ list fieldsByTextFormatName)
+          @@ rawFieldAccessor (unQual $ messageUnknownFields m)
   where
     fieldsByTag =
         [tuple
