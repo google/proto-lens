@@ -279,8 +279,6 @@ makeValue reg field@MessageField (Parser.MessageValue (Just typeUri) x)
               Left err -> Left err
               Right value' -> Right (def & anyTypeUrlLens .~ typeUri
                                          & anyValueLens .~ encodeMessage value')
-    | typeUri == messageName (descriptor :: MessageDescriptor value) =
-        buildMessage reg x
     | otherwise = Left ("Type mismatch parsing explicitly typed message. Expected " ++
                         show (messageName (descriptor :: MessageDescriptor value))  ++
                         ", got " ++ show typeUri)
