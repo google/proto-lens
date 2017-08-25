@@ -1,0 +1,3 @@
+This is an invalid .proto file which, even though it has the ".proto"
+extension, should not be compiled since it is not referenced by any of the
+components in `proto-lens-tests.cabal`.

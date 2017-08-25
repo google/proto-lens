@@ -85,22 +85,23 @@ outputFilePath n = T.replace "." "/" (T.pack n) <> ".hs"
 
 -- | Get the Haskell 'ModuleName' corresponding to a given .proto file.
 moduleName :: Text -> FileDescriptorProto -> ModuleName
-moduleName modulePrefix fd = fromString (moduleNameStr modulePrefix fd)
+moduleName modulePrefix fd
+      = fromString $ moduleNameStr (T.unpack modulePrefix) (T.unpack $ fd ^. name)
 
 -- | Get the Haskell module name corresponding to a given .proto file.
-moduleNameStr :: Text -> FileDescriptorProto -> String
-moduleNameStr prefix fd = fixModuleName rawModuleName
+moduleNameStr :: String -> FilePath -> String
+moduleNameStr prefix path = fixModuleName rawModuleName
   where
-    path = fd ^. name
     fixModuleName "" = ""
     -- Characters allowed in Bazel filenames but not in module names:
     fixModuleName ('.':c:cs) = '.' : toUpper c : fixModuleName cs
     fixModuleName ('_':c:cs) = toUpper c : fixModuleName cs
     fixModuleName ('-':c:cs) = toUpper c : fixModuleName cs
     fixModuleName (c:cs) = c : fixModuleName cs
-    rawModuleName = intercalate "." $ (T.unpack prefix :)
-                        $ splitDirectories $ dropExtension
-                        $ T.unpack path
+    rawModuleName = intercalate "."
+                        . (prefix :)
+                        . splitDirectories $ dropExtension
+                        $ path
 
 -- | Given a list of .proto files (topologically sorted), determine which
 -- files' definitions are exported by which files.
