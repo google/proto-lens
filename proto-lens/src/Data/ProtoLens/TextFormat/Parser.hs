@@ -15,13 +15,15 @@ module Data.ProtoLens.TextFormat.Parser
     ) where
 
 import Data.ByteString (ByteString, pack)
-import Data.Char (ord)
+import Data.Char (ord, isSpace)
 import Data.Functor.Identity (Identity)
 import Data.List (intercalate)
 import Data.Maybe (catMaybes)
 import Data.Text.Lazy (Text)
+import qualified Data.Text as StrictText
 import Data.Word (Word8)
 import Numeric (readOct, readHex)
+import Text.Parsec ((<?>))
 import Text.Parsec.Char
   (alphaNum, char, hexDigit, letter, octDigit, oneOf, satisfy)
 import Text.Parsec.Text.Lazy (Parser)
@@ -67,7 +69,7 @@ data Key = Key String  -- ^ A standard key that is just a string.
 data Value = IntValue Integer  -- ^ An integer
   | DoubleValue Double  -- ^ Any floating point number
   | ByteStringValue ByteString    -- ^ A string or bytes literal
-  | MessageValue Message  -- ^ A sub message
+  | MessageValue (Maybe StrictText.Text) Message  -- ^ A sub message, with an optional type URI
   | EnumValue String  -- ^ Any undelimited string (including false & true)
   deriving (Show,Ord,Eq)
 
@@ -100,8 +102,15 @@ parser = whiteSpace ptp *> parseMessage <* eof
     parseString = liftM (ByteStringValue . mconcat)
         $ many1 $ lexeme ptp $ protoStringLiteral
     parseEnumValue = liftM EnumValue (identifier ptp)
-    parseMessageValue = liftM MessageValue
-        (braces ptp parseMessage <|> angles ptp parseMessage)
+    parseMessageValue =
+        braces ptp (parseAny <|>
+                    liftM (MessageValue Nothing) parseMessage) <|>
+        angles ptp (liftM (MessageValue Nothing) parseMessage)
+
+    typeUri = liftM StrictText.pack (many (satisfy (\c -> c /= ']' && not (isSpace c)))) <?>
+              "type URI"
+    parseAny = liftM2 MessageValue (liftM Just (brackets ptp typeUri))
+                                   (braces ptp parseMessage)
 
     makeNumberValue :: Bool -> Either Integer Double -> Value
     makeNumberValue True (Left intValue) = IntValue (negate intValue)

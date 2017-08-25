@@ -8,25 +8,32 @@
 {-# LANGUAGE GADTs #-}
 {-# LANGUAGE PatternGuards #-}
 {-# LANGUAGE ScopedTypeVariables #-}
+{-# LANGUAGE NamedFieldPuns #-}
 
 module Data.ProtoLens.TextFormat(
     showMessage,
+    showMessageWithRegistry,
     showMessageShort,
     pprintMessage,
+    pprintMessageWithRegistry,
     readMessage,
+    readMessageWithRegistry,
     readMessageOrDie,
     ) where
 
-import Lens.Family2 ((&),(^.),(.~), set, over)
+import Lens.Family2 ((&),(^.),(.~), set, over, view)
 import Control.Arrow (left)
 import qualified Data.ByteString
 import Data.Char (isPrint, isAscii, chr)
 import Data.Foldable (foldlM, foldl')
-import Data.Maybe (catMaybes)
 import qualified Data.Map as Map
+import Data.Maybe (catMaybes)
+import Data.Proxy (Proxy(Proxy))
+import Data.ProtoLens.Encoding (encodeMessage, decodeMessage)
 import qualified Data.Set as Set
 import qualified Data.Text.Encoding as Text
 import qualified Data.Text.Lazy as Lazy
+import qualified Data.Text as Text (unpack)
 import Numeric (showOct)
 import Text.Parsec (parse)
 import Text.PrettyPrint
@@ -52,28 +59,38 @@ import qualified Data.ProtoLens.TextFormat.Parser as Parser
 
 -- | Pretty-print the given message into a human-readable form.
 pprintMessage :: Message msg => msg -> Doc
-pprintMessage = pprintMessage' descriptor
+pprintMessage = pprintMessageWithRegistry mempty
+
+-- | Pretty-print the given message into human-readable form, using the given
+-- 'Registry' to decode @google.protobuf.Any@ values.
+pprintMessageWithRegistry :: Message msg => Registry -> msg -> Doc
+pprintMessageWithRegistry reg = pprintMessage' reg descriptor
 
 -- | Convert the given message into a human-readable 'String'.
 showMessage :: Message msg => msg -> String
 showMessage = render . pprintMessage
+
+-- | Convert the given message into a human-readable 'String', using the
+-- 'Registry' to encode @google.protobuf.Any@ values.
+showMessageWithRegistry :: Message msg => Registry -> msg -> String
+showMessageWithRegistry reg = render . pprintMessageWithRegistry reg
 
 -- | Serializes a proto as a string on a single line.  Useful for debugging
 -- and error messages like @.DebugString()@ in other languages.
 showMessageShort :: Message msg => msg -> String
 showMessageShort = renderStyle (Style OneLineMode maxBound 1.5) . pprintMessage
 
-pprintMessage' :: MessageDescriptor msg -> msg -> Doc
-pprintMessage' descr msg
+pprintMessage' :: Registry -> MessageDescriptor msg -> msg -> Doc
+pprintMessage' reg descr msg
     -- Either put all fields together on a single line, or use a separate line
     -- for each field.  We use a single "sep" for all fields (and all elements
     -- of all the repeated fields) to avoid putting some repeated fields on one
     -- line and other fields on multiple lines, which is less readable.
-    = sep $ concatMap (pprintField msg) $ Map.elems $ fieldsByTag descr
+    = sep $ concatMap (pprintField reg msg) $ Map.elems $ fieldsByTag descr
 
-pprintField :: msg -> FieldDescriptor msg -> [Doc]
-pprintField msg (FieldDescriptor name typeDescr accessor)
-    = map (pprintFieldValue name typeDescr) $ case accessor of
+pprintField :: Registry -> msg -> FieldDescriptor msg -> [Doc]
+pprintField reg msg (FieldDescriptor name typeDescr accessor)
+    = map (pprintFieldValue reg name typeDescr) $ case accessor of
         PlainField d f
             | Optional <- d, val == fieldDefault -> []
             | otherwise -> [val]
@@ -85,27 +102,39 @@ pprintField msg (FieldDescriptor name typeDescr accessor)
           where pairToMsg (x,y) = def & k .~ x
                                       & v .~ y
 
-pprintFieldValue :: String -> FieldTypeDescriptor value -> value -> Doc
-pprintFieldValue name MessageField m
-    = sep [text name <+> lbrace, nest 2 (pprintMessage m), rbrace]
-pprintFieldValue name EnumField x = text name <> colon <+> text (showEnum x)
-pprintFieldValue name Int32Field x = primField name x
-pprintFieldValue name Int64Field x = primField name x
-pprintFieldValue name UInt32Field x = primField name x
-pprintFieldValue name UInt64Field x = primField name x
-pprintFieldValue name SInt32Field x = primField name x
-pprintFieldValue name SInt64Field x = primField name x
-pprintFieldValue name Fixed32Field x = primField name x
-pprintFieldValue name Fixed64Field x = primField name x
-pprintFieldValue name SFixed32Field x = primField name x
-pprintFieldValue name SFixed64Field x = primField name x
-pprintFieldValue name FloatField x = primField name x
-pprintFieldValue name DoubleField x = primField name x
-pprintFieldValue name BoolField x = text name <> colon <+> boolValue x
-pprintFieldValue name StringField x = pprintByteString name (Text.encodeUtf8 x)
-pprintFieldValue name BytesField x = pprintByteString name x
-pprintFieldValue name GroupField m
-    = text name <+> lbrace $$ nest 2 (pprintMessage m) $$ rbrace
+pprintFieldValue :: Registry -> String -> FieldTypeDescriptor value -> value -> Doc
+pprintFieldValue reg name field@MessageField m
+  | Just AnyMessageDescriptor { anyTypeUrlLens, anyValueLens } <- matchAnyMessage field,
+    typeUri <- view anyTypeUrlLens m,
+    fieldData <- view anyValueLens m,
+    Just (SomeMessageType (Proxy :: Proxy value')) <- lookupRegistered typeUri reg,
+    Right (anyValue :: value') <- decodeMessage fieldData =
+      sep [ text name <+> lbrace
+          , nest 2 $ sep
+            [ lbrack <> text (Text.unpack typeUri) <> rbrack <+> lbrace
+            , nest 2 (pprintMessageWithRegistry reg anyValue)
+            , rbrace ]
+          , rbrace ]
+  | otherwise =
+      sep [text name <+> lbrace, nest 2 (pprintMessageWithRegistry reg m), rbrace]
+pprintFieldValue _ name EnumField x = text name <> colon <+> text (showEnum x)
+pprintFieldValue _ name Int32Field x = primField name x
+pprintFieldValue _ name Int64Field x = primField name x
+pprintFieldValue _ name UInt32Field x = primField name x
+pprintFieldValue _ name UInt64Field x = primField name x
+pprintFieldValue _ name SInt32Field x = primField name x
+pprintFieldValue _ name SInt64Field x = primField name x
+pprintFieldValue _ name Fixed32Field x = primField name x
+pprintFieldValue _ name Fixed64Field x = primField name x
+pprintFieldValue _ name SFixed32Field x = primField name x
+pprintFieldValue _ name SFixed64Field x = primField name x
+pprintFieldValue _ name FloatField x = primField name x
+pprintFieldValue _ name DoubleField x = primField name x
+pprintFieldValue _ name BoolField x = text name <> colon <+> boolValue x
+pprintFieldValue _ name StringField x = pprintByteString name (Text.encodeUtf8 x)
+pprintFieldValue _ name BytesField x = pprintByteString name x
+pprintFieldValue reg name GroupField m
+    = text name <+> lbrace $$ nest 2 (pprintMessageWithRegistry reg m) $$ rbrace
 
 -- | Formats a string in a way that mostly matches the C-compatible escaping
 -- used by the Protocol Buffer distribution.  We depart a bit by escaping all
@@ -143,7 +172,7 @@ boolValue False = text "false"
 
 -- | Parse a 'Message' from the human-readable protocol buffer text format.
 readMessage :: Message msg => Lazy.Text -> Either String msg
-readMessage str = left show (parse Parser.parser "" str) >>= buildMessage
+readMessage = readMessageWithRegistry mempty
 
 -- | Parse a 'Message' from the human-readable protocol buffer text format.
 -- Throws an error if the parse was not successful.
@@ -152,12 +181,17 @@ readMessageOrDie str = case readMessage str of
     Left e -> error $ "readMessageOrDie: " ++ e
     Right x -> x
 
-buildMessage :: forall msg . Message msg => Parser.Message -> Either String msg
-buildMessage fields
+-- | Parse a 'Message' from a human-readable protocol buffer text format, using
+-- the given 'Registry' to decode 'Any' fields
+readMessageWithRegistry :: Message msg => Registry -> Lazy.Text -> Either String msg
+readMessageWithRegistry reg str = left show (parse Parser.parser "" str) >>= buildMessage reg
+
+buildMessage :: forall msg . Message msg => Registry -> Parser.Message -> Either String msg
+buildMessage reg fields
     | missing <- missingFields desc fields, not $ null missing
         = Left $ "Missing fields " ++ show missing
     | otherwise = reverseRepeatedFields (fieldsByTag desc)
-                      <$> buildMessageFromDescriptor desc def fields
+                      <$> buildMessageFromDescriptor reg desc def fields
   where
     desc :: MessageDescriptor msg
     desc = descriptor
@@ -178,13 +212,13 @@ missingFields desc = Set.toList . foldl' deleteField requiredFieldNames
 
 
 buildMessageFromDescriptor
-    :: MessageDescriptor msg -> msg -> Parser.Message -> Either String msg
-buildMessageFromDescriptor descr = foldlM (addField descr)
+    :: Registry -> MessageDescriptor msg -> msg -> Parser.Message -> Either String msg
+buildMessageFromDescriptor reg descr = foldlM (addField reg descr)
 
-addField :: MessageDescriptor msg -> msg -> Parser.Field -> Either String msg
-addField descr msg (Parser.Field key rawValue) = do
+addField :: Registry -> MessageDescriptor msg -> msg -> Parser.Field -> Either String msg
+addField reg descr msg (Parser.Field key rawValue) = do
     FieldDescriptor _ typeDescriptor accessor <- getFieldDescriptor
-    value <- makeValue typeDescriptor rawValue
+    value <- makeValue reg typeDescriptor rawValue
     return $ modifyField accessor value msg
   where
     getFieldDescriptor
@@ -203,37 +237,50 @@ modifyField (RepeatedField _ f) value = over f (value :)
 modifyField (MapField key value f) mapElem
     = over f (Map.insert (mapElem ^. key) (mapElem ^. value))
 
-makeValue :: FieldTypeDescriptor value -> Parser.Value -> Either String value
-makeValue Int32Field (Parser.IntValue x) = Right (fromInteger x)
-makeValue Int64Field (Parser.IntValue x) = Right (fromInteger x)
-makeValue UInt32Field (Parser.IntValue x) = Right (fromInteger x)
-makeValue UInt64Field (Parser.IntValue x) = Right (fromInteger x)
-makeValue SInt32Field (Parser.IntValue x) = Right (fromInteger x)
-makeValue SInt64Field (Parser.IntValue x) = Right (fromInteger x)
-makeValue Fixed32Field (Parser.IntValue x) = Right (fromInteger x)
-makeValue Fixed64Field (Parser.IntValue x) = Right (fromInteger x)
-makeValue SFixed32Field (Parser.IntValue x) = Right (fromInteger x)
-makeValue SFixed64Field (Parser.IntValue x) = Right (fromInteger x)
-makeValue FloatField (Parser.IntValue x) = Right (fromInteger x)
-makeValue DoubleField (Parser.IntValue x) = Right (fromInteger x)
-makeValue BoolField (Parser.IntValue x)
+makeValue :: forall value. Registry -> FieldTypeDescriptor value -> Parser.Value -> Either String value
+makeValue _ Int32Field (Parser.IntValue x) = Right (fromInteger x)
+makeValue _ Int64Field (Parser.IntValue x) = Right (fromInteger x)
+makeValue _ UInt32Field (Parser.IntValue x) = Right (fromInteger x)
+makeValue _ UInt64Field (Parser.IntValue x) = Right (fromInteger x)
+makeValue _ SInt32Field (Parser.IntValue x) = Right (fromInteger x)
+makeValue _ SInt64Field (Parser.IntValue x) = Right (fromInteger x)
+makeValue _ Fixed32Field (Parser.IntValue x) = Right (fromInteger x)
+makeValue _ Fixed64Field (Parser.IntValue x) = Right (fromInteger x)
+makeValue _ SFixed32Field (Parser.IntValue x) = Right (fromInteger x)
+makeValue _ SFixed64Field (Parser.IntValue x) = Right (fromInteger x)
+makeValue _ FloatField (Parser.IntValue x) = Right (fromInteger x)
+makeValue _ DoubleField (Parser.IntValue x) = Right (fromInteger x)
+makeValue _ BoolField (Parser.IntValue x)
     | x == 0 = Right False
     | x == 1 = Right True
     | otherwise = Left $ "Unrecognized bool value " ++ show x
-makeValue DoubleField (Parser.DoubleValue x) = Right x
-makeValue FloatField (Parser.DoubleValue x) = Right (realToFrac x)
-makeValue BoolField (Parser.EnumValue x)
+makeValue _ DoubleField (Parser.DoubleValue x) = Right x
+makeValue _ FloatField (Parser.DoubleValue x) = Right (realToFrac x)
+makeValue _ BoolField (Parser.EnumValue x)
     | x == "true" = Right True
     | x == "false" = Right False
     | otherwise = Left $ "Unrecognized bool value " ++ show x
-makeValue StringField (Parser.ByteStringValue x) = Right (Text.decodeUtf8 x)
-makeValue BytesField (Parser.ByteStringValue x) = Right x
-makeValue EnumField (Parser.IntValue x) =
+makeValue _ StringField (Parser.ByteStringValue x) = Right (Text.decodeUtf8 x)
+makeValue _ BytesField (Parser.ByteStringValue x) = Right x
+makeValue _ EnumField (Parser.IntValue x) =
     maybe (Left $ "Unrecognized enum value " ++ show x) Right
         (maybeToEnum $ fromInteger x)
-makeValue EnumField (Parser.EnumValue x) =
+makeValue _ EnumField (Parser.EnumValue x) =
     maybe (Left $ "Unrecognized enum value " ++ show x) Right
         (readEnum x)
-makeValue MessageField (Parser.MessageValue x) = buildMessage x
-makeValue GroupField (Parser.MessageValue x) = buildMessage x
-makeValue f val = Left $ "Type mismatch parsing text format: " ++ show (f, val)
+makeValue reg MessageField (Parser.MessageValue Nothing x) =
+  buildMessage reg x
+makeValue reg field@MessageField (Parser.MessageValue (Just typeUri) x)
+    | Just AnyMessageDescriptor { anyTypeUrlLens, anyValueLens } <- matchAnyMessage field =
+        case lookupRegistered typeUri reg of
+          Nothing -> Left "Could not decode Any"
+          Just (SomeMessageType (Proxy :: Proxy value')) ->
+            case buildMessage reg x :: Either String value' of
+              Left err -> Left err
+              Right value' -> Right (def & anyTypeUrlLens .~ typeUri
+                                         & anyValueLens .~ encodeMessage value')
+    | otherwise = Left ("Type mismatch parsing explicitly typed message. Expected " ++
+                        show (messageName (descriptor :: MessageDescriptor value))  ++
+                        ", got " ++ show typeUri)
+makeValue reg GroupField (Parser.MessageValue _ x) = buildMessage reg x
+makeValue _ f val = Left $ "Type mismatch parsing text format: " ++ show (f, val)
