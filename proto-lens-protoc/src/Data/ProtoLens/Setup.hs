@@ -338,10 +338,12 @@ collectActiveModules :: LocalBuildInfo -> [ModuleName]
 collectActiveModules l = let
     in (activeLib >>= exposedModules)
         ++ concatMap otherModules
-            ((libBuildInfo <$> activeLib)
-             ++ (buildInfo <$> activeExes)
-             ++ (testBuildInfo <$> activeTests)
-             ++ (benchmarkBuildInfo <$> activeBenchmarks))
+            (concat
+                [ libBuildInfo <$> activeLib
+                , buildInfo <$> activeExes
+                , testBuildInfo <$> activeTests
+                , benchmarkBuildInfo <$> activeBenchmarks
+                ])
   where
     p = localPkgDescr l
     activeLib = guard (active CLibName) >> maybeToList (library p)
