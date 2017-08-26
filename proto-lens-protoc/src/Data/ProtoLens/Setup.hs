@@ -31,9 +31,9 @@ import Control.Monad (filterM, forM_, guard, when)
 #if MIN_VERSION_Cabal(2,0,0)
 import qualified Data.Map as Map
 #endif
-import Data.Maybe (mapMaybe, maybeToList)
+import Data.Maybe (maybeToList)
 import qualified Data.Set as Set
-import Distribution.ModuleName (ModuleName, components)
+import Distribution.ModuleName (ModuleName)
 import qualified Distribution.ModuleName as ModuleName
 import qualified Distribution.InstalledPackageInfo as InstalledPackageInfo
 import Distribution.PackageDescription
@@ -41,7 +41,6 @@ import Distribution.PackageDescription
     , benchmarkBuildInfo
     , benchmarkName
     , buildInfo
-    , buildable
     , exeName
     , exposedModules
     , extraSrcFiles
@@ -79,10 +78,8 @@ import Distribution.Simple
 import Distribution.Verbosity (Verbosity)
 import System.FilePath
     ( (</>)
-    , (<.>)
     , equalFilePath
     , isRelative
-    , joinPath
     , makeRelative
     , takeDirectory
     , takeExtension
