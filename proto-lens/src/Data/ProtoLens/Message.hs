@@ -6,11 +6,11 @@
 
 {-# LANGUAGE GADTs #-}
 {-# LANGUAGE GeneralizedNewtypeDeriving #-}
-{-# LANGUAGE RankNTypes #-}
 {-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE PatternGuards #-}
+{-# LANGUAGE RankNTypes #-}
 {-# LANGUAGE ScopedTypeVariables #-}
 {-# LANGUAGE StandaloneDeriving #-}
-{-# LANGUAGE PatternGuards #-}
 -- | Datatypes for reflection of protocol buffer messages.
 module Data.ProtoLens.Message (
     -- * Reflection of Messages
@@ -55,6 +55,8 @@ import Data.Word
 import Lens.Family2 (Lens', over)
 import Lens.Family2.Unchecked (lens)
 
+import Data.ProtoLens.Encoding.Wire (Tag(..))
+
 -- | Every protocol buffer is an instance of 'Message'.  This class enables
 -- serialization by providing reflection of all of the fields that may be used
 -- by this type.
@@ -75,11 +77,6 @@ data MessageDescriptor msg = MessageDescriptor
       -- field name. For example, "optional group Foo" has the field name "foo"
       -- but in this map it is stored with the key "Foo".
     }
-
--- | A tag that identifies a particular field of the message when converting
--- to/from the wire format.
-newtype Tag = Tag { unTag :: Int}
-    deriving (Show, Eq, Ord, Num)
 
 
 -- | A description of a specific field of a protocol buffer.
