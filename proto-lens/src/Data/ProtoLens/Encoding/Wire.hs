@@ -26,6 +26,7 @@ module Data.ProtoLens.Encoding.Wire(
     decodeFieldSet,
     ) where
 
+import Control.DeepSeq (NFData(..))
 import Data.Attoparsec.ByteString as Parse
 import Data.Bits
 import qualified Data.ByteString as B
@@ -36,6 +37,9 @@ import Data.Word
 import Data.ProtoLens.Encoding.Bytes
 
 data WireType a where
+    -- Note: all of these types are fully strict (vs, say,
+    -- Data.ByteString.Lazy.ByteString).  If that changes, we'll
+    -- need to update the NFData instance.
     VarInt :: WireType Word64
     Fixed64 :: WireType Word64
     Fixed32 :: WireType Word32
@@ -58,14 +62,23 @@ instance Show WireValue where
     show (WireValue StartGroup x) = show x
     show (WireValue EndGroup x) = show x
 
+
 -- The wire contents of a single key-value pair in a Message.
 data TaggedValue = TaggedValue !Tag !WireValue
     deriving (Show, Eq, Ord)
 
+-- TaggedValue, WireValue and Tag are strict, so their NFData instances are
+-- trivial:
+instance NFData TaggedValue where
+    rnf = (`seq` ())
+
+instance NFData WireValue where
+    rnf = (`seq` ())
+
 -- | A tag that identifies a particular field of the message when converting
 -- to/from the wire format.
 newtype Tag = Tag { unTag :: Int}
-    deriving (Show, Eq, Ord, Num)
+    deriving (Show, Eq, Ord, Num, NFData)
 
 data Equal a b where
     -- TODO: move Eq/Ord instance somewhere else?
