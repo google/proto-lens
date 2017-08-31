@@ -14,7 +14,6 @@ module Data.ProtoLens.Arbitrary
     ) where
 
 import Data.ProtoLens.Message
-import Data.ProtoLens.Encoding.Wire
 
 import Control.Arrow ((&&&))
 import Control.Monad (foldM)
