@@ -62,7 +62,7 @@ parseMessage end = do
   where
     fields = fieldsByTag descriptor
     addUnknown :: TaggedValue -> msg -> msg
-    addUnknown !f = over unknownFields (\(!xs) -> f : xs)
+    addUnknown !f = over' unknownFields (f :)
     requiredFields = Map.filter isRequired fields
     loop :: msg -> Map.Map Tag (FieldDescriptor msg)
             -> Parser (msg, Map.Map Tag (FieldDescriptor msg))
