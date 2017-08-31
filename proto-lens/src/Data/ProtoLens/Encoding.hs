@@ -12,6 +12,7 @@
 {-# LANGUAGE GADTs #-}
 {-# LANGUAGE LambdaCase #-}
 {-# LANGUAGE PatternGuards #-}
+{-# LANGUAGE RankNTypes #-}
 {-# LANGUAGE ScopedTypeVariables #-}
 module Data.ProtoLens.Encoding(
     encodeMessage,
@@ -36,7 +37,7 @@ import qualified Data.ByteString as B
 import qualified Data.Map.Strict as Map
 import Data.ByteString.Lazy.Builder as Builder
 import qualified Data.ByteString.Lazy as L
-import Lens.Family2 (set, over, (^.), (&))
+import Lens.Family2 (Lens', set, over, (^.), (&))
 
 -- TODO: We could be more incremental when parsing/encoding length-based fields,
 -- rather than forcing the whole thing.  E.g., for encoding we're doing extra
@@ -120,10 +121,10 @@ parseAndAddField
               RepeatedField _ f
                 -> (do
                         !x <- getSimpleVal
-                        return $! over f (\(!xs) -> x:xs) msg)
+                        return $! over' f (x :) msg)
                 <|> (do 
                         xs <- getPackedVals
-                        return $! over f (\(!ys) -> xs++ys) msg)
+                        return $! over' f (xs ++) msg)
                 <|> fail ("Field " ++ name
                             ++ "expects a repeated field wire type but found "
                             ++ show wt)
@@ -134,6 +135,15 @@ parseAndAddField
                   return $! over f
                       (Map.insert key value)
                       msg
+
+-- | Strict version of 'over' that forces the old value.
+-- Helps prevent gross space leaks when modifying a list field.
+--
+-- In particular, a naive `@over f (x :) y@ keeps the old value of @y@ around
+-- in a thunk, because @(:)@ isn't strict in its second argument.  (Similarly
+-- for @(++)@.)
+over' :: Lens' a b -> (b -> b) -> a -> a
+over' f g = over f (\(!x) -> g x)
 
 -- | Run the parser zero or more times, until the "end" parser succeeds.
 -- Returns a list of the parsed elements, in reverse order.
