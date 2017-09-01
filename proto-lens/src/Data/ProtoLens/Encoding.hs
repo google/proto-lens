@@ -54,12 +54,15 @@ parseMessage :: forall msg . Message msg => Parser () -> Parser msg
 parseMessage end = do
     (msg, unsetFields) <- loop def requiredFields
     if Map.null unsetFields
-        then return $ reverseRepeatedFields fields msg
+        then return $ over unknownFields reverse
+                    $ reverseRepeatedFields fields msg
         else fail $ "Missing required fields "
                         ++ show (map fieldDescriptorName
                                     $ Map.elems $ unsetFields)
   where
     fields = fieldsByTag descriptor
+    addUnknown :: TaggedValue -> msg -> msg
+    addUnknown !f = over' unknownFields (f :)
     requiredFields = Map.filter isRequired fields
     loop :: msg -> Map.Map Tag (FieldDescriptor msg)
             -> Parser (msg, Map.Map Tag (FieldDescriptor msg))
@@ -67,7 +70,7 @@ parseMessage end = do
                 <|> do
                     tv@(TaggedValue tag _) <- getTaggedValue
                     case Map.lookup tag fields of
-                        Nothing -> loop msg unsetFields
+                        Nothing -> (loop $! addUnknown tv msg) unsetFields
                         Just field -> do
                             !msg' <- parseAndAddField msg field tv
                             loop msg' $! Map.delete tag unsetFields
@@ -172,10 +175,12 @@ buildMessageDelimited msg =
 
 -- | Encode a message as a sequence of key-value pairs.
 messageToTaggedValues :: Message msg => msg -> [TaggedValue]
-messageToTaggedValues msg = mconcat
-    [ messageFieldToVals tag fieldDescr msg
-    | (tag, fieldDescr) <- Map.toList (fieldsByTag descriptor)
-    ]
+messageToTaggedValues msg =
+    mconcat
+        [ messageFieldToVals tag fieldDescr msg
+        | (tag, fieldDescr) <- Map.toList (fieldsByTag descriptor)
+        ]
+    ++ msg ^. unknownFields
 
 messageFieldToVals :: Tag -> FieldDescriptor a -> a -> [TaggedValue]
 messageFieldToVals tag (FieldDescriptor _ typeDescriptor accessor) msg =

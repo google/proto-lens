@@ -24,7 +24,9 @@ data CodeGeneratorRequest = CodeGeneratorRequest{_CodeGeneratorRequest'fileToGen
                                                  _CodeGeneratorRequest'parameter ::
                                                  !(Prelude.Maybe Data.Text.Text),
                                                  _CodeGeneratorRequest'protoFile ::
-                                                 ![Proto.Google.Protobuf.Descriptor.FileDescriptorProto]}
+                                                 ![Proto.Google.Protobuf.Descriptor.FileDescriptorProto],
+                                                 _CodeGeneratorRequest'_unknownFields ::
+                                                 !Data.ProtoLens.FieldSet}
                           deriving (Prelude.Show, Prelude.Eq, Prelude.Ord)
 
 instance (Lens.Labels.HasLens' f CodeGeneratorRequest x a,
@@ -71,7 +73,8 @@ instance Data.Default.Class.Default CodeGeneratorRequest where
         def
           = CodeGeneratorRequest{_CodeGeneratorRequest'fileToGenerate = [],
                                  _CodeGeneratorRequest'parameter = Prelude.Nothing,
-                                 _CodeGeneratorRequest'protoFile = []}
+                                 _CodeGeneratorRequest'protoFile = [],
+                                 _CodeGeneratorRequest'_unknownFields = ([])}
 
 instance Data.ProtoLens.Message CodeGeneratorRequest where
         descriptor
@@ -111,11 +114,15 @@ instance Data.ProtoLens.Message CodeGeneratorRequest where
                    [("file_to_generate", fileToGenerate__field_descriptor),
                     ("parameter", parameter__field_descriptor),
                     ("proto_file", protoFile__field_descriptor)])
+                (Lens.Family2.Unchecked.lens _CodeGeneratorRequest'_unknownFields
+                   (\ x__ y__ -> x__{_CodeGeneratorRequest'_unknownFields = y__}))
 
 data CodeGeneratorResponse = CodeGeneratorResponse{_CodeGeneratorResponse'error
                                                    :: !(Prelude.Maybe Data.Text.Text),
                                                    _CodeGeneratorResponse'file ::
-                                                   ![CodeGeneratorResponse'File]}
+                                                   ![CodeGeneratorResponse'File],
+                                                   _CodeGeneratorResponse'_unknownFields ::
+                                                   !Data.ProtoLens.FieldSet}
                            deriving (Prelude.Show, Prelude.Eq, Prelude.Ord)
 
 instance (Lens.Labels.HasLens' f CodeGeneratorResponse x a,
@@ -153,7 +160,8 @@ instance Data.Default.Class.Default CodeGeneratorResponse where
         def
           = CodeGeneratorResponse{_CodeGeneratorResponse'error =
                                     Prelude.Nothing,
-                                  _CodeGeneratorResponse'file = []}
+                                  _CodeGeneratorResponse'file = [],
+                                  _CodeGeneratorResponse'_unknownFields = ([])}
 
 instance Data.ProtoLens.Message CodeGeneratorResponse where
         descriptor
@@ -182,13 +190,17 @@ instance Data.ProtoLens.Message CodeGeneratorResponse where
                 (Data.Map.fromList
                    [("error", error__field_descriptor),
                     ("file", file__field_descriptor)])
+                (Lens.Family2.Unchecked.lens _CodeGeneratorResponse'_unknownFields
+                   (\ x__ y__ -> x__{_CodeGeneratorResponse'_unknownFields = y__}))
 
 data CodeGeneratorResponse'File = CodeGeneratorResponse'File{_CodeGeneratorResponse'File'name
                                                              :: !(Prelude.Maybe Data.Text.Text),
                                                              _CodeGeneratorResponse'File'insertionPoint
                                                              :: !(Prelude.Maybe Data.Text.Text),
                                                              _CodeGeneratorResponse'File'content ::
-                                                             !(Prelude.Maybe Data.Text.Text)}
+                                                             !(Prelude.Maybe Data.Text.Text),
+                                                             _CodeGeneratorResponse'File'_unknownFields
+                                                             :: !Data.ProtoLens.FieldSet}
                                 deriving (Prelude.Show, Prelude.Eq, Prelude.Ord)
 
 instance (Lens.Labels.HasLens' f CodeGeneratorResponse'File x a,
@@ -258,7 +270,8 @@ instance Data.Default.Class.Default CodeGeneratorResponse'File
           = CodeGeneratorResponse'File{_CodeGeneratorResponse'File'name =
                                          Prelude.Nothing,
                                        _CodeGeneratorResponse'File'insertionPoint = Prelude.Nothing,
-                                       _CodeGeneratorResponse'File'content = Prelude.Nothing}
+                                       _CodeGeneratorResponse'File'content = Prelude.Nothing,
+                                       _CodeGeneratorResponse'File'_unknownFields = ([])}
 
 instance Data.ProtoLens.Message CodeGeneratorResponse'File where
         descriptor
@@ -299,3 +312,7 @@ instance Data.ProtoLens.Message CodeGeneratorResponse'File where
                    [("name", name__field_descriptor),
                     ("insertion_point", insertionPoint__field_descriptor),
                     ("content", content__field_descriptor)])
+                (Lens.Family2.Unchecked.lens
+                   _CodeGeneratorResponse'File'_unknownFields
+                   (\ x__ y__ ->
+                      x__{_CodeGeneratorResponse'File'_unknownFields = y__}))
