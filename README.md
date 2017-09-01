@@ -98,8 +98,6 @@ will generate the haskell files `Proto/Project/{Foo,Bar}.hs`.
 - Extensions (proto2-only) are not supported.  `Any` messages (the proto3
   equivalent) can be used, but don't have any custom API support like in the C++
   libraries.
-- Unknown fields of proto2 messages are discarded during decoding. (This is the
-  correct behavior for proto3.)
 - Unknown enum values cause a decoding error, instead of being preserved
   round-trip.
 - Files with `import public` statements compile correctly, but don't explicitly
