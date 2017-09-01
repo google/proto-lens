@@ -8,11 +8,9 @@ import Data.Monoid ((<>))
 import Data.ProtoLens
 import qualified Data.ProtoLens.Encoding.Wire as Wire
 import qualified Data.Text.Lazy as LT
-import Lens.Family2 (Lens', (&), (.~))
-import Test.Framework (testGroup)
+import Lens.Family2 ((&), (.~))
 import Test.Framework.Providers.HUnit (testCase)
 import Test.HUnit ((@=?), assertBool)
-import Text.PrettyPrint (render, ($$))
 
 import Data.ProtoLens.TestUtil
 import Proto.UnknownFields
@@ -88,10 +86,10 @@ testUnknownGroup =
 testUnknownSerialization
     :: forall msg . (Eq msg, Show msg, Message msg)
     => String -> msg -> Doc -> Builder -> Test
-testUnknownSerialization name x ts bs = testCase name $ do
+testUnknownSerialization name msg ts bs = testCase name $ do
     let bs' = toStrictByteString bs
-    bs' @=? encodeMessage x
-    Right x @=? decodeMessage bs'
-    renderIndenting ts @=? renderIndenting (pprintMessage x)
+    bs' @=? encodeMessage msg
+    Right msg @=? decodeMessage bs'
+    renderIndenting ts @=? renderIndenting (pprintMessage msg)
     assertBool "can't decode unknown fields from text format"
         $ isLeft $ (readMessage $ LT.pack $ show ts :: Either String msg)
