@@ -95,15 +95,13 @@ will generate the haskell files `Proto/Project/{Foo,Bar}.hs`.
 # Current differences from the standard
 
 - Services are not supported.
-- Extensions (proto2-only) are not supported.  `Any` messages (the proto3
-  equivalent) can be used, but don't have any custom API support like in the C++
-  libraries.
+- Extensions (proto2-only) are not supported.
 - Unknown enum values cause a decoding error, instead of being preserved
   round-trip.
+- Messages with proto3 syntax preserve unknown fields, the same as for proto2.
+  This behavior tracks a [recent change to the specification](google/protobuf#272).
 - Files with `import public` statements compile correctly, but don't explicitly
   reexport the definitions from those imports.
-- Enum aliases (`option allow_alias = true`) are not supported; each enum value
-  must map to a distinct integer constant.
 
 # Troubleshooting
 
