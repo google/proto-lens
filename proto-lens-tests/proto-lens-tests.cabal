@@ -32,11 +32,14 @@ library
                -- compile tests/package-deps.proto (since it's listed in
                -- extra-source-files regardless).
                , proto-lens-tests-dep
+               , proto-lens-protobuf-types
+               -- For tests/imports.proto:
+               , proto-lens-descriptors
                , base >= 4.8 && < 4.11
                , bytestring == 0.10.*
                , text == 1.2.*
                , pretty == 1.1.*
-               , HUnit >= 1.3 && < 1.6
+               , HUnit >= 1.3 && < 1.7
                , test-framework == 0.8.*
                , test-framework-hunit == 0.3.*
                , test-framework-quickcheck2 == 0.3.*
@@ -159,6 +162,7 @@ Test-Suite text_format_test
                , pretty
                , proto-lens
                , proto-lens-protoc
+               , proto-lens-protobuf-types
                , proto-lens-tests
                , test-framework
                , test-framework-hunit
@@ -309,6 +313,24 @@ Test-Suite any_test
                , proto-lens-protoc
                , proto-lens-tests
                , QuickCheck
+               , test-framework
+               , test-framework-hunit
+               , text
+
+Test-Suite unknown_fields_test
+  default-language: Haskell2010
+  type: exitcode-stdio-1.0
+  main-is: unknown_fields_test.hs
+  hs-source-dirs: tests
+  other-modules: Proto.UnknownFields, Proto.UnknownFields'Fields
+  build-depends: base
+               , bytestring
+               , HUnit
+               , lens-family
+               , pretty
+               , proto-lens
+               , proto-lens-protoc
+               , proto-lens-tests
                , test-framework
                , test-framework-hunit
                , text

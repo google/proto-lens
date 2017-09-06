@@ -20,21 +20,21 @@ import qualified Lens.Labels
 import qualified Proto.Google.Protobuf.Descriptor
 
 content ::
-        forall f s t a b . Lens.Labels.HasLens "content" f s t a b =>
+        forall f s t a b . Lens.Labels.HasLens f s t "content" a b =>
           Lens.Family2.LensLike f s t a b
 content
   = Lens.Labels.lensOf
       ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "content")
 
 error ::
-      forall f s t a b . Lens.Labels.HasLens "error" f s t a b =>
+      forall f s t a b . Lens.Labels.HasLens f s t "error" a b =>
         Lens.Family2.LensLike f s t a b
 error
   = Lens.Labels.lensOf
       ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "error")
 
 file ::
-     forall f s t a b . Lens.Labels.HasLens "file" f s t a b =>
+     forall f s t a b . Lens.Labels.HasLens f s t "file" a b =>
        Lens.Family2.LensLike f s t a b
 file
   = Lens.Labels.lensOf
@@ -42,7 +42,7 @@ file
 
 fileToGenerate ::
                forall f s t a b .
-                 Lens.Labels.HasLens "fileToGenerate" f s t a b =>
+                 Lens.Labels.HasLens f s t "fileToGenerate" a b =>
                  Lens.Family2.LensLike f s t a b
 fileToGenerate
   = Lens.Labels.lensOf
@@ -50,21 +50,21 @@ fileToGenerate
 
 insertionPoint ::
                forall f s t a b .
-                 Lens.Labels.HasLens "insertionPoint" f s t a b =>
+                 Lens.Labels.HasLens f s t "insertionPoint" a b =>
                  Lens.Family2.LensLike f s t a b
 insertionPoint
   = Lens.Labels.lensOf
       ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "insertionPoint")
 
 maybe'content ::
-              forall f s t a b . Lens.Labels.HasLens "maybe'content" f s t a b =>
+              forall f s t a b . Lens.Labels.HasLens f s t "maybe'content" a b =>
                 Lens.Family2.LensLike f s t a b
 maybe'content
   = Lens.Labels.lensOf
       ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "maybe'content")
 
 maybe'error ::
-            forall f s t a b . Lens.Labels.HasLens "maybe'error" f s t a b =>
+            forall f s t a b . Lens.Labels.HasLens f s t "maybe'error" a b =>
               Lens.Family2.LensLike f s t a b
 maybe'error
   = Lens.Labels.lensOf
@@ -72,7 +72,7 @@ maybe'error
 
 maybe'insertionPoint ::
                      forall f s t a b .
-                       Lens.Labels.HasLens "maybe'insertionPoint" f s t a b =>
+                       Lens.Labels.HasLens f s t "maybe'insertionPoint" a b =>
                        Lens.Family2.LensLike f s t a b
 maybe'insertionPoint
   = Lens.Labels.lensOf
@@ -80,7 +80,7 @@ maybe'insertionPoint
          (Lens.Labels.Proxy#) "maybe'insertionPoint")
 
 maybe'name ::
-           forall f s t a b . Lens.Labels.HasLens "maybe'name" f s t a b =>
+           forall f s t a b . Lens.Labels.HasLens f s t "maybe'name" a b =>
              Lens.Family2.LensLike f s t a b
 maybe'name
   = Lens.Labels.lensOf
@@ -88,28 +88,28 @@ maybe'name
 
 maybe'parameter ::
                 forall f s t a b .
-                  Lens.Labels.HasLens "maybe'parameter" f s t a b =>
+                  Lens.Labels.HasLens f s t "maybe'parameter" a b =>
                   Lens.Family2.LensLike f s t a b
 maybe'parameter
   = Lens.Labels.lensOf
       ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "maybe'parameter")
 
 name ::
-     forall f s t a b . Lens.Labels.HasLens "name" f s t a b =>
+     forall f s t a b . Lens.Labels.HasLens f s t "name" a b =>
        Lens.Family2.LensLike f s t a b
 name
   = Lens.Labels.lensOf
       ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "name")
 
 parameter ::
-          forall f s t a b . Lens.Labels.HasLens "parameter" f s t a b =>
+          forall f s t a b . Lens.Labels.HasLens f s t "parameter" a b =>
             Lens.Family2.LensLike f s t a b
 parameter
   = Lens.Labels.lensOf
       ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "parameter")
 
 protoFile ::
-          forall f s t a b . Lens.Labels.HasLens "protoFile" f s t a b =>
+          forall f s t a b . Lens.Labels.HasLens f s t "protoFile" a b =>
             Lens.Family2.LensLike f s t a b
 protoFile
   = Lens.Labels.lensOf

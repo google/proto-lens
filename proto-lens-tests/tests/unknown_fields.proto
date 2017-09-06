@@ -1,0 +1,11 @@
+syntax = "proto2";
+
+package unknown_fields;
+
+message Raw {
+  optional int32 a = 1;
+  optional fixed32 b = 2;
+  optional group SubGroup = 3 {
+    optional int32 x = 1;
+  }
+}

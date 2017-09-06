@@ -14,6 +14,14 @@ build-type:          Simple
 cabal-version:       >=1.10
 extra-source-files:  Changelog.md
 
+-- Make the corresponding .proto files available for other packages to import.
+-- Usually this happens automatically as part of Data.ProtoLens.Setup,
+-- but because of bootstrapping we don't use that module here.
+data-dir: data
+data-files:
+    proto-lens-imports/google/protobuf/descriptor.proto
+    proto-lens-imports/google/protobuf/compiler/plugin.proto
+
 library
   hs-source-dirs:      src
   exposed-modules:

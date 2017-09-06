@@ -62,8 +62,12 @@ main = testMain
         trivial (Disambiguated'EnumCon' 42 :: Disambiguated'EnumType')
 
         -- And we don't change the message or enum types and constructors.
-        trivial (Disambiguated'MessageTypeA{} :: Disambiguated'MessageTypeA)
-        trivial (Disambiguated'MessageTypeB{} :: Disambiguated'MessageTypeB)
+        trivial (Disambiguated'MessageTypeA
+                    {_Disambiguated'MessageTypeA'_unknownFields = []}
+                    :: Disambiguated'MessageTypeA)
+        trivial (Disambiguated'MessageTypeB
+                    {_Disambiguated'MessageTypeB'_unknownFields = []}
+                    :: Disambiguated'MessageTypeB)
         trivial (Disambiguated'EnumCon :: Disambiguated'EnumType)
 
     , testCase "not disambiguated names" $ do

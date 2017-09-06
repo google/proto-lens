@@ -12,10 +12,12 @@
 {-# LANGUAGE GADTs #-}
 {-# LANGUAGE LambdaCase #-}
 {-# LANGUAGE PatternGuards #-}
+{-# LANGUAGE RankNTypes #-}
 {-# LANGUAGE ScopedTypeVariables #-}
 module Data.ProtoLens.Encoding(
     encodeMessage,
     buildMessage,
+    buildMessageDelimited,
     decodeMessage,
     decodeMessageOrDie,
     ) where
@@ -28,13 +30,14 @@ import Control.Applicative ((<|>))
 import Control.Monad (guard)
 import Data.Attoparsec.ByteString as Parse
 import Data.Bool (bool)
+import Data.Monoid ((<>))
 import Data.Text.Encoding (encodeUtf8, decodeUtf8')
 import Data.Text.Encoding.Error (UnicodeException(..))
 import qualified Data.ByteString as B
 import qualified Data.Map.Strict as Map
 import Data.ByteString.Lazy.Builder as Builder
 import qualified Data.ByteString.Lazy as L
-import Lens.Family2 (set, over, (^.), (&))
+import Lens.Family2 (Lens', set, over, (^.), (&))
 
 -- TODO: We could be more incremental when parsing/encoding length-based fields,
 -- rather than forcing the whole thing.  E.g., for encoding we're doing extra
@@ -51,23 +54,26 @@ parseMessage :: forall msg . Message msg => Parser () -> Parser msg
 parseMessage end = do
     (msg, unsetFields) <- loop def requiredFields
     if Map.null unsetFields
-        then return $ reverseRepeatedFields fields msg
+        then return $ over unknownFields reverse
+                    $ reverseRepeatedFields fields msg
         else fail $ "Missing required fields "
                         ++ show (map fieldDescriptorName
                                     $ Map.elems $ unsetFields)
   where
     fields = fieldsByTag descriptor
+    addUnknown :: TaggedValue -> msg -> msg
+    addUnknown !f = over' unknownFields (f :)
     requiredFields = Map.filter isRequired fields
     loop :: msg -> Map.Map Tag (FieldDescriptor msg)
             -> Parser (msg, Map.Map Tag (FieldDescriptor msg))
     loop msg unsetFields = ((msg, unsetFields) <$ end)
                 <|> do
                     tv@(TaggedValue tag _) <- getTaggedValue
-                    case Map.lookup (Tag tag) fields of
-                        Nothing -> loop msg unsetFields
+                    case Map.lookup tag fields of
+                        Nothing -> (loop $! addUnknown tv msg) unsetFields
                         Just field -> do
                             !msg' <- parseAndAddField msg field tv
-                            loop msg' $! Map.delete (Tag tag) unsetFields
+                            loop msg' $! Map.delete tag unsetFields
 
 -- | Decode a message from its wire format.  Throws an error if the decoding
 -- fails.
@@ -100,7 +106,7 @@ parseAndAddField
             FieldWireType fieldWt _ get -> do
               Equal <- equalWireTypes name Lengthy wt
               let getElt = do
-                        wv <- getWireValue fieldWt tag
+                        wv <- getWireValue fieldWt
                         x <- runEither $ get wv
                         return $! x
               runEither $ parseOnly (manyReversedTill getElt endOfInput) val
@@ -118,10 +124,10 @@ parseAndAddField
               RepeatedField _ f
                 -> (do
                         !x <- getSimpleVal
-                        return $! over f (\(!xs) -> x:xs) msg)
+                        return $! over' f (x :) msg)
                 <|> (do
                         xs <- getPackedVals
-                        return $! over f (\(!ys) -> xs++ys) msg)
+                        return $! over' f (xs ++) msg)
                 <|> fail ("Field " ++ name
                             ++ " expects a repeated field wire type but found "
                             ++ show wt)
@@ -132,6 +138,15 @@ parseAndAddField
                   return $! over f
                       (Map.insert key value)
                       msg
+
+-- | Strict version of 'over' that forces the old value.
+-- Helps prevent gross space leaks when modifying a list field.
+--
+-- In particular, a naive `@over f (x :) y@ keeps the old value of @y@ around
+-- in a thunk, because @(:)@ isn't strict in its second argument.  (Similarly
+-- for @(++)@.)
+over' :: Lens' a b -> (b -> b) -> a -> a
+over' f g = over f (\(!x) -> g x)
 
 -- | Run the parser zero or more times, until the "end" parser succeeds.
 -- Returns a list of the parsed elements, in reverse order.
@@ -146,16 +161,28 @@ encodeMessage = L.toStrict . toLazyByteString . buildMessage
 
 -- | Encode a message to the wire format, as part of a 'Builder'.
 buildMessage :: Message msg => msg -> Builder
-buildMessage msg = foldMap putTaggedValue (messageToTaggedValues msg)
+buildMessage = foldMap putTaggedValue . messageToTaggedValues
+
+-- | Encode a message to the wire format, prefixed by its size as a VarInt,
+-- as part of a 'Builder'.
+--
+-- This can be used to build up streams of messages in the size-delimited
+-- format expected by some protocols.
+buildMessageDelimited :: Message msg => msg -> Builder
+buildMessageDelimited msg =
+  let b = L.toStrict . toLazyByteString $ buildMessage msg in
+    putVarInt (fromIntegral $ B.length b) <> byteString b
 
 -- | Encode a message as a sequence of key-value pairs.
 messageToTaggedValues :: Message msg => msg -> [TaggedValue]
-messageToTaggedValues msg = mconcat
-    [ messageFieldToVals t fieldDescr msg
-    | (Tag t, fieldDescr) <- Map.toList (fieldsByTag descriptor)
-    ]
+messageToTaggedValues msg =
+    mconcat
+        [ messageFieldToVals tag fieldDescr msg
+        | (tag, fieldDescr) <- Map.toList (fieldsByTag descriptor)
+        ]
+    ++ msg ^. unknownFields
 
-messageFieldToVals :: Int -> FieldDescriptor a -> a -> [TaggedValue]
+messageFieldToVals :: Tag -> FieldDescriptor a -> a -> [TaggedValue]
 messageFieldToVals tag (FieldDescriptor _ typeDescriptor accessor) msg =
     let
         embed src
@@ -227,7 +254,7 @@ fieldWireType MessageField = FieldWireType Lengthy encodeMessage
                                 decodeMessage
 fieldWireType GroupField = GroupFieldType
 
-endOfGroup :: String -> Int -> Parser ()
+endOfGroup :: String -> Tag -> Parser ()
 endOfGroup name tag = do
     TaggedValue tag' (WireValue wt _) <- getTaggedValue
     Equal <- equalWireTypes name EndGroup wt

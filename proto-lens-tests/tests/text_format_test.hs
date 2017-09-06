@@ -5,14 +5,18 @@
 -- https://developers.google.com/open-source/licenses/bsd
 
 {-# LANGUAGE OverloadedStrings #-}
+
 module Main where
 
 import qualified Data.ByteString
 import Data.Char (ord)
 import Data.Monoid ((<>))
 import qualified Data.Text.Lazy
+import qualified Data.ProtoLens.Any as Any
 import Data.ProtoLens (
-    def, Message, showMessage, showMessageShort, pprintMessage)
+    def, Message, showMessage, showMessageShort, pprintMessage, register,
+    showMessageWithRegistry )
+import Data.Proxy (Proxy(..))
 import Lens.Family2 ((&), (.~))
 import Proto.TextFormat
 import Proto.TextFormat'Fields
@@ -27,6 +31,9 @@ def1 = def
 
 def2 :: Test2
 def2 = def
+
+def3 :: AnyHolder
+def3 = def
 
 failed1 :: Maybe Test1
 failed1 = Nothing
@@ -84,6 +91,20 @@ main = testMain
     , readFrom "Non-UTF8 bytes"
          (Just invalidUTF8BytesMessage)
          (Data.Text.Lazy.pack invalidUTF8BytesRendered)
+    , readFromWithRegistry
+         anyRegistry
+         "Parse any"
+         (Just anyExpProto)
+         anyExpText
+    , readFromWithRegistry
+         anyRegistry
+         "Parse any (explicit)"
+         (Just anyExpProto)
+         explicitAnyExpText
+    , testCase "Render any" $
+        Data.Text.Lazy.unpack anyExpText @=? (showMessageWithRegistry anyRegistry anyExpProto <> "\n")
+    , testCase "Render any unknown" $
+        Data.Text.Lazy.unpack explicitAnyExpText @=? (showMessageWithRegistry test1Registry anyExpProto <> "\n")
     , let kNums = [0..99]  -- The default line limit is 100 so we exceed it.
           kExpected = unwords $ map (("d: " ++) . show) kNums
       in testCase "Render single line for debugString" $
@@ -105,3 +126,49 @@ main = testMain
         def1 & e .~ Data.ByteString.pack (map (fromIntegral . ord) "abc"
             ++ [0xC0, 0xC0, 0x0])  -- Invalid UTF8.
     invalidUTF8BytesRendered = "e: \"abc\\300\\300\\000\""
+
+    anyRegistry =
+      register (Proxy :: Proxy Test1) <>
+      register (Proxy :: Proxy Test2)
+    test1Registry =
+      register (Proxy :: Proxy Test1)
+
+    anyExpProto =
+        def3 & thing1 .~ Any.pack (def1 & a .~ 3
+                                        & b .~ "test"
+                                        & d .~ [1,2,4,9]
+                                        & e .~ "\0\0\0")
+             & sub    .~ (def & thing2 .~
+                          Any.pack (def2 & c . a .~ 35
+                                         & c . b .~ "hello world"
+                                         & c . d .~ [1,3,5]
+                                         & c . e .~ "\n\n\n"))
+    anyExpText =
+      Data.Text.Lazy.unlines
+        [ "thing1 {"
+        , "  [type.googleapis.com/text_format.Test1] {"
+        , "    b: \"test\" d: 1 d: 2 d: 4 d: 9 e: \"\\000\\000\\000\" a: 3"
+        , "  }"
+        , "}"
+        , "sub {"
+        , "  thing2 {"
+        , "    [type.googleapis.com/text_format.Test2] {"
+        , "      c { b: \"hello world\" d: 1 d: 3 d: 5 e: \"\\n\\n\\n\" a: 35 }"
+        , "    }"
+        , "  }"
+        , "}"
+        ]
+    explicitAnyExpText =
+      Data.Text.Lazy.unlines
+        [ "thing1 {"
+        , "  [type.googleapis.com/text_format.Test1] {"
+        , "    b: \"test\" d: 1 d: 2 d: 4 d: 9 e: \"\\000\\000\\000\" a: 3"
+        , "  }"
+        , "}"
+        , "sub {"
+        , "  thing2 {"
+        , "    type_url: \"type.googleapis.com/text_format.Test2\""
+        , "    value: \"\\n\\031\\n\\013hello world\\022\\003\\001\\003\\005\\032\\003\\n\\n\\n #\""
+        , "  }"
+        , "}"
+        ]
