@@ -119,11 +119,11 @@ parseAndAddField
                 -> (do
                         !x <- getSimpleVal
                         return $! over f (\(!xs) -> x:xs) msg)
-                <|> (do 
+                <|> (do
                         xs <- getPackedVals
                         return $! over f (\(!ys) -> xs++ys) msg)
                 <|> fail ("Field " ++ name
-                            ++ "expects a repeated field wire type but found "
+                            ++ " expects a repeated field wire type but found "
                             ++ show wt)
               MapField keyLens valueLens f -> do
                   entry <- getSimpleVal
