@@ -1,9 +1,7 @@
 # Use a lightweight base image; we provide our own build tools.
 language: c
 
-# Docker builds make GHC much slower for some reason:
-# https://github.com/travis-ci/travis-ci/issues/5623
-sudo: true
+sudo: false
 
 cache:
   directories:
