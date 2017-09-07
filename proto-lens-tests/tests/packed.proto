@@ -1,6 +1,6 @@
 syntax = "proto2";
 
-package partial;
+package test;
 
 message Foo {
   repeated int32 a = 1;

@@ -1,6 +1,6 @@
 syntax = "proto2";
 
-package test;
+package partial;
 
 message Foo {
   optional Bar bar = 1;
