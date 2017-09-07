@@ -10,7 +10,7 @@ module Main where
 import qualified Data.Map as M
 import Data.ProtoLens
 import Data.ProtoLens.Arbitrary
-import Data.ProtoLens.Message (partial)
+import Data.ProtoLens.Compare (partial)
 import Lens.Family2 ((&), (.~))
 import Test.Framework (testGroup)
 import Test.Framework.Providers.HUnit (testCase)

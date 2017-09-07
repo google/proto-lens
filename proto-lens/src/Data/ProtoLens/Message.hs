@@ -6,13 +6,11 @@
 
 {-# LANGUAGE GADTs #-}
 {-# LANGUAGE GeneralizedNewtypeDeriving #-}
-{-# LANGUAGE LambdaCase #-}
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE PatternGuards #-}
 {-# LANGUAGE RankNTypes #-}
 {-# LANGUAGE ScopedTypeVariables #-}
 {-# LANGUAGE StandaloneDeriving #-}
-{-# LANGUAGE TypeApplications #-}
 -- | Datatypes for reflection of protocol buffer messages.
 module Data.ProtoLens.Message (
     -- * Reflection of Messages
@@ -48,13 +46,9 @@ module Data.ProtoLens.Message (
     TaggedValue(..),
     unknownFields,
     discardUnknownFields,
-    -- * Matchers
-    partial,
     ) where
 
-import Control.Applicative ((<$>), (<*>))
 import qualified Data.ByteString as B
-import Data.Constraint (Dict (..))
 import Data.Default.Class
 import Data.Int
 import qualified Data.Map as Map
@@ -63,7 +57,7 @@ import Data.Maybe (fromMaybe)
 import Data.Proxy (Proxy(..))
 import qualified Data.Text as T
 import Data.Word
-import Lens.Family2 (Lens', over, set, view)
+import Lens.Family2 (Lens', over, set)
 import Lens.Family2.Unchecked (lens)
 
 import Data.ProtoLens.Encoding.Wire
@@ -309,89 +303,3 @@ discardUnknownFields = set unknownFields []
 -- | Access the unknown fields of a Message.
 unknownFields :: Message msg => Lens' msg FieldSet
 unknownFields = unknownFieldsLens descriptor
-
--- | Perform a partial match on a protobuffer. This corresponds to equality for
--- primitive fields, (recursive) partial equality for required 'Message'
--- fields, partial equality if both are set for optional fields, and partial
--- equality of subsets for repeated and map fields.
-partial
-    :: forall a. Message a
-    => a  -- ^ The value to partially match against.
-    -> a  -- ^ The value to match.
-    -> Bool
-partial against match =
-  and . flip fmap (Map.elems (fieldsByTag $ descriptor @a))
-      $ \(FieldDescriptor _ ftd acc) ->
-      case acc of
-        PlainField _    l ->
-          eq ftd (view l against) (view l match)
-
-        OptionalField   l ->
-          compareMaybe (eq ftd) (view l against) (view l match)
-
-        RepeatedField _ l ->
-          and . fmap (\a -> any (eq ftd a) $ view l match) $ view l against
-
-        MapField k v l    ->
-          let entriesMatch   = toRepeatedEntry k v $ view l match
-              entriesAgainst = toRepeatedEntry k v $ view l against
-           in and $ fmap (\a -> any (eq ftd a) entriesMatch) entriesAgainst
-  where
-    toRepeatedEntry :: (Ord key, Message entry)
-                    => Lens' entry key
-                    -> Lens' entry value
-                    -> Map.Map key value
-                    -> [entry]
-    toRepeatedEntry keyL valL = fmap (\(k, v) -> set keyL k $ set valL v def)
-                              . Map.toList
-
-    compareMaybe :: (v -> v -> Bool) -> Maybe v -> Maybe v -> Bool
-    compareMaybe _ Nothing _         = True
-    compareMaybe f (Just a) (Just b) = f a b
-    compareMaybe _ _ _               = False
-
-
-    getMessage :: FieldTypeDescriptor v -> Maybe (Dict (Message v))
-    getMessage = \case
-      MessageField -> Just Dict
-      GroupField   -> Just Dict
-      _            -> Nothing
-
-    getMessageEnum :: FieldTypeDescriptor v -> Maybe (Dict (MessageEnum v))
-    getMessageEnum = \case
-      EnumField    -> Just Dict
-      _            -> Nothing
-
-    getEq :: FieldTypeDescriptor v -> Maybe (Dict (Eq v))
-    getEq = \case
-      MessageField  -> Nothing
-      GroupField    -> Nothing
-      EnumField     -> Nothing
-      Int32Field    -> Just Dict
-      Int64Field    -> Just Dict
-      UInt32Field   -> Just Dict
-      UInt64Field   -> Just Dict
-      SInt32Field   -> Just Dict
-      SInt64Field   -> Just Dict
-      Fixed32Field  -> Just Dict
-      Fixed64Field  -> Just Dict
-      SFixed32Field -> Just Dict
-      SFixed64Field -> Just Dict
-      FloatField    -> Just Dict
-      DoubleField   -> Just Dict
-      BoolField     -> Just Dict
-      StringField   -> Just Dict
-      BytesField    -> Just Dict
-
-    eq :: FieldTypeDescriptor v -> v -> v -> Bool
-    eq fd a b =
-      case getMessage fd of
-        Just Dict -> partial a b
-        Nothing ->
-          case getEq fd of
-            Just Dict -> a == b
-            Nothing ->
-              case getMessageEnum fd of
-                Just Dict -> fromEnum a == fromEnum b
-                Nothing -> False
-

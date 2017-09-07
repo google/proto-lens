@@ -25,6 +25,7 @@ extra-source-files:  Changelog.md
 library
   hs-source-dirs: src
   exposed-modules:     Data.ProtoLens
+                       Data.ProtoLens.Compare
                        Data.ProtoLens.Encoding
                        Data.ProtoLens.Encoding.Wire
                        Data.ProtoLens.Message
