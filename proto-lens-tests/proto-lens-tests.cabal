@@ -233,6 +233,21 @@ Test-Suite packed_test
                , test-framework
                , text
 
+Test-Suite partial_test
+  default-language: Haskell2010
+  type: exitcode-stdio-1.0
+  main-is: partial_test.hs
+  hs-source-dirs: tests
+  other-modules: Proto.Partial, Proto.Partial'Fields
+  build-depends: base
+               , containers
+               , lens-family
+               , proto-lens
+               , proto-lens-protoc
+               , proto-lens-tests
+               , test-framework
+               , text
+
 Test-Suite raw_fields_test
   default-language: Haskell2010
   type: exitcode-stdio-1.0

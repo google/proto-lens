@@ -44,3 +44,4 @@ library
                 , text == 1.2.*
                 , transformers >= 0.4 && < 0.6
                 , void == 0.7.*
+                , constraints >= 0.1
