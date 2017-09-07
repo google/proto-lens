@@ -47,8 +47,8 @@ testMatchRequired = makeTestCase "required"
 testMatchOptional = makeTestCase "optional"
     (def @Foo & ok .~ 5)
     (def @Foo & ok .~ 5
-                         & bar . name .~ "hello"
-                         & bar . deep . name .~ "deeper")
+              & bar . name .~ "hello"
+              & bar . deep . name .~ "deeper")
 
 testMatchRepeated = makeTestCase "repeated"
     (def @Foo & rep .~ [ def & name .~ "1"
