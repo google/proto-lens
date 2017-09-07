@@ -17,8 +17,10 @@ message Foo {
   Sub sub = 5;
 
   enum FooEnum {
+    option allow_alias = true;
     Enum1 = 0;
-    Enum2 = 1;
+    Enum2 = 3;
+    Enum2a = 3;
   }
   FooEnum enum = 6;
 

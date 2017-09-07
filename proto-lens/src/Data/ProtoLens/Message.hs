@@ -220,7 +220,8 @@ class (Enum a, Bounded a) => MessageEnum a where
     -- | Convert the given 'Int' to an enum value.  Returns 'Nothing' if
     -- no corresponding value was defined in the .proto file.
     maybeToEnum :: Int -> Maybe a
-    -- | Get the name of this enum as defined in the .proto file.
+    -- | Get the name of this enum as defined in the .proto file.  Used
+    -- for the human-readable output in @Data.ProtoLens.TextFormat@.
     showEnum :: a -> String
     -- | Convert the given 'String' to an enum value. Returns 'Nothing' if
     -- no corresponding value was defined in the .proto file.
