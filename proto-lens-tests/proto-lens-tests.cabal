@@ -239,13 +239,16 @@ Test-Suite partial_test
   main-is: partial_test.hs
   hs-source-dirs: tests
   other-modules: Proto.Partial, Proto.Partial'Fields
-  build-depends: base
+  build-depends: HUnit
+               , base
                , containers
                , lens-family
                , proto-lens
+               , proto-lens-arbitrary
                , proto-lens-protoc
                , proto-lens-tests
                , test-framework
+               , test-framework-hunit
                , text
 
 Test-Suite raw_fields_test

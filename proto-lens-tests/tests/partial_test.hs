@@ -55,12 +55,12 @@ testMatchRepeated = makeTestCase "repeated"
                        , def & name .~ "3"
                              & another .~ 3
                        ])
-    (def @Foo & rep .~ [ def & name .~ "1"
-                             & another .~ 1
+    (def @Foo & rep .~ [ def & name .~ "3"
+                             & another .~ 3
                        , def & name .~ "2"
                              & another .~ 2
-                       , def & name .~ "3"
-                             & another .~ 3
+                       , def & name .~ "1"
+                             & another .~ 1
                        ])
 
 testMatchMap = makeTestCase "map"

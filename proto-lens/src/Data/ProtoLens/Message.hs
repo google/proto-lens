@@ -63,7 +63,7 @@ import Data.Maybe (fromMaybe)
 import Data.Proxy (Proxy(..))
 import qualified Data.Text as T
 import Data.Word
-import Lens.Family2 (Lens', over, set, view, (&))
+import Lens.Family2 (Lens', over, set, view)
 import Lens.Family2.Unchecked (lens)
 
 import Data.ProtoLens.Encoding.Wire
