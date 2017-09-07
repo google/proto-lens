@@ -53,17 +53,11 @@ module Lens.Labels (
 
 import qualified Control.Category as Category
 import GHC.Prim (Proxy#, proxy#)
-#if __GLASGOW_HASKELL__ >= 800
 import GHC.OverloadedLabels (IsLabel(..))
-#endif
 import GHC.TypeLits (Symbol)
 
 import Data.Function ((&))
-#if __GLASGOW_HASKELL__ >= 800
 import Data.Functor.Const (Const(..))
-#else
-import Control.Applicative (Const(..))
-#endif
 import Data.Functor.Identity(Identity(..))
 
 
@@ -81,7 +75,6 @@ class HasLens f s t (x :: Symbol) a b
         | x s -> a, x t -> b, x s b -> t, x t a -> s where
     lensOf :: Proxy# x -> (a -> f b) -> s -> f t
 
-#if __GLASGOW_HASKELL__ >= 800
 instance
     (p ~ (a -> f b), q ~ (s -> f t), HasLens f s t x a b)
     => IsLabel x (LensFn p q) where
@@ -89,7 +82,6 @@ instance
     fromLabel = LensFn $ lensOf (proxy# :: Proxy# x)
 #else
     fromLabel p = LensFn $ lensOf p
-#endif
 #endif
 
 -- | A type class for lens fields of monomorphic types (i.e., where the lens

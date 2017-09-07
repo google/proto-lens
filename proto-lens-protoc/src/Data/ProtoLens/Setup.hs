@@ -23,10 +23,6 @@ module Data.ProtoLens.Setup
     , generateProtos
     ) where
 
-#if __GLASGOW_HASKELL__ < 709
-import Data.Functor ((<$>))
-#endif
-
 import Control.Monad (filterM, forM_, when)
 import qualified Distribution.InstalledPackageInfo as InstalledPackageInfo
 import Distribution.PackageDescription

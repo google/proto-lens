@@ -13,14 +13,10 @@ cache:
 
 matrix:
   include:
-  - env: BUILD=cabal GHCVER=7.10.3 CABALVER=1.22
-    addons: {apt: {packages: [cabal-install-1.22, ghc-7.10.3], sources: [hvr-ghc]}}
   - env: BUILD=cabal GHCVER=8.0.1 CABALVER=1.24
     addons: {apt: {packages: [cabal-install-1.24, ghc-8.0.1], sources: [hvr-ghc]}}
   - env: BUILD=cabal GHCVER=8.2.1 CABALVER=2.0
     addons: {apt: {packages: [cabal-install-2.0, ghc-8.2.1], sources: [hvr-ghc]}}
-  - env: BUILD=stack STACK='stack --resolver=lts-6.22'
-    addons: {apt: {packages: [libgmp-dev]}}
   - env: BUILD=stack STACK='stack --resolver=lts-7.4'
     addons: {apt: {packages: [libgmp-dev]}}
   - env: BUILD=stack STACK='stack --resolver=lts-8.24'
