@@ -150,7 +150,8 @@ testAliases = testCase "alias" $ do
     -- Test that we can use the pattern synonym as a pattern:
     True @?= case Alias2 of
               Alias2a -> True
-              _ -> False    Alias2 @?= case Alias2 of
+              _ -> False
+    Alias2 @?= case Alias2 of
         -- Check that this explicit list (which doesn't include Alias2) covers
         -- all the constructor cases for this type.
         -- We turn on warnings and -Werror for this test in the .cabal file.
