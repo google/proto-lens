@@ -21,7 +21,7 @@ extra-source-files:
     proto-src/google/protobuf/wrappers.proto
 
 custom-setup
-  setup-depends: base >= 4.8 && < 4.11
+  setup-depends: base >= 4.9 && < 4.11
                , Cabal
                , proto-lens-protoc == 0.2.*
 
@@ -34,7 +34,7 @@ library
                       Proto.Google.Protobuf.Duration'Fields
                       Proto.Google.Protobuf.Wrappers
                       Proto.Google.Protobuf.Wrappers'Fields
-  build-depends: base >= 4.8 && < 4.11
+  build-depends: base >= 4.9 && < 4.11
                , lens-family
                , proto-lens >= 0.2.2 && < 0.3
                , proto-lens-protoc >= 0.2.2 && < 0.3

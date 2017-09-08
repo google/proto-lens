@@ -15,7 +15,7 @@ cabal-version:       >=1.10
 extra-source-files: tests/*.proto
 
 custom-setup
-  setup-depends: base >= 4.8 && < 4.11
+  setup-depends: base >= 4.9 && < 4.11
                , Cabal
                , proto-lens-protoc == 0.2.*
 
@@ -35,7 +35,7 @@ library
                , proto-lens-protobuf-types
                -- For tests/imports.proto:
                , proto-lens-descriptors
-               , base >= 4.8 && < 4.11
+               , base >= 4.9 && < 4.11
                , bytestring == 0.10.*
                , text == 1.2.*
                , pretty == 1.1.*
