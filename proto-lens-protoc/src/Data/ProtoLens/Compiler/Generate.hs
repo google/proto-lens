@@ -331,8 +331,6 @@ generateEnumDecls Proto3 info =
   where
     dataName = enumName info
     dataType = tyCon $ unQual dataName
-    enumPatternNames = map fst
-
 
 generateEnumDecls Proto2 info =
     [ dataDecl dataName
