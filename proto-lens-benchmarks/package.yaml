@@ -47,6 +47,7 @@ benchmarks:
       - proto-lens-benchmarks
     other-modules:
       - Proto.Nested
+      - Proto.Nested'Fields
 
   unused-fields:
     main: UnusedFields.hs
@@ -55,6 +56,7 @@ benchmarks:
       - proto-lens-benchmarks
     other-modules:
       - Proto.UnusedFields
+      - Proto.UnusedFields'Fields
 
   int-packing:
     main: IntPacking.hs
@@ -63,3 +65,4 @@ benchmarks:
       - proto-lens-benchmarks
     other-modules:
       - Proto.IntPacking
+      - Proto.IntPacking'Fields
