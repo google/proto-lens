@@ -1,12 +1,13 @@
+-- This file has been generated from package.yaml by hpack version 0.17.1.
+--
+-- see: https://github.com/sol/hpack
+
 name:                proto-lens-optparse
 version:             0.1.0.4
 synopsis:            Adapting proto-lens to optparse-applicative ReadMs.
-description:
-   A package adapting proto-lens to optparse-applicative ReadMs.
-   This gives an easy way to define options and arguments for
-   text-format protobuf types.
-
-homepage:            https://github.com/google/proto-lens
+description:         A package adapting proto-lens to optparse-applicative ReadMs. This gives an easy way to define options and arguments for text-format protobuf types.
+homepage:            https://github.com/google/proto-lens#readme
+bug-reports:         https://github.com/google/proto-lens/issues
 license:             BSD3
 license-file:        LICENSE
 author:              Andrew Pritchard
@@ -14,13 +15,26 @@ maintainer:          awpr+protolens@google.com
 copyright:           Google Inc.
 category:            Data
 build-type:          Simple
-cabal-version:       >=1.8
-extra-source-files:  Changelog.md
+cabal-version:       >= 1.10
+
+extra-source-files:
+    Changelog.md
+
+source-repository head
+  type: git
+  location: https://github.com/google/proto-lens
+  subdir: proto-lens-optparse
 
 library
-  hs-source-dirs: src
-  exposed-modules:     Data.ProtoLens.Optparse
-  build-depends:  proto-lens >= 0.1 && < 0.3
-                , base >= 4.8 && < 4.11
-                , optparse-applicative >= 0.12 && < 0.15
-                , text == 1.2.*
+  hs-source-dirs:
+      src
+  exposed-modules:
+      Data.ProtoLens.Optparse
+  other-modules:
+      Paths_proto_lens_optparse
+  default-language: Haskell2010
+  build-depends:
+      proto-lens >= 0.1 && < 0.3
+    , base >= 4.8 && < 4.11
+    , optparse-applicative >= 0.12 && < 0.15
+    , text == 1.2.*
