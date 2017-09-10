@@ -92,6 +92,9 @@ data MessageInfo n = MessageInfo
     , messageOneofFields :: [OneofInfo]
       -- ^ The oneofs in this message, associated with the fields that
       --   belong to them.
+    , messageUnknownFields :: Name
+      -- ^ The name of the Haskell field in this message that holds the
+      -- unknown fields.
     } deriving Functor
 
 -- | Information about a single field of a proto message.
@@ -225,6 +228,8 @@ messageDefs protoPrefix hsPrefix d
                   map (fieldInfo hsPrefix')
                       $ Map.findWithDefault [] Nothing allFields
             , messageOneofFields = collectOneofFields hsPrefix' d allFields
+            , messageUnknownFields =
+                  fromString $ "_" ++ hsPrefix' ++ "_unknownFields"
             }
 
 fieldInfo :: String -> FieldDescriptorProto -> FieldInfo

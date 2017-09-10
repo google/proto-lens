@@ -253,6 +253,4 @@ testBytes = testRawValues "bytes" i
 
 testFailedDecoding = testGroup "failedDecoding"
     [ deserializeFails "different types" (def & a .~ fromString "foo")
-    , deserializeFrom "unknown tag" (Just (def :: Raw))
-        $ buildMessage (def & z .~ 42 :: Bad)
     ]
