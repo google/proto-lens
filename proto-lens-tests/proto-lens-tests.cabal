@@ -26,13 +26,6 @@ library
   build-depends: proto-lens-arbitrary == 0.1.*
                , proto-lens == 0.2.*
                , proto-lens-protoc == 0.2.*
-               -- TODO: this is necessary to list explicitly here since when
-               -- --enable-tests is off, Cabal won't see the test-suite
-               -- `package-deps_test` that lists it, but we'll still try to
-               -- compile tests/package-deps.proto (since it's listed in
-               -- extra-source-files regardless).
-               , proto-lens-tests-dep
-               , proto-lens-protobuf-types
                -- For tests/imports.proto:
                , proto-lens-descriptors
                , base >= 4.9 && < 4.11

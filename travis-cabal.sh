@@ -2,6 +2,7 @@
 # A script for running Cabal on all the individual packages in this project.
 
 set -euo pipefail
+set -x
 
 # List all the packages in this repo.  Put certain ones first since
 # they're dependencies of the others.  (Unfortunately, "stack query" doesn't
@@ -40,7 +41,7 @@ do
     (cd $p &&
         cabal clean
         cabal install --enable-tests --only-dependencies
-        cabal configure --enable-tests
+        cabal configure --enable-tests --enable-benchmarks
         cabal build
         cabal sdist
         SRC_TGZ=$(cabal info . | awk '{print $2 ".tar.gz"; exit}')
