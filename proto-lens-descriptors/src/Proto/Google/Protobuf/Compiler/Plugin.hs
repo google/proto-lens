@@ -4,7 +4,11 @@
   FlexibleInstances, PatternSynonyms, MagicHash, NoImplicitPrelude
   #-}
 {-# OPTIONS_GHC -fno-warn-unused-imports #-}
-module Proto.Google.Protobuf.Compiler.Plugin where
+{-# OPTIONS_GHC -fno-warn-duplicate-exports #-}
+module Proto.Google.Protobuf.Compiler.Plugin
+       (CodeGeneratorRequest(..), CodeGeneratorResponse(..),
+        CodeGeneratorResponse'File(..))
+       where
 import qualified Prelude
 import qualified Data.Int
 import qualified Data.Word

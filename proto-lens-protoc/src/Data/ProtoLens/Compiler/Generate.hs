@@ -78,10 +78,12 @@ generateModule :: ModuleName
                -> [Module]
 generateModule modName imports syntaxType modifyImport definitions importedEnv
     = [ module' modName
+                (Just $ concatMap generateExports $ Map.elems definitions)
                 pragmas
                 sharedImports
           . concatMap generateDecls $ Map.toList definitions
       , module' fieldModName
+                Nothing
                 pragmas
                 sharedImports
                 (concatMap generateFieldDecls allLensNames)
@@ -97,6 +99,9 @@ generateModule modName imports syntaxType modifyImport definitions importedEnv
               -- Allow unused imports in case we don't import anything from
               -- Data.Text, Data.Int, etc.
           , optionsGhcPragma "-fno-warn-unused-imports"
+          -- haskell-src-exts doesn't support exporting `Foo(..., A, B)`
+          -- in a single entry, so we use two: `Foo(..)` and `Foo(A, B)`.
+          , optionsGhcPragma "-fno-warn-duplicate-exports"
           ]
     sharedImports = map (modifyImport . importSimple)
               [ "Prelude", "Data.Int", "Data.Word"
@@ -110,6 +115,8 @@ generateModule modName imports syntaxType modifyImport definitions importedEnv
     generateDecls (protoName, Message m)
         = generateMessageDecls syntaxType env (stripDotPrefix protoName) m
     generateDecls (_, Enum e) = generateEnumDecls e
+    generateExports (Message m) = generateMessageExports m
+    generateExports (Enum e) = generateEnumExports e
     allLensNames = F.toList $ Set.fromList
         [ lensSymbol inst
         | Message m <- Map.elems definitions
@@ -148,6 +155,11 @@ reexported imp@ImportDecl {importModule = m}
     = imp { importAs = Just m, importModule = m' }
   where
     m' = fromString $ "Data.ProtoLens.Reexport." ++ prettyPrint m
+
+generateMessageExports :: MessageInfo Name -> [ExportSpec]
+generateMessageExports m =
+    map (exportAll . unQual)
+        $ messageName m : map oneofTypeName (messageOneofFields m)
 
 generateMessageDecls :: SyntaxType -> Env QName -> T.Text -> MessageInfo Name -> [Decl]
 generateMessageDecls syntaxType env protoName info =
@@ -235,6 +247,13 @@ generateMessageDecls syntaxType env protoName info =
     dataType = tyCon $ unQual dataName
     dataName = messageName info
     allFields = allMessageFields syntaxType env info
+
+generateEnumExports :: EnumInfo Name -> [ExportSpec]
+generateEnumExports e = [exportAll n, exportWith n aliases]
+  where
+    n = unQual $ enumName e
+    aliases = [enumValueName v | v <- enumValues e, Just _ <- [enumAliasOf v]]
+
 
 generateEnumDecls :: EnumInfo Name -> [Decl]
 generateEnumDecls info =

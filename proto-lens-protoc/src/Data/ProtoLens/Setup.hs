@@ -23,10 +23,6 @@ module Data.ProtoLens.Setup
     , generateProtos
     ) where
 
-#if __GLASGOW_HASKELL__ < 709
-import Data.Functor ((<$>))
-#endif
-
 import Control.Monad (filterM, forM_, guard, when)
 #if MIN_VERSION_Cabal(2,0,0)
 import qualified Data.Map as Map
