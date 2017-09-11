@@ -4,7 +4,25 @@
   FlexibleInstances, PatternSynonyms, MagicHash, NoImplicitPrelude
   #-}
 {-# OPTIONS_GHC -fno-warn-unused-imports #-}
-module Proto.Google.Protobuf.Descriptor where
+{-# OPTIONS_GHC -fno-warn-duplicate-exports #-}
+module Proto.Google.Protobuf.Descriptor
+       (DescriptorProto(..), DescriptorProto'ExtensionRange(..),
+        DescriptorProto'ReservedRange(..), EnumDescriptorProto(..),
+        EnumOptions(..), EnumValueDescriptorProto(..),
+        EnumValueOptions(..), FieldDescriptorProto(..),
+        FieldDescriptorProto'Label(..), FieldDescriptorProto'Label(),
+        FieldDescriptorProto'Type(..), FieldDescriptorProto'Type(),
+        FieldOptions(..), FieldOptions'CType(..), FieldOptions'CType(),
+        FieldOptions'JSType(..), FieldOptions'JSType(),
+        FileDescriptorProto(..), FileDescriptorSet(..), FileOptions(..),
+        FileOptions'OptimizeMode(..), FileOptions'OptimizeMode(),
+        GeneratedCodeInfo(..), GeneratedCodeInfo'Annotation(..),
+        MessageOptions(..), MethodDescriptorProto(..), MethodOptions(..),
+        OneofDescriptorProto(..), ServiceDescriptorProto(..),
+        ServiceOptions(..), SourceCodeInfo(..),
+        SourceCodeInfo'Location(..), UninterpretedOption(..),
+        UninterpretedOption'NamePart(..))
+       where
 import qualified Prelude
 import qualified Data.Int
 import qualified Data.Word

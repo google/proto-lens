@@ -4,6 +4,7 @@
   FlexibleInstances, PatternSynonyms, MagicHash, NoImplicitPrelude
   #-}
 {-# OPTIONS_GHC -fno-warn-unused-imports #-}
+{-# OPTIONS_GHC -fno-warn-duplicate-exports #-}
 module Proto.Google.Protobuf.Compiler.Plugin'Fields where
 import qualified Prelude
 import qualified Data.Int

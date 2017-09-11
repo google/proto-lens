@@ -8,6 +8,14 @@
 module Main where
 
 import Proto.Enum
+    ( Bar(..)
+    , Baz(..)
+    , TwoBazs(..)
+    , Foo(..)
+    , Foo'Baz(..)
+    -- explicit import to make sure we get pattern synonyms
+    , Alias(..)
+    )
 import Proto.Enum'Fields
 import Data.Function (on)
 import Data.ProtoLens
@@ -139,6 +147,10 @@ testMonotonicFromEnum = testGroup "monotonicFromEnum"
 testAliases = testCase "alias" $ do
     map fromEnum [Alias1, Alias2, Alias2a, Alias3] @?= [1,2,2,3]
     Alias2 @?= Alias2a
+    -- Test that we can use the pattern synonym as a pattern:
+    True @?= case Alias2 of
+              Alias2a -> True
+              _ -> False
     Alias2 @?= case Alias2 of
         -- Check that this explicit list (which doesn't include Alias2) covers
         -- all the constructor cases for this type.
