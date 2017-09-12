@@ -19,7 +19,7 @@ import Control.Arrow (second)
 import qualified Data.Foldable as F
 import qualified Data.List as List
 import qualified Data.Map as Map
-import Data.Maybe (isNothing)
+import Data.Maybe (isNothing, isJust)
 import Data.Monoid ((<>))
 import Data.Ord (comparing)
 import qualified Data.Set as Set
@@ -53,7 +53,7 @@ import Data.ProtoLens.Compiler.Combinators
 import Data.ProtoLens.Compiler.Definitions
 
 data SyntaxType = Proto2 | Proto3
-    deriving Eq
+    deriving (Show, Eq)
 
 fileSyntaxType :: FileDescriptorProto -> SyntaxType
 fileSyntaxType f = case f ^. syntax of
@@ -93,7 +93,7 @@ generateModule modName imports syntaxType modifyImport definitions importedEnv
     pragmas =
           [ languagePragma $ map fromString
               ["ScopedTypeVariables", "DataKinds", "TypeFamilies",
-               "UndecidableInstances",
+               "UndecidableInstances", "GeneralizedNewtypeDeriving",
                "MultiParamTypeClasses", "FlexibleContexts", "FlexibleInstances",
                "PatternSynonyms", "MagicHash", "NoImplicitPrelude"]
               -- Allow unused imports in case we don't import anything from
@@ -114,9 +114,9 @@ generateModule modName imports syntaxType modifyImport definitions importedEnv
     env = Map.union (unqualifyEnv definitions) importedEnv
     generateDecls (protoName, Message m)
         = generateMessageDecls syntaxType env (stripDotPrefix protoName) m
-    generateDecls (_, Enum e) = generateEnumDecls e
+    generateDecls (_, Enum e) = generateEnumDecls syntaxType e
     generateExports (Message m) = generateMessageExports m
-    generateExports (Enum e) = generateEnumExports e
+    generateExports (Enum e) = generateEnumExports syntaxType e
     allLensNames = F.toList $ Set.fromList
         [ lensSymbol inst
         | Message m <- Map.elems definitions
@@ -173,7 +173,7 @@ generateMessageDecls syntaxType env protoName info =
                   ]
                   ++ [(messageUnknownFields info, "Data.ProtoLens.FieldSet")]
         ]
-        ["Prelude.Show", "Prelude.Eq", "Prelude.Ord"]
+        $ deriving' ["Prelude.Show", "Prelude.Eq", "Prelude.Ord"]
     ] ++
 
     -- oneof field data type declarations
@@ -191,7 +191,7 @@ generateMessageDecls syntaxType env protoName info =
       , let f = caseField c
       , let consName = caseConstructorName c
       ]
-      ["Prelude.Show", "Prelude.Eq", "Prelude.Ord"]
+      $ deriving' ["Prelude.Show", "Prelude.Eq", "Prelude.Ord"]
     | oneofInfo <- messageOneofFields info
     ] ++
     -- instance (HasLens' f Foo x a, HasLens' f Foo x b, a ~ b)
@@ -248,18 +248,94 @@ generateMessageDecls syntaxType env protoName info =
     dataName = messageName info
     allFields = allMessageFields syntaxType env info
 
-generateEnumExports :: EnumInfo Name -> [ExportSpec]
-generateEnumExports e = [exportAll n, exportWith n aliases]
+generateEnumExports :: SyntaxType -> EnumInfo Name -> [ExportSpec]
+generateEnumExports syntaxType e = [exportAll n, exportWith n aliases]
   where
     n = unQual $ enumName e
-    aliases = [enumValueName v | v <- enumValues e, Just _ <- [enumAliasOf v]]
+    aliases = [enumValueName v | v <- enumValues e, needsManualExport v]
+    needsManualExport v = syntaxType == Proto3
+                              || isJust (enumAliasOf v)
 
+generateEnumDecls :: SyntaxType -> EnumInfo Name -> [Decl]
+generateEnumDecls Proto3 info =
+    -- newtype Foo = Foo Int32
+    [ newtypeDecl dataName "Data.Int.Int32"
+        $ deriving' ["Prelude.Eq", "Prelude.Ord", "Prelude.Enum", "Prelude.Bounded"]
 
-generateEnumDecls :: EnumInfo Name -> [Decl]
-generateEnumDecls info =
+    -- instance Show Foo where
+    --    showsPrec _ Value0 = "Value0" -- the Haskell name
+    --    showsPrec p (Foo k) = showParen (p > 10)
+    --                            $ showString "toEnum " . shows k
+    , instDecl [] ("Prelude.Show" `ihApp` [dataType])
+        [ [ match "showsPrec" [pWildCard, pApp (unQual n) []]
+               $ "Prelude.showString" @@ stringExp (prettyPrint n)
+          | n <- map enumValueName $ enumValues info
+          ]
+          ++
+          [ match "showsPrec" ["p", pApp (unQual dataName) ["k"]]
+                $ "Prelude.showParen" @@ ("Prelude.>" @@ "p" @@ litInt 10)
+                          @@ ("Prelude.." @@ ("Prelude.showString"
+                                                  @@ stringExp "toEnum ")
+                                          @@ ("Prelude.shows" @@ "k"))
+          ]
+        ]
+
+    -- instance MessageEnum Foo where
+    --    maybeToEnum k = Just $ toEnum k
+    --    showEnum (Foo 0) = "Value0" -- the proto name
+    --    showEnum (Foo k) = show k
+    --    readEnum "Value0" = Just (Foo 0)
+    --    readEnum _ = Nothing
+    , instDecl [] ("Data.ProtoLens.MessageEnum" `ihApp` [dataType])
+        [ [match "maybeToEnum" ["k"]
+                $ "Prelude.Just" @@ ("Prelude.toEnum" @@ "k")]
+        , [ match "showEnum" [pVar n] $ stringExp pn
+          | v <- enumValues info
+          , isNothing (enumAliasOf v)
+          , let n = enumValueName v
+          , let pn = T.unpack $ enumValueDescriptor v ^. name
+          ]
+        , [ match "showEnum" [pApp (unQual dataName) ["k"]]
+                $ "Prelude.show" @@ "k"
+          ]
+
+        , [ match "readEnum" [stringPat pn]
+              $ "Prelude.Just" @@ con (unQual n)
+          | v <- enumValues info
+          , let n = enumValueName v
+          , let pn = T.unpack $ enumValueDescriptor v ^. name
+          ]
+          ++
+          [ match "readEnum" [pWildCard] "Prelude.Nothing"
+          ]
+        ]
+
+    -- proto3 enums always default to zero.
+    , instDecl [] ("Data.Default.Class.Default" `ihApp` [dataType])
+        [[match "def" [] $ "Prelude.toEnum" @@ litInt 0]]
+    , instDecl [] ("Data.ProtoLens.FieldDefault" `ihApp` [dataType])
+        [[match "fieldDefault" [] $ "Prelude.toEnum" @@ litInt 0]]
+    ]
+    ++
+    -- pattern Value0 :: Foo
+    -- pattern Value0 = Foo 0
+    concat
+        [ [ patSynSig n dataType
+          , patSyn (pVar n)
+                $ pApp (unQual dataName) [pLitInt k]
+          ]
+        | v <- enumValues info
+        , let n = enumValueName v
+        , let k = fromIntegral $ enumValueDescriptor v ^. number
+        ]
+  where
+    dataName = enumName info
+    dataType = tyCon $ unQual dataName
+
+generateEnumDecls Proto2 info =
     [ dataDecl dataName
         [conDecl n [] | n <- constructorNames]
-        ["Prelude.Show", "Prelude.Eq", "Prelude.Ord"]
+        $ deriving' ["Prelude.Show", "Prelude.Eq", "Prelude.Ord"]
     -- instance Data.Default.Class.Default Foo where
     --   def = FirstEnumValue
     , instDecl [] ("Data.Default.Class.Default" `ihApp` [dataType])
