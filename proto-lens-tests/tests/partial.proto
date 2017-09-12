@@ -1,0 +1,23 @@
+syntax = "proto2";
+
+package partial;
+
+message Foo {
+  optional Bar bar = 1;
+  repeated Bar rep = 2;
+  map<string, Bar> mapped = 3;
+  optional int32 ok = 4;
+}
+
+message FooReq {
+  required Bar bar = 1;
+  repeated Bar rep = 2;
+  map<string, Bar> mapped = 3;
+  optional int32 ok = 4;
+}
+
+message Bar {
+  optional string name = 1;
+  optional Bar deep = 2;
+  optional int32 another = 3;
+}
