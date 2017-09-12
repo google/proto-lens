@@ -421,8 +421,8 @@ generateEnumDecls Proto2 info =
          ]]
     ]
     ++
-    -- pattern FooAlias :: Foo
-    -- pattern FooAlias = FooConstructor
+    -- pattern Foo0 :: Foo
+    -- pattern Foo0 = Foo 0
     concat
         [ [ patSynSig aliasName dataType
           , patSyn (pVar aliasName) (pVar originalName)
