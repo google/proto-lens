@@ -33,7 +33,7 @@ library
   other-modules:       Data.ProtoLens.Encoding.Bytes
                        Data.ProtoLens.TextFormat.Parser
   build-depends:  attoparsec == 0.13.*
-                , base >= 4.8 && < 4.11
+                , base >= 4.9 && < 4.11
                 , bytestring == 0.10.*
                 , containers == 0.5.*
                 , deepseq == 1.4.*
