@@ -1,2 +1,4 @@
 .stack-work/
 dist/
+# Generated automatically by hpack:
+*.cabal

@@ -26,6 +26,8 @@ echo Building: $PACKAGES
 # Sadly, Cabal won't install such build-tools automatically.
 cabal install happy
 
+cabal install hpack
+
 # Unregister the already-installed packages, since otherwise they may
 # propagate between builds.
 # TODO: use a Cabal sandbox for this.
@@ -39,6 +41,7 @@ for p in $PACKAGES
 do
     echo "Cabal building $p"
     (cd $p &&
+        hpack # Generate the .cabal file
         cabal clean
         cabal install --enable-tests --only-dependencies
         cabal configure --enable-tests --enable-benchmarks
