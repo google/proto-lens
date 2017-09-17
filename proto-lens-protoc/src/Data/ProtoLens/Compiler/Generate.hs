@@ -241,7 +241,7 @@ generateMessageDecls syntaxType env protoName info =
         ]
     -- instance Message.Message Bar where
     , instDecl [] ("Data.ProtoLens.Message" `ihApp` [dataType])
-        [[match "descriptor" [] $ descriptorExpr syntaxType env protoName info]]
+        $ messageInstance syntaxType env protoName info
     ]
   where
     dataType = tyCon $ unQual dataName
@@ -774,22 +774,15 @@ oneofFieldAccessor o
     setter = lambda ["_", "y__"]
                 $ "Prelude.fmap" @@ con (unQual consName) @@ "y__"
 
-descriptorExpr :: SyntaxType -> Env QName -> T.Text -> MessageInfo Name -> Exp
-descriptorExpr syntaxType env protoName m
-    -- let foo__field_descriptor = ...
-    --     ...
-    -- in Message.MessageDescriptor
-    --      (Data.Map.fromList [(Tag 1, foo__field_descriptor),...])
-    --      (Data.Map.fromList [("foo", foo__field_descriptor),...])
-    --
-    -- (Note that the two maps have the same elements but different keys.  We
-    -- use the "let" expression to share elements between the two maps.)
-    = let' (map (fieldDescriptorVarBind $ messageName m) $ fields)
-        $ "Data.ProtoLens.MessageDescriptor"
-          @@ ("Data.Text.pack" @@ stringExp (T.unpack protoName))
-          @@ ("Data.Map.fromList" @@ list fieldsByTag)
-          @@ ("Data.Map.fromList" @@ list fieldsByTextFormatName)
-          @@ rawFieldAccessor (unQual $ messageUnknownFields m)
+messageInstance :: SyntaxType -> Env QName -> T.Text -> MessageInfo Name -> [[Match]]
+messageInstance syntaxType env protoName m =
+    [ [ match "messageName" [pWildCard] $
+          "Data.Text.pack" @@ stringExp (T.unpack protoName)]
+    , [ match "fieldsByTag" [] $
+          let' (map (fieldDescriptorVarBind $ messageName m) $ fields)
+              $ "Data.Map.fromList" @@ list fieldsByTag ]
+    , [ match "unknownFields" [] $ rawFieldAccessor (unQual $ messageUnknownFields m) ]
+    ]
   where
     fieldsByTag =
         [tuple
@@ -798,13 +791,6 @@ descriptorExpr syntaxType env protoName m
               , let t = "Data.ProtoLens.Tag"
                           @@ litInt (fromIntegral
                                       $ fieldDescriptor f ^. number)
-              ]
-    fieldsByTextFormatName =
-        [tuple
-              [ t, fieldDescriptorVar f ]
-              | f <- fields
-              , let t = stringExp $ T.unpack $ textFormatFieldName env
-                                                    (fieldDescriptor f)
               ]
     fieldDescriptorVar = var . unQual . fieldDescriptorName
     fieldDescriptorName f

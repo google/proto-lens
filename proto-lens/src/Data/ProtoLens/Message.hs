@@ -11,12 +11,13 @@
 {-# LANGUAGE RankNTypes #-}
 {-# LANGUAGE ScopedTypeVariables #-}
 {-# LANGUAGE StandaloneDeriving #-}
+{-# LANGUAGE TypeApplications #-}
 -- | Datatypes for reflection of protocol buffer messages.
 module Data.ProtoLens.Message (
     -- * Reflection of Messages
     Message(..),
     Tag(..),
-    MessageDescriptor(..),
+    allFields,
     FieldDescriptor(..),
     fieldDescriptorName,
     isRequired,
@@ -44,7 +45,6 @@ module Data.ProtoLens.Message (
     -- * Unknown fields
     FieldSet,
     TaggedValue(..),
-    unknownFields,
     discardUnknownFields,
     ) where
 
@@ -69,23 +69,24 @@ import Data.ProtoLens.Encoding.Wire
 -- serialization by providing reflection of all of the fields that may be used
 -- by this type.
 class Default msg => Message msg where
-    descriptor :: MessageDescriptor msg
+    -- | A unique identifier for this type, of the format
+    -- @"packagename.messagename"@.
+    messageName :: Proxy msg -> T.Text
+    -- | The fields of the proto, indexed by their (integer) tag.
+    fieldsByTag :: Map Tag (FieldDescriptor msg)
+    -- | This map is keyed by the name of the field used for text format protos.
+    -- This is just the field name for every field except for group fields,
+    -- which use their Message type name in text protos instead of their
+    -- field name. For example, "optional group Foo" has the field name "foo"
+    -- but in this map it is stored with the key "Foo".
+    fieldsByTextFormatName :: Map String (FieldDescriptor msg)
+    fieldsByTextFormatName =
+        Map.fromList [(n, f) | f@(FieldDescriptor n _ _) <- allFields]
+    -- | Access the unknown fields of a Message.
+    unknownFields :: Lens' msg FieldSet
 
--- | The description of a particular protocol buffer message type.
-data MessageDescriptor msg = MessageDescriptor
-    {  messageName :: T.Text
-      -- ^ A unique identifier for this type, of the format
-      -- @"packagename.messagename"@.
-    , fieldsByTag :: Map Tag (FieldDescriptor msg)
-      -- ^ The fields of the proto, indexed by their (integer) tag.
-    , fieldsByTextFormatName :: Map String (FieldDescriptor msg)
-      -- ^ This map is keyed by the name of the field used for text format protos.
-      -- This is just the field name for every field except for group fields,
-      -- which use their Message type name in text protos instead of their
-      -- field name. For example, "optional group Foo" has the field name "foo"
-      -- but in this map it is stored with the key "Foo".
-    , unknownFieldsLens :: Lens' msg FieldSet
-    }
+allFields :: Message msg => [FieldDescriptor msg]
+allFields = Map.elems fieldsByTag
 
 type FieldSet = [TaggedValue]
 
@@ -199,14 +200,12 @@ deriving instance Show (FieldTypeDescriptor value)
 
 matchAnyMessage :: forall value . FieldTypeDescriptor value -> Maybe (AnyMessageDescriptor value)
 matchAnyMessage MessageField
-    | messageName desc == "google.protobuf.Any"
+    | messageName (Proxy @value) == "google.protobuf.Any"
     , Just (FieldDescriptor _ StringField (PlainField Optional typeUrlLens))
-        <- Map.lookup 1 (fieldsByTag desc)
+        <- Map.lookup 1 (fieldsByTag @value)
     , Just (FieldDescriptor _ BytesField (PlainField Optional valueLens))
-        <- Map.lookup 2 (fieldsByTag desc)
+        <- Map.lookup 2 (fieldsByTag @value)
         = Just $ AnyMessageDescriptor typeUrlLens valueLens
-  where
-    desc = descriptor :: MessageDescriptor value
 matchAnyMessage _ = Nothing
 
 data AnyMessageDescriptor msg
@@ -284,9 +283,7 @@ newtype Registry = Registry (Map.Map T.Text SomeMessageType)
 --   Example:
 -- > register (Proxy :: Proxy Proto.My.Proto.Type)
 register :: forall msg . Message msg => Proxy msg -> Registry
-register p = Registry $ Map.singleton (messageName desc) (SomeMessageType p)
-  where
-    desc = descriptor :: MessageDescriptor msg
+register p = Registry $ Map.singleton (messageName (Proxy @msg)) (SomeMessageType p)
 
 -- | Look up a message type by name (e.g.,
 -- @"type.googleapis.com/google.protobuf.FloatValue"@). The URL corresponds to
@@ -300,7 +297,3 @@ data SomeMessageType where
 -- TODO: recursively
 discardUnknownFields :: Message msg => msg -> msg
 discardUnknownFields = set unknownFields []
-
--- | Access the unknown fields of a Message.
-unknownFields :: Message msg => Lens' msg FieldSet
-unknownFields = unknownFieldsLens descriptor

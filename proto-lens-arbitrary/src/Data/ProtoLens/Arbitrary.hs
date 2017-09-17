@@ -38,9 +38,7 @@ instance Message a => Arbitrary (ArbitraryMessage a) where
     shrink (ArbitraryMessage a) = ArbitraryMessage <$> shrinkMessage a
 
 arbitraryMessage :: Message a => Gen a
-arbitraryMessage = foldM (flip arbitraryField) def fields
-  where
-    fields = M.elems (fieldsByTag descriptor)
+arbitraryMessage = foldM (flip arbitraryField) def allFields
 
 -- | Imitation of the (Arbitrary a => Arbitrary (Maybe a)) instance from
 -- QuickCheck.
@@ -96,9 +94,7 @@ arbitraryFieldValue ftd = case ftd of
 -- | Shrink each field individually and append all shrinks together into
 -- a single list.
 shrinkMessage :: Message a => a -> [a]
-shrinkMessage msg = concatMap (`shrinkField` msg) fields
-  where
-    fields = M.elems (fieldsByTag descriptor)
+shrinkMessage msg = concatMap (`shrinkField` msg) allFields
 
 shrinkMaybe :: (a -> [a]) -> Maybe a -> [Maybe a]
 shrinkMaybe f (Just v) = Nothing : (Just <$> f v)
