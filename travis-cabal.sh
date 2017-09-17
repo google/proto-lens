@@ -10,7 +10,6 @@ set -x
 PACKAGES="
     lens-labels
     proto-lens
-    proto-lens-descriptors
     proto-lens-protoc
     proto-lens-protobuf-types
     proto-lens-arbitrary

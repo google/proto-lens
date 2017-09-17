@@ -20,6 +20,13 @@ category: Data
 extra-source-files:
   - Changelog.md
 
+# Make the corresponding .proto files available for other packages to import.
+# Usually this happens automatically as part of Data.ProtoLens.Setup,
+# but because of bootstrapping we don't use that module here.
+data-files:
+  - proto-lens-imports/google/protobuf/descriptor.proto
+  - proto-lens-imports/google/protobuf/compiler/plugin.proto
+
 library:
   source-dirs: src
   exposed-modules:
@@ -29,6 +36,10 @@ library:
     - Data.ProtoLens.Message
     - Data.ProtoLens.Message.Enum
     - Data.ProtoLens.TextFormat
+    - Proto.Google.Protobuf.Compiler.Plugin
+    - Proto.Google.Protobuf.Compiler.Plugin'Fields
+    - Proto.Google.Protobuf.Descriptor
+    - Proto.Google.Protobuf.Descriptor'Fields
   other-modules:
     - Data.ProtoLens.Encoding.Bytes
     - Data.ProtoLens.TextFormat.Parser
@@ -40,6 +51,7 @@ library:
     - deepseq == 1.4.*
     - data-default-class >= 0.0 && < 0.2
     - lens-family == 1.2.*
+    - lens-labels == 0.1.*
     - parsec == 3.1.*
     - pretty == 1.1.*
     - text == 1.2.*
