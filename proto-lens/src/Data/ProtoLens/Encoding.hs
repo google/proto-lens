@@ -60,7 +60,7 @@ parseMessage end = do
                         ++ show (map fieldDescriptorName
                                     $ Map.elems $ unsetFields)
   where
-    fields = fieldsByTag descriptor
+    fields = fieldsByTag
     addUnknown :: TaggedValue -> msg -> msg
     addUnknown !f = over' unknownFields (f :)
     requiredFields = Map.filter isRequired fields
@@ -178,7 +178,7 @@ messageToTaggedValues :: Message msg => msg -> [TaggedValue]
 messageToTaggedValues msg =
     mconcat
         [ messageFieldToVals tag fieldDescr msg
-        | (tag, fieldDescr) <- Map.toList (fieldsByTag descriptor)
+        | (tag, fieldDescr) <- Map.toList fieldsByTag
         ]
     ++ msg ^. unknownFields
 
