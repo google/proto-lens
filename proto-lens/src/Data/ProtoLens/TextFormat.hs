@@ -212,7 +212,7 @@ buildMessage reg fields
                       <$> buildMessageFromDescriptor reg def fields
 
 missingFields :: forall msg . Message msg => Proxy msg -> Parser.Message -> [String]
-missingFields p = Set.toList . foldl' deleteField requiredFieldNames
+missingFields _ = Set.toList . foldl' deleteField requiredFieldNames
   where
     requiredFieldNames :: Set.Set String
     requiredFieldNames = Set.fromList $ Map.keys
