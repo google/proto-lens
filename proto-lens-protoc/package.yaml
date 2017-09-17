@@ -27,7 +27,6 @@ dependencies:
   # Specify a more precise version of `proto-lens`, since it depends on the
   # exact definition of the Message class.
   - proto-lens == 0.2.2.*
-  - proto-lens-descriptors == 0.2.2.*
   - text == 1.2.*
 
 

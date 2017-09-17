@@ -12,10 +12,4 @@ packages:
   subdirs:
   - lens-labels
   - proto-lens
-  - proto-lens-descriptors
   extra-dep: True
-flags:
-  proto-lens-protoc:
-    # Skip the library; it's not needed for the executable, and the modules
-    # that it reexports may change between versions of proto-lens.
-    only-executable: True
