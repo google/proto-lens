@@ -1,8 +1,8 @@
 {- This file was auto-generated from google/protobuf/compiler/plugin.proto by the proto-lens-protoc program. -}
 {-# LANGUAGE ScopedTypeVariables, DataKinds, TypeFamilies,
-  UndecidableInstances, MultiParamTypeClasses, FlexibleContexts,
-  FlexibleInstances, PatternSynonyms, MagicHash, NoImplicitPrelude
-  #-}
+  UndecidableInstances, GeneralizedNewtypeDeriving,
+  MultiParamTypeClasses, FlexibleContexts, FlexibleInstances,
+  PatternSynonyms, MagicHash, NoImplicitPrelude #-}
 {-# OPTIONS_GHC -fno-warn-unused-imports #-}
 {-# OPTIONS_GHC -fno-warn-duplicate-exports #-}
 module Proto.Google.Protobuf.Compiler.Plugin'Fields where

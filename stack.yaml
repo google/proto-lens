@@ -2,7 +2,6 @@ resolver: lts-9.0
 packages:
 - lens-labels
 - proto-lens
-- proto-lens-descriptors
 - proto-lens-protoc
 - proto-lens-protobuf-types
 - proto-lens-arbitrary
