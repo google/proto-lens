@@ -1,6 +1,15 @@
 # Changelog for `proto-lens-protoc`
 
 ## Unreleased changes
+- Remove support for `ghc-7.10`. (#136)
+- Use a `.cabal` file that's auto-generated from `hpack`. (#138)
+- Separate types into their own module, apart from field lenses.
+- Improve readability of `HasLens` instances. (#118)
+- Add support for tracking unknown fields. (#129)
+- Don't generate Haskell modules if they won't be used. (#126)
+- Bundle enum pattern synonyms exports with their type. (#136)
+- Implement proto3-style "open" enums. (#137)
+- Split the `Message` class into separate methods.
 
 ## v0.2.2.3
 - Don't camel-case message names.  This reverts behavior which was added
