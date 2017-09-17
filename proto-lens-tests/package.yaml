@@ -213,3 +213,17 @@ tests:
     other-modules:
       - Proto.UnknownFields
       - Proto.UnknownFields'Fields
+
+  imports_test:
+    main: imports_test.hs
+    source-dirs: tests
+    dependencies:
+      - lens-labels
+      - proto-lens-tests
+    other-modules:
+      - Proto.Enum
+      - Proto.Imports
+      - Proto.ImportsDep
+      - Proto.ImportsTransitive
+      - Proto.ImportsTransitive2
+      - Proto.Nested
