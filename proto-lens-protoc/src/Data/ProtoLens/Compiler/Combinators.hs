@@ -7,6 +7,7 @@
 {-# OPTIONS_GHC -fno-warn-orphans #-}
 {-# LANGUAGE CPP #-}
 {-# LANGUAGE FlexibleInstances #-}
+{-# LANGUAGE OverloadedStrings #-}
 -- | Some utility functions, classes and instances for nicer code generation.
 --
 -- Re-exports simpler versions of the types and constructors from
@@ -33,6 +34,7 @@ import qualified Language.Haskell.Exts.Annotated.Syntax as Syntax
 import qualified Language.Haskell.Exts.Pretty as Pretty
 import Language.Haskell.Exts.SrcLoc (SrcLoc, noLoc)
 #endif
+import Text.PrettyPrint (($+$), (<+>), render, text, vcat)
 
 #if MIN_VERSION_haskell_src_exts(1,18,0)
 prettyPrint :: Pretty.Pretty a => a -> String
@@ -172,27 +174,41 @@ type Match = Syntax.Match ()
 match :: Name -> [Pat] -> Exp -> Syntax.Match ()
 match n ps e = Syntax.Match () n ps (Syntax.UnGuardedRhs () e) Nothing
 
-type Module = Syntax.Module ()
+-- | A hand-rolled type for modules, which allows comments on top-level
+-- declarations.
+data Module = Module ModuleName (Maybe [ExportSpec]) [ModulePragma]
+                [Syntax.ImportDecl ()]
+                [CommentedDecl]
+
+-- | A declaration, along with an optional comment.
+data CommentedDecl = CommentedDecl (Maybe String) Decl
+
+uncommented :: Decl -> CommentedDecl
+uncommented = CommentedDecl Nothing
+
+commented :: String -> Decl -> CommentedDecl
+commented = CommentedDecl . Just
+
+prettyPrintModule :: Module -> String
+prettyPrintModule (Module modName exports pragmas imports decls) =
+    render $
+        vcat (map Pretty.prettyPrim pragmas)
+        $+$ Pretty.prettyPrim (Syntax.ModuleHead () modName
+                                  -- no warning text
+                                  Nothing
+                                  (Syntax.ExportSpecList () <$> exports))
+        $+$ vcat (map Pretty.prettyPrim imports)
+        $+$ ""
+        $+$ vcat (map pprintDecl decls)
+  where
+    pprintDecl (CommentedDecl Nothing d) = Pretty.prettyPrim d
+    pprintDecl (CommentedDecl (Just c) d)
+        = "{- |" <+> text c <+> "-}" $+$ Pretty.prettyPrim d
 
 type ExportSpec = Syntax.ExportSpec ()
 
-module'
-    :: ModuleName
-    -> Maybe [ExportSpec]
-    -> [ModulePragma]
-    -> [Syntax.ImportDecl ()]
-    -> [Decl]
-    -> Module
-module' modName exports
-    = Syntax.Module ()
-        (Just $ Syntax.ModuleHead () modName
-                    -- no warning text
-                    Nothing
-                    (Syntax.ExportSpecList () <$> exports))
-
 getModuleName :: Module -> Maybe ModuleName
-getModuleName (Syntax.Module _ (Just (Syntax.ModuleHead _ name _ _)) _ _ _)
-    = Just name
+getModuleName (Module name _ _ _ _) = Just name
 getModuleName _ = Nothing
 
 type ModuleName = Syntax.ModuleName ()
@@ -297,7 +313,7 @@ instance IsString Name where
 -- | Whether this character belongs to an Ident (e.g., "foo") or a symbol
 -- (e.g., "<$>").
 isIdentChar :: Char -> Bool
-isIdentChar c = isAlphaNum c || c `elem` "_'"
+isIdentChar c = isAlphaNum c || c `elem` ("_'" :: String)
 
 instance IsString ModuleName where
     fromString = Syntax.ModuleName ()

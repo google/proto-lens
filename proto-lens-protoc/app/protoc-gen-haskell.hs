@@ -33,7 +33,11 @@ import System.Environment (getProgName)
 import System.Exit (exitWith, ExitCode(..))
 import System.IO as IO
 
-import Data.ProtoLens.Compiler.Combinators (prettyPrint, getModuleName)
+import Data.ProtoLens.Compiler.Combinators
+    ( prettyPrint
+    , prettyPrintModule
+    , getModuleName
+    )
 import Data.ProtoLens.Compiler.Generate
 import Data.ProtoLens.Compiler.Plugin
 
@@ -83,7 +87,7 @@ generateFiles modifyImports header files toGenerate = let
              (definitions f)
              (collectEnvFromDeps deps filesByName)
   in [ ( outputFilePath $ prettyPrint modName
-       , header (descriptor f) <> pack (prettyPrint modul)
+       , header (descriptor f) <> pack (prettyPrintModule modul)
        )
      | fileName <- toGenerate
      , let f = filesByName ! fileName
