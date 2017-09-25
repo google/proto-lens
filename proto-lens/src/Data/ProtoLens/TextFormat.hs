@@ -288,7 +288,9 @@ makeValue reg MessageField (Parser.MessageValue Nothing x) =
 makeValue reg field@MessageField (Parser.MessageValue (Just typeUri) x)
     | Just AnyMessageDescriptor { anyTypeUrlLens, anyValueLens } <- matchAnyMessage field =
         case lookupRegistered typeUri reg of
-          Nothing -> Left "Could not decode Any"
+          Nothing -> Left $ "Could not decode google.protobuf.Any: "
+                                ++ "unregistered type URI "
+                                ++ show typeUri
           Just (SomeMessageType (Proxy :: Proxy value')) ->
             case buildMessage reg x :: Either String value' of
               Left err -> Left err
