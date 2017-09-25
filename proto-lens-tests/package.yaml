@@ -14,7 +14,7 @@ custom-setup:
   dependencies:
     - base >= 4.8 && < 4.11
     - Cabal
-    - proto-lens-protoc == 0.2.*
+    - proto-lens-protoc == 0.3.*
 
 # Dependencies shared by the library and/or several of the tests:
 dependencies:
@@ -25,9 +25,9 @@ dependencies:
     - data-default-class
     - lens-family
     - pretty == 1.1.*
-    - proto-lens == 0.2.*
+    - proto-lens == 0.3.*
     - proto-lens-arbitrary == 0.1.*
-    - proto-lens-protoc == 0.2.*
+    - proto-lens-protoc == 0.3.*
     - test-framework == 0.8.*
     - test-framework-hunit == 0.3.*
     - test-framework-quickcheck2 == 0.3.*

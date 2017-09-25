@@ -1,6 +1,6 @@
 # Changelog for `proto-lens-optparse`
 
-## Unreleased changes
+## v0.1.0.5
 - Remove support for `ghc-7.10`. (#136)
 - Use a `.cabal` file that's auto-generated from `hpack`. (#138)
 

@@ -1,6 +1,6 @@
 # Changelog for `lens-labels`
 
-## Unreleased changes
+## v0.2.0.0
 - Improve readability of `HasLens` instances. (#118)
 - Remove support for `ghc-7.10`. (#136)
 - Use a `.cabal` file that's auto-generated from `hpack`. (#138)

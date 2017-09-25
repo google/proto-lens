@@ -1,6 +1,6 @@
 # Changelog for `proto-lens-arbitrary`
 
-## Unreleased changes
+## v0.1.1.2
 - Remove support for `ghc-7.10`. (#136)
 - Use a `.cabal` file that's auto-generated from `hpack`. (#138)
 - Track `proto-lens` change: split the `Message` class into

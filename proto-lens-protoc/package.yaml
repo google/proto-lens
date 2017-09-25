@@ -1,5 +1,5 @@
 name: proto-lens-protoc
-version: '0.2.2.3'
+version: '0.3.0.0'
 synopsis: Protocol buffer compiler for the proto-lens library.
 description: >
   Turn protocol buffer files (.proto) into Haskell files (.hs) which
@@ -26,7 +26,7 @@ dependencies:
   - lens-family == 1.2.*
   # Specify a more precise version of `proto-lens`, since it depends on the
   # exact definition of the Message class.
-  - proto-lens == 0.2.2.*
+  - proto-lens == 0.3.0.*
   - text == 1.2.*
 
 
@@ -35,7 +35,7 @@ library:
   dependencies:
     - Cabal >= 1.22 && < 2.1
     - directory >= 1.2 && < 1.4
-    - lens-labels == 0.1.*
+    - lens-labels == 0.2.*
     - process >= 1.2 && < 1.7
   exposed-modules:
     - Data.ProtoLens.Compiler.Combinators
