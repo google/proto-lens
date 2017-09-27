@@ -1,6 +1,6 @@
 # Changelog for `proto-lens-combinators`
 
-## Unreleased changes
+## v0.1.0.9
 - Track proto-lens change: separate types into their own module. (#100)
 - Remove support for `ghc-7.10`. (#136)
 - Use a `.cabal` file that's auto-generated from `hpack`. (#138)

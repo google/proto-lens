@@ -1,6 +1,6 @@
 # Changelog for `proto-lens-protobuf-types`
 
-## Unreleased changes
+## v0.3.0.0
 - Remove support for `ghc-7.10`. (#136)
 - Use a `.cabal` file that's auto-generated from `hpack`. (#138)
 - Separate types into their own module, apart from field lenses. (#100)
