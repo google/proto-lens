@@ -25,6 +25,8 @@ module Data.ProtoLens.Message (
     WireDefault(..),
     Packing(..),
     FieldTypeDescriptor(..),
+    ScalarField(..),
+    MessageOrGroup(..),
     FieldDefault(..),
     MessageEnum(..),
     -- * Building protocol buffers
@@ -177,33 +179,40 @@ data Packing = Packed | Unpacked
 
 -- | A description of the type of a given field value.
 data FieldTypeDescriptor value where
-    MessageField :: Message value => FieldTypeDescriptor value
-    GroupField :: Message value => FieldTypeDescriptor value
-    EnumField :: MessageEnum value => FieldTypeDescriptor value
-    Int32Field :: FieldTypeDescriptor Int32
-    Int64Field :: FieldTypeDescriptor Int64
-    UInt32Field :: FieldTypeDescriptor Word32
-    UInt64Field :: FieldTypeDescriptor Word64
-    SInt32Field :: FieldTypeDescriptor Int32
-    SInt64Field :: FieldTypeDescriptor Int64
-    Fixed32Field :: FieldTypeDescriptor Word32
-    Fixed64Field :: FieldTypeDescriptor Word64
-    SFixed32Field :: FieldTypeDescriptor Int32
-    SFixed64Field :: FieldTypeDescriptor Int64
-    FloatField :: FieldTypeDescriptor Float
-    DoubleField :: FieldTypeDescriptor Double
-    BoolField :: FieldTypeDescriptor Bool
-    StringField :: FieldTypeDescriptor T.Text
-    BytesField :: FieldTypeDescriptor B.ByteString
+    MessageField :: Message value => MessageOrGroup -> FieldTypeDescriptor value
+    ScalarField :: ScalarField value -> FieldTypeDescriptor value
 
 deriving instance Show (FieldTypeDescriptor value)
 
+data MessageOrGroup = MessageType | GroupType
+    deriving Show
+
+data ScalarField t where
+    EnumField :: MessageEnum value => ScalarField value
+    Int32Field :: ScalarField Int32
+    Int64Field :: ScalarField Int64
+    UInt32Field :: ScalarField Word32
+    UInt64Field :: ScalarField Word64
+    SInt32Field :: ScalarField Int32
+    SInt64Field :: ScalarField Int64
+    Fixed32Field :: ScalarField Word32
+    Fixed64Field :: ScalarField Word64
+    SFixed32Field :: ScalarField Int32
+    SFixed64Field :: ScalarField Int64
+    FloatField :: ScalarField Float
+    DoubleField :: ScalarField Double
+    BoolField :: ScalarField Bool
+    StringField :: ScalarField T.Text
+    BytesField :: ScalarField B.ByteString
+
+deriving instance Show (ScalarField value)
+
 matchAnyMessage :: forall value . FieldTypeDescriptor value -> Maybe (AnyMessageDescriptor value)
-matchAnyMessage MessageField
+matchAnyMessage (MessageField _)
     | messageName (Proxy @value) == "google.protobuf.Any"
-    , Just (FieldDescriptor _ StringField (PlainField Optional typeUrlLens))
+    , Just (FieldDescriptor _ (ScalarField StringField) (PlainField Optional typeUrlLens))
         <- Map.lookup 1 (fieldsByTag @value)
-    , Just (FieldDescriptor _ BytesField (PlainField Optional valueLens))
+    , Just (FieldDescriptor _ (ScalarField BytesField) (PlainField Optional valueLens))
         <- Map.lookup 2 (fieldsByTag @value)
         = Just $ AnyMessageDescriptor typeUrlLens valueLens
 matchAnyMessage _ = Nothing

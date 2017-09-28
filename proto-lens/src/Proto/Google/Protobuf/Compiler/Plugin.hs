@@ -86,7 +86,7 @@ instance Data.ProtoLens.Message CodeGeneratorRequest where
         fieldsByTag
           = let fileToGenerate__field_descriptor
                   = Data.ProtoLens.FieldDescriptor "file_to_generate"
-                      (Data.ProtoLens.StringField ::
+                      (Data.ProtoLens.ScalarField Data.ProtoLens.StringField ::
                          Data.ProtoLens.FieldTypeDescriptor Data.Text.Text)
                       (Data.ProtoLens.RepeatedField Data.ProtoLens.Unpacked
                          (Lens.Labels.lensOf
@@ -94,7 +94,7 @@ instance Data.ProtoLens.Message CodeGeneratorRequest where
                       :: Data.ProtoLens.FieldDescriptor CodeGeneratorRequest
                 parameter__field_descriptor
                   = Data.ProtoLens.FieldDescriptor "parameter"
-                      (Data.ProtoLens.StringField ::
+                      (Data.ProtoLens.ScalarField Data.ProtoLens.StringField ::
                          Data.ProtoLens.FieldTypeDescriptor Data.Text.Text)
                       (Data.ProtoLens.OptionalField
                          (Lens.Labels.lensOf
@@ -102,7 +102,7 @@ instance Data.ProtoLens.Message CodeGeneratorRequest where
                       :: Data.ProtoLens.FieldDescriptor CodeGeneratorRequest
                 protoFile__field_descriptor
                   = Data.ProtoLens.FieldDescriptor "proto_file"
-                      (Data.ProtoLens.MessageField ::
+                      (Data.ProtoLens.MessageField Data.ProtoLens.MessageType ::
                          Data.ProtoLens.FieldTypeDescriptor
                            Proto.Google.Protobuf.Descriptor.FileDescriptorProto)
                       (Data.ProtoLens.RepeatedField Data.ProtoLens.Unpacked
@@ -170,7 +170,7 @@ instance Data.ProtoLens.Message CodeGeneratorResponse where
         fieldsByTag
           = let error__field_descriptor
                   = Data.ProtoLens.FieldDescriptor "error"
-                      (Data.ProtoLens.StringField ::
+                      (Data.ProtoLens.ScalarField Data.ProtoLens.StringField ::
                          Data.ProtoLens.FieldTypeDescriptor Data.Text.Text)
                       (Data.ProtoLens.OptionalField
                          (Lens.Labels.lensOf
@@ -178,7 +178,7 @@ instance Data.ProtoLens.Message CodeGeneratorResponse where
                       :: Data.ProtoLens.FieldDescriptor CodeGeneratorResponse
                 file__field_descriptor
                   = Data.ProtoLens.FieldDescriptor "file"
-                      (Data.ProtoLens.MessageField ::
+                      (Data.ProtoLens.MessageField Data.ProtoLens.MessageType ::
                          Data.ProtoLens.FieldTypeDescriptor CodeGeneratorResponse'File)
                       (Data.ProtoLens.RepeatedField Data.ProtoLens.Unpacked
                          (Lens.Labels.lensOf
@@ -279,7 +279,7 @@ instance Data.ProtoLens.Message CodeGeneratorResponse'File where
         fieldsByTag
           = let name__field_descriptor
                   = Data.ProtoLens.FieldDescriptor "name"
-                      (Data.ProtoLens.StringField ::
+                      (Data.ProtoLens.ScalarField Data.ProtoLens.StringField ::
                          Data.ProtoLens.FieldTypeDescriptor Data.Text.Text)
                       (Data.ProtoLens.OptionalField
                          (Lens.Labels.lensOf
@@ -287,7 +287,7 @@ instance Data.ProtoLens.Message CodeGeneratorResponse'File where
                       :: Data.ProtoLens.FieldDescriptor CodeGeneratorResponse'File
                 insertionPoint__field_descriptor
                   = Data.ProtoLens.FieldDescriptor "insertion_point"
-                      (Data.ProtoLens.StringField ::
+                      (Data.ProtoLens.ScalarField Data.ProtoLens.StringField ::
                          Data.ProtoLens.FieldTypeDescriptor Data.Text.Text)
                       (Data.ProtoLens.OptionalField
                          (Lens.Labels.lensOf
@@ -296,7 +296,7 @@ instance Data.ProtoLens.Message CodeGeneratorResponse'File where
                       :: Data.ProtoLens.FieldDescriptor CodeGeneratorResponse'File
                 content__field_descriptor
                   = Data.ProtoLens.FieldDescriptor "content"
-                      (Data.ProtoLens.StringField ::
+                      (Data.ProtoLens.ScalarField Data.ProtoLens.StringField ::
                          Data.ProtoLens.FieldTypeDescriptor Data.Text.Text)
                       (Data.ProtoLens.OptionalField
                          (Lens.Labels.lensOf

@@ -6,6 +6,7 @@
 
 -- | This module builds the actual, generated Haskell file
 -- for a given input .proto file.
+{-# LANGUAGE LambdaCase #-}
 {-# LANGUAGE OverloadedStrings #-}
 module Data.ProtoLens.Compiler.Generate(
     generateModule,
@@ -894,23 +895,25 @@ isPackedField s f = case f ^. options . maybe'packed of
                       ]
 
 fieldTypeDescriptorExpr :: FieldDescriptorProto'Type -> Exp
-fieldTypeDescriptorExpr =
-    (\n -> fromString $ "Data.ProtoLens." ++ n ++ "Field") . \t -> case t of
-    FieldDescriptorProto'TYPE_DOUBLE -> "Double"
-    FieldDescriptorProto'TYPE_FLOAT -> "Float"
-    FieldDescriptorProto'TYPE_INT64 -> "Int64"
-    FieldDescriptorProto'TYPE_UINT64 -> "UInt64"
-    FieldDescriptorProto'TYPE_INT32 -> "Int32"
-    FieldDescriptorProto'TYPE_FIXED64 -> "Fixed64"
-    FieldDescriptorProto'TYPE_FIXED32 -> "Fixed32"
-    FieldDescriptorProto'TYPE_BOOL -> "Bool"
-    FieldDescriptorProto'TYPE_STRING -> "String"
-    FieldDescriptorProto'TYPE_GROUP -> "Group"
-    FieldDescriptorProto'TYPE_MESSAGE -> "Message"
-    FieldDescriptorProto'TYPE_BYTES -> "Bytes"
-    FieldDescriptorProto'TYPE_UINT32 -> "UInt32"
-    FieldDescriptorProto'TYPE_ENUM -> "Enum"
-    FieldDescriptorProto'TYPE_SFIXED32 -> "SFixed32"
-    FieldDescriptorProto'TYPE_SFIXED64 -> "SFixed64"
-    FieldDescriptorProto'TYPE_SINT32 -> "SInt32"
-    FieldDescriptorProto'TYPE_SINT64 -> "SInt64"
+fieldTypeDescriptorExpr = \case
+    FieldDescriptorProto'TYPE_DOUBLE -> mk "ScalarField" "DoubleField"
+    FieldDescriptorProto'TYPE_FLOAT -> mk "ScalarField" "FloatField"
+    FieldDescriptorProto'TYPE_INT64 -> mk "ScalarField" "Int64Field"
+    FieldDescriptorProto'TYPE_UINT64 -> mk "ScalarField" "UInt64Field"
+    FieldDescriptorProto'TYPE_INT32 -> mk "ScalarField" "Int32Field"
+    FieldDescriptorProto'TYPE_FIXED64 -> mk "ScalarField" "Fixed64Field"
+    FieldDescriptorProto'TYPE_FIXED32 -> mk "ScalarField" "Fixed32Field"
+    FieldDescriptorProto'TYPE_BOOL -> mk "ScalarField" "BoolField"
+    FieldDescriptorProto'TYPE_STRING -> mk "ScalarField" "StringField"
+    FieldDescriptorProto'TYPE_GROUP -> mk "MessageField" "GroupType"
+    FieldDescriptorProto'TYPE_MESSAGE -> mk "MessageField" "MessageType"
+    FieldDescriptorProto'TYPE_BYTES -> mk "ScalarField" "BytesField"
+    FieldDescriptorProto'TYPE_UINT32 -> mk "ScalarField" "UInt32Field"
+    FieldDescriptorProto'TYPE_ENUM -> mk "ScalarField" "EnumField"
+    FieldDescriptorProto'TYPE_SFIXED32 -> mk "ScalarField" "SFixed32Field"
+    FieldDescriptorProto'TYPE_SFIXED64 -> mk "ScalarField" "SFixed64Field"
+    FieldDescriptorProto'TYPE_SINT32 -> mk "ScalarField" "SInt32Field"
+    FieldDescriptorProto'TYPE_SINT64 -> mk "ScalarField" "SInt64Field"
+  where
+    mk x y = fromString ("Data.ProtoLens." ++ x)
+              @@ fromString ("Data.ProtoLens." ++ y)
