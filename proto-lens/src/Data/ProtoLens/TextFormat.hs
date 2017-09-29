@@ -24,6 +24,7 @@ module Data.ProtoLens.TextFormat(
 
 import Lens.Family2 ((&),(^.),(.~), set, over, view)
 import Control.Arrow (left)
+import Data.Bifunctor (first)
 import qualified Data.ByteString
 import Data.Char (isPrint, isAscii, chr)
 import Data.Foldable (foldlM, foldl')
@@ -237,10 +238,10 @@ buildMessageFromDescriptor
     :: Message msg => Registry -> msg -> Parser.Message -> Either String msg
 buildMessageFromDescriptor reg = foldlM (addField reg)
 
-addField :: Message msg => Registry -> msg -> Parser.Field -> Either String msg
+addField :: forall msg . Message msg => Registry -> msg -> Parser.Field -> Either String msg
 addField reg msg (Parser.Field key rawValue) = do
-    FieldDescriptor _ typeDescriptor accessor <- getFieldDescriptor
-    value <- makeValue reg typeDescriptor rawValue
+    FieldDescriptor name typeDescriptor accessor <- getFieldDescriptor
+    value <- makeValue name reg typeDescriptor rawValue
     return $ modifyField accessor value msg
   where
     getFieldDescriptor
@@ -259,13 +260,20 @@ modifyField (RepeatedField _ f) value = over f (value :)
 modifyField (MapField key value f) mapElem
     = over f (Map.insert (mapElem ^. key) (mapElem ^. value))
 
-makeValue :: forall value. Registry -> FieldTypeDescriptor value -> Parser.Value -> Either String value
-makeValue _ (ScalarField f) v = makeScalarValue f v
-makeValue reg field@(MessageField MessageType) (Parser.MessageValue (Just typeUri) x)
+makeValue
+    :: forall value
+     . String -- ^ name of field
+    -> Registry
+    -> FieldTypeDescriptor value
+    -> Parser.Value
+    -> Either String value
+makeValue name _ (ScalarField f) v =
+    first (("Error parsing field " ++ show name ++ ": ") ++) $ makeScalarValue f v
+makeValue name reg field@(MessageField MessageType) (Parser.MessageValue (Just typeUri) x)
     | Just AnyMessageDescriptor { anyTypeUrlLens, anyValueLens } <- matchAnyMessage field =
         case lookupRegistered typeUri reg of
-          Nothing -> Left $ "Could not decode google.protobuf.Any: "
-                                ++ "unregistered type URI "
+          Nothing -> Left $ "Could not decode google.protobuf.Any for field "
+                                ++ show name ++ ": unregistered type URI "
                                 ++ show typeUri
           Just (SomeMessageType (Proxy :: Proxy value')) ->
             case buildMessage reg x :: Either String value' of
@@ -275,8 +283,10 @@ makeValue reg field@(MessageField MessageType) (Parser.MessageValue (Just typeUr
     | otherwise = Left ("Type mismatch parsing explicitly typed message. Expected " ++
                         show (messageName (Proxy @value))  ++
                         ", got " ++ show typeUri)
-makeValue reg (MessageField _) (Parser.MessageValue _ x) = buildMessage reg x
-makeValue _ (MessageField _) val = Left $ "Type mismatch: expected message, found " ++ show val
+makeValue _ reg (MessageField _) (Parser.MessageValue _ x) = buildMessage reg x
+makeValue name _ (MessageField _) val =
+    Left $ "Type mismatch for field " ++ show name ++
+            ": expected message, found " ++ show val
 
 makeScalarValue :: ScalarField value -> Parser.Value -> Either String value
 makeScalarValue Int32Field (Parser.IntValue x) = Right (fromInteger x)
