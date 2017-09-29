@@ -3,8 +3,7 @@
 ## v0.1.1.2
 - Remove support for `ghc-7.10`. (#136)
 - Use a `.cabal` file that's auto-generated from `hpack`. (#138)
-- Track `proto-lens` change: split the `Message` class into
-  separate methods. (#139)
+- Track `proto-lens` changes to the `Message` class. (#139, #147)
 
 
 ## v0.1.1.1

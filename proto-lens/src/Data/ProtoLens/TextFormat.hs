@@ -103,7 +103,7 @@ pprintField reg msg (FieldDescriptor name typeDescr accessor)
                                       & v .~ y
 
 pprintFieldValue :: Registry -> String -> FieldTypeDescriptor value -> value -> Doc
-pprintFieldValue reg name field@MessageField m
+pprintFieldValue reg name field@(MessageField MessageType) m
   | Just AnyMessageDescriptor { anyTypeUrlLens, anyValueLens } <- matchAnyMessage field,
     typeUri <- view anyTypeUrlLens m,
     fieldData <- view anyValueLens m,
@@ -116,24 +116,31 @@ pprintFieldValue reg name field@MessageField m
             , rbrace ]
   | otherwise =
       pprintSubmessage name (pprintMessageWithRegistry reg m)
-pprintFieldValue _ name EnumField x = text name <> colon <+> text (showEnum x)
-pprintFieldValue _ name Int32Field x = primField name x
-pprintFieldValue _ name Int64Field x = primField name x
-pprintFieldValue _ name UInt32Field x = primField name x
-pprintFieldValue _ name UInt64Field x = primField name x
-pprintFieldValue _ name SInt32Field x = primField name x
-pprintFieldValue _ name SInt64Field x = primField name x
-pprintFieldValue _ name Fixed32Field x = primField name x
-pprintFieldValue _ name Fixed64Field x = primField name x
-pprintFieldValue _ name SFixed32Field x = primField name x
-pprintFieldValue _ name SFixed64Field x = primField name x
-pprintFieldValue _ name FloatField x = primField name x
-pprintFieldValue _ name DoubleField x = primField name x
-pprintFieldValue _ name BoolField x = text name <> colon <+> boolValue x
-pprintFieldValue _ name StringField x = pprintByteString name (Text.encodeUtf8 x)
-pprintFieldValue _ name BytesField x = pprintByteString name x
-pprintFieldValue reg name GroupField m
+pprintFieldValue reg name (MessageField GroupType) m
     = pprintSubmessage name (pprintMessageWithRegistry reg m)
+pprintFieldValue _ name (ScalarField f) x = named name $ pprintScalarValue f x
+
+named :: String -> Doc -> Doc
+named n x = text n <> colon <+> x
+
+
+pprintScalarValue :: ScalarField value -> value -> Doc
+pprintScalarValue EnumField x = text (showEnum x)
+pprintScalarValue Int32Field x = primField x
+pprintScalarValue Int64Field x = primField x
+pprintScalarValue UInt32Field x = primField x
+pprintScalarValue UInt64Field x = primField x
+pprintScalarValue SInt32Field x = primField x
+pprintScalarValue SInt64Field x = primField x
+pprintScalarValue Fixed32Field x = primField x
+pprintScalarValue Fixed64Field x = primField x
+pprintScalarValue SFixed32Field x = primField x
+pprintScalarValue SFixed64Field x = primField x
+pprintScalarValue FloatField x = primField x
+pprintScalarValue DoubleField x = primField x
+pprintScalarValue BoolField x = boolValue x
+pprintScalarValue StringField x = pprintByteString (Text.encodeUtf8 x)
+pprintScalarValue BytesField x = pprintByteString x
 
 pprintSubmessage :: String -> Doc -> Doc
 pprintSubmessage name contents =
@@ -148,8 +155,8 @@ pprintSubmessage name contents =
 -- and \\ only.  Note that Haskell string-literal syntax calls for "\011" to be
 -- interpreted as decimal 11, rather than the decimal 9 it actually represent,
 -- so you can't use Prelude.read to parse the strings created here.
-pprintByteString :: String -> Data.ByteString.ByteString -> Doc
-pprintByteString name x = text name <> colon <+> char '\"'
+pprintByteString :: Data.ByteString.ByteString -> Doc
+pprintByteString x = char '\"'
     <> text (concatMap escape $ Data.ByteString.unpack x) <> char '\"'
   where escape w8 | ch == '\n'               = "\\n"
                   | ch == '\r'               = "\\r"
@@ -163,8 +170,8 @@ pprintByteString name x = text name <> colon <+> char '\"'
             ch = chr $ fromIntegral w8
             pad str = replicate (3 - length str) '0' ++ str
 
-primField :: Show value => String -> value -> Doc
-primField name x = text name <> colon <+> text (show x)
+primField :: Show value => value -> Doc
+primField x = text (show x)
 
 boolValue :: Bool -> Doc
 boolValue True = text "true"
@@ -172,16 +179,16 @@ boolValue False = text "false"
 
 pprintTaggedValue :: TaggedValue -> Doc
 pprintTaggedValue (TaggedValue t (WireValue v x)) = case v of
-    VarInt -> primField name x
-    Fixed64 -> primField name x
-    Fixed32 -> primField name x
+    VarInt -> named name $ primField x
+    Fixed64 -> named name $ primField x
+    Fixed32 -> named name $ primField x
     Lengthy -> case decodeFieldSet x of
-                  Left _ -> pprintByteString name x
+                  Left _ -> named name $ pprintByteString x
                   Right ts -> pprintSubmessage name
                                 $ sep $ map pprintTaggedValue ts
     -- TODO: implement better printing for unknown groups
-    StartGroup -> text name <> colon <+> text "start_group"
-    EndGroup -> text name <> colon <+> text "end_group"
+    StartGroup -> named name $ text "start_group"
+    EndGroup -> named name $ text "end_group"
   where
     name = show (unTag t)
 
@@ -253,39 +260,8 @@ modifyField (MapField key value f) mapElem
     = over f (Map.insert (mapElem ^. key) (mapElem ^. value))
 
 makeValue :: forall value. Registry -> FieldTypeDescriptor value -> Parser.Value -> Either String value
-makeValue _ Int32Field (Parser.IntValue x) = Right (fromInteger x)
-makeValue _ Int64Field (Parser.IntValue x) = Right (fromInteger x)
-makeValue _ UInt32Field (Parser.IntValue x) = Right (fromInteger x)
-makeValue _ UInt64Field (Parser.IntValue x) = Right (fromInteger x)
-makeValue _ SInt32Field (Parser.IntValue x) = Right (fromInteger x)
-makeValue _ SInt64Field (Parser.IntValue x) = Right (fromInteger x)
-makeValue _ Fixed32Field (Parser.IntValue x) = Right (fromInteger x)
-makeValue _ Fixed64Field (Parser.IntValue x) = Right (fromInteger x)
-makeValue _ SFixed32Field (Parser.IntValue x) = Right (fromInteger x)
-makeValue _ SFixed64Field (Parser.IntValue x) = Right (fromInteger x)
-makeValue _ FloatField (Parser.IntValue x) = Right (fromInteger x)
-makeValue _ DoubleField (Parser.IntValue x) = Right (fromInteger x)
-makeValue _ BoolField (Parser.IntValue x)
-    | x == 0 = Right False
-    | x == 1 = Right True
-    | otherwise = Left $ "Unrecognized bool value " ++ show x
-makeValue _ DoubleField (Parser.DoubleValue x) = Right x
-makeValue _ FloatField (Parser.DoubleValue x) = Right (realToFrac x)
-makeValue _ BoolField (Parser.EnumValue x)
-    | x == "true" = Right True
-    | x == "false" = Right False
-    | otherwise = Left $ "Unrecognized bool value " ++ show x
-makeValue _ StringField (Parser.ByteStringValue x) = Right (Text.decodeUtf8 x)
-makeValue _ BytesField (Parser.ByteStringValue x) = Right x
-makeValue _ EnumField (Parser.IntValue x) =
-    maybe (Left $ "Unrecognized enum value " ++ show x) Right
-        (maybeToEnum $ fromInteger x)
-makeValue _ EnumField (Parser.EnumValue x) =
-    maybe (Left $ "Unrecognized enum value " ++ show x) Right
-        (readEnum x)
-makeValue reg MessageField (Parser.MessageValue Nothing x) =
-  buildMessage reg x
-makeValue reg field@MessageField (Parser.MessageValue (Just typeUri) x)
+makeValue _ (ScalarField f) v = makeScalarValue f v
+makeValue reg field@(MessageField MessageType) (Parser.MessageValue (Just typeUri) x)
     | Just AnyMessageDescriptor { anyTypeUrlLens, anyValueLens } <- matchAnyMessage field =
         case lookupRegistered typeUri reg of
           Nothing -> Left $ "Could not decode google.protobuf.Any: "
@@ -299,5 +275,38 @@ makeValue reg field@MessageField (Parser.MessageValue (Just typeUri) x)
     | otherwise = Left ("Type mismatch parsing explicitly typed message. Expected " ++
                         show (messageName (Proxy @value))  ++
                         ", got " ++ show typeUri)
-makeValue reg GroupField (Parser.MessageValue _ x) = buildMessage reg x
-makeValue _ f val = Left $ "Type mismatch parsing text format: " ++ show (f, val)
+makeValue reg (MessageField _) (Parser.MessageValue _ x) = buildMessage reg x
+makeValue _ (MessageField _) val = Left $ "Type mismatch: expected message, found " ++ show val
+
+makeScalarValue :: ScalarField value -> Parser.Value -> Either String value
+makeScalarValue Int32Field (Parser.IntValue x) = Right (fromInteger x)
+makeScalarValue Int64Field (Parser.IntValue x) = Right (fromInteger x)
+makeScalarValue UInt32Field (Parser.IntValue x) = Right (fromInteger x)
+makeScalarValue UInt64Field (Parser.IntValue x) = Right (fromInteger x)
+makeScalarValue SInt32Field (Parser.IntValue x) = Right (fromInteger x)
+makeScalarValue SInt64Field (Parser.IntValue x) = Right (fromInteger x)
+makeScalarValue Fixed32Field (Parser.IntValue x) = Right (fromInteger x)
+makeScalarValue Fixed64Field (Parser.IntValue x) = Right (fromInteger x)
+makeScalarValue SFixed32Field (Parser.IntValue x) = Right (fromInteger x)
+makeScalarValue SFixed64Field (Parser.IntValue x) = Right (fromInteger x)
+makeScalarValue FloatField (Parser.IntValue x) = Right (fromInteger x)
+makeScalarValue DoubleField (Parser.IntValue x) = Right (fromInteger x)
+makeScalarValue BoolField (Parser.IntValue x)
+    | x == 0 = Right False
+    | x == 1 = Right True
+    | otherwise = Left $ "Unrecognized bool value " ++ show x
+makeScalarValue DoubleField (Parser.DoubleValue x) = Right x
+makeScalarValue FloatField (Parser.DoubleValue x) = Right (realToFrac x)
+makeScalarValue BoolField (Parser.EnumValue x)
+    | x == "true" = Right True
+    | x == "false" = Right False
+    | otherwise = Left $ "Unrecognized bool value " ++ show x
+makeScalarValue StringField (Parser.ByteStringValue x) = Right (Text.decodeUtf8 x)
+makeScalarValue BytesField (Parser.ByteStringValue x) = Right x
+makeScalarValue EnumField (Parser.IntValue x) =
+    maybe (Left $ "Unrecognized enum value " ++ show x) Right
+        (maybeToEnum $ fromInteger x)
+makeScalarValue EnumField (Parser.EnumValue x) =
+    maybe (Left $ "Unrecognized enum value " ++ show x) Right
+        (readEnum x)
+makeScalarValue f val = Left $ "Type mismatch: " ++ show (f, val)

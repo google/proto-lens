@@ -93,23 +93,28 @@ parseAndAddField
     !msg
     (FieldDescriptor name typeDescriptor accessor)
     (TaggedValue tag (WireValue wt val)) = let
-          getSimpleVal = case fieldWireType typeDescriptor of
-                            GroupFieldType -> do
+          getSimpleVal = case typeDescriptor of
+                            MessageField GroupType -> do
                                 Equal <- equalWireTypes name StartGroup wt
                                 parseMessage (endOfGroup name tag)
-                            FieldWireType fieldWt _ get -> do
-                                Equal <- equalWireTypes name fieldWt wt
-                                runEither $ get val
+                            MessageField MessageType -> do
+                                Equal <- equalWireTypes name Lengthy wt
+                                runEither $ decodeMessage val
+                            ScalarField f -> case fieldWireType f of
+                                FieldWireType fieldWt _ get -> do
+                                    Equal <- equalWireTypes name fieldWt wt
+                                    runEither $ get val
           -- Get a block of packed values, reversed.
-          getPackedVals = case fieldWireType typeDescriptor of
-            GroupFieldType -> fail "Groups can't be packed"
-            FieldWireType fieldWt _ get -> do
-              Equal <- equalWireTypes name Lengthy wt
-              let getElt = do
-                        wv <- getWireValue fieldWt
-                        x <- runEither $ get wv
-                        return $! x
-              runEither $ parseOnly (manyReversedTill getElt endOfInput) val
+          getPackedVals = case typeDescriptor of
+            MessageField _ -> fail "Messages can't be packed"
+            ScalarField f -> case fieldWireType f of
+              FieldWireType fieldWt _ get -> do
+                Equal <- equalWireTypes name Lengthy wt
+                let getElt = do
+                          wv <- getWireValue fieldWt
+                          x <- runEither $ get wv
+                          return $! x
+                runEither $ parseOnly (manyReversedTill getElt endOfInput) val
           in case accessor of
               PlainField _ f -> do
                   !x <- getSimpleVal
@@ -186,21 +191,25 @@ messageFieldToVals :: Tag -> FieldDescriptor a -> a -> [TaggedValue]
 messageFieldToVals tag (FieldDescriptor _ typeDescriptor accessor) msg =
     let
         embed src
-            = case fieldWireType typeDescriptor of
-                FieldWireType wt convert _
-                    -> [TaggedValue tag $ WireValue wt (convert src)]
-                GroupFieldType
-                    -> TaggedValue tag (WireValue StartGroup ())
+            = case typeDescriptor of
+                MessageField MessageType -> [TaggedValue tag $ WireValue Lengthy
+                                                  $ encodeMessage src]
+                MessageField GroupType ->
+                    TaggedValue tag (WireValue StartGroup ())
                             : messageToTaggedValues src
                                 ++ [TaggedValue tag $ WireValue EndGroup ()]
+                ScalarField f -> case fieldWireType f of
+                    FieldWireType wt convert _ ->
+                        [TaggedValue tag $ WireValue wt (convert src)]
         embedPacked [] = []
         embedPacked src
-            = case fieldWireType typeDescriptor of
-                GroupFieldType -> error "GroupFieldType can't be packed"
-                FieldWireType wt convert _ -> let
-                    v = L.toStrict $ toLazyByteString
-                        $ mconcat [putWireValue wt (convert x) | x <- src]
-                    in [TaggedValue tag $ WireValue Lengthy v]
+            = case typeDescriptor of
+                MessageField _ -> error "Messages can't be packed"
+                ScalarField f -> case fieldWireType f of
+                    FieldWireType wt convert _ -> let
+                        v = L.toStrict $ toLazyByteString
+                            $ mconcat [putWireValue wt (convert x) | x <- src]
+                        in [TaggedValue tag $ WireValue Lengthy v]
     in case accessor of
             PlainField d f
                 -- proto3 optional scalar field:
@@ -221,9 +230,8 @@ messageFieldToVals tag (FieldDescriptor _ typeDescriptor accessor) msg =
 data FieldWireType value where
     FieldWireType :: WireType w -> (value -> w) -> (w -> Either String value)
                   -> FieldWireType value
-    GroupFieldType :: Message value => FieldWireType value
 
-fieldWireType :: FieldTypeDescriptor value -> FieldWireType value
+fieldWireType :: ScalarField value -> FieldWireType value
 -- TODO: Don't let toEnum crash on unknown enum values.
 fieldWireType EnumField = simpleFieldWireType VarInt
                               (fromIntegral . fromEnum)
@@ -250,9 +258,6 @@ fieldWireType DoubleField = simpleFieldWireType Fixed64
 fieldWireType StringField = FieldWireType Lengthy encodeUtf8
                                     (stringizeError . decodeUtf8')
 fieldWireType BytesField = identityFieldWireType Lengthy
-fieldWireType MessageField = FieldWireType Lengthy encodeMessage
-                                decodeMessage
-fieldWireType GroupField = GroupFieldType
 
 endOfGroup :: String -> Tag -> Parser ()
 endOfGroup name tag = do
