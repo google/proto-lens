@@ -12,6 +12,7 @@
 - Implement proto3-style "open" enums. (#137)
 - Consolidate `proto-lens-descriptors` into `proto-lens`. (#140)
 - Split the `Message` class into separate methods. (#139)
+- Refactor the `FieldDescriptorType. (#147)
 
 ## v0.2.2.0
 - Bump the dependency on `base` to support `ghc-8.2.1`.

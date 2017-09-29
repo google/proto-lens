@@ -10,6 +10,7 @@
 - Bundle enum pattern synonyms exports with their type. (#136)
 - Implement proto3-style "open" enums. (#137)
 - Split the `Message` class into separate methods. (#139)
+- Refactor the `FieldDescriptorType. (#147)
 
 ## v0.2.2.3
 - Don't camel-case message names.  This reverts behavior which was added
