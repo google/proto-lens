@@ -24,7 +24,6 @@ module Data.ProtoLens.TextFormat(
 
 import Lens.Family2 ((&),(^.),(.~), set, over, view)
 import Control.Arrow (left)
-import Data.Bifunctor (first)
 import qualified Data.ByteString
 import Data.Char (isPrint, isAscii, chr)
 import Data.Foldable (foldlM, foldl')
@@ -277,6 +276,7 @@ makeValue reg field@(MessageField MessageType) (Parser.MessageValue (Just typeUr
                         show (messageName (Proxy @value))  ++
                         ", got " ++ show typeUri)
 makeValue reg (MessageField _) (Parser.MessageValue _ x) = buildMessage reg x
+makeValue _ (MessageField _) val = Left $ "Type mismatch: expected message, found " ++ show val
 
 makeScalarValue :: ScalarField value -> Parser.Value -> Either String value
 makeScalarValue Int32Field (Parser.IntValue x) = Right (fromInteger x)
