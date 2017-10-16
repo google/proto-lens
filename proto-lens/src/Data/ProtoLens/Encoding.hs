@@ -20,6 +20,7 @@ module Data.ProtoLens.Encoding(
     buildMessageDelimited,
     decodeMessage,
     decodeMessageOrDie,
+    parseMessage
     ) where
 
 import Data.ProtoLens.Message
