@@ -259,11 +259,8 @@ generateEnumExports syntaxType e = [exportAll n, exportWith n aliases]
 
 generateEnumDecls :: SyntaxType -> EnumInfo Name -> [Decl]
 generateEnumDecls Proto3 info =
-  -- Judah: Just to clarify, for values with duplicate numbers,
-  -- we can make the first one be the “real” constructor and the rest be pattern synonyms for that constructor
-  -- todo: a whole shitload of groupBy type logic
     [ dataDecl dataName
-        (  (flip conDecl [] . enumValueName <$> enumValues info)
+        (  (flip conDecl [] <$> constructorNames)
         ++ [conDecl unrecognizedName [unrecognizedValueType]]
         )
         $ deriving' ["Prelude.Show", "Prelude.Eq", "Prelude.Ord"]
@@ -279,8 +276,18 @@ generateEnumDecls Proto3 info =
     --    readEnum "Value0" = Just (Foo 0)
     --    readEnum _ = Nothing
     , instDecl [] ("Data.ProtoLens.MessageEnum" `ihApp` [dataType])
-        [ [match "maybeToEnum" ["k"]
-                $ "Prelude.Just" @@ ("Prelude.toEnum" @@ "k")]
+        [ [ match "maybeToEnum" [pLitInt k] $ "Prelude.Just" @@ con (unQual c)
+          | (c, k) <- constructorNumbers
+          ]
+          ++
+          [match "maybeToEnum" ["k"]
+                  $ "Prelude.Just" @@
+                    (con (unQual unrecognizedName)
+                      @@ (con (unQual unrecognizedValueName)
+                          @@ ("Prelude.fromIntegral" @@ "k")
+                         )
+                    )
+          ]
         , [ match "showEnum" []
                 $ "Prelude.show"
           ]
@@ -329,6 +336,12 @@ generateEnumDecls Proto3 info =
         , [ match "fromEnum" [pApp (unQual c) []] $ litInt k
           | (c, k) <- constructorNumbers
           ]
+          ++
+          [match "fromEnum" [pApp (unQual unrecognizedName)
+                              [pApp (unQual unrecognizedValueName) [pVar "k"]]
+                            ]
+                  $ "Prelude.fromIntegral" @@ "k"
+          ]
         , succDecl "succ" maxBoundName succPairs
         , succDecl "pred" minBoundName $ map swap succPairs
         , alias "enumFrom" "Data.ProtoLens.Message.Enum.messageEnumFrom"
@@ -346,7 +359,16 @@ generateEnumDecls Proto3 info =
     --   fieldDefault = FirstEnumValue
     , instDecl [] ("Data.ProtoLens.FieldDefault" `ihApp` [dataType])
         [[match "fieldDefault" [] defaultCon]]
-    ]
+    ] ++
+    concat
+        [ [ patSynSig aliasName dataType
+          , patSyn (pVar aliasName) (pVar originalName)
+          ]
+        | EnumValueInfo
+            { enumValueName = aliasName
+            , enumAliasOf = Just originalName
+            } <- enumValues info
+        ]
 
   where
     EnumInfo { enumName = dataName, enumDescriptor = ed } = info
@@ -364,7 +386,7 @@ generateEnumDecls Proto3 info =
     unrecognizedValueName = modifyIdent (++ "'UnrecognizedValue") dataName
     unrecognizedName = modifyIdent (++ "'Unrecognized") dataName
 
-    unrecognizedValueType = tyCon $ unQual unrecognizedValueName -- this should compile fine
+    unrecognizedValueType = tyCon $ unQual unrecognizedValueName
 
     constructors :: [(Name, EnumValueDescriptorProto)]
     constructors = List.sortBy (comparing ((^. number) . snd))
@@ -375,14 +397,13 @@ generateEnumDecls Proto3 info =
                                 } <- enumValues info
                             ]
     constructorNames = map fst constructors
+
     defaultCon = con $ unQual $ head constructorNames
 
     minBoundName = head constructorNames
     maxBoundName = last constructorNames
 
-    constructorProtoNames = map (second (^. name)) constructors
-    constructorNumbers = map (second (fromIntegral . (^. number)))
-                          constructors
+    constructorNumbers = map (second (fromIntegral . (^. number))) constructors
 
     succPairs = zip constructorNames $ tail constructorNames
     succDecl funName boundName thePairs =
