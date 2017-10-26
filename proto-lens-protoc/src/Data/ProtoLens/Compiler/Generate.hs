@@ -108,8 +108,8 @@ generateModule modName imports syntaxType modifyImport definitions importedEnv
               [ "Prelude", "Data.Int", "Data.Word"
               , "Data.ProtoLens", "Data.ProtoLens.Message.Enum"
               , "Lens.Family2", "Lens.Family2.Unchecked", "Data.Default.Class"
-              , "Data.Text",  "Data.Map" , "Data.ByteString"
-              , "Lens.Labels"
+              , "Data.Text",  "Data.Map", "Data.ByteString"
+              , "Lens.Labels", "Text.Read"
               ]
             ++ map importSimple imports
     env = Map.union (unqualifyEnv definitions) importedEnv
@@ -263,11 +263,11 @@ generateEnumDecls Proto3 info =
         (  (flip conDecl [] <$> constructorNames)
         ++ [conDecl unrecognizedName [unrecognizedValueType]]
         )
-        $ deriving' ["Prelude.Show", "Prelude.Eq", "Prelude.Ord"]
+        $ deriving' ["Prelude.Show", "Prelude.Eq", "Prelude.Ord, Prelude.Read"]
 
     , newtypeDecl unrecognizedValueName
        "Data.Int.Int32"
-        $ deriving' ["Prelude.Eq", "Prelude.Ord", "Prelude.Show"]
+        $ deriving' ["Prelude.Eq", "Prelude.Ord", "Prelude.Show, Prelude.Read"]
 
     -- instance MessageEnum Foo where
     --    maybeToEnum k = Just $ toEnum k
@@ -288,18 +288,19 @@ generateEnumDecls Proto3 info =
                          )
                     )
           ]
-        , [ match "showEnum" []
-                $ "Prelude.show"
-          ]
+        , [match "showEnum" [pApp (unQual unrecognizedName)
+                              [pApp (unQual unrecognizedValueName) [pVar "k"]]
+                            ]
+                  $ "Prelude.show" @@ "k"
+          ] ++
+          [match "showEnum" ["k"] $ "Prelude.show" @@ "k"]
         , [ match "readEnum" [stringPat pn]
               $ "Prelude.Just" @@ con (unQual n)
-          | v <- enumValues info
+          | v <- filter (not . null . enumAliasOf) $ enumValues info
           , let n = enumValueName v
           , let pn = T.unpack $ enumValueDescriptor v ^. name
-          ]
-          ++
-          [ match "readEnum" [pWildCard] "Prelude.Nothing"
-          ]
+          ] ++
+          [match "readEnum" ["k"] $ "Text.Read.readMaybe" @@ "k"]
         ]
 
     -- instance Bounded Foo where
@@ -415,6 +416,12 @@ generateEnumDecls Proto3 info =
         :
         [ match funName [pApp (unQual from) []] $ con $ unQual to
         | (from, to) <- thePairs
+        ]
+        ++
+        [match funName [pWildCard]
+            ("Prelude.error" @@ stringExp (concat
+                [ prettyPrint dataName, ".", prettyPrint funName, ": bad argument: unrecognized value"
+                ]))
         ]
 
 generateEnumDecls Proto2 info =

@@ -105,7 +105,7 @@ main = testMain
           map toEnum [0, 3, 3] @=? [Enum1, Enum2, Enum2a]
           ["Enum1", "Enum2", "Enum2", "FooEnum'Unrecognized (FooEnum'UnrecognizedValue 5)"]
               @=? map show [Enum1, Enum2, Enum2a, toEnum 5]
-          ["Enum1", "Enum2", "Enum2", "FooEnum'Unrecognized (FooEnum'UnrecognizedValue 6)"]
+          ["Enum1", "Enum2", "Enum2", "6"]
               @=? map showEnum [Enum1, Enum2, Enum2a, toEnum 6]
           [Just Enum1, Just Enum2, Just Enum2, Nothing, Nothing]
               @=? map readEnum ["Enum1", "Enum2", "Enum2a", "4", "5"]
