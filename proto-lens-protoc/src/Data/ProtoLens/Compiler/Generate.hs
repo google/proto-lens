@@ -303,34 +303,34 @@ generateEnumDecls Proto3 info =
           [match "readEnum" ["k"] $ "Text.Read.readMaybe" @@ "k"]
         ]
 
-    -- instance Bounded Foo where
-    --    minBound = Foo1
-    --    maxBound = FooN
-    , instDecl [] ("Prelude.Bounded" `ihApp` [dataType])
-        [[ match "minBound" [] $ con $ unQual minBoundName
-         , match "maxBound" [] $ con $ unQual maxBoundName
-         ]]
+      -- instance Bounded Foo where
+      --    minBound = Foo1
+      --    maxBound = FooN
+      , instDecl [] ("Prelude.Bounded" `ihApp` [dataType])
+          [[ match "minBound" [] $ con $ unQual minBoundName
+          , match "maxBound" [] $ con $ unQual maxBoundName
+          ]]
 
-    -- instance Enum Foo where
-    --    toEnum k = maybe (error ("Foo.toEnum: unknown argument for enum Foo: "
-    --                                ++ show k))
-    --                  id (maybeToEnum k)
-    --    fromEnum Foo1 = 1
-    --    fromEnum Foo2 = 2
-    --    ..
-    --    succ FooN = error "Foo.succ: bad argument FooN."
-    --    succ Foo1 = Foo2
-    --    succ Foo2 = Foo3
-    --    ..
-    --    pred Foo1 = error "Foo.succ: bad argument Foo1."
-    --    pred Foo2 = Foo1
-    --    pred Foo3 = Foo2
-    --    ..
-    --    enumFrom = messageEnumFrom
-    --    enumFromTo = messageEnumFromTo
-    --    enumFromThen = messageEnumFromThen
-    --    enumFromThenTo = messageEnumFromThenTo
-    , instDecl [] ("Prelude.Enum" `ihApp` [dataType])
+      -- instance Enum Foo where
+      --    toEnum k = maybe (error ("Foo.toEnum: unknown argument for enum Foo: "
+      --                                ++ show k))
+      --                  id (maybeToEnum k)
+      --    fromEnum Foo1 = 1
+      --    fromEnum Foo2 = 2
+      --    ..
+      --    succ FooN = error "Foo.succ: bad argument FooN."
+      --    succ Foo1 = Foo2
+      --    succ Foo2 = Foo3
+      --    ..
+      --    pred Foo1 = error "Foo.succ: bad argument Foo1."
+      --    pred Foo2 = Foo1
+      --    pred Foo3 = Foo2
+      --    ..
+      --    enumFrom = messageEnumFrom
+      --    enumFromTo = messageEnumFromTo
+      --    enumFromThen = messageEnumFromThen
+      --    enumFromThenTo = messageEnumFromThenTo
+      , instDecl [] ("Prelude.Enum" `ihApp` [dataType])
         [[match "toEnum" ["k__"]
                   $ "Prelude.maybe" @@ errorMessageExpr @@ "Prelude.id"
                         @@ ("Data.ProtoLens.maybeToEnum" @@ "k__")]
@@ -524,7 +524,6 @@ generateEnumDecls Proto2 info =
             , enumAliasOf = Just originalName
             } <- enumValues info
         ]
-
   where
     dataType = tyCon $ unQual dataName
     EnumInfo { enumName = dataName, enumDescriptor = ed } = info
