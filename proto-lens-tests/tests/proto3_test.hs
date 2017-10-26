@@ -13,7 +13,7 @@ import qualified Data.ByteString.Builder as Builder
 import Data.Monoid ((<>))
 import Proto.Proto3
     ( Foo
-    , Foo'FooEnum(..)
+    , FooEnum(..)
     , Foo'Sub(..)
     , Strings
     )
@@ -96,25 +96,25 @@ main = testMain
       [ testCase "int" $ (def :: Foo) @=? (def & a .~ 0)
       , testCase "bytes" $ (def :: Strings) @=? (def & bytes .~ "")
       , testCase "string" $ (def :: Strings) @=? (def & string .~ "")
-      , testCase "enum" $ (def :: Foo) @=? (def & enum .~ Foo'Enum1)
+      , testCase "enum" $ (def :: Foo) @=? (def & enum .~ Enum1)
       ]
   -- Enums are all pattern aliases
   , testGroup "enum"
-      [ testCase "aliases are exported" $ Foo'Enum2 @=? Foo'Enum2a
+      [ testCase "aliases are exported" $ Enum2 @=? Enum2a
       , testCase "enum values" $ do
-          map toEnum [0, 3, 3] @=? [Foo'Enum1, Foo'Enum2, Foo'Enum2a]
-          ["Foo'Enum1", "Foo'Enum2", "Foo'Enum2", "toEnum 5"]
-              @=? map show [Foo'Enum1, Foo'Enum2, Foo'Enum2a, toEnum 5]
+          map toEnum [0, 3, 3] @=? [Enum1, Enum2, Enum2a]
+          ["Enum1", "Enum2", "Enum2", "toEnum 5"]
+              @=? map show [Enum1, Enum2, Enum2a, toEnum 5]
           ["Enum1", "Enum2", "Enum2", "6"]
-              @=? map showEnum [Foo'Enum1, Foo'Enum2, Foo'Enum2a, toEnum 6]
-          [Just Foo'Enum1, Just Foo'Enum2, Just Foo'Enum2, Nothing, Nothing]
+              @=? map showEnum [Enum1, Enum2, Enum2a, toEnum 6]
+          [Just Enum1, Just Enum2, Just Enum2, Nothing, Nothing]
               @=? map readEnum ["Enum1", "Enum2", "Enum2a", "4", "5"]
       , testCase "enum patterns" $ do
           assertBool "enum value" $ case toEnum 3 of
-                                      Foo'Enum2 -> True
+                                      Enum2 -> True
                                       _ -> False
           assertBool "enum alias" $ case toEnum 3 of
-                                      Foo'Enum2a -> True
+                                      Enum2a -> True
                                       _ -> False
 
       ]

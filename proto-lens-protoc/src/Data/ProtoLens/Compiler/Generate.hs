@@ -259,27 +259,18 @@ generateEnumExports syntaxType e = [exportAll n, exportWith n aliases]
 
 generateEnumDecls :: SyntaxType -> EnumInfo Name -> [Decl]
 generateEnumDecls Proto3 info =
-    -- newtype Foo = Foo Int32
-    [ newtypeDecl dataName "Data.Int.Int32"
-        $ deriving' ["Prelude.Eq", "Prelude.Ord", "Prelude.Enum", "Prelude.Bounded"]
+  -- Judah: Just to clarify, for values with duplicate numbers,
+  -- we can make the first one be the “real” constructor and the rest be pattern synonyms for that constructor
+  -- todo: a whole shitload of groupBy type logic
+    [ dataDecl dataName
+        (  (flip conDecl [] . enumValueName <$> enumValues info)
+        ++ [conDecl unrecognizedName [unrecognizedValueType]]
+        )
+        $ deriving' ["Prelude.Show", "Prelude.Eq", "Prelude.Ord"]
 
-    -- instance Show Foo where
-    --    showsPrec _ Value0 = "Value0" -- the Haskell name
-    --    showsPrec p (Foo k) = showParen (p > 10)
-    --                            $ showString "toEnum " . shows k
-    , instDecl [] ("Prelude.Show" `ihApp` [dataType])
-        [ [ match "showsPrec" [pWildCard, pApp (unQual n) []]
-               $ "Prelude.showString" @@ stringExp (prettyPrint n)
-          | n <- map enumValueName $ enumValues info
-          ]
-          ++
-          [ match "showsPrec" ["p", pApp (unQual dataName) ["k"]]
-                $ "Prelude.showParen" @@ ("Prelude.>" @@ "p" @@ litInt 10)
-                          @@ ("Prelude.." @@ ("Prelude.showString"
-                                                  @@ stringExp "toEnum ")
-                                          @@ ("Prelude.shows" @@ "k"))
-          ]
-        ]
+    , newtypeDecl unrecognizedValueName
+       "Data.Int.Int32"
+        $ deriving' ["Prelude.Eq", "Prelude.Ord", "Prelude.Show"]
 
     -- instance MessageEnum Foo where
     --    maybeToEnum k = Just $ toEnum k
@@ -290,16 +281,9 @@ generateEnumDecls Proto3 info =
     , instDecl [] ("Data.ProtoLens.MessageEnum" `ihApp` [dataType])
         [ [match "maybeToEnum" ["k"]
                 $ "Prelude.Just" @@ ("Prelude.toEnum" @@ "k")]
-        , [ match "showEnum" [pVar n] $ stringExp pn
-          | v <- enumValues info
-          , isNothing (enumAliasOf v)
-          , let n = enumValueName v
-          , let pn = T.unpack $ enumValueDescriptor v ^. name
+        , [ match "showEnum" []
+                $ "Prelude.show"
           ]
-        , [ match "showEnum" [pApp (unQual dataName) ["k"]]
-                $ "Prelude.show" @@ "k"
-          ]
-
         , [ match "readEnum" [stringPat pn]
               $ "Prelude.Just" @@ con (unQual n)
           | v <- enumValues info
@@ -311,27 +295,106 @@ generateEnumDecls Proto3 info =
           ]
         ]
 
-    -- proto3 enums always default to zero.
-    , instDecl [] ("Data.Default.Class.Default" `ihApp` [dataType])
-        [[match "def" [] $ "Prelude.toEnum" @@ litInt 0]]
-    , instDecl [] ("Data.ProtoLens.FieldDefault" `ihApp` [dataType])
-        [[match "fieldDefault" [] $ "Prelude.toEnum" @@ litInt 0]]
-    ]
-    ++
-    -- pattern Value0 :: Foo
-    -- pattern Value0 = Foo 0
-    concat
-        [ [ patSynSig n dataType
-          , patSyn (pVar n)
-                $ pApp (unQual dataName) [pLitInt k]
+    -- instance Bounded Foo where
+    --    minBound = Foo1
+    --    maxBound = FooN
+    , instDecl [] ("Prelude.Bounded" `ihApp` [dataType])
+        [[ match "minBound" [] $ con $ unQual minBoundName
+         , match "maxBound" [] $ con $ unQual maxBoundName
+         ]]
+
+    -- instance Enum Foo where
+    --    toEnum k = maybe (error ("Foo.toEnum: unknown argument for enum Foo: "
+    --                                ++ show k))
+    --                  id (maybeToEnum k)
+    --    fromEnum Foo1 = 1
+    --    fromEnum Foo2 = 2
+    --    ..
+    --    succ FooN = error "Foo.succ: bad argument FooN."
+    --    succ Foo1 = Foo2
+    --    succ Foo2 = Foo3
+    --    ..
+    --    pred Foo1 = error "Foo.succ: bad argument Foo1."
+    --    pred Foo2 = Foo1
+    --    pred Foo3 = Foo2
+    --    ..
+    --    enumFrom = messageEnumFrom
+    --    enumFromTo = messageEnumFromTo
+    --    enumFromThen = messageEnumFromThen
+    --    enumFromThenTo = messageEnumFromThenTo
+    , instDecl [] ("Prelude.Enum" `ihApp` [dataType])
+        [[match "toEnum" ["k__"]
+                  $ "Prelude.maybe" @@ errorMessageExpr @@ "Prelude.id"
+                        @@ ("Data.ProtoLens.maybeToEnum" @@ "k__")]
+        , [ match "fromEnum" [pApp (unQual c) []] $ litInt k
+          | (c, k) <- constructorNumbers
           ]
-        | v <- enumValues info
-        , let n = enumValueName v
-        , let k = fromIntegral $ enumValueDescriptor v ^. number
+        , succDecl "succ" maxBoundName succPairs
+        , succDecl "pred" minBoundName $ map swap succPairs
+        , alias "enumFrom" "Data.ProtoLens.Message.Enum.messageEnumFrom"
+        , alias "enumFromTo" "Data.ProtoLens.Message.Enum.messageEnumFromTo"
+        , alias "enumFromThen" "Data.ProtoLens.Message.Enum.messageEnumFromThen"
+        , alias "enumFromThenTo"
+            "Data.ProtoLens.Message.Enum.messageEnumFromThenTo"
         ]
+
+    -- instance Data.Default.Class.Default Foo where
+    --   def = FirstEnumValue
+    , instDecl [] ("Data.Default.Class.Default" `ihApp` [dataType])
+        [[match "def" [] defaultCon]]
+    -- instance Data.ProtoLens.FieldDefault Foo where
+    --   fieldDefault = FirstEnumValue
+    , instDecl [] ("Data.ProtoLens.FieldDefault" `ihApp` [dataType])
+        [[match "fieldDefault" [] defaultCon]]
+    ]
+
   where
-    dataName = enumName info
+    EnumInfo { enumName = dataName, enumDescriptor = ed } = info
+    errorMessage = "toEnum: unknown value for enum " ++ unpack (ed ^. name)
+                      ++ ": "
+
+    errorMessageExpr = "Prelude.error"
+                          @@ ("Prelude.++" @@ stringExp errorMessage
+                              @@ ("Prelude.show" @@ "k__"))
+    alias funName implName = [match funName [] implName]
+
     dataType = tyCon $ unQual dataName
+
+    unrecognizedValueName, unrecognizedName :: Name
+    unrecognizedValueName = modifyIdent (++ "'UnrecognizedValue") dataName
+    unrecognizedName = modifyIdent (++ "'Unrecognized") dataName
+
+    unrecognizedValueType = tyCon $ unQual unrecognizedValueName -- this should compile fine
+
+    constructors :: [(Name, EnumValueDescriptorProto)]
+    constructors = List.sortBy (comparing ((^. number) . snd))
+                            [(n, d) | EnumValueInfo
+                                { enumValueName = n
+                                , enumValueDescriptor = d
+                                , enumAliasOf = Nothing
+                                } <- enumValues info
+                            ]
+    constructorNames = map fst constructors
+    defaultCon = con $ unQual $ head constructorNames
+
+    minBoundName = head constructorNames
+    maxBoundName = last constructorNames
+
+    constructorProtoNames = map (second (^. name)) constructors
+    constructorNumbers = map (second (fromIntegral . (^. number)))
+                          constructors
+
+    succPairs = zip constructorNames $ tail constructorNames
+    succDecl funName boundName thePairs =
+        match funName [pApp (unQual boundName) []]
+            ("Prelude.error" @@ stringExp (concat
+                [ prettyPrint dataName, ".", prettyPrint funName, ": bad argument "
+                , prettyPrint boundName, ". This value would be out of bounds."
+                ]))
+        :
+        [ match funName [pApp (unQual from) []] $ con $ unQual to
+        | (from, to) <- thePairs
+        ]
 
 generateEnumDecls Proto2 info =
     [ dataDecl dataName
@@ -433,6 +496,7 @@ generateEnumDecls Proto2 info =
             , enumAliasOf = Just originalName
             } <- enumValues info
         ]
+
   where
     dataType = tyCon $ unQual dataName
     EnumInfo { enumName = dataName, enumDescriptor = ed } = info
