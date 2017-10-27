@@ -259,22 +259,34 @@ generateEnumExports syntaxType e = [exportAll n, exportWith n aliases]
 
 generateEnumDecls :: SyntaxType -> EnumInfo Name -> [Decl]
 generateEnumDecls Proto3 info =
+    -- data FooEnum = Enum1
+    --   | Enum2
+    --   | FooEnum'Unrecognized !FooEnum'UnrecognizedValue
+    --   deriving (Prelude.Show, Prelude.Eq, Prelude.Ord, Prelude.Read)
     [ dataDecl dataName
         (  (flip conDecl [] <$> constructorNames)
         ++ [conDecl unrecognizedName [unrecognizedValueType]]
         )
         $ deriving' ["Prelude.Show", "Prelude.Eq", "Prelude.Ord, Prelude.Read"]
 
+    -- newtype FooEnum'UnrecognizedValue = FooEnum'UnrecognizedValue Data.Int.Int32
+    --   deriving (Prelude.Eq, Prelude.Ord, Prelude.Show, Prelude.Read)
     , newtypeDecl unrecognizedValueName
        "Data.Int.Int32"
         $ deriving' ["Prelude.Eq", "Prelude.Ord", "Prelude.Show, Prelude.Read"]
 
-    -- instance MessageEnum Foo where
-    --    maybeToEnum k = Just $ toEnum k
-    --    showEnum (Foo 0) = "Value0" -- the proto name
-    --    showEnum (Foo k) = show k
-    --    readEnum "Value0" = Just (Foo 0)
-    --    readEnum _ = Nothing
+    -- instance Data.ProtoLens.MessageEnum FooEnum where
+    --       maybeToEnum 0 = Prelude.Just Enum1
+    --       maybeToEnum 3 = Prelude.Just Enum2
+    --       maybeToEnum k
+    --         = Prelude.Just
+    --             (FooEnum'Unrecognized
+    --               (FooEnum'UnrecognizedValue (Prelude.fromIntegral k)))
+    --       showEnum (FooEnum'Unrecognized (FooEnum'UnrecognizedValue k))
+    --         = Prelude.show k
+    --       showEnum k = Prelude.show k
+    --       readEnum "Enum2a" = Prelude.Just Enum2a -- alias
+    --       readEnum k = Text.Read.readMaybe k
     , instDecl [] ("Data.ProtoLens.MessageEnum" `ihApp` [dataType])
         [ [ match "maybeToEnum" [pLitInt k] $ "Prelude.Just" @@ con (unQual c)
           | (c, k) <- constructorNumbers
@@ -361,6 +373,8 @@ generateEnumDecls Proto3 info =
     , instDecl [] ("Data.ProtoLens.FieldDefault" `ihApp` [dataType])
         [[match "fieldDefault" [] defaultCon]]
     ] ++
+    -- pattern Enum2a :: FooEnum
+    -- pattern Enum2a = Enum2
     concat
         [ [ patSynSig aliasName dataType
           , patSyn (pVar aliasName) (pVar originalName)
