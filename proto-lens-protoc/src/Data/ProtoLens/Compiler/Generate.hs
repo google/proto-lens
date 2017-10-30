@@ -259,9 +259,10 @@ generateEnumExports syntaxType e = [exportAll n, exportWith n aliases]
 
 generateEnumDecls :: SyntaxType -> EnumInfo Name -> [Decl]
 generateEnumDecls Proto3 info =
-    -- data FooEnum = Enum1
-    --   | Enum2
-    --   | FooEnum'Unrecognized !FooEnum'UnrecognizedValue
+    -- data FooEnum
+    --     = Enum1
+    --     | Enum2
+    --     | FooEnum'Unrecognized !FooEnum'UnrecognizedValue
     --   deriving (Prelude.Show, Prelude.Eq, Prelude.Ord, Prelude.Read)
     [ dataDecl dataName
         (  (flip conDecl [] <$> constructorNames)
