@@ -323,7 +323,9 @@ generateEnumDecls Proto3 info =
           , let n = enumValueName v
           , let pn = T.unpack $ enumValueDescriptor v ^. name
           ] ++
-          [match "readEnum" [pVar "k"] $ "Prelude.>>=" @@ ("Text.Read.readMaybe" @@ "k") @@ "Data.ProtoLens.maybeToEnum"]
+          [match "readEnum" [pVar "k"] $ "Prelude.>>="
+                                      @@ ("Text.Read.readMaybe" @@ "k")
+                                      @@ "Data.ProtoLens.maybeToEnum"]
         ]
 
       -- instance Bounded Foo where
