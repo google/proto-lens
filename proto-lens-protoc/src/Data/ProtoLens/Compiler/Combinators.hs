@@ -358,8 +358,3 @@ string s = Syntax.String () s (show s)
 modifyModuleName :: (String -> String) -> ModuleName -> ModuleName
 modifyModuleName f (Syntax.ModuleName _ unpacked) =
   Syntax.ModuleName () $ f unpacked
-
-
-modifyIdent :: (String -> String) -> Name -> Name
-modifyIdent f (Syntax.Ident l s) = Syntax.Ident l $ f s
-modifyIdent _ x = x

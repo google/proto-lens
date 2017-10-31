@@ -266,7 +266,7 @@ generateEnumDecls Proto3 info =
     --   deriving (Prelude.Show, Prelude.Eq, Prelude.Ord, Prelude.Read)
     [ dataDecl dataName
         (  (flip conDecl [] <$> constructorNames)
-        ++ [conDecl unrecognizedName [unrecognizedValueType]]
+        ++ [conDecl unrecognizedName [tyCon $ unQual unrecognizedValueName]]
         )
         $ deriving' ["Prelude.Show", "Prelude.Eq", "Prelude.Ord, Prelude.Read"]
 
@@ -311,7 +311,8 @@ generateEnumDecls Proto3 info =
               $ "Prelude.Just" @@ con (unQual n)
           | v <- filter (not . null . enumAliasOf) $ enumValues info
           , let n = enumValueName v
-          , let pn = T.unpack $ enumValueDescriptor v ^. name
+          , let pn = enumValueNameString v
+          -- problem: descriptor != name, only name has Foo' prefix, not descriptor
           ] ++
           [match "readEnum" ["k"] $ "Text.Read.readMaybe" @@ "k"]
         ]
@@ -387,7 +388,11 @@ generateEnumDecls Proto3 info =
         ]
 
   where
-    EnumInfo { enumName = dataName, enumDescriptor = ed } = info
+    EnumInfo { enumName = dataName
+             , enumUnrecognizedName = unrecognizedName
+             , enumUnrecognizedValueName = unrecognizedValueName
+             , enumDescriptor = ed
+             } = info
     errorMessage = "toEnum: unknown value for enum " ++ unpack (ed ^. name)
                       ++ ": "
 
@@ -398,11 +403,7 @@ generateEnumDecls Proto3 info =
 
     dataType = tyCon $ unQual dataName
 
-    unrecognizedValueName, unrecognizedName :: Name
-    unrecognizedValueName = modifyIdent (++ "'UnrecognizedValue") dataName
-    unrecognizedName = modifyIdent (++ "'Unrecognized") dataName
 
-    unrecognizedValueType = tyCon $ unQual unrecognizedValueName
 
     constructors :: [(Name, EnumValueDescriptorProto)]
     constructors = List.sortBy (comparing ((^. number) . snd))
