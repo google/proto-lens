@@ -270,13 +270,13 @@ generateEnumDecls Proto3 info =
         (  (flip conDecl [] <$> constructorNames)
         ++ [conDecl unrecognizedName [tyCon $ unQual unrecognizedValueName]]
         )
-        $ deriving' ["Prelude.Show", "Prelude.Eq", "Prelude.Ord, Prelude.Read"]
+        $ deriving' ["Prelude.Show", "Prelude.Eq", "Prelude.Ord"]
 
     -- newtype FooEnum'UnrecognizedValue = FooEnum'UnrecognizedValue Data.Int.Int32
     --   deriving (Prelude.Eq, Prelude.Ord, Prelude.Show, Prelude.Read)
     , newtypeDecl unrecognizedValueName
        "Data.Int.Int32"
-        $ deriving' ["Prelude.Eq", "Prelude.Ord", "Prelude.Show, Prelude.Read"]
+        $ deriving' ["Prelude.Eq", "Prelude.Ord", "Prelude.Show"]
 
     -- instance Data.ProtoLens.MessageEnum FooEnum where
     --       maybeToEnum 0 = Prelude.Just Enum1
@@ -287,7 +287,8 @@ generateEnumDecls Proto3 info =
     --               (FooEnum'UnrecognizedValue (Prelude.fromIntegral k)))
     --       showEnum (FooEnum'Unrecognized (FooEnum'UnrecognizedValue k))
     --         = Prelude.show k
-    --       showEnum k = Prelude.show k
+    --       showEnum Foo'Enum2 = "Enum2"
+    --       showEnum Foo'Enum1 = "Enum1"
     --       readEnum "Enum2a" = Prelude.Just Enum2a -- alias
     --       readEnum "Enum2" = Prelude.Just Enum2
     --       readEnum "Enum1" = Prelude.Just Enum1

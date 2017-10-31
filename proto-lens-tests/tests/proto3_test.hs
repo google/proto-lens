@@ -104,9 +104,10 @@ main = testMain
       , serializeTo "serializeTo enum"
           (def & enum .~ Foo'Enum2 :: Foo)
           "enum: Enum2"
-          "0\ETX"
+          $ tagged 6 $ VarInt 3
       , testCase "enum values" $ do
           map toEnum [0, 3, 3] @=? [Foo'Enum1, Foo'Enum2, Foo'Enum2a]
+          fromEnum <$> (maybeToEnum 4 :: Maybe Foo'FooEnum) @=? Just 4
           ["Foo'Enum1", "Foo'Enum2", "Foo'Enum2", "Foo'FooEnum'Unrecognized (Foo'FooEnum'UnrecognizedValue 5)"]
               @=? map show [Foo'Enum1, Foo'Enum2, Foo'Enum2a, toEnum 5]
           ["Enum1", "Enum2", "Enum2", "6"]
