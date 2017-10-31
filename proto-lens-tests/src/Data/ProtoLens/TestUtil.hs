@@ -68,7 +68,6 @@ import Text.PrettyPrint
 testMain :: [Test] -> IO ()
 testMain = defaultMain
 
--- todo use this for enum msg on Foo
 serializeTo :: (Show a, Eq a, Message a)
             => String -> a -> Doc -> Builder.Builder -> Test
 serializeTo name x text bs = testCase name $ do
