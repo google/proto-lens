@@ -165,7 +165,6 @@ data EnumInfo n = EnumInfo
 -- | Information about a single value case of a proto enum.
 data EnumValueInfo n = EnumValueInfo
     { enumValueName :: n
-    , enumValueNameString :: String -- because the EnumValueDescriptorProto name doesn't have the hs prefix
     , enumValueDescriptor :: EnumValueDescriptorProto
     , enumAliasOf :: Maybe Name
         -- ^ If 'Nothing', we turn value into a normal constructor of the enum.
@@ -364,17 +363,14 @@ enumDef :: Text -> String -> EnumDescriptorProto
           -> (Text, Definition Name)
 enumDef protoPrefix hsPrefix d = let
     mkText n = protoPrefix <> n
-    mkHsName :: Text -> Name
-    mkHsName = fromString . mkHsNameString
-    mkHsNameString :: Text -> String
-    mkHsNameString n = hsPrefix ++ unpack n
+    mkHsName n = fromString $ hsPrefix ++ unpack n
     in (mkText (d ^. name)
        , Enum EnumInfo
             { enumName = mkHsName (d ^. name)
             , enumUnrecognizedName = mkHsName (d ^. name <> "'Unrecognized")
             , enumUnrecognizedValueName = mkHsName (d ^. name <> "'UnrecognizedValue")
             , enumDescriptor = d
-            , enumValues = collectEnumValues mkHsNameString $ d ^. value
+            , enumValues = collectEnumValues mkHsName $ d ^. value
             })
 
 -- | Generate the definitions for each enum value.  In particular, decide
@@ -383,7 +379,7 @@ enumDef protoPrefix hsPrefix d = let
 --
 -- Like Java, we treat the first case of each numeric value as the "real"
 -- constructor, and subsequent cases as synonyms.
-collectEnumValues :: (Text -> String) -> [EnumValueDescriptorProto]
+collectEnumValues :: (Text -> Name) -> [EnumValueDescriptorProto]
                   -> [EnumValueInfo Name]
 collectEnumValues mkHsName = snd . mapAccumL helper Map.empty
   where
@@ -393,11 +389,8 @@ collectEnumValues mkHsName = snd . mapAccumL helper Map.empty
         | Just n' <- Map.lookup k seenNames = (seenNames, mkValue (Just n'))
         | otherwise = (Map.insert k n seenNames, mkValue Nothing)
       where
-        mkValue = EnumValueInfo n n' v
-        n :: Name
-        n = fromString $ mkHsName (v ^. name)
-        n' :: String
-        n' = mkHsName (v ^. name)
+        mkValue = EnumValueInfo n v
+        n = mkHsName (v ^. name)
         k = v ^. number
 
 -- Haskell types must start with an uppercase letter, so we capitalize message

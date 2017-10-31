@@ -301,20 +301,25 @@ generateEnumDecls Proto3 info =
                          )
                     )
           ]
-        , [match "showEnum" [pApp (unQual unrecognizedName)
+        , [ match "showEnum" [pApp (unQual n) []]
+              $ stringExp pn
+          | v <- filter (null . enumAliasOf) $ enumValues info
+          , let n = enumValueName v
+          , let pn = T.unpack $ enumValueDescriptor v ^. name
+          ] ++
+          [match "showEnum" [pApp (unQual unrecognizedName)
                               [pApp (unQual unrecognizedValueName) [pVar "k"]]
                             ]
                   $ "Prelude.show" @@ "k"
-          ] ++
-          [match "showEnum" ["k"] $ "Prelude.show" @@ "k"]
+          ]
         , [ match "readEnum" [stringPat pn]
               $ "Prelude.Just" @@ con (unQual n)
-          | v <- filter (not . null . enumAliasOf) $ enumValues info
+          | v <- enumValues info
           , let n = enumValueName v
-          , let pn = enumValueNameString v
+          , let pn = T.unpack $ enumValueDescriptor v ^. name
           -- problem: descriptor != name, only name has Foo' prefix, not descriptor
           ] ++
-          [match "readEnum" ["k"] $ "Text.Read.readMaybe" @@ "k"]
+          [match "readEnum" [pVar "k"] $ ("Prelude.>>=" @@ paren ("Text.Read.readMaybe" @@ "k")) @@ ("Data.ProtoLens.maybeToEnum")]
         ]
 
       -- instance Bounded Foo where

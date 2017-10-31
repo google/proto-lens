@@ -166,6 +166,9 @@ ihApp = foldl (Syntax.IHApp ())
 tyParen :: Type -> Type
 tyParen = Syntax.TyParen ()
 
+paren :: Exp -> Exp
+paren = Syntax.Paren ()
+
 type Match = Syntax.Match ()
 
 -- | A simple clause of a function binding.
