@@ -16,7 +16,6 @@ message Foo {
   }
   Sub sub = 5;
 
-
   enum FooEnum {
     option allow_alias = true;
     Enum1 = 0;

@@ -287,7 +287,9 @@ generateEnumDecls Proto3 info =
     --         = Prelude.show k
     --       showEnum k = Prelude.show k
     --       readEnum "Enum2a" = Prelude.Just Enum2a -- alias
-    --       readEnum k = Text.Read.readMaybe k
+    --       readEnum "Enum2" = Prelude.Just Enum2
+    --       readEnum "Enum1" = Prelude.Just Enum1
+    --       readEnum k = Text.Read.readMaybe k >>= maybeToEnum
     , instDecl [] ("Data.ProtoLens.MessageEnum" `ihApp` [dataType])
         [ [ match "maybeToEnum" [pLitInt k] $ "Prelude.Just" @@ con (unQual c)
           | (c, k) <- constructorNumbers
@@ -317,7 +319,6 @@ generateEnumDecls Proto3 info =
           | v <- enumValues info
           , let n = enumValueName v
           , let pn = T.unpack $ enumValueDescriptor v ^. name
-          -- problem: descriptor != name, only name has Foo' prefix, not descriptor
           ] ++
           [match "readEnum" [pVar "k"] $ ("Prelude.>>=" @@ paren ("Text.Read.readMaybe" @@ "k")) @@ ("Data.ProtoLens.maybeToEnum")]
         ]

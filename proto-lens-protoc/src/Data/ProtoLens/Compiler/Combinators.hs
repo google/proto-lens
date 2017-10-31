@@ -361,3 +361,4 @@ string s = Syntax.String () s (show s)
 modifyModuleName :: (String -> String) -> ModuleName -> ModuleName
 modifyModuleName f (Syntax.ModuleName _ unpacked) =
   Syntax.ModuleName () $ f unpacked
+
