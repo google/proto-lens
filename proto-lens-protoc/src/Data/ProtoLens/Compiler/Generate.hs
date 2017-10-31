@@ -250,12 +250,14 @@ generateMessageDecls syntaxType env protoName info =
     allFields = allMessageFields syntaxType env info
 
 generateEnumExports :: SyntaxType -> EnumInfo Name -> [ExportSpec]
-generateEnumExports syntaxType e = [exportAll n, exportWith n aliases]
+generateEnumExports syntaxType e = [exportAll n, exportWith n aliases] ++ proto3NewType
   where
     n = unQual $ enumName e
     aliases = [enumValueName v | v <- enumValues e, needsManualExport v]
-    needsManualExport v = syntaxType == Proto3
-                              || isJust (enumAliasOf v)
+    needsManualExport v = isJust (enumAliasOf v)
+    proto3NewType = if syntaxType == Proto3
+      then [exportVar . unQual $ enumUnrecognizedValueName e]
+      else []
 
 generateEnumDecls :: SyntaxType -> EnumInfo Name -> [Decl]
 generateEnumDecls Proto3 info =
