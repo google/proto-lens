@@ -156,6 +156,8 @@ promoteSymbol (Symbol s) = tyPromotedString s
 -- | All the information needed to define or use a proto enum type.
 data EnumInfo n = EnumInfo
     { enumName :: n
+    , enumUnrecognizedName :: n
+    , enumUnrecognizedValueName :: n
     , enumDescriptor :: EnumDescriptorProto
     , enumValues :: [EnumValueInfo n]
     } deriving Functor
@@ -365,6 +367,8 @@ enumDef protoPrefix hsPrefix d = let
     in (mkText (d ^. name)
        , Enum EnumInfo
             { enumName = mkHsName (d ^. name)
+            , enumUnrecognizedName = mkHsName (d ^. name <> "'Unrecognized")
+            , enumUnrecognizedValueName = mkHsName (d ^. name <> "'UnrecognizedValue")
             , enumDescriptor = d
             , enumValues = collectEnumValues mkHsName $ d ^. value
             })

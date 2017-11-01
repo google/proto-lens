@@ -98,16 +98,25 @@ main = testMain
       , testCase "string" $ (def :: Strings) @=? (def & string .~ "")
       , testCase "enum" $ (def :: Foo) @=? (def & enum .~ Foo'Enum1)
       ]
-  -- Enums are all pattern aliases
+  -- Enums are sum types, except for aliases
   , testGroup "enum"
       [ testCase "aliases are exported" $ Foo'Enum2 @=? Foo'Enum2a
+      , serializeTo "serializeTo enum"
+          (def & enum .~ Foo'Enum2 :: Foo)
+          "enum: Enum2"
+          $ tagged 6 $ VarInt 3
+      , serializeTo "serializeTo unrecognized"
+          (def & enum .~ toEnum 9 :: Foo)
+          "enum: 9"
+          $ tagged 6 $ VarInt 9
       , testCase "enum values" $ do
           map toEnum [0, 3, 3] @=? [Foo'Enum1, Foo'Enum2, Foo'Enum2a]
-          ["Foo'Enum1", "Foo'Enum2", "Foo'Enum2", "toEnum 5"]
+          fromEnum <$> (maybeToEnum 4 :: Maybe Foo'FooEnum) @=? Just 4
+          ["Foo'Enum1", "Foo'Enum2", "Foo'Enum2", "Foo'FooEnum'Unrecognized (Foo'FooEnum'UnrecognizedValue 5)"]
               @=? map show [Foo'Enum1, Foo'Enum2, Foo'Enum2a, toEnum 5]
           ["Enum1", "Enum2", "Enum2", "6"]
               @=? map showEnum [Foo'Enum1, Foo'Enum2, Foo'Enum2a, toEnum 6]
-          [Just Foo'Enum1, Just Foo'Enum2, Just Foo'Enum2, Nothing, Nothing]
+          [Just Foo'Enum1, Just Foo'Enum2, Just Foo'Enum2, maybeToEnum 4, maybeToEnum 5]
               @=? map readEnum ["Enum1", "Enum2", "Enum2a", "4", "5"]
       , testCase "enum patterns" $ do
           assertBool "enum value" $ case toEnum 3 of

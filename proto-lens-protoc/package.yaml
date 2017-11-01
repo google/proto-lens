@@ -59,8 +59,8 @@ library:
     - Data.Text as Data.ProtoLens.Reexport.Data.Text,
     - Lens.Family2 as Data.ProtoLens.Reexport.Lens.Family2,
     - Lens.Family2.Unchecked as Data.ProtoLens.Reexport.Lens.Family2.Unchecked,
-    - Lens.Labels as Data.ProtoLens.Reexport.Lens.Labels
-
+    - Lens.Labels as Data.ProtoLens.Reexport.Lens.Labels,
+    - Text.Read as Data.ProtoLens.Reexport.Text.Read
 
 executables:
   proto-lens-protoc:
