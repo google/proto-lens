@@ -167,8 +167,8 @@ generateMessageExports m =
 
 generateServiceDecls :: Env QName -> ServiceInfo -> [Decl]
 generateServiceDecls env si =
-    -- data Service = Service {
-    --    normalMethod :: Input -> IO Output
+    -- data MyService = MyService {
+    --    myService'NormalMethod :: ServerHandler Foo Bar
     -- }
     [ dataDecl dataName
       [ recDecl dataName
@@ -177,20 +177,40 @@ generateServiceDecls env si =
           ]
       ]
       $ deriving' []
+    ] ++
+    -- instance Data.ProtoLens.GRPC.Types.Service MyService where
+    --     packHandlers s = [ NormalHandler (myService'NormalMethod s) ]
+    [ instDecl [] ("Data.ProtoLens.GRPC.Types.Service" `ihApp` [recordType])
+        [[match "packHandlers" [pVar "s"] $ list
+            [ getMethodTypeExistentializer m @@ (var (unQual $ methodName m) @@ var "s")
+            | m <- serviceMethods si
+            ]]]
     ]
   where
     dataName = serviceName si
+    recordType = tyCon $ unQual dataName
+
+    getMethodTypeHandler mi =
+        case methodType mi of
+            Normal          -> tyCon "Data.ProtoLens.GRPC.Types.ServerHandler"
+            ClientStreaming -> tyCon "Data.ProtoLens.GRPC.Types.ServerReaderHandler"
+            ServerStreaming -> tyCon "Data.ProtoLens.GRPC.Types.ServerWriterHandler"
+            BiDiStreaming   -> tyCon "Data.ProtoLens.GRPC.Types.ServerRWHandler"
+
+    getMethodTypeExistentializer mi =
+        case methodType mi of
+            Normal          -> "Data.ProtoLens.GRPC.Types.NormalHandler"
+            ClientStreaming -> "Data.ProtoLens.GRPC.Types.ReaderHandler"
+            ServerStreaming -> "Data.ProtoLens.GRPC.Types.WriterHandler"
+            BiDiStreaming   -> "Data.ProtoLens.GRPC.Types.BiDiHandler"
+
     buildMethodType mi =
         let getType t = case definedType t env of
                             Message msg -> tyCon $ messageName msg
                             Enum _ -> error "Service must have a message type"
             input  = getType $ methodInput mi
             output = getType $ methodOutput mi
-         in (@@ output) . (@@ input) $ case methodType mi of
-                Normal          -> tyCon "Data.ProtoLens.GRPC.Types.ServerHandler"
-                ClientStreaming -> tyCon "Data.ProtoLens.GRPC.Types.ServerReaderHandler"
-                ServerStreaming -> tyCon "Data.ProtoLens.GRPC.Types.ServerWriterHandler"
-                BiDiStreaming   -> tyCon "Data.ProtoLens.GRPC.Types.ServerRWHandler"
+         in getMethodTypeHandler mi @@ input @@ output
 
 
 generateMessageDecls :: SyntaxType -> Env QName -> T.Text -> MessageInfo Name -> [Decl]
