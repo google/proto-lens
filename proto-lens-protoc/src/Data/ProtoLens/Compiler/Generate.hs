@@ -85,7 +85,7 @@ generateModule modName imports syntaxType modifyImport definitions importedEnv s
                 pragmas
                 sharedImports
           $ (concatMap generateDecls $ Map.toList definitions)
-         ++ concatMap generateServiceDecls services
+         ++ concatMap (generateServiceDecls env) services
       , module' fieldModName
                 Nothing
                 pragmas
@@ -109,7 +109,7 @@ generateModule modName imports syntaxType modifyImport definitions importedEnv s
           ]
     sharedImports = map (modifyImport . importSimple)
               [ "Prelude", "Data.Int", "Data.Word"
-              , "Data.ProtoLens", "Data.ProtoLens.Message.Enum"
+              , "Data.ProtoLens", "Data.ProtoLens.Message.Enum", "Data.ProtoLens.GRPC.Types"
               , "Lens.Family2", "Lens.Family2.Unchecked", "Data.Default.Class"
               , "Data.Text",  "Data.Map", "Data.ByteString"
               , "Lens.Labels", "Text.Read"
@@ -165,8 +165,8 @@ generateMessageExports m =
     map (exportAll . unQual)
         $ messageName m : map oneofTypeName (messageOneofFields m)
 
-generateServiceDecls :: ServiceInfo -> [Decl]
-generateServiceDecls si =
+generateServiceDecls :: Env QName -> ServiceInfo -> [Decl]
+generateServiceDecls env si =
     -- data Service = Service {
     --    normalMethod :: Input -> IO Output
     -- }
@@ -181,9 +181,16 @@ generateServiceDecls si =
   where
     dataName = serviceName si
     buildMethodType mi =
-        case methodType mi of
-            Normal -> tyFun (tyCon . unQual $ methodInput mi) (tyCon "Prelude.IO" @@ (tyCon . unQual $ methodOutput mi))
-            _ -> error "DONT DO IT YET"
+        let getType t = case definedType t env of
+                            Message msg -> tyCon $ messageName msg
+                            Enum _ -> error "Service must have a message type"
+            input  = getType $ methodInput mi
+            output = getType $ methodOutput mi
+         in (@@ output) . (@@ input) $ case methodType mi of
+                Normal          -> tyCon "Data.ProtoLens.GRPC.Types.ServerHandler"
+                ClientStreaming -> tyCon "Data.ProtoLens.GRPC.Types.ServerReaderHandler"
+                ServerStreaming -> tyCon "Data.ProtoLens.GRPC.Types.ServerWriterHandler"
+                BiDiStreaming   -> tyCon "Data.ProtoLens.GRPC.Types.ServerRWHandler"
 
 
 generateMessageDecls :: SyntaxType -> Env QName -> T.Text -> MessageInfo Name -> [Decl]

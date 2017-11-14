@@ -6,9 +6,9 @@ packages:
 - location:
     commit: master
     # To use the github master:
-    git: https://github.com/google/proto-lens
+    # git: https://github.com/google/proto-lens
     # To use the current repository:
-    # git: ../..  # stack runs 'git clone' in a subdirectory
+    git: ../..  # stack runs 'git clone' in a subdirectory
   subdirs:
   - lens-labels
   - proto-lens

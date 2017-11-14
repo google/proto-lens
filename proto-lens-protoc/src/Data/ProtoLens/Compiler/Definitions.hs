@@ -31,6 +31,7 @@ module Data.ProtoLens.Compiler.Definitions
     , collectDefinitions
     , collectServices
     , definedFieldType
+    , definedType
     ) where
 
 import Data.Char (isUpper, toUpper)
@@ -124,8 +125,8 @@ data MethodType
 
 data MethodInfo = MethodInfo
     { methodName :: Name
-    , methodInput :: Name
-    , methodOutput :: Name
+    , methodInput :: Text
+    , methodOutput :: Text
     , methodType :: MethodType
     }
 
@@ -223,6 +224,13 @@ definedFieldType fd env = fromMaybe err $ Map.lookup (fd ^. typeName) env
     err = error $ "definedFieldType: Field type " ++ unpack (fd ^. typeName)
                   ++ " not found in environment."
 
+-- | Look up the Haskell name for the type of a given type.
+definedType :: Text -> Env QName -> Definition QName
+definedType ty = fromMaybe err . Map.lookup ty
+  where
+    err = error $ "definedType: Type " ++ unpack ty
+                  ++ " not found in environment."
+
 -- | Collect all the definitions in the given file (including definitions
 -- nested in other messages), and assign Haskell names to them.
 collectDefinitions :: FileDescriptorProto -> Env Name
@@ -240,14 +248,14 @@ collectServices fd = fmap toServiceInfo $ fd ^. service
     toServiceInfo :: ServiceDescriptorProto -> ServiceInfo
     toServiceInfo sd =
         ServiceInfo
-            { serviceName = fromString . T.unpack $ sd ^. name
-            , serviceMethods = fmap toMethodInfo $ sd ^. method
+            { serviceName = fromString $ T.unpack $ sd ^. name
+            , serviceMethods = fmap (toMethodInfo . (<> "'") . lowerInitialChars $ sd ^. name) $ sd ^. method
             }
 
-    toMethodInfo :: MethodDescriptorProto -> MethodInfo
-    toMethodInfo md =
+    toMethodInfo :: Text -> MethodDescriptorProto -> MethodInfo
+    toMethodInfo prefix md =
         MethodInfo
-            { methodName = fromString . T.unpack $ md ^. name
+            { methodName = fromString . T.unpack $ prefix <> md ^. name
             , methodInput = fromString . T.unpack $ md ^. inputType
             , methodOutput = fromString . T.unpack $ md ^. outputType
             , methodType =
