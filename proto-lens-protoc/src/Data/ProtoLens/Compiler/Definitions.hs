@@ -253,15 +253,15 @@ collectServices fd = fmap toServiceInfo $ fd ^. service
     toMethodInfo :: Text -> MethodDescriptorProto -> MethodInfo
     toMethodInfo prefix md =
         MethodInfo
-            { methodName = fromString . T.unpack $ prefix <> md ^. name
-            , methodInput = fromString . T.unpack $ md ^. inputType
+            { methodName   = fromString . T.unpack $ prefix <> md ^. name
+            , methodInput  = fromString . T.unpack $ md ^. inputType
             , methodOutput = fromString . T.unpack $ md ^. outputType
-            , methodType =
+            , methodType   =
                 case (md ^. clientStreaming, md ^. serverStreaming) of
                     (False, False) -> Normal
-                    (True, False)  -> ClientStreaming
                     (False, True)  -> ServerStreaming
-                    (True, True)   -> BiDiStreaming
+                    (True,  False) -> ClientStreaming
+                    (True,  True)  -> BiDiStreaming
             }
 
 messageAndEnumDefs :: Text -> String -> [DescriptorProto]
