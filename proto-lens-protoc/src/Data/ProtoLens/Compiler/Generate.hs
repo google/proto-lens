@@ -109,7 +109,7 @@ generateModule modName imports syntaxType modifyImport definitions importedEnv s
           ]
     sharedImports = map (modifyImport . importSimple)
               [ "Prelude", "Data.Int", "Data.Word"
-              , "Data.ProtoLens", "Data.ProtoLens.Message.Enum", "Data.ProtoLens.GRPC.Types"
+              , "Data.ProtoLens", "Data.ProtoLens.Message.Enum", "Data.ProtoLens.Service.Types"
               , "Lens.Family2", "Lens.Family2.Unchecked", "Data.Default.Class"
               , "Data.Text",  "Data.Map", "Data.ByteString"
               , "Lens.Labels", "Text.Read"
@@ -178,9 +178,9 @@ generateServiceDecls env si =
       ]
       $ deriving' []
     ] ++
-    -- instance Data.ProtoLens.GRPC.Types.Service MyService where
+    -- instance Data.ProtoLens.Service.Types.Service MyService where
     --     packHandlers s = [ NormalHandler (myService'NormalMethod s) ]
-    [ instDecl [] ("Data.ProtoLens.GRPC.Types.Service" `ihApp` [recordType])
+    [ instDecl [] ("Data.ProtoLens.Service.Types.Service" `ihApp` [recordType])
         [[match "packHandlers" [pVar "s"] $ list
             [ getMethodTypeExistentializer m @@ (var (unQual $ methodName m) @@ var "s")
             | m <- serviceMethods si
@@ -192,17 +192,17 @@ generateServiceDecls env si =
 
     getMethodTypeHandler mi =
         case methodType mi of
-            Normal          -> tyCon "Data.ProtoLens.GRPC.Types.ServerHandler"
-            ClientStreaming -> tyCon "Data.ProtoLens.GRPC.Types.ServerReaderHandler"
-            ServerStreaming -> tyCon "Data.ProtoLens.GRPC.Types.ServerWriterHandler"
-            BiDiStreaming   -> tyCon "Data.ProtoLens.GRPC.Types.ServerRWHandler"
+            Normal          -> tyCon "Data.ProtoLens.Service.Types.ServerHandler"
+            ClientStreaming -> tyCon "Data.ProtoLens.Service.Types.ServerReaderHandler"
+            ServerStreaming -> tyCon "Data.ProtoLens.Service.Types.ServerWriterHandler"
+            BiDiStreaming   -> tyCon "Data.ProtoLens.Service.Types.ServerRWHandler"
 
     getMethodTypeExistentializer mi =
         case methodType mi of
-            Normal          -> "Data.ProtoLens.GRPC.Types.NormalHandler"
-            ClientStreaming -> "Data.ProtoLens.GRPC.Types.ReaderHandler"
-            ServerStreaming -> "Data.ProtoLens.GRPC.Types.WriterHandler"
-            BiDiStreaming   -> "Data.ProtoLens.GRPC.Types.BiDiHandler"
+            Normal          -> "Data.ProtoLens.Service.Types.NormalHandler"
+            ClientStreaming -> "Data.ProtoLens.Service.Types.ReaderHandler"
+            ServerStreaming -> "Data.ProtoLens.Service.Types.WriterHandler"
+            BiDiStreaming   -> "Data.ProtoLens.Service.Types.BiDiHandler"
 
     buildMethodType mi =
         let getType t = case definedType t env of

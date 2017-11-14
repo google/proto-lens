@@ -94,9 +94,7 @@ import Data.ProtoLens.Compiler.Combinators
 -- either from this or another file).
 type Env n = Map.Map Text (Definition n)
 
-data Definition n
-    = Message (MessageInfo n)
-    | Enum (EnumInfo n)
+data Definition n = Message (MessageInfo n) | Enum (EnumInfo n)
     deriving Functor
 
 -- | All the information needed to define or use a proto message type.
@@ -249,7 +247,7 @@ collectServices fd = fmap toServiceInfo $ fd ^. service
     toServiceInfo sd =
         ServiceInfo
             { serviceName = fromString $ T.unpack $ sd ^. name
-            , serviceMethods = fmap (toMethodInfo . (<> "'") . lowerInitialChars $ sd ^. name) $ sd ^. method
+            , serviceMethods = fmap (toMethodInfo . (<> "'") . camelCase $ sd ^. name) $ sd ^. method
             }
 
     toMethodInfo :: Text -> MethodDescriptorProto -> MethodInfo

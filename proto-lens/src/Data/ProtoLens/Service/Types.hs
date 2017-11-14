@@ -1,6 +1,6 @@
 {-# LANGUAGE GADTs #-}
 
-module Data.ProtoLens.GRPC.Types where
+module Data.ProtoLens.Service.Types where
 
 import Data.ProtoLens.Message (Message)
 

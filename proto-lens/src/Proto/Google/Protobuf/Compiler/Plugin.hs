@@ -14,7 +14,6 @@ import qualified Data.Int
 import qualified Data.Word
 import qualified Data.ProtoLens
 import qualified Data.ProtoLens.Message.Enum
-import qualified Data.ProtoLens.GRPC.Types
 import qualified Lens.Family2
 import qualified Lens.Family2.Unchecked
 import qualified Data.Default.Class
