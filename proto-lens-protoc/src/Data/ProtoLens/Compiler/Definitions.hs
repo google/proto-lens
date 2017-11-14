@@ -14,6 +14,9 @@ module Data.ProtoLens.Compiler.Definitions
     ( Env
     , Definition(..)
     , MessageInfo(..)
+    , ServiceInfo(..)
+    , MethodInfo(..)
+    , MethodType(..)
     , FieldInfo(..)
     , OneofInfo(..)
     , OneofCase(..)
@@ -26,6 +29,7 @@ module Data.ProtoLens.Compiler.Definitions
     , qualifyEnv
     , unqualifyEnv
     , collectDefinitions
+    , collectServices
     , definedFieldType
     ) where
 
@@ -46,17 +50,25 @@ import Proto.Google.Protobuf.Descriptor
     , EnumValueDescriptorProto
     , FieldDescriptorProto
     , FileDescriptorProto
+    , MethodDescriptorProto
+    , ServiceDescriptorProto
     )
 import Proto.Google.Protobuf.Descriptor'Fields
-    ( enumType
+    ( clientStreaming
+    , enumType
     , field
+    , inputType
     , maybe'oneofIndex
     , messageType
+    , method
     , name
     , nestedType
     , number
     , oneofDecl
+    , outputType
     , package
+    , serverStreaming
+    , service
     , typeName
     , value
     )
@@ -81,7 +93,9 @@ import Data.ProtoLens.Compiler.Combinators
 -- either from this or another file).
 type Env n = Map.Map Text (Definition n)
 
-data Definition n = Message (MessageInfo n) | Enum (EnumInfo n)
+data Definition n
+    = Message (MessageInfo n)
+    | Enum (EnumInfo n)
     deriving Functor
 
 -- | All the information needed to define or use a proto message type.
@@ -96,6 +110,24 @@ data MessageInfo n = MessageInfo
       -- ^ The name of the Haskell field in this message that holds the
       -- unknown fields.
     } deriving Functor
+
+data ServiceInfo = ServiceInfo
+    { serviceName :: Name
+    , serviceMethods :: [MethodInfo]
+    }
+
+data MethodType
+    = Normal
+    | ClientStreaming
+    | ServerStreaming
+    | BiDiStreaming
+
+data MethodInfo = MethodInfo
+    { methodName :: Name
+    , methodInput :: Name
+    , methodOutput :: Name
+    , methodType :: MethodType
+    }
 
 -- | Information about a single field of a proto message.
 data FieldInfo = FieldInfo
@@ -201,6 +233,30 @@ collectDefinitions fd = let
     hsPrefix = ""
     in Map.fromList $ messageAndEnumDefs protoPrefix hsPrefix
                           (fd ^. messageType) (fd ^. enumType)
+
+collectServices :: FileDescriptorProto -> [ServiceInfo]
+collectServices fd = fmap toServiceInfo $ fd ^. service
+  where
+    toServiceInfo :: ServiceDescriptorProto -> ServiceInfo
+    toServiceInfo sd =
+        ServiceInfo
+            { serviceName = fromString . T.unpack $ sd ^. name
+            , serviceMethods = fmap toMethodInfo $ sd ^. method
+            }
+
+    toMethodInfo :: MethodDescriptorProto -> MethodInfo
+    toMethodInfo md =
+        MethodInfo
+            { methodName = fromString . T.unpack $ md ^. name
+            , methodInput = fromString . T.unpack $ md ^. inputType
+            , methodOutput = fromString . T.unpack $ md ^. outputType
+            , methodType =
+                case (md ^. clientStreaming, md ^. serverStreaming) of
+                    (False, False) -> Normal
+                    (True, False)  -> ClientStreaming
+                    (False, True)  -> ServerStreaming
+                    (True, True)   -> BiDiStreaming
+            }
 
 messageAndEnumDefs :: Text -> String -> [DescriptorProto]
                    -> [EnumDescriptorProto] -> [(Text, Definition Name)]

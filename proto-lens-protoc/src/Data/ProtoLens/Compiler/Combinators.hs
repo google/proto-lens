@@ -253,6 +253,9 @@ unQual = Syntax.UnQual ()
 type TyVarBind = Syntax.TyVarBind ()
 type Type = Syntax.Type ()
 
+tyFun :: Type -> Type -> Type
+tyFun = Syntax.TyFun ()
+
 tyCon :: QName -> Type
 tyCon = Syntax.TyCon ()
 

@@ -35,6 +35,7 @@ import Proto.Google.Protobuf.Descriptor
     , FieldDescriptorProto'Label(..)
     , FieldDescriptorProto'Type(..)
     , FileDescriptorProto
+    , ServiceDescriptorProto
     )
 import Proto.Google.Protobuf.Descriptor'Fields
     ( defaultValue
@@ -76,13 +77,15 @@ generateModule :: ModuleName
                -> ModifyImports
                -> Env Name      -- ^ Definitions in this file
                -> Env QName     -- ^ Definitions in the imported modules
+               -> [ServiceInfo]
                -> [Module]
-generateModule modName imports syntaxType modifyImport definitions importedEnv
+generateModule modName imports syntaxType modifyImport definitions importedEnv services
     = [ module' modName
                 (Just $ concatMap generateExports $ Map.elems definitions)
                 pragmas
                 sharedImports
-          . concatMap generateDecls $ Map.toList definitions
+          $ (concatMap generateDecls $ Map.toList definitions)
+         ++ concatMap generateServiceDecls services
       , module' fieldModName
                 Nothing
                 pragmas
@@ -161,6 +164,27 @@ generateMessageExports :: MessageInfo Name -> [ExportSpec]
 generateMessageExports m =
     map (exportAll . unQual)
         $ messageName m : map oneofTypeName (messageOneofFields m)
+
+generateServiceDecls :: ServiceInfo -> [Decl]
+generateServiceDecls si =
+    -- data Service = Service {
+    --    normalMethod :: Input -> IO Output
+    -- }
+    [ dataDecl dataName
+      [ recDecl dataName
+          [ (methodName m, buildMethodType m)
+          | m <- serviceMethods si
+          ]
+      ]
+      $ deriving' []
+    ]
+  where
+    dataName = serviceName si
+    buildMethodType mi =
+        case methodType mi of
+            Normal -> tyFun (tyCon . unQual $ methodInput mi) (tyCon "Prelude.IO" @@ (tyCon . unQual $ methodOutput mi))
+            _ -> error "DONT DO IT YET"
+
 
 generateMessageDecls :: SyntaxType -> Env QName -> T.Text -> MessageInfo Name -> [Decl]
 generateMessageDecls syntaxType env protoName info =
