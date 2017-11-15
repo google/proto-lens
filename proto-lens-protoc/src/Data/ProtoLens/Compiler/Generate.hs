@@ -167,8 +167,9 @@ generateMessageExports m =
 
 generateServiceDecls :: Env QName -> ServiceInfo -> [Decl]
 generateServiceDecls env si =
-    -- data MyService = MyService {
-    --    myService'NormalMethod :: ServerHandler Foo Bar
+    -- data MyService'Server = MyService'Server {
+    --    myService'NormalMethod'handler :: ServerHandler Foo Bar
+    --    myService'StreamingMethod'handler :: ServerBiDiHandler Foo Bar
     -- }
     [ dataDecl serverDataName
       [ recDecl serverDataName
@@ -179,7 +180,14 @@ generateServiceDecls env si =
       $ deriving' []
     ] ++
     -- instance Data.ProtoLens.Service.Types.Service MyService where
-    --     packHandlers s = [ NormalHandler (myService'NormalMethod s) ]
+    --     packHandlers s = Data.Map.fromList
+    --         [ ( Data.ByteString.Char8.pack "/takt.MyService/NormalMethod"
+    --           , NormalHandler (myService'NormalMethod'handler s)
+    --           )
+    --         , ( Data.ByteString.Char8.pack "/takt.MyService/StreamingMethod"
+    --           , BiDiHandler (myService'StreamingMethod'handler s)
+    --           )
+    --         ]
     [ instDecl [] ("Data.ProtoLens.Service.Types.Service" `ihApp` [serverRecordType])
         [[match "packHandlers" [pVar "s"] $ (@@) "Data.Map.fromList" $ list
             [ tuple
@@ -191,8 +199,9 @@ generateServiceDecls env si =
             | m <- serviceMethods si
             ]]]
     ] ++
-    -- data MyService = MyService {
-    --    myService'NormalMethod :: ServerHandler Foo Bar
+    -- data MyService'Client = MyService'Client {
+    --    myService'NormalMethod :: ClientHandler Foo Bar
+    --    myService'StreamingMethod :: ClientBiDiHandler Foo Bar
     -- }
     [ dataDecl clientDataName
       [ recDecl clientDataName
