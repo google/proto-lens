@@ -2,8 +2,7 @@
 {-# LANGUAGE ScopedTypeVariables, DataKinds, TypeFamilies,
   UndecidableInstances, GeneralizedNewtypeDeriving,
   MultiParamTypeClasses, FlexibleContexts, FlexibleInstances,
-  OverloadedStrings, PatternSynonyms, MagicHash, NoImplicitPrelude
-  #-}
+  PatternSynonyms, MagicHash, NoImplicitPrelude #-}
 {-# OPTIONS_GHC -fno-warn-unused-imports #-}
 {-# OPTIONS_GHC -fno-warn-duplicate-exports #-}
 module Proto.Google.Protobuf.Compiler.Plugin'Fields where
@@ -19,6 +18,7 @@ import qualified Data.Default.Class
 import qualified Data.Text
 import qualified Data.Map
 import qualified Data.ByteString
+import qualified Data.ByteString.Char8
 import qualified Lens.Labels
 import qualified Text.Read
 import qualified Proto.Google.Protobuf.Descriptor

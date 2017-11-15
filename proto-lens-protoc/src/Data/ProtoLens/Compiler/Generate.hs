@@ -98,7 +98,7 @@ generateModule modName imports syntaxType modifyImport definitions importedEnv s
           [ languagePragma $ map fromString
               ["ScopedTypeVariables", "DataKinds", "TypeFamilies",
                "UndecidableInstances", "GeneralizedNewtypeDeriving",
-               "MultiParamTypeClasses", "FlexibleContexts", "FlexibleInstances", "OverloadedStrings",
+               "MultiParamTypeClasses", "FlexibleContexts", "FlexibleInstances",
                "PatternSynonyms", "MagicHash", "NoImplicitPrelude"]
               -- Allow unused imports in case we don't import anything from
               -- Data.Text, Data.Int, etc.
@@ -111,8 +111,8 @@ generateModule modName imports syntaxType modifyImport definitions importedEnv s
               [ "Prelude", "Data.Int", "Data.Word"
               , "Data.ProtoLens", "Data.ProtoLens.Message.Enum", "Data.ProtoLens.Service.Types"
               , "Lens.Family2", "Lens.Family2.Unchecked", "Data.Default.Class"
-              , "Data.Text",  "Data.Map", "Data.ByteString", -- "Data.ByteString.Char8"
-                "Lens.Labels", "Text.Read"
+              , "Data.Text",  "Data.Map", "Data.ByteString", "Data.ByteString.Char8"
+              , "Lens.Labels", "Text.Read"
               ]
             ++ map importSimple imports
     env = Map.union (unqualifyEnv definitions) importedEnv
@@ -183,8 +183,8 @@ generateServiceDecls env si =
     [ instDecl [] ("Data.ProtoLens.Service.Types.Service" `ihApp` [serverRecordType])
         [[match "packHandlers" [pVar "s"] $ (@@) "Data.Map.fromList" $ list
             [ tuple
-                [ -- "Data.ByteString.Char8.pack" @@
-                   stringExp (T.unpack $ methodPath m)
+                [ "Data.ByteString.Char8.pack"
+                    @@ stringExp (T.unpack $ methodPath m)
                 , getMethodTypeExistentializer m
                     @@ (var (unQual $ methodServerName m) @@ var "s")
                 ]

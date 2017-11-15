@@ -4,7 +4,7 @@ packages:
 # Build the current HEAD proto-lens-protoc against older revisions of proto-lens
 # and proto-lens-descriptors that are consistent with each other.
 - location:
-    commit: 2eddd2a63f64fd6d51c6986e8e240cb87c0bc4d3
+    commit: 5766ceca2558b1721204ba74d3d080a3d98a7d37
     # To use the github master:
     # git: https://github.com/google/proto-lens
     # To use the current repository:
