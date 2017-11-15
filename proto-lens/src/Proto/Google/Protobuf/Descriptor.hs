@@ -2,7 +2,8 @@
 {-# LANGUAGE ScopedTypeVariables, DataKinds, TypeFamilies,
   UndecidableInstances, GeneralizedNewtypeDeriving,
   MultiParamTypeClasses, FlexibleContexts, FlexibleInstances,
-  PatternSynonyms, MagicHash, NoImplicitPrelude #-}
+  OverloadedStrings, PatternSynonyms, MagicHash, NoImplicitPrelude
+  #-}
 {-# OPTIONS_GHC -fno-warn-unused-imports #-}
 {-# OPTIONS_GHC -fno-warn-duplicate-exports #-}
 module Proto.Google.Protobuf.Descriptor

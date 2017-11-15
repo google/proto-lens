@@ -111,7 +111,8 @@ data MessageInfo n = MessageInfo
     } deriving Functor
 
 data ServiceInfo = ServiceInfo
-    { serviceName :: Name
+    { serviceServerName :: Name
+    , serviceClientName :: Name
     , serviceMethods :: [MethodInfo]
     }
 
@@ -122,7 +123,9 @@ data MethodType
     | BiDiStreaming
 
 data MethodInfo = MethodInfo
-    { methodName :: Name
+    { methodPath :: Text
+    , methodServerName :: Name
+    , methodClientName :: Name
     , methodInput :: Text
     , methodOutput :: Text
     , methodType :: MethodType
@@ -241,28 +244,34 @@ collectDefinitions fd = let
                           (fd ^. messageType) (fd ^. enumType)
 
 collectServices :: FileDescriptorProto -> [ServiceInfo]
-collectServices fd = fmap toServiceInfo $ fd ^. service
+collectServices fd = fmap (toServiceInfo $ fd ^. package) $ fd ^. service
   where
-    toServiceInfo :: ServiceDescriptorProto -> ServiceInfo
-    toServiceInfo sd =
+    toServiceInfo :: Text -> ServiceDescriptorProto -> ServiceInfo
+    toServiceInfo pkg sd =
         ServiceInfo
-            { serviceName = fromString $ T.unpack $ sd ^. name
-            , serviceMethods = fmap (toMethodInfo . (<> "'") . camelCase $ sd ^. name) $ sd ^. method
+            { serviceServerName = fromString . (<> "'Server") . T.unpack $ sd ^. name
+            , serviceClientName = fromString . (<> "'Client") . T.unpack $ sd ^. name
+            , serviceMethods = fmap (toMethodInfo pkg sd) $ sd ^. method
             }
 
-    toMethodInfo :: Text -> MethodDescriptorProto -> MethodInfo
-    toMethodInfo prefix md =
+    toMethodInfo :: Text -> ServiceDescriptorProto -> MethodDescriptorProto -> MethodInfo
+    toMethodInfo pkg sd md =
         MethodInfo
-            { methodName   = fromString . T.unpack $ prefix <> md ^. name
-            , methodInput  = fromString . T.unpack $ md ^. inputType
-            , methodOutput = fromString . T.unpack $ md ^. outputType
-            , methodType   =
+            -- TODO(sandy): is this correct for protos without a package?
+            { methodPath       = "/" <> pkg <> "." <> sd ^. name <> "/" <> md ^. name
+            , methodServerName = fromString . T.unpack $ prefix <> md ^. name <> "'handler"
+            , methodClientName = fromString . T.unpack $ prefix <> md ^. name
+            , methodInput      = fromString . T.unpack $ md ^. inputType
+            , methodOutput     = fromString . T.unpack $ md ^. outputType
+            , methodType       =
                 case (md ^. clientStreaming, md ^. serverStreaming) of
                     (False, False) -> Normal
                     (False, True)  -> ServerStreaming
                     (True,  False) -> ClientStreaming
                     (True,  True)  -> BiDiStreaming
             }
+      where
+        prefix = (<> "'") . camelCase $ sd ^. name
 
 messageAndEnumDefs :: Text -> String -> [DescriptorProto]
                    -> [EnumDescriptorProto] -> [(Text, Definition Name)]

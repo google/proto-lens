@@ -98,7 +98,7 @@ generateModule modName imports syntaxType modifyImport definitions importedEnv s
           [ languagePragma $ map fromString
               ["ScopedTypeVariables", "DataKinds", "TypeFamilies",
                "UndecidableInstances", "GeneralizedNewtypeDeriving",
-               "MultiParamTypeClasses", "FlexibleContexts", "FlexibleInstances",
+               "MultiParamTypeClasses", "FlexibleContexts", "FlexibleInstances", "OverloadedStrings",
                "PatternSynonyms", "MagicHash", "NoImplicitPrelude"]
               -- Allow unused imports in case we don't import anything from
               -- Data.Text, Data.Int, etc.
@@ -111,8 +111,8 @@ generateModule modName imports syntaxType modifyImport definitions importedEnv s
               [ "Prelude", "Data.Int", "Data.Word"
               , "Data.ProtoLens", "Data.ProtoLens.Message.Enum", "Data.ProtoLens.Service.Types"
               , "Lens.Family2", "Lens.Family2.Unchecked", "Data.Default.Class"
-              , "Data.Text",  "Data.Map", "Data.ByteString"
-              , "Lens.Labels", "Text.Read"
+              , "Data.Text",  "Data.Map", "Data.ByteString", -- "Data.ByteString.Char8"
+                "Lens.Labels", "Text.Read"
               ]
             ++ map importSimple imports
     env = Map.union (unqualifyEnv definitions) importedEnv
@@ -170,9 +170,9 @@ generateServiceDecls env si =
     -- data MyService = MyService {
     --    myService'NormalMethod :: ServerHandler Foo Bar
     -- }
-    [ dataDecl dataName
-      [ recDecl dataName
-          [ (methodName m, buildMethodType m)
+    [ dataDecl serverDataName
+      [ recDecl serverDataName
+          [ (methodServerName m, buildServerMethodType m)
           | m <- serviceMethods si
           ]
       ]
@@ -180,17 +180,35 @@ generateServiceDecls env si =
     ] ++
     -- instance Data.ProtoLens.Service.Types.Service MyService where
     --     packHandlers s = [ NormalHandler (myService'NormalMethod s) ]
-    [ instDecl [] ("Data.ProtoLens.Service.Types.Service" `ihApp` [recordType])
-        [[match "packHandlers" [pVar "s"] $ list
-            [ getMethodTypeExistentializer m @@ (var (unQual $ methodName m) @@ var "s")
+    [ instDecl [] ("Data.ProtoLens.Service.Types.Service" `ihApp` [serverRecordType])
+        [[match "packHandlers" [pVar "s"] $ (@@) "Data.Map.fromList" $ list
+            [ tuple
+                [ -- "Data.ByteString.Char8.pack" @@
+                   stringExp (T.unpack $ methodPath m)
+                , getMethodTypeExistentializer m
+                    @@ (var (unQual $ methodServerName m) @@ var "s")
+                ]
             | m <- serviceMethods si
             ]]]
+    ] ++
+    -- data MyService = MyService {
+    --    myService'NormalMethod :: ServerHandler Foo Bar
+    -- }
+    [ dataDecl clientDataName
+      [ recDecl clientDataName
+          [ (methodClientName m, buildClientMethodType m)
+          | m <- serviceMethods si
+          ]
+      ]
+      $ deriving' []
     ]
   where
-    dataName = serviceName si
-    recordType = tyCon $ unQual dataName
+    serverDataName = serviceServerName si
+    serverRecordType = tyCon $ unQual serverDataName
+    clientDataName = serviceClientName si
+    clientRecordType = tyCon $ unQual clientDataName
 
-    getMethodTypeHandler mi =
+    getServerMethodType mi =
         case methodType mi of
             Normal          -> tyCon "Data.ProtoLens.Service.Types.ServerHandler"
             ClientStreaming -> tyCon "Data.ProtoLens.Service.Types.ServerReaderHandler"
@@ -204,13 +222,28 @@ generateServiceDecls env si =
             ServerStreaming -> "Data.ProtoLens.Service.Types.WriterHandler"
             BiDiStreaming   -> "Data.ProtoLens.Service.Types.BiDiHandler"
 
-    buildMethodType mi =
+    buildServerMethodType mi =
         let getType t = case definedType t env of
                             Message msg -> tyCon $ messageName msg
                             Enum _ -> error "Service must have a message type"
             input  = getType $ methodInput mi
             output = getType $ methodOutput mi
-         in getMethodTypeHandler mi @@ input @@ output
+         in getServerMethodType mi @@ input @@ output
+
+    getClientMethodType mi =
+        case methodType mi of
+            Normal          -> tyCon "Data.ProtoLens.Service.Types.ClientHandler"
+            ClientStreaming -> tyCon "Data.ProtoLens.Service.Types.ClientWriterHandler"
+            ServerStreaming -> tyCon "Data.ProtoLens.Service.Types.ClientReaderHandler"
+            BiDiStreaming   -> tyCon "Data.ProtoLens.Service.Types.ClientRWHandler"
+
+    buildClientMethodType mi =
+        let getType t = case definedType t env of
+                            Message msg -> tyCon $ messageName msg
+                            Enum _ -> error "Service must have a message type"
+            input  = getType $ methodInput mi
+            output = getType $ methodOutput mi
+         in getClientMethodType mi @@ input @@ output
 
 
 generateMessageDecls :: SyntaxType -> Env QName -> T.Text -> MessageInfo Name -> [Decl]
