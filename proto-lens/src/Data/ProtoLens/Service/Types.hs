@@ -24,6 +24,7 @@ instance (HasAllMethods s ms, HasMethod s m) => HasAllMethods s (m ': ms)
 
 
 class HasAllMethods s (ServiceMethods s) => Service s where
+  type ServiceName s    :: Symbol
   type ServiceMethods s :: [Symbol]
 
 

@@ -110,7 +110,7 @@ data MessageInfo n = MessageInfo
     } deriving Functor
 
 data ServiceInfo = ServiceInfo
-    { serviceServerName :: Name
+    { serviceName :: Text
     , serviceMethods :: [MethodInfo]
     }
 
@@ -241,7 +241,7 @@ collectServices fd = fmap (toServiceInfo $ fd ^. package) $ fd ^. service
     toServiceInfo :: Text -> ServiceDescriptorProto -> ServiceInfo
     toServiceInfo pkg sd =
         ServiceInfo
-            { serviceServerName = fromString . T.unpack $ sd ^. name
+            { serviceName = sd ^. name
             , serviceMethods = fmap (toMethodInfo pkg sd) $ sd ^. method
             }
 

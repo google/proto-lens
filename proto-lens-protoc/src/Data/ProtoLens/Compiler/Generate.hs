@@ -176,9 +176,13 @@ generateServiceDecls env si =
       $ deriving' []
     ] ++
     -- instance Data.ProtoLens.Service.Types.Service MyService where
+    --     type ServiceName    MyService = "MyService"
     --     type ServiceMethods MyService = '["NormalMethod", "StreamingMethod"]
     [ instAssocDecl [] ("Data.ProtoLens.Service.Types.Service" `ihApp` [serverRecordType])
-        [ ( "ServiceMethods" @@ serverRecordType
+        [ ( "ServiceName" @@ serverRecordType
+          , tyPromotedString . T.unpack $ serviceName si
+          )
+        , ( "ServiceMethods" @@ serverRecordType
           , tyPromotedList
               [ tyPromotedString . T.unpack $ methodIdent m
               | m <- List.sortBy (comparing methodIdent) $ serviceMethods si
@@ -213,7 +217,7 @@ generateServiceDecls env si =
     , let instanceHead = tyPromotedString (T.unpack $ methodIdent m)
     ]
   where
-    serverDataName = serviceServerName si
+    serverDataName = fromString . T.unpack $ serviceName si
     serverRecordType = tyCon $ unQual serverDataName
 
     lookupType t = case definedType t env of
@@ -319,7 +323,7 @@ generateEnumExports syntaxType e = [exportAll n, exportWith n aliases] ++ proto3
       else []
 
 generateServiceExports :: ServiceInfo -> ExportSpec
-generateServiceExports si = exportAll $ unQual $ serviceServerName si
+generateServiceExports si = exportAll $ unQual $ fromString $ T.unpack $ serviceName si
 
 generateEnumDecls :: SyntaxType -> EnumInfo Name -> [Decl]
 generateEnumDecls Proto3 info =
