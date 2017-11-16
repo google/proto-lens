@@ -224,22 +224,26 @@ generateServiceDecls env si =
         ]
     ] ++
     -- instance Data.ProtoLens.Service.Types.HasMethod MyService "NormalMethod" where
+    --     methodPath _ _ = Data.ByteString.Char8.pack "/takt.MyService/NormalMethod"
     --     type MethodInput       MyService "NormalMethod" = Foo
     --     type MethodOutput      MyService "NormalMethod" = Bar
     --     type IsClientStreaming MyService "NormalMethod" = 'False
     --     type IsServerStreaming MyService "NormalMethod" = 'False
-    [ instAssocDecl [] ("Data.ProtoLens.Service.Types.HasMethod" `ihApp` [serverRecordType, instanceHead])
-        [ ( "MethodInput" @@ serverRecordType @@ instanceHead
+    [ instOK [] ("Data.ProtoLens.Service.Types.HasMethod" `ihApp` [serverRecordType, instanceHead])
+        [ instMatch [ match "methodPath" [pWildCard, pWildCard] $
+                          "Data.ByteString.Char8.pack" @@ stringExp (T.unpack $ methodPath m)
+                    ]
+        , uncurry instType ( "MethodInput" @@ serverRecordType @@ instanceHead
           , lookupType $ methodInput m
           )
-        , ( "MethodOutput" @@ serverRecordType @@ instanceHead
+        , uncurry instType ( "MethodOutput" @@ serverRecordType @@ instanceHead
           , lookupType $ methodOutput m
           )
-        , ( "IsClientStreaming" @@ serverRecordType @@ instanceHead
+        , uncurry instType ( "IsClientStreaming" @@ serverRecordType @@ instanceHead
           , tyPromotedBool $ methodType m == ClientStreaming
                           || methodType m == BiDiStreaming
           )
-        , ( "IsServerStreaming" @@ serverRecordType @@ instanceHead
+        , uncurry instType ( "IsServerStreaming" @@ serverRecordType @@ instanceHead
           , tyPromotedBool $ methodType m == ServerStreaming
                           || methodType m == BiDiStreaming
           )

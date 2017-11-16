@@ -10,6 +10,7 @@
 
 module Data.ProtoLens.Service.Types where
 
+import Data.Proxy (Proxy)
 import GHC.TypeLits
 import Data.ByteString (ByteString)
 import qualified Data.Map as M
@@ -55,6 +56,7 @@ class HasAllMethods s (ServiceMethods s) => Service' s where
 
 
 class KnownSymbol m => HasMethod s (m :: Symbol) where
+  methodPath :: Proxy s -> Proxy m -> ByteString
   type MethodInput       s m :: *
   type MethodOutput      s m :: *
   type IsServerStreaming s m :: Bool

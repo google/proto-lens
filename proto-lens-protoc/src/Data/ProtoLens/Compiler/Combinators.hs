@@ -100,11 +100,28 @@ deriving' classes = Syntax.Deriving ()
 funBind :: [Match] -> Decl
 funBind = Syntax.FunBind ()
 
+instType :: Type -> Type -> Syntax.InstDecl ()
+instType = Syntax.InsType ()
+
+instMatch :: [Match] -> Syntax.InstDecl ()
+instMatch m = Syntax.InsDecl () $ funBind m
+
+instOK :: [Asst] -> InstHead -> [Syntax.InstDecl ()] -> Decl
+instOK ctx instHead decls
+    = Syntax.InstDecl () Nothing
+        (Syntax.IRule () Nothing ctx' instHead)
+        $ Just decls
+  where
+    ctx' = case ctx of
+        [] -> Nothing
+        [c] -> Just $ Syntax.CxSingle () c
+        cs -> Just $ Syntax.CxTuple () cs
+
 instAssocDecl :: [Asst] -> InstHead -> [(Type, Type)] -> Decl
 instAssocDecl ctx instHead assocs
     = Syntax.InstDecl () Nothing
         (Syntax.IRule () Nothing ctx' instHead)
-        $ Just [uncurry (Syntax.InsType ()) a | a <- assocs]
+        $ Just [uncurry instType a | a <- assocs]
   where
     ctx' = case ctx of
         [] -> Nothing
@@ -115,7 +132,7 @@ instDecl :: [Asst] -> InstHead -> [[Match]] -> Decl
 instDecl ctx instHead matches
     = Syntax.InstDecl () Nothing
         (Syntax.IRule () Nothing ctx' instHead)
-        $ Just [Syntax.InsDecl () $ funBind m | m <- matches]
+        $ Just [instMatch m | m <- matches]
   where
     ctx' = case ctx of
         [] -> Nothing
