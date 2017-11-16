@@ -99,7 +99,8 @@ generateModule modName imports syntaxType modifyImport definitions importedEnv s
               ["ScopedTypeVariables", "DataKinds", "TypeFamilies",
                "UndecidableInstances", "GeneralizedNewtypeDeriving",
                "MultiParamTypeClasses", "FlexibleContexts", "FlexibleInstances",
-               "PatternSynonyms", "MagicHash", "NoImplicitPrelude"]
+               "PatternSynonyms", "MagicHash", "NoImplicitPrelude",
+               "DataKinds"]
               -- Allow unused imports in case we don't import anything from
               -- Data.Text, Data.Int, etc.
           , optionsGhcPragma "-fno-warn-unused-imports"
@@ -210,6 +211,41 @@ generateServiceDecls env si =
           ]
       ]
       $ deriving' []
+    ] ++
+    -- instance Data.ProtoLens.Service.Types.Service' MyService where
+    --     type ServiceMethods MyService = '["NormalMethod", "StreamingMethod"]
+    [ instAssocDecl [] ("Data.ProtoLens.Service.Types.Service'" `ihApp` [serverRecordType])
+        [ ( "ServiceMethods" @@ serverRecordType
+          , tyPromotedList
+              [ tyPromotedString . T.unpack $ methodIdent m
+              | m <- serviceMethods si
+              ]
+          )
+        ]
+    ] ++
+    -- instance Data.ProtoLens.Service.Types.HasMethod MyService "NormalMethod" where
+    --     type MethodInput       MyService "NormalMethod" = Foo
+    --     type MethodOutput      MyService "NormalMethod" = Bar
+    --     type IsClientStreaming MyService "NormalMethod" = 'False
+    --     type IsServerStreaming MyService "NormalMethod" = 'False
+    [ instAssocDecl [] ("Data.ProtoLens.Service.Types.HasMethod" `ihApp` [serverRecordType, instanceHead])
+        [ ( "MethodInput" @@ serverRecordType @@ instanceHead
+          , lookupType $ methodInput m
+          )
+        , ( "MethodOutput" @@ serverRecordType @@ instanceHead
+          , lookupType $ methodOutput m
+          )
+        , ( "IsClientStreaming" @@ serverRecordType @@ instanceHead
+          , tyPromotedBool $ methodType m == ClientStreaming
+                          || methodType m == BiDiStreaming
+          )
+        , ( "IsServerStreaming" @@ serverRecordType @@ instanceHead
+          , tyPromotedBool $ methodType m == ServerStreaming
+                          || methodType m == BiDiStreaming
+          )
+        ]
+    | m <- serviceMethods si
+    , let instanceHead = tyPromotedString (T.unpack $ methodIdent m)
     ]
   where
     serverDataName = serviceServerName si
@@ -231,12 +267,13 @@ generateServiceDecls env si =
             ServerStreaming -> "Data.ProtoLens.Service.Types.WriterHandler"
             BiDiStreaming   -> "Data.ProtoLens.Service.Types.BiDiHandler"
 
+    lookupType t = case definedType t env of
+                       Message msg -> tyCon $ messageName msg
+                       Enum _ -> error "Service must have a message type"
+
     buildServerMethodType mi =
-        let getType t = case definedType t env of
-                            Message msg -> tyCon $ messageName msg
-                            Enum _ -> error "Service must have a message type"
-            input  = getType $ methodInput mi
-            output = getType $ methodOutput mi
+        let input  = lookupType $ methodInput mi
+            output = lookupType $ methodOutput mi
          in getServerMethodType mi @@ input @@ output
 
     getClientMethodType mi =
@@ -247,11 +284,8 @@ generateServiceDecls env si =
             BiDiStreaming   -> tyCon "Data.ProtoLens.Service.Types.ClientRWHandler"
 
     buildClientMethodType mi =
-        let getType t = case definedType t env of
-                            Message msg -> tyCon $ messageName msg
-                            Enum _ -> error "Service must have a message type"
-            input  = getType $ methodInput mi
-            output = getType $ methodOutput mi
+        let input  = lookupType $ methodInput mi
+            output = lookupType $ methodOutput mi
          in getClientMethodType mi @@ input @@ output
 
 

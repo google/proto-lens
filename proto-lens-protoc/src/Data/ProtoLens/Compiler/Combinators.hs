@@ -7,6 +7,7 @@
 {-# OPTIONS_GHC -fno-warn-orphans #-}
 {-# LANGUAGE CPP #-}
 {-# LANGUAGE FlexibleInstances #-}
+{-# LANGUAGE OverloadedStrings #-}
 -- | Some utility functions, classes and instances for nicer code generation.
 --
 -- Re-exports simpler versions of the types and constructors from
@@ -23,6 +24,7 @@ module Data.ProtoLens.Compiler.Combinators
     , Syntax.ImportDecl(..)
     ) where
 
+import Data.Bool (bool)
 import Data.Char (isAlphaNum, isUpper)
 import Data.String (IsString(..))
 #if MIN_VERSION_haskell_src_exts(1,18,0)
@@ -97,6 +99,17 @@ deriving' classes = Syntax.Deriving ()
 
 funBind :: [Match] -> Decl
 funBind = Syntax.FunBind ()
+
+instAssocDecl :: [Asst] -> InstHead -> [(Type, Type)] -> Decl
+instAssocDecl ctx instHead assocs
+    = Syntax.InstDecl () Nothing
+        (Syntax.IRule () Nothing ctx' instHead)
+        $ Just [uncurry (Syntax.InsType ()) a | a <- assocs]
+  where
+    ctx' = case ctx of
+        [] -> Nothing
+        [c] -> Just $ Syntax.CxSingle () c
+        cs -> Just $ Syntax.CxTuple () cs
 
 instDecl :: [Asst] -> InstHead -> [[Match]] -> Decl
 instDecl ctx instHead matches
@@ -259,8 +272,14 @@ tyCon = Syntax.TyCon ()
 tyList :: Type -> Type
 tyList = Syntax.TyList ()
 
+tyPromotedList :: [Type] -> Type
+tyPromotedList ts = Syntax.TyPromoted () $ Syntax.PromotedList () True ts
+
 tyPromotedString :: String -> Type
 tyPromotedString s = Syntax.TyPromoted () $ Syntax.PromotedString () s s
+
+tyPromotedBool :: Bool -> Type
+tyPromotedBool b = Syntax.TyPromoted () $ Syntax.PromotedCon () True $ bool "Prelude.False" "Prelude.True" b
 
 tyForAll :: [TyVarBind] -> [Asst] -> Type -> Type
 tyForAll vars ctx t = Syntax.TyForall () (Just vars)
@@ -297,7 +316,7 @@ instance IsString Name where
 -- | Whether this character belongs to an Ident (e.g., "foo") or a symbol
 -- (e.g., "<$>").
 isIdentChar :: Char -> Bool
-isIdentChar c = isAlphaNum c || c `elem` "_'"
+isIdentChar c = isAlphaNum c || c `elem` ("_'" :: String)
 
 instance IsString ModuleName where
     fromString = Syntax.ModuleName ()

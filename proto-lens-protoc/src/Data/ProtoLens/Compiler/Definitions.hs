@@ -121,9 +121,11 @@ data MethodType
     | ClientStreaming
     | ServerStreaming
     | BiDiStreaming
+    deriving (Eq)
 
 data MethodInfo = MethodInfo
-    { methodPath :: Text
+    { methodIdent :: Text
+    , methodPath :: Text
     , methodServerName :: Name
     , methodClientName :: Name
     , methodInput :: Text
@@ -258,7 +260,8 @@ collectServices fd = fmap (toServiceInfo $ fd ^. package) $ fd ^. service
     toMethodInfo pkg sd md =
         MethodInfo
             -- TODO(sandy): is this correct for protos without a package?
-            { methodPath       = "/" <> pkg <> "." <> sd ^. name <> "/" <> md ^. name
+            { methodIdent      = md ^. name
+            , methodPath       = "/" <> pkg <> "." <> sd ^. name <> "/" <> md ^. name
             , methodServerName = fromString . T.unpack $ prefix <> md ^. name <> "'handler"
             , methodClientName = fromString . T.unpack $ prefix <> md ^. name
             , methodInput      = fromString . T.unpack $ md ^. inputType
