@@ -81,7 +81,7 @@ generateModule :: ModuleName
                -> [Module]
 generateModule modName imports syntaxType modifyImport definitions importedEnv services
     = [ module' modName
-                (Just $ concatMap generateExports $ Map.elems definitions)
+                (Just $ (serviceExports ++) $ concatMap generateExports $ Map.elems definitions)
                 pragmas
                 sharedImports
           $ (concatMap generateDecls $ Map.toList definitions)
@@ -122,6 +122,7 @@ generateModule modName imports syntaxType modifyImport definitions importedEnv s
     generateDecls (_, Enum e) = generateEnumDecls syntaxType e
     generateExports (Message m) = generateMessageExports m
     generateExports (Enum e) = generateEnumExports syntaxType e
+    serviceExports = fmap generateServiceExports services
     allLensNames = F.toList $ Set.fromList
         [ lensSymbol inst
         | Message m <- Map.elems definitions
@@ -389,6 +390,9 @@ generateEnumExports syntaxType e = [exportAll n, exportWith n aliases] ++ proto3
     proto3NewType = if syntaxType == Proto3
       then [exportVar . unQual $ enumUnrecognizedValueName e]
       else []
+
+generateServiceExports :: ServiceInfo -> ExportSpec
+generateServiceExports si = exportAll $ unQual $ serviceServerName si
 
 generateEnumDecls :: SyntaxType -> EnumInfo Name -> [Decl]
 generateEnumDecls Proto3 info =
