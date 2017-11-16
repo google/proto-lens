@@ -31,6 +31,7 @@ module Data.ProtoLens.Compiler.Definitions
     , collectServices
     , definedFieldType
     , definedType
+    , camelCase
     ) where
 
 import Data.Char (isUpper, toUpper)
@@ -248,8 +249,8 @@ collectServices fd = fmap (toServiceInfo $ fd ^. package) $ fd ^. service
     toMethodInfo :: Text -> ServiceDescriptorProto -> MethodDescriptorProto -> MethodInfo
     toMethodInfo pkg sd md =
         MethodInfo
+            { methodIdent      = camelCase $ md ^. name
             -- TODO(sandy): is this correct for protos without a package?
-            { methodIdent      = md ^. name
             , methodPath       = "/" <> pkg <> "." <> sd ^. name <> "/" <> md ^. name
             , methodInput      = fromString . T.unpack $ md ^. inputType
             , methodOutput     = fromString . T.unpack $ md ^. outputType

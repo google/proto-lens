@@ -180,7 +180,7 @@ generateServiceDecls env si =
     --     type ServiceMethods MyService = '["NormalMethod", "StreamingMethod"]
     [ instAssocDecl [] ("Data.ProtoLens.Service.Types.Service" `ihApp` [serverRecordType])
         [ ( "ServiceName" @@ serverRecordType
-          , tyPromotedString . T.unpack $ serviceName si
+          , tyPromotedString . T.unpack $ camelCase $ serviceName si
           )
         , ( "ServiceMethods" @@ serverRecordType
           , tyPromotedList
