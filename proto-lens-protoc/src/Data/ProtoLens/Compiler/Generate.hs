@@ -169,57 +169,19 @@ generateMessageExports m =
 
 generateServiceDecls :: Env QName -> ServiceInfo -> [Decl]
 generateServiceDecls env si =
-    -- data MyService'Server = MyService'Server {
-    --    myService'NormalMethod'handler :: ServerHandler Foo Bar
-    --    myService'StreamingMethod'handler :: ServerBiDiHandler Foo Bar
-    -- }
+    -- data MyService = MyService
     [ dataDecl serverDataName
-      [ recDecl serverDataName
-          [ (methodServerName m, buildServerMethodType m)
-          | m <- serviceMethods si
-          ]
+      [ recDecl serverDataName []
       ]
       $ deriving' []
     ] ++
     -- instance Data.ProtoLens.Service.Types.Service MyService where
-    --     packHandlers s = Data.Map.fromList
-    --         [ ( Data.ByteString.Char8.pack "/takt.MyService/NormalMethod"
-    --           , NormalHandler (myService'NormalMethod'handler s)
-    --           )
-    --         , ( Data.ByteString.Char8.pack "/takt.MyService/StreamingMethod"
-    --           , BiDiHandler (myService'StreamingMethod'handler s)
-    --           )
-    --         ]
-    [ instDecl [] ("Data.ProtoLens.Service.Types.Service" `ihApp` [serverRecordType])
-        [[match "packHandlers" [pVar "s"] $ (@@) "Data.Map.fromList" $ list
-            [ tuple
-                [ "Data.ByteString.Char8.pack"
-                    @@ stringExp (T.unpack $ methodPath m)
-                , getMethodTypeExistentializer m
-                    @@ (var (unQual $ methodServerName m) @@ var "s")
-                ]
-            | m <- serviceMethods si
-            ]]]
-    ] ++
-    -- data MyService'Client = MyService'Client {
-    --    myService'NormalMethod :: ClientHandler Foo Bar
-    --    myService'StreamingMethod :: ClientBiDiHandler Foo Bar
-    -- }
-    [ dataDecl clientDataName
-      [ recDecl clientDataName
-          [ (methodClientName m, buildClientMethodType m)
-          | m <- serviceMethods si
-          ]
-      ]
-      $ deriving' []
-    ] ++
-    -- instance Data.ProtoLens.Service.Types.Service' MyService where
     --     type ServiceMethods MyService = '["NormalMethod", "StreamingMethod"]
-    [ instAssocDecl [] ("Data.ProtoLens.Service.Types.Service'" `ihApp` [serverRecordType])
+    [ instAssocDecl [] ("Data.ProtoLens.Service.Types.Service" `ihApp` [serverRecordType])
         [ ( "ServiceMethods" @@ serverRecordType
           , tyPromotedList
               [ tyPromotedString . T.unpack $ methodIdent m
-              | m <- serviceMethods si
+              | m <- List.sortBy (comparing methodIdent) $ serviceMethods si
               ]
           )
         ]
@@ -241,12 +203,10 @@ generateServiceDecls env si =
           , lookupType $ methodOutput m
           )
         , uncurry instType ( "IsClientStreaming" @@ serverRecordType @@ instanceHead
-          , tyPromotedBool $ methodType m == ClientStreaming
-                          || methodType m == BiDiStreaming
+          , tyPromotedBool $ methodClientStreaming m
           )
         , uncurry instType ( "IsServerStreaming" @@ serverRecordType @@ instanceHead
-          , tyPromotedBool $ methodType m == ServerStreaming
-                          || methodType m == BiDiStreaming
+          , tyPromotedBool $ methodServerStreaming m
           )
         ]
     | m <- serviceMethods si
@@ -255,43 +215,10 @@ generateServiceDecls env si =
   where
     serverDataName = serviceServerName si
     serverRecordType = tyCon $ unQual serverDataName
-    clientDataName = serviceClientName si
-    clientRecordType = tyCon $ unQual clientDataName
-
-    getServerMethodType mi =
-        case methodType mi of
-            Normal          -> tyCon "Data.ProtoLens.Service.Types.ServerHandler"
-            ClientStreaming -> tyCon "Data.ProtoLens.Service.Types.ServerReaderHandler"
-            ServerStreaming -> tyCon "Data.ProtoLens.Service.Types.ServerWriterHandler"
-            BiDiStreaming   -> tyCon "Data.ProtoLens.Service.Types.ServerRWHandler"
-
-    getMethodTypeExistentializer mi =
-        case methodType mi of
-            Normal          -> "Data.ProtoLens.Service.Types.NormalHandler"
-            ClientStreaming -> "Data.ProtoLens.Service.Types.ReaderHandler"
-            ServerStreaming -> "Data.ProtoLens.Service.Types.WriterHandler"
-            BiDiStreaming   -> "Data.ProtoLens.Service.Types.BiDiHandler"
 
     lookupType t = case definedType t env of
                        Message msg -> tyCon $ messageName msg
                        Enum _ -> error "Service must have a message type"
-
-    buildServerMethodType mi =
-        let input  = lookupType $ methodInput mi
-            output = lookupType $ methodOutput mi
-         in getServerMethodType mi @@ input @@ output
-
-    getClientMethodType mi =
-        case methodType mi of
-            Normal          -> tyCon "Data.ProtoLens.Service.Types.ClientHandler"
-            ClientStreaming -> tyCon "Data.ProtoLens.Service.Types.ClientWriterHandler"
-            ServerStreaming -> tyCon "Data.ProtoLens.Service.Types.ClientReaderHandler"
-            BiDiStreaming   -> tyCon "Data.ProtoLens.Service.Types.ClientRWHandler"
-
-    buildClientMethodType mi =
-        let input  = lookupType $ methodInput mi
-            output = lookupType $ methodOutput mi
-         in getClientMethodType mi @@ input @@ output
 
 
 generateMessageDecls :: SyntaxType -> Env QName -> T.Text -> MessageInfo Name -> [Decl]

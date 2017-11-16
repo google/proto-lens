@@ -16,7 +16,6 @@ module Data.ProtoLens.Compiler.Definitions
     , MessageInfo(..)
     , ServiceInfo(..)
     , MethodInfo(..)
-    , MethodType(..)
     , FieldInfo(..)
     , OneofInfo(..)
     , OneofCase(..)
@@ -112,25 +111,16 @@ data MessageInfo n = MessageInfo
 
 data ServiceInfo = ServiceInfo
     { serviceServerName :: Name
-    , serviceClientName :: Name
     , serviceMethods :: [MethodInfo]
     }
-
-data MethodType
-    = Normal
-    | ClientStreaming
-    | ServerStreaming
-    | BiDiStreaming
-    deriving (Eq)
 
 data MethodInfo = MethodInfo
     { methodIdent :: Text
     , methodPath :: Text
-    , methodServerName :: Name
-    , methodClientName :: Name
     , methodInput :: Text
     , methodOutput :: Text
-    , methodType :: MethodType
+    , methodClientStreaming :: Bool
+    , methodServerStreaming :: Bool
     }
 
 -- | Information about a single field of a proto message.
@@ -251,8 +241,7 @@ collectServices fd = fmap (toServiceInfo $ fd ^. package) $ fd ^. service
     toServiceInfo :: Text -> ServiceDescriptorProto -> ServiceInfo
     toServiceInfo pkg sd =
         ServiceInfo
-            { serviceServerName = fromString . (<> "'Server") . T.unpack $ sd ^. name
-            , serviceClientName = fromString . (<> "'Client") . T.unpack $ sd ^. name
+            { serviceServerName = fromString . T.unpack $ sd ^. name
             , serviceMethods = fmap (toMethodInfo pkg sd) $ sd ^. method
             }
 
@@ -262,16 +251,10 @@ collectServices fd = fmap (toServiceInfo $ fd ^. package) $ fd ^. service
             -- TODO(sandy): is this correct for protos without a package?
             { methodIdent      = md ^. name
             , methodPath       = "/" <> pkg <> "." <> sd ^. name <> "/" <> md ^. name
-            , methodServerName = fromString . T.unpack $ prefix <> md ^. name <> "'handler"
-            , methodClientName = fromString . T.unpack $ prefix <> md ^. name
             , methodInput      = fromString . T.unpack $ md ^. inputType
             , methodOutput     = fromString . T.unpack $ md ^. outputType
-            , methodType       =
-                case (md ^. clientStreaming, md ^. serverStreaming) of
-                    (False, False) -> Normal
-                    (False, True)  -> ServerStreaming
-                    (True,  False) -> ClientStreaming
-                    (True,  True)  -> BiDiStreaming
+            , methodClientStreaming = md ^. clientStreaming
+            , methodServerStreaming = md ^. serverStreaming
             }
       where
         prefix = (<> "'") . camelCase $ sd ^. name
