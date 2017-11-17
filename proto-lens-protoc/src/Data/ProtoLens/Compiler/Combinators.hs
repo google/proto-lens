@@ -7,7 +7,6 @@
 {-# OPTIONS_GHC -fno-warn-orphans #-}
 {-# LANGUAGE CPP #-}
 {-# LANGUAGE FlexibleInstances #-}
-{-# LANGUAGE OverloadedStrings #-}
 -- | Some utility functions, classes and instances for nicer code generation.
 --
 -- Re-exports simpler versions of the types and constructors from
@@ -24,7 +23,6 @@ module Data.ProtoLens.Compiler.Combinators
     , Syntax.ImportDecl(..)
     ) where
 
-import Data.Bool (bool)
 import Data.Char (isAlphaNum, isUpper)
 import Data.String (IsString(..))
 #if MIN_VERSION_haskell_src_exts(1,18,0)
@@ -276,8 +274,13 @@ tyPromotedList ts = Syntax.TyPromoted () $ Syntax.PromotedList () True ts
 tyPromotedString :: String -> Type
 tyPromotedString s = Syntax.TyPromoted () $ Syntax.PromotedString () s s
 
-tyPromotedBool :: Bool -> Type
-tyPromotedBool b = Syntax.TyPromoted () $ Syntax.PromotedCon () True $ bool "Prelude.False" "Prelude.True" b
+type Promoted = Syntax.Promoted ()
+
+tyPromotedCon :: Promoted -> Type
+tyPromotedCon = Syntax.TyPromoted ()
+
+instance IsString Promoted where
+    fromString = Syntax.PromotedCon () True . fromString
 
 tyForAll :: [TyVarBind] -> [Asst] -> Type -> Type
 tyForAll vars ctx t = Syntax.TyForall () (Just vars)
@@ -314,7 +317,7 @@ instance IsString Name where
 -- | Whether this character belongs to an Ident (e.g., "foo") or a symbol
 -- (e.g., "<$>").
 isIdentChar :: Char -> Bool
-isIdentChar c = isAlphaNum c || c `elem` ("_'" :: String)
+isIdentChar c = isAlphaNum c || c `elem` "_'"
 
 instance IsString ModuleName where
     fromString = Syntax.ModuleName ()

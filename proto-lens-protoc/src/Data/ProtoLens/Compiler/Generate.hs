@@ -16,6 +16,7 @@ module Data.ProtoLens.Compiler.Generate(
     ) where
 
 
+import Data.Bool (bool)
 import Control.Arrow (second)
 import qualified Data.Foldable as F
 import qualified Data.List as List
@@ -176,9 +177,9 @@ generateServiceDecls env si =
       $ deriving' []
     ] ++
     -- instance Data.ProtoLens.Service.Types.Service MyService where
-    --     type ServiceName    MyService = "MyService"
+    --     type ServiceName    MyService = "myService"
     --     type ServicePackage MyService = "some.package"
-    --     type ServiceMethods MyService = '["NormalMethod", "StreamingMethod"]
+    --     type ServiceMethods MyService = '["normalMethod", "streamingMethod"]
     [ instDeclWithTypes [] ("Data.ProtoLens.Service.Types.Service" `ihApp` [serverRecordType])
         [ instType ("ServiceName" @@ serverRecordType)
                  . tyPromotedString . T.unpack $ camelCase $ serviceName si
@@ -191,11 +192,11 @@ generateServiceDecls env si =
                       ]
         ]
     ] ++
-    -- instance Data.ProtoLens.Service.Types.HasMethodImpl MyService "NormalMethod" where
-    --     type MethodInput       MyService "NormalMethod" = Foo
-    --     type MethodOutput      MyService "NormalMethod" = Bar
-    --     type IsClientStreaming MyService "NormalMethod" = 'False
-    --     type IsServerStreaming MyService "NormalMethod" = 'False
+    -- instance Data.ProtoLens.Service.Types.HasMethodImpl MyService "normalMethod" where
+    --     type MethodInput       MyService "normalMethod" = Foo
+    --     type MethodOutput      MyService "normalMethod" = Bar
+    --     type IsClientStreaming MyService "normalMethod" = 'False
+    --     type IsServerStreaming MyService "normalMethod" = 'False
     [ instDeclWithTypes [] ("Data.ProtoLens.Service.Types.HasMethodImpl" `ihApp` [serverRecordType, instanceHead])
         [ instType ("MethodInput" @@ serverRecordType @@ instanceHead)
                  . lookupType $ methodInput m
@@ -210,6 +211,8 @@ generateServiceDecls env si =
     , let instanceHead = tyPromotedString (T.unpack $ methodIdent m)
     ]
   where
+    tyPromotedBool = tyPromotedCon . bool "Prelude.False" "Prelude.True"
+
     serverDataName = fromString . T.unpack $ serviceName si
     serverRecordType = tyCon $ unQual serverDataName
 
