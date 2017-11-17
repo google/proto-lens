@@ -208,6 +208,11 @@ tests:
   service_test:
     main: service_test.hs
     source-dirs: tests
+    ghc-options:
+      # Check that the code generated for checking service metadata is
+      # warning-free.
+      - -fwarn-overlapping-patterns
+      - -Werror
     dependencies:
       - proto-lens-protobuf-types
       - proto-lens-tests
