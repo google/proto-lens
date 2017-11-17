@@ -205,6 +205,16 @@ tests:
       - Proto.Any
       - Proto.Any'Fields
 
+  service_test:
+    main: service_test.hs
+    source-dirs: tests
+    dependencies:
+      - proto-lens-protobuf-types
+      - proto-lens-tests
+    other-modules:
+      - Proto.Service
+      - Proto.Service'Fields
+
   unknown_fields_test:
     main: unknown_fields_test.hs
     source-dirs: tests

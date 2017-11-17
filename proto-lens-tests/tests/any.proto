@@ -10,8 +10,3 @@ message Bar {
   int32 a = 1;
   string b = 2;
 }
-
-service SearchService {
-  rpc Search (Foo) returns (Bar);
-}
-
