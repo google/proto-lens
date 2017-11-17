@@ -111,14 +111,14 @@ data MessageInfo n = MessageInfo
     } deriving Functor
 
 data ServiceInfo = ServiceInfo
-    { serviceName :: Text
+    { serviceName    :: Text
+    , servicePackage :: Text
     , serviceMethods :: [MethodInfo]
     }
 
 data MethodInfo = MethodInfo
-    { methodIdent :: Text
-    , methodPath :: Text
-    , methodInput :: Text
+    { methodIdent  :: Text
+    , methodInput  :: Text
     , methodOutput :: Text
     , methodClientStreaming :: Bool
     , methodServerStreaming :: Bool
@@ -242,18 +242,17 @@ collectServices fd = fmap (toServiceInfo $ fd ^. package) $ fd ^. service
     toServiceInfo :: Text -> ServiceDescriptorProto -> ServiceInfo
     toServiceInfo pkg sd =
         ServiceInfo
-            { serviceName = sd ^. name
+            { serviceName    = sd ^. name
+            , servicePackage = pkg
             , serviceMethods = fmap (toMethodInfo pkg sd) $ sd ^. method
             }
 
     toMethodInfo :: Text -> ServiceDescriptorProto -> MethodDescriptorProto -> MethodInfo
     toMethodInfo pkg sd md =
         MethodInfo
-            { methodIdent      = camelCase $ md ^. name
-            -- TODO(sandy): is this correct for protos without a package?
-            , methodPath       = "/" <> pkg <> "." <> sd ^. name <> "/" <> md ^. name
-            , methodInput      = fromString . T.unpack $ md ^. inputType
-            , methodOutput     = fromString . T.unpack $ md ^. outputType
+            { methodIdent  = camelCase $ md ^. name
+            , methodInput  = fromString . T.unpack $ md ^. inputType
+            , methodOutput = fromString . T.unpack $ md ^. outputType
             , methodClientStreaming = md ^. clientStreaming
             , methodServerStreaming = md ^. serverStreaming
             }

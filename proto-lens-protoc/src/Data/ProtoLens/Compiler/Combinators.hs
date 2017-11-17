@@ -106,8 +106,8 @@ instType = Syntax.InsType ()
 instMatch :: [Match] -> Syntax.InstDecl ()
 instMatch m = Syntax.InsDecl () $ funBind m
 
-instOK :: [Asst] -> InstHead -> [Syntax.InstDecl ()] -> Decl
-instOK ctx instHead decls
+instDeclWithTypes :: [Asst] -> InstHead -> [Syntax.InstDecl ()] -> Decl
+instDeclWithTypes ctx instHead decls
     = Syntax.InstDecl () Nothing
         (Syntax.IRule () Nothing ctx' instHead)
         $ Just decls
@@ -117,27 +117,8 @@ instOK ctx instHead decls
         [c] -> Just $ Syntax.CxSingle () c
         cs -> Just $ Syntax.CxTuple () cs
 
-instAssocDecl :: [Asst] -> InstHead -> [(Type, Type)] -> Decl
-instAssocDecl ctx instHead assocs
-    = Syntax.InstDecl () Nothing
-        (Syntax.IRule () Nothing ctx' instHead)
-        $ Just [uncurry instType a | a <- assocs]
-  where
-    ctx' = case ctx of
-        [] -> Nothing
-        [c] -> Just $ Syntax.CxSingle () c
-        cs -> Just $ Syntax.CxTuple () cs
-
 instDecl :: [Asst] -> InstHead -> [[Match]] -> Decl
-instDecl ctx instHead matches
-    = Syntax.InstDecl () Nothing
-        (Syntax.IRule () Nothing ctx' instHead)
-        $ Just [instMatch m | m <- matches]
-  where
-    ctx' = case ctx of
-        [] -> Nothing
-        [c] -> Just $ Syntax.CxSingle () c
-        cs -> Just $ Syntax.CxTuple () cs
+instDecl ctx instHead = instDeclWithTypes ctx instHead . fmap instMatch
 
 typeSig :: [Name] -> Type -> Decl
 typeSig = Syntax.TypeSig ()

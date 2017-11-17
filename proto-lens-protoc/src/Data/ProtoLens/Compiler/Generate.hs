@@ -177,41 +177,34 @@ generateServiceDecls env si =
     ] ++
     -- instance Data.ProtoLens.Service.Types.Service MyService where
     --     type ServiceName    MyService = "MyService"
+    --     type ServicePackage MyService = "some.package"
     --     type ServiceMethods MyService = '["NormalMethod", "StreamingMethod"]
-    [ instAssocDecl [] ("Data.ProtoLens.Service.Types.Service" `ihApp` [serverRecordType])
-        [ ( "ServiceName" @@ serverRecordType
-          , tyPromotedString . T.unpack $ camelCase $ serviceName si
-          )
-        , ( "ServiceMethods" @@ serverRecordType
-          , tyPromotedList
-              [ tyPromotedString . T.unpack $ methodIdent m
-              | m <- List.sortBy (comparing methodIdent) $ serviceMethods si
-              ]
-          )
+    [ instDeclWithTypes [] ("Data.ProtoLens.Service.Types.Service" `ihApp` [serverRecordType])
+        [ instType ("ServiceName" @@ serverRecordType)
+                 . tyPromotedString . T.unpack $ camelCase $ serviceName si
+        , instType ("ServicePackage" @@ serverRecordType)
+                 . tyPromotedString . T.unpack $ servicePackage si
+        , instType ("ServiceMethods" @@ serverRecordType)
+                 $ tyPromotedList
+                      [ tyPromotedString . T.unpack $ methodIdent m
+                      | m <- List.sortBy (comparing methodIdent) $ serviceMethods si
+                      ]
         ]
     ] ++
-    -- instance Data.ProtoLens.Service.Types.HasMethod MyService "NormalMethod" where
-    --     methodPath _ _ = Data.ByteString.Char8.pack "/takt.MyService/NormalMethod"
+    -- instance Data.ProtoLens.Service.Types.HasMethodImpl MyService "NormalMethod" where
     --     type MethodInput       MyService "NormalMethod" = Foo
     --     type MethodOutput      MyService "NormalMethod" = Bar
     --     type IsClientStreaming MyService "NormalMethod" = 'False
     --     type IsServerStreaming MyService "NormalMethod" = 'False
-    [ instOK [] ("Data.ProtoLens.Service.Types.HasMethod" `ihApp` [serverRecordType, instanceHead])
-        [ instMatch [ match "methodPath" [pWildCard, pWildCard] $
-                          "Data.ByteString.Char8.pack" @@ stringExp (T.unpack $ methodPath m)
-                    ]
-        , uncurry instType ( "MethodInput" @@ serverRecordType @@ instanceHead
-          , lookupType $ methodInput m
-          )
-        , uncurry instType ( "MethodOutput" @@ serverRecordType @@ instanceHead
-          , lookupType $ methodOutput m
-          )
-        , uncurry instType ( "IsClientStreaming" @@ serverRecordType @@ instanceHead
-          , tyPromotedBool $ methodClientStreaming m
-          )
-        , uncurry instType ( "IsServerStreaming" @@ serverRecordType @@ instanceHead
-          , tyPromotedBool $ methodServerStreaming m
-          )
+    [ instDeclWithTypes [] ("Data.ProtoLens.Service.Types.HasMethodImpl" `ihApp` [serverRecordType, instanceHead])
+        [ instType ("MethodInput" @@ serverRecordType @@ instanceHead)
+                 . lookupType $ methodInput m
+        , instType ("MethodOutput" @@ serverRecordType @@ instanceHead)
+                 . lookupType $ methodOutput m
+        , instType ("IsClientStreaming" @@ serverRecordType @@ instanceHead)
+                 . tyPromotedBool $ methodClientStreaming m
+        , instType ("IsServerStreaming" @@ serverRecordType @@ instanceHead)
+                 . tyPromotedBool $ methodServerStreaming m
         ]
     | m <- serviceMethods si
     , let instanceHead = tyPromotedString (T.unpack $ methodIdent m)
