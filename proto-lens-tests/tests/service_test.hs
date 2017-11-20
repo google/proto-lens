@@ -42,8 +42,7 @@ _normalMethodMetadataTest
        , HasMethod s m
        , MethodInput  s m ~ Foo
        , MethodOutput s m ~ Bar
-       , IsClientStreaming s m ~ 'False
-       , IsServerStreaming s m ~ 'False
+       , MethodStreamingType s m ~ 'NonStreaming
        ) => Proxy m
 _normalMethodMetadataTest = Proxy
 
@@ -54,8 +53,7 @@ _clientStreamingMethodMetadataTest
        , HasMethod s m
        , MethodInput  s m ~ Foo
        , MethodOutput s m ~ Bar
-       , IsClientStreaming s m ~ 'True
-       , IsServerStreaming s m ~ 'False
+       , MethodStreamingType s m ~ 'ClientStreaming
        ) => Proxy m
 _clientStreamingMethodMetadataTest = Proxy
 
@@ -66,8 +64,7 @@ _serverStreamingMethodMetadataTest
        , HasMethod s m
        , MethodInput  s m ~ Foo
        , MethodOutput s m ~ Bar
-       , IsClientStreaming s m ~ 'False
-       , IsServerStreaming s m ~ 'True
+       , MethodStreamingType s m ~ 'ServerStreaming
        ) => Proxy m
 _serverStreamingMethodMetadataTest = Proxy
 
@@ -78,8 +75,7 @@ _bidiStreamingMethodMetadataTest
        , HasMethod s m
        , MethodInput  s m ~ Foo
        , MethodOutput s m ~ Bar
-       , IsClientStreaming s m ~ 'True
-       , IsServerStreaming s m ~ 'True
+       , MethodStreamingType s m ~ 'BiDiStreaming
        ) => Proxy m
 _bidiStreamingMethodMetadataTest = Proxy
 
@@ -90,8 +86,7 @@ _revMessagesMetadataTest
        , HasMethod s m
        , MethodInput  s m ~ Bar
        , MethodOutput s m ~ Foo
-       , IsClientStreaming s m ~ 'False
-       , IsServerStreaming s m ~ 'False
+       , MethodStreamingType s m ~ 'NonStreaming
        ) => Proxy m
 _revMessagesMetadataTest = Proxy
 
