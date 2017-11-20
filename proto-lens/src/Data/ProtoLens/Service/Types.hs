@@ -71,6 +71,7 @@ class ( KnownSymbol m
       , Message (MethodInput  s m)
       , Message (MethodOutput s m)
       ) => HasMethodImpl s (m :: Symbol) where
+  type MethodName        s m :: Symbol
   type MethodInput       s m :: *
   type MethodOutput      s m :: *
   type IsClientStreaming s m :: Bool

@@ -117,7 +117,8 @@ data ServiceInfo = ServiceInfo
     }
 
 data MethodInfo = MethodInfo
-    { methodIdent  :: Text
+    { methodName   :: Text
+    , methodIdent  :: Text
     , methodInput  :: Text
     , methodOutput :: Text
     , methodClientStreaming :: Bool
@@ -250,7 +251,8 @@ collectServices fd = fmap (toServiceInfo $ fd ^. package) $ fd ^. service
     toMethodInfo :: Text -> ServiceDescriptorProto -> MethodDescriptorProto -> MethodInfo
     toMethodInfo pkg sd md =
         MethodInfo
-            { methodIdent  = camelCase $ md ^. name
+            { methodName   = md ^. name
+            , methodIdent  = camelCase $ md ^. name
             , methodInput  = fromString . T.unpack $ md ^. inputType
             , methodOutput = fromString . T.unpack $ md ^. outputType
             , methodClientStreaming = md ^. clientStreaming

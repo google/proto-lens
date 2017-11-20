@@ -182,7 +182,7 @@ generateServiceDecls env si =
     --     type ServiceMethods MyService = '["normalMethod", "streamingMethod"]
     [ instDeclWithTypes [] ("Data.ProtoLens.Service.Types.Service" `ihApp` [serverRecordType])
         [ instType ("ServiceName" @@ serverRecordType)
-                 . tyPromotedString . T.unpack $ camelCase $ serviceName si
+                 . tyPromotedString . T.unpack $ serviceName si
         , instType ("ServicePackage" @@ serverRecordType)
                  . tyPromotedString . T.unpack $ servicePackage si
         , instType ("ServiceMethods" @@ serverRecordType)
@@ -198,7 +198,9 @@ generateServiceDecls env si =
     --     type IsClientStreaming MyService "normalMethod" = 'False
     --     type IsServerStreaming MyService "normalMethod" = 'False
     [ instDeclWithTypes [] ("Data.ProtoLens.Service.Types.HasMethodImpl" `ihApp` [serverRecordType, instanceHead])
-        [ instType ("MethodInput" @@ serverRecordType @@ instanceHead)
+        [ instType ("MethodName" @@ serverRecordType @@ instanceHead)
+                 . tyPromotedString . T.unpack $ methodName m
+        , instType ("MethodInput" @@ serverRecordType @@ instanceHead)
                  . lookupType $ methodInput m
         , instType ("MethodOutput" @@ serverRecordType @@ instanceHead)
                  . lookupType $ methodOutput m
