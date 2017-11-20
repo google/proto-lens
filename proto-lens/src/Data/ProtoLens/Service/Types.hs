@@ -67,6 +67,7 @@ class ( KnownSymbol (ServiceName s)
 -- the constraint will be exposed to the end user. 'HasMethod' provides
 -- substantially friendlier error messages when used incorrectly.
 class ( KnownSymbol m
+      , KnownSymbol (MethodName s m)
       , Service s
       , Message (MethodInput  s m)
       , Message (MethodOutput s m)
