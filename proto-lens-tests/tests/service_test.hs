@@ -5,7 +5,6 @@
 
 module Main (main) where
 
-import Data.ProtoLens
 import Data.Proxy (Proxy (..))
 import Test.Framework.Providers.HUnit (testCase)
 import Proto.Service

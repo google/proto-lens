@@ -10,6 +10,7 @@
 {-# LANGUAGE TypeFamilies          #-}
 {-# LANGUAGE TypeOperators         #-}
 {-# LANGUAGE UndecidableInstances  #-}
+{-# OPTIONS_GHC -fno-warn-redundant-constraints #-}
 
 -- | This module provides typeclasses for describing protobuf service metadata.
 -- It is intended to be used by library authors to generating bindings against
