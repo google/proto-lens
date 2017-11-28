@@ -17,6 +17,7 @@ library:
   source-dirs: src
   exposed-modules:
     - Lens.Labels
+    - Lens.Labels.Unwrapped
   dependencies:
     - base >= 4.8 && < 4.11
     - ghc-prim >= 0.4 && < 0.6

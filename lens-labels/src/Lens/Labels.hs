@@ -52,6 +52,7 @@ module Lens.Labels (
     view,
     ) where
 
+
 import qualified Control.Category as Category
 import GHC.Prim (Proxy#, proxy#)
 import GHC.OverloadedLabels (IsLabel(..))
