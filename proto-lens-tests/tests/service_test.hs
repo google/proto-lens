@@ -2,6 +2,7 @@
 {-# LANGUAGE OverloadedStrings   #-}
 {-# LANGUAGE ScopedTypeVariables #-}
 {-# LANGUAGE TypeFamilies        #-}
+{-# OPTIONS_GHC -fno-warn-redundant-constraints #-}
 
 module Main (main) where
 
