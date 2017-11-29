@@ -185,6 +185,17 @@ tests:
       - Proto.Canonical
       - Proto.Canonical'Fields
 
+  unwrapped_test:
+    main: unwrapped_test.hs
+    source-dirs: tests
+    dependencies:
+      - lens-family-core
+      - lens-labels
+      - proto-lens-tests
+    other-modules:
+      - Proto.Canonical
+      - Proto.Canonical'Fields
+
   package-deps_test:
     main: package-deps_test.hs
     source-dirs: tests
