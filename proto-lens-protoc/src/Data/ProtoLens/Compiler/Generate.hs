@@ -16,7 +16,6 @@ module Data.ProtoLens.Compiler.Generate(
     ) where
 
 
-import Data.Bool (bool)
 import Control.Arrow (second)
 import qualified Data.Foldable as F
 import qualified Data.List as List
@@ -36,7 +35,6 @@ import Proto.Google.Protobuf.Descriptor
     , FieldDescriptorProto'Label(..)
     , FieldDescriptorProto'Type(..)
     , FileDescriptorProto
-    , ServiceDescriptorProto
     )
 import Proto.Google.Protobuf.Descriptor'Fields
     ( defaultValue
@@ -216,8 +214,6 @@ generateServiceDecls env si =
     , let instanceHead = tyPromotedString (T.unpack $ methodIdent m)
     ]
   where
-    tyPromotedBool = tyPromotedCon . bool "Prelude.False" "Prelude.True"
-
     serverDataName = fromString . T.unpack $ serviceName si
     serverRecordType = tyCon $ unQual serverDataName
 

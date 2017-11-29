@@ -245,11 +245,11 @@ collectServices fd = fmap (toServiceInfo $ fd ^. package) $ fd ^. service
         ServiceInfo
             { serviceName    = sd ^. name
             , servicePackage = pkg
-            , serviceMethods = fmap (toMethodInfo pkg sd) $ sd ^. method
+            , serviceMethods = fmap toMethodInfo $ sd ^. method
             }
 
-    toMethodInfo :: Text -> ServiceDescriptorProto -> MethodDescriptorProto -> MethodInfo
-    toMethodInfo pkg sd md =
+    toMethodInfo :: MethodDescriptorProto -> MethodInfo
+    toMethodInfo md =
         MethodInfo
             { methodName   = md ^. name
             , methodIdent  = camelCase $ md ^. name
@@ -258,8 +258,6 @@ collectServices fd = fmap (toServiceInfo $ fd ^. package) $ fd ^. service
             , methodClientStreaming = md ^. clientStreaming
             , methodServerStreaming = md ^. serverStreaming
             }
-      where
-        prefix = (<> "'") . camelCase $ sd ^. name
 
 messageAndEnumDefs :: Text -> String -> [DescriptorProto]
                    -> [EnumDescriptorProto] -> [(Text, Definition Name)]

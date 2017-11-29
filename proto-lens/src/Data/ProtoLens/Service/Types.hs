@@ -10,23 +10,21 @@
 {-# LANGUAGE TypeFamilies          #-}
 {-# LANGUAGE TypeOperators         #-}
 {-# LANGUAGE UndecidableInstances  #-}
+{-# OPTIONS_GHC -fno-warn-redundant-constraints #-}
 
 -- | This module provides typeclasses for describing protobuf service metadata.
 -- It is intended to be used by library authors to generating bindings against
 -- proto services for specific RPC backends.
 module Data.ProtoLens.Service.Types
   ( Service (..)
-  , HasAllMethods (..)
+  , HasAllMethods
   , HasMethodImpl (..)
   , HasMethod
   , StreamingType (..)
   ) where
 
-import Data.ByteString (ByteString)
 import Data.Kind (Constraint)
-import qualified Data.Map as M
 import Data.ProtoLens.Message (Message)
-import Data.Proxy (Proxy)
 import GHC.TypeLits
 
 
@@ -101,14 +99,14 @@ type HasMethod s m =
 -- suggests alternatives the user might have wanted.
 type family RequireHasMethod s (m :: Symbol) (h :: Bool) :: Constraint where
   RequireHasMethod s m 'False = TypeError
-      ( Text "No method "
-   :<>: ShowType m
-   :<>: Text " available for service '"
-   :<>: ShowType s
-   :<>: Text "'."
-   :$$: Text "Available methods are: "
-   :<>: ShowList (ServiceMethods s)
-      )
+       ( 'Text "No method "
+   ':<>: 'ShowType m
+   ':<>: 'Text " available for service '"
+   ':<>: 'ShowType s
+   ':<>: 'Text "'."
+   ':$$: 'Text "Available methods are: "
+   ':<>: ShowList (ServiceMethods s)
+       )
   RequireHasMethod s m 'True = ()
 
 
@@ -121,7 +119,8 @@ type family ListContains (n :: k) (hs :: [k]) :: Bool where
 
 -- | Pretty prints a promoted list.
 type family ShowList (ls :: [k]) :: ErrorMessage where
-  ShowList '[]  = Text ""
-  ShowList '[x] = ShowType x
-  ShowList (x ': xs) = ShowType x :<>: Text ", " :<>: ShowList xs
+  ShowList '[]  = 'Text ""
+  ShowList '[x] = 'ShowType x
+  ShowList (x ': xs) =
+    'ShowType x ':<>: 'Text ", " ':<>: ShowList xs
 
