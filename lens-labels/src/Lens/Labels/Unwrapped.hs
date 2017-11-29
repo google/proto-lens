@@ -10,12 +10,13 @@
 {-# OPTIONS_GHC -fno-warn-orphans #-}
 
 ------------------------------------------------------------------------------
--- | This module provides OverloadedLabels 'IsLabel' support via an orphan
--- instance. This means a 'LensFn' with the label @"foo"@ can be referenced
--- as @#foo@.
+-- | This module provides OverloadedLabels 'IsLabel' support via an
+-- orphan instance. This means a @Lens.Family.Lens@ can be referenced
+-- as @#foo@ whenever we have an instance of @Lens.Labels.HasLens@
+-- with the label @"foo"@."
 --
 -- This can eliminate the need to call 'runLens' when working with libraries
--- like @lens-family-core@.
+-- like @lens@, @microlens@, or @lens-family@.
 module Lens.Labels.Unwrapped where
 
 import GHC.OverloadedLabels (IsLabel (..))
