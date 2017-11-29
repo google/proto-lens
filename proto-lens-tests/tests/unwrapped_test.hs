@@ -4,7 +4,7 @@
 module Main where
 
 import Prelude
-import Lens.Family ((&), (.~), (^.), set)
+import Lens.Family ((&), (.~), (^.))
 import Lens.Labels.Unwrapped ()
 import Proto.Canonical (Test1, Test3)
 
@@ -19,7 +19,6 @@ main = testMain
     [ testCase "inside" inside
     , testCase "outside" outside
     , testCase "fromBuild" fromBuild
-    , testCase "lensFamilyCore" lensFamilyCore
     ]
 
 inside :: IO ()
@@ -33,9 +32,3 @@ outside = let msg = def & #c . #a .~ 42 :: Test3
 fromBuild :: IO ()
 fromBuild = let msg = build (#c . #a .~ 42) :: Test3
             in 42 @?= msg ^. #c . #a
-
-lensFamilyCore :: IO ()
-lensFamilyCore = let
-    msg1 = def & set #a 42 :: Test1
-    msg2 = def & Lens.Family.set #a 42
-    in msg1 @?= msg2
