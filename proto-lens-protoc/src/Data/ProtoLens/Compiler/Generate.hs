@@ -76,13 +76,15 @@ generateModule :: ModuleName
                -> ModifyImports
                -> Env Name      -- ^ Definitions in this file
                -> Env QName     -- ^ Definitions in the imported modules
+               -> [ServiceInfo]
                -> [Module]
-generateModule modName imports syntaxType modifyImport definitions importedEnv
+generateModule modName imports syntaxType modifyImport definitions importedEnv services
     = [ module' modName
-                (Just $ concatMap generateExports $ Map.elems definitions)
+                (Just $ (serviceExports ++) $ concatMap generateExports $ Map.elems definitions)
                 pragmas
                 sharedImports
-          . concatMap generateDecls $ Map.toList definitions
+          $ (concatMap generateDecls $ Map.toList definitions)
+         ++ concatMap (generateServiceDecls env) services
       , module' fieldModName
                 Nothing
                 pragmas
@@ -96,7 +98,8 @@ generateModule modName imports syntaxType modifyImport definitions importedEnv
               ["ScopedTypeVariables", "DataKinds", "TypeFamilies",
                "UndecidableInstances", "GeneralizedNewtypeDeriving",
                "MultiParamTypeClasses", "FlexibleContexts", "FlexibleInstances",
-               "PatternSynonyms", "MagicHash", "NoImplicitPrelude"]
+               "PatternSynonyms", "MagicHash", "NoImplicitPrelude",
+               "DataKinds"]
               -- Allow unused imports in case we don't import anything from
               -- Data.Text, Data.Int, etc.
           , optionsGhcPragma "-fno-warn-unused-imports"
@@ -106,9 +109,9 @@ generateModule modName imports syntaxType modifyImport definitions importedEnv
           ]
     sharedImports = map (modifyImport . importSimple)
               [ "Prelude", "Data.Int", "Data.Word"
-              , "Data.ProtoLens", "Data.ProtoLens.Message.Enum"
+              , "Data.ProtoLens", "Data.ProtoLens.Message.Enum", "Data.ProtoLens.Service.Types"
               , "Lens.Family2", "Lens.Family2.Unchecked", "Data.Default.Class"
-              , "Data.Text",  "Data.Map", "Data.ByteString"
+              , "Data.Text",  "Data.Map", "Data.ByteString", "Data.ByteString.Char8"
               , "Lens.Labels", "Text.Read"
               ]
             ++ map importSimple imports
@@ -118,6 +121,7 @@ generateModule modName imports syntaxType modifyImport definitions importedEnv
     generateDecls (_, Enum e) = generateEnumDecls syntaxType e
     generateExports (Message m) = generateMessageExports m
     generateExports (Enum e) = generateEnumExports syntaxType e
+    serviceExports = fmap generateServiceExports services
     allLensNames = F.toList $ Set.fromList
         [ lensSymbol inst
         | Message m <- Map.elems definitions
@@ -161,6 +165,62 @@ generateMessageExports :: MessageInfo Name -> [ExportSpec]
 generateMessageExports m =
     map (exportAll . unQual)
         $ messageName m : map oneofTypeName (messageOneofFields m)
+
+generateServiceDecls :: Env QName -> ServiceInfo -> [Decl]
+generateServiceDecls env si =
+    -- data MyService = MyService
+    [ dataDecl serverDataName
+      [ recDecl serverDataName []
+      ]
+      $ deriving' []
+    ] ++
+    -- instance Data.ProtoLens.Service.Types.Service MyService where
+    --     type ServiceName    MyService = "myService"
+    --     type ServicePackage MyService = "some.package"
+    --     type ServiceMethods MyService = '["normalMethod", "streamingMethod"]
+    [ instDeclWithTypes [] ("Data.ProtoLens.Service.Types.Service" `ihApp` [serverRecordType])
+        [ instType ("ServiceName" @@ serverRecordType)
+                 . tyPromotedString . T.unpack $ serviceName si
+        , instType ("ServicePackage" @@ serverRecordType)
+                 . tyPromotedString . T.unpack $ servicePackage si
+        , instType ("ServiceMethods" @@ serverRecordType)
+                 $ tyPromotedList
+                      [ tyPromotedString . T.unpack $ methodIdent m
+                      | m <- List.sortBy (comparing methodIdent) $ serviceMethods si
+                      ]
+        ]
+    ] ++
+    -- instance Data.ProtoLens.Service.Types.HasMethodImpl MyService "normalMethod" where
+    --     type MethodInput       MyService "normalMethod" = Foo
+    --     type MethodOutput      MyService "normalMethod" = Bar
+    --     type IsClientStreaming MyService "normalMethod" = 'False
+    --     type IsServerStreaming MyService "normalMethod" = 'False
+    [ instDeclWithTypes [] ("Data.ProtoLens.Service.Types.HasMethodImpl" `ihApp` [serverRecordType, instanceHead])
+        [ instType ("MethodName" @@ serverRecordType @@ instanceHead)
+                 . tyPromotedString . T.unpack $ methodName m
+        , instType ("MethodInput" @@ serverRecordType @@ instanceHead)
+                 . lookupType $ methodInput m
+        , instType ("MethodOutput" @@ serverRecordType @@ instanceHead)
+                 . lookupType $ methodOutput m
+        , instType ("MethodStreamingType" @@ serverRecordType @@ instanceHead)
+                 . tyPromotedCon
+                 $ case (methodClientStreaming m, methodServerStreaming m) of
+                     (False, False) -> "Data.ProtoLens.Service.Types.NonStreaming"
+                     (True,  False) -> "Data.ProtoLens.Service.Types.ClientStreaming"
+                     (False, True)  -> "Data.ProtoLens.Service.Types.ServerStreaming"
+                     (True,  True)  -> "Data.ProtoLens.Service.Types.BiDiStreaming"
+        ]
+    | m <- serviceMethods si
+    , let instanceHead = tyPromotedString (T.unpack $ methodIdent m)
+    ]
+  where
+    serverDataName = fromString . T.unpack $ serviceName si
+    serverRecordType = tyCon $ unQual serverDataName
+
+    lookupType t = case definedType t env of
+                       Message msg -> tyCon $ messageName msg
+                       Enum _ -> error "Service must have a message type"
+
 
 generateMessageDecls :: SyntaxType -> Env QName -> T.Text -> MessageInfo Name -> [Decl]
 generateMessageDecls syntaxType env protoName info =
@@ -258,6 +318,9 @@ generateEnumExports syntaxType e = [exportAll n, exportWith n aliases] ++ proto3
     proto3NewType = if syntaxType == Proto3
       then [exportVar . unQual $ enumUnrecognizedValueName e]
       else []
+
+generateServiceExports :: ServiceInfo -> ExportSpec
+generateServiceExports si = exportAll $ unQual $ fromString $ T.unpack $ serviceName si
 
 generateEnumDecls :: SyntaxType -> EnumInfo Name -> [Decl]
 generateEnumDecls Proto3 info =

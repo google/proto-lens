@@ -14,6 +14,8 @@ module Data.ProtoLens.Compiler.Definitions
     ( Env
     , Definition(..)
     , MessageInfo(..)
+    , ServiceInfo(..)
+    , MethodInfo(..)
     , FieldInfo(..)
     , OneofInfo(..)
     , OneofCase(..)
@@ -26,7 +28,10 @@ module Data.ProtoLens.Compiler.Definitions
     , qualifyEnv
     , unqualifyEnv
     , collectDefinitions
+    , collectServices
     , definedFieldType
+    , definedType
+    , camelCase
     ) where
 
 import Data.Char (isUpper, toUpper)
@@ -46,17 +51,25 @@ import Proto.Google.Protobuf.Descriptor
     , EnumValueDescriptorProto
     , FieldDescriptorProto
     , FileDescriptorProto
+    , MethodDescriptorProto
+    , ServiceDescriptorProto
     )
 import Proto.Google.Protobuf.Descriptor'Fields
-    ( enumType
+    ( clientStreaming
+    , enumType
     , field
+    , inputType
     , maybe'oneofIndex
     , messageType
+    , method
     , name
     , nestedType
     , number
     , oneofDecl
+    , outputType
     , package
+    , serverStreaming
+    , service
     , typeName
     , value
     )
@@ -96,6 +109,21 @@ data MessageInfo n = MessageInfo
       -- ^ The name of the Haskell field in this message that holds the
       -- unknown fields.
     } deriving Functor
+
+data ServiceInfo = ServiceInfo
+    { serviceName    :: Text
+    , servicePackage :: Text
+    , serviceMethods :: [MethodInfo]
+    }
+
+data MethodInfo = MethodInfo
+    { methodName   :: Text
+    , methodIdent  :: Text
+    , methodInput  :: Text
+    , methodOutput :: Text
+    , methodClientStreaming :: Bool
+    , methodServerStreaming :: Bool
+    }
 
 -- | Information about a single field of a proto message.
 data FieldInfo = FieldInfo
@@ -191,6 +219,13 @@ definedFieldType fd env = fromMaybe err $ Map.lookup (fd ^. typeName) env
     err = error $ "definedFieldType: Field type " ++ unpack (fd ^. typeName)
                   ++ " not found in environment."
 
+-- | Look up the Haskell name for the type of a given type.
+definedType :: Text -> Env QName -> Definition QName
+definedType ty = fromMaybe err . Map.lookup ty
+  where
+    err = error $ "definedType: Type " ++ unpack ty
+                  ++ " not found in environment."
+
 -- | Collect all the definitions in the given file (including definitions
 -- nested in other messages), and assign Haskell names to them.
 collectDefinitions :: FileDescriptorProto -> Env Name
@@ -201,6 +236,28 @@ collectDefinitions fd = let
     hsPrefix = ""
     in Map.fromList $ messageAndEnumDefs protoPrefix hsPrefix
                           (fd ^. messageType) (fd ^. enumType)
+
+collectServices :: FileDescriptorProto -> [ServiceInfo]
+collectServices fd = fmap (toServiceInfo $ fd ^. package) $ fd ^. service
+  where
+    toServiceInfo :: Text -> ServiceDescriptorProto -> ServiceInfo
+    toServiceInfo pkg sd =
+        ServiceInfo
+            { serviceName    = sd ^. name
+            , servicePackage = pkg
+            , serviceMethods = fmap toMethodInfo $ sd ^. method
+            }
+
+    toMethodInfo :: MethodDescriptorProto -> MethodInfo
+    toMethodInfo md =
+        MethodInfo
+            { methodName   = md ^. name
+            , methodIdent  = camelCase $ md ^. name
+            , methodInput  = fromString . T.unpack $ md ^. inputType
+            , methodOutput = fromString . T.unpack $ md ^. outputType
+            , methodClientStreaming = md ^. clientStreaming
+            , methodServerStreaming = md ^. serverStreaming
+            }
 
 messageAndEnumDefs :: Text -> String -> [DescriptorProto]
                    -> [EnumDescriptorProto] -> [(Text, Definition Name)]

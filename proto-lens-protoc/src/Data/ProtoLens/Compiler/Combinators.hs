@@ -98,16 +98,25 @@ deriving' classes = Syntax.Deriving ()
 funBind :: [Match] -> Decl
 funBind = Syntax.FunBind ()
 
-instDecl :: [Asst] -> InstHead -> [[Match]] -> Decl
-instDecl ctx instHead matches
+instType :: Type -> Type -> Syntax.InstDecl ()
+instType = Syntax.InsType ()
+
+instMatch :: [Match] -> Syntax.InstDecl ()
+instMatch m = Syntax.InsDecl () $ funBind m
+
+instDeclWithTypes :: [Asst] -> InstHead -> [Syntax.InstDecl ()] -> Decl
+instDeclWithTypes ctx instHead decls
     = Syntax.InstDecl () Nothing
         (Syntax.IRule () Nothing ctx' instHead)
-        $ Just [Syntax.InsDecl () $ funBind m | m <- matches]
+        $ Just decls
   where
     ctx' = case ctx of
         [] -> Nothing
         [c] -> Just $ Syntax.CxSingle () c
         cs -> Just $ Syntax.CxTuple () cs
+
+instDecl :: [Asst] -> InstHead -> [[Match]] -> Decl
+instDecl ctx instHead = instDeclWithTypes ctx instHead . fmap instMatch
 
 typeSig :: [Name] -> Type -> Decl
 typeSig = Syntax.TypeSig ()
@@ -259,8 +268,19 @@ tyCon = Syntax.TyCon ()
 tyList :: Type -> Type
 tyList = Syntax.TyList ()
 
+tyPromotedList :: [Type] -> Type
+tyPromotedList ts = Syntax.TyPromoted () $ Syntax.PromotedList () True ts
+
 tyPromotedString :: String -> Type
 tyPromotedString s = Syntax.TyPromoted () $ Syntax.PromotedString () s s
+
+type Promoted = Syntax.Promoted ()
+
+tyPromotedCon :: Promoted -> Type
+tyPromotedCon = Syntax.TyPromoted ()
+
+instance IsString Promoted where
+    fromString = Syntax.PromotedCon () True . fromString
 
 tyForAll :: [TyVarBind] -> [Asst] -> Type -> Type
 tyForAll vars ctx t = Syntax.TyForall () (Just vars)

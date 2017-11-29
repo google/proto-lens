@@ -35,6 +35,7 @@ library:
     - Data.ProtoLens.Encoding.Wire
     - Data.ProtoLens.Message
     - Data.ProtoLens.Message.Enum
+    - Data.ProtoLens.Service.Types
     - Data.ProtoLens.TextFormat
     - Proto.Google.Protobuf.Compiler.Plugin
     - Proto.Google.Protobuf.Compiler.Plugin'Fields

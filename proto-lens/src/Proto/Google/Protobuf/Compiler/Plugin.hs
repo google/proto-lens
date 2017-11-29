@@ -2,7 +2,7 @@
 {-# LANGUAGE ScopedTypeVariables, DataKinds, TypeFamilies,
   UndecidableInstances, GeneralizedNewtypeDeriving,
   MultiParamTypeClasses, FlexibleContexts, FlexibleInstances,
-  PatternSynonyms, MagicHash, NoImplicitPrelude #-}
+  PatternSynonyms, MagicHash, NoImplicitPrelude, DataKinds #-}
 {-# OPTIONS_GHC -fno-warn-unused-imports #-}
 {-# OPTIONS_GHC -fno-warn-duplicate-exports #-}
 module Proto.Google.Protobuf.Compiler.Plugin
@@ -14,13 +14,16 @@ import qualified Data.Int
 import qualified Data.Word
 import qualified Data.ProtoLens
 import qualified Data.ProtoLens.Message.Enum
+import qualified Data.ProtoLens.Service.Types
 import qualified Lens.Family2
 import qualified Lens.Family2.Unchecked
 import qualified Data.Default.Class
 import qualified Data.Text
 import qualified Data.Map
 import qualified Data.ByteString
+import qualified Data.ByteString.Char8
 import qualified Lens.Labels
+import qualified Text.Read
 import qualified Proto.Google.Protobuf.Descriptor
 
 data CodeGeneratorRequest = CodeGeneratorRequest{_CodeGeneratorRequest'fileToGenerate
