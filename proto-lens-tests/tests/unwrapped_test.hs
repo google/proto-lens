@@ -6,7 +6,7 @@ module Main where
 import Prelude
 import Lens.Family ((&), (.~), (^.))
 import Lens.Labels.Unwrapped ()
-import Proto.Canonical (Test1, Test3)
+import Proto.Canonical (Test3)
 
 import Data.Default.Class (def)
 import Data.ProtoLens (build)
