@@ -7,6 +7,8 @@ import  Data.Functor.Identity (Identity)
 import  Data.Profunctor (dimap)
 import  Data.Profunctor.Choice
 
+-- TODO(fintan): Probably need something similar to HasLens execpt HasPrism
+
 ------------------------------------------------------------------------------
 -- Prism Internals
 ------------------------------------------------------------------------------
