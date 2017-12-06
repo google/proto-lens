@@ -255,6 +255,28 @@ generateMessageDecls syntaxType env protoName info =
       $ deriving' ["Prelude.Show", "Prelude.Eq", "Prelude.Ord"]
     | oneofInfo <- messageOneofFields info
     ] ++
+    -- oneof Prism declarations
+    -- proto: message Foo {
+    --          oneof bar {
+    --            float c = 1;
+    --            Sub s = 2;
+    --          }
+    --        }
+    -- haskell: _Foo'C :: Prism' Foo Float
+    --          _Foo'S :: Prism' Foo Sub
+    [ funBind [
+        -- TODO(fintan): remove this
+        -- match :: Name -> [Pat] -> Exp -> Syntax.Match ()
+        match
+            consName
+            []
+            (list [])
+      ]
+    | oneofInfo <- messageOneofFields info
+    , oneofCase <- oneofCases oneofInfo
+    , let consName = caseConstructorName oneofCase
+    ]
+    ++
     -- instance (HasLens' f Foo x a, HasLens' f Foo x b, a ~ b)
     --    => HasLens f Foo Foo x a b
     [ instDecl [classA "Lens.Labels.HasLens'" ["f", dataType, "x", "a"],
