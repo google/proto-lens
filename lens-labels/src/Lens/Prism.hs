@@ -16,14 +16,6 @@ type Prism s t a b = forall p f. (Choice p, Applicative f) => p a (f b) -> p s (
 
 type Prism' s a = Prism s s a a
 
--- | If you see this in a signature for a function, the function is expecting a 'Prism'.
-type APrism s t a b = Market a b a (Identity b) -> Market a b s (Identity t)
-
--- | @
--- type APrism' = 'Simple' 'APrism'
--- @
-type APrism' s a = APrism s s a a
-
 ------------------------------------------------------------------------------
 -- Prism Combinators
 ------------------------------------------------------------------------------
