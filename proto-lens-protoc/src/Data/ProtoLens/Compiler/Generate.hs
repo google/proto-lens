@@ -107,19 +107,22 @@ generateModule modName imports syntaxType modifyImport definitions importedEnv s
           -- in a single entry, so we use two: `Foo(..)` and `Foo(A, B)`.
           , optionsGhcPragma "-fno-warn-duplicate-exports"
           ]
+    prismImport = modifyImport $ importSimple "Lens.Prism"
     sharedImports = map (modifyImport . importSimple)
               [ "Prelude", "Data.Int", "Data.Word"
               , "Data.ProtoLens", "Data.ProtoLens.Message.Enum", "Data.ProtoLens.Service.Types"
               , "Lens.Family2", "Lens.Family2.Unchecked", "Data.Default.Class"
               , "Data.Text",  "Data.Map", "Data.ByteString", "Data.ByteString.Char8"
-              , "Lens.Labels", "Text.Read"
+              , "Lens.Labels", "Lens.Prism", "Text.Read"
               ]
             ++ map importSimple imports
     env = Map.union (unqualifyEnv definitions) importedEnv
     generateDecls (protoName, Message m)
         = generateMessageDecls syntaxType env (stripDotPrefix protoName) m
+       ++ concatMap (generatePrisms env $ stripDotPrefix protoName) (messageOneofFields m)
     generateDecls (_, Enum e) = generateEnumDecls syntaxType e
     generateExports (Message m) = generateMessageExports m
+                               ++ concatMap generatePrismExports (messageOneofFields m)
     generateExports (Enum e) = generateEnumExports syntaxType e
     serviceExports = fmap generateServiceExports services
     allLensNames = F.toList $ Set.fromList
@@ -255,28 +258,6 @@ generateMessageDecls syntaxType env protoName info =
       $ deriving' ["Prelude.Show", "Prelude.Eq", "Prelude.Ord"]
     | oneofInfo <- messageOneofFields info
     ] ++
-    -- oneof Prism declarations
-    -- proto: message Foo {
-    --          oneof bar {
-    --            float c = 1;
-    --            Sub s = 2;
-    --          }
-    --        }
-    -- haskell: _Foo'C :: Prism' Foo Float
-    --          _Foo'S :: Prism' Foo Sub
-    [ funBind [
-        -- TODO(fintan): remove this
-        -- match :: Name -> [Pat] -> Exp -> Syntax.Match ()
-        match
-            consName
-            []
-            (list [])
-      ]
-    | oneofInfo <- messageOneofFields info
-    , oneofCase <- oneofCases oneofInfo
-    , let consName = caseConstructorName oneofCase
-    ]
-    ++
     -- instance (HasLens' f Foo x a, HasLens' f Foo x b, a ~ b)
     --    => HasLens f Foo Foo x a b
     [ instDecl [classA "Lens.Labels.HasLens'" ["f", dataType, "x", "a"],
@@ -330,6 +311,51 @@ generateMessageDecls syntaxType env protoName info =
     dataType = tyCon $ unQual dataName
     dataName = messageName info
     allFields = allMessageFields syntaxType env info
+
+-- oneof Prism declarations
+-- proto: message Foo {
+--          oneof bar {
+--            float c = 1;
+--            Sub s = 2;
+--          }
+--        }
+-- haskell: _Foo'C :: Prism' Bar'C Float
+--          _Foo'S :: Prism' Bar'S Sub
+generatePrisms :: Env QName -> T.Text -> OneofInfo -> [Decl]
+generatePrisms env protoName oneofInfo =
+    concatMap generatePrism $ oneofCases oneofInfo
+    where
+        fieldName = unQual . haskellRecordFieldName $ oneofFieldName oneofInfo
+        typeName = oneofTypeName oneofInfo
+        generatePrism :: OneofCase -> [Decl]
+        generatePrism oneofCase =
+            let consName = caseConstructorName oneofCase
+                funName = modifyName ("_" ++) $ consName
+                f = caseField oneofCase
+            in [ typeSig [funName] $
+                       "Lens.Prism.Prism'"
+                    @@ (tyCon $ unQual typeName)
+                    @@ (hsFieldType env $ fieldDescriptor f)
+               , funBind [
+                    match funName [] $
+                          "Lens.Prism.prism'"
+                       @@ con (unQual consName)
+                       @@ (lambda ["p__"] $
+                            case' "p__" $
+                                [ alt
+                                    (pApp (unQual consName) ["p__val"])
+                                    ("Prelude.Just" @@ "p__val")
+                                , alt
+                                    "_otherwise"
+                                    "Prelude.Nothing"
+                                ])
+                 ]
+               ]
+
+generatePrismExports :: OneofInfo -> [ExportSpec]
+generatePrismExports = map (exportVar . unQual . createFunName) . oneofCases
+    where
+        createFunName = modifyName ("_" ++) . caseConstructorName
 
 generateEnumExports :: SyntaxType -> EnumInfo Name -> [ExportSpec]
 generateEnumExports syntaxType e = [exportAll n, exportWith n aliases] ++ proto3NewType
