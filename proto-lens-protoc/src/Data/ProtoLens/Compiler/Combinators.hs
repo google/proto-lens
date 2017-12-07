@@ -237,6 +237,13 @@ type Name = Syntax.Name ()
 
 type Pat = Syntax.Pat ()
 
+identCons :: String -> Name
+identCons = Syntax.Ident ()
+
+modifyName :: (String -> String) -> Name -> Name
+modifyName f (Syntax.Ident  l n) = Syntax.Ident  l (f n)
+modifyName f (Syntax.Symbol l n) = Syntax.Symbol l (f n)
+
 pApp :: QName -> [Pat] -> Pat
 pApp = Syntax.PApp ()
 
