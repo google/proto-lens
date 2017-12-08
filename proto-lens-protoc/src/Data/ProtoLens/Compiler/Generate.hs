@@ -323,8 +323,13 @@ generateMessageDecls syntaxType env protoName info =
 --          _Foo'S :: Prism' Bar'S Sub
 generatePrisms :: Env QName -> OneofInfo -> [Decl]
 generatePrisms env oneofInfo =
-    concatMap generatePrism $ oneofCases oneofInfo
+    if length cases > 1
+       then concatMap (generatePrism altOtherwise) cases
+       else concatMap (generatePrism mempty) cases
     where
+        cases = oneofCases oneofInfo
+        altOtherwise = [ alt "_otherwise" "Prelude.Nothing" ]
+
         -- Generate type signature
         -- e.g. Prism' Bar'C Float
         generateTypeSig f funName =
@@ -336,7 +341,7 @@ generatePrisms env oneofInfo =
         -- Generate function definition
         -- Prism' is constructed with Constructor for building value
         -- and Deconstructor and wrapping in Just for getting value
-        generateFunDef consName =
+        generateFunDef otherwise consName =
                "Lens.Prism.prism'"
                -- Sum type constructor
             @@ con (unQual consName)
@@ -345,17 +350,18 @@ generatePrisms env oneofInfo =
                     case' "p__" $
                         [ alt (pApp (unQual consName) ["p__val"])
                               ("Prelude.Just" @@ "p__val")
-                        , alt "_otherwise"
-                              "Prelude.Nothing"
                         ]
+                       -- We want to generate the otherwise case
+                       -- depending on the amount of sum type there are
+                       ++ otherwise
                )
-        generatePrism :: OneofCase -> [Decl]
-        generatePrism oneofCase =
+        generatePrism :: [Alt] -> OneofCase -> [Decl]
+        generatePrism otherwise oneofCase =
             let consName = caseConstructorName oneofCase
                 funName = modifyName ("_" ++) $ consName
                 f = caseField oneofCase
             in [ generateTypeSig f funName
-               , funBind [ match funName [] $ generateFunDef consName ]
+               , funBind [ match funName [] $ generateFunDef otherwise consName ]
                ]
 
 generatePrismExports :: OneofInfo -> [ExportSpec]
