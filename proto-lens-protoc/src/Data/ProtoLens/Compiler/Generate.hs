@@ -341,7 +341,7 @@ generatePrisms env oneofInfo =
         -- Generate function definition
         -- Prism' is constructed with Constructor for building value
         -- and Deconstructor and wrapping in Just for getting value
-        generateFunDef otherwise consName =
+        generateFunDef otherwiseCase consName =
                "Lens.Prism.prism'"
                -- Sum type constructor
             @@ con (unQual consName)
@@ -352,16 +352,16 @@ generatePrisms env oneofInfo =
                               ("Prelude.Just" @@ "p__val")
                         ]
                        -- We want to generate the otherwise case
-                       -- depending on the amount of sum type there are
-                       ++ otherwise
+                       -- depending on the amount of sum type cases there are
+                       ++ otherwiseCase
                )
         generatePrism :: [Alt] -> OneofCase -> [Decl]
-        generatePrism otherwise oneofCase =
+        generatePrism otherwiseCase oneofCase =
             let consName = caseConstructorName oneofCase
                 funName = modifyName ("_" ++) $ consName
                 f = caseField oneofCase
             in [ generateTypeSig f funName
-               , funBind [ match funName [] $ generateFunDef otherwise consName ]
+               , funBind [ match funName [] $ generateFunDef otherwiseCase consName ]
                ]
 
 generatePrismExports :: OneofInfo -> [ExportSpec]
