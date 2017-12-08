@@ -72,6 +72,9 @@ tests:
     source-dirs: tests
     dependencies:
       - proto-lens-tests
+      - lens-labels
+      - tagged
+      - profunctors
     other-modules:
       - Proto.Oneof
       - Proto.Oneof'Fields
