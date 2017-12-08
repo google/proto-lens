@@ -325,31 +325,37 @@ generatePrisms :: Env QName -> T.Text -> OneofInfo -> [Decl]
 generatePrisms env protoName oneofInfo =
     concatMap generatePrism $ oneofCases oneofInfo
     where
-        fieldName = unQual . haskellRecordFieldName $ oneofFieldName oneofInfo
-        typeName = oneofTypeName oneofInfo
+        -- Generate type signature
+        -- e.g. Prism' Bar'C Float
+        generateTypeSig f funName =
+            typeSig [funName] $ "Lens.Prism.Prism'"
+                                -- The oneof sum type name
+                             @@ (tyCon . unQual $ oneofTypeName oneofInfo)
+                                -- The field contained in the sum
+                             @@ (hsFieldType env $ fieldDescriptor f)
+        -- Generate function definition
+        -- Prism' is constructed with Constructor for building value
+        -- and Deconstructor and wrapping in Just for getting value
+        generateFunDef consName =
+               "Lens.Prism.prism'"
+               -- Sum type constructor
+            @@ con (unQual consName)
+               -- Case deconstruction
+            @@ (lambda ["p__"] $
+                    case' "p__" $
+                        [ alt (pApp (unQual consName) ["p__val"])
+                              ("Prelude.Just" @@ "p__val")
+                        , alt "_otherwise"
+                              "Prelude.Nothing"
+                        ]
+               )
         generatePrism :: OneofCase -> [Decl]
         generatePrism oneofCase =
             let consName = caseConstructorName oneofCase
                 funName = modifyName ("_" ++) $ consName
                 f = caseField oneofCase
-            in [ typeSig [funName] $
-                       "Lens.Prism.Prism'"
-                    @@ (tyCon $ unQual typeName)
-                    @@ (hsFieldType env $ fieldDescriptor f)
-               , funBind [
-                    match funName [] $
-                          "Lens.Prism.prism'"
-                       @@ con (unQual consName)
-                       @@ (lambda ["p__"] $
-                            case' "p__" $
-                                [ alt
-                                    (pApp (unQual consName) ["p__val"])
-                                    ("Prelude.Just" @@ "p__val")
-                                , alt
-                                    "_otherwise"
-                                    "Prelude.Nothing"
-                                ])
-                 ]
+            in [ generateTypeSig f funName
+               , funBind [ match funName [] $ generateFunDef consName ]
                ]
 
 generatePrismExports :: OneofInfo -> [ExportSpec]
