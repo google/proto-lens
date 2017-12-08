@@ -4,14 +4,32 @@ module Main (main) where
 import Proto.Oneof
 import Proto.Oneof'Fields
 import Data.ProtoLens
-import Lens.Family2 ((&), (.~), view)
+import Lens.Family2 ((&), (.~), (^.), (^?), (%~), view)
+import Lens.Prism (_Just)
 import Test.Framework.Providers.HUnit (testCase)
 import Test.HUnit
+
+-- Utilities for prism setting
+import Data.Functor.Identity (Identity (..))
+import Data.Profunctor.Unsafe ((#.), (.#))
+import Data.Tagged (Tagged (..))
 
 import Data.ProtoLens.TestUtil
 
 defFoo :: Foo
 defFoo = def
+
+-- So we do not pull in the lens library we are putting some
+-- utilities in here for setting prisms
+type Optic p f s t a b = p a (f b) -> p s (f t)
+
+type Optic' p f s a = Optic p f s s a a
+
+type AReview t b = Optic' Tagged Identity t b
+
+( # ) :: AReview t b -> b -> t
+( # ) p = runIdentity #. unTagged #. p .# Tagged .# Identity
+infixr 8 #
 
 main :: IO ()
 main = testMain
@@ -40,6 +58,19 @@ main = testMain
         42 @=? view baz (defFoo & maybe'bar .~ Just (Foo'Baz 42))
         Just 42 @=? view maybe'baz (defFoo & maybe'bar .~ Just (Foo'Baz 42))
         Nothing @=? view maybe'bippy (defFoo & maybe'bar .~ Just (Foo'Baz 42))
+
+    , testCase "oneof prism accessor" $ do
+        Just 42 @=? (defFoo & baz .~ 42) ^? maybe'bar . _Just . _Foo'Baz
+        Nothing @=? (defFoo & baz .~ 42) ^? maybe'bar . _Just . _Foo'Bippy
+        Just "querty" @=? (defFoo & bippy .~ "querty") ^? maybe'bar . _Just . _Foo'Bippy
+
+    , testCase "oneof prism setter" $ do
+        -- modify an existing value
+        let test = (defFoo & baz .~ 42) & maybe'bar . _Just . _Foo'Baz %~ (+1)
+        Just 43 @=? test ^? maybe'bar . _Just . _Foo'Baz
+        -- test creation methods are equal
+        (defFoo & bippy .~ "querty") @=?
+            (defFoo & maybe'bar .~ (_Just # _Foo'Bippy # "querty"))
 
     , testCase "dupe field names" $
         Just (DupeFieldNames'Baz 42) @=?
