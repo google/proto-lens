@@ -4,7 +4,7 @@ module Main (main) where
 import Proto.Oneof
 import Proto.Oneof'Fields
 import Data.ProtoLens
-import Lens.Family2 ((&), (.~), (^.), (^?), (%~), view)
+import Lens.Family2 ((&), (.~), (^?), (%~), view)
 import Lens.Prism (_Just)
 import Test.Framework.Providers.HUnit (testCase)
 import Test.HUnit
@@ -66,8 +66,8 @@ main = testMain
 
     , testCase "oneof prism setter" $ do
         -- modify an existing value
-        let test = (defFoo & baz .~ 42) & maybe'bar . _Just . _Foo'Baz %~ (+1)
-        Just 43 @=? test ^? maybe'bar . _Just . _Foo'Baz
+        let testFoo = (defFoo & baz .~ 42) & maybe'bar . _Just . _Foo'Baz %~ (+1)
+        Just 43 @=? testFoo ^? maybe'bar . _Just . _Foo'Baz
         -- test creation methods are equal
         (defFoo & bippy .~ "querty") @=?
             (defFoo & maybe'bar .~ (_Just # _Foo'Bippy # "querty"))
