@@ -82,7 +82,7 @@ generateModule modName imports syntaxType modifyImport definitions importedEnv s
     = [ module' modName
                 (Just $ (serviceExports ++) $ concatMap generateExports $ Map.elems definitions)
                 pragmas
-                sharedImports
+                (prismImport:sharedImports)
           $ (concatMap generateDecls $ Map.toList definitions)
          ++ concatMap (generateServiceDecls env) services
       , module' fieldModName
@@ -113,13 +113,13 @@ generateModule modName imports syntaxType modifyImport definitions importedEnv s
               , "Data.ProtoLens", "Data.ProtoLens.Message.Enum", "Data.ProtoLens.Service.Types"
               , "Lens.Family2", "Lens.Family2.Unchecked", "Data.Default.Class"
               , "Data.Text",  "Data.Map", "Data.ByteString", "Data.ByteString.Char8"
-              , "Lens.Labels", "Lens.Prism", "Text.Read"
+              , "Lens.Labels", "Text.Read"
               ]
             ++ map importSimple imports
     env = Map.union (unqualifyEnv definitions) importedEnv
     generateDecls (protoName, Message m)
         = generateMessageDecls syntaxType env (stripDotPrefix protoName) m
-       ++ concatMap (generatePrisms env $ stripDotPrefix protoName) (messageOneofFields m)
+       ++ concatMap (generatePrisms env) (messageOneofFields m)
     generateDecls (_, Enum e) = generateEnumDecls syntaxType e
     generateExports (Message m) = generateMessageExports m
                                ++ concatMap generatePrismExports (messageOneofFields m)
@@ -321,8 +321,8 @@ generateMessageDecls syntaxType env protoName info =
 --        }
 -- haskell: _Foo'C :: Prism' Bar'C Float
 --          _Foo'S :: Prism' Bar'S Sub
-generatePrisms :: Env QName -> T.Text -> OneofInfo -> [Decl]
-generatePrisms env protoName oneofInfo =
+generatePrisms :: Env QName -> OneofInfo -> [Decl]
+generatePrisms env oneofInfo =
     concatMap generatePrism $ oneofCases oneofInfo
     where
         -- Generate type signature
