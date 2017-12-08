@@ -2,8 +2,6 @@
 
 module Lens.Prism where
 
-import  Lens.Prism.Market
-import  Data.Functor.Identity (Identity)
 import  Data.Profunctor (dimap)
 import  Data.Profunctor.Choice
 
