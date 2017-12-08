@@ -12,6 +12,7 @@
 module Data.ProtoLens.Arbitrary
     ( ArbitraryMessage(..)
     , arbitraryMessage
+    , shrinkMessage
     ) where
 
 import Data.ProtoLens.Message
