@@ -5,6 +5,7 @@ import Proto.Oneof
 import Proto.Oneof'Fields
 import Data.ProtoLens
 import Lens.Family2 ((&), (.~), (^?), (%~), view)
+<<<<<<< HEAD
 import Lens.Labels.Prism (_Just, (#))
 import Test.Framework.Providers.HUnit (testCase)
 import Test.HUnit
@@ -13,6 +14,18 @@ import Data.ProtoLens.TestUtil
 
 defFoo :: Foo
 defFoo = def
+
+-- So we do not pull in the lens library we are putting some
+-- utilities in here for setting prisms
+type Optic p f s t a b = p a (f b) -> p s (f t)
+
+type Optic' p f s a = Optic p f s s a a
+
+type AReview t b = Optic' Tagged Identity t b
+
+( # ) :: AReview t b -> b -> t
+( # ) p = runIdentity #. unTagged #. p .# Tagged .# Identity
+infixr 8 #
 
 main :: IO ()
 main = testMain
