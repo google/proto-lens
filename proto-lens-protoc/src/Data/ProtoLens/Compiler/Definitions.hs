@@ -144,6 +144,8 @@ data OneofCase = OneofCase
     , caseConstructorName :: Name
         -- ^ The constructor for building a 'oneofTypeName' from the
         -- value in this field.
+    , casePrismName :: Name
+        -- ^ The name for building 'Prism' definition.
     }
 
 data FieldName = FieldName
@@ -307,14 +309,18 @@ collectOneofFields hsPrefix d allFields
                           $ Map.findWithDefault [] (Just idx)
                               allFields
         }
-    oneofCase f = OneofCase
-        { caseField = fieldInfo hsPrefix f
-        , caseConstructorName =
-              -- Note: oneof case constructors aren't prefixed
-              -- by the oneof name; field names (even inside
-              -- of a oneof) are unique within a message.
-              fromString $ hsPrefix ++ hsNameUnique subdefCons (f ^. name)
-        }
+    oneofCase f =
+        let consName = hsPrefix ++ hsNameUnique subdefCons (f ^. name)
+        in OneofCase
+            { caseField = fieldInfo hsPrefix f
+            , caseConstructorName =
+                  -- Note: oneof case constructors aren't prefixed
+                  -- by the oneof name; field names (even inside
+                  -- of a oneof) are unique within a message.
+                  fromString consName
+            , casePrismName =
+                  fromString $ "_" ++ consName
+            }
     -- Make a name that doesn't overlap with those already defined by submessages
     -- or subenums.
     hsNameUnique ns n

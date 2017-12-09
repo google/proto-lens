@@ -107,7 +107,7 @@ generateModule modName imports syntaxType modifyImport definitions importedEnv s
           -- in a single entry, so we use two: `Foo(..)` and `Foo(A, B)`.
           , optionsGhcPragma "-fno-warn-duplicate-exports"
           ]
-    prismImport = modifyImport $ importSimple "Lens.Prism"
+    prismImport = modifyImport $ importSimple "Lens.Labels.Prism"
     sharedImports = map (modifyImport . importSimple)
               [ "Prelude", "Data.Int", "Data.Word"
               , "Data.ProtoLens", "Data.ProtoLens.Message.Enum", "Data.ProtoLens.Service.Types"
@@ -321,6 +321,15 @@ generateMessageDecls syntaxType env protoName info =
 --        }
 -- haskell: _Foo'C :: Prism' Bar'C Float
 --          _Foo'S :: Prism' Bar'S Sub
+--
+--  example of the function definition for _Foo'C:
+-- _Foo'C :: Lens.Prism.Prism' Bar'C Float
+-- _Foo'C
+--   = Lens.Prism.prism' Bar'C
+--       (\ p__ ->
+--          case p__ of
+--              Bar'C p__val -> Prelude.Just p__val
+--              _otherwise -> Prelude.Nothing)
 generatePrisms :: Env QName -> OneofInfo -> [Decl]
 generatePrisms env oneofInfo =
     if length cases > 1
@@ -333,7 +342,7 @@ generatePrisms env oneofInfo =
         -- Generate type signature
         -- e.g. Prism' Bar'C Float
         generateTypeSig f funName =
-            typeSig [funName] $ "Lens.Prism.Prism'"
+            typeSig [funName] $ "Lens.Labels.Prism.Prism'"
                                 -- The oneof sum type name
                              @@ (tyCon . unQual $ oneofTypeName oneofInfo)
                                 -- The field contained in the sum
@@ -342,7 +351,7 @@ generatePrisms env oneofInfo =
         -- Prism' is constructed with Constructor for building value
         -- and Deconstructor and wrapping in Just for getting value
         generateFunDef otherwiseCase consName =
-               "Lens.Prism.prism'"
+               "Lens.Labels.Prism.prism'"
                -- Sum type constructor
             @@ con (unQual consName)
                -- Case deconstruction
@@ -358,10 +367,9 @@ generatePrisms env oneofInfo =
         generatePrism :: [Alt] -> OneofCase -> [Decl]
         generatePrism otherwiseCase oneofCase =
             let consName = caseConstructorName oneofCase
-                funName = modifyName ("_" ++) $ consName
-                f = caseField oneofCase
-            in [ generateTypeSig f funName
-               , funBind [ match funName [] $ generateFunDef otherwiseCase consName ]
+                prismName = casePrismName oneofCase
+            in [ generateTypeSig (caseField oneofCase) prismName
+               , funBind [ match prismName [] $ generateFunDef otherwiseCase consName ]
                ]
 
 generatePrismExports :: OneofInfo -> [ExportSpec]

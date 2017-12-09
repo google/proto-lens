@@ -1,9 +1,32 @@
+-- Copyright 2016 Google Inc. All Rights Reserved.
+--
+-- Use of this source code is governed by a BSD-style
+-- license that can be found in the LICENSE file or at
+-- https://developers.google.com/open-source/licenses/bsd
+
+-- | This module defines the 'Prism' type and combinators. Used for building
+--   'Prism's for oneof fields.
 {-# LANGUAGE RankNTypes #-}
 
-module Lens.Prism where
+module Lens.Labels.Prism
+    ( Prism
+    , Prism'
+    , AReview
+    , (#)
+    , prism
+    , prism'
+    , _Left
+    , _Right
+    , _Just
+    , _Nothing
+    ) where
 
+import  Data.Tagged (Tagged (..))
+import  Data.Functor.Identity (Identity (..))
 import  Data.Profunctor (dimap)
 import  Data.Profunctor.Choice
+import  Data.Profunctor.Unsafe ((#.), (.#))
+
 
 ------------------------------------------------------------------------------
 -- Prism Internals
@@ -11,6 +34,20 @@ import  Data.Profunctor.Choice
 type Prism s t a b = forall p f. (Choice p, Applicative f) => p a (f b) -> p s (f t)
 
 type Prism' s a = Prism s s a a
+
+type Optic p f s t a b = p a (f b) -> p s (f t)
+
+type Optic' p f s a = Optic p f s s a a
+
+type AReview t b = Optic' Tagged Identity t b
+
+-- | Used for constructing 'Prism' values.
+--
+-- @'_Just' '#' 5 == 'Just' 5@
+( # ) :: AReview t b -> b -> t
+( # ) p = runIdentity #. unTagged #. p .# Tagged .# Identity
+infixr 8 #
+
 
 ------------------------------------------------------------------------------
 -- Prism Combinators
