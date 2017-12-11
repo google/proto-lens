@@ -82,7 +82,7 @@ generateModule modName imports syntaxType modifyImport definitions importedEnv s
     = [ module' modName
                 (Just $ (serviceExports ++) $ concatMap generateExports $ Map.elems definitions)
                 pragmas
-                sharedImports
+                (prismImport:sharedImports)
           $ (concatMap generateDecls $ Map.toList definitions)
          ++ concatMap (generateServiceDecls env) services
       , module' fieldModName
@@ -107,6 +107,7 @@ generateModule modName imports syntaxType modifyImport definitions importedEnv s
           -- in a single entry, so we use two: `Foo(..)` and `Foo(A, B)`.
           , optionsGhcPragma "-fno-warn-duplicate-exports"
           ]
+    prismImport = modifyImport $ importSimple "Lens.Labels.Prism"
     sharedImports = map (modifyImport . importSimple)
               [ "Prelude", "Data.Int", "Data.Word"
               , "Data.ProtoLens", "Data.ProtoLens.Message.Enum", "Data.ProtoLens.Service.Types"
@@ -118,8 +119,10 @@ generateModule modName imports syntaxType modifyImport definitions importedEnv s
     env = Map.union (unqualifyEnv definitions) importedEnv
     generateDecls (protoName, Message m)
         = generateMessageDecls syntaxType env (stripDotPrefix protoName) m
+       ++ concatMap (generatePrisms env) (messageOneofFields m)
     generateDecls (_, Enum e) = generateEnumDecls syntaxType e
     generateExports (Message m) = generateMessageExports m
+                               ++ concatMap generatePrismExports (messageOneofFields m)
     generateExports (Enum e) = generateEnumExports syntaxType e
     serviceExports = fmap generateServiceExports services
     allLensNames = F.toList $ Set.fromList
@@ -308,6 +311,69 @@ generateMessageDecls syntaxType env protoName info =
     dataType = tyCon $ unQual dataName
     dataName = messageName info
     allFields = allMessageFields syntaxType env info
+
+-- oneof Prism declarations
+-- proto: message Foo {
+--          oneof bar {
+--            float c = 1;
+--            Sub s = 2;
+--          }
+--        }
+-- haskell: _Foo'C :: Prism' Bar'C Float
+--          _Foo'S :: Prism' Bar'S Sub
+--
+--  example of the function definition for _Foo'C:
+-- _Foo'C :: Lens.Prism.Prism' Bar'C Float
+-- _Foo'C
+--   = Lens.Prism.prism' Bar'C
+--       (\ p__ ->
+--          case p__ of
+--              Bar'C p__val -> Prelude.Just p__val
+--              _otherwise -> Prelude.Nothing)
+generatePrisms :: Env QName -> OneofInfo -> [Decl]
+generatePrisms env oneofInfo =
+    if length cases > 1
+       then concatMap (generatePrism altOtherwise) cases
+       else concatMap (generatePrism mempty) cases
+    where
+        cases = oneofCases oneofInfo
+        altOtherwise = [ alt "_otherwise" "Prelude.Nothing" ]
+
+        -- Generate type signature
+        -- e.g. Prism' Bar'C Float
+        generateTypeSig f funName =
+            typeSig [funName] $ "Lens.Labels.Prism.Prism'"
+                                -- The oneof sum type name
+                             @@ (tyCon . unQual $ oneofTypeName oneofInfo)
+                                -- The field contained in the sum
+                             @@ (hsFieldType env $ fieldDescriptor f)
+        -- Generate function definition
+        -- Prism' is constructed with Constructor for building value
+        -- and Deconstructor and wrapping in Just for getting value
+        generateFunDef otherwiseCase consName =
+               "Lens.Labels.Prism.prism'"
+               -- Sum type constructor
+            @@ con (unQual consName)
+               -- Case deconstruction
+            @@ (lambda ["p__"] $
+                    case' "p__" $
+                        [ alt (pApp (unQual consName) ["p__val"])
+                              ("Prelude.Just" @@ "p__val")
+                        ]
+                       -- We want to generate the otherwise case
+                       -- depending on the amount of sum type cases there are
+                       ++ otherwiseCase
+               )
+        generatePrism :: [Alt] -> OneofCase -> [Decl]
+        generatePrism otherwiseCase oneofCase =
+            let consName = caseConstructorName oneofCase
+                prismName = casePrismName oneofCase
+            in [ generateTypeSig (caseField oneofCase) prismName
+               , funBind [ match prismName [] $ generateFunDef otherwiseCase consName ]
+               ]
+
+generatePrismExports :: OneofInfo -> [ExportSpec]
+generatePrismExports = map (exportVar . unQual . casePrismName) . oneofCases
 
 generateEnumExports :: SyntaxType -> EnumInfo Name -> [ExportSpec]
 generateEnumExports syntaxType e = [exportAll n, exportWith n aliases] ++ proto3NewType
