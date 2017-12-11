@@ -373,9 +373,7 @@ generatePrisms env oneofInfo =
                ]
 
 generatePrismExports :: OneofInfo -> [ExportSpec]
-generatePrismExports = map (exportVar . unQual . createFunName) . oneofCases
-    where
-        createFunName = modifyName ("_" ++) . caseConstructorName
+generatePrismExports = map (exportVar . unQual . casePrismName) . oneofCases
 
 generateEnumExports :: SyntaxType -> EnumInfo Name -> [ExportSpec]
 generateEnumExports syntaxType e = [exportAll n, exportWith n aliases] ++ proto3NewType
