@@ -1,5 +1,18 @@
 # proto-lens-tutorial
 
+## Table of Contents
+
+1. [Message Generation](#message-generation)
+2. [Oneof Generation](#oneof-generation)
+3. [Enum Generation](#enum-generation)
+4. [Field Overloading](#field-overloading)
+5. [Any](#any)
+6. [Repeated](#repeated)
+7. [Map](#map)
+8. [Lens Laws](#lens-laws)
+9. [Example: Person](./person/README.md)
+10. [Example: Coffee Order](./coffee-order/README.md)
+
 ## Message Generation
 
 `message`s that are defined in a `.proto` file are generated as Haskell records. Given instances to various typeclasses for making their use more ergonomic in code use.
