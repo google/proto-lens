@@ -5,22 +5,8 @@
 # https://docs.haskellstack.org/en/stable/yaml_configuration/
 
 resolver: lts-9.14
-
 packages:
-- person
-- person/proto
-- coffee-order
-- coffee-order/proto
-
-- extra-dep: true
-  location:
-    git: https://github.com/google/proto-lens
-    commit: master
-  subdirs:
-    - proto-lens
-    - proto-lens-protoc
-    - lens-labels
-
+- .
 extra-deps: []
 flags: {}
 extra-package-dbs: []

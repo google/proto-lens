@@ -1,0 +1,26 @@
+name:                person
+version:             0.1.0.0
+#synopsis:
+#description:
+homepage:            https://github.com/google/proto-lens-tutorial#readme
+license:             BSD3
+author:              Fintan Halpenny
+maintainer:          fintan.halpenny@gmail.com
+copyright:           2017 Author name here
+category:            Web
+extra-source-files:
+- README.md
+
+dependencies:
+  - base >= 4.7 && < 5
+  - person-proto
+  - data-default
+  - microlens
+  - proto-lens
+  - lens-labels
+  - text
+
+executables:
+  person:
+    source-dirs:      src
+    main:             Main.hs

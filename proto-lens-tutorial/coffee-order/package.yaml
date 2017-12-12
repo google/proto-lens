@@ -1,4 +1,4 @@
-name:                proto-playground
+name:                coffee-order
 version:             0.1.0.0
 #synopsis:
 #description:
@@ -13,17 +13,12 @@ extra-source-files:
 
 dependencies:
   - base >= 4.7 && < 5
-  - person-proto
+  - coffee-proto
   - data-default
   - microlens
   - proto-lens
   - lens-labels
   - text
-
-executables:
-  proto-playground:
-    source-dirs:      src
-    main:             Main.hs
 
 executables:
   gimme-coffee:

@@ -14,5 +14,3 @@ library:
   exposed-modules:
     - Proto.Person
     - Proto.Person'Fields
-    - Proto.Coffee.Order
-    - Proto.Coffee.Order'Fields

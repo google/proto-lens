@@ -2,7 +2,7 @@
 
 ## Message Generation
 
-Messages that are defined in a `.proto` file are generated as Haskell records. Given instances to various typeclasses for making their use more ergonomic in code use.
+`message`s that are defined in a `.proto` file are generated as Haskell records. Given instances to various typeclasses for making their use more ergonomic in code use.
 
 A `message` may be defined in a file `foo.proto`:
 ```
@@ -33,9 +33,9 @@ Instances generated are:
 
 ## Oneof Generation
 
-Oneof fields within a Message are generated as fields in the records, where the field is a `Maybe` due to paritiality of deserializing. The values are defined by a coproduct type.
+`oneof` fields within a `message` are generated as fields in the records, where the field is a `Maybe` due to paritiality of deserializing. The values are defined by a coproduct type.
 
-A Message with a `oneof` may be defined in a file `foo.proto`:
+A `message` with a `oneof` may be defined in a file `foo.proto`:
 ```
 syntax="proto3"
 
@@ -80,7 +80,7 @@ accessBaz :: Foo -> Maybe Int32
 accessBaz foo = foo ^? maybe'bar . _Just . _Foo'Baz
 ```
 
-Our regular Message instances are generated:
+Our regular instances are generated:
 
 * `Lens.Labels.HasLens`
 * `Lens.Labels.HasLens'` for the various fields. These include `maybe'*` `HasLens'` instances for viewing the `Maybe` values.
@@ -89,7 +89,7 @@ Our regular Message instances are generated:
 
 ## Enum Generation
 
-Enums that are defined in a `.proto` file are generated as Haskell coproducts. Given instances to various typeclasses for making their use more ergonomic in code use.
+`enum`s that are defined in a `.proto` file are generated as Haskell coproducts. Given instances to various typeclasses for making their use more ergonomic in code use.
 
 An `enum` may be defined in a file `foo.proto`:
 ```
@@ -121,7 +121,7 @@ Instances generated are:
 
 ## Field Overloading
 
-When we look at having the Message:
+When we look at having the `message`:
 ```
 syntax="proto3"
 
@@ -197,7 +197,7 @@ message Foo {
 }
 ```
 generates:
-``` haskell 
+``` haskell
 data Foo = Foo{_Foo'a :: ![Data.Int.Int32],
                _Foo'b :: ![Data.Int.Int32],
                _Foo'_unknownFields :: !Data.ProtoLens.FieldSet}
@@ -213,12 +213,12 @@ message Foo {
 }
 ```
 generates:
-``` haskell 
+``` haskell
 data Foo = Foo{_Foo'bar ::
                !(Data.Map.Map Data.Int.Int32 Data.Text.Text),
                _Foo'_unknownFields :: !Data.ProtoLens.FieldSet}
          deriving (Prelude.Show, Prelude.Eq, Prelude.Ord)
-         
+
 data Foo'BarEntry = Foo'BarEntry{_Foo'BarEntry'key ::
                                 !Data.Int.Int32,
                                 _Foo'BarEntry'value :: !Data.Text.Text,
@@ -580,7 +580,7 @@ data Coffee'CoffeeType = Coffee'Americano !Americano
 
 To break this down, our types `Americano`, `Latte`, etc. are essentially empty messages as we defined them as such. It gets more interesting when we look at the data for `Coffee`. We have our regular `Float` value for `_Coffee'cost`. Along with that `oneof` was generated as a `Maybe Coffee'CoffeeType`. Now, we did not specify some `Coffee'CoffeeType` but `proto-lens` generated it for us. This is the way a sum type is generated in `proto-lens` and as we can see it is our usual sum type with constructors around our original coffees `Coffee'Americano !Americano`, `Coffee'Latter !Latte`, etc. The reason it is wrapped in a `Maybe` is because everything is optional by default in `proto3`.
 
-Now that we have looked at the Haskell representation of the data, let's look at the lenses that come with these. 
+Now that we have looked at the Haskell representation of the data, let's look at the lenses that come with these.
 
 ```haskell
 instance Prelude.Functor f =>
