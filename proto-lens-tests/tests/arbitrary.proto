@@ -1,0 +1,14 @@
+syntax="proto3";
+
+package arbitrary_test;
+
+message Bar {
+  repeated int64 boo = 1;
+  repeated double huh = 2;
+}
+
+message Foo {
+  repeated Bar bar = 1;
+  repeated float baz = 2;
+  repeated string bippy = 3;
+}

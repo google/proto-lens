@@ -40,6 +40,15 @@ library:
     - Data.ProtoLens.TestUtil
 
 tests:
+  arbitrary_test:
+    main: arbitrary_test.hs
+    source-dirs: tests
+    dependencies:
+      - proto-lens-tests
+      - hspec
+    other-modules:
+      - Proto.Arbitrary
+
   canonical_test:
     main: canonical_test.hs
     source-dirs: tests
