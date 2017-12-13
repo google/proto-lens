@@ -181,12 +181,13 @@ main :: IO ()
 main = putStrLn $ myBar ^. P.bippy
 ```
 
-The second method is by using the `OverloadedLabels` extension and importing the orphan instance of `IsLabel` for `proto-lens` `LensFn` type, giving us the use of `#` for prefixing our field accessors:
+The second method is by using the `OverloadedLabels` extension and importing the orphan instance of `IsLabel` for `proto-lens` `LensFn` type, giving us the use of `#` for prefixing our field accessors. To bring this instance into scope we need to also import `Lens.Labels.Unrwapped`:
 ``` haskell
 {-# LANGUAGE OverloadedLabels #-}
 
-import Proto.Foo        as P
-import Microlens ((^.))
+import Lens.Labels.Unwrapped ()
+import Microlens             ((^.))
+import Proto.Foo          as P
 
 myBar :: P.Bar
 myBar = def & #baz   .~ 42
