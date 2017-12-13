@@ -19,7 +19,7 @@
 
 A `message` may be defined in a file `foo.proto`:
 ```
-syntax="proto3"
+syntax="proto3";
 
 message Bar {
   int32 baz = 1;
@@ -50,7 +50,7 @@ Instances generated are:
 
 A `message` with a `oneof` may be defined in a file `foo.proto`:
 ```
-syntax="proto3"
+syntax="proto3";
 
 message Foo {
   oneof bar {
@@ -60,7 +60,7 @@ message Foo {
 }
 ```
 
-This will generate a `Foo` module with the a `Bar` record containing the field `_Foo'bar` and and a coproduct `Foo'Bar` with constructors `Foo'Baz` and `Foo'Bippy`. On top of this `Prism'` functions will be generated for the sum type, in this case `Foo'Bar`, one for each `oneof` field:
+This will generate a `Foo` module with the a `Bar` record containing the field `_Foo'bar` and a coproduct `Foo'Bar` with constructors `Foo'Baz` and `Foo'Bippy`. On top of this, `Prism'` functions will be generated for the sum type, in this case `Foo'Bar`, one for each `oneof` field:
 ``` haskell
 data Foo = Foo{_Foo'bar :: !(Prelude.Maybe Foo'Bar),
                _Foo'_unknownFields :: !Data.ProtoLens.FieldSet}
@@ -90,7 +90,10 @@ _Foo'Bippy
 The `Prism'` functions allow us to succinctly focus on one branch of the sum type for our Message, for example:
 ``` haskell
 accessBaz :: Foo -> Maybe Int32
-accessBaz foo = foo ^? maybe'bar . _Just . _Foo'Baz
+accessBaz foo = foo
+             ^? maybe'bar -- We want to look at the 'bar' oneof field
+              . _Just     -- We only care if this value is set with a `Just`
+              . _Foo'Baz  -- Focus on the 'baz' branch of our sum type
 ```
 
 Our regular instances are generated:
@@ -106,7 +109,7 @@ Our regular instances are generated:
 
 An `enum` may be defined in a file `foo.proto`:
 ```
-syntax="proto3"
+syntax="proto3";
 
 enum Baz {
   BAZ1 = 0;
@@ -136,7 +139,7 @@ Instances generated are:
 
 When we look at having the `message`:
 ```
-syntax="proto3"
+syntax="proto3";
 
 message Bar {
   int32 baz = 1;
@@ -169,9 +172,9 @@ baz
 
 The use of `baz` can be done in two ways and which way you choose is up to you and your style. The first is by importing the `*'Fields.hs` module, for example:
 ``` haskell
+import Microlens           ((^.))
 import Proto.Foo        as P
 import Proto.Foo'Fields as P
-import Microlens ((^.))
 
 myBar :: P.Bar
 myBar = def & P.baz   .~ 42
