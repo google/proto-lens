@@ -23,4 +23,4 @@ dependencies:
 executables:
   gimme-coffee:
     source-dirs:      src
-    main:             CoffeeOrder.hs
+    main:             Main.hs
