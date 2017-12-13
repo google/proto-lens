@@ -2,12 +2,12 @@ name:                person
 version:             0.1.0.0
 #synopsis:
 #description:
-homepage:            https://github.com/google/proto-lens-tutorial#readme
+homepage:            https://github.com/google/proto-lens-tutorial/person#readme
 license:             BSD3
 author:              Fintan Halpenny
 maintainer:          fintan.halpenny@gmail.com
 copyright:           2017 Fintan Halpenny
-category:            Web
+category:            Data
 extra-source-files:
 - README.md
 
