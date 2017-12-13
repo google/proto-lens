@@ -2,6 +2,17 @@
 
 In this example we will go through a more complicated data structure compared to our [Person Example](https://github.com/FintanH/proto-lens/blob/docs/codelab/proto-lens-tutorial/person/README.md).
 
+## Table of Contents
+
+1. [Modeling Coffee Orders](#modeling-coffee-orders)
+  1. [Coffee Types](#coffee-types)
+  2. [Coffee](#coffee)
+  3. [Generated Code](#generated-code)
+    1. [Generated Records and Sum Types](#generated-records-and-sum-types)
+    2. [Generated Accessors and Prisms](#generated-accessors-and-prisms)
+2. [Full Code Example](#full-code-example)
+3. [Did We Miss Something?](#did-we-miss-something)
+
 ## Modeling Coffee Orders
 
 We will examine what gets generated as the data and lenses for the definitions in [order.proto](./proto/src/coffee/order.proto)
