@@ -18,7 +18,7 @@
 `message`s that are defined in a `.proto` file are generated as Haskell records. Given instances to various typeclasses for making their use more ergonomic in code use.
 
 A `message` may be defined in a file `foo.proto`:
-```
+``` protobuf
 syntax="proto3";
 
 message Bar {
@@ -49,7 +49,7 @@ Instances generated are:
 `oneof` fields within a `message` are generated as fields in the records, where the field is a `Maybe` due to paritiality of deserializing. The values are defined by a coproduct type.
 
 A `message` with a `oneof` may be defined in a file `foo.proto`:
-```
+``` protobuf
 syntax="proto3";
 
 message Foo {
@@ -108,7 +108,7 @@ Our regular instances are generated:
 `enum`s that are defined in a `.proto` file are generated as Haskell coproducts. Given instances to various typeclasses for making their use more ergonomic in code use.
 
 An `enum` may be defined in a file `foo.proto`:
-```
+``` protobuf
 syntax="proto3";
 
 enum Baz {
@@ -138,7 +138,7 @@ Instances generated are:
 ## Field Overloading
 
 When we look at having the `message`:
-```
+``` protobuf
 syntax="proto3";
 
 message Bar {
@@ -147,7 +147,7 @@ message Bar {
 }
 ```
 we said that `baz` and `bippy` accessors are created via `HasLens'` instances. If we add a further message into the mix such as:
-```
+``` protobuf
 message Foo {
   string baz = 1;
 }
@@ -207,7 +207,7 @@ main = putStrLn $ myBar ^. #bippy
 ## Repeated
 
 `repeated` fields signify that the type of the field is a list of values, narturally fitting to the `[a]` type in Haskell. For example:
-```
+``` protobuf
 message Foo {
   repeated int32 a = 1;
   repeated int32 b = 2 [packed=true];
@@ -224,7 +224,7 @@ data Foo = Foo{_Foo'a :: ![Data.Int.Int32],
 ## Map
 
 `map` fields signify that the type of the field is mapping from one value to another, narturally fitting to the `Data.Map a b` type in Haskell. For exmaple:
-```
+``` protobuf
 message Foo {
   map<int32, string> bar = 1;
 }
