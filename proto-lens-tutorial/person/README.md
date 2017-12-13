@@ -1,22 +1,24 @@
-# Person Example Setup
+# Person Example
+
+In this section we will go through how to setup a package with a simple definition of a Person via a `.proto` file.
 
 ## Tutorial: Setting up a basic package
 In this tutorial we are gonna visit how to set up proto-lens and all its goodness. To get all the good stuff we are going to stick with `master` branch of `proto-lens`, so there is gonna be a few extra steps involved. If you want to follow along rather than pull the repo here are the steps.
 
 ### Setup
 
-I am going to use `stack` and `hpack` to set things up. So heeeeerrrrrreeeee weeeeee go:
+I am going to use `stack` and `hpack` to set things up. So here we go:
 
 #### 1. Create a new stack project
 
-`stack new proto-playground simple-hpack && cd proto-playground`
+`stack new person simple-hpack && cd person`
 
 #### 2. Setup proto
 
 Now we have our top level project we are going to create a `proto` package inside:
 `stack new proto simple-hpack`
 
-We will setup the stuff in the project first before coming back to `proto-playground`. In our `proto/src` directory we will remove `Main.hs` and replace it with a `person.proto` file with the following contents:
+We will setup the stuff in the project first before coming back to `person`. In our `proto/src` directory we will remove `Main.hs` and replace it with a `person.proto` file with the following contents:
 
 ```protobuf
 syntax="proto3";
@@ -66,9 +68,9 @@ import Data.ProtoLens.Setup
 main = defaultMainGeneratingProtos "src"
 ```
 
-#### 3. Setup proto-playground
+#### 3. Setup person
 
-Here we are going to be telling `proto-playground` how to find the proto stuff we just setup and how to grab the most up to date version of `proto-lens`. First thing to do will be to edit the `stack.yaml` file as follows:
+Here we are going to be telling `person` how to find the proto stuff we just setup and how to grab the most up to date version of `proto-lens`. First thing to do will be to edit the `stack.yaml` file as follows:
 
 1. Under `packages` we should have:
 
@@ -96,11 +98,11 @@ This last one says we will grab `proto-lens` from the github repo and use the `m
 Our final step will be to add `person-proto`, along with `default-data`, `microlens`, and `proto-lens`, to our dependencies in our main project like so:
 
 ```yaml
-name:                proto-playgorund
+name:                person
 version:             0.1.0.0
 #synopsis:
 #description:
-homepage:            https://github.com/githubuser/proto-playground#readme
+homepage:            https://github.com/githubuser/person#readme
 license:             BSD3
 author:              Author name here
 maintainer:          example@example.com
@@ -117,7 +119,7 @@ dependencies:
   - proto-lens
 
 executables:
-  proto-wtf:
+  person:
     source-dirs:      src
     main:             Main.hs
 ```
