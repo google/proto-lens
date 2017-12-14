@@ -1,14 +1,78 @@
-syntax="proto3";
+syntax = "proto3";
 
 package arbitrary_test;
 
-message Bar {
-  repeated int64 boo = 1;
-  repeated double huh = 2;
+message Label {
+  oneof label {
+    string string_label = 1;
+    int32 int_label = 2;
+    float float_label = 3;
+    SimpleLabel simple_label = 4;
+    ContextualBanditLabel cb_label = 5;
+  }
 }
 
-message Foo {
-  repeated Bar bar = 1;
-  repeated float baz = 2;
-  repeated string bippy = 3;
+message SimpleLabel {
+  float label = 1;
+  float weight = 2;
+  float initial = 3;
+  string tag = 4;
+}
+
+message ContextualBanditLabel {
+  float action = 1;
+  float cost = 2;
+  float probability = 3;
+  int32 index = 4;
+}
+
+message SimpleFeature {
+  oneof feature {
+    int32 int_feature = 1;
+    float float_feature = 2;
+  }
+}
+
+message ArrayFeature {
+  repeated SimpleFeature features = 1;
+}
+
+message Feature {
+  string name = 1;
+  oneof feature {
+    string string_feature = 2;
+    bool bool_feature = 3;
+    SimpleFeature simple_feature = 4;
+    ArrayFeature array_feature = 5;
+  }
+}
+
+message Object {
+  repeated Item items = 1;
+}
+
+message Multi {
+  repeated Object items = 1;
+}
+
+message Item {
+  oneof element {
+    Label label = 1;
+    Feature feature = 2;
+    Namespace namespace = 3;
+    string text = 4;
+    Multi multi = 5;
+  }
+}
+
+message Namespace {
+  string name = 1;
+  repeated NamespaceItem items = 2;
+}
+
+message NamespaceItem {
+  oneof element {
+    Feature feature = 1;
+    string text = 2;
+  }
 }

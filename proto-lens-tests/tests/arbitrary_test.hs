@@ -12,5 +12,5 @@ main :: IO ()
 main = hspec $
   describe "roundtrip" $ do
     it "should actually work" $
-     forAllShrink arbitraryMessage shrinkMessage $ \(msg :: Foo) ->
+     forAllShrink arbitraryMessage shrinkMessage $ \(msg :: Multi) ->
      decodeMessage (encodeMessage msg) === pure msg
