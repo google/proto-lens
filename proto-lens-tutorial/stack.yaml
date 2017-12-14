@@ -14,8 +14,7 @@ packages:
 
 - extra-dep: true
   location:
-    git: https://github.com/google/proto-lens
-    commit: master
+    '..'
   subdirs:
     - proto-lens
     - proto-lens-protoc
