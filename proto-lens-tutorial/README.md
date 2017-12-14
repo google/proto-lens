@@ -89,11 +89,21 @@ _Foo'Bippy
 
 The `Prism'` functions allow us to succinctly focus on one branch of the sum type for our Message, for example:
 ``` haskell
+import Lens.Labels.Prism
+
 accessBaz :: Foo -> Maybe Int32
 accessBaz foo = foo
              ^? maybe'bar -- We want to look at the 'bar' oneof field
               . _Just     -- We only care if this value is set with a `Just`
               . _Foo'Baz  -- Focus on the 'baz' branch of our sum type
+
+-- | Creates a 'Foo' with an incoming 'Int32'
+createFoo :: Int32 -> Foo
+createFoo i = def & maybe'bar .~ (_Just # _Foo'Baz # i)
+
+-- | Sets a new `bippy` value
+updateFoo :: String -> Foo -> Foo
+updateFoo s foo = foo ?~ _Foo'Bippy # s 
 ```
 
 Our regular instances are generated:
@@ -202,7 +212,12 @@ main = putStrLn $ myBar ^. #bippy
 
 ## Any
 
-`TODO: Explain Any`
+An `Any` field stands for any arbitrary message and thus is represented by an arbitrary blob of bytes. We can see this as a placeholder for any user defined message where the message becomes concrete when we unpack it to some message we have chosen. There are two utility functions for packing any `Message a` into an `Any` and its dual for unpacking an `Any` into a `Message a`. These functions are called `pack` and `unpack` rsepectively and their type signatures are below:
+
+``` haskell
+pack :: forall a. Message a => a -> Any
+unpack :: forall a. Message a => Any -> Either UnpackError a
+```
 
 ## Repeated
 
@@ -242,8 +257,40 @@ data Foo'BarEntry = Foo'BarEntry{_Foo'BarEntry'key ::
                                 _Foo'BarEntry'_unknownFields :: !Data.ProtoLens.FieldSet}
                  deriving (Prelude.Show, Prelude.Eq, Prelude.Ord)
 ```
-`TODO: What is the Foo'BarEntry for? Is there anything significant about map`
+
+`Foo'BarEntry` is generated due to [backwards compatability](https://developers.google.com/protocol-buffers/docs/proto3#maps), so we can ignore this generated code and focus on the fact that we can treat this data as a regular Haskell `Map`.
 
 ## Lens Laws
 
-`TODO: Explain why the lens laws are not adhered to for optional fields and oneofs`
+Underneath there is a function that is used for creating lenses, `maybeLens`. `maybeLens` does not satisfy the lens laws, which expect that `set l (view l x) == x`.
+For example:
+``` haskell
+set (maybeLens 'a') (view (maybeLens 'a') Nothing) == Just 'a'
+```
+
+However, this is the behavior generally expected by users, and only matters if we're explicitly checking whether a field is set.
+
+Another pitfall is when interacting with `oneof` fields it is possible to clear exisitng values. For example if we have the following proto:
+
+``` protobuf
+message Foo {
+  oneof bar {
+    int32 baz = 1;
+    string bippy = 2;
+  }
+}
+```
+we can end up doing the following:
+``` haskell
+fooVal :: P.Foo
+fooVal = def & P.maybe'baz ?~ 42
+
+fooVal' :: P.Foo
+fooVal' = fooVal & P.maybe'bippy .~ Nothing
+
+main :: IO ()
+main = do
+  print fooVal  -- outputs: Foo {_Foo'bar = Just (Foo'Baz 42), _Foo'_unknownFields = []}
+  print fooVal' -- outputs: Foo {_Foo'bar = Nothing, _Foo'_unknownFields = []}
+```
+We have cleared the previously set `Just (Foo'Baz 42)` value by doing `P.maybe'bippy .~ Nothing`. To try and avoid this it would be best to organise your code by using the `Prism'` functions for `oneof` fields instead.
