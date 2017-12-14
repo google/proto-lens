@@ -6,9 +6,6 @@
 module Main where
 
 import           Data.Default
-import           Data.String (IsString)
-import           Data.Text (Text)
-import           Lens.Labels.Prism ((#))
 import           Lens.Labels.Unwrapped ()
 import           Lens.Micro
 import           Lens.Micro.Extras (view)
@@ -83,7 +80,7 @@ processCashPayment :: Float
                    -> Either TransactionError ()
 processCashPayment amount payment
   | amount <= pay = pure ()
-  | amount > pay  = Left NotEnoughMoney
+  | otherwise     = Left NotEnoughMoney
   where
     pay = payment ^. #amount
 
