@@ -40,7 +40,7 @@ instance Message a => Arbitrary (ArbitraryMessage a) where
     shrink (ArbitraryMessage a) = ArbitraryMessage <$> shrinkMessage a
 
 arbitraryMessage :: Message a => Gen a
-arbitraryMessage = foldM (flip $ arbitraryField) def allFields
+arbitraryMessage = foldM (flip arbitraryField) def allFields
 
 -- | Imitation of the (Arbitrary a => Arbitrary (Maybe a)) instance from
 -- QuickCheck.
