@@ -29,10 +29,12 @@ message Bar {
 
 This will generate a `Foo` module with the a `Bar` record containing fields `_Bar'baz` and `_Bar'bippy`:
 ``` haskell
-data Bar = Bar{_Bar'baz   :: !Prelude.Float,
-               _Bar'bippy :: !Data.Text.Text,
-               _Foo'_unknownFields :: !Data.ProtoLens.FieldSet}
-           deriving (Prelude.Show, Prelude.Eq, Prelude.Ord)
+data Bar = Bar
+  { _Bar'baz   :: !Prelude.Float
+  , _Bar'bippy :: !Data.Text.Text
+  , _Foo'_unknownFields :: !Data.ProtoLens.FieldSet
+  }
+  deriving (Prelude.Show, Prelude.Eq, Prelude.Ord)
 ```
 
 Notice `_Foo'_unknownFields :: !Data.ProtoLens.FieldSet`; it is there for the uncertainty of deserializing the data from a protocol buffer encountering non-conformant data.
@@ -62,9 +64,11 @@ message Foo {
 
 This will generate a `Foo` module with the a `Bar` record containing the field `_Foo'bar` and a coproduct `Foo'Bar` with constructors `Foo'Baz` and `Foo'Bippy`. On top of this, `Prism'` functions will be generated for the sum type, in this case `Foo'Bar`, one for each `oneof` field:
 ``` haskell
-data Foo = Foo{_Foo'bar :: !(Prelude.Maybe Foo'Bar),
-               _Foo'_unknownFields :: !Data.ProtoLens.FieldSet}
-         deriving (Prelude.Show, Prelude.Eq, Prelude.Ord)
+data Foo = Foo
+  { _Foo'bar :: !(Prelude.Maybe Foo'Bar)
+  , _Foo'_unknownFields :: !Data.ProtoLens.FieldSet
+  }
+  deriving (Prelude.Show, Prelude.Eq, Prelude.Ord)
 
 data Foo'Bar = Foo'Baz !Data.Int.Int32
              | Foo'Bippy !Data.Text.Text
@@ -103,7 +107,7 @@ createFoo i = def & maybe'bar .~ (_Just # _Foo'Baz # i)
 
 -- | Sets a new `bippy` value
 updateFoo :: String -> Foo -> Foo
-updateFoo s foo = foo ?~ _Foo'Bippy # s 
+updateFoo s foo = foo ?~ _Foo'Bippy # s
 ```
 
 Our regular instances are generated:
@@ -230,10 +234,12 @@ message Foo {
 ```
 generates:
 ``` haskell
-data Foo = Foo{_Foo'a :: ![Data.Int.Int32],
-               _Foo'b :: ![Data.Int.Int32],
-               _Foo'_unknownFields :: !Data.ProtoLens.FieldSet}
-         deriving (Prelude.Show, Prelude.Eq, Prelude.Ord)
+data Foo = Foo
+  { _Foo'a :: ![Data.Int.Int32]
+  , _Foo'b :: ![Data.Int.Int32]
+  , _Foo'_unknownFields :: !Data.ProtoLens.FieldSet
+  }
+  deriving (Prelude.Show, Prelude.Eq, Prelude.Ord)
 ```
 
 ## Map
@@ -246,16 +252,18 @@ message Foo {
 ```
 generates:
 ``` haskell
-data Foo = Foo{_Foo'bar ::
-               !(Data.Map.Map Data.Int.Int32 Data.Text.Text),
-               _Foo'_unknownFields :: !Data.ProtoLens.FieldSet}
-         deriving (Prelude.Show, Prelude.Eq, Prelude.Ord)
+data Foo = Foo
+  { _Foo'bar :: !(Data.Map.Map Data.Int.Int32 Data.Text.Text)
+  , _Foo'_unknownFields :: !Data.ProtoLens.FieldSet
+  }
+  deriving (Prelude.Show, Prelude.Eq, Prelude.Ord)
 
-data Foo'BarEntry = Foo'BarEntry{_Foo'BarEntry'key ::
-                                !Data.Int.Int32,
-                                _Foo'BarEntry'value :: !Data.Text.Text,
-                                _Foo'BarEntry'_unknownFields :: !Data.ProtoLens.FieldSet}
-                 deriving (Prelude.Show, Prelude.Eq, Prelude.Ord)
+data Foo'BarEntry = Foo'BarEntry
+  { _Foo'BarEntry'key :: !Data.Int.Int32
+  , _Foo'BarEntry'value :: !Data.Text.Text
+  , _Foo'BarEntry'_unknownFields :: !Data.ProtoLens.FieldSet
+  }
+  deriving (Prelude.Show, Prelude.Eq, Prelude.Ord)
 ```
 
 `Foo'BarEntry` is generated due to [backwards compatability](https://developers.google.com/protocol-buffers/docs/proto3#maps), so we can ignore this generated code and focus on the fact that we can treat this data as a regular Haskell `Map`.

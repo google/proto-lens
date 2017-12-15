@@ -53,33 +53,35 @@ These two sets of proto statements will be generated as follows:
 #### Generated Records and Sum Types
 ``` haskell
 -- Our Coffee sum type values
-data Americano = Americano{_Americano'_unknownFields ::
-                           !Data.ProtoLens.FieldSet}
-               deriving (Prelude.Show, Prelude.Eq, Prelude.Ord)
+data Americano = Americano
+  { _Americano'_unknownFields :: !Data.ProtoLens.FieldSet }
+  deriving (Prelude.Show, Prelude.Eq, Prelude.Ord)
 
-data Latte = Latte{_Latte'_unknownFields ::
-                   !Data.ProtoLens.FieldSet}
-           deriving (Prelude.Show, Prelude.Eq, Prelude.Ord)
+data Latte = Latte
+  { _Latte'_unknownFields :: !Data.ProtoLens.FieldSet }
+  deriving (Prelude.Show, Prelude.Eq, Prelude.Ord)
 
-data FlatWhite = FlatWhite{_FlatWhite'_unknownFields ::
-                           !Data.ProtoLens.FieldSet}
-               deriving (Prelude.Show, Prelude.Eq, Prelude.Ord)
+data FlatWhite = FlatWhite
+  { _FlatWhite'_unknownFields :: !Data.ProtoLens.FieldSet }
+  deriving (Prelude.Show, Prelude.Eq, Prelude.Ord)
 
-data Cappuccino = Cappuccino{_Cappuccino'_unknownFields ::
-                             !Data.ProtoLens.FieldSet}
-                deriving (Prelude.Show, Prelude.Eq, Prelude.Ord)
+data Cappuccino = Cappuccino
+  { _Cappuccino'_unknownFields :: !Data.ProtoLens.FieldSet }
+  deriving (Prelude.Show, Prelude.Eq, Prelude.Ord)
 
-data Mocha = Mocha{_Mocha'_unknownFields ::
-                   !Data.ProtoLens.FieldSet}
-           deriving (Prelude.Show, Prelude.Eq, Prelude.Ord)
+data Mocha = Mocha
+  { _Mocha'_unknownFields :: !Data.ProtoLens.FieldSet }
+  deriving (Prelude.Show, Prelude.Eq, Prelude.Ord)
 ```
 
 ``` haskell
 -- Our Coffee type
-data Coffee = Coffee{_Coffee'cost :: !Prelude.Float,
-                     _Coffee'coffeeType :: !(Prelude.Maybe Coffee'CoffeeType),
-                     _Coffee'_unknownFields :: !Data.ProtoLens.FieldSet}
-            deriving (Prelude.Show, Prelude.Eq, Prelude.Ord)
+data Coffee = Coffee
+  { _Coffee'cost :: !Prelude.Float
+  , _Coffee'coffeeType :: !(Prelude.Maybe Coffee'CoffeeType)
+  , _Coffee'_unknownFields :: !Data.ProtoLens.FieldSet
+  }
+  deriving (Prelude.Show, Prelude.Eq, Prelude.Ord)
 
 data Coffee'CoffeeType = Coffee'Americano !Americano
                        | Coffee'Latte !Latte
@@ -160,11 +162,11 @@ We have a bunch of lenses (or prisms) to access the data relating to `Coffee`. W
 
 What we can use them for is setting values! When we are defining the value we will know (and have to know) what type our `CoffeeType` will be. Thus we can do the following, `def & mocha .~ def` where the second `def` is secretly our empty `Mocha` value.<br>
 
-As of commit `87efe00a0fa16b657493ba4043abd014d5c04cd3`, `Prism'` functions are also available for use on `Coffee'Type` sum. The `Prism'` functions are of of the naming convention `_Coffee'Americano`, `_Coffee'Latte`, etc. There is more information on `Prism'`s [here](https://github.com/FintanH/proto-lens/tree/docs/codelab/proto-lens-tutorial#oneof-generation) 
+As of commit `87efe00a0fa16b657493ba4043abd014d5c04cd3`, `Prism'` functions are also available for use on `Coffee'Type` sum. The `Prism'` functions are of of the naming convention `_Coffee'Americano`, `_Coffee'Latte`, etc. There is more information on `Prism'`s [here](https://github.com/FintanH/proto-lens/tree/docs/codelab/proto-lens-tutorial#oneof-generation)
 
 ## Full Code Example
 
-We can find a full example using the different features [here](https://github.com/FintanH/proto-lens/blob/docs/codelab/proto-lens-tutorial/coffee-order/src/Main.hs). 
+We can find a full example using the different features [here](https://github.com/FintanH/proto-lens/blob/docs/codelab/proto-lens-tutorial/coffee-order/src/Main.hs).
 
 ## Did We Miss Something?
 
