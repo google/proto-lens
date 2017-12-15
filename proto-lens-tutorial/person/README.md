@@ -86,9 +86,9 @@ main = defaultMainGeneratingProtos "src"
 
 #### 3. Setup Person
 
-Here we are going to be telling `person` how to find the proto stuff we just setup and how to grab the most up to date version of `proto-lens`. First thing to do will be to edit the `stack.yaml` file as follows:
+Here we are going to be telling `person` how to find the proto stuff we just setup. We will edit the `stack.yaml` file as follows:
 
-1. Under `packages` we should have:
+Under `packages` we should have:
 
 ``` yaml
 packages:
@@ -96,22 +96,7 @@ packages:
 - proto
 ```
 
-2. Under `packages` we will add a new field:
-
-``` yaml
-- extra-dep: true
-  location:
-    git: https://github.com/google/proto-lens
-    commit: master
-  subdirs:
-    - proto-lens
-    - proto-lens-protoc
-    - lens-labels
-```
-
-This last one says we will grab `proto-lens` from the github repo and use the `master` commit. It is better practice to clamp this to a certain commit in real projects. This also says we are grabbing the specified subdirectories in the project.
-
-Our final step will be to add `person-proto`, along with `default-data`, `microlens`, and `proto-lens`, to our dependencies in our main project like so:
+Then we will add `person-proto`, along with `default-data`, `microlens`, and `proto-lens`, to our dependencies in our main project like so:
 
 ``` yaml
 name:                person
