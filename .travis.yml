@@ -57,7 +57,7 @@ script:
   - case "$BUILD" in
       stack)
         STACK_ARGS=(--haddock --no-haddock-deps --ghc-options="-Wall -Werror");
-        cd proto-lens-tutorial && $STACK build --bench --no-run-benchmarks "${STACK_ARGS[@]}" && cd ..
+        cd proto-lens-tutorial && $STACK build "${STACK_ARGS[@]}" && cd ..
         $STACK build --bench --no-run-benchmarks "${STACK_ARGS[@]}" && $STACK test "${STACK_ARGS[@]}";;
       cabal)
         ./travis-cabal.sh;;
