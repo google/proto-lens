@@ -274,6 +274,18 @@ data Foo'BarEntry = Foo'BarEntry
 
 `Foo'BarEntry` is generated due to [backwards compatability](https://developers.google.com/protocol-buffers/docs/proto3#maps), so we can ignore this generated code and focus on the fact that we can treat this data as a regular Haskell `Map`.
 
+## Encode/Decode and Show/Read
+
+`Data.ProtoLens` provides utilities for converting to and from `ByteString` and `Text` values. For `ByteString` we are provided the `encodeMessage` and `decodeMessage` functions. For `Text` we are provided the `showMessage` and `readMessage` functions. The former are used for encoding and decoding to/from wire format. While the latter are used converting and parsing human readable representations. The type signatures for these functions are given below:
+
+``` haskell
+encodeMessage :: Message msg => msg        -> ByteString
+decodeMessage :: Message msg => ByteString -> Either String msg
+
+showMessage :: Message msg => msg  -> String
+readMessage :: Message msg => Text -> Either String msg
+```
+
 ## Lens Laws
 
 Underneath there is a function that is used for creating lenses:
