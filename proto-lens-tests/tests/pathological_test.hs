@@ -5,10 +5,10 @@
 -- https://developers.google.com/open-source/licenses/bsd
 
 {-# LANGUAGE ScopedTypeVariables #-}
--- This module tests a large recursive proto that makes can cause
--- an OOM error by allowing the shrinker to create a giant arbitrary structure.
--- This tests the fix in 'Data.ProtoLens.Arbitrary' by adding @size (`div` 2) to
--- enforce a shrinking structure.
+-- This module tests a large recursive proto that can cause an OOM error by
+-- allowing the arbitrary generator to create a giant data structure.
+-- This tests the fix in 'Data.ProtoLens.Arbitrary' by adding @size (`div` 2)@ to
+-- the recrusive case to ensure that the generated structure is limited in size.
 
 module Main (main) where
 
