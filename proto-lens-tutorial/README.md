@@ -135,12 +135,16 @@ data Baz = BAZ1
          deriving (Prelude.Show, Prelude.Eq, Prelude.Ord)
 ```
 
-`TODO: sort our what happens if Bar is deserialized to a non-BAZ value`
-Notice `Bar'Unrecognized !Bar'UnrecognizedValue`; it is there for the uncertainty of deserializing the data from a protocol buffer and this becomes the default value.
+The `Baz'Unrecognized` field is used for paritality. For example when `maybeToEnum` encounters a value that is not a valid value it will return:
+``` haskell
+Just (Baz'Unrecognized (Baz'UnrecognizedValue value))
+```
 
-It is important to note the following for `enum`s:
-  * If we are using `proto2` then `Bar'Unrecognized` would not be generated.
-  * If we are using `proto3` then the first `enum` value must be zero.
+When using `proto2` syntax there are a few notes to remember when using `enum` data:
+  * The default is `minBound` unless an [explicit default value](https://developers.google.com/protocol-buffers/docs/proto#optional) is given.
+  * `Bar'Unrecognized` would not be generated.
+
+When using `proto3` syntax it is important to rememver that the first `enum` value must be zero.
 
 Instances generated are:
 
