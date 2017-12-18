@@ -27,7 +27,7 @@ import qualified Data.Text as T
 import Lens.Family2 (Lens', view, set)
 import Lens.Family2.Unchecked (lens)
 import Test.QuickCheck (Arbitrary(..), Gen, suchThat, frequency, listOf,
-                        shrinkList)
+                        shrinkList, scale)
 
 
 -- | A newtype wrapper that provides an Arbitrary instance for the underlying
@@ -67,7 +67,7 @@ arbitraryField (FieldDescriptor _ ftd fa) = case fa of
 
 arbitraryFieldValue :: FieldTypeDescriptor value -> Gen value
 arbitraryFieldValue = \case
-    MessageField _ -> arbitraryMessage
+    MessageField _ -> scale (`div` 2) arbitraryMessage
     ScalarField f -> arbitraryScalarValue f
 
 arbitraryScalarValue :: ScalarField value -> Gen value

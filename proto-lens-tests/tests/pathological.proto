@@ -1,0 +1,36 @@
+syntax = "proto3";
+
+package pathological_test;
+
+message Foo {
+  repeated Bar bars = 1;
+}
+
+message Bar {
+  oneof bar {
+    Baz baz = 2;
+    string text = 4;
+    Foo foo = 5;
+  }
+}
+
+message Baz {
+  string name = 1;
+  oneof baz {
+    string string_baz = 2;
+    bool bool_baz = 3;
+    SimpleNumber simple_number = 4;
+    ArrayNumber array_number = 5;
+  }
+}
+
+message SimpleNumber {
+  oneof number {
+    int32 int_number = 1;
+    float float_number = 2;
+  }
+}
+
+message ArrayNumber {
+  repeated SimpleNumber numbers = 1;
+}

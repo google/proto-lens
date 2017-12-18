@@ -40,6 +40,7 @@ library:
     - Data.ProtoLens.TestUtil
 
 tests:
+
   canonical_test:
     main: canonical_test.hs
     source-dirs: tests
@@ -254,3 +255,11 @@ tests:
       - Proto.ImportsTransitive
       - Proto.ImportsTransitive2
       - Proto.Nested
+
+  pathological_test:
+    main: pathological_test.hs
+    source-dirs: tests
+    dependencies:
+      - proto-lens-tests
+    other-modules:
+      - Proto.Pathological
