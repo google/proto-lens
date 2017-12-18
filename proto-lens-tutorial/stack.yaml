@@ -3,7 +3,6 @@ packages:
 - person
 - person/proto
 - coffee-order
-- coffee-order/proto
 
 - extra-dep: true
   location:
