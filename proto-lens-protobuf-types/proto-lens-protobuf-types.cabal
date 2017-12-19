@@ -17,6 +17,7 @@ cabal-version:       >=1.8
 extra-source-files:
     proto-src/google/protobuf/any.proto
     proto-src/google/protobuf/duration.proto
+    proto-src/google/protobuf/timestamp.proto
     proto-src/google/protobuf/wrappers.proto
 
 custom-setup
@@ -27,5 +28,6 @@ custom-setup
 library
   exposed-modules:     Proto.Google.Protobuf.Any
                        Proto.Google.Protobuf.Duration
+                       Proto.Google.Protobuf.Timestamp
                        Proto.Google.Protobuf.Wrappers
   build-depends: proto-lens-protoc == 0.2.*
