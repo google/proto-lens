@@ -8,16 +8,20 @@ copyright:           2017 Google Inc.
 category:            Data
 extra-source-files:
 - README.md
-- proto/src/**/*.proto
+- proto/**/*.proto
 
 custom-setup:
-  dependencies: base, Cabal, proto-lens-protoc
+  dependencies:
+    - base
+    - Cabal
+    - proto-lens-protoc
 
 dependencies:
   - base >= 4.7 && < 5
   - data-default
   - microlens
   - proto-lens
+  - proto-lens-protoc
   - lens-labels
   - text
 
