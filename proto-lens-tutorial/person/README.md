@@ -17,7 +17,7 @@ In this section we will go through how to setup a package with a simple definiti
 3. [Did We Miss Something?](#did-we-miss-something)
 
 ## Tutorial: Setting Up a Basic Package
-In this tutorial we are going to visit how to set up `proto-lens` and all its goodness. To get all the good stuff we are going to stick with the `master` branch of `proto-lens`, so there is going to be a few extra steps involved. If you want to follow along rather than pull the repo here are the steps.
+In this tutorial we are going to visit how to set up `proto-lens` and all its goodness. The directory structure differs between this code lab and the git directory itself. The code remains the same nonetheless.
 
 ### Setup
 
@@ -125,7 +125,7 @@ executables:
     main:             Main.hs
 ```
 
-Alright! Let us test this puppy out! We will make a `Main.hs` in our main project so we can create and print some stuff out!
+Alright! We are going to test this puppy out! We will make a `Main.hs` in our main project so we can create and print some stuff out!
 
 ``` haskell
 {-# LANGUAGE OverloadedStrings #-}
