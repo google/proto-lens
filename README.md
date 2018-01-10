@@ -9,6 +9,10 @@ language and library patterns.  Specifically, it provides:
 
 This is not an official Google product.
 
+# Tutorial
+
+You can find tutorial documentation in the [proto-lens-tutorial](./proto-lens-tutorial) subdir.
+
 # Instructions
 
 ## Setup

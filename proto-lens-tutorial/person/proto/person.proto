@@ -1,0 +1,14 @@
+syntax="proto3";
+
+message Person {
+    string name = 1;
+    int32 age = 2;
+
+    // Address is a message defined somewhere else.
+    repeated Address addresses = 3;
+}
+
+message Address {
+  string street = 1;
+  string zip_code = 2;
+}
