@@ -25,15 +25,12 @@ dependencies:
   - lens-labels
   - text
 
-library:
-  dependencies:
-    - proto-lens-protoc
-
-  exposed-modules:
-    - Proto.Person
-    - Proto.Person'Fields
-
 executables:
   person:
+    dependencies:
+      - proto-lens-protoc
+    other-modules:
+      - Proto.Person
+      - Proto.Person'Fields
     source-dirs:      src
     main:             Main.hs
