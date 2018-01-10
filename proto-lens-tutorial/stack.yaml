@@ -1,7 +1,6 @@
 resolver: lts-9.14
 packages:
 - person
-- person/proto
 - coffee-order
 
 - extra-dep: true
