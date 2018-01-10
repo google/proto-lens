@@ -135,7 +135,7 @@ data Baz = BAZ1
          deriving (Prelude.Show, Prelude.Eq, Prelude.Ord)
 ```
 
-The `Bar'Unrecognized` constructor will be created during deserialization if the `enum` field is set to a numeric value that is not listed for that `enum` in the `.proto` file. For example, given the case above, the user calls `decodeProto` which encounters the numeric value `2` the value set for `Baz` would be `Baz'Unrecognized 
+The `Bar'Unrecognized` constructor will be created during deserialization if the `enum` field is set to a numeric value that is not listed for that `enum` in the `.proto` file. For example, given the case above, the user calls `decodeProto` which encounters the numeric value `2` the value set for `Baz` would be `Baz'Unrecognized (Baz'UnrecognizedValue 2)`.
 
 When using `proto2` syntax there are a few notes to remember when using `enum` data:
   * The default is `minBound` unless an [explicit default value](https://developers.google.com/protocol-buffers/docs/proto#optional) is given.
