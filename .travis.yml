@@ -21,9 +21,9 @@ matrix:
     addons: {apt: {packages: [libgmp-dev]}}
   - env: BUILD=stack STACK='stack --resolver=lts-8.24'
     addons: {apt: {packages: [libgmp-dev]}}
-  - env: BUILD=stack STACK=stack # Use the resolver in stack.yaml
+  - env: BUILD=stack STACK='stack --resolver=lts-9.6'
     addons: {apt: {packages: [libgmp-dev]}}
-  - env: BUILD=stack STACK='stack --resolver=nightly-2017-07-31'  # ghc-8.2.1
+  - env: BUILD=stack STACK=stack # Use the resolver in stack.yaml
     addons: {apt: {packages: [libgmp-dev]}}
 
 before_install:
@@ -34,7 +34,7 @@ before_install:
       cabal)
         export PATH=/opt/ghc/$GHCVER/bin:/opt/cabal/$CABALVER/bin:$HOME/.local/bin:$HOME/.cabal/bin:$PATH;;
     esac
-  - curl -L https://github.com/commercialhaskell/stack/releases/download/v1.4.0/stack-1.4.0-linux-x86_64.tar.gz | tar xz --wildcards --strip-components=1 -C $HOME/.local/bin '*/stack'
+  - curl -L https://github.com/commercialhaskell/stack/releases/download/v1.6.1/stack-1.6.1-linux-x86_64.tar.gz | tar xz --wildcards --strip-components=1 -C $HOME/.local/bin '*/stack'
   - curl -L https://github.com/google/protobuf/releases/download/v3.0.0-beta-2/protoc-3.0.0-beta-2-linux-x86_64.zip > protoc-release.zip
   - unzip -p protoc-release.zip protoc > $HOME/.local/bin/protoc
   - chmod a+x $HOME/.local/bin/protoc
