@@ -67,30 +67,41 @@ recDecl dataName fields
 type Decl = Syntax.Decl ()
 
 patSynSig :: Name -> Type -> Decl
+#if MIN_VERSION_haskell_src_exts(1,20,0)
+patSynSig n t = Syntax.PatSynSig () [n] Nothing Nothing Nothing t
+#else
 patSynSig n t = Syntax.PatSynSig () n Nothing Nothing Nothing t
+#endif
 
 patSyn :: Pat -> Pat -> Decl
 patSyn p1 p2 = Syntax.PatSyn () p1 p2 Syntax.ImplicitBidirectional
 
 dataDecl :: Name -> [ConDecl] -> Deriving -> Decl
-dataDecl name conDecls derives
-    = Syntax.DataDecl () (Syntax.DataType ()) Nothing
-        (Syntax.DHead () name)
-            [Syntax.QualConDecl () Nothing Nothing q | q <- conDecls]
-        $ Just derives
+dataDecl = dataDeclHelper $ Syntax.DataType ()
 
 newtypeDecl :: Name -> Type -> Deriving -> Decl
-newtypeDecl name wrappedType derives
-    = Syntax.DataDecl () (Syntax.NewType ()) Nothing
+newtypeDecl name wrappedType
+    = dataDeclHelper (Syntax.NewType ()) name
+          [Syntax.ConDecl () name [wrappedType]]
+
+dataDeclHelper :: Syntax.DataOrNew () -> Name -> [ConDecl] -> Deriving -> Decl
+dataDeclHelper dataOrNew name conDecls derives
+    = Syntax.DataDecl () dataOrNew Nothing
         (Syntax.DHead () name)
-            [Syntax.QualConDecl () Nothing Nothing
-                $ Syntax.ConDecl () name [wrappedType]]
+            [Syntax.QualConDecl () Nothing Nothing q | q <- conDecls]
+#if MIN_VERSION_haskell_src_exts(1,20,0)
+        [derives]
+#else
         $ Just derives
+#endif
 
 type Deriving = Syntax.Deriving ()
 
 deriving' :: [QName] -> Deriving
 deriving' classes = Syntax.Deriving ()
+#if MIN_VERSION_haskell_src_exts(1,20,0)
+                      Nothing
+#endif
                       [ Syntax.IRule () Nothing Nothing (Syntax.IHCon () c)
                       | c <- classes
                       ]
