@@ -24,9 +24,7 @@ dependencies:
   - filepath >= 1.4 && < 1.6
   - haskell-src-exts >= 1.17 && < 1.20
   - lens-family == 1.2.*
-  # Specify a more precise version of `proto-lens`, since it depends on the
-  # exact definition of the Message class.
-  - proto-lens == 0.3.0.*
+  - proto-lens == 0.3.*
   - text == 1.2.*
 
 
