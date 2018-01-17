@@ -1,6 +1,12 @@
 # Changelog for `proto-lens-arbitrary`
 
-## Unreleased changes
+## v0.1.2.0
+- Remove support for `ghc-7.10`. (#136)
+- Use a `.cabal` file that's auto-generated from `hpack`. (#138)
+- Track `proto-lens` changes to the `Message` class. (#139, #147)
+- Expose `shrinkMessage` (#159)
+- Improve the `Arbitrary` generator for nested structures (#163)
+
 
 ## v0.1.1.1
 - Bump the dependency on `base` to support `ghc-8.2.1`.

@@ -22,7 +22,7 @@ custom-setup:
   dependencies:
     - base >= 4.8 && < 4.11
     - Cabal
-    - proto-lens-protoc == 0.2.*
+    - proto-lens-protoc == 0.3.*
 
 dependencies:
   - proto-lens-protoc

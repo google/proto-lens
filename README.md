@@ -9,6 +9,10 @@ language and library patterns.  Specifically, it provides:
 
 This is not an official Google product.
 
+# Tutorial
+
+You can find tutorial documentation in the [proto-lens-tutorial](./proto-lens-tutorial) subdir.
+
 # Instructions
 
 ## Setup
@@ -110,6 +114,24 @@ Due to [stack issue #1891](https://github.com/commercialhaskell/stack/issues/189
 if you only change the .proto files then stack won't rebuild the package (that
 is, it won't regenerate the `Proto.*` modules).
 
+## Loading into `ghci` with Stack
+
+`stack ghci` can get confused when trying to directly load a package that
+generates `Proto.*` modules (for example: `stack ghci <proto-package>`).
+To work around this issue, run instead:
+
+    stack exec ghci --package <proto-package>
+
+And then manually import the generated modules within ghci, for example:
+
+    Prelude> import Proto.Foo.Bar
+    Prelude Proto.Foo.Bar>
+    ...
+
+Alternately, you can make those modules available at the same time as another local
+package, by running:
+
+    stack ghci <another-package> --package <proto-package>
 ## Linking errors
 Due to the limitations of how we can specify the dependencies of Setup
 files, stack may try to link them against the `terminfo` package. You

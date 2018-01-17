@@ -33,6 +33,7 @@ module Lens.Labels (
     (&),
     (Category..),
     Lens,
+    Lens',
     -- * HasLens
     HasLens(..),
     Proxy#,
@@ -50,6 +51,7 @@ module Lens.Labels (
     (^.),
     view,
     ) where
+
 
 import qualified Control.Category as Category
 import GHC.Prim (Proxy#, proxy#)
@@ -69,6 +71,7 @@ newtype LensFn a b = LensFn {runLens :: a -> b}
 type LensLike f s t a b = LensFn (a -> f b) (s -> f t)
 type LensLike' f s a = LensLike f s s a a
 type Lens s t a b = forall f . Functor f => LensLike f s t a b
+type Lens' s a = Lens s s a a
 
 -- | A type class for lens fields.
 class HasLens f s t (x :: Symbol) a b
@@ -117,8 +120,10 @@ infixr 4 %~
 
 type Getting r s t a b = LensLike (Const r) s t a b
 
-(^.), view :: s -> Getting a s t a b -> a
+(^.) :: s -> Getting a s t a b -> a
 s ^. f = getConst $ runLens f Const s
-view = (^.)
+
+view :: Getting a s t a b -> s -> a
+view = flip (^.)
 
 infixl 8 ^.

@@ -6,8 +6,8 @@ import "enum.proto";
 import "imports_dep.proto";
 import "nested.proto";
 
-// Test that we can import from proto-lens-descriptors, which is special
-// due to bootstrapping:
+// Test that we can import descriptor-related modules, which are special due
+// to bootstrapping:
 import "google/protobuf/descriptor.proto";
 import "google/protobuf/compiler/plugin.proto";
 

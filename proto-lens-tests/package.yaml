@@ -14,7 +14,7 @@ custom-setup:
   dependencies:
     - base >= 4.8 && < 4.11
     - Cabal
-    - proto-lens-protoc == 0.2.*
+    - proto-lens-protoc == 0.3.*
 
 # Dependencies shared by the library and/or several of the tests:
 dependencies:
@@ -25,9 +25,9 @@ dependencies:
     - data-default-class
     - lens-family
     - pretty == 1.1.*
-    - proto-lens == 0.2.*
+    - proto-lens == 0.3.*
     - proto-lens-arbitrary == 0.1.*
-    - proto-lens-protoc == 0.2.*
+    - proto-lens-protoc == 0.3.*
     - test-framework == 0.8.*
     - test-framework-hunit == 0.3.*
     - test-framework-quickcheck2 == 0.3.*
@@ -40,6 +40,7 @@ library:
     - Data.ProtoLens.TestUtil
 
 tests:
+
   canonical_test:
     main: canonical_test.hs
     source-dirs: tests
@@ -72,6 +73,7 @@ tests:
     source-dirs: tests
     dependencies:
       - proto-lens-tests
+      - lens-labels
     other-modules:
       - Proto.Oneof
       - Proto.Oneof'Fields
@@ -185,6 +187,17 @@ tests:
       - Proto.Canonical
       - Proto.Canonical'Fields
 
+  unwrapped_test:
+    main: unwrapped_test.hs
+    source-dirs: tests
+    dependencies:
+      - lens-family-core
+      - lens-labels
+      - proto-lens-tests
+    other-modules:
+      - Proto.Canonical
+      - Proto.Canonical'Fields
+
   package-deps_test:
     main: package-deps_test.hs
     source-dirs: tests
@@ -205,6 +218,21 @@ tests:
       - Proto.Any
       - Proto.Any'Fields
 
+  service_test:
+    main: service_test.hs
+    source-dirs: tests
+    ghc-options:
+      # Check that the code generated for checking service metadata is
+      # warning-free.
+      - -fwarn-overlapping-patterns
+      - -Werror
+    dependencies:
+      - proto-lens-protobuf-types
+      - proto-lens-tests
+    other-modules:
+      - Proto.Service
+      - Proto.Service'Fields
+
   unknown_fields_test:
     main: unknown_fields_test.hs
     source-dirs: tests
@@ -213,3 +241,25 @@ tests:
     other-modules:
       - Proto.UnknownFields
       - Proto.UnknownFields'Fields
+
+  imports_test:
+    main: imports_test.hs
+    source-dirs: tests
+    dependencies:
+      - lens-labels
+      - proto-lens-tests
+    other-modules:
+      - Proto.Enum
+      - Proto.Imports
+      - Proto.ImportsDep
+      - Proto.ImportsTransitive
+      - Proto.ImportsTransitive2
+      - Proto.Nested
+
+  pathological_test:
+    main: pathological_test.hs
+    source-dirs: tests
+    dependencies:
+      - proto-lens-tests
+    other-modules:
+      - Proto.Pathological

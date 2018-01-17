@@ -1,0 +1,21 @@
+syntax = "proto3";
+package test.service;
+
+message Foo {
+  int32 a = 1;
+  string b = 2;
+}
+
+message Bar {
+  int32 a = 1;
+  string b = 2;
+}
+
+service TestService {
+  rpc Normal          (Foo)        returns (Bar);
+  rpc RevMessages     (Bar)        returns (Foo);
+  rpc ClientStreaming (stream Foo) returns (Bar);
+  rpc ServerStreaming (Foo)        returns (stream Bar);
+  rpc BiDiStreaming   (stream Foo) returns (stream Bar);
+}
+

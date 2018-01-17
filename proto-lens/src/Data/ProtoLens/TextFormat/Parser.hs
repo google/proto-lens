@@ -75,7 +75,8 @@ data Value = IntValue Integer  -- ^ An integer
 
 instance Show Key
   where
-    show (Key name) = name
+    show (Key name) = show name  -- Quoting field names (i.e., `"field"` vs `field`
+                                 -- leads to nicer error messages.
     show (UnknownKey k) = show k
     show (ExtensionKey name) = "[" ++ intercalate "." name ++ "]"
     show (UnknownExtensionKey k) = "[" ++ show k ++ "]"

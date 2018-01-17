@@ -86,6 +86,7 @@ generateFiles modifyImports header files toGenerate = let
              modifyImports
              (definitions f)
              (collectEnvFromDeps deps filesByName)
+             (services f)
   in [ ( outputFilePath $ prettyPrint modName
        , header (descriptor f) <> pack (prettyPrintModule modul)
        )

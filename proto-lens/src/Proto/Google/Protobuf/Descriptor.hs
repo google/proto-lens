@@ -2,7 +2,7 @@
 {-# LANGUAGE ScopedTypeVariables, DataKinds, TypeFamilies,
   UndecidableInstances, GeneralizedNewtypeDeriving,
   MultiParamTypeClasses, FlexibleContexts, FlexibleInstances,
-  PatternSynonyms, MagicHash, NoImplicitPrelude #-}
+  PatternSynonyms, MagicHash, NoImplicitPrelude, DataKinds #-}
 {-# OPTIONS_GHC -fno-warn-unused-imports #-}
 {-# OPTIONS_GHC -fno-warn-duplicate-exports #-}
 module Proto.Google.Protobuf.Descriptor
@@ -28,13 +28,16 @@ import qualified Data.Int
 import qualified Data.Word
 import qualified Data.ProtoLens
 import qualified Data.ProtoLens.Message.Enum
+import qualified Data.ProtoLens.Service.Types
 import qualified Lens.Family2
 import qualified Lens.Family2.Unchecked
 import qualified Data.Default.Class
 import qualified Data.Text
 import qualified Data.Map
 import qualified Data.ByteString
+import qualified Data.ByteString.Char8
 import qualified Lens.Labels
+import qualified Text.Read
 
 data DescriptorProto = DescriptorProto{_DescriptorProto'name ::
                                        !(Prelude.Maybe Data.Text.Text),
@@ -172,7 +175,7 @@ instance Data.ProtoLens.Message DescriptorProto where
         fieldsByTag
           = let name__field_descriptor
                   = Data.ProtoLens.FieldDescriptor "name"
-                      (Data.ProtoLens.StringField ::
+                      (Data.ProtoLens.ScalarField Data.ProtoLens.StringField ::
                          Data.ProtoLens.FieldTypeDescriptor Data.Text.Text)
                       (Data.ProtoLens.OptionalField
                          (Lens.Labels.lensOf
@@ -180,7 +183,7 @@ instance Data.ProtoLens.Message DescriptorProto where
                       :: Data.ProtoLens.FieldDescriptor DescriptorProto
                 field__field_descriptor
                   = Data.ProtoLens.FieldDescriptor "field"
-                      (Data.ProtoLens.MessageField ::
+                      (Data.ProtoLens.MessageField Data.ProtoLens.MessageType ::
                          Data.ProtoLens.FieldTypeDescriptor FieldDescriptorProto)
                       (Data.ProtoLens.RepeatedField Data.ProtoLens.Unpacked
                          (Lens.Labels.lensOf
@@ -188,7 +191,7 @@ instance Data.ProtoLens.Message DescriptorProto where
                       :: Data.ProtoLens.FieldDescriptor DescriptorProto
                 extension__field_descriptor
                   = Data.ProtoLens.FieldDescriptor "extension"
-                      (Data.ProtoLens.MessageField ::
+                      (Data.ProtoLens.MessageField Data.ProtoLens.MessageType ::
                          Data.ProtoLens.FieldTypeDescriptor FieldDescriptorProto)
                       (Data.ProtoLens.RepeatedField Data.ProtoLens.Unpacked
                          (Lens.Labels.lensOf
@@ -196,7 +199,7 @@ instance Data.ProtoLens.Message DescriptorProto where
                       :: Data.ProtoLens.FieldDescriptor DescriptorProto
                 nestedType__field_descriptor
                   = Data.ProtoLens.FieldDescriptor "nested_type"
-                      (Data.ProtoLens.MessageField ::
+                      (Data.ProtoLens.MessageField Data.ProtoLens.MessageType ::
                          Data.ProtoLens.FieldTypeDescriptor DescriptorProto)
                       (Data.ProtoLens.RepeatedField Data.ProtoLens.Unpacked
                          (Lens.Labels.lensOf
@@ -204,7 +207,7 @@ instance Data.ProtoLens.Message DescriptorProto where
                       :: Data.ProtoLens.FieldDescriptor DescriptorProto
                 enumType__field_descriptor
                   = Data.ProtoLens.FieldDescriptor "enum_type"
-                      (Data.ProtoLens.MessageField ::
+                      (Data.ProtoLens.MessageField Data.ProtoLens.MessageType ::
                          Data.ProtoLens.FieldTypeDescriptor EnumDescriptorProto)
                       (Data.ProtoLens.RepeatedField Data.ProtoLens.Unpacked
                          (Lens.Labels.lensOf
@@ -212,7 +215,7 @@ instance Data.ProtoLens.Message DescriptorProto where
                       :: Data.ProtoLens.FieldDescriptor DescriptorProto
                 extensionRange__field_descriptor
                   = Data.ProtoLens.FieldDescriptor "extension_range"
-                      (Data.ProtoLens.MessageField ::
+                      (Data.ProtoLens.MessageField Data.ProtoLens.MessageType ::
                          Data.ProtoLens.FieldTypeDescriptor DescriptorProto'ExtensionRange)
                       (Data.ProtoLens.RepeatedField Data.ProtoLens.Unpacked
                          (Lens.Labels.lensOf
@@ -220,7 +223,7 @@ instance Data.ProtoLens.Message DescriptorProto where
                       :: Data.ProtoLens.FieldDescriptor DescriptorProto
                 oneofDecl__field_descriptor
                   = Data.ProtoLens.FieldDescriptor "oneof_decl"
-                      (Data.ProtoLens.MessageField ::
+                      (Data.ProtoLens.MessageField Data.ProtoLens.MessageType ::
                          Data.ProtoLens.FieldTypeDescriptor OneofDescriptorProto)
                       (Data.ProtoLens.RepeatedField Data.ProtoLens.Unpacked
                          (Lens.Labels.lensOf
@@ -228,7 +231,7 @@ instance Data.ProtoLens.Message DescriptorProto where
                       :: Data.ProtoLens.FieldDescriptor DescriptorProto
                 options__field_descriptor
                   = Data.ProtoLens.FieldDescriptor "options"
-                      (Data.ProtoLens.MessageField ::
+                      (Data.ProtoLens.MessageField Data.ProtoLens.MessageType ::
                          Data.ProtoLens.FieldTypeDescriptor MessageOptions)
                       (Data.ProtoLens.OptionalField
                          (Lens.Labels.lensOf
@@ -236,7 +239,7 @@ instance Data.ProtoLens.Message DescriptorProto where
                       :: Data.ProtoLens.FieldDescriptor DescriptorProto
                 reservedRange__field_descriptor
                   = Data.ProtoLens.FieldDescriptor "reserved_range"
-                      (Data.ProtoLens.MessageField ::
+                      (Data.ProtoLens.MessageField Data.ProtoLens.MessageType ::
                          Data.ProtoLens.FieldTypeDescriptor DescriptorProto'ReservedRange)
                       (Data.ProtoLens.RepeatedField Data.ProtoLens.Unpacked
                          (Lens.Labels.lensOf
@@ -244,7 +247,7 @@ instance Data.ProtoLens.Message DescriptorProto where
                       :: Data.ProtoLens.FieldDescriptor DescriptorProto
                 reservedName__field_descriptor
                   = Data.ProtoLens.FieldDescriptor "reserved_name"
-                      (Data.ProtoLens.StringField ::
+                      (Data.ProtoLens.ScalarField Data.ProtoLens.StringField ::
                          Data.ProtoLens.FieldTypeDescriptor Data.Text.Text)
                       (Data.ProtoLens.RepeatedField Data.ProtoLens.Unpacked
                          (Lens.Labels.lensOf
@@ -334,7 +337,7 @@ instance Data.ProtoLens.Message DescriptorProto'ExtensionRange
         fieldsByTag
           = let start__field_descriptor
                   = Data.ProtoLens.FieldDescriptor "start"
-                      (Data.ProtoLens.Int32Field ::
+                      (Data.ProtoLens.ScalarField Data.ProtoLens.Int32Field ::
                          Data.ProtoLens.FieldTypeDescriptor Data.Int.Int32)
                       (Data.ProtoLens.OptionalField
                          (Lens.Labels.lensOf
@@ -342,7 +345,7 @@ instance Data.ProtoLens.Message DescriptorProto'ExtensionRange
                       :: Data.ProtoLens.FieldDescriptor DescriptorProto'ExtensionRange
                 end__field_descriptor
                   = Data.ProtoLens.FieldDescriptor "end"
-                      (Data.ProtoLens.Int32Field ::
+                      (Data.ProtoLens.ScalarField Data.ProtoLens.Int32Field ::
                          Data.ProtoLens.FieldTypeDescriptor Data.Int.Int32)
                       (Data.ProtoLens.OptionalField
                          (Lens.Labels.lensOf
@@ -422,7 +425,7 @@ instance Data.ProtoLens.Message DescriptorProto'ReservedRange where
         fieldsByTag
           = let start__field_descriptor
                   = Data.ProtoLens.FieldDescriptor "start"
-                      (Data.ProtoLens.Int32Field ::
+                      (Data.ProtoLens.ScalarField Data.ProtoLens.Int32Field ::
                          Data.ProtoLens.FieldTypeDescriptor Data.Int.Int32)
                       (Data.ProtoLens.OptionalField
                          (Lens.Labels.lensOf
@@ -430,7 +433,7 @@ instance Data.ProtoLens.Message DescriptorProto'ReservedRange where
                       :: Data.ProtoLens.FieldDescriptor DescriptorProto'ReservedRange
                 end__field_descriptor
                   = Data.ProtoLens.FieldDescriptor "end"
-                      (Data.ProtoLens.Int32Field ::
+                      (Data.ProtoLens.ScalarField Data.ProtoLens.Int32Field ::
                          Data.ProtoLens.FieldTypeDescriptor Data.Int.Int32)
                       (Data.ProtoLens.OptionalField
                          (Lens.Labels.lensOf
@@ -516,7 +519,7 @@ instance Data.ProtoLens.Message EnumDescriptorProto where
         fieldsByTag
           = let name__field_descriptor
                   = Data.ProtoLens.FieldDescriptor "name"
-                      (Data.ProtoLens.StringField ::
+                      (Data.ProtoLens.ScalarField Data.ProtoLens.StringField ::
                          Data.ProtoLens.FieldTypeDescriptor Data.Text.Text)
                       (Data.ProtoLens.OptionalField
                          (Lens.Labels.lensOf
@@ -524,7 +527,7 @@ instance Data.ProtoLens.Message EnumDescriptorProto where
                       :: Data.ProtoLens.FieldDescriptor EnumDescriptorProto
                 value__field_descriptor
                   = Data.ProtoLens.FieldDescriptor "value"
-                      (Data.ProtoLens.MessageField ::
+                      (Data.ProtoLens.MessageField Data.ProtoLens.MessageType ::
                          Data.ProtoLens.FieldTypeDescriptor EnumValueDescriptorProto)
                       (Data.ProtoLens.RepeatedField Data.ProtoLens.Unpacked
                          (Lens.Labels.lensOf
@@ -532,7 +535,7 @@ instance Data.ProtoLens.Message EnumDescriptorProto where
                       :: Data.ProtoLens.FieldDescriptor EnumDescriptorProto
                 options__field_descriptor
                   = Data.ProtoLens.FieldDescriptor "options"
-                      (Data.ProtoLens.MessageField ::
+                      (Data.ProtoLens.MessageField Data.ProtoLens.MessageType ::
                          Data.ProtoLens.FieldTypeDescriptor EnumOptions)
                       (Data.ProtoLens.OptionalField
                          (Lens.Labels.lensOf
@@ -610,7 +613,7 @@ instance Data.ProtoLens.Message EnumOptions where
         fieldsByTag
           = let allowAlias__field_descriptor
                   = Data.ProtoLens.FieldDescriptor "allow_alias"
-                      (Data.ProtoLens.BoolField ::
+                      (Data.ProtoLens.ScalarField Data.ProtoLens.BoolField ::
                          Data.ProtoLens.FieldTypeDescriptor Prelude.Bool)
                       (Data.ProtoLens.OptionalField
                          (Lens.Labels.lensOf
@@ -618,7 +621,7 @@ instance Data.ProtoLens.Message EnumOptions where
                       :: Data.ProtoLens.FieldDescriptor EnumOptions
                 deprecated__field_descriptor
                   = Data.ProtoLens.FieldDescriptor "deprecated"
-                      (Data.ProtoLens.BoolField ::
+                      (Data.ProtoLens.ScalarField Data.ProtoLens.BoolField ::
                          Data.ProtoLens.FieldTypeDescriptor Prelude.Bool)
                       (Data.ProtoLens.OptionalField
                          (Lens.Labels.lensOf
@@ -626,7 +629,7 @@ instance Data.ProtoLens.Message EnumOptions where
                       :: Data.ProtoLens.FieldDescriptor EnumOptions
                 uninterpretedOption__field_descriptor
                   = Data.ProtoLens.FieldDescriptor "uninterpreted_option"
-                      (Data.ProtoLens.MessageField ::
+                      (Data.ProtoLens.MessageField Data.ProtoLens.MessageType ::
                          Data.ProtoLens.FieldTypeDescriptor UninterpretedOption)
                       (Data.ProtoLens.RepeatedField Data.ProtoLens.Unpacked
                          (Lens.Labels.lensOf
@@ -723,7 +726,7 @@ instance Data.ProtoLens.Message EnumValueDescriptorProto where
         fieldsByTag
           = let name__field_descriptor
                   = Data.ProtoLens.FieldDescriptor "name"
-                      (Data.ProtoLens.StringField ::
+                      (Data.ProtoLens.ScalarField Data.ProtoLens.StringField ::
                          Data.ProtoLens.FieldTypeDescriptor Data.Text.Text)
                       (Data.ProtoLens.OptionalField
                          (Lens.Labels.lensOf
@@ -731,7 +734,7 @@ instance Data.ProtoLens.Message EnumValueDescriptorProto where
                       :: Data.ProtoLens.FieldDescriptor EnumValueDescriptorProto
                 number__field_descriptor
                   = Data.ProtoLens.FieldDescriptor "number"
-                      (Data.ProtoLens.Int32Field ::
+                      (Data.ProtoLens.ScalarField Data.ProtoLens.Int32Field ::
                          Data.ProtoLens.FieldTypeDescriptor Data.Int.Int32)
                       (Data.ProtoLens.OptionalField
                          (Lens.Labels.lensOf
@@ -739,7 +742,7 @@ instance Data.ProtoLens.Message EnumValueDescriptorProto where
                       :: Data.ProtoLens.FieldDescriptor EnumValueDescriptorProto
                 options__field_descriptor
                   = Data.ProtoLens.FieldDescriptor "options"
-                      (Data.ProtoLens.MessageField ::
+                      (Data.ProtoLens.MessageField Data.ProtoLens.MessageType ::
                          Data.ProtoLens.FieldTypeDescriptor EnumValueOptions)
                       (Data.ProtoLens.OptionalField
                          (Lens.Labels.lensOf
@@ -804,7 +807,7 @@ instance Data.ProtoLens.Message EnumValueOptions where
         fieldsByTag
           = let deprecated__field_descriptor
                   = Data.ProtoLens.FieldDescriptor "deprecated"
-                      (Data.ProtoLens.BoolField ::
+                      (Data.ProtoLens.ScalarField Data.ProtoLens.BoolField ::
                          Data.ProtoLens.FieldTypeDescriptor Prelude.Bool)
                       (Data.ProtoLens.OptionalField
                          (Lens.Labels.lensOf
@@ -812,7 +815,7 @@ instance Data.ProtoLens.Message EnumValueOptions where
                       :: Data.ProtoLens.FieldDescriptor EnumValueOptions
                 uninterpretedOption__field_descriptor
                   = Data.ProtoLens.FieldDescriptor "uninterpreted_option"
-                      (Data.ProtoLens.MessageField ::
+                      (Data.ProtoLens.MessageField Data.ProtoLens.MessageType ::
                          Data.ProtoLens.FieldTypeDescriptor UninterpretedOption)
                       (Data.ProtoLens.RepeatedField Data.ProtoLens.Unpacked
                          (Lens.Labels.lensOf
@@ -1048,7 +1051,7 @@ instance Data.ProtoLens.Message FieldDescriptorProto where
         fieldsByTag
           = let name__field_descriptor
                   = Data.ProtoLens.FieldDescriptor "name"
-                      (Data.ProtoLens.StringField ::
+                      (Data.ProtoLens.ScalarField Data.ProtoLens.StringField ::
                          Data.ProtoLens.FieldTypeDescriptor Data.Text.Text)
                       (Data.ProtoLens.OptionalField
                          (Lens.Labels.lensOf
@@ -1056,7 +1059,7 @@ instance Data.ProtoLens.Message FieldDescriptorProto where
                       :: Data.ProtoLens.FieldDescriptor FieldDescriptorProto
                 number__field_descriptor
                   = Data.ProtoLens.FieldDescriptor "number"
-                      (Data.ProtoLens.Int32Field ::
+                      (Data.ProtoLens.ScalarField Data.ProtoLens.Int32Field ::
                          Data.ProtoLens.FieldTypeDescriptor Data.Int.Int32)
                       (Data.ProtoLens.OptionalField
                          (Lens.Labels.lensOf
@@ -1064,7 +1067,7 @@ instance Data.ProtoLens.Message FieldDescriptorProto where
                       :: Data.ProtoLens.FieldDescriptor FieldDescriptorProto
                 label__field_descriptor
                   = Data.ProtoLens.FieldDescriptor "label"
-                      (Data.ProtoLens.EnumField ::
+                      (Data.ProtoLens.ScalarField Data.ProtoLens.EnumField ::
                          Data.ProtoLens.FieldTypeDescriptor FieldDescriptorProto'Label)
                       (Data.ProtoLens.OptionalField
                          (Lens.Labels.lensOf
@@ -1072,7 +1075,7 @@ instance Data.ProtoLens.Message FieldDescriptorProto where
                       :: Data.ProtoLens.FieldDescriptor FieldDescriptorProto
                 type'__field_descriptor
                   = Data.ProtoLens.FieldDescriptor "type"
-                      (Data.ProtoLens.EnumField ::
+                      (Data.ProtoLens.ScalarField Data.ProtoLens.EnumField ::
                          Data.ProtoLens.FieldTypeDescriptor FieldDescriptorProto'Type)
                       (Data.ProtoLens.OptionalField
                          (Lens.Labels.lensOf
@@ -1080,7 +1083,7 @@ instance Data.ProtoLens.Message FieldDescriptorProto where
                       :: Data.ProtoLens.FieldDescriptor FieldDescriptorProto
                 typeName__field_descriptor
                   = Data.ProtoLens.FieldDescriptor "type_name"
-                      (Data.ProtoLens.StringField ::
+                      (Data.ProtoLens.ScalarField Data.ProtoLens.StringField ::
                          Data.ProtoLens.FieldTypeDescriptor Data.Text.Text)
                       (Data.ProtoLens.OptionalField
                          (Lens.Labels.lensOf
@@ -1088,7 +1091,7 @@ instance Data.ProtoLens.Message FieldDescriptorProto where
                       :: Data.ProtoLens.FieldDescriptor FieldDescriptorProto
                 extendee__field_descriptor
                   = Data.ProtoLens.FieldDescriptor "extendee"
-                      (Data.ProtoLens.StringField ::
+                      (Data.ProtoLens.ScalarField Data.ProtoLens.StringField ::
                          Data.ProtoLens.FieldTypeDescriptor Data.Text.Text)
                       (Data.ProtoLens.OptionalField
                          (Lens.Labels.lensOf
@@ -1096,7 +1099,7 @@ instance Data.ProtoLens.Message FieldDescriptorProto where
                       :: Data.ProtoLens.FieldDescriptor FieldDescriptorProto
                 defaultValue__field_descriptor
                   = Data.ProtoLens.FieldDescriptor "default_value"
-                      (Data.ProtoLens.StringField ::
+                      (Data.ProtoLens.ScalarField Data.ProtoLens.StringField ::
                          Data.ProtoLens.FieldTypeDescriptor Data.Text.Text)
                       (Data.ProtoLens.OptionalField
                          (Lens.Labels.lensOf
@@ -1105,7 +1108,7 @@ instance Data.ProtoLens.Message FieldDescriptorProto where
                       :: Data.ProtoLens.FieldDescriptor FieldDescriptorProto
                 oneofIndex__field_descriptor
                   = Data.ProtoLens.FieldDescriptor "oneof_index"
-                      (Data.ProtoLens.Int32Field ::
+                      (Data.ProtoLens.ScalarField Data.ProtoLens.Int32Field ::
                          Data.ProtoLens.FieldTypeDescriptor Data.Int.Int32)
                       (Data.ProtoLens.OptionalField
                          (Lens.Labels.lensOf
@@ -1113,7 +1116,7 @@ instance Data.ProtoLens.Message FieldDescriptorProto where
                       :: Data.ProtoLens.FieldDescriptor FieldDescriptorProto
                 jsonName__field_descriptor
                   = Data.ProtoLens.FieldDescriptor "json_name"
-                      (Data.ProtoLens.StringField ::
+                      (Data.ProtoLens.ScalarField Data.ProtoLens.StringField ::
                          Data.ProtoLens.FieldTypeDescriptor Data.Text.Text)
                       (Data.ProtoLens.OptionalField
                          (Lens.Labels.lensOf
@@ -1121,7 +1124,7 @@ instance Data.ProtoLens.Message FieldDescriptorProto where
                       :: Data.ProtoLens.FieldDescriptor FieldDescriptorProto
                 options__field_descriptor
                   = Data.ProtoLens.FieldDescriptor "options"
-                      (Data.ProtoLens.MessageField ::
+                      (Data.ProtoLens.MessageField Data.ProtoLens.MessageType ::
                          Data.ProtoLens.FieldTypeDescriptor FieldOptions)
                       (Data.ProtoLens.OptionalField
                          (Lens.Labels.lensOf
@@ -1552,7 +1555,7 @@ instance Data.ProtoLens.Message FieldOptions where
         fieldsByTag
           = let ctype__field_descriptor
                   = Data.ProtoLens.FieldDescriptor "ctype"
-                      (Data.ProtoLens.EnumField ::
+                      (Data.ProtoLens.ScalarField Data.ProtoLens.EnumField ::
                          Data.ProtoLens.FieldTypeDescriptor FieldOptions'CType)
                       (Data.ProtoLens.OptionalField
                          (Lens.Labels.lensOf
@@ -1560,7 +1563,7 @@ instance Data.ProtoLens.Message FieldOptions where
                       :: Data.ProtoLens.FieldDescriptor FieldOptions
                 packed__field_descriptor
                   = Data.ProtoLens.FieldDescriptor "packed"
-                      (Data.ProtoLens.BoolField ::
+                      (Data.ProtoLens.ScalarField Data.ProtoLens.BoolField ::
                          Data.ProtoLens.FieldTypeDescriptor Prelude.Bool)
                       (Data.ProtoLens.OptionalField
                          (Lens.Labels.lensOf
@@ -1568,7 +1571,7 @@ instance Data.ProtoLens.Message FieldOptions where
                       :: Data.ProtoLens.FieldDescriptor FieldOptions
                 jstype__field_descriptor
                   = Data.ProtoLens.FieldDescriptor "jstype"
-                      (Data.ProtoLens.EnumField ::
+                      (Data.ProtoLens.ScalarField Data.ProtoLens.EnumField ::
                          Data.ProtoLens.FieldTypeDescriptor FieldOptions'JSType)
                       (Data.ProtoLens.OptionalField
                          (Lens.Labels.lensOf
@@ -1576,7 +1579,7 @@ instance Data.ProtoLens.Message FieldOptions where
                       :: Data.ProtoLens.FieldDescriptor FieldOptions
                 lazy__field_descriptor
                   = Data.ProtoLens.FieldDescriptor "lazy"
-                      (Data.ProtoLens.BoolField ::
+                      (Data.ProtoLens.ScalarField Data.ProtoLens.BoolField ::
                          Data.ProtoLens.FieldTypeDescriptor Prelude.Bool)
                       (Data.ProtoLens.OptionalField
                          (Lens.Labels.lensOf
@@ -1584,7 +1587,7 @@ instance Data.ProtoLens.Message FieldOptions where
                       :: Data.ProtoLens.FieldDescriptor FieldOptions
                 deprecated__field_descriptor
                   = Data.ProtoLens.FieldDescriptor "deprecated"
-                      (Data.ProtoLens.BoolField ::
+                      (Data.ProtoLens.ScalarField Data.ProtoLens.BoolField ::
                          Data.ProtoLens.FieldTypeDescriptor Prelude.Bool)
                       (Data.ProtoLens.OptionalField
                          (Lens.Labels.lensOf
@@ -1592,7 +1595,7 @@ instance Data.ProtoLens.Message FieldOptions where
                       :: Data.ProtoLens.FieldDescriptor FieldOptions
                 weak__field_descriptor
                   = Data.ProtoLens.FieldDescriptor "weak"
-                      (Data.ProtoLens.BoolField ::
+                      (Data.ProtoLens.ScalarField Data.ProtoLens.BoolField ::
                          Data.ProtoLens.FieldTypeDescriptor Prelude.Bool)
                       (Data.ProtoLens.OptionalField
                          (Lens.Labels.lensOf
@@ -1600,7 +1603,7 @@ instance Data.ProtoLens.Message FieldOptions where
                       :: Data.ProtoLens.FieldDescriptor FieldOptions
                 uninterpretedOption__field_descriptor
                   = Data.ProtoLens.FieldDescriptor "uninterpreted_option"
-                      (Data.ProtoLens.MessageField ::
+                      (Data.ProtoLens.MessageField Data.ProtoLens.MessageType ::
                          Data.ProtoLens.FieldTypeDescriptor UninterpretedOption)
                       (Data.ProtoLens.RepeatedField Data.ProtoLens.Unpacked
                          (Lens.Labels.lensOf
@@ -1923,7 +1926,7 @@ instance Data.ProtoLens.Message FileDescriptorProto where
         fieldsByTag
           = let name__field_descriptor
                   = Data.ProtoLens.FieldDescriptor "name"
-                      (Data.ProtoLens.StringField ::
+                      (Data.ProtoLens.ScalarField Data.ProtoLens.StringField ::
                          Data.ProtoLens.FieldTypeDescriptor Data.Text.Text)
                       (Data.ProtoLens.OptionalField
                          (Lens.Labels.lensOf
@@ -1931,7 +1934,7 @@ instance Data.ProtoLens.Message FileDescriptorProto where
                       :: Data.ProtoLens.FieldDescriptor FileDescriptorProto
                 package__field_descriptor
                   = Data.ProtoLens.FieldDescriptor "package"
-                      (Data.ProtoLens.StringField ::
+                      (Data.ProtoLens.ScalarField Data.ProtoLens.StringField ::
                          Data.ProtoLens.FieldTypeDescriptor Data.Text.Text)
                       (Data.ProtoLens.OptionalField
                          (Lens.Labels.lensOf
@@ -1939,7 +1942,7 @@ instance Data.ProtoLens.Message FileDescriptorProto where
                       :: Data.ProtoLens.FieldDescriptor FileDescriptorProto
                 dependency__field_descriptor
                   = Data.ProtoLens.FieldDescriptor "dependency"
-                      (Data.ProtoLens.StringField ::
+                      (Data.ProtoLens.ScalarField Data.ProtoLens.StringField ::
                          Data.ProtoLens.FieldTypeDescriptor Data.Text.Text)
                       (Data.ProtoLens.RepeatedField Data.ProtoLens.Unpacked
                          (Lens.Labels.lensOf
@@ -1947,7 +1950,7 @@ instance Data.ProtoLens.Message FileDescriptorProto where
                       :: Data.ProtoLens.FieldDescriptor FileDescriptorProto
                 publicDependency__field_descriptor
                   = Data.ProtoLens.FieldDescriptor "public_dependency"
-                      (Data.ProtoLens.Int32Field ::
+                      (Data.ProtoLens.ScalarField Data.ProtoLens.Int32Field ::
                          Data.ProtoLens.FieldTypeDescriptor Data.Int.Int32)
                       (Data.ProtoLens.RepeatedField Data.ProtoLens.Unpacked
                          (Lens.Labels.lensOf
@@ -1955,7 +1958,7 @@ instance Data.ProtoLens.Message FileDescriptorProto where
                       :: Data.ProtoLens.FieldDescriptor FileDescriptorProto
                 weakDependency__field_descriptor
                   = Data.ProtoLens.FieldDescriptor "weak_dependency"
-                      (Data.ProtoLens.Int32Field ::
+                      (Data.ProtoLens.ScalarField Data.ProtoLens.Int32Field ::
                          Data.ProtoLens.FieldTypeDescriptor Data.Int.Int32)
                       (Data.ProtoLens.RepeatedField Data.ProtoLens.Unpacked
                          (Lens.Labels.lensOf
@@ -1963,7 +1966,7 @@ instance Data.ProtoLens.Message FileDescriptorProto where
                       :: Data.ProtoLens.FieldDescriptor FileDescriptorProto
                 messageType__field_descriptor
                   = Data.ProtoLens.FieldDescriptor "message_type"
-                      (Data.ProtoLens.MessageField ::
+                      (Data.ProtoLens.MessageField Data.ProtoLens.MessageType ::
                          Data.ProtoLens.FieldTypeDescriptor DescriptorProto)
                       (Data.ProtoLens.RepeatedField Data.ProtoLens.Unpacked
                          (Lens.Labels.lensOf
@@ -1971,7 +1974,7 @@ instance Data.ProtoLens.Message FileDescriptorProto where
                       :: Data.ProtoLens.FieldDescriptor FileDescriptorProto
                 enumType__field_descriptor
                   = Data.ProtoLens.FieldDescriptor "enum_type"
-                      (Data.ProtoLens.MessageField ::
+                      (Data.ProtoLens.MessageField Data.ProtoLens.MessageType ::
                          Data.ProtoLens.FieldTypeDescriptor EnumDescriptorProto)
                       (Data.ProtoLens.RepeatedField Data.ProtoLens.Unpacked
                          (Lens.Labels.lensOf
@@ -1979,7 +1982,7 @@ instance Data.ProtoLens.Message FileDescriptorProto where
                       :: Data.ProtoLens.FieldDescriptor FileDescriptorProto
                 service__field_descriptor
                   = Data.ProtoLens.FieldDescriptor "service"
-                      (Data.ProtoLens.MessageField ::
+                      (Data.ProtoLens.MessageField Data.ProtoLens.MessageType ::
                          Data.ProtoLens.FieldTypeDescriptor ServiceDescriptorProto)
                       (Data.ProtoLens.RepeatedField Data.ProtoLens.Unpacked
                          (Lens.Labels.lensOf
@@ -1987,7 +1990,7 @@ instance Data.ProtoLens.Message FileDescriptorProto where
                       :: Data.ProtoLens.FieldDescriptor FileDescriptorProto
                 extension__field_descriptor
                   = Data.ProtoLens.FieldDescriptor "extension"
-                      (Data.ProtoLens.MessageField ::
+                      (Data.ProtoLens.MessageField Data.ProtoLens.MessageType ::
                          Data.ProtoLens.FieldTypeDescriptor FieldDescriptorProto)
                       (Data.ProtoLens.RepeatedField Data.ProtoLens.Unpacked
                          (Lens.Labels.lensOf
@@ -1995,7 +1998,7 @@ instance Data.ProtoLens.Message FileDescriptorProto where
                       :: Data.ProtoLens.FieldDescriptor FileDescriptorProto
                 options__field_descriptor
                   = Data.ProtoLens.FieldDescriptor "options"
-                      (Data.ProtoLens.MessageField ::
+                      (Data.ProtoLens.MessageField Data.ProtoLens.MessageType ::
                          Data.ProtoLens.FieldTypeDescriptor FileOptions)
                       (Data.ProtoLens.OptionalField
                          (Lens.Labels.lensOf
@@ -2003,7 +2006,7 @@ instance Data.ProtoLens.Message FileDescriptorProto where
                       :: Data.ProtoLens.FieldDescriptor FileDescriptorProto
                 sourceCodeInfo__field_descriptor
                   = Data.ProtoLens.FieldDescriptor "source_code_info"
-                      (Data.ProtoLens.MessageField ::
+                      (Data.ProtoLens.MessageField Data.ProtoLens.MessageType ::
                          Data.ProtoLens.FieldTypeDescriptor SourceCodeInfo)
                       (Data.ProtoLens.OptionalField
                          (Lens.Labels.lensOf
@@ -2012,7 +2015,7 @@ instance Data.ProtoLens.Message FileDescriptorProto where
                       :: Data.ProtoLens.FieldDescriptor FileDescriptorProto
                 syntax__field_descriptor
                   = Data.ProtoLens.FieldDescriptor "syntax"
-                      (Data.ProtoLens.StringField ::
+                      (Data.ProtoLens.ScalarField Data.ProtoLens.StringField ::
                          Data.ProtoLens.FieldTypeDescriptor Data.Text.Text)
                       (Data.ProtoLens.OptionalField
                          (Lens.Labels.lensOf
@@ -2065,7 +2068,7 @@ instance Data.ProtoLens.Message FileDescriptorSet where
         fieldsByTag
           = let file__field_descriptor
                   = Data.ProtoLens.FieldDescriptor "file"
-                      (Data.ProtoLens.MessageField ::
+                      (Data.ProtoLens.MessageField Data.ProtoLens.MessageType ::
                          Data.ProtoLens.FieldTypeDescriptor FileDescriptorProto)
                       (Data.ProtoLens.RepeatedField Data.ProtoLens.Unpacked
                          (Lens.Labels.lensOf
@@ -2359,7 +2362,7 @@ instance Data.ProtoLens.Message FileOptions where
         fieldsByTag
           = let javaPackage__field_descriptor
                   = Data.ProtoLens.FieldDescriptor "java_package"
-                      (Data.ProtoLens.StringField ::
+                      (Data.ProtoLens.ScalarField Data.ProtoLens.StringField ::
                          Data.ProtoLens.FieldTypeDescriptor Data.Text.Text)
                       (Data.ProtoLens.OptionalField
                          (Lens.Labels.lensOf
@@ -2368,7 +2371,7 @@ instance Data.ProtoLens.Message FileOptions where
                       :: Data.ProtoLens.FieldDescriptor FileOptions
                 javaOuterClassname__field_descriptor
                   = Data.ProtoLens.FieldDescriptor "java_outer_classname"
-                      (Data.ProtoLens.StringField ::
+                      (Data.ProtoLens.ScalarField Data.ProtoLens.StringField ::
                          Data.ProtoLens.FieldTypeDescriptor Data.Text.Text)
                       (Data.ProtoLens.OptionalField
                          (Lens.Labels.lensOf
@@ -2377,7 +2380,7 @@ instance Data.ProtoLens.Message FileOptions where
                       :: Data.ProtoLens.FieldDescriptor FileOptions
                 javaMultipleFiles__field_descriptor
                   = Data.ProtoLens.FieldDescriptor "java_multiple_files"
-                      (Data.ProtoLens.BoolField ::
+                      (Data.ProtoLens.ScalarField Data.ProtoLens.BoolField ::
                          Data.ProtoLens.FieldTypeDescriptor Prelude.Bool)
                       (Data.ProtoLens.OptionalField
                          (Lens.Labels.lensOf
@@ -2386,7 +2389,7 @@ instance Data.ProtoLens.Message FileOptions where
                       :: Data.ProtoLens.FieldDescriptor FileOptions
                 javaGenerateEqualsAndHash__field_descriptor
                   = Data.ProtoLens.FieldDescriptor "java_generate_equals_and_hash"
-                      (Data.ProtoLens.BoolField ::
+                      (Data.ProtoLens.ScalarField Data.ProtoLens.BoolField ::
                          Data.ProtoLens.FieldTypeDescriptor Prelude.Bool)
                       (Data.ProtoLens.OptionalField
                          (Lens.Labels.lensOf
@@ -2395,7 +2398,7 @@ instance Data.ProtoLens.Message FileOptions where
                       :: Data.ProtoLens.FieldDescriptor FileOptions
                 javaStringCheckUtf8__field_descriptor
                   = Data.ProtoLens.FieldDescriptor "java_string_check_utf8"
-                      (Data.ProtoLens.BoolField ::
+                      (Data.ProtoLens.ScalarField Data.ProtoLens.BoolField ::
                          Data.ProtoLens.FieldTypeDescriptor Prelude.Bool)
                       (Data.ProtoLens.OptionalField
                          (Lens.Labels.lensOf
@@ -2404,7 +2407,7 @@ instance Data.ProtoLens.Message FileOptions where
                       :: Data.ProtoLens.FieldDescriptor FileOptions
                 optimizeFor__field_descriptor
                   = Data.ProtoLens.FieldDescriptor "optimize_for"
-                      (Data.ProtoLens.EnumField ::
+                      (Data.ProtoLens.ScalarField Data.ProtoLens.EnumField ::
                          Data.ProtoLens.FieldTypeDescriptor FileOptions'OptimizeMode)
                       (Data.ProtoLens.OptionalField
                          (Lens.Labels.lensOf
@@ -2413,7 +2416,7 @@ instance Data.ProtoLens.Message FileOptions where
                       :: Data.ProtoLens.FieldDescriptor FileOptions
                 goPackage__field_descriptor
                   = Data.ProtoLens.FieldDescriptor "go_package"
-                      (Data.ProtoLens.StringField ::
+                      (Data.ProtoLens.ScalarField Data.ProtoLens.StringField ::
                          Data.ProtoLens.FieldTypeDescriptor Data.Text.Text)
                       (Data.ProtoLens.OptionalField
                          (Lens.Labels.lensOf
@@ -2421,7 +2424,7 @@ instance Data.ProtoLens.Message FileOptions where
                       :: Data.ProtoLens.FieldDescriptor FileOptions
                 ccGenericServices__field_descriptor
                   = Data.ProtoLens.FieldDescriptor "cc_generic_services"
-                      (Data.ProtoLens.BoolField ::
+                      (Data.ProtoLens.ScalarField Data.ProtoLens.BoolField ::
                          Data.ProtoLens.FieldTypeDescriptor Prelude.Bool)
                       (Data.ProtoLens.OptionalField
                          (Lens.Labels.lensOf
@@ -2430,7 +2433,7 @@ instance Data.ProtoLens.Message FileOptions where
                       :: Data.ProtoLens.FieldDescriptor FileOptions
                 javaGenericServices__field_descriptor
                   = Data.ProtoLens.FieldDescriptor "java_generic_services"
-                      (Data.ProtoLens.BoolField ::
+                      (Data.ProtoLens.ScalarField Data.ProtoLens.BoolField ::
                          Data.ProtoLens.FieldTypeDescriptor Prelude.Bool)
                       (Data.ProtoLens.OptionalField
                          (Lens.Labels.lensOf
@@ -2439,7 +2442,7 @@ instance Data.ProtoLens.Message FileOptions where
                       :: Data.ProtoLens.FieldDescriptor FileOptions
                 pyGenericServices__field_descriptor
                   = Data.ProtoLens.FieldDescriptor "py_generic_services"
-                      (Data.ProtoLens.BoolField ::
+                      (Data.ProtoLens.ScalarField Data.ProtoLens.BoolField ::
                          Data.ProtoLens.FieldTypeDescriptor Prelude.Bool)
                       (Data.ProtoLens.OptionalField
                          (Lens.Labels.lensOf
@@ -2448,7 +2451,7 @@ instance Data.ProtoLens.Message FileOptions where
                       :: Data.ProtoLens.FieldDescriptor FileOptions
                 deprecated__field_descriptor
                   = Data.ProtoLens.FieldDescriptor "deprecated"
-                      (Data.ProtoLens.BoolField ::
+                      (Data.ProtoLens.ScalarField Data.ProtoLens.BoolField ::
                          Data.ProtoLens.FieldTypeDescriptor Prelude.Bool)
                       (Data.ProtoLens.OptionalField
                          (Lens.Labels.lensOf
@@ -2456,7 +2459,7 @@ instance Data.ProtoLens.Message FileOptions where
                       :: Data.ProtoLens.FieldDescriptor FileOptions
                 ccEnableArenas__field_descriptor
                   = Data.ProtoLens.FieldDescriptor "cc_enable_arenas"
-                      (Data.ProtoLens.BoolField ::
+                      (Data.ProtoLens.ScalarField Data.ProtoLens.BoolField ::
                          Data.ProtoLens.FieldTypeDescriptor Prelude.Bool)
                       (Data.ProtoLens.OptionalField
                          (Lens.Labels.lensOf
@@ -2465,7 +2468,7 @@ instance Data.ProtoLens.Message FileOptions where
                       :: Data.ProtoLens.FieldDescriptor FileOptions
                 objcClassPrefix__field_descriptor
                   = Data.ProtoLens.FieldDescriptor "objc_class_prefix"
-                      (Data.ProtoLens.StringField ::
+                      (Data.ProtoLens.ScalarField Data.ProtoLens.StringField ::
                          Data.ProtoLens.FieldTypeDescriptor Data.Text.Text)
                       (Data.ProtoLens.OptionalField
                          (Lens.Labels.lensOf
@@ -2474,7 +2477,7 @@ instance Data.ProtoLens.Message FileOptions where
                       :: Data.ProtoLens.FieldDescriptor FileOptions
                 csharpNamespace__field_descriptor
                   = Data.ProtoLens.FieldDescriptor "csharp_namespace"
-                      (Data.ProtoLens.StringField ::
+                      (Data.ProtoLens.ScalarField Data.ProtoLens.StringField ::
                          Data.ProtoLens.FieldTypeDescriptor Data.Text.Text)
                       (Data.ProtoLens.OptionalField
                          (Lens.Labels.lensOf
@@ -2483,7 +2486,7 @@ instance Data.ProtoLens.Message FileOptions where
                       :: Data.ProtoLens.FieldDescriptor FileOptions
                 uninterpretedOption__field_descriptor
                   = Data.ProtoLens.FieldDescriptor "uninterpreted_option"
-                      (Data.ProtoLens.MessageField ::
+                      (Data.ProtoLens.MessageField Data.ProtoLens.MessageType ::
                          Data.ProtoLens.FieldTypeDescriptor UninterpretedOption)
                       (Data.ProtoLens.RepeatedField Data.ProtoLens.Unpacked
                          (Lens.Labels.lensOf
@@ -2596,7 +2599,7 @@ instance Data.ProtoLens.Message GeneratedCodeInfo where
         fieldsByTag
           = let annotation__field_descriptor
                   = Data.ProtoLens.FieldDescriptor "annotation"
-                      (Data.ProtoLens.MessageField ::
+                      (Data.ProtoLens.MessageField Data.ProtoLens.MessageType ::
                          Data.ProtoLens.FieldTypeDescriptor GeneratedCodeInfo'Annotation)
                       (Data.ProtoLens.RepeatedField Data.ProtoLens.Unpacked
                          (Lens.Labels.lensOf
@@ -2704,7 +2707,7 @@ instance Data.ProtoLens.Message GeneratedCodeInfo'Annotation where
         fieldsByTag
           = let path__field_descriptor
                   = Data.ProtoLens.FieldDescriptor "path"
-                      (Data.ProtoLens.Int32Field ::
+                      (Data.ProtoLens.ScalarField Data.ProtoLens.Int32Field ::
                          Data.ProtoLens.FieldTypeDescriptor Data.Int.Int32)
                       (Data.ProtoLens.RepeatedField Data.ProtoLens.Packed
                          (Lens.Labels.lensOf
@@ -2712,7 +2715,7 @@ instance Data.ProtoLens.Message GeneratedCodeInfo'Annotation where
                       :: Data.ProtoLens.FieldDescriptor GeneratedCodeInfo'Annotation
                 sourceFile__field_descriptor
                   = Data.ProtoLens.FieldDescriptor "source_file"
-                      (Data.ProtoLens.StringField ::
+                      (Data.ProtoLens.ScalarField Data.ProtoLens.StringField ::
                          Data.ProtoLens.FieldTypeDescriptor Data.Text.Text)
                       (Data.ProtoLens.OptionalField
                          (Lens.Labels.lensOf
@@ -2720,7 +2723,7 @@ instance Data.ProtoLens.Message GeneratedCodeInfo'Annotation where
                       :: Data.ProtoLens.FieldDescriptor GeneratedCodeInfo'Annotation
                 begin__field_descriptor
                   = Data.ProtoLens.FieldDescriptor "begin"
-                      (Data.ProtoLens.Int32Field ::
+                      (Data.ProtoLens.ScalarField Data.ProtoLens.Int32Field ::
                          Data.ProtoLens.FieldTypeDescriptor Data.Int.Int32)
                       (Data.ProtoLens.OptionalField
                          (Lens.Labels.lensOf
@@ -2728,7 +2731,7 @@ instance Data.ProtoLens.Message GeneratedCodeInfo'Annotation where
                       :: Data.ProtoLens.FieldDescriptor GeneratedCodeInfo'Annotation
                 end__field_descriptor
                   = Data.ProtoLens.FieldDescriptor "end"
-                      (Data.ProtoLens.Int32Field ::
+                      (Data.ProtoLens.ScalarField Data.ProtoLens.Int32Field ::
                          Data.ProtoLens.FieldTypeDescriptor Data.Int.Int32)
                       (Data.ProtoLens.OptionalField
                          (Lens.Labels.lensOf
@@ -2852,7 +2855,7 @@ instance Data.ProtoLens.Message MessageOptions where
         fieldsByTag
           = let messageSetWireFormat__field_descriptor
                   = Data.ProtoLens.FieldDescriptor "message_set_wire_format"
-                      (Data.ProtoLens.BoolField ::
+                      (Data.ProtoLens.ScalarField Data.ProtoLens.BoolField ::
                          Data.ProtoLens.FieldTypeDescriptor Prelude.Bool)
                       (Data.ProtoLens.OptionalField
                          (Lens.Labels.lensOf
@@ -2861,7 +2864,7 @@ instance Data.ProtoLens.Message MessageOptions where
                       :: Data.ProtoLens.FieldDescriptor MessageOptions
                 noStandardDescriptorAccessor__field_descriptor
                   = Data.ProtoLens.FieldDescriptor "no_standard_descriptor_accessor"
-                      (Data.ProtoLens.BoolField ::
+                      (Data.ProtoLens.ScalarField Data.ProtoLens.BoolField ::
                          Data.ProtoLens.FieldTypeDescriptor Prelude.Bool)
                       (Data.ProtoLens.OptionalField
                          (Lens.Labels.lensOf
@@ -2870,7 +2873,7 @@ instance Data.ProtoLens.Message MessageOptions where
                       :: Data.ProtoLens.FieldDescriptor MessageOptions
                 deprecated__field_descriptor
                   = Data.ProtoLens.FieldDescriptor "deprecated"
-                      (Data.ProtoLens.BoolField ::
+                      (Data.ProtoLens.ScalarField Data.ProtoLens.BoolField ::
                          Data.ProtoLens.FieldTypeDescriptor Prelude.Bool)
                       (Data.ProtoLens.OptionalField
                          (Lens.Labels.lensOf
@@ -2878,7 +2881,7 @@ instance Data.ProtoLens.Message MessageOptions where
                       :: Data.ProtoLens.FieldDescriptor MessageOptions
                 mapEntry__field_descriptor
                   = Data.ProtoLens.FieldDescriptor "map_entry"
-                      (Data.ProtoLens.BoolField ::
+                      (Data.ProtoLens.ScalarField Data.ProtoLens.BoolField ::
                          Data.ProtoLens.FieldTypeDescriptor Prelude.Bool)
                       (Data.ProtoLens.OptionalField
                          (Lens.Labels.lensOf
@@ -2886,7 +2889,7 @@ instance Data.ProtoLens.Message MessageOptions where
                       :: Data.ProtoLens.FieldDescriptor MessageOptions
                 uninterpretedOption__field_descriptor
                   = Data.ProtoLens.FieldDescriptor "uninterpreted_option"
-                      (Data.ProtoLens.MessageField ::
+                      (Data.ProtoLens.MessageField Data.ProtoLens.MessageType ::
                          Data.ProtoLens.FieldTypeDescriptor UninterpretedOption)
                       (Data.ProtoLens.RepeatedField Data.ProtoLens.Unpacked
                          (Lens.Labels.lensOf
@@ -3046,7 +3049,7 @@ instance Data.ProtoLens.Message MethodDescriptorProto where
         fieldsByTag
           = let name__field_descriptor
                   = Data.ProtoLens.FieldDescriptor "name"
-                      (Data.ProtoLens.StringField ::
+                      (Data.ProtoLens.ScalarField Data.ProtoLens.StringField ::
                          Data.ProtoLens.FieldTypeDescriptor Data.Text.Text)
                       (Data.ProtoLens.OptionalField
                          (Lens.Labels.lensOf
@@ -3054,7 +3057,7 @@ instance Data.ProtoLens.Message MethodDescriptorProto where
                       :: Data.ProtoLens.FieldDescriptor MethodDescriptorProto
                 inputType__field_descriptor
                   = Data.ProtoLens.FieldDescriptor "input_type"
-                      (Data.ProtoLens.StringField ::
+                      (Data.ProtoLens.ScalarField Data.ProtoLens.StringField ::
                          Data.ProtoLens.FieldTypeDescriptor Data.Text.Text)
                       (Data.ProtoLens.OptionalField
                          (Lens.Labels.lensOf
@@ -3062,7 +3065,7 @@ instance Data.ProtoLens.Message MethodDescriptorProto where
                       :: Data.ProtoLens.FieldDescriptor MethodDescriptorProto
                 outputType__field_descriptor
                   = Data.ProtoLens.FieldDescriptor "output_type"
-                      (Data.ProtoLens.StringField ::
+                      (Data.ProtoLens.ScalarField Data.ProtoLens.StringField ::
                          Data.ProtoLens.FieldTypeDescriptor Data.Text.Text)
                       (Data.ProtoLens.OptionalField
                          (Lens.Labels.lensOf
@@ -3070,7 +3073,7 @@ instance Data.ProtoLens.Message MethodDescriptorProto where
                       :: Data.ProtoLens.FieldDescriptor MethodDescriptorProto
                 options__field_descriptor
                   = Data.ProtoLens.FieldDescriptor "options"
-                      (Data.ProtoLens.MessageField ::
+                      (Data.ProtoLens.MessageField Data.ProtoLens.MessageType ::
                          Data.ProtoLens.FieldTypeDescriptor MethodOptions)
                       (Data.ProtoLens.OptionalField
                          (Lens.Labels.lensOf
@@ -3078,7 +3081,7 @@ instance Data.ProtoLens.Message MethodDescriptorProto where
                       :: Data.ProtoLens.FieldDescriptor MethodDescriptorProto
                 clientStreaming__field_descriptor
                   = Data.ProtoLens.FieldDescriptor "client_streaming"
-                      (Data.ProtoLens.BoolField ::
+                      (Data.ProtoLens.ScalarField Data.ProtoLens.BoolField ::
                          Data.ProtoLens.FieldTypeDescriptor Prelude.Bool)
                       (Data.ProtoLens.OptionalField
                          (Lens.Labels.lensOf
@@ -3087,7 +3090,7 @@ instance Data.ProtoLens.Message MethodDescriptorProto where
                       :: Data.ProtoLens.FieldDescriptor MethodDescriptorProto
                 serverStreaming__field_descriptor
                   = Data.ProtoLens.FieldDescriptor "server_streaming"
-                      (Data.ProtoLens.BoolField ::
+                      (Data.ProtoLens.ScalarField Data.ProtoLens.BoolField ::
                          Data.ProtoLens.FieldTypeDescriptor Prelude.Bool)
                       (Data.ProtoLens.OptionalField
                          (Lens.Labels.lensOf
@@ -3151,7 +3154,7 @@ instance Data.ProtoLens.Message MethodOptions where
         fieldsByTag
           = let deprecated__field_descriptor
                   = Data.ProtoLens.FieldDescriptor "deprecated"
-                      (Data.ProtoLens.BoolField ::
+                      (Data.ProtoLens.ScalarField Data.ProtoLens.BoolField ::
                          Data.ProtoLens.FieldTypeDescriptor Prelude.Bool)
                       (Data.ProtoLens.OptionalField
                          (Lens.Labels.lensOf
@@ -3159,7 +3162,7 @@ instance Data.ProtoLens.Message MethodOptions where
                       :: Data.ProtoLens.FieldDescriptor MethodOptions
                 uninterpretedOption__field_descriptor
                   = Data.ProtoLens.FieldDescriptor "uninterpreted_option"
-                      (Data.ProtoLens.MessageField ::
+                      (Data.ProtoLens.MessageField Data.ProtoLens.MessageType ::
                          Data.ProtoLens.FieldTypeDescriptor UninterpretedOption)
                       (Data.ProtoLens.RepeatedField Data.ProtoLens.Unpacked
                          (Lens.Labels.lensOf
@@ -3215,7 +3218,7 @@ instance Data.ProtoLens.Message OneofDescriptorProto where
         fieldsByTag
           = let name__field_descriptor
                   = Data.ProtoLens.FieldDescriptor "name"
-                      (Data.ProtoLens.StringField ::
+                      (Data.ProtoLens.ScalarField Data.ProtoLens.StringField ::
                          Data.ProtoLens.FieldTypeDescriptor Data.Text.Text)
                       (Data.ProtoLens.OptionalField
                          (Lens.Labels.lensOf
@@ -3299,7 +3302,7 @@ instance Data.ProtoLens.Message ServiceDescriptorProto where
         fieldsByTag
           = let name__field_descriptor
                   = Data.ProtoLens.FieldDescriptor "name"
-                      (Data.ProtoLens.StringField ::
+                      (Data.ProtoLens.ScalarField Data.ProtoLens.StringField ::
                          Data.ProtoLens.FieldTypeDescriptor Data.Text.Text)
                       (Data.ProtoLens.OptionalField
                          (Lens.Labels.lensOf
@@ -3307,7 +3310,7 @@ instance Data.ProtoLens.Message ServiceDescriptorProto where
                       :: Data.ProtoLens.FieldDescriptor ServiceDescriptorProto
                 method__field_descriptor
                   = Data.ProtoLens.FieldDescriptor "method"
-                      (Data.ProtoLens.MessageField ::
+                      (Data.ProtoLens.MessageField Data.ProtoLens.MessageType ::
                          Data.ProtoLens.FieldTypeDescriptor MethodDescriptorProto)
                       (Data.ProtoLens.RepeatedField Data.ProtoLens.Unpacked
                          (Lens.Labels.lensOf
@@ -3315,7 +3318,7 @@ instance Data.ProtoLens.Message ServiceDescriptorProto where
                       :: Data.ProtoLens.FieldDescriptor ServiceDescriptorProto
                 options__field_descriptor
                   = Data.ProtoLens.FieldDescriptor "options"
-                      (Data.ProtoLens.MessageField ::
+                      (Data.ProtoLens.MessageField Data.ProtoLens.MessageType ::
                          Data.ProtoLens.FieldTypeDescriptor ServiceOptions)
                       (Data.ProtoLens.OptionalField
                          (Lens.Labels.lensOf
@@ -3376,7 +3379,7 @@ instance Data.ProtoLens.Message ServiceOptions where
         fieldsByTag
           = let deprecated__field_descriptor
                   = Data.ProtoLens.FieldDescriptor "deprecated"
-                      (Data.ProtoLens.BoolField ::
+                      (Data.ProtoLens.ScalarField Data.ProtoLens.BoolField ::
                          Data.ProtoLens.FieldTypeDescriptor Prelude.Bool)
                       (Data.ProtoLens.OptionalField
                          (Lens.Labels.lensOf
@@ -3384,7 +3387,7 @@ instance Data.ProtoLens.Message ServiceOptions where
                       :: Data.ProtoLens.FieldDescriptor ServiceOptions
                 uninterpretedOption__field_descriptor
                   = Data.ProtoLens.FieldDescriptor "uninterpreted_option"
-                      (Data.ProtoLens.MessageField ::
+                      (Data.ProtoLens.MessageField Data.ProtoLens.MessageType ::
                          Data.ProtoLens.FieldTypeDescriptor UninterpretedOption)
                       (Data.ProtoLens.RepeatedField Data.ProtoLens.Unpacked
                          (Lens.Labels.lensOf
@@ -3426,7 +3429,7 @@ instance Data.ProtoLens.Message SourceCodeInfo where
         fieldsByTag
           = let location__field_descriptor
                   = Data.ProtoLens.FieldDescriptor "location"
-                      (Data.ProtoLens.MessageField ::
+                      (Data.ProtoLens.MessageField Data.ProtoLens.MessageType ::
                          Data.ProtoLens.FieldTypeDescriptor SourceCodeInfo'Location)
                       (Data.ProtoLens.RepeatedField Data.ProtoLens.Unpacked
                          (Lens.Labels.lensOf
@@ -3541,7 +3544,7 @@ instance Data.ProtoLens.Message SourceCodeInfo'Location where
         fieldsByTag
           = let path__field_descriptor
                   = Data.ProtoLens.FieldDescriptor "path"
-                      (Data.ProtoLens.Int32Field ::
+                      (Data.ProtoLens.ScalarField Data.ProtoLens.Int32Field ::
                          Data.ProtoLens.FieldTypeDescriptor Data.Int.Int32)
                       (Data.ProtoLens.RepeatedField Data.ProtoLens.Packed
                          (Lens.Labels.lensOf
@@ -3549,7 +3552,7 @@ instance Data.ProtoLens.Message SourceCodeInfo'Location where
                       :: Data.ProtoLens.FieldDescriptor SourceCodeInfo'Location
                 span__field_descriptor
                   = Data.ProtoLens.FieldDescriptor "span"
-                      (Data.ProtoLens.Int32Field ::
+                      (Data.ProtoLens.ScalarField Data.ProtoLens.Int32Field ::
                          Data.ProtoLens.FieldTypeDescriptor Data.Int.Int32)
                       (Data.ProtoLens.RepeatedField Data.ProtoLens.Packed
                          (Lens.Labels.lensOf
@@ -3557,7 +3560,7 @@ instance Data.ProtoLens.Message SourceCodeInfo'Location where
                       :: Data.ProtoLens.FieldDescriptor SourceCodeInfo'Location
                 leadingComments__field_descriptor
                   = Data.ProtoLens.FieldDescriptor "leading_comments"
-                      (Data.ProtoLens.StringField ::
+                      (Data.ProtoLens.ScalarField Data.ProtoLens.StringField ::
                          Data.ProtoLens.FieldTypeDescriptor Data.Text.Text)
                       (Data.ProtoLens.OptionalField
                          (Lens.Labels.lensOf
@@ -3566,7 +3569,7 @@ instance Data.ProtoLens.Message SourceCodeInfo'Location where
                       :: Data.ProtoLens.FieldDescriptor SourceCodeInfo'Location
                 trailingComments__field_descriptor
                   = Data.ProtoLens.FieldDescriptor "trailing_comments"
-                      (Data.ProtoLens.StringField ::
+                      (Data.ProtoLens.ScalarField Data.ProtoLens.StringField ::
                          Data.ProtoLens.FieldTypeDescriptor Data.Text.Text)
                       (Data.ProtoLens.OptionalField
                          (Lens.Labels.lensOf
@@ -3575,7 +3578,7 @@ instance Data.ProtoLens.Message SourceCodeInfo'Location where
                       :: Data.ProtoLens.FieldDescriptor SourceCodeInfo'Location
                 leadingDetachedComments__field_descriptor
                   = Data.ProtoLens.FieldDescriptor "leading_detached_comments"
-                      (Data.ProtoLens.StringField ::
+                      (Data.ProtoLens.ScalarField Data.ProtoLens.StringField ::
                          Data.ProtoLens.FieldTypeDescriptor Data.Text.Text)
                       (Data.ProtoLens.RepeatedField Data.ProtoLens.Unpacked
                          (Lens.Labels.lensOf
@@ -3745,7 +3748,7 @@ instance Data.ProtoLens.Message UninterpretedOption where
         fieldsByTag
           = let name__field_descriptor
                   = Data.ProtoLens.FieldDescriptor "name"
-                      (Data.ProtoLens.MessageField ::
+                      (Data.ProtoLens.MessageField Data.ProtoLens.MessageType ::
                          Data.ProtoLens.FieldTypeDescriptor UninterpretedOption'NamePart)
                       (Data.ProtoLens.RepeatedField Data.ProtoLens.Unpacked
                          (Lens.Labels.lensOf
@@ -3753,7 +3756,7 @@ instance Data.ProtoLens.Message UninterpretedOption where
                       :: Data.ProtoLens.FieldDescriptor UninterpretedOption
                 identifierValue__field_descriptor
                   = Data.ProtoLens.FieldDescriptor "identifier_value"
-                      (Data.ProtoLens.StringField ::
+                      (Data.ProtoLens.ScalarField Data.ProtoLens.StringField ::
                          Data.ProtoLens.FieldTypeDescriptor Data.Text.Text)
                       (Data.ProtoLens.OptionalField
                          (Lens.Labels.lensOf
@@ -3762,7 +3765,7 @@ instance Data.ProtoLens.Message UninterpretedOption where
                       :: Data.ProtoLens.FieldDescriptor UninterpretedOption
                 positiveIntValue__field_descriptor
                   = Data.ProtoLens.FieldDescriptor "positive_int_value"
-                      (Data.ProtoLens.UInt64Field ::
+                      (Data.ProtoLens.ScalarField Data.ProtoLens.UInt64Field ::
                          Data.ProtoLens.FieldTypeDescriptor Data.Word.Word64)
                       (Data.ProtoLens.OptionalField
                          (Lens.Labels.lensOf
@@ -3771,7 +3774,7 @@ instance Data.ProtoLens.Message UninterpretedOption where
                       :: Data.ProtoLens.FieldDescriptor UninterpretedOption
                 negativeIntValue__field_descriptor
                   = Data.ProtoLens.FieldDescriptor "negative_int_value"
-                      (Data.ProtoLens.Int64Field ::
+                      (Data.ProtoLens.ScalarField Data.ProtoLens.Int64Field ::
                          Data.ProtoLens.FieldTypeDescriptor Data.Int.Int64)
                       (Data.ProtoLens.OptionalField
                          (Lens.Labels.lensOf
@@ -3780,7 +3783,7 @@ instance Data.ProtoLens.Message UninterpretedOption where
                       :: Data.ProtoLens.FieldDescriptor UninterpretedOption
                 doubleValue__field_descriptor
                   = Data.ProtoLens.FieldDescriptor "double_value"
-                      (Data.ProtoLens.DoubleField ::
+                      (Data.ProtoLens.ScalarField Data.ProtoLens.DoubleField ::
                          Data.ProtoLens.FieldTypeDescriptor Prelude.Double)
                       (Data.ProtoLens.OptionalField
                          (Lens.Labels.lensOf
@@ -3789,7 +3792,7 @@ instance Data.ProtoLens.Message UninterpretedOption where
                       :: Data.ProtoLens.FieldDescriptor UninterpretedOption
                 stringValue__field_descriptor
                   = Data.ProtoLens.FieldDescriptor "string_value"
-                      (Data.ProtoLens.BytesField ::
+                      (Data.ProtoLens.ScalarField Data.ProtoLens.BytesField ::
                          Data.ProtoLens.FieldTypeDescriptor Data.ByteString.ByteString)
                       (Data.ProtoLens.OptionalField
                          (Lens.Labels.lensOf
@@ -3798,7 +3801,7 @@ instance Data.ProtoLens.Message UninterpretedOption where
                       :: Data.ProtoLens.FieldDescriptor UninterpretedOption
                 aggregateValue__field_descriptor
                   = Data.ProtoLens.FieldDescriptor "aggregate_value"
-                      (Data.ProtoLens.StringField ::
+                      (Data.ProtoLens.ScalarField Data.ProtoLens.StringField ::
                          Data.ProtoLens.FieldTypeDescriptor Data.Text.Text)
                       (Data.ProtoLens.OptionalField
                          (Lens.Labels.lensOf
@@ -3865,7 +3868,7 @@ instance Data.ProtoLens.Message UninterpretedOption'NamePart where
         fieldsByTag
           = let namePart__field_descriptor
                   = Data.ProtoLens.FieldDescriptor "name_part"
-                      (Data.ProtoLens.StringField ::
+                      (Data.ProtoLens.ScalarField Data.ProtoLens.StringField ::
                          Data.ProtoLens.FieldTypeDescriptor Data.Text.Text)
                       (Data.ProtoLens.PlainField Data.ProtoLens.Required
                          (Lens.Labels.lensOf
@@ -3873,7 +3876,7 @@ instance Data.ProtoLens.Message UninterpretedOption'NamePart where
                       :: Data.ProtoLens.FieldDescriptor UninterpretedOption'NamePart
                 isExtension__field_descriptor
                   = Data.ProtoLens.FieldDescriptor "is_extension"
-                      (Data.ProtoLens.BoolField ::
+                      (Data.ProtoLens.ScalarField Data.ProtoLens.BoolField ::
                          Data.ProtoLens.FieldTypeDescriptor Prelude.Bool)
                       (Data.ProtoLens.PlainField Data.ProtoLens.Required
                          (Lens.Labels.lensOf

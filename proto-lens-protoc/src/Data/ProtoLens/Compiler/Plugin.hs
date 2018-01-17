@@ -41,6 +41,7 @@ data ProtoFile = ProtoFile
     { descriptor :: FileDescriptorProto
     , haskellModule :: ModuleName
     , definitions :: Env Name
+    , services :: [ServiceInfo]
     -- | The names of proto files exported (transitively, via "import public"
     -- decl) by this file.
     , exports :: [ProtoFileName]
@@ -57,6 +58,7 @@ analyzeProtoFiles modulePrefix files =
     moduleNames = fmap (moduleName modulePrefix) filesByName
     -- The definitions in each input proto file, indexed by filename.
     definitionsByName = fmap collectDefinitions filesByName
+    servicesByName = fmap collectServices filesByName
     -- The exports from each .proto file (including any "public import"
     -- dependencies), as they appear to other modules that are importing them;
     -- i.e., qualified by module name.
@@ -68,6 +70,7 @@ analyzeProtoFiles modulePrefix files =
         { descriptor = f
         , haskellModule = moduleNames ! n
         , definitions = definitionsByName ! n
+        , services = servicesByName ! n
         , exports = exportsByName ! n
         , exportedEnv = exportedEnvs ! n
         }

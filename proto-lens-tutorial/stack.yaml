@@ -1,0 +1,12 @@
+resolver: lts-9.14
+packages:
+- person
+- coffee-order
+
+- extra-dep: true
+  location:
+    '..'
+  subdirs:
+    - proto-lens
+    - proto-lens-protoc
+    - lens-labels

@@ -1,6 +1,21 @@
 # Changelog for `proto-lens`
 
-## Unreleased changes
+## v0.3.0.0
+- Remove support for `ghc-7.10`. (#136)
+- Use a `.cabal` file that's auto-generated from `hpack`. (#138)
+- Add buildMessageDelimited: size-delimited streams of Messages (#102)
+- Add support for parsing `Any` messages in google protobuf text format (#124)
+- Use the Tag newtype consistently. (#127)
+- Add support for tracking unknown fields. (#129)
+- Improve an error message. (#132)
+- Bundle enum pattern synonyms with their type. (#136)
+- Implement proto3-style "open" enums. (#137)
+- Consolidate `proto-lens-descriptors` into `proto-lens`. (#140)
+- Split the `Message` class into separate methods. (#139)
+- Improve an error message when decoding Anys. (#146)
+- Refactor the `FieldDescriptorType. (#147)
+- Improve text format error messages. (#148)
+- Add module `Data.ProtoLens.Service.Types`. (#154)
 
 ## v0.2.2.0
 - Bump the dependency on `base` to support `ghc-8.2.1`.

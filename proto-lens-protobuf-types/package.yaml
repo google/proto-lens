@@ -1,5 +1,5 @@
 name: proto-lens-protobuf-types
-version: '0.2.2.0'
+version: '0.3.0.0'
 synopsis: Basic protocol buffer message types.
 description: >
   This package provides bindings standard protocol message types,
@@ -15,18 +15,19 @@ extra-source-files:
   - proto-src/google/protobuf/any.proto
   - proto-src/google/protobuf/duration.proto
   - proto-src/google/protobuf/wrappers.proto
+  - proto-src/google/protobuf/timestamp.proto
 
 custom-setup:
   dependencies:
     - base >= 4.8 && < 4.11
     - Cabal
-    - proto-lens-protoc == 0.2.*
+    - proto-lens-protoc == 0.3.*
 
 dependencies:
   - base >= 4.8 && < 4.11
   - lens-family
-  - proto-lens >= 0.2.2 && < 0.3
-  - proto-lens-protoc >= 0.2.2 && < 0.3
+  - proto-lens == 0.3.*
+  - proto-lens-protoc == 0.3.*
   - text == 1.2.*
 
 library:
@@ -39,3 +40,5 @@ library:
     - Proto.Google.Protobuf.Duration'Fields
     - Proto.Google.Protobuf.Wrappers
     - Proto.Google.Protobuf.Wrappers'Fields
+    - Proto.Google.Protobuf.Timestamp
+    - Proto.Google.Protobuf.Timestamp'Fields
