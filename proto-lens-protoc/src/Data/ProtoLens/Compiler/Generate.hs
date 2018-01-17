@@ -84,7 +84,7 @@ generateModule modName imports syntaxType modifyImport definitions importedEnv s
                 pragmas
                 (prismImport:sharedImports)
           $ (concatMap generateDecls $ Map.toList definitions)
-         ++ concatMap (generateServiceDecls env) services
+         ++ map uncommented (concatMap (generateServiceDecls env) services)
       , Module fieldModName
                 Nothing
                 pragmas
@@ -120,7 +120,7 @@ generateModule modName imports syntaxType modifyImport definitions importedEnv s
     env = Map.union (unqualifyEnv definitions) importedEnv
     generateDecls (protoName, Message m)
         = generateMessageDecls syntaxType env (stripDotPrefix protoName) m
-       ++ concatMap (generatePrisms env) (messageOneofFields m)
+       ++ map uncommented (concatMap (generatePrisms env) (messageOneofFields m))
     generateDecls (_, Enum e) = map uncommented $ generateEnumDecls syntaxType e
     generateExports (Message m) = generateMessageExports m
                                ++ concatMap generatePrismExports (messageOneofFields m)
