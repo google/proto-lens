@@ -12,7 +12,10 @@
 - Implement proto3-style "open" enums. (#137)
 - Consolidate `proto-lens-descriptors` into `proto-lens`. (#140)
 - Split the `Message` class into separate methods. (#139)
+- Improve an error message when decoding Anys. (#146)
 - Refactor the `FieldDescriptorType. (#147)
+- Improve text format error messages. (#148)
+- Add module `Data.ProtoLens.Service.Types`. (#154)
 
 ## v0.2.2.0
 - Bump the dependency on `base` to support `ghc-8.2.1`.
