@@ -79,13 +79,13 @@ generateModule :: ModuleName
                -> [ServiceInfo]
                -> [Module]
 generateModule modName imports syntaxType modifyImport definitions importedEnv services
-    = [ module' modName
+    = [ Module modName
                 (Just $ (serviceExports ++) $ concatMap generateExports $ Map.elems definitions)
                 pragmas
                 (prismImport:sharedImports)
           $ (concatMap generateDecls $ Map.toList definitions)
          ++ concatMap (generateServiceDecls env) services
-      , module' fieldModName
+      , Module fieldModName
                 Nothing
                 pragmas
                 sharedImports
