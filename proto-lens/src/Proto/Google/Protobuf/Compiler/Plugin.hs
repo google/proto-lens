@@ -29,13 +29,11 @@ import qualified Proto.Google.Protobuf.Descriptor
 
 {- | Fields :
 
-    * @fileToGenerate :: Lens' CodeGeneratorRequest [Data.Text.Text]@
-    * @parameter :: Lens' CodeGeneratorRequest Data.Text.Text@
-    * @maybe'parameter ::
-                Lens' CodeGeneratorRequest (Prelude.Maybe Data.Text.Text)@
-    * @protoFile ::
-          Lens' CodeGeneratorRequest
-            [Proto.Google.Protobuf.Descriptor.FileDescriptorProto]@
+    * 'Proto.Google.Protobuf.Compiler.Plugin'Fields.fileToGenerate' @:: Lens' CodeGeneratorRequest [Data.Text.Text]@
+    * 'Proto.Google.Protobuf.Compiler.Plugin'Fields.parameter' @:: Lens' CodeGeneratorRequest Data.Text.Text@
+    * 'Proto.Google.Protobuf.Compiler.Plugin'Fields.maybe'parameter' @:: Lens' CodeGeneratorRequest (Prelude.Maybe Data.Text.Text)@
+    * 'Proto.Google.Protobuf.Compiler.Plugin'Fields.protoFile' @:: Lens' CodeGeneratorRequest
+  [Proto.Google.Protobuf.Descriptor.FileDescriptorProto]@
  -}
 data CodeGeneratorRequest = CodeGeneratorRequest{_CodeGeneratorRequest'fileToGenerate
                                                  :: ![Data.Text.Text],
@@ -133,10 +131,9 @@ instance Data.ProtoLens.Message CodeGeneratorRequest where
               (\ x__ y__ -> x__{_CodeGeneratorRequest'_unknownFields = y__})
 {- | Fields :
 
-    * @error :: Lens' CodeGeneratorResponse Data.Text.Text@
-    * @maybe'error ::
-            Lens' CodeGeneratorResponse (Prelude.Maybe Data.Text.Text)@
-    * @file :: Lens' CodeGeneratorResponse [CodeGeneratorResponse'File]@
+    * 'Proto.Google.Protobuf.Compiler.Plugin'Fields.error' @:: Lens' CodeGeneratorResponse Data.Text.Text@
+    * 'Proto.Google.Protobuf.Compiler.Plugin'Fields.maybe'error' @:: Lens' CodeGeneratorResponse (Prelude.Maybe Data.Text.Text)@
+    * 'Proto.Google.Protobuf.Compiler.Plugin'Fields.file' @:: Lens' CodeGeneratorResponse [CodeGeneratorResponse'File]@
  -}
 data CodeGeneratorResponse = CodeGeneratorResponse{_CodeGeneratorResponse'error
                                                    :: !(Prelude.Maybe Data.Text.Text),
@@ -214,15 +211,12 @@ instance Data.ProtoLens.Message CodeGeneratorResponse where
               (\ x__ y__ -> x__{_CodeGeneratorResponse'_unknownFields = y__})
 {- | Fields :
 
-    * @name :: Lens' CodeGeneratorResponse'File Data.Text.Text@
-    * @maybe'name ::
-           Lens' CodeGeneratorResponse'File (Prelude.Maybe Data.Text.Text)@
-    * @insertionPoint :: Lens' CodeGeneratorResponse'File Data.Text.Text@
-    * @maybe'insertionPoint ::
-                     Lens' CodeGeneratorResponse'File (Prelude.Maybe Data.Text.Text)@
-    * @content :: Lens' CodeGeneratorResponse'File Data.Text.Text@
-    * @maybe'content ::
-              Lens' CodeGeneratorResponse'File (Prelude.Maybe Data.Text.Text)@
+    * 'Proto.Google.Protobuf.Compiler.Plugin'Fields.name' @:: Lens' CodeGeneratorResponse'File Data.Text.Text@
+    * 'Proto.Google.Protobuf.Compiler.Plugin'Fields.maybe'name' @:: Lens' CodeGeneratorResponse'File (Prelude.Maybe Data.Text.Text)@
+    * 'Proto.Google.Protobuf.Compiler.Plugin'Fields.insertionPoint' @:: Lens' CodeGeneratorResponse'File Data.Text.Text@
+    * 'Proto.Google.Protobuf.Compiler.Plugin'Fields.maybe'insertionPoint' @:: Lens' CodeGeneratorResponse'File (Prelude.Maybe Data.Text.Text)@
+    * 'Proto.Google.Protobuf.Compiler.Plugin'Fields.content' @:: Lens' CodeGeneratorResponse'File Data.Text.Text@
+    * 'Proto.Google.Protobuf.Compiler.Plugin'Fields.maybe'content' @:: Lens' CodeGeneratorResponse'File (Prelude.Maybe Data.Text.Text)@
  -}
 data CodeGeneratorResponse'File = CodeGeneratorResponse'File{_CodeGeneratorResponse'File'name
                                                              :: !(Prelude.Maybe Data.Text.Text),

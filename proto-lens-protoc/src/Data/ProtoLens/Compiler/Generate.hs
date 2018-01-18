@@ -28,7 +28,10 @@ import Data.String (fromString)
 import Data.Text (unpack)
 import qualified Data.Text as T
 import Data.Tuple (swap)
+import qualified Language.Haskell.Exts.Syntax as Syntax
 import Lens.Family2 ((^.))
+import Text.Printf (printf)
+
 import Proto.Google.Protobuf.Descriptor
     ( EnumValueDescriptorProto
     , FieldDescriptorProto
@@ -119,7 +122,7 @@ generateModule modName imports syntaxType modifyImport definitions importedEnv s
             ++ map importSimple imports
     env = Map.union (unqualifyEnv definitions) importedEnv
     generateDecls (protoName, Message m)
-        = generateMessageDecls syntaxType env (stripDotPrefix protoName) m
+        = generateMessageDecls fieldModName syntaxType env (stripDotPrefix protoName) m
        ++ map uncommented (concatMap (generatePrisms env) (messageOneofFields m))
     generateDecls (_, Enum e) = map uncommented $ generateEnumDecls syntaxType e
     generateExports (Message m) = generateMessageExports m
@@ -165,15 +168,16 @@ reexported imp@ImportDecl {importModule = m}
   where
     m' = fromString $ "Data.ProtoLens.Reexport." ++ prettyPrint m
 
-messageComment :: Name -> [RecordField] -> String
-messageComment n fields = unlines
+messageComment :: Syntax.ModuleName () -> Name -> [RecordField] -> String
+messageComment (Syntax.ModuleName _ fieldModName) n fields = unlines
     $ ["Fields :", ""]
         ++ map item (concatMap recordFieldLenses fields)
   where
     item :: LensInstance -> String
-    item l = "    * @" ++ prettyPrint (typeSig [nameFromSymbol $ lensSymbol l]
-                                        $ "Lens'" @@ t @@ (lensFieldType l))
-                        ++ "@"
+    item l = (printf "    * '%s.%s' @:: %s@"
+                 fieldModName
+                 (prettyPrint $ nameFromSymbol $ lensSymbol l)
+                 (prettyPrint $ "Lens'" @@ t @@ (lensFieldType l)))
     t = tyCon (unQual n)
 
 generateMessageExports :: MessageInfo Name -> [ExportSpec]
@@ -237,12 +241,12 @@ generateServiceDecls env si =
                        Enum _ -> error "Service must have a message type"
 
 
-generateMessageDecls :: SyntaxType -> Env QName -> T.Text -> MessageInfo Name -> [CommentedDecl]
-generateMessageDecls syntaxType env protoName info =
+generateMessageDecls :: Syntax.ModuleName () -> SyntaxType -> Env QName -> T.Text -> MessageInfo Name -> [CommentedDecl]
+generateMessageDecls fieldModName syntaxType env protoName info =
     -- data Bar = Bar {
     --    foo :: Baz
     -- }
-    [ commented (messageComment (messageName info) allFields)
+    [ commented (messageComment fieldModName (messageName info) allFields)
         $ dataDecl dataName
             [recDecl dataName $
                       [ (recordFieldName f, recordFieldType f)
