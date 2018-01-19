@@ -22,7 +22,7 @@ dependencies:
   - containers == 0.5.*
   - data-default-class >= 0.0 && < 0.2
   - filepath >= 1.4 && < 1.6
-  - haskell-src-exts >= 1.17 && < 1.20
+  - haskell-src-exts >= 1.17 && < 1.21
   - lens-family == 1.2.*
   - proto-lens == 0.3.*
   - text == 1.2.*

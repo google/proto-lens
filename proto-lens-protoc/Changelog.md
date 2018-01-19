@@ -14,6 +14,7 @@
 - Track consolidation of `proto-lens-descriptors` into `proto-lens`. (#140)
 - Generate service definitions using promoted datatypes. (#154)
 - Generate prisms for `oneof` message fields. (#160)
+- Build with `haskell-src-exts-1.20.*`.
 
 ## v0.2.2.3
 - Don't camel-case message names.  This reverts behavior which was added
