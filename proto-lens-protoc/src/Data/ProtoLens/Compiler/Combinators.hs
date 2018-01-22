@@ -218,7 +218,6 @@ type ExportSpec = Syntax.ExportSpec ()
 
 getModuleName :: Module -> Maybe ModuleName
 getModuleName (Module name _ _ _ _) = Just name
-getModuleName _ = Nothing
 
 type ModuleName = Syntax.ModuleName ()
 type ModulePragma = Syntax.ModulePragma ()

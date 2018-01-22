@@ -20,7 +20,7 @@ import Control.Arrow (second)
 import qualified Data.Foldable as F
 import qualified Data.List as List
 import qualified Data.Map as Map
-import Data.Maybe (isNothing, isJust)
+import Data.Maybe (isNothing, isJust, fromJust)
 import Data.Monoid ((<>))
 import Data.Ord (comparing)
 import qualified Data.Set as Set
@@ -28,7 +28,6 @@ import Data.String (fromString)
 import Data.Text (unpack)
 import qualified Data.Text as T
 import Data.Tuple (swap)
-import qualified Language.Haskell.Exts.Syntax as Syntax
 import Lens.Family2 ((^.))
 import Text.Printf (printf)
 
@@ -168,14 +167,14 @@ reexported imp@ImportDecl {importModule = m}
   where
     m' = fromString $ "Data.ProtoLens.Reexport." ++ prettyPrint m
 
-messageComment :: Syntax.ModuleName () -> Name -> [RecordField] -> String
-messageComment (Syntax.ModuleName _ fieldModName) n fields = unlines
+messageComment :: ModuleName -> Name -> [RecordField] -> String
+messageComment fieldModName n fields = unlines
     $ ["Fields :", ""]
         ++ map item (concatMap recordFieldLenses fields)
   where
     item :: LensInstance -> String
     item l = (printf "    * '%s.%s' @:: %s@"
-                 fieldModName
+                 (prettyPrint fieldModName)
                  (prettyPrint $ nameFromSymbol $ lensSymbol l)
                  (prettyPrint $ "Lens'" @@ t @@ (lensFieldType l)))
     t = tyCon (unQual n)
@@ -241,7 +240,7 @@ generateServiceDecls env si =
                        Enum _ -> error "Service must have a message type"
 
 
-generateMessageDecls :: Syntax.ModuleName () -> SyntaxType -> Env QName -> T.Text -> MessageInfo Name -> [CommentedDecl]
+generateMessageDecls :: ModuleName -> SyntaxType -> Env QName -> T.Text -> MessageInfo Name -> [CommentedDecl]
 generateMessageDecls fieldModName syntaxType env protoName info =
     -- data Bar = Bar {
     --    foo :: Baz
