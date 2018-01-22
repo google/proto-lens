@@ -34,14 +34,20 @@ import qualified Language.Haskell.Exts.Annotated.Syntax as Syntax
 import qualified Language.Haskell.Exts.Pretty as Pretty
 import Language.Haskell.Exts.SrcLoc (SrcLoc, noLoc)
 #endif
-import Text.PrettyPrint (($+$), (<+>), render, text, vcat)
+import Text.PrettyPrint (($+$), (<+>), render, text, vcat, Doc)
 
 #if MIN_VERSION_haskell_src_exts(1,18,0)
 prettyPrint :: Pretty.Pretty a => a -> String
 prettyPrint = Pretty.prettyPrint
+
+prettyPrim :: Pretty.Pretty a => a -> Doc
+prettyPrim = Pretty.prettyPrim
 #else
 prettyPrint :: (Functor m, Pretty.Pretty (m SrcLoc)) => m () -> String
 prettyPrint = Pretty.prettyPrint . fmap (const noLoc)
+
+prettyPrim :: (Functor m, Pretty.Pretty (m SrcLoc)) => m () -> Doc
+prettyPrim = Pretty.prettyPrim . fmap (const noLoc)
 #endif
 
 type Asst = Syntax.Asst ()
@@ -201,18 +207,18 @@ commented = CommentedDecl . Just
 prettyPrintModule :: Module -> String
 prettyPrintModule (Module modName exports pragmas imports decls) =
     render $
-        vcat (map Pretty.prettyPrim pragmas)
-        $+$ Pretty.prettyPrim (Syntax.ModuleHead () modName
-                                  -- no warning text
-                                  Nothing
-                                  (Syntax.ExportSpecList () <$> exports))
-        $+$ vcat (map Pretty.prettyPrim imports)
+        vcat (map prettyPrim pragmas)
+        $+$ prettyPrim (Syntax.ModuleHead () modName
+                           -- no warning text
+                           Nothing
+                           (Syntax.ExportSpecList () <$> exports))
+        $+$ vcat (map prettyPrim imports)
         $+$ ""
         $+$ vcat (map pprintDecl decls)
   where
-    pprintDecl (CommentedDecl Nothing d) = Pretty.prettyPrim d
+    pprintDecl (CommentedDecl Nothing d) = prettyPrim d
     pprintDecl (CommentedDecl (Just c) d)
-        = "{- |" <+> text c <+> "-}" $+$ Pretty.prettyPrim d
+        = "{- |" <+> text c <+> "-}" $+$ prettyPrim d
 
 type ExportSpec = Syntax.ExportSpec ()
 

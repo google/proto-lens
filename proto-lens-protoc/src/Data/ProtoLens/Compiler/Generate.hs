@@ -20,7 +20,7 @@ import Control.Arrow (second)
 import qualified Data.Foldable as F
 import qualified Data.List as List
 import qualified Data.Map as Map
-import Data.Maybe (isNothing, isJust, fromJust)
+import Data.Maybe (isNothing, isJust)
 import Data.Monoid ((<>))
 import Data.Ord (comparing)
 import qualified Data.Set as Set
