@@ -29,6 +29,8 @@ import Data.Text (unpack)
 import qualified Data.Text as T
 import Data.Tuple (swap)
 import Lens.Family2 ((^.))
+import Text.Printf (printf)
+
 import Proto.Google.Protobuf.Descriptor
     ( EnumValueDescriptorProto
     , FieldDescriptorProto
@@ -79,17 +81,18 @@ generateModule :: ModuleName
                -> [ServiceInfo]
                -> [Module]
 generateModule modName imports syntaxType modifyImport definitions importedEnv services
-    = [ module' modName
+    = [ Module modName
                 (Just $ (serviceExports ++) $ concatMap generateExports $ Map.elems definitions)
                 pragmas
                 (prismImport:sharedImports)
           $ (concatMap generateDecls $ Map.toList definitions)
-         ++ concatMap (generateServiceDecls env) services
-      , module' fieldModName
+         ++ map uncommented (concatMap (generateServiceDecls env) services)
+      , Module fieldModName
                 Nothing
                 pragmas
                 sharedImports
-                (concatMap generateFieldDecls allLensNames)
+          . map uncommented
+          $ concatMap generateFieldDecls allLensNames
       ]
   where
     fieldModName = modifyModuleName (++ "'Fields") modName
@@ -118,9 +121,9 @@ generateModule modName imports syntaxType modifyImport definitions importedEnv s
             ++ map importSimple imports
     env = Map.union (unqualifyEnv definitions) importedEnv
     generateDecls (protoName, Message m)
-        = generateMessageDecls syntaxType env (stripDotPrefix protoName) m
-       ++ concatMap (generatePrisms env) (messageOneofFields m)
-    generateDecls (_, Enum e) = generateEnumDecls syntaxType e
+        = generateMessageDecls fieldModName syntaxType env (stripDotPrefix protoName) m
+       ++ map uncommented (concatMap (generatePrisms env) (messageOneofFields m))
+    generateDecls (_, Enum e) = map uncommented $ generateEnumDecls syntaxType e
     generateExports (Message m) = generateMessageExports m
                                ++ concatMap generatePrismExports (messageOneofFields m)
     generateExports (Enum e) = generateEnumExports syntaxType e
@@ -163,6 +166,18 @@ reexported imp@ImportDecl {importModule = m}
     = imp { importAs = Just m, importModule = m' }
   where
     m' = fromString $ "Data.ProtoLens.Reexport." ++ prettyPrint m
+
+messageComment :: ModuleName -> Name -> [RecordField] -> String
+messageComment fieldModName n fields = unlines
+    $ ["Fields :", ""]
+        ++ map item (concatMap recordFieldLenses fields)
+  where
+    item :: LensInstance -> String
+    item l = (printf "    * '%s.%s' @:: %s@"
+                 (prettyPrint fieldModName)
+                 (prettyPrint $ nameFromSymbol $ lensSymbol l)
+                 (prettyPrint $ "Lens'" @@ t @@ (lensFieldType l)))
+    t = tyCon (unQual n)
 
 generateMessageExports :: MessageInfo Name -> [ExportSpec]
 generateMessageExports m =
@@ -225,19 +240,20 @@ generateServiceDecls env si =
                        Enum _ -> error "Service must have a message type"
 
 
-generateMessageDecls :: SyntaxType -> Env QName -> T.Text -> MessageInfo Name -> [Decl]
-generateMessageDecls syntaxType env protoName info =
+generateMessageDecls :: ModuleName -> SyntaxType -> Env QName -> T.Text -> MessageInfo Name -> [CommentedDecl]
+generateMessageDecls fieldModName syntaxType env protoName info =
     -- data Bar = Bar {
     --    foo :: Baz
     -- }
-    [ dataDecl dataName
-        [recDecl dataName $
-                  [ (recordFieldName f, recordFieldType f)
-                  | f <- allFields
-                  ]
-                  ++ [(messageUnknownFields info, "Data.ProtoLens.FieldSet")]
-        ]
-        $ deriving' ["Prelude.Show", "Prelude.Eq", "Prelude.Ord"]
+    [ commented (messageComment fieldModName (messageName info) allFields)
+        $ dataDecl dataName
+            [recDecl dataName $
+                      [ (recordFieldName f, recordFieldType f)
+                      | f <- allFields
+                      ]
+                      ++ [(messageUnknownFields info, "Data.ProtoLens.FieldSet")]
+            ]
+            $ deriving' ["Prelude.Show", "Prelude.Eq", "Prelude.Ord"]
     ] ++
 
     -- oneof field data type declarations
@@ -249,7 +265,7 @@ generateMessageDecls syntaxType env protoName info =
     --        }
     -- haskell: data Foo'Bar = Foo'Bar'c !Prelude.Float
     --                       | Foo'Bar's !Sub
-    [ dataDecl (oneofTypeName oneofInfo)
+    [ uncommented $ dataDecl (oneofTypeName oneofInfo)
       [ conDecl consName [hsFieldType env $ fieldDescriptor f]
       | c <- oneofCases oneofInfo
       , let f = caseField c
@@ -260,11 +276,12 @@ generateMessageDecls syntaxType env protoName info =
     ] ++
     -- instance (HasLens' f Foo x a, HasLens' f Foo x b, a ~ b)
     --    => HasLens f Foo Foo x a b
-    [ instDecl [classA "Lens.Labels.HasLens'" ["f", dataType, "x", "a"],
-                equalP "a" "b"]
-          ("Lens.Labels.HasLens" `ihApp`
-              ["f", dataType, dataType, "x", "a", "b"])
-          [[match "lensOf" [] "Lens.Labels.lensOf'"]]
+    [ uncommented $
+          instDecl [classA "Lens.Labels.HasLens'" ["f", dataType, "x", "a"],
+                    equalP "a" "b"]
+              ("Lens.Labels.HasLens" `ihApp`
+                  ["f", dataType, dataType, "x", "a", "b"])
+              [[match "lensOf" [] "Lens.Labels.lensOf'"]]
     ]
     ++
     -- instance Functor f
@@ -272,7 +289,7 @@ generateMessageDecls syntaxType env protoName info =
     --   lensOf _ = ...
     -- Note: for optional fields, this generates an instance both for "foo" and
     -- for "maybe'foo" (see plainRecordField below).
-    [ instDecl [classA "Prelude.Functor" ["f"]]
+    [ uncommented $ instDecl [classA "Prelude.Functor" ["f"]]
         ("Lens.Labels.HasLens'" `ihApp`
             ["f", dataType, sym, tyParen t])
             [[match "lensOf'" [pWildCard] $
@@ -286,7 +303,7 @@ generateMessageDecls syntaxType env protoName info =
     ]
     ++
     -- instance Data.Default.Class.Default Bar where
-    [ instDecl [] ("Data.Default.Class.Default" `ihApp` [dataType])
+    [ uncommented $ instDecl [] ("Data.Default.Class.Default" `ihApp` [dataType])
         -- def = Bar { _Bar_foo = 0 }
         [
             [ match "def" []
@@ -304,7 +321,7 @@ generateMessageDecls syntaxType env protoName info =
             ]
         ]
     -- instance Message.Message Bar where
-    , instDecl [] ("Data.ProtoLens.Message" `ihApp` [dataType])
+    , uncommented $ instDecl [] ("Data.ProtoLens.Message" `ihApp` [dataType])
         $ messageInstance syntaxType env protoName info
     ]
   where

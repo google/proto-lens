@@ -34,6 +34,7 @@ library:
     - Cabal >= 1.22 && < 2.1
     - directory >= 1.2 && < 1.4
     - lens-labels == 0.2.*
+    - pretty == 1.1.*
     - process >= 1.2 && < 1.7
   exposed-modules:
     - Data.ProtoLens.Compiler.Combinators
