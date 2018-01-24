@@ -87,12 +87,11 @@ generateFiles modifyImports header files toGenerate = let
              (definitions f)
              (collectEnvFromDeps deps filesByName)
              (services f)
-  in [ ( outputFilePath $ prettyPrint modName
+  in [ ( outputFilePath $ prettyPrint $ getModuleName modul
        , header (descriptor f) <> pack (prettyPrintModule modul)
        )
      | fileName <- toGenerate
      , let f = filesByName ! fileName
      , modul <- modulesToBuild f
-     , let Just modName =  getModuleName modul
      ]
 

@@ -233,8 +233,8 @@ prettyPrintModule (Module modName exports pragmas imports decls) =
 
 type ExportSpec = Syntax.ExportSpec ()
 
-getModuleName :: Module -> Maybe ModuleName
-getModuleName (Module name _ _ _ _) = Just name
+getModuleName :: Module -> ModuleName
+getModuleName (Module name _ _ _ _) = name
 
 type ModuleName = Syntax.ModuleName ()
 type ModulePragma = Syntax.ModulePragma ()
