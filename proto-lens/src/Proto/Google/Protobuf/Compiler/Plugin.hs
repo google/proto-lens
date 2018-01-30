@@ -6,8 +6,8 @@
 {-# OPTIONS_GHC -fno-warn-unused-imports#-}
 {-# OPTIONS_GHC -fno-warn-duplicate-exports#-}
 module Proto.Google.Protobuf.Compiler.Plugin
-       (CodeGeneratorRequest(..), CodeGeneratorResponse(..),
-        CodeGeneratorResponse'File(..))
+       (CodeGeneratorRequest(), CodeGeneratorResponse(),
+        CodeGeneratorResponse'File())
        where
 import qualified Lens.Labels.Prism
 import qualified Prelude
@@ -43,7 +43,12 @@ data CodeGeneratorRequest = CodeGeneratorRequest{_CodeGeneratorRequest'fileToGen
                                                  ![Proto.Google.Protobuf.Descriptor.FileDescriptorProto],
                                                  _CodeGeneratorRequest'_unknownFields ::
                                                  !Data.ProtoLens.FieldSet}
-                          deriving (Prelude.Show, Prelude.Eq, Prelude.Ord)
+                          deriving (Prelude.Eq, Prelude.Ord)
+instance Prelude.Show CodeGeneratorRequest where
+        showsPrec _ __x __s
+          = Prelude.showChar '{'
+              (Prelude.showString (Data.ProtoLens.showMessageShort __x)
+                 (Prelude.showChar '}' __s))
 instance (Lens.Labels.HasLens' f CodeGeneratorRequest x a,
           a ~ b) =>
          Lens.Labels.HasLens f CodeGeneratorRequest CodeGeneratorRequest x a
@@ -141,7 +146,12 @@ data CodeGeneratorResponse = CodeGeneratorResponse{_CodeGeneratorResponse'error
                                                    ![CodeGeneratorResponse'File],
                                                    _CodeGeneratorResponse'_unknownFields ::
                                                    !Data.ProtoLens.FieldSet}
-                           deriving (Prelude.Show, Prelude.Eq, Prelude.Ord)
+                           deriving (Prelude.Eq, Prelude.Ord)
+instance Prelude.Show CodeGeneratorResponse where
+        showsPrec _ __x __s
+          = Prelude.showChar '{'
+              (Prelude.showString (Data.ProtoLens.showMessageShort __x)
+                 (Prelude.showChar '}' __s))
 instance (Lens.Labels.HasLens' f CodeGeneratorResponse x a,
           a ~ b) =>
          Lens.Labels.HasLens f CodeGeneratorResponse CodeGeneratorResponse x
@@ -226,7 +236,12 @@ data CodeGeneratorResponse'File = CodeGeneratorResponse'File{_CodeGeneratorRespo
                                                              !(Prelude.Maybe Data.Text.Text),
                                                              _CodeGeneratorResponse'File'_unknownFields
                                                              :: !Data.ProtoLens.FieldSet}
-                                deriving (Prelude.Show, Prelude.Eq, Prelude.Ord)
+                                deriving (Prelude.Eq, Prelude.Ord)
+instance Prelude.Show CodeGeneratorResponse'File where
+        showsPrec _ __x __s
+          = Prelude.showChar '{'
+              (Prelude.showString (Data.ProtoLens.showMessageShort __x)
+                 (Prelude.showChar '}' __s))
 instance (Lens.Labels.HasLens' f CodeGeneratorResponse'File x a,
           a ~ b) =>
          Lens.Labels.HasLens f CodeGeneratorResponse'File

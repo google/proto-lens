@@ -9,12 +9,14 @@
 - Don't generate Haskell modules if they won't be used. (#126)
 - Bundle enum pattern synonyms exports with their type. (#136)
 - Split the `Message` class into separate methods. (#139)
-- Refactor the `FieldDescriptorType. (#147)
+- Refactor the `FieldDescriptorType`. (#147)
 - Add a case to proto3 enums for unknown values. (#137)
 - Track consolidation of `proto-lens-descriptors` into `proto-lens`. (#140)
 - Generate service definitions using promoted datatypes. (#154)
 - Generate prisms for `oneof` message fields. (#160)
 - Build with `haskell-src-exts-1.20.*`.
+- Hide the constructors and record fields of message types, and make `Show`
+  instances call `showMessageShort`.
 
 ## v0.2.2.3
 - Don't camel-case message names.  This reverts behavior which was added
