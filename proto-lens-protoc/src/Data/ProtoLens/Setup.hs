@@ -14,6 +14,7 @@
 --
 -- See @README.md@ for instructions on how to use proto-lens with Cabal.
 {-# LANGUAGE CPP #-}
+{-# LANGUAGE BangPatterns #-}
 module Data.ProtoLens.Setup
     ( defaultMainGeneratingProtos
     , defaultMainGeneratingSpecificProtos
@@ -23,10 +24,12 @@ module Data.ProtoLens.Setup
     , generateProtos
     ) where
 
+import Control.DeepSeq (force)
 import Control.Monad (filterM, forM_, guard, when)
 #if MIN_VERSION_Cabal(2,0,0)
 import qualified Data.Map as Map
 #endif
+import qualified Data.ByteString as BS
 import Data.Maybe (maybeToList)
 import qualified Data.Set as Set
 import Distribution.ModuleName (ModuleName)
@@ -63,6 +66,7 @@ import qualified Distribution.Simple.PackageIndex as PackageIndex
 import Distribution.Simple.Setup (fromFlag, copyDest, copyVerbosity)
 import Distribution.Simple.Utils
     ( createDirectoryIfMissingVerbose
+    , getDirectoryContentsRecursive
     , installOrdinaryFile
     , matchFileGlob
     )
@@ -83,8 +87,10 @@ import System.FilePath
 import System.Directory
     ( createDirectoryIfMissing
     , doesDirectoryExist
+    , doesFileExist
     , findExecutable
     , removeDirectoryRecursive
+    , renameFile
     )
 import System.IO (hPutStrLn, stderr)
 import System.Process (callProcess)
@@ -209,10 +215,40 @@ generateSources root l files = do
                      [ InstalledPackageInfo.dataDir info </> protoLensImportsPrefix
                      | info <- collectDeps l
                      ]
-    generateProtosWithImports (root : importDirs) (autogenModulesDir l)
+    -- Generate .hs files into a temporary directory, then move them over
+    -- to the target (autogen) directory only if they are different from
+    -- what's already there. This way, we don't needlessly touch the generated
+    -- .hs files when nothing changes, and thus don't needlessly make GHC
+    -- recompile them (as it considers their modification times for that).
+    let tmpAutogenModulesDir = autogenModulesDir l ++ "-protoc-tmpOutDir"
+    -- Generate .hs files into temp dir.
+    generateProtosWithImports (root : importDirs) tmpAutogenModulesDir
                               -- Applying 'root </>' does nothing if the path is already
                               -- absolute.
                               (map (root </>) files)
+    -- Discover generated files.
+    -- `getDirectoryContentsRecursive` is lazy IO, so we `force` through
+    -- the list to make it strict hereinafter.
+    !generatedFiles <- force <$> getDirectoryContentsRecursive tmpAutogenModulesDir
+    -- Move files to autogen dir only if file contents are different.
+    forM_ generatedFiles $ \pathRelativeToTmpDir -> do
+        let sourcePath = tmpAutogenModulesDir </> pathRelativeToTmpDir
+        let targetPath = autogenModulesDir l </> pathRelativeToTmpDir
+        identical <- do
+            targetExists <- doesFileExist targetPath
+            if not targetExists
+                then return False
+                else do
+                    -- This could be done in a streaming fashion,
+                    -- but since the .hs files usually easily fit
+                    -- into RAM, this is OK.
+                    sourceContents <- BS.readFile sourcePath
+                    targetContents <- BS.readFile targetPath
+                    return (sourceContents == targetContents)
+        -- Do the move if necessary.
+        when (not identical) $ do
+            createDirectoryIfMissing True (takeDirectory targetPath)
+            renameFile sourcePath targetPath
 
 -- | Copy each .proto file into the installed "data-dir" path,
 -- so that it can be included by other packages that depend on this one.
