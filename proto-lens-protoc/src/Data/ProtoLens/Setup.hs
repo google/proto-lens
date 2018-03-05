@@ -69,7 +69,6 @@ import Distribution.Simple.Utils
     , getDirectoryContentsRecursive
     , installOrdinaryFile
     , matchFileGlob
-    , moreRecentFile
     )
 import Distribution.Simple
     ( defaultMainWithHooks
