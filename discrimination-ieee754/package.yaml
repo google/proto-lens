@@ -1,0 +1,34 @@
+name: discrimination-ieee754
+version: '0.1.0.0'
+synopsis: Discrimination of floating-point numbers via their IEEE754 representation.
+description: >
+  Support for sorting/grouping by floating-point numbers.
+  Uses the technique described by http://stereopsis.com/radix.html.
+category: Data
+author: Andrew Pritchard
+maintainer: awpr+protolens@google.com
+copyright: Google Inc.
+license: BSD3
+github: google/proto-lens/discrimination-ieee754
+
+dependencies:
+  - base >= 4.8 && < 4.11
+  - data-binary-ieee754 >= 0.4 && < 0.5
+  - contravariant >= 1.3 && < 1.5
+  - discrimination >= 0.3 && < 0.4
+
+library:
+  source-dirs: src
+  exposed-modules:
+    - Data.Discrimination.IEEE754
+
+tests:
+
+  test:
+    main: test.hs
+    source-dirs: test
+    dependencies:
+      - discrimination-ieee754
+      - QuickCheck
+      - test-framework
+      - test-framework-quickcheck2 == 0.3.*
