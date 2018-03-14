@@ -31,7 +31,6 @@ import Options.Applicative
   , Parser
   , argument
   , eitherReader
-  , maybeReader
   , option
   )
 import Text.Read (readMaybe)
@@ -48,6 +47,11 @@ protoOption = option proto
 -- | Shorthand for a text-format protobuf argument.
 protoArgument :: Message a => Mod ArgumentFields a -> Parser a
 protoArgument = argument proto
+
+-- We define our own maybeReader to preserve compatibility with versions of
+-- optparse-applicative that don't provide it (< 0.13.0.0).
+maybeReader :: (String -> Maybe a) -> ReadM a
+maybeReader = eitherReader . fmap (maybe (Left "No parse") Right)
 
 -- | An optparse-applicative 'ReadM' for an enum name or number.
 protoEnum :: MessageEnum a => ReadM a
