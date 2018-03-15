@@ -20,7 +20,6 @@ import Data.Functor.Contravariant
     ( Contravariant
     , (>$<)
     )
-import Data.Discrimination (Group, Sort)
 import Data.Functor.Contravariant.Divisible
     ( chosen
     , conquered
@@ -44,8 +43,8 @@ import Data.ProtoLens.Message
 discFields
     :: (Foldable t, Contravariant f, Monoid (f a))
     => (forall v. FieldTypeDescriptor v -> f v)
-    -> (forall a. f a -> f [a])
-    -> (forall a. f a -> f (Maybe a))
+    -> (forall b. f b -> f [b])
+    -> (forall b. f b -> f (Maybe b))
     -> t (FieldDescriptor a)
     -> f a
 discFields discFieldValue discList discMaybe =
@@ -63,8 +62,8 @@ discFields discFieldValue discList discMaybe =
 discField
     :: Contravariant f
     => (forall v. FieldTypeDescriptor v -> f v)
-    -> (forall a. f a -> f [a])
-    -> (forall a. f a -> f (Maybe a))
+    -> (forall b. f b -> f [b])
+    -> (forall b. f b -> f (Maybe b))
     -> FieldDescriptor a
     -> f a
 discField discFieldValue discList discMaybe (FieldDescriptor _ ty accessor) =
@@ -103,8 +102,8 @@ discProtoMapAssocs discList c key value =
 -- Sort on a field given a Sort of that field and an accessor for it.
 discFieldAccessor
     :: forall f a b. Contravariant f
-    => (forall a. f a -> f [a])
-    -> (forall a. f a -> f (Maybe a))
+    => (forall c. f c -> f [c])
+    -> (forall c. f c -> f (Maybe c))
     -> f b
     -> FieldAccessor a b
     -> f a

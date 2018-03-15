@@ -17,38 +17,23 @@ module Data.ProtoLens.Sort
     , sortingFieldValue
     ) where
 
-import Data.Default (Default(def))
-import Data.Foldable (foldMap)
 import Data.Functor.Contravariant
     ( (>$<)
     )
 import Data.Discrimination
-    ( Group
-    , Grouping(grouping)
+    ( Grouping(grouping)
     , Sort
     , Sorting(sorting)
     , Sorting1(sorting1)
     , sortingCompare
     )
 import Data.Discrimination.IEEE754 (sortingFloat, sortingDouble)
-import Data.Functor.Contravariant.Divisible
-    ( conquered
-    , divided
-    , divide
-    , Decidable(choose)
-    )
-import Data.Map (Map)
-import qualified Data.Map as M
-import qualified Data.Text as T
-import Lens.Family2 ((&), (.~), Lens', view)
-
 
 import Data.ProtoLens.Message
     ( Message(fieldsByTag)
-    , FieldDescriptor(FieldDescriptor)
+    , FieldDescriptor
     , FieldTypeDescriptor(..)
     , ScalarField(..)
-    , FieldAccessor(..)
     )
 import Data.ProtoLens.Discrimination
     ( discFields

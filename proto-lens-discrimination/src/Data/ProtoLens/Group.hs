@@ -17,10 +17,7 @@ module Data.ProtoLens.Group
     , groupingFieldValue
     ) where
 
-import Data.Default (Default(def))
-import Data.Foldable (foldMap)
 import Data.Functor.Contravariant ((>$<))
-import Data.Functor.Contravariant.Divisible (divide)
 import Data.Discrimination
     ( Group
     , Grouping(grouping)
@@ -28,24 +25,13 @@ import Data.Discrimination
     , groupingEq
     )
 import Data.Discrimination.IEEE754 (groupingFloat, groupingDouble)
-import Data.Functor.Contravariant.Divisible
-    ( chosen
-    , conquered
-    , divided
-    , Decidable(choose)
-    )
-import Data.Map (Map)
-import qualified Data.Map as M
-import qualified Data.Text as T
-import Lens.Family2 ((&), (.~), Lens', view)
 
 
 import Data.ProtoLens.Message
     ( Message(fieldsByTag)
-    , FieldDescriptor(FieldDescriptor)
+    , FieldDescriptor
     , FieldTypeDescriptor(..)
     , ScalarField(..)
-    , FieldAccessor(..)
     )
 import Data.ProtoLens.Discrimination
     ( discFields
