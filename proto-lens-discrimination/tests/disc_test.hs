@@ -127,7 +127,7 @@ messageSortTest = testGroup "Message"
     -- This fixes the types of all the ArbitraryMessages and defs above.
     s = sortingMessage :: Sort Foo
 
-
+main :: IO ()
 main = defaultMain
     [ fieldValueSortTest
     , protoMapSortTest

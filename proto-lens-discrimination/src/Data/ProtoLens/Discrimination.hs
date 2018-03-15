@@ -25,7 +25,6 @@ import Data.Functor.Contravariant.Divisible
     , conquered
     , divided
     , Decidable(choose)
-    , Divisible
     )
 import Data.Map (Map)
 import Data.Word (Word8, Word16)
@@ -125,14 +124,12 @@ unconsWord16BS bs = case B.length bs of
             fromIntegral (B.unsafeIndex bs 1))
            (B.drop 2 bs)
 
-discByteString ::
-    (Decidable f, Divisible f) => f Word8 -> f Word16 -> f B.ByteString
+discByteString :: Decidable f => f Word8 -> f Word16 -> f B.ByteString
 discByteString discWord8 discWord16 = choose unconsWord16BS
     (chosen conquered discWord8)
     (divided discWord16 (discByteString discWord8 discWord16))
 
-discText ::
-    (Decidable f, Divisible f) => f Char -> f T.Text
+discText :: Decidable f => f Char -> f T.Text
 discText discChar =
     choose unconsEither conquered (divided discChar (discText discChar))
   where
