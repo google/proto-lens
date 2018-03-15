@@ -2,7 +2,7 @@
 module Main where
 
 import Data.Binary.IEEE754 (doubleToWord, floatToWord, wordToDouble, wordToFloat)
-import Data.Bits ((.|.), (.&.), Bits, FiniteBits, finiteBitSize, testBit, bit)
+import Data.Bits ((.|.), (.&.), Bits, FiniteBits, bit)
 import Data.Discrimination (Sort, runSort)
 import Data.Discrimination.IEEE754 (sortingFloat, sortingDouble)
 import Data.Word (Word32, Word64)
@@ -38,10 +38,10 @@ inf = 1.0 / 0
 negInf :: Fractional a => a
 negInf = -1.0 / 0
 
-propNegInfLTNumbers :: (Eq a, RealFloat a) => Sort a -> a -> Bool
+propNegInfLTNumbers :: RealFloat a => Sort a -> a -> Bool
 propNegInfLTNumbers s x = isNaN x || x == negInf || sortCompare s negInf x == LT
 
-propInfGTNumbers :: (Eq a, RealFloat a) => Sort a -> a -> Bool
+propInfGTNumbers :: RealFloat a => Sort a -> a -> Bool
 propInfGTNumbers s x = isNaN x || x == inf || sortCompare s inf x == GT
 
 -- Trim a word to be a valid NaN payload of n bits.
@@ -76,9 +76,9 @@ makeDoubleNaN sign payload =
 -- It's consistent with Ord for all non-NaN arguments, so we only have to write
 -- properties for the cases involving NaNs.
 nansTestGroup
-    -- Do I get a medal for the most constraints in one function?
-    :: ( Arbitrary a, RealFloat a, Ord a, Show a
-       , Arbitrary b, FiniteBits b, Ord b, Show b)
+    :: ( Arbitrary a, RealFloat a, Show a
+       , Arbitrary b, FiniteBits b, Ord b, Show b
+       )
     => Sort a -> (a -> b) -> (Bool -> b -> a) -> (b -> b) -> Test
 nansTestGroup s toWord makeNaN makePayload = testGroup "NaNs" $
     [ testProperty "-NaN < everything" $ \x payload ->
@@ -108,7 +108,9 @@ nansTestGroup s toWord makeNaN makePayload = testGroup "NaNs" $
     ]
 
 comparisonsTestGroup
-    :: (RealFloat a, Arbitrary a, Ord a, Show a, FiniteBits b, Ord b, Show b, Arbitrary b)
+    :: ( RealFloat a, Arbitrary a, Show a
+       , FiniteBits b, Ord b, Show b, Arbitrary b
+       )
     => String -> Sort a -> (a -> b) -> (Bool -> b -> a) -> (b -> b) -> Test
 comparisonsTestGroup nm s toWord makeNaN makePayload = testGroup nm
     [ testProperty "negatives LT positives" $
@@ -134,7 +136,7 @@ comparisonsTestGroup nm s toWord makeNaN makePayload = testGroup nm
     , nansTestGroup s toWord makeNaN makePayload
     ]
 
-
+main :: IO ()
 main = defaultMain
     [ comparisonsTestGroup "Float" sortingFloat floatToWord
                                    makeFloatNaN makeFloatNaNPayload
