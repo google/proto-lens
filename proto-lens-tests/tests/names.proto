@@ -12,6 +12,9 @@ message Names {
   optional int32 multi_word_name = 3;
   optional int32 FOO_multi_WORD_name = 4;
   optional int32 _multi_word_name = 5;
+
+  // Already camel-case; don't change it.
+  optional int32 camelCasedName = 6;
 }
 
 // A message whose name conflicts with the Prelude.
@@ -67,6 +70,26 @@ message ProtoKeywords {
   optional int32 package = 9;
   optional int32 option = 10;
   optional int32 import = 11;
+}
+
+message odd_CAsed_message {
+  oneof oneof_field {
+    int32 oneof_case = 1;
+  }
+
+  // TODO: odd_Cased_enum
+  enum odd_CAsed_enum {
+    // TODO: deFA_ult = 0;
+    DeFA_ult = 0;
+  }
+}
+
+message ABBREVName {}
+
+// TODO: odd_Cased_enum
+enum Odd_CAsed_enum {
+  // TODO: deFA_ult = 0;
+  DeFA_ult = 0;
 }
 
 // Messages whose name conflicts with a proto keyword.

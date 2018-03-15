@@ -14,14 +14,22 @@ module Data.ProtoLens.TextFormat.Parser
     , parser
     ) where
 
-import Data.List (intercalate)
+import Data.ByteString (ByteString, pack)
+import Data.Char (ord, isSpace)
 import Data.Functor.Identity (Identity)
+import Data.List (intercalate)
+import Data.Maybe (catMaybes)
 import Data.Text.Lazy (Text)
-import Text.Parsec.Char (alphaNum, char, letter, oneOf)
+import qualified Data.Text as StrictText
+import Data.Word (Word8)
+import Numeric (readOct, readHex)
+import Text.Parsec ((<?>))
+import Text.Parsec.Char
+  (alphaNum, char, hexDigit, letter, octDigit, oneOf, satisfy)
 import Text.Parsec.Text.Lazy (Parser)
-import Text.Parsec.Combinator (eof, sepBy1, many1, choice)
-import Text.Parsec.Token
-import Control.Applicative ((<*), (<|>), (*>), many)
+import Text.Parsec.Combinator (choice, eof, many1, optionMaybe, sepBy1)
+import Text.Parsec.Token hiding (octal)
+import Control.Applicative ((<|>), many)
 import Control.Monad (liftM, liftM2, mzero)
 
 -- | A 'TokenParser' for the protobuf text format.
@@ -60,14 +68,15 @@ data Key = Key String  -- ^ A standard key that is just a string.
 
 data Value = IntValue Integer  -- ^ An integer
   | DoubleValue Double  -- ^ Any floating point number
-  | StringValue String  -- ^ A string literal
-  | MessageValue Message  -- ^ A sub message
+  | ByteStringValue ByteString    -- ^ A string or bytes literal
+  | MessageValue (Maybe StrictText.Text) Message  -- ^ A sub message, with an optional type URI
   | EnumValue String  -- ^ Any undelimited string (including false & true)
   deriving (Show,Ord,Eq)
 
 instance Show Key
   where
-    show (Key name) = name
+    show (Key name) = show name  -- Quoting field names (i.e., `"field"` vs `field`
+                                 -- leads to nicer error messages.
     show (UnknownKey k) = show k
     show (ExtensionKey name) = "[" ++ intercalate "." name ++ "]"
     show (UnknownExtensionKey k) = "[" ++ show k ++ "]"
@@ -91,13 +100,68 @@ parser = whiteSpace ptp *> parseMessage <* eof
         negative <- (symbol ptp "-" >> return True) <|> return False
         value <- naturalOrFloat ptp
         return $ makeNumberValue negative value
-    parseString = liftM (StringValue . concat) . many1 $ stringLiteral ptp
+    parseString = liftM (ByteStringValue . mconcat)
+        $ many1 $ lexeme ptp $ protoStringLiteral
     parseEnumValue = liftM EnumValue (identifier ptp)
-    parseMessageValue = liftM MessageValue
-        (braces ptp parseMessage <|> angles ptp parseMessage)
+    parseMessageValue =
+        braces ptp (parseAny <|>
+                    liftM (MessageValue Nothing) parseMessage) <|>
+        angles ptp (liftM (MessageValue Nothing) parseMessage)
+
+    typeUri = liftM StrictText.pack (many (satisfy (\c -> c /= ']' && not (isSpace c)))) <?>
+              "type URI"
+    parseAny = liftM2 MessageValue (liftM Just (brackets ptp typeUri))
+                                   (braces ptp parseMessage)
 
     makeNumberValue :: Bool -> Either Integer Double -> Value
     makeNumberValue True (Left intValue) = IntValue (negate intValue)
     makeNumberValue False (Left intValue) = IntValue intValue
     makeNumberValue True (Right doubleValue) = DoubleValue (negate doubleValue)
     makeNumberValue False (Right doubleValue) = DoubleValue doubleValue
+
+-- | Reads a literal string the way the Protocol Buffer distribution's
+-- tokenizer.cc does.  This differs from Haskell string literals in treating,
+-- e.g. "\11" as octal instead of decimal, so reading as 9 instead of 11.  Also,
+-- like tokenizer.cc we assume octal and hex escapes can have at most three and
+-- two digits, respectively.
+--
+-- TODO: implement reading of Unicode escapes.
+protoStringLiteral :: Parser ByteString
+protoStringLiteral = do
+    initialQuoteChar <- char '\'' <|> char '\"'
+    word8s <- many stringChar
+    _ <- char initialQuoteChar
+    return $ pack word8s
+  where
+    stringChar :: Parser Word8
+    stringChar = nonEscape <|> stringEscape
+    nonEscape  = fmap (fromIntegral . ord)
+        $ satisfy (\c -> c `notElem` "\\\'\"" && ord c < 256)
+    stringEscape = char '\\' >> (octal <|> hex <|> unicode <|> simple)
+    octal = do d0 <- octDigit
+               d1 <- optionMaybe octDigit
+               d2 <- optionMaybe octDigit
+               readMaybeDigits readOct [Just d0, d1, d2]
+    readMaybeDigits :: ReadS Word8 -> [Maybe Char] -> Parser Word8
+    readMaybeDigits reader
+        = return . (\str -> let [(v, "")] = reader str in v) . catMaybes
+    hex = do _ <- oneOf "xX"
+             d0 <- hexDigit
+             d1 <- optionMaybe hexDigit
+             readMaybeDigits readHex [Just d0, d1]
+    unicode = oneOf "uU" >> fail "Unicode in string literals not yet supported"
+    simple = choice $ map charRet [ ('a', '\a')
+                                  , ('b', '\b')
+                                  , ('f', '\f')
+                                  , ('n', '\n')
+                                  , ('r', '\r')
+                                  , ('t', '\t')
+                                  , ('v', '\v')
+                                  , ('\\', '\\')
+                                  , ('\'', '\'')
+                                  , ('\"', '\"')
+                                  ]
+      where
+        charRet :: (Char, Char) -> Parser Word8
+        charRet (escapeCh, ch) = do _ <- char escapeCh
+                                    return $ fromIntegral $ ord ch

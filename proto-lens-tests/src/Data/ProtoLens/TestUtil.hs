@@ -10,20 +10,26 @@ module Data.ProtoLens.TestUtil(
     Test,
     serializeTo,
     deserializeFrom,
+    renderIndenting,
     readFrom,
+    readFromWithRegistry,
     Data(..),
     tagged,
     varInt,
+    toStrictByteString,
     keyed,
-    keyedDoc,
+    keyedInt,
+    keyedStr,
+    keyedShow,
     braced,
+    doubleQuotes,
     testProperty,
     textRoundTripProperty,
     wireRoundTripProperty,
     MessageProperty,
     roundTripTest,
     TypedTest(runTypedTest),
-    PrettyPrint.Doc,
+    Doc,
     PrettyPrint.vcat,
     (PrettyPrint.$+$),
     ) where
@@ -31,6 +37,7 @@ module Data.ProtoLens.TestUtil(
 import Data.ProtoLens
 import Data.ProtoLens.Arbitrary
 
+import qualified Data.ByteString as B
 import qualified Data.ByteString.Builder as Builder
 import qualified Data.ByteString.Lazy as L
 import qualified Data.Text.Lazy as LT
@@ -41,15 +48,16 @@ import Test.Framework.Providers.QuickCheck2 (testProperty)
 import Test.HUnit ((@=?), assertBool)
 import Data.Either (isLeft)
 import Data.Bits (shiftL, shiftR, (.|.), (.&.))
-import Data.Foldable (foldMap)
 import qualified Data.Text.Lazy as TL
 import Data.Monoid ((<>))
 import Data.Word (Word32, Word64)
 import qualified Text.PrettyPrint as PrettyPrint
 import Text.PrettyPrint
-    ( char
+    ( Doc
+    , char
     , colon
     , nest
+    , doubleQuotes
     , renderStyle
     , style
     , lineLength
@@ -61,16 +69,19 @@ testMain :: [Test] -> IO ()
 testMain = defaultMain
 
 serializeTo :: (Show a, Eq a, Message a)
-            => String -> a -> PrettyPrint.Doc -> Builder.Builder -> Test
+            => String -> a -> Doc -> Builder.Builder -> Test
 serializeTo name x text bs = testCase name $ do
-    let bs' = L.toStrict $ Builder.toLazyByteString bs
+    let bs' = toStrictByteString bs
     bs' @=? encodeMessage x
     x @=? decodeMessageOrDie bs'
     let text' = show text
     -- For consistency in the tests, make them put each field and submessage on
     -- a separate line.
-    text' @=? renderStyle style {lineLength = 1} (pprintMessage x)
+    text' @=? renderIndenting (pprintMessage x)
     x @=? readMessageOrDie (LT.pack text')
+
+renderIndenting :: Doc -> String
+renderIndenting = renderStyle style { lineLength = 1 }
 
 deserializeFrom :: (Show a, Eq a, Message a)
                 => String -> Maybe a -> Builder.Builder -> Test
@@ -80,7 +91,7 @@ deserializeFrom name x bs = testCase name $ case x of
     Nothing -> assertBool ("Expected failure, found " ++ show y) $ isLeft y
     Just x' -> Right x' @=? y
   where
-    y = decodeMessage $ L.toStrict $ Builder.toLazyByteString bs
+    y = decodeMessage $ toStrictByteString bs
 
 type MessageProperty a = ArbitraryMessage a -> Bool
 
@@ -102,14 +113,18 @@ roundTripTest name = TypedTest $ testGroup name
     , testProperty "text" (textRoundTripProperty :: MessageProperty a)
     ]
 
-readFrom :: (Show a, Eq a, Message a)
-         => String -> Maybe a -> LT.Text -> Test
-readFrom name x text = testCase name $ case x of
+readFromWithRegistry :: (Show a, Eq a, Message a)
+                     => Registry -> String -> Maybe a -> LT.Text -> Test
+readFromWithRegistry reg name x text = testCase name $ case x of
     -- Check whether or not it failed without worrying about the exact error
     -- message.
     Nothing -> assertBool ("Expected failure, found " ++ show y) $ isLeft y
     Just x' -> Right x' @=? y
-  where y = readMessage text
+  where y = readMessageWithRegistry reg text
+
+readFrom :: (Show a, Eq a, Message a)
+         => String -> Maybe a -> LT.Text -> Test
+readFrom = readFromWithRegistry mempty
 
 varInt :: Word64 -> Builder.Builder
 varInt n
@@ -122,7 +137,8 @@ data Data
   | Fixed64 Word64
   | Fixed32 Word32
   | Lengthy Builder.Builder
-  | Group [(Word64, Data)]
+  | GroupStart
+  | GroupEnd
 
 -- | Build the binary representation of a proto field.
 -- Note that this code should be separate from anything in Data.ProtoLens.*,
@@ -135,22 +151,30 @@ tagged t (Lengthy bs) = let
     bs' = Builder.toLazyByteString bs
     in varInt (t `shiftL` 3 .|. 2) <> varInt (fromIntegral $ L.length bs')
         <> Builder.lazyByteString bs'
-tagged t (Group tvs) =
-    varInt (t `shiftL` 3 .|. 3)
-    <> foldMap (uncurry tagged) tvs
-    <> varInt (t `shiftL` 3 .|. 4)
+tagged t GroupStart = varInt (t `shiftL` 3 .|. 3)
+tagged t GroupEnd = varInt (t `shiftL` 3 .|. 4)
 
 -- | Utility to generate the text format for a single, non-message field.
-keyed :: Show a => String -> a -> PrettyPrint.Doc
-keyed k v = keyedDoc k (PrettyPrint.text (show v))
+keyed :: Doc -> Doc -> Doc
+keyed k v = (k <> colon) <+> v
 
--- | Utility to generate the text format for a single, non-message field
--- which doesn't correspond to a 'Show' instance.
-keyedDoc :: String -> PrettyPrint.Doc -> PrettyPrint.Doc
-keyedDoc k v = PrettyPrint.text k <> (colon <+> v)
+-- | A version of keyed with a showable type.
+keyedShow :: Show a => Doc -> a -> Doc
+keyedShow k = keyed k . PrettyPrint.text . show
+
+-- | A version of keyed that's specialized to integers.
+keyedInt :: Doc -> Integer -> Doc
+keyedInt k = keyed k . PrettyPrint.text . show
+
+-- | A version of keyed that's specialized to (quoted) strings.
+keyedStr :: Doc -> Doc -> Doc
+keyedStr k = keyed k . doubleQuotes
 
 -- | Utility to generate the text format for a submessage.
-braced :: String -> PrettyPrint.Doc -> PrettyPrint.Doc
+braced :: String -> Doc -> Doc
 braced k v = (PrettyPrint.text k <+> char '{')
               $+$ nest 2 v
               $+$ PrettyPrint.char '}'
+
+toStrictByteString :: Builder.Builder -> B.ByteString
+toStrictByteString = L.toStrict . Builder.toLazyByteString

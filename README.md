@@ -9,17 +9,29 @@ language and library patterns.  Specifically, it provides:
 
 This is not an official Google product.
 
+# Tutorial
+
+You can find tutorial documentation in the [proto-lens-tutorial](./proto-lens-tutorial) subdir.
+
 # Instructions
 
 ## Setup
 First, install the "protoc" binary somewhere in your PATH.  You can get it by
-downloading the corresponding file for your system from
-https://github.com/google/protobuf/releases.  (The corresponding file will be
-named something like `protoc-*-.zip`.)
+following [these instructions](docs/installing-protoc.md).
 
-## Using Cabal
-`proto-lens` can be used as part of a Cabal project to auto-generate Haskell
-source files from the original protocol buffer specifications (`.proto` files).
+## Building from HEAD
+
+To build and test this repository from HEAD, run:
+
+    git submodule update --init --recursive
+    stack test
+
+## Using in a Cabal or Stack package
+`proto-lens` is available on Hackage and Stackage.  Cabal and Stack projects can use it
+to auto-generate Haskell source files from the original
+protocol buffer specifications (`.proto` files).
+
+Note: if using Stack, these instructions require `v1.4.0` or newer.
 
 First, edit the `.cabal` file of your project to:
 
@@ -31,15 +43,19 @@ First, edit the `.cabal` file of your project to:
   or `other-modules` of the rule(s) that use them (e.g. the library or
   executables).
 * Add `proto-lens-protoc` to the build-depends of those rules.
+* Add a `custom-setup` clause to your .cabal file.
 
-For example:
+For example, in `foo-bar-proto.cabal`:
 
     ...
     build-type: Custom
     extra-source-files: src/foo/bar.proto
     ...
+    custom-setup
+      setup-depends: base, Cabal, proto-lens-protoc
+
     library
-        exposed-modules: Proto.Foo.Bar
+        exposed-modules: Proto.Foo.Bar, Proto.Foo.Bar'Fields
         build-depends: proto-lens-protoc, ...
 
 Next, write a `Setup.hs` file that uses `Data.ProtoLens.Setup` and specifies the
@@ -83,18 +99,13 @@ will generate the haskell files `Proto/Project/{Foo,Bar}.hs`.
 # Current differences from the standard
 
 - Services are not supported.
-- `oneof` fields are treated the same as `optional` fields.
-- Extensions (proto2-only) are not supported.  `Any` messages (the proto3
-  equivalent) can be used, but don't have any custom API support like in the C++
-  libraries.
-- Unknown fields of proto2 messages are discarded during decoding. (This is the
-  correct behavior for proto3.)
-- Unknown enum values cause a decoding error, instead of being preserved
+- Extensions (proto2-only) are not supported.
+- Unknown proto2 enum values cause a decoding error, instead of being preserved
   round-trip.
+- Messages with proto3 syntax preserve unknown fields, the same as for proto2.
+  This behavior tracks a [recent change to the specification](google/protobuf#272).
 - Files with `import public` statements compile correctly, but don't explicitly
   reexport the definitions from those imports.
-- Enum aliases (`option allow_alias = true`) are not supported; each enum value
-  must map to a distinct integer constant.
 
 # Troubleshooting
 
@@ -103,6 +114,24 @@ Due to [stack issue #1891](https://github.com/commercialhaskell/stack/issues/189
 if you only change the .proto files then stack won't rebuild the package (that
 is, it won't regenerate the `Proto.*` modules).
 
+## Loading into `ghci` with Stack
+
+`stack ghci` can get confused when trying to directly load a package that
+generates `Proto.*` modules (for example: `stack ghci <proto-package>`).
+To work around this issue, run instead:
+
+    stack exec ghci --package <proto-package>
+
+And then manually import the generated modules within ghci, for example:
+
+    Prelude> import Proto.Foo.Bar
+    Prelude Proto.Foo.Bar>
+    ...
+
+Alternately, you can make those modules available at the same time as another local
+package, by running:
+
+    stack ghci <another-package> --package <proto-package>
 ## Linking errors
 Due to the limitations of how we can specify the dependencies of Setup
 files, stack may try to link them against the `terminfo` package. You

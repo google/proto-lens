@@ -8,9 +8,10 @@
 module Main where
 
 import Data.Default.Class (def)
-import Data.Monoid (mempty, (<>))
-import Lens.Family2 ((&), (.~))
-import Proto.Required (Foo, a, b)
+import Data.Monoid ((<>))
+import Lens.Family ((&), (.~))
+import Proto.Required (Foo)
+import Proto.Required'Fields (a, b)
 import Test.Framework (testGroup)
 
 import Data.ProtoLens.TestUtil
@@ -21,12 +22,15 @@ defFoo = def
 failedFoo :: Maybe Foo
 failedFoo = Nothing
 
+main :: IO ()
 main = testMain
     [ empty
     , onlyRequired
     , onlyOptional
     , both
     ]
+
+empty, onlyRequired, onlyOptional, both :: Test
 
 empty = testGroup "empty"
     [ deserializeFrom "wire" failedFoo mempty

@@ -6,15 +6,17 @@
 
 {-# LANGUAGE DeriveFunctor #-}
 {-# LANGUAGE GADTs #-}
+{-# LANGUAGE LambdaCase #-}
 {-# LANGUAGE RankNTypes #-}
 -- | An Arbitrary instance for protocol buffer Messages to use with QuickCheck.
 module Data.ProtoLens.Arbitrary
-    ( ArbitraryMessage(..),
+    ( ArbitraryMessage(..)
+    , arbitraryMessage
+    , shrinkMessage
     ) where
 
 import Data.ProtoLens.Message
 
-import Control.Applicative ((<$>), pure)
 import Control.Arrow ((&&&))
 import Control.Monad (foldM)
 import qualified Data.ByteString as BS
@@ -25,7 +27,7 @@ import qualified Data.Text as T
 import Lens.Family2 (Lens', view, set)
 import Lens.Family2.Unchecked (lens)
 import Test.QuickCheck (Arbitrary(..), Gen, suchThat, frequency, listOf,
-                        shrinkList)
+                        shrinkList, scale)
 
 
 -- | A newtype wrapper that provides an Arbitrary instance for the underlying
@@ -38,9 +40,7 @@ instance Message a => Arbitrary (ArbitraryMessage a) where
     shrink (ArbitraryMessage a) = ArbitraryMessage <$> shrinkMessage a
 
 arbitraryMessage :: Message a => Gen a
-arbitraryMessage = foldM (flip arbitraryField) def fields
-  where
-    fields = M.elems (fieldsByTag descriptor)
+arbitraryMessage = foldM (flip arbitraryField) def allFields
 
 -- | Imitation of the (Arbitrary a => Arbitrary (Maybe a)) instance from
 -- QuickCheck.
@@ -66,9 +66,12 @@ arbitraryField (FieldDescriptor _ ftd fa) = case fa of
     fieldGen = arbitraryFieldValue ftd
 
 arbitraryFieldValue :: FieldTypeDescriptor value -> Gen value
-arbitraryFieldValue ftd = case ftd of
-    MessageField -> unArbitraryMessage <$> arbitrary
-    GroupField -> unArbitraryMessage <$> arbitrary
+arbitraryFieldValue = \case
+    MessageField _ -> scale (`div` 2) arbitraryMessage
+    ScalarField f -> arbitraryScalarValue f
+
+arbitraryScalarValue :: ScalarField value -> Gen value
+arbitraryScalarValue = \case
     -- For enum fields, all we know is that the value is an instance of
     -- MessageEnum, meaning we can only use fromEnum, toEnum, or maybeToEnum. So
     -- we must rely on the instance of Arbitrary for Int and filter out only the
@@ -96,9 +99,7 @@ arbitraryFieldValue ftd = case ftd of
 -- | Shrink each field individually and append all shrinks together into
 -- a single list.
 shrinkMessage :: Message a => a -> [a]
-shrinkMessage msg = concatMap (`shrinkField` msg) fields
-  where
-    fields = M.elems (fieldsByTag descriptor)
+shrinkMessage msg = concatMap (`shrinkField` msg) allFields
 
 shrinkMaybe :: (a -> [a]) -> Maybe a -> [Maybe a]
 shrinkMaybe f (Just v) = Nothing : (Just <$> f v)
@@ -119,9 +120,12 @@ shrinkField (FieldDescriptor _ ftd fa) = case fa of
     fieldShrinker = shrinkFieldValue ftd
 
 shrinkFieldValue :: FieldTypeDescriptor value -> value -> [value]
-shrinkFieldValue ftd = case ftd of
-    MessageField -> map unArbitraryMessage . shrink . ArbitraryMessage
-    GroupField -> map unArbitraryMessage . shrink . ArbitraryMessage
+shrinkFieldValue = \case
+    MessageField _ -> shrinkMessage
+    ScalarField f -> shrinkScalarValue f
+
+shrinkScalarValue :: ScalarField value -> value -> [value]
+shrinkScalarValue = \case
     -- Shrink to the 0-equivalent Enum value if it's both a valid Enum value
     -- and the value isn't already 0.
     EnumField -> case maybeToEnum 0 of

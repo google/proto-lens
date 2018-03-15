@@ -1,0 +1,28 @@
+name: proto-lens-arbitrary
+version: "0.1.2.0"
+synopsis: Arbitrary instances for proto-lens.
+description: >
+  The proto-lens-arbitrary allows generating arbitrary messages for
+  use with QuickCheck.
+category: Data
+author: Aden Grue
+maintainer: agrue+protolens@google.com
+copyright: Google Inc.
+license: BSD3
+github: google/proto-lens/proto-lens-arbitrary
+extra-source-files:
+  - Changelog.md
+
+dependencies:
+  - proto-lens == 0.3.*
+  - base >= 4.8 && < 4.11
+  - bytestring == 0.10.*
+  - containers == 0.5.*
+  - text == 1.2.*
+  - lens-family == 1.2.*
+  - QuickCheck >= 2.8 && < 2.11
+
+library:
+  source-dirs: src
+  exposed-modules:
+    - Data.ProtoLens.Arbitrary

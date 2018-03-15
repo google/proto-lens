@@ -3,37 +3,37 @@
 -- Use of this source code is governed by a BSD-style
 -- license that can be found in the LICENSE file or at
 -- https://developers.google.com/open-source/licenses/bsd
-
 {-# LANGUAGE OverloadedStrings #-}
 module Main where
 
 import Proto.Optional
+import Proto.Optional'Fields
 import Data.ProtoLens
 import Lens.Family2 ((&), (.~), (^.))
 import Test.Framework (testGroup)
 import Test.Framework.Providers.HUnit (testCase)
 import Test.HUnit ((@=?))
-import Data.Monoid (mempty)
 
 import Data.ProtoLens.TestUtil
 
 defFoo :: Foo
 defFoo = def
 
+main :: IO ()
 main = testMain
     [ testGroup "serialize"
         [ serializeTo "default" defFoo "" mempty
         , serializeTo "different-from-implicit-default" (defFoo & a .~ 17)
-              (keyed "a" 17)
+              (keyed "a" "17")
               $ tagged 1 $ VarInt 17
         , serializeTo "different-from-explicit-default" (defFoo & b .~ 17)
-              (keyed "b" 17)
+              (keyed "b" "17")
               $ tagged 2 $ VarInt 17
         , serializeTo "same-as-implicit-default" (defFoo & a .~ 0)
-              (keyed "a" 0)
+              (keyed "a" "0")
               $ tagged 1 $ VarInt 0
         , serializeTo "same-as-explicit-default" (defFoo & b .~ 42)
-              (keyed "b" 42)
+              (keyed "b" "42")
               $ tagged 2 $ VarInt 42
         ]
     , testGroup "lens"

@@ -4,15 +4,17 @@
 -- license that can be found in the LICENSE file or at
 -- https://developers.google.com/open-source/licenses/bsd
 
-{-# LANGUAGE OverloadedStrings, OverloadedLists #-}
+{-# LANGUAGE OverloadedLists #-}
+{-# LANGUAGE OverloadedStrings #-}
 module Main where
 
 import Proto.Map
+import Proto.Map'Fields
 import Data.ProtoLens
 import Lens.Family2 ((&), (.~))
 import qualified Data.ByteString.Char8 as C
 import Data.ByteString.Builder (Builder, byteString)
-import Data.Monoid (mempty, (<>))
+import Data.Monoid ((<>))
 import Data.Word (Word64)
 
 import Data.ProtoLens.TestUtil
@@ -27,21 +29,23 @@ entry k v = tagged 1 $ Lengthy $ tagged 1 (VarInt k)
 taggedValue :: String -> Builder
 taggedValue = tagged 2 . Lengthy . byteString . C.pack
 
-kvPair :: (Show k, Show v) => k -> v -> Doc
+kvPair :: Doc -> Doc -> Doc
 kvPair k v = keyed "key" k $+$ keyed "value" v
 
 
 -- Note how OverloadedLists work here in the "bar" field.
 -- For proto-lens, it resolves to a (Map Int32 Text).
+main :: IO ()
 main = testMain
     [ serializeTo "default" defFoo "" mempty
     , serializeTo "singleton"
         (defFoo & bar .~ [(42, "qwerty")])
-        (braced "bar" $ kvPair 42 "qwerty")
+        (braced "bar" $ kvPair "42" $ doubleQuotes "qwerty")
         (entry 42 "qwerty")
     , serializeTo "moreElements"
         (defFoo & bar .~ [(17, "abc"), (42, "qwerty")])
-        (braced "bar" (kvPair 17 "abc") $+$ braced "bar" (kvPair 42 "qwerty"))
+        (braced "bar" (kvPair "17" $ doubleQuotes "abc")
+            $+$ braced "bar" (kvPair "42" $ doubleQuotes "qwerty"))
         (entry 17 "abc" <> entry 42 "qwerty")
     -- Check that we can tolerate missing keys and values.
     , deserializeFrom "missing key"

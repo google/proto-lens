@@ -1,0 +1,44 @@
+name: proto-lens-protobuf-types
+version: '0.3.0.0'
+synopsis: Basic protocol buffer message types.
+description: >
+  This package provides bindings standard protocol message types,
+  for use with the proto-lens library.
+category: Data
+author: Judah Jacobson
+maintainer: proto-lens@googlegroups.com
+copyright: Google Inc.
+license: BSD3
+github: google/proto-lens/proto-lens-protobuf-types
+extra-source-files:
+  - Changelog.md
+  - proto-src/google/protobuf/any.proto
+  - proto-src/google/protobuf/duration.proto
+  - proto-src/google/protobuf/wrappers.proto
+  - proto-src/google/protobuf/timestamp.proto
+
+custom-setup:
+  dependencies:
+    - base >= 4.8 && < 4.11
+    - Cabal
+    - proto-lens-protoc == 0.3.*
+
+dependencies:
+  - base >= 4.8 && < 4.11
+  - lens-family
+  - proto-lens == 0.3.*
+  - proto-lens-protoc == 0.3.*
+  - text == 1.2.*
+
+library:
+  source-dirs: src
+  exposed-modules:
+    - Data.ProtoLens.Any
+    - Proto.Google.Protobuf.Any
+    - Proto.Google.Protobuf.Any'Fields
+    - Proto.Google.Protobuf.Duration
+    - Proto.Google.Protobuf.Duration'Fields
+    - Proto.Google.Protobuf.Wrappers
+    - Proto.Google.Protobuf.Wrappers'Fields
+    - Proto.Google.Protobuf.Timestamp
+    - Proto.Google.Protobuf.Timestamp'Fields

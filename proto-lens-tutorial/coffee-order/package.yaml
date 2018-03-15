@@ -1,0 +1,36 @@
+name:                coffee-order
+version:             0.1.0.0
+homepage:            https://github.com/google/proto-tutorial/coffee-order#readme
+license:             BSD3
+author:              Fintan Halpenny
+maintainer:          fintan.halpenny@gmail.com
+copyright:           2017 Google Inc.
+category:            Data
+extra-source-files:
+- README.md
+- proto/**/*.proto
+
+custom-setup:
+  dependencies:
+    - base
+    - Cabal
+    - proto-lens-protoc
+
+dependencies:
+  - base >= 4.7 && < 5
+  - data-default
+  - microlens
+  - proto-lens
+  - proto-lens-protoc
+  - lens-labels
+  - text
+
+executables:
+  gimme-coffee:
+    dependencies:
+      - proto-lens-protoc
+    other-modules:
+      - Proto.Coffee.Order
+      - Proto.Coffee.Order'Fields
+    source-dirs:      src
+    main:             Main.hs

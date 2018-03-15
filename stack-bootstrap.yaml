@@ -1,0 +1,15 @@
+resolver: lts-9.21
+packages:
+- proto-lens-protoc
+# Build the current HEAD proto-lens-protoc against older revisions of proto-lens
+# and proto-lens-descriptors that are consistent with each other.
+- location:
+    commit: master
+    # To use the github master:
+    git: https://github.com/google/proto-lens
+    # To use the current repository:
+    # git: ../..  # stack runs 'git clone' in a subdirectory
+  subdirs:
+  - lens-labels
+  - proto-lens
+  extra-dep: True

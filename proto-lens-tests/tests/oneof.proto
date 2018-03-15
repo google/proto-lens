@@ -1,0 +1,55 @@
+syntax = "proto2";
+
+package oneof_test;
+option java_package = "oneof";
+
+message Foo {
+  oneof bar {
+    int32 baz = 1;
+    string bippy = 2;
+  }
+  oneof bar2 {
+    int32 baz2 = 3;
+  }
+}
+
+// A message with the same field names as Foo; tests that the record
+// field names don't clash.
+message DupeFieldNames {
+  oneof bar {
+    int32 baz = 1;
+  }
+}
+
+// It's possible for oneof types/constructors to overlap with message or enum
+// types/constructors.  In those cases we should add a trailing "'" to the
+// Haskell types corresponding to the oneof.
+message Disambiguated {
+  message MessageTypeA {
+  }
+  message MessageTypeB {
+  }
+  enum EnumType {
+    EnumCon = 0;
+  }
+
+  oneof message_type_a {
+    int32 message_type_b = 1;
+  }
+
+  oneof enum_type {
+    int32 enum_con = 2;
+  }
+}
+
+// Types and constructors are in different namespaces, so if they overlap we
+// don't need to disambiguate them.
+message NotDisambiguated {
+  enum EnumType {
+    EnumCon = 0;
+  }
+
+  oneof enum_con {
+    int32 enum_type = 1;
+  }
+}

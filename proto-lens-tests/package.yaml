@@ -1,0 +1,265 @@
+name: proto-lens-tests
+version: '0.1.0.1'
+synopsis: Unit tests for proto-lens
+description: This package contains a set of test suites for proto-lens.
+category: Data
+author: Judah Jacobson
+maintainer: proto-lens@googlegroups.com
+copyright: Google Inc.
+license: BSD3
+extra-source-files:
+  - tests/*.proto
+
+custom-setup:
+  dependencies:
+    - base >= 4.8 && < 4.11
+    - Cabal
+    - proto-lens-protoc == 0.3.*
+
+# Dependencies shared by the library and/or several of the tests:
+dependencies:
+    - HUnit >= 1.3 && < 1.7
+    - QuickCheck
+    - base >= 4.8 && < 4.11
+    - bytestring == 0.10.*
+    - data-default-class
+    - lens-family
+    - pretty == 1.1.*
+    - proto-lens == 0.3.*
+    - proto-lens-arbitrary == 0.1.*
+    - proto-lens-protoc == 0.3.*
+    - test-framework == 0.8.*
+    - test-framework-hunit == 0.3.*
+    - test-framework-quickcheck2 == 0.3.*
+    - text == 1.2.*
+
+
+library:
+  source-dirs: src
+  exposed-modules:
+    - Data.ProtoLens.TestUtil
+
+tests:
+
+  canonical_test:
+    main: canonical_test.hs
+    source-dirs: tests
+    dependencies:
+      - proto-lens-tests
+    other-modules:
+      - Proto.Canonical
+      - Proto.Canonical'Fields
+
+  group_test:
+    main: group_test.hs
+    source-dirs: tests
+    dependencies:
+      - proto-lens-tests
+    other-modules:
+      - Proto.Group
+      - Proto.Group'Fields
+
+  map_test:
+    main: map_test.hs
+    source-dirs: tests
+    dependencies:
+      - proto-lens-tests
+    other-modules:
+      - Proto.Map
+      - Proto.Map'Fields
+
+  oneof_test:
+    main: oneof_test.hs
+    source-dirs: tests
+    dependencies:
+      - proto-lens-tests
+      - lens-labels
+    other-modules:
+      - Proto.Oneof
+      - Proto.Oneof'Fields
+
+  optional_test:
+    main: optional_test.hs
+    source-dirs: tests
+    dependencies:
+      - proto-lens-tests
+    other-modules:
+      - Proto.Optional
+      - Proto.Optional'Fields
+
+  proto3_test:
+    main: proto3_test.hs
+    source-dirs: tests
+    dependencies:
+      - proto-lens-tests
+    other-modules:
+      - Proto.Proto3
+      - Proto.Proto3'Fields
+
+  repeated_test:
+    main: repeated_test.hs
+    source-dirs: tests
+    dependencies:
+      - proto-lens-tests
+    other-modules:
+      - Proto.Repeated
+      - Proto.Repeated'Fields
+
+  text-format_test:
+    main: text_format_test.hs
+    source-dirs: tests
+    dependencies:
+      - proto-lens-protobuf-types
+      - proto-lens-tests
+    other-modules:
+      - Proto.TextFormat
+      - Proto.TextFormat'Fields
+
+  enum_test:
+    main: enum_test.hs
+    source-dirs: tests
+    ghc-options:
+      # Check that the code generated for enum aliases and the pattern-match in the
+      # test (aliasTest) are both warning-clean.
+      - -fwarn-overlapping-patterns
+      - -fwarn-incomplete-patterns
+      - -Werror
+    dependencies:
+      - proto-lens-tests
+    other-modules:
+      - Proto.Enum
+      - Proto.Enum'Fields
+
+  names_test:
+    main: names_test.hs
+    source-dirs: tests
+    dependencies:
+      - proto-lens-tests
+    other-modules:
+      - Proto.Names
+      - Proto.Names'Fields
+
+  no_package_test:
+    main: no_package_test.hs
+    source-dirs: tests
+    dependencies:
+      - proto-lens-tests
+    other-modules:
+      - Proto.NoPackage
+      - Proto.NoPackage'Fields
+
+  packed_test:
+    main: packed_test.hs
+    source-dirs: tests
+    dependencies:
+      - proto-lens-tests
+    other-modules:
+      - Proto.Packed
+      - Proto.Packed'Fields
+
+  raw_fields_test:
+    main: raw_fields_test.hs
+    source-dirs: tests
+    dependencies:
+      - proto-lens-tests
+    other-modules:
+      - Proto.RawFields
+      - Proto.RawFields'Fields
+
+  required_test:
+    main: required_test.hs
+    source-dirs: tests
+    dependencies:
+      - lens-family-core
+      - proto-lens-tests
+    other-modules:
+      - Proto.Required
+      - Proto.Required'Fields
+
+  labels_test:
+    main: labels_test.hs
+    source-dirs: tests
+    dependencies:
+      - lens-family-core
+      - lens-labels
+      - proto-lens-tests
+    other-modules:
+      - Proto.Canonical
+      - Proto.Canonical'Fields
+
+  unwrapped_test:
+    main: unwrapped_test.hs
+    source-dirs: tests
+    dependencies:
+      - lens-family-core
+      - lens-labels
+      - proto-lens-tests
+    other-modules:
+      - Proto.Canonical
+      - Proto.Canonical'Fields
+
+  package-deps_test:
+    main: package-deps_test.hs
+    source-dirs: tests
+    dependencies:
+      - proto-lens-tests
+      - proto-lens-tests-dep
+    other-modules:
+      - Proto.PackageDeps
+      - Proto.PackageDeps'Fields
+
+  any_test:
+    main: any_test.hs
+    source-dirs: tests
+    dependencies:
+      - proto-lens-protobuf-types
+      - proto-lens-tests
+    other-modules:
+      - Proto.Any
+      - Proto.Any'Fields
+
+  service_test:
+    main: service_test.hs
+    source-dirs: tests
+    ghc-options:
+      # Check that the code generated for checking service metadata is
+      # warning-free.
+      - -fwarn-overlapping-patterns
+      - -Werror
+    dependencies:
+      - proto-lens-protobuf-types
+      - proto-lens-tests
+    other-modules:
+      - Proto.Service
+      - Proto.Service'Fields
+
+  unknown_fields_test:
+    main: unknown_fields_test.hs
+    source-dirs: tests
+    dependencies:
+      - proto-lens-tests
+    other-modules:
+      - Proto.UnknownFields
+      - Proto.UnknownFields'Fields
+
+  imports_test:
+    main: imports_test.hs
+    source-dirs: tests
+    dependencies:
+      - lens-labels
+      - proto-lens-tests
+    other-modules:
+      - Proto.Enum
+      - Proto.Imports
+      - Proto.ImportsDep
+      - Proto.ImportsTransitive
+      - Proto.ImportsTransitive2
+      - Proto.Nested
+
+  pathological_test:
+    main: pathological_test.hs
+    source-dirs: tests
+    dependencies:
+      - proto-lens-tests
+    other-modules:
+      - Proto.Pathological

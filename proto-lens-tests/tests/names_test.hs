@@ -13,7 +13,7 @@ module Main where
 
 import Data.Int (Int32)
 import Data.ProtoLens (def, Message)
-import Lens.Family2 (Lens', (&), (.~), (^.))
+import Lens.Family2 (Lens', (&), view, set)
 import Prelude hiding (Maybe, maybe, map, head, span)
 import qualified Prelude
 import Test.Framework (Test, testGroup)
@@ -21,6 +21,7 @@ import Test.Framework.Providers.HUnit (testCase)
 import Test.HUnit ((@=?))
 
 import Proto.Names
+import Proto.Names'Fields
 import Data.ProtoLens.TestUtil
     ( TypedTest
     , readFrom
@@ -29,14 +30,19 @@ import Data.ProtoLens.TestUtil
     , testMain
     )
 
+main :: IO ()
 main = testMain
     [ testNames
     , testPreludeType
     , testHaskellKeywords
+    , testOddCasedMessage
     , testProtoKeywords
     , testProtoKeywordTypes
     , testReadReservedName
     ]
+
+testNames, testPreludeType, testHaskellKeywords, testProtoKeywords,
+    testOddCasedMessage, testProtoKeywordTypes, testReadReservedName :: Test
 
 -- | Test that we can get/set each individual field.
 testFields :: forall a . (Show a, Message a, Eq a)
@@ -48,7 +54,10 @@ testFields name defValue fields = testGroup name
     , runTypedTest (roundTripTest "roundTrip" :: TypedTest a)
     ]
   where
-    testField (SomeLens f) = 1 @=? (defValue & f .~ 1) ^. f
+    testField (SomeLens f) = verifyLens defValue f 1
+
+verifyLens :: (Show b, Eq b) => a -> Lens' a b -> b -> IO ()
+verifyLens x f y = y @=? view f (set f y x)
 
 -- | Wraps a Lens' (which is a higher-order type) so it can be used in a list
 -- without ImpredicativeTypes.
@@ -60,6 +69,7 @@ testNames = testFields "names" (def :: Names)
     , SomeLens multiWordName
     , SomeLens fooMultiWORDName
     , SomeLens _multiWordName
+    , SomeLens camelCasedName
     ]
 
 testPreludeType = testFields "preludeType" (def :: Maybe) [SomeLens maybe]
@@ -97,6 +107,27 @@ testHaskellKeywords = testFields "haskellKeywords" (def :: HaskellKeywords)
     , SomeLens hiding
     ]
 
+-- Don't change the name of messages and enums.  However, do still camel-case
+-- the generated oneof datatypes and constructors.
+testOddCasedMessage = testGroup "oddCasedMessage"
+    [ runTypedTest (roundTripTest "roundTrip" :: TypedTest Odd_CAsed_message)
+    , runTypedTest (roundTripTest "roundTrip abbrev" :: TypedTest ABBREVName)
+    , testCase "oneofField" $ do
+          verifyLens defMsg maybe'oneofField $ Just
+                    (Odd_CAsed_message'OneofCase 42
+                        :: Odd_CAsed_message'OneofField)
+          verifyLens defMsg oneofCase 42
+          verifyLens defMsg maybe'oneofCase (Just 42)
+    , testCase "enums" $ do
+          trivial (Odd_CAsed_message'DeFA_ult :: Odd_CAsed_message'odd_CAsed_enum)
+          trivial (DeFA_ult :: Odd_CAsed_enum)
+    ]
+  where
+    defMsg = def :: Odd_CAsed_message
+
+trivial :: (Show a, Eq a) => a -> IO ()
+trivial a = a @=? a
+
 testProtoKeywords = testFields "protoKeywords" (def :: ProtoKeywords)
     [ SomeLens required
     , SomeLens message
@@ -122,5 +153,5 @@ testProtoKeywordTypes = testFields "protoKeywordTypes" (def :: ProtoKeywordTypes
 -- make sure we don't expect that apostrophe when parsing TextFormat.
 -- "import" field.
 testReadReservedName = readFrom "testReadReservedName"
-      (Just $ def & import' .~ 1 :: Prelude.Maybe HaskellKeywords)
+      (Just $ def & set import' 1 :: Prelude.Maybe HaskellKeywords)
       "import: 1"

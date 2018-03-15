@@ -1,0 +1,26 @@
+syntax = "proto2";
+
+package text_format;
+
+import "google/protobuf/any.proto";
+
+message Test1 {
+  // Note: the field tag numbers are intentionally ordered differently
+  // than the names, to make sure we print ordered by tag number.
+  optional int32 a = 4;
+  optional string b = 1;
+  repeated int32 d = 2 [packed=true];
+  optional bytes e = 3;
+}
+
+message Test2 {
+  optional Test1 c = 1;
+}
+
+message AnyHolder {
+  optional google.protobuf.Any thing1 = 1;
+  message Sub {
+    optional google.protobuf.Any thing2 = 1;
+  }
+  optional Sub sub = 2;
+}

@@ -1,0 +1,34 @@
+name: proto-lens-tests-dep
+version: '0.1.0.1'
+synopsis: Test package dependency.
+description: >
+  This package exports a .proto file which is used by proto-lens-tests
+  to test interpackage dependencies.
+  .
+  NOTE: The test needs a new package with its own .proto files,
+  rather than using the ones in proto-lens-protobuf-types
+  (google/protobuf/*.proto), since on some systems protoc has special logic
+  and can resolve imports of those files automatically.
+category: Data
+author: Judah Jacobson
+maintainer: proto-lens@googlegroups.com
+copyright: Google Inc.
+license: BSD3
+github: google/proto-lens/proto-lens-tests-dep
+extra-source-files:
+  - protos/test-dep/foo.proto
+
+custom-setup:
+  dependencies:
+    - base >= 4.8 && < 4.11
+    - Cabal
+    - proto-lens-protoc == 0.3.*
+
+dependencies:
+  - proto-lens-protoc
+  - base
+
+library:
+  exposed-modules:
+    - Proto.TestDep.Foo
+    - Proto.TestDep.Foo'Fields

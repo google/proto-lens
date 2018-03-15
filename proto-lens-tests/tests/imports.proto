@@ -6,6 +6,11 @@ import "enum.proto";
 import "imports_dep.proto";
 import "nested.proto";
 
+// Test that we can import descriptor-related modules, which are special due
+// to bootstrapping:
+import "google/protobuf/descriptor.proto";
+import "google/protobuf/compiler/plugin.proto";
+
 // Note that this clashes with the name "Foo" from enums; however, since they're
 // in different modules/packages, it should still compile.
 message Foo {
@@ -20,4 +25,9 @@ message UseDep {
   optional dep.pkg.DepPkg foo = 1;
   optional transitive.TransitiveDep bar = 2;
   optional transitive.TransitiveDep2 baz = 3;
+}
+
+message UseBootstrapped {
+  optional google.protobuf.DescriptorProto descriptor = 1;
+  optional google.protobuf.compiler.CodeGeneratorRequest request = 2;
 }

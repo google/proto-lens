@@ -1,23 +1,18 @@
-resolver: lts-5.12
+resolver: lts-10.3
 packages:
 - discrimination-ieee754
+- lens-labels
 - proto-lens
 - proto-lens-protoc
+- proto-lens-protobuf-types
 - proto-lens-arbitrary
 - proto-lens-combinators
 - proto-lens-optparse
+- proto-lens-tests-dep
 - proto-lens-tests
+- proto-lens-benchmarks
 - proto-lens-discrimination
 
 extra-deps:
-- discrimination-0.2.1
+- discrimination-0.3
 - promises-0.3
-
-# Allow our custom Setup.hs scripts to import Data.ProtoLens.Setup from the version of
-# `proto-lens-protoc` in stack's local DB.  This makes things simpler when developing
-# `proto-lens-proto` and `proto-lens-tests` at the same time.
-#
-# For more details, see:
-# http://docs.haskellstack.org/en/latest/yaml_configuration/#explicit-setup-deps
-explicit-setup-deps:
-  "*": true

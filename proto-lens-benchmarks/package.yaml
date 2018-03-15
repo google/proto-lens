@@ -1,0 +1,68 @@
+name: proto-lens-benchmarks
+version: '0.1.0.0'
+synopsis: Benchmarks for proto-lens
+description: This package contains a set of benchmarks for proto-lens.
+category: Data
+author: Aden Grue
+maintainer: agrue+protolens@google.com
+copyright: Google Inc.
+license: BSD3
+extra-source-files:
+  - benchmarks/*.proto
+
+custom-setup:
+  dependencies:
+    - base >= 4.8 && < 4.11
+    - Cabal
+    - proto-lens-protoc == 0.3.*
+
+dependencies:
+  - base >= 4.8 && < 4.11
+  - criterion >= 1.1 && < 1.3
+  - deepseq
+  - lens-family
+  - lens-family-core
+  - proto-lens == 0.3.*
+  - proto-lens-protoc == 0.3.*
+  - text
+
+ghc-options:
+  - -O2
+  - -rtsopts
+
+library:
+  source-dirs: src
+  exposed-modules:
+    - Data.ProtoLens.BenchmarkUtil
+  dependencies:
+    - bytestring == 0.10.*
+    - deepseq == 1.4.*
+    - optparse-applicative >= 0.12 && < 0.15
+
+benchmarks:
+  nested:
+    main: Nested.hs
+    source-dirs: benchmarks
+    dependencies:
+      - proto-lens-benchmarks
+    other-modules:
+      - Proto.Nested
+      - Proto.Nested'Fields
+
+  unused-fields:
+    main: UnusedFields.hs
+    source-dirs: benchmarks
+    dependencies:
+      - proto-lens-benchmarks
+    other-modules:
+      - Proto.UnusedFields
+      - Proto.UnusedFields'Fields
+
+  int-packing:
+    main: IntPacking.hs
+    source-dirs: benchmarks
+    dependencies:
+      - proto-lens-benchmarks
+    other-modules:
+      - Proto.IntPacking
+      - Proto.IntPacking'Fields

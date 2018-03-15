@@ -1,0 +1,50 @@
+name: proto-lens-combinators
+version: '0.1.0.9'
+synopsis: Utilities functions to proto-lens.
+description: Useful things for working with protos.
+category: Data
+author: Zie Weaver
+maintainer: zearen+protolens@google.com
+copyright: Google Inc.
+license: BSD3
+github: google/proto-lens/proto-lens-combinators
+extra-source-files:
+  - tests/combinators.proto
+  - Changelog.md
+
+custom-setup:
+  dependencies:
+    - base >= 4.8 && < 4.11
+    - Cabal
+    - proto-lens-protoc == 0.3.*
+
+dependencies:
+  - base >= 4.8 && < 4.11
+  - proto-lens-protoc == 0.3.*
+  - lens-family == 1.2.*
+
+library:
+  source-dirs: src
+  exposed-modules:
+    - Data.ProtoLens.Combinators
+  dependencies:
+    - data-default-class >= 0.0 && < 0.2
+    - transformers >= 0.4 && < 0.6
+
+tests:
+  combinators_test:
+    main: combinators_test.hs
+    source-dirs: tests
+    dependencies:
+      - HUnit
+      - base
+      - lens-family
+      - lens-family-core
+      - proto-lens
+      - proto-lens-combinators
+      - proto-lens-protoc
+      - test-framework
+      - test-framework-hunit
+    other-modules:
+      Proto.Combinators
+      Proto.Combinators'Fields

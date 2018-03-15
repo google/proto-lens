@@ -8,11 +8,12 @@
 module Main where
 
 import Proto.Repeated
+import Proto.Repeated'Fields
 import Test.Framework (testGroup)
 import Data.ProtoLens
 import Lens.Family2 ((&), (.~))
 import Data.ByteString.Builder (byteString)
-import Data.Monoid (mempty, mconcat, (<>))
+import Data.Monoid ((<>))
 
 import Data.ProtoLens.TestUtil
 
@@ -22,15 +23,16 @@ defFoo = def
 defBar :: Bar
 defBar = def
 
+main :: IO ()
 main = testMain
     [ serializeTo "default" defFoo mempty mempty
     , serializeTo "int32"
           (defFoo & a .~ [1..3])
-          (vcat $ map (keyed "a") [1..3])
+          (vcat $ map (keyedInt "a") [1..3])
           $ mconcat [tagged 1 $ VarInt x | x <- [1..3]]
     , serializeTo "string"
           (defFoo & b .~ ["one", "two", "three"])
-          (vcat $ map (keyed "b") ["one", "two", "three"])
+          (vcat $ map (keyedStr "b") ["one", "two", "three"])
           $ mconcat [ tagged 2 $ Lengthy $ byteString x
                     | x <- ["one", "two", "three"]
                     ]
@@ -40,16 +42,16 @@ main = testMain
           $ tagged 3 (Lengthy mempty) <> tagged 3 (Lengthy mempty)
     , serializeTo "nested/fixed32"
           (defFoo & c .~ [defBar & d .~ [1..3]])
-          (braced "c" $ vcat $ map (keyed "d") [1..3])
+          (braced "c" $ vcat $ map (keyedInt "d") [1..3])
           $ tagged 3 $ Lengthy $ mconcat [tagged 3 $ Fixed32 x | x <- [1..3]]
     , serializeTo "nested/fixed64"
           (defFoo & c .~ [defBar & e .~ [1..3]])
-          (braced "c" $ vcat $ map (keyed "e") [1..3])
+          (braced "c" $ vcat $ map (keyedInt "e") [1..3])
           $ tagged 3 $ Lengthy $ mconcat [tagged 4 $ Fixed64 x | x <- [1..3]]
     , serializeTo "nested/repeated"
           (defFoo & c .~ [defBar & d .~ [1..3], defBar & e .~ [1..3]])
-          (braced "c" (vcat $ map (keyed "d") [1..3])
-              $+$ braced "c" (vcat $ map (keyed "e") [1..3]))
+          (braced "c" (vcat $ map (keyedInt "d") [1..3])
+              $+$ braced "c" (vcat $ map (keyedInt "e") [1..3]))
           $ tagged 3 (Lengthy $ mconcat [tagged 3 $ Fixed32 x | x <- [1..3]])
           <> tagged 3 (Lengthy $ mconcat [tagged 4 $ Fixed64 x | x <- [1..3]])
     -- Test that if the same nested tag appears twice, we append the lists
