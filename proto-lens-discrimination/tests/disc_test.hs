@@ -20,13 +20,16 @@ import qualified Data.Map as M
 import Data.ProtoLens.Arbitrary (ArbitraryMessage(..))
 import Data.ProtoLens.Message
     ( FieldTypeDescriptor(..)
-    , MessageDescriptor(..)
-    , descriptor
+    , FieldDescriptor
+    , Message(fieldsByTextFormatName)
+    , ScalarField(..)
+    , MessageOrGroup(..)
     )
 import Data.ProtoLens.Discrimination (discProtoMapAssocs)
 import Data.ProtoLens.Sort
 
 import Proto.Enum
+import Proto.Enum'Fields
 
 
 sortCompare :: Sort a -> a -> a -> Ordering
@@ -42,23 +45,26 @@ comparesAs ordering x y s = ordering @=? sortCompare s x y
 (<?) :: a -> a -> Sort a -> Assertion
 (<?) = comparesAs LT
 
+sortingScalarField :: ScalarField a -> Sort a
+sortingScalarField = sortingFieldValue . ScalarField
+
 fieldValueSortTest :: Test
 fieldValueSortTest = testGroup "field value"
     -- Spot-check a few primitive types.
-    [ testCase "int32" $ 42 <? 2112 $ sortingFieldValue Int32Field
-    , testCase "string" $ "a" <? "aa" $ sortingFieldValue StringField
+    [ testCase "int32" $ 42 <? 2112 $ sortingScalarField Int32Field
+    , testCase "string" $ "a" <? "aa" $ sortingScalarField StringField
     -- Enum values.
-    , testCase "enum Bar pos" $ BAR3 <? BAR5 $ sortingFieldValue EnumField
-    , testCase "enum Bar neg" $ NEGATIVE <? BAR5 $ sortingFieldValue EnumField
+    , testCase "enum Bar pos" $ BAR3 <? BAR5 $ sortingScalarField EnumField
+    , testCase "enum Bar neg" $ NEGATIVE <? BAR5 $ sortingScalarField EnumField
     , testCase "enum Bar eq" $
-          comparesAs EQ BAR5 BAR5 $ sortingFieldValue EnumField
+          comparesAs EQ BAR5 BAR5 $ sortingScalarField EnumField
     -- Message fields.
     , testCase "message Foo eq" $
-          comparesAs EQ def def $
-          sortingFieldValue (MessageField :: FieldTypeDescriptor Foo)
+          comparesAs EQ def def $ sortingFieldValue
+              (MessageField MessageType :: FieldTypeDescriptor Foo)
     , testCase "message Foo lt" $
-          (def & bar .~ BAR3) <? (def & bar .~ BAR5) $
-          sortingFieldValue (MessageField :: FieldTypeDescriptor Foo)
+          (def & bar .~ BAR3) <? (def & bar .~ BAR5) $ sortingFieldValue
+              (MessageField MessageType :: FieldTypeDescriptor Foo)
     ]
 
 protoMapSortTest :: Test
@@ -99,7 +105,7 @@ fieldSortTest = testProperty "compares by field" $
         == sortCompare (sortingField fieldDesc) msg1 msg2
   where
     fieldDesc =
-      fieldsByTextFormatName (descriptor :: MessageDescriptor Foo) M.! "bar"
+      (fieldsByTextFormatName :: M.Map String (FieldDescriptor Foo)) M.! "bar"
 
 messageSortTest :: Test
 messageSortTest = testGroup "Message"

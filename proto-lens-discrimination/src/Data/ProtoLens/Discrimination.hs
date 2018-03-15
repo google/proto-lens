@@ -4,7 +4,7 @@
 {-# LANGUAGE Rank2Types #-}
 {-# LANGUAGE ScopedTypeVariables #-}
 module Data.ProtoLens.Discrimination
-    ( discDescriptor
+    ( discFields
     , discField
     , discText
     , discByteString
@@ -34,25 +34,22 @@ import qualified Data.Map as M
 import qualified Data.Text as T
 import Lens.Family2 ((&), (.~), Lens', view)
 
-
 import Data.ProtoLens.Message
-    ( Message(descriptor)
-    , MessageDescriptor(fieldsByTag)
-    , FieldDescriptor(FieldDescriptor)
+    ( FieldDescriptor(FieldDescriptor)
     , FieldTypeDescriptor(..)
     , FieldAccessor(..)
     )
 
--- | Sort values according to a MessageDescriptor for their type.
-discDescriptor
-    :: (Contravariant f, Monoid (f a))
+-- | Sort values according to a Foldable of field descriptors.
+discFields
+    :: (Foldable t, Contravariant f, Monoid (f a))
     => (forall v. FieldTypeDescriptor v -> f v)
     -> (forall a. f a -> f [a])
     -> (forall a. f a -> f (Maybe a))
-    -> MessageDescriptor a
+    -> t (FieldDescriptor a)
     -> f a
-discDescriptor discFieldValue discList discMaybe =
-    foldMap (discField discFieldValue discList discMaybe) . fieldsByTag
+discFields discFieldValue discList discMaybe =
+    foldMap (discField discFieldValue discList discMaybe)
 
 -- | Sort values on a single field.
 --

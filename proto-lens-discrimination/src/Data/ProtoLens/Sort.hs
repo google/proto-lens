@@ -10,7 +10,7 @@ module Data.ProtoLens.Sort
 
     -- * 'Sort's for Messages
     , sortingMessage
-    , sortingDescriptor
+    , sortingFields
     , sortingField
 
     -- * 'Sort' for individual field values
@@ -44,14 +44,14 @@ import Lens.Family2 ((&), (.~), Lens', view)
 
 
 import Data.ProtoLens.Message
-    ( Message(descriptor)
-    , MessageDescriptor(fieldsByTag)
+    ( Message(fieldsByTag)
     , FieldDescriptor(FieldDescriptor)
     , FieldTypeDescriptor(..)
+    , ScalarField(..)
     , FieldAccessor(..)
     )
 import Data.ProtoLens.Discrimination
-    ( discDescriptor
+    ( discFields
     , discField
     , discText
     , discByteString
@@ -72,11 +72,11 @@ compareMessage x y = sortingCompare (MessageSorting x) (MessageSorting y)
 
 -- | Sort protobuf message values according to their Message instance.
 sortingMessage :: Message a => Sort a
-sortingMessage = sortingDescriptor descriptor
+sortingMessage = sortingFields fieldsByTag
 
--- | Sort values according to a MessageDescriptor for their type.
-sortingDescriptor :: MessageDescriptor a -> Sort a
-sortingDescriptor = discDescriptor sortingFieldValue sorting1 sorting1
+-- | Sort values according to a Foldable of field descriptors.
+sortingFields :: Foldable t => t (FieldDescriptor a) -> Sort a
+sortingFields = discFields sortingFieldValue sorting1 sorting1
 
 -- | Sort values on a single field.
 --
@@ -94,21 +94,21 @@ sortingField = discField sortingFieldValue sorting1 sorting1
 -- or 'Sorting' instances.
 sortingFieldValue :: FieldTypeDescriptor v -> Sort v
 sortingFieldValue ty = case ty of
-    MessageField  -> sortingMessage
-    GroupField    -> sortingMessage
-    EnumField     -> fromEnum >$< sorting
-    Int32Field    -> sorting
-    Int64Field    -> sorting
-    UInt32Field   -> sorting
-    UInt64Field   -> sorting
-    SInt32Field   -> sorting
-    SInt64Field   -> sorting
-    Fixed32Field  -> sorting
-    Fixed64Field  -> sorting
-    SFixed32Field -> sorting
-    SFixed64Field -> sorting
-    FloatField    -> sortingFloat
-    DoubleField   -> sortingDouble
-    BoolField     -> sorting
-    StringField   -> discText sorting
-    BytesField    -> discByteString sorting sorting
+    MessageField _ -> sortingMessage
+    ScalarField  f -> case f of
+        EnumField     -> fromEnum >$< sorting
+        Int32Field    -> sorting
+        Int64Field    -> sorting
+        UInt32Field   -> sorting
+        UInt64Field   -> sorting
+        SInt32Field   -> sorting
+        SInt64Field   -> sorting
+        Fixed32Field  -> sorting
+        Fixed64Field  -> sorting
+        SFixed32Field -> sorting
+        SFixed64Field -> sorting
+        FloatField    -> sortingFloat
+        DoubleField   -> sortingDouble
+        BoolField     -> sorting
+        StringField   -> discText sorting
+        BytesField    -> discByteString sorting sorting
