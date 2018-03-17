@@ -3,7 +3,7 @@
 module Main where
 
 import Proto.Person as P
-import Proto.Person'Fields as P
+import Proto.Person_Fields as P
 import Data.Default
 import Data.ProtoLens (showMessage)
 import Lens.Micro

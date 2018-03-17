@@ -17,7 +17,7 @@ import Proto.Proto3
     , Foo'Sub(..)
     , Strings
     )
-import Proto.Proto3'Fields
+import Proto.Proto3_Fields
     ( a
     , b
     , c

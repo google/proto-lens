@@ -47,4 +47,4 @@ tests:
       - test-framework-hunit
     other-modules:
       Proto.Combinators
-      Proto.Combinators'Fields
+      Proto.Combinators_Fields

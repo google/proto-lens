@@ -38,7 +38,7 @@ import Proto.Google.Protobuf.Descriptor
     , FieldDescriptorProto'Type(..)
     , FileDescriptorProto
     )
-import Proto.Google.Protobuf.Descriptor'Fields
+import Proto.Google.Protobuf.Descriptor_Fields
     ( defaultValue
     , label
     , mapEntry
@@ -95,7 +95,7 @@ generateModule modName imports syntaxType modifyImport definitions importedEnv s
           $ concatMap generateFieldDecls allLensNames
       ]
   where
-    fieldModName = modifyModuleName (++ "'Fields") modName
+    fieldModName = modifyModuleName (++ "_Fields") modName
     pragmas =
           [ languagePragma $ map fromString
               ["ScopedTypeVariables", "DataKinds", "TypeFamilies",

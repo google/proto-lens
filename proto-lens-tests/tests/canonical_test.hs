@@ -15,7 +15,7 @@ module Main where
 
 import Lens.Family2 ((&), (.~))
 import Proto.Canonical (Test1, Test2, Test3, Test4)
-import Proto.Canonical'Fields (a, b, c, d)
+import Proto.Canonical_Fields (a, b, c, d)
 import Test.Framework (testGroup)
 import Data.ProtoLens
 import qualified Data.ByteString as B

@@ -35,10 +35,10 @@ library:
   exposed-modules:
     - Data.ProtoLens.Any
     - Proto.Google.Protobuf.Any
-    - Proto.Google.Protobuf.Any'Fields
+    - Proto.Google.Protobuf.Any_Fields
     - Proto.Google.Protobuf.Duration
-    - Proto.Google.Protobuf.Duration'Fields
+    - Proto.Google.Protobuf.Duration_Fields
     - Proto.Google.Protobuf.Wrappers
-    - Proto.Google.Protobuf.Wrappers'Fields
+    - Proto.Google.Protobuf.Wrappers_Fields
     - Proto.Google.Protobuf.Timestamp
-    - Proto.Google.Protobuf.Timestamp'Fields
+    - Proto.Google.Protobuf.Timestamp_Fields
