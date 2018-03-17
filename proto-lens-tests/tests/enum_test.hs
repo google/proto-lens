@@ -16,7 +16,7 @@ import Proto.Enum
     -- explicit import to make sure we get pattern synonyms
     , Alias(..)
     )
-import Proto.Enum'Fields
+import Proto.Enum_Fields
 import Data.Function (on)
 import Data.ProtoLens
 import Data.ProtoLens.Arbitrary

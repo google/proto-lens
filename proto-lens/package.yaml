@@ -38,9 +38,9 @@ library:
     - Data.ProtoLens.Service.Types
     - Data.ProtoLens.TextFormat
     - Proto.Google.Protobuf.Compiler.Plugin
-    - Proto.Google.Protobuf.Compiler.Plugin'Fields
+    - Proto.Google.Protobuf.Compiler.Plugin_Fields
     - Proto.Google.Protobuf.Descriptor
-    - Proto.Google.Protobuf.Descriptor'Fields
+    - Proto.Google.Protobuf.Descriptor_Fields
   other-modules:
     - Data.ProtoLens.Encoding.Bytes
     - Data.ProtoLens.TextFormat.Parser

@@ -31,6 +31,6 @@ executables:
       - proto-lens-protoc
     other-modules:
       - Proto.Coffee.Order
-      - Proto.Coffee.Order'Fields
+      - Proto.Coffee.Order_Fields
     source-dirs:      src
     main:             Main.hs

@@ -2,7 +2,7 @@
 module Main (main) where
 
 import Proto.Oneof
-import Proto.Oneof'Fields
+import Proto.Oneof_Fields
 import Data.ProtoLens
 import Lens.Family2 ((&), (.~), (^?), (%~), view)
 import Lens.Labels.Prism (_Just, (#))

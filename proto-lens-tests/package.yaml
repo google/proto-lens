@@ -48,7 +48,7 @@ tests:
       - proto-lens-tests
     other-modules:
       - Proto.Canonical
-      - Proto.Canonical'Fields
+      - Proto.Canonical_Fields
 
   group_test:
     main: group_test.hs
@@ -57,7 +57,7 @@ tests:
       - proto-lens-tests
     other-modules:
       - Proto.Group
-      - Proto.Group'Fields
+      - Proto.Group_Fields
 
   map_test:
     main: map_test.hs
@@ -66,7 +66,7 @@ tests:
       - proto-lens-tests
     other-modules:
       - Proto.Map
-      - Proto.Map'Fields
+      - Proto.Map_Fields
 
   oneof_test:
     main: oneof_test.hs
@@ -76,7 +76,7 @@ tests:
       - lens-labels
     other-modules:
       - Proto.Oneof
-      - Proto.Oneof'Fields
+      - Proto.Oneof_Fields
 
   optional_test:
     main: optional_test.hs
@@ -85,7 +85,7 @@ tests:
       - proto-lens-tests
     other-modules:
       - Proto.Optional
-      - Proto.Optional'Fields
+      - Proto.Optional_Fields
 
   proto3_test:
     main: proto3_test.hs
@@ -94,7 +94,7 @@ tests:
       - proto-lens-tests
     other-modules:
       - Proto.Proto3
-      - Proto.Proto3'Fields
+      - Proto.Proto3_Fields
 
   repeated_test:
     main: repeated_test.hs
@@ -103,7 +103,7 @@ tests:
       - proto-lens-tests
     other-modules:
       - Proto.Repeated
-      - Proto.Repeated'Fields
+      - Proto.Repeated_Fields
 
   text-format_test:
     main: text_format_test.hs
@@ -113,7 +113,7 @@ tests:
       - proto-lens-tests
     other-modules:
       - Proto.TextFormat
-      - Proto.TextFormat'Fields
+      - Proto.TextFormat_Fields
 
   enum_test:
     main: enum_test.hs
@@ -128,7 +128,7 @@ tests:
       - proto-lens-tests
     other-modules:
       - Proto.Enum
-      - Proto.Enum'Fields
+      - Proto.Enum_Fields
 
   names_test:
     main: names_test.hs
@@ -137,7 +137,7 @@ tests:
       - proto-lens-tests
     other-modules:
       - Proto.Names
-      - Proto.Names'Fields
+      - Proto.Names_Fields
 
   no_package_test:
     main: no_package_test.hs
@@ -146,7 +146,7 @@ tests:
       - proto-lens-tests
     other-modules:
       - Proto.NoPackage
-      - Proto.NoPackage'Fields
+      - Proto.NoPackage_Fields
 
   packed_test:
     main: packed_test.hs
@@ -155,7 +155,7 @@ tests:
       - proto-lens-tests
     other-modules:
       - Proto.Packed
-      - Proto.Packed'Fields
+      - Proto.Packed_Fields
 
   raw_fields_test:
     main: raw_fields_test.hs
@@ -164,7 +164,7 @@ tests:
       - proto-lens-tests
     other-modules:
       - Proto.RawFields
-      - Proto.RawFields'Fields
+      - Proto.RawFields_Fields
 
   required_test:
     main: required_test.hs
@@ -174,7 +174,7 @@ tests:
       - proto-lens-tests
     other-modules:
       - Proto.Required
-      - Proto.Required'Fields
+      - Proto.Required_Fields
 
   labels_test:
     main: labels_test.hs
@@ -185,7 +185,7 @@ tests:
       - proto-lens-tests
     other-modules:
       - Proto.Canonical
-      - Proto.Canonical'Fields
+      - Proto.Canonical_Fields
 
   unwrapped_test:
     main: unwrapped_test.hs
@@ -196,7 +196,7 @@ tests:
       - proto-lens-tests
     other-modules:
       - Proto.Canonical
-      - Proto.Canonical'Fields
+      - Proto.Canonical_Fields
 
   package-deps_test:
     main: package-deps_test.hs
@@ -206,7 +206,7 @@ tests:
       - proto-lens-tests-dep
     other-modules:
       - Proto.PackageDeps
-      - Proto.PackageDeps'Fields
+      - Proto.PackageDeps_Fields
 
   any_test:
     main: any_test.hs
@@ -216,7 +216,7 @@ tests:
       - proto-lens-tests
     other-modules:
       - Proto.Any
-      - Proto.Any'Fields
+      - Proto.Any_Fields
 
   service_test:
     main: service_test.hs
@@ -231,7 +231,7 @@ tests:
       - proto-lens-tests
     other-modules:
       - Proto.Service
-      - Proto.Service'Fields
+      - Proto.Service_Fields
 
   unknown_fields_test:
     main: unknown_fields_test.hs
@@ -240,7 +240,7 @@ tests:
       - proto-lens-tests
     other-modules:
       - Proto.UnknownFields
-      - Proto.UnknownFields'Fields
+      - Proto.UnknownFields_Fields
 
   imports_test:
     main: imports_test.hs

@@ -22,7 +22,7 @@ import Data.Text (Text)
 import Lens.Family ((&), (.~))
 import Data.ProtoLens.Message (def)
 import Proto.Nested
-import Proto.Nested'Fields
+import Proto.Nested_Fields
 
 -- These instances are required by Criterion to benchmark proto decoding.
 deriving instance Generic FooFlat
