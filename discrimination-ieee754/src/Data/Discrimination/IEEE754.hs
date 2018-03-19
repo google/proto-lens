@@ -7,7 +7,15 @@
 -- NaNs with positive sign are ordered by the value of their payload, and NaNs
 -- with negative sign are reverse-ordered by the value of their payload.
 
-module Data.Discrimination.IEEE754 where
+module Data.Discrimination.IEEE754
+  (
+  -- * Groups
+  -- $groups
+    groupingFloat, groupingDouble
+  -- * Sorts
+  -- $sorts
+  , sortingFloat, sortingDouble
+  ) where
 
 import Data.Binary.IEEE754 (floatToWord, doubleToWord)
 import Data.Bits (xor, setBit, shift)
@@ -33,11 +41,26 @@ discFloat = contramap sortableFloat32
 discDouble :: Contravariant f => f Word64 -> f Double
 discDouble = contramap sortableFloat64
 
+-- $groups
+-- Group values according to the IEEE754 total order.
+--
+-- This means that values will be in the same group if and only if they compare
+-- equal under the IEEE754 total order.  In particular, bit-wise-identical NaNs
+-- will be grouped together.
+
 groupingFloat :: Group Float
 groupingFloat = discFloat grouping
 
 groupingDouble :: Group Double
 groupingDouble = discDouble grouping
+
+-- $sorts
+-- Sort values according to the IEEE754 total order.
+--
+-- This matches the 'Ord' instance for non-NaN values, but orders NaNs
+-- according to their sign bit and mantissa (negated if the sign bit is set).
+-- Positive NaNs are greater than +Infinity, and negative NaNs are less than
+-- -Infinity.
 
 sortingFloat :: Sort Float
 sortingFloat = discFloat sorting

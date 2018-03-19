@@ -5,16 +5,21 @@
 {-# LANGUAGE ScopedTypeVariables #-}
 module Data.ProtoLens.Group
     (
-    -- * Comparing Protobuf Messages
-      eqMessage
-
     -- * 'Group's for Messages
-    , groupingMessage
+      groupingMessage
+    , groupingKnownFields
+
+    -- ** 'Group'ing on a subset of fields
     , groupingFields
     , groupingField
+    , groupingUnknownFields
+
+    -- * Comparing Protobuf Messages
+    , eqMessage
 
     -- * 'Group' for individual field values
     , groupingFieldValue
+    , groupingFieldSet
     ) where
 
 import Data.Functor.Contravariant ((>$<))
@@ -25,17 +30,20 @@ import Data.Discrimination
     , groupingEq
     )
 import Data.Discrimination.IEEE754 (groupingFloat, groupingDouble)
-
+import Data.Monoid ((<>))
+import Lens.Family2 (view)
 
 import Data.ProtoLens.Message
-    ( Message(fieldsByTag)
+    ( Message(fieldsByTag, unknownFields)
     , FieldDescriptor
+    , FieldSet
     , FieldTypeDescriptor(..)
     , ScalarField(..)
     )
 import Data.ProtoLens.Discrimination
     ( discFields
     , discField
+    , discFieldSet
     , discText
     , discByteString
     )
@@ -54,7 +62,11 @@ eqMessage x y = groupingEq (MessageGrouping x) (MessageGrouping y)
 
 -- | Group protobuf message values according to their Message instance.
 groupingMessage :: Message a => Group a
-groupingMessage = groupingFields fieldsByTag
+groupingMessage = groupingKnownFields <> groupingUnknownFields
+
+-- | Group protobuf message values ignoring unknown fields.
+groupingKnownFields :: Message a => Group a
+groupingKnownFields = groupingFields fieldsByTag
 
 -- | Group values according to a Foldable of field descriptors.
 groupingFields :: Foldable t => t (FieldDescriptor a) -> Group a
@@ -71,6 +83,16 @@ groupingFields = discFields groupingFieldValue grouping1 grouping1
 -- >>> runGroup grouping $ map (view myIntField &&& id) protos
 groupingField :: FieldDescriptor a -> Group a
 groupingField = discField groupingFieldValue grouping1 grouping1
+
+-- | Group any message type according to its unknown fields.
+groupingUnknownFields :: Message a => Group a
+groupingUnknownFields = view unknownFields >$< groupingFieldSet
+
+-- | Group 'FieldSet's.
+groupingFieldSet :: Group FieldSet
+groupingFieldSet =
+    discFieldSet grouping1 grouping grouping (discByteString grouping grouping)
+        grouping
 
 -- | Group values of a single field of a protobuf according to their 'Message'
 -- or 'Grouping' instances.

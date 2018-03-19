@@ -5,16 +5,21 @@
 {-# LANGUAGE ScopedTypeVariables #-}
 module Data.ProtoLens.Sort
     (
-    -- * Comparing Protobuf Messages
-      compareMessage
-
     -- * 'Sort's for Messages
-    , sortingMessage
+      sortingMessage
+    , sortingKnownFields
+
+    -- ** 'Sort'ing on a subset of fields
     , sortingFields
     , sortingField
+    , sortingUnknownFields
+
+    -- * Comparing Protobuf Messages
+    , compareMessage
 
     -- * 'Sort' for individual field values
     , sortingFieldValue
+    , sortingFieldSet
     ) where
 
 import Data.Functor.Contravariant
@@ -28,16 +33,20 @@ import Data.Discrimination
     , sortingCompare
     )
 import Data.Discrimination.IEEE754 (sortingFloat, sortingDouble)
+import Data.Monoid ((<>))
+import Lens.Family2 (view)
 
 import Data.ProtoLens.Message
-    ( Message(fieldsByTag)
+    ( Message(fieldsByTag, unknownFields)
     , FieldDescriptor
+    , FieldSet
     , FieldTypeDescriptor(..)
     , ScalarField(..)
     )
 import Data.ProtoLens.Discrimination
     ( discFields
     , discField
+    , discFieldSet
     , discText
     , discByteString
     )
@@ -57,7 +66,11 @@ compareMessage x y = sortingCompare (MessageSorting x) (MessageSorting y)
 
 -- | Sort protobuf message values according to their Message instance.
 sortingMessage :: Message a => Sort a
-sortingMessage = sortingFields fieldsByTag
+sortingMessage = sortingKnownFields <> sortingUnknownFields
+
+-- | Sort protobuf message values ignoring unknown fields.
+sortingKnownFields :: Message a => Sort a
+sortingKnownFields = sortingFields fieldsByTag
 
 -- | Sort values according to a Foldable of field descriptors.
 sortingFields :: Foldable t => t (FieldDescriptor a) -> Sort a
@@ -74,6 +87,16 @@ sortingFields = discFields sortingFieldValue sorting1 sorting1
 -- >>> sortWith (view myIntField) protos
 sortingField :: FieldDescriptor a -> Sort a
 sortingField = discField sortingFieldValue sorting1 sorting1
+
+-- | Sort any message type according to its unknown fields.
+sortingUnknownFields :: Message a => Sort a
+sortingUnknownFields = view unknownFields >$< sortingFieldSet
+
+-- | Sort 'FieldSet's.
+sortingFieldSet :: Sort FieldSet
+sortingFieldSet =
+    discFieldSet sorting1 sorting sorting (discByteString sorting sorting)
+        sorting
 
 -- | Sort values of a single field of a protobuf according to their 'Message'
 -- or 'Sorting' instances.

@@ -9,6 +9,7 @@ module Data.ProtoLens.Discrimination
     , discText
     , discByteString
     , discProtoMapAssocs
+    , discFieldSet
     ) where
 
 import Data.Bits ((.|.), shift)
@@ -17,7 +18,7 @@ import qualified Data.ByteString.Unsafe as B (unsafeIndex)
 import Data.Default (Default(def))
 import Data.Foldable (foldMap)
 import Data.Functor.Contravariant
-    ( Contravariant
+    ( Contravariant(contramap)
     , (>$<)
     )
 import Data.Functor.Contravariant.Divisible
@@ -25,13 +26,19 @@ import Data.Functor.Contravariant.Divisible
     , conquered
     , divided
     , Decidable(choose)
+    , Divisible(conquer)
     )
+import qualified Data.IntMap as IM
 import Data.Map (Map)
-import Data.Word (Word8, Word16)
+import Data.Monoid ((<>))
+import Data.Word (Word8, Word16, Word32, Word64)
 import qualified Data.Map as M
 import qualified Data.Text as T
 import Lens.Family2 ((&), (.~), Lens', view)
 
+import Data.ProtoLens.Encoding.Wire
+    ( Tag(..), TaggedValue(..), WireValue(..), WireType(..)
+    )
 import Data.ProtoLens.Message
     ( FieldDescriptor(FieldDescriptor)
     , FieldTypeDescriptor(..)
@@ -75,6 +82,40 @@ discMapAssocs
     -> f (k, v)
     -> f (Map k v)
 discMapAssocs discList kv = M.toAscList >$< discList kv
+
+-- Sort an unknown-fields set by treating it as a map from tag to [WireValue].
+discFieldSet
+    :: Decidable f
+    => (forall a. f a -> f [a])
+    -> f Word32
+    -> f Word64
+    -> f B.ByteString
+    -> f Int
+    -> f [TaggedValue]
+discFieldSet discList disc32 disc64 discBS discInt =
+    IM.toAscList . toIntMap >$<
+    discList (divided discInt (discList discWireValue))
+  where
+    toIntMap =
+        fmap ($[]) . IM.fromListWith (flip (.)) .
+        fmap (\ (TaggedValue (Tag t) v) -> (t, (v:)))
+
+    discWireValue = contramap toEithers $ chosen
+        (chosen disc64 (chosen disc64 disc32))
+        (chosen discBS (chosen conquer conquer))
+
+    toEithers
+      :: WireValue
+      -> Either
+          (Either Word64 (Either Word64 Word32))
+          (Either B.ByteString (Either () ()))
+    toEithers x = case x of
+      WireValue VarInt     x -> Left (Left x)
+      WireValue Fixed64    x -> Left (Right (Left x))
+      WireValue Fixed32    x -> Left (Right (Right x))
+      WireValue Lengthy    x -> Right (Left x)
+      WireValue StartGroup () -> Right (Right (Left ()))
+      WireValue EndGroup   () -> Right (Right (Right ()))
 
 -- | Sort a map by converting its associations to @entry@ and sorting that as a
 -- protobuf.
