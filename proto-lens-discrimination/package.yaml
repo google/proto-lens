@@ -53,4 +53,4 @@ tests:
       - test-framework-quickcheck2 == 0.3.*
     other-modules:
       - Proto.Enum
-      - Proto.Enum'Fields
+      - Proto.Enum_Fields

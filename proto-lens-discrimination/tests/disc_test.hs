@@ -29,7 +29,7 @@ import Data.ProtoLens.Discrimination (discProtoMapAssocs)
 import Data.ProtoLens.Sort
 
 import Proto.Enum
-import Proto.Enum'Fields
+import Proto.Enum_Fields
 
 
 sortCompare :: Sort a -> a -> a -> Ordering

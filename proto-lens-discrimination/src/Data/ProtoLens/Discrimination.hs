@@ -30,7 +30,6 @@ import Data.Functor.Contravariant.Divisible
     )
 import qualified Data.IntMap as IM
 import Data.Map (Map)
-import Data.Monoid ((<>))
 import Data.Word (Word8, Word16, Word32, Word64)
 import qualified Data.Map as M
 import qualified Data.Text as T
@@ -109,7 +108,7 @@ discFieldSet discList disc32 disc64 discBS discInt =
       -> Either
           (Either Word64 (Either Word64 Word32))
           (Either B.ByteString (Either () ()))
-    toEithers x = case x of
+    toEithers v = case v of
       WireValue VarInt     x -> Left (Left x)
       WireValue Fixed64    x -> Left (Right (Left x))
       WireValue Fixed32    x -> Left (Right (Right x))
