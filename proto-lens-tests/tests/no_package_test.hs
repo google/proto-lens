@@ -9,7 +9,7 @@ import Test.HUnit ((@=?))
 
 import Data.ProtoLens.TestUtil (Test, testMain)
 import Proto.NoPackage
-import Proto.NoPackage'Fields
+import Proto.NoPackage_Fields
 
 main :: IO ()
 main = testMain [testNames]

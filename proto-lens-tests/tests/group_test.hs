@@ -11,7 +11,7 @@ module Main where
 import Data.ProtoLens
 import Data.Monoid ((<>))
 import Proto.Group
-import Proto.Group'Fields
+import Proto.Group_Fields
 import Lens.Family2 ((&), (.~))
 
 import Data.ProtoLens.TestUtil

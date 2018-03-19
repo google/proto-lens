@@ -54,7 +54,7 @@ import Proto.Google.Protobuf.Descriptor
     , MethodDescriptorProto
     , ServiceDescriptorProto
     )
-import Proto.Google.Protobuf.Descriptor'Fields
+import Proto.Google.Protobuf.Descriptor_Fields
     ( clientStreaming
     , enumType
     , field

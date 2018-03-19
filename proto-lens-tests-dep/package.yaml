@@ -31,4 +31,4 @@ dependencies:
 library:
   exposed-modules:
     - Proto.TestDep.Foo
-    - Proto.TestDep.Foo'Fields
+    - Proto.TestDep.Foo_Fields

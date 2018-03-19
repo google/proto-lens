@@ -20,7 +20,7 @@ import Proto.Google.Protobuf.Compiler.Plugin
     ( CodeGeneratorRequest
     , CodeGeneratorResponse
     )
-import Proto.Google.Protobuf.Compiler.Plugin'Fields
+import Proto.Google.Protobuf.Compiler.Plugin_Fields
     ( content
     , file
     , fileToGenerate
@@ -28,7 +28,7 @@ import Proto.Google.Protobuf.Compiler.Plugin'Fields
     , protoFile
     )
 import Proto.Google.Protobuf.Descriptor (FileDescriptorProto)
-import Proto.Google.Protobuf.Descriptor'Fields (name, dependency)
+import Proto.Google.Protobuf.Descriptor_Fields (name, dependency)
 import System.Environment (getProgName)
 import System.Exit (exitWith, ExitCode(..))
 import System.IO as IO

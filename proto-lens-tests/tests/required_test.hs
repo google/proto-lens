@@ -11,7 +11,7 @@ import Data.Default.Class (def)
 import Data.Monoid ((<>))
 import Lens.Family ((&), (.~))
 import Proto.Required (Foo)
-import Proto.Required'Fields (a, b)
+import Proto.Required_Fields (a, b)
 import Test.Framework (testGroup)
 
 import Data.ProtoLens.TestUtil

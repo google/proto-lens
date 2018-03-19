@@ -21,7 +21,7 @@ import Test.Framework.Providers.HUnit (testCase)
 import Test.HUnit ((@=?))
 
 import Proto.Names
-import Proto.Names'Fields
+import Proto.Names_Fields
 import Data.ProtoLens.TestUtil
     ( TypedTest
     , readFrom

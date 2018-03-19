@@ -23,7 +23,7 @@ import Lens.Family2 ((&), (.~))
 import Data.Int (Int32)
 import Data.ProtoLens.Message (def)
 import Proto.UnusedFields
-import Proto.UnusedFields'Fields
+import Proto.UnusedFields_Fields
 
 -- These instances are required by Criterion to benchmark proto decoding.
 deriving instance Generic Foo

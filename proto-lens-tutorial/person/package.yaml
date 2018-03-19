@@ -31,6 +31,6 @@ executables:
       - proto-lens-protoc
     other-modules:
       - Proto.Person
-      - Proto.Person'Fields
+      - Proto.Person_Fields
     source-dirs:      src
     main:             Main.hs

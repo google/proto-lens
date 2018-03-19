@@ -42,18 +42,18 @@ import qualified Text.Read
 
 {- | Fields :
 
-    * 'Proto.Google.Protobuf.Descriptor'Fields.name' @:: Lens' DescriptorProto Data.Text.Text@
-    * 'Proto.Google.Protobuf.Descriptor'Fields.maybe'name' @:: Lens' DescriptorProto (Prelude.Maybe Data.Text.Text)@
-    * 'Proto.Google.Protobuf.Descriptor'Fields.field' @:: Lens' DescriptorProto [FieldDescriptorProto]@
-    * 'Proto.Google.Protobuf.Descriptor'Fields.extension' @:: Lens' DescriptorProto [FieldDescriptorProto]@
-    * 'Proto.Google.Protobuf.Descriptor'Fields.nestedType' @:: Lens' DescriptorProto [DescriptorProto]@
-    * 'Proto.Google.Protobuf.Descriptor'Fields.enumType' @:: Lens' DescriptorProto [EnumDescriptorProto]@
-    * 'Proto.Google.Protobuf.Descriptor'Fields.extensionRange' @:: Lens' DescriptorProto [DescriptorProto'ExtensionRange]@
-    * 'Proto.Google.Protobuf.Descriptor'Fields.oneofDecl' @:: Lens' DescriptorProto [OneofDescriptorProto]@
-    * 'Proto.Google.Protobuf.Descriptor'Fields.options' @:: Lens' DescriptorProto MessageOptions@
-    * 'Proto.Google.Protobuf.Descriptor'Fields.maybe'options' @:: Lens' DescriptorProto (Prelude.Maybe MessageOptions)@
-    * 'Proto.Google.Protobuf.Descriptor'Fields.reservedRange' @:: Lens' DescriptorProto [DescriptorProto'ReservedRange]@
-    * 'Proto.Google.Protobuf.Descriptor'Fields.reservedName' @:: Lens' DescriptorProto [Data.Text.Text]@
+    * 'Proto.Google.Protobuf.Descriptor_Fields.name' @:: Lens' DescriptorProto Data.Text.Text@
+    * 'Proto.Google.Protobuf.Descriptor_Fields.maybe'name' @:: Lens' DescriptorProto (Prelude.Maybe Data.Text.Text)@
+    * 'Proto.Google.Protobuf.Descriptor_Fields.field' @:: Lens' DescriptorProto [FieldDescriptorProto]@
+    * 'Proto.Google.Protobuf.Descriptor_Fields.extension' @:: Lens' DescriptorProto [FieldDescriptorProto]@
+    * 'Proto.Google.Protobuf.Descriptor_Fields.nestedType' @:: Lens' DescriptorProto [DescriptorProto]@
+    * 'Proto.Google.Protobuf.Descriptor_Fields.enumType' @:: Lens' DescriptorProto [EnumDescriptorProto]@
+    * 'Proto.Google.Protobuf.Descriptor_Fields.extensionRange' @:: Lens' DescriptorProto [DescriptorProto'ExtensionRange]@
+    * 'Proto.Google.Protobuf.Descriptor_Fields.oneofDecl' @:: Lens' DescriptorProto [OneofDescriptorProto]@
+    * 'Proto.Google.Protobuf.Descriptor_Fields.options' @:: Lens' DescriptorProto MessageOptions@
+    * 'Proto.Google.Protobuf.Descriptor_Fields.maybe'options' @:: Lens' DescriptorProto (Prelude.Maybe MessageOptions)@
+    * 'Proto.Google.Protobuf.Descriptor_Fields.reservedRange' @:: Lens' DescriptorProto [DescriptorProto'ReservedRange]@
+    * 'Proto.Google.Protobuf.Descriptor_Fields.reservedName' @:: Lens' DescriptorProto [Data.Text.Text]@
  -}
 data DescriptorProto = DescriptorProto{_DescriptorProto'name ::
                                        !(Prelude.Maybe Data.Text.Text),
@@ -291,10 +291,10 @@ instance Data.ProtoLens.Message DescriptorProto where
               (\ x__ y__ -> x__{_DescriptorProto'_unknownFields = y__})
 {- | Fields :
 
-    * 'Proto.Google.Protobuf.Descriptor'Fields.start' @:: Lens' DescriptorProto'ExtensionRange Data.Int.Int32@
-    * 'Proto.Google.Protobuf.Descriptor'Fields.maybe'start' @:: Lens' DescriptorProto'ExtensionRange (Prelude.Maybe Data.Int.Int32)@
-    * 'Proto.Google.Protobuf.Descriptor'Fields.end' @:: Lens' DescriptorProto'ExtensionRange Data.Int.Int32@
-    * 'Proto.Google.Protobuf.Descriptor'Fields.maybe'end' @:: Lens' DescriptorProto'ExtensionRange (Prelude.Maybe Data.Int.Int32)@
+    * 'Proto.Google.Protobuf.Descriptor_Fields.start' @:: Lens' DescriptorProto'ExtensionRange Data.Int.Int32@
+    * 'Proto.Google.Protobuf.Descriptor_Fields.maybe'start' @:: Lens' DescriptorProto'ExtensionRange (Prelude.Maybe Data.Int.Int32)@
+    * 'Proto.Google.Protobuf.Descriptor_Fields.end' @:: Lens' DescriptorProto'ExtensionRange Data.Int.Int32@
+    * 'Proto.Google.Protobuf.Descriptor_Fields.maybe'end' @:: Lens' DescriptorProto'ExtensionRange (Prelude.Maybe Data.Int.Int32)@
  -}
 data DescriptorProto'ExtensionRange = DescriptorProto'ExtensionRange{_DescriptorProto'ExtensionRange'start
                                                                      ::
@@ -392,10 +392,10 @@ instance Data.ProtoLens.Message DescriptorProto'ExtensionRange
                  x__{_DescriptorProto'ExtensionRange'_unknownFields = y__})
 {- | Fields :
 
-    * 'Proto.Google.Protobuf.Descriptor'Fields.start' @:: Lens' DescriptorProto'ReservedRange Data.Int.Int32@
-    * 'Proto.Google.Protobuf.Descriptor'Fields.maybe'start' @:: Lens' DescriptorProto'ReservedRange (Prelude.Maybe Data.Int.Int32)@
-    * 'Proto.Google.Protobuf.Descriptor'Fields.end' @:: Lens' DescriptorProto'ReservedRange Data.Int.Int32@
-    * 'Proto.Google.Protobuf.Descriptor'Fields.maybe'end' @:: Lens' DescriptorProto'ReservedRange (Prelude.Maybe Data.Int.Int32)@
+    * 'Proto.Google.Protobuf.Descriptor_Fields.start' @:: Lens' DescriptorProto'ReservedRange Data.Int.Int32@
+    * 'Proto.Google.Protobuf.Descriptor_Fields.maybe'start' @:: Lens' DescriptorProto'ReservedRange (Prelude.Maybe Data.Int.Int32)@
+    * 'Proto.Google.Protobuf.Descriptor_Fields.end' @:: Lens' DescriptorProto'ReservedRange Data.Int.Int32@
+    * 'Proto.Google.Protobuf.Descriptor_Fields.maybe'end' @:: Lens' DescriptorProto'ReservedRange (Prelude.Maybe Data.Int.Int32)@
  -}
 data DescriptorProto'ReservedRange = DescriptorProto'ReservedRange{_DescriptorProto'ReservedRange'start
                                                                    ::
@@ -489,11 +489,11 @@ instance Data.ProtoLens.Message DescriptorProto'ReservedRange where
                  x__{_DescriptorProto'ReservedRange'_unknownFields = y__})
 {- | Fields :
 
-    * 'Proto.Google.Protobuf.Descriptor'Fields.name' @:: Lens' EnumDescriptorProto Data.Text.Text@
-    * 'Proto.Google.Protobuf.Descriptor'Fields.maybe'name' @:: Lens' EnumDescriptorProto (Prelude.Maybe Data.Text.Text)@
-    * 'Proto.Google.Protobuf.Descriptor'Fields.value' @:: Lens' EnumDescriptorProto [EnumValueDescriptorProto]@
-    * 'Proto.Google.Protobuf.Descriptor'Fields.options' @:: Lens' EnumDescriptorProto EnumOptions@
-    * 'Proto.Google.Protobuf.Descriptor'Fields.maybe'options' @:: Lens' EnumDescriptorProto (Prelude.Maybe EnumOptions)@
+    * 'Proto.Google.Protobuf.Descriptor_Fields.name' @:: Lens' EnumDescriptorProto Data.Text.Text@
+    * 'Proto.Google.Protobuf.Descriptor_Fields.maybe'name' @:: Lens' EnumDescriptorProto (Prelude.Maybe Data.Text.Text)@
+    * 'Proto.Google.Protobuf.Descriptor_Fields.value' @:: Lens' EnumDescriptorProto [EnumValueDescriptorProto]@
+    * 'Proto.Google.Protobuf.Descriptor_Fields.options' @:: Lens' EnumDescriptorProto EnumOptions@
+    * 'Proto.Google.Protobuf.Descriptor_Fields.maybe'options' @:: Lens' EnumDescriptorProto (Prelude.Maybe EnumOptions)@
  -}
 data EnumDescriptorProto = EnumDescriptorProto{_EnumDescriptorProto'name
                                                :: !(Prelude.Maybe Data.Text.Text),
@@ -595,11 +595,11 @@ instance Data.ProtoLens.Message EnumDescriptorProto where
               (\ x__ y__ -> x__{_EnumDescriptorProto'_unknownFields = y__})
 {- | Fields :
 
-    * 'Proto.Google.Protobuf.Descriptor'Fields.allowAlias' @:: Lens' EnumOptions Prelude.Bool@
-    * 'Proto.Google.Protobuf.Descriptor'Fields.maybe'allowAlias' @:: Lens' EnumOptions (Prelude.Maybe Prelude.Bool)@
-    * 'Proto.Google.Protobuf.Descriptor'Fields.deprecated' @:: Lens' EnumOptions Prelude.Bool@
-    * 'Proto.Google.Protobuf.Descriptor'Fields.maybe'deprecated' @:: Lens' EnumOptions (Prelude.Maybe Prelude.Bool)@
-    * 'Proto.Google.Protobuf.Descriptor'Fields.uninterpretedOption' @:: Lens' EnumOptions [UninterpretedOption]@
+    * 'Proto.Google.Protobuf.Descriptor_Fields.allowAlias' @:: Lens' EnumOptions Prelude.Bool@
+    * 'Proto.Google.Protobuf.Descriptor_Fields.maybe'allowAlias' @:: Lens' EnumOptions (Prelude.Maybe Prelude.Bool)@
+    * 'Proto.Google.Protobuf.Descriptor_Fields.deprecated' @:: Lens' EnumOptions Prelude.Bool@
+    * 'Proto.Google.Protobuf.Descriptor_Fields.maybe'deprecated' @:: Lens' EnumOptions (Prelude.Maybe Prelude.Bool)@
+    * 'Proto.Google.Protobuf.Descriptor_Fields.uninterpretedOption' @:: Lens' EnumOptions [UninterpretedOption]@
  -}
 data EnumOptions = EnumOptions{_EnumOptions'allowAlias ::
                                !(Prelude.Maybe Prelude.Bool),
@@ -698,12 +698,12 @@ instance Data.ProtoLens.Message EnumOptions where
               (\ x__ y__ -> x__{_EnumOptions'_unknownFields = y__})
 {- | Fields :
 
-    * 'Proto.Google.Protobuf.Descriptor'Fields.name' @:: Lens' EnumValueDescriptorProto Data.Text.Text@
-    * 'Proto.Google.Protobuf.Descriptor'Fields.maybe'name' @:: Lens' EnumValueDescriptorProto (Prelude.Maybe Data.Text.Text)@
-    * 'Proto.Google.Protobuf.Descriptor'Fields.number' @:: Lens' EnumValueDescriptorProto Data.Int.Int32@
-    * 'Proto.Google.Protobuf.Descriptor'Fields.maybe'number' @:: Lens' EnumValueDescriptorProto (Prelude.Maybe Data.Int.Int32)@
-    * 'Proto.Google.Protobuf.Descriptor'Fields.options' @:: Lens' EnumValueDescriptorProto EnumValueOptions@
-    * 'Proto.Google.Protobuf.Descriptor'Fields.maybe'options' @:: Lens' EnumValueDescriptorProto (Prelude.Maybe EnumValueOptions)@
+    * 'Proto.Google.Protobuf.Descriptor_Fields.name' @:: Lens' EnumValueDescriptorProto Data.Text.Text@
+    * 'Proto.Google.Protobuf.Descriptor_Fields.maybe'name' @:: Lens' EnumValueDescriptorProto (Prelude.Maybe Data.Text.Text)@
+    * 'Proto.Google.Protobuf.Descriptor_Fields.number' @:: Lens' EnumValueDescriptorProto Data.Int.Int32@
+    * 'Proto.Google.Protobuf.Descriptor_Fields.maybe'number' @:: Lens' EnumValueDescriptorProto (Prelude.Maybe Data.Int.Int32)@
+    * 'Proto.Google.Protobuf.Descriptor_Fields.options' @:: Lens' EnumValueDescriptorProto EnumValueOptions@
+    * 'Proto.Google.Protobuf.Descriptor_Fields.maybe'options' @:: Lens' EnumValueDescriptorProto (Prelude.Maybe EnumValueOptions)@
  -}
 data EnumValueDescriptorProto = EnumValueDescriptorProto{_EnumValueDescriptorProto'name
                                                          :: !(Prelude.Maybe Data.Text.Text),
@@ -823,9 +823,9 @@ instance Data.ProtoLens.Message EnumValueDescriptorProto where
               (\ x__ y__ -> x__{_EnumValueDescriptorProto'_unknownFields = y__})
 {- | Fields :
 
-    * 'Proto.Google.Protobuf.Descriptor'Fields.deprecated' @:: Lens' EnumValueOptions Prelude.Bool@
-    * 'Proto.Google.Protobuf.Descriptor'Fields.maybe'deprecated' @:: Lens' EnumValueOptions (Prelude.Maybe Prelude.Bool)@
-    * 'Proto.Google.Protobuf.Descriptor'Fields.uninterpretedOption' @:: Lens' EnumValueOptions [UninterpretedOption]@
+    * 'Proto.Google.Protobuf.Descriptor_Fields.deprecated' @:: Lens' EnumValueOptions Prelude.Bool@
+    * 'Proto.Google.Protobuf.Descriptor_Fields.maybe'deprecated' @:: Lens' EnumValueOptions (Prelude.Maybe Prelude.Bool)@
+    * 'Proto.Google.Protobuf.Descriptor_Fields.uninterpretedOption' @:: Lens' EnumValueOptions [UninterpretedOption]@
  -}
 data EnumValueOptions = EnumValueOptions{_EnumValueOptions'deprecated
                                          :: !(Prelude.Maybe Prelude.Bool),
@@ -898,28 +898,28 @@ instance Data.ProtoLens.Message EnumValueOptions where
               (\ x__ y__ -> x__{_EnumValueOptions'_unknownFields = y__})
 {- | Fields :
 
-    * 'Proto.Google.Protobuf.Descriptor'Fields.name' @:: Lens' FieldDescriptorProto Data.Text.Text@
-    * 'Proto.Google.Protobuf.Descriptor'Fields.maybe'name' @:: Lens' FieldDescriptorProto (Prelude.Maybe Data.Text.Text)@
-    * 'Proto.Google.Protobuf.Descriptor'Fields.number' @:: Lens' FieldDescriptorProto Data.Int.Int32@
-    * 'Proto.Google.Protobuf.Descriptor'Fields.maybe'number' @:: Lens' FieldDescriptorProto (Prelude.Maybe Data.Int.Int32)@
-    * 'Proto.Google.Protobuf.Descriptor'Fields.label' @:: Lens' FieldDescriptorProto FieldDescriptorProto'Label@
-    * 'Proto.Google.Protobuf.Descriptor'Fields.maybe'label' @:: Lens' FieldDescriptorProto
+    * 'Proto.Google.Protobuf.Descriptor_Fields.name' @:: Lens' FieldDescriptorProto Data.Text.Text@
+    * 'Proto.Google.Protobuf.Descriptor_Fields.maybe'name' @:: Lens' FieldDescriptorProto (Prelude.Maybe Data.Text.Text)@
+    * 'Proto.Google.Protobuf.Descriptor_Fields.number' @:: Lens' FieldDescriptorProto Data.Int.Int32@
+    * 'Proto.Google.Protobuf.Descriptor_Fields.maybe'number' @:: Lens' FieldDescriptorProto (Prelude.Maybe Data.Int.Int32)@
+    * 'Proto.Google.Protobuf.Descriptor_Fields.label' @:: Lens' FieldDescriptorProto FieldDescriptorProto'Label@
+    * 'Proto.Google.Protobuf.Descriptor_Fields.maybe'label' @:: Lens' FieldDescriptorProto
   (Prelude.Maybe FieldDescriptorProto'Label)@
-    * 'Proto.Google.Protobuf.Descriptor'Fields.type'' @:: Lens' FieldDescriptorProto FieldDescriptorProto'Type@
-    * 'Proto.Google.Protobuf.Descriptor'Fields.maybe'type'' @:: Lens' FieldDescriptorProto
+    * 'Proto.Google.Protobuf.Descriptor_Fields.type'' @:: Lens' FieldDescriptorProto FieldDescriptorProto'Type@
+    * 'Proto.Google.Protobuf.Descriptor_Fields.maybe'type'' @:: Lens' FieldDescriptorProto
   (Prelude.Maybe FieldDescriptorProto'Type)@
-    * 'Proto.Google.Protobuf.Descriptor'Fields.typeName' @:: Lens' FieldDescriptorProto Data.Text.Text@
-    * 'Proto.Google.Protobuf.Descriptor'Fields.maybe'typeName' @:: Lens' FieldDescriptorProto (Prelude.Maybe Data.Text.Text)@
-    * 'Proto.Google.Protobuf.Descriptor'Fields.extendee' @:: Lens' FieldDescriptorProto Data.Text.Text@
-    * 'Proto.Google.Protobuf.Descriptor'Fields.maybe'extendee' @:: Lens' FieldDescriptorProto (Prelude.Maybe Data.Text.Text)@
-    * 'Proto.Google.Protobuf.Descriptor'Fields.defaultValue' @:: Lens' FieldDescriptorProto Data.Text.Text@
-    * 'Proto.Google.Protobuf.Descriptor'Fields.maybe'defaultValue' @:: Lens' FieldDescriptorProto (Prelude.Maybe Data.Text.Text)@
-    * 'Proto.Google.Protobuf.Descriptor'Fields.oneofIndex' @:: Lens' FieldDescriptorProto Data.Int.Int32@
-    * 'Proto.Google.Protobuf.Descriptor'Fields.maybe'oneofIndex' @:: Lens' FieldDescriptorProto (Prelude.Maybe Data.Int.Int32)@
-    * 'Proto.Google.Protobuf.Descriptor'Fields.jsonName' @:: Lens' FieldDescriptorProto Data.Text.Text@
-    * 'Proto.Google.Protobuf.Descriptor'Fields.maybe'jsonName' @:: Lens' FieldDescriptorProto (Prelude.Maybe Data.Text.Text)@
-    * 'Proto.Google.Protobuf.Descriptor'Fields.options' @:: Lens' FieldDescriptorProto FieldOptions@
-    * 'Proto.Google.Protobuf.Descriptor'Fields.maybe'options' @:: Lens' FieldDescriptorProto (Prelude.Maybe FieldOptions)@
+    * 'Proto.Google.Protobuf.Descriptor_Fields.typeName' @:: Lens' FieldDescriptorProto Data.Text.Text@
+    * 'Proto.Google.Protobuf.Descriptor_Fields.maybe'typeName' @:: Lens' FieldDescriptorProto (Prelude.Maybe Data.Text.Text)@
+    * 'Proto.Google.Protobuf.Descriptor_Fields.extendee' @:: Lens' FieldDescriptorProto Data.Text.Text@
+    * 'Proto.Google.Protobuf.Descriptor_Fields.maybe'extendee' @:: Lens' FieldDescriptorProto (Prelude.Maybe Data.Text.Text)@
+    * 'Proto.Google.Protobuf.Descriptor_Fields.defaultValue' @:: Lens' FieldDescriptorProto Data.Text.Text@
+    * 'Proto.Google.Protobuf.Descriptor_Fields.maybe'defaultValue' @:: Lens' FieldDescriptorProto (Prelude.Maybe Data.Text.Text)@
+    * 'Proto.Google.Protobuf.Descriptor_Fields.oneofIndex' @:: Lens' FieldDescriptorProto Data.Int.Int32@
+    * 'Proto.Google.Protobuf.Descriptor_Fields.maybe'oneofIndex' @:: Lens' FieldDescriptorProto (Prelude.Maybe Data.Int.Int32)@
+    * 'Proto.Google.Protobuf.Descriptor_Fields.jsonName' @:: Lens' FieldDescriptorProto Data.Text.Text@
+    * 'Proto.Google.Protobuf.Descriptor_Fields.maybe'jsonName' @:: Lens' FieldDescriptorProto (Prelude.Maybe Data.Text.Text)@
+    * 'Proto.Google.Protobuf.Descriptor_Fields.options' @:: Lens' FieldDescriptorProto FieldOptions@
+    * 'Proto.Google.Protobuf.Descriptor_Fields.maybe'options' @:: Lens' FieldDescriptorProto (Prelude.Maybe FieldOptions)@
  -}
 data FieldDescriptorProto = FieldDescriptorProto{_FieldDescriptorProto'name
                                                  :: !(Prelude.Maybe Data.Text.Text),
@@ -1507,19 +1507,19 @@ instance Prelude.Bounded FieldDescriptorProto'Type where
         maxBound = FieldDescriptorProto'TYPE_SINT64
 {- | Fields :
 
-    * 'Proto.Google.Protobuf.Descriptor'Fields.ctype' @:: Lens' FieldOptions FieldOptions'CType@
-    * 'Proto.Google.Protobuf.Descriptor'Fields.maybe'ctype' @:: Lens' FieldOptions (Prelude.Maybe FieldOptions'CType)@
-    * 'Proto.Google.Protobuf.Descriptor'Fields.packed' @:: Lens' FieldOptions Prelude.Bool@
-    * 'Proto.Google.Protobuf.Descriptor'Fields.maybe'packed' @:: Lens' FieldOptions (Prelude.Maybe Prelude.Bool)@
-    * 'Proto.Google.Protobuf.Descriptor'Fields.jstype' @:: Lens' FieldOptions FieldOptions'JSType@
-    * 'Proto.Google.Protobuf.Descriptor'Fields.maybe'jstype' @:: Lens' FieldOptions (Prelude.Maybe FieldOptions'JSType)@
-    * 'Proto.Google.Protobuf.Descriptor'Fields.lazy' @:: Lens' FieldOptions Prelude.Bool@
-    * 'Proto.Google.Protobuf.Descriptor'Fields.maybe'lazy' @:: Lens' FieldOptions (Prelude.Maybe Prelude.Bool)@
-    * 'Proto.Google.Protobuf.Descriptor'Fields.deprecated' @:: Lens' FieldOptions Prelude.Bool@
-    * 'Proto.Google.Protobuf.Descriptor'Fields.maybe'deprecated' @:: Lens' FieldOptions (Prelude.Maybe Prelude.Bool)@
-    * 'Proto.Google.Protobuf.Descriptor'Fields.weak' @:: Lens' FieldOptions Prelude.Bool@
-    * 'Proto.Google.Protobuf.Descriptor'Fields.maybe'weak' @:: Lens' FieldOptions (Prelude.Maybe Prelude.Bool)@
-    * 'Proto.Google.Protobuf.Descriptor'Fields.uninterpretedOption' @:: Lens' FieldOptions [UninterpretedOption]@
+    * 'Proto.Google.Protobuf.Descriptor_Fields.ctype' @:: Lens' FieldOptions FieldOptions'CType@
+    * 'Proto.Google.Protobuf.Descriptor_Fields.maybe'ctype' @:: Lens' FieldOptions (Prelude.Maybe FieldOptions'CType)@
+    * 'Proto.Google.Protobuf.Descriptor_Fields.packed' @:: Lens' FieldOptions Prelude.Bool@
+    * 'Proto.Google.Protobuf.Descriptor_Fields.maybe'packed' @:: Lens' FieldOptions (Prelude.Maybe Prelude.Bool)@
+    * 'Proto.Google.Protobuf.Descriptor_Fields.jstype' @:: Lens' FieldOptions FieldOptions'JSType@
+    * 'Proto.Google.Protobuf.Descriptor_Fields.maybe'jstype' @:: Lens' FieldOptions (Prelude.Maybe FieldOptions'JSType)@
+    * 'Proto.Google.Protobuf.Descriptor_Fields.lazy' @:: Lens' FieldOptions Prelude.Bool@
+    * 'Proto.Google.Protobuf.Descriptor_Fields.maybe'lazy' @:: Lens' FieldOptions (Prelude.Maybe Prelude.Bool)@
+    * 'Proto.Google.Protobuf.Descriptor_Fields.deprecated' @:: Lens' FieldOptions Prelude.Bool@
+    * 'Proto.Google.Protobuf.Descriptor_Fields.maybe'deprecated' @:: Lens' FieldOptions (Prelude.Maybe Prelude.Bool)@
+    * 'Proto.Google.Protobuf.Descriptor_Fields.weak' @:: Lens' FieldOptions Prelude.Bool@
+    * 'Proto.Google.Protobuf.Descriptor_Fields.maybe'weak' @:: Lens' FieldOptions (Prelude.Maybe Prelude.Bool)@
+    * 'Proto.Google.Protobuf.Descriptor_Fields.uninterpretedOption' @:: Lens' FieldOptions [UninterpretedOption]@
  -}
 data FieldOptions = FieldOptions{_FieldOptions'ctype ::
                                  !(Prelude.Maybe FieldOptions'CType),
@@ -1826,23 +1826,23 @@ instance Prelude.Bounded FieldOptions'JSType where
         maxBound = FieldOptions'JS_NUMBER
 {- | Fields :
 
-    * 'Proto.Google.Protobuf.Descriptor'Fields.name' @:: Lens' FileDescriptorProto Data.Text.Text@
-    * 'Proto.Google.Protobuf.Descriptor'Fields.maybe'name' @:: Lens' FileDescriptorProto (Prelude.Maybe Data.Text.Text)@
-    * 'Proto.Google.Protobuf.Descriptor'Fields.package' @:: Lens' FileDescriptorProto Data.Text.Text@
-    * 'Proto.Google.Protobuf.Descriptor'Fields.maybe'package' @:: Lens' FileDescriptorProto (Prelude.Maybe Data.Text.Text)@
-    * 'Proto.Google.Protobuf.Descriptor'Fields.dependency' @:: Lens' FileDescriptorProto [Data.Text.Text]@
-    * 'Proto.Google.Protobuf.Descriptor'Fields.publicDependency' @:: Lens' FileDescriptorProto [Data.Int.Int32]@
-    * 'Proto.Google.Protobuf.Descriptor'Fields.weakDependency' @:: Lens' FileDescriptorProto [Data.Int.Int32]@
-    * 'Proto.Google.Protobuf.Descriptor'Fields.messageType' @:: Lens' FileDescriptorProto [DescriptorProto]@
-    * 'Proto.Google.Protobuf.Descriptor'Fields.enumType' @:: Lens' FileDescriptorProto [EnumDescriptorProto]@
-    * 'Proto.Google.Protobuf.Descriptor'Fields.service' @:: Lens' FileDescriptorProto [ServiceDescriptorProto]@
-    * 'Proto.Google.Protobuf.Descriptor'Fields.extension' @:: Lens' FileDescriptorProto [FieldDescriptorProto]@
-    * 'Proto.Google.Protobuf.Descriptor'Fields.options' @:: Lens' FileDescriptorProto FileOptions@
-    * 'Proto.Google.Protobuf.Descriptor'Fields.maybe'options' @:: Lens' FileDescriptorProto (Prelude.Maybe FileOptions)@
-    * 'Proto.Google.Protobuf.Descriptor'Fields.sourceCodeInfo' @:: Lens' FileDescriptorProto SourceCodeInfo@
-    * 'Proto.Google.Protobuf.Descriptor'Fields.maybe'sourceCodeInfo' @:: Lens' FileDescriptorProto (Prelude.Maybe SourceCodeInfo)@
-    * 'Proto.Google.Protobuf.Descriptor'Fields.syntax' @:: Lens' FileDescriptorProto Data.Text.Text@
-    * 'Proto.Google.Protobuf.Descriptor'Fields.maybe'syntax' @:: Lens' FileDescriptorProto (Prelude.Maybe Data.Text.Text)@
+    * 'Proto.Google.Protobuf.Descriptor_Fields.name' @:: Lens' FileDescriptorProto Data.Text.Text@
+    * 'Proto.Google.Protobuf.Descriptor_Fields.maybe'name' @:: Lens' FileDescriptorProto (Prelude.Maybe Data.Text.Text)@
+    * 'Proto.Google.Protobuf.Descriptor_Fields.package' @:: Lens' FileDescriptorProto Data.Text.Text@
+    * 'Proto.Google.Protobuf.Descriptor_Fields.maybe'package' @:: Lens' FileDescriptorProto (Prelude.Maybe Data.Text.Text)@
+    * 'Proto.Google.Protobuf.Descriptor_Fields.dependency' @:: Lens' FileDescriptorProto [Data.Text.Text]@
+    * 'Proto.Google.Protobuf.Descriptor_Fields.publicDependency' @:: Lens' FileDescriptorProto [Data.Int.Int32]@
+    * 'Proto.Google.Protobuf.Descriptor_Fields.weakDependency' @:: Lens' FileDescriptorProto [Data.Int.Int32]@
+    * 'Proto.Google.Protobuf.Descriptor_Fields.messageType' @:: Lens' FileDescriptorProto [DescriptorProto]@
+    * 'Proto.Google.Protobuf.Descriptor_Fields.enumType' @:: Lens' FileDescriptorProto [EnumDescriptorProto]@
+    * 'Proto.Google.Protobuf.Descriptor_Fields.service' @:: Lens' FileDescriptorProto [ServiceDescriptorProto]@
+    * 'Proto.Google.Protobuf.Descriptor_Fields.extension' @:: Lens' FileDescriptorProto [FieldDescriptorProto]@
+    * 'Proto.Google.Protobuf.Descriptor_Fields.options' @:: Lens' FileDescriptorProto FileOptions@
+    * 'Proto.Google.Protobuf.Descriptor_Fields.maybe'options' @:: Lens' FileDescriptorProto (Prelude.Maybe FileOptions)@
+    * 'Proto.Google.Protobuf.Descriptor_Fields.sourceCodeInfo' @:: Lens' FileDescriptorProto SourceCodeInfo@
+    * 'Proto.Google.Protobuf.Descriptor_Fields.maybe'sourceCodeInfo' @:: Lens' FileDescriptorProto (Prelude.Maybe SourceCodeInfo)@
+    * 'Proto.Google.Protobuf.Descriptor_Fields.syntax' @:: Lens' FileDescriptorProto Data.Text.Text@
+    * 'Proto.Google.Protobuf.Descriptor_Fields.maybe'syntax' @:: Lens' FileDescriptorProto (Prelude.Maybe Data.Text.Text)@
  -}
 data FileDescriptorProto = FileDescriptorProto{_FileDescriptorProto'name
                                                :: !(Prelude.Maybe Data.Text.Text),
@@ -2160,7 +2160,7 @@ instance Data.ProtoLens.Message FileDescriptorProto where
               (\ x__ y__ -> x__{_FileDescriptorProto'_unknownFields = y__})
 {- | Fields :
 
-    * 'Proto.Google.Protobuf.Descriptor'Fields.file' @:: Lens' FileDescriptorSet [FileDescriptorProto]@
+    * 'Proto.Google.Protobuf.Descriptor_Fields.file' @:: Lens' FileDescriptorSet [FileDescriptorProto]@
  -}
 data FileDescriptorSet = FileDescriptorSet{_FileDescriptorSet'file
                                            :: ![FileDescriptorProto],
@@ -2202,35 +2202,35 @@ instance Data.ProtoLens.Message FileDescriptorSet where
               (\ x__ y__ -> x__{_FileDescriptorSet'_unknownFields = y__})
 {- | Fields :
 
-    * 'Proto.Google.Protobuf.Descriptor'Fields.javaPackage' @:: Lens' FileOptions Data.Text.Text@
-    * 'Proto.Google.Protobuf.Descriptor'Fields.maybe'javaPackage' @:: Lens' FileOptions (Prelude.Maybe Data.Text.Text)@
-    * 'Proto.Google.Protobuf.Descriptor'Fields.javaOuterClassname' @:: Lens' FileOptions Data.Text.Text@
-    * 'Proto.Google.Protobuf.Descriptor'Fields.maybe'javaOuterClassname' @:: Lens' FileOptions (Prelude.Maybe Data.Text.Text)@
-    * 'Proto.Google.Protobuf.Descriptor'Fields.javaMultipleFiles' @:: Lens' FileOptions Prelude.Bool@
-    * 'Proto.Google.Protobuf.Descriptor'Fields.maybe'javaMultipleFiles' @:: Lens' FileOptions (Prelude.Maybe Prelude.Bool)@
-    * 'Proto.Google.Protobuf.Descriptor'Fields.javaGenerateEqualsAndHash' @:: Lens' FileOptions Prelude.Bool@
-    * 'Proto.Google.Protobuf.Descriptor'Fields.maybe'javaGenerateEqualsAndHash' @:: Lens' FileOptions (Prelude.Maybe Prelude.Bool)@
-    * 'Proto.Google.Protobuf.Descriptor'Fields.javaStringCheckUtf8' @:: Lens' FileOptions Prelude.Bool@
-    * 'Proto.Google.Protobuf.Descriptor'Fields.maybe'javaStringCheckUtf8' @:: Lens' FileOptions (Prelude.Maybe Prelude.Bool)@
-    * 'Proto.Google.Protobuf.Descriptor'Fields.optimizeFor' @:: Lens' FileOptions FileOptions'OptimizeMode@
-    * 'Proto.Google.Protobuf.Descriptor'Fields.maybe'optimizeFor' @:: Lens' FileOptions (Prelude.Maybe FileOptions'OptimizeMode)@
-    * 'Proto.Google.Protobuf.Descriptor'Fields.goPackage' @:: Lens' FileOptions Data.Text.Text@
-    * 'Proto.Google.Protobuf.Descriptor'Fields.maybe'goPackage' @:: Lens' FileOptions (Prelude.Maybe Data.Text.Text)@
-    * 'Proto.Google.Protobuf.Descriptor'Fields.ccGenericServices' @:: Lens' FileOptions Prelude.Bool@
-    * 'Proto.Google.Protobuf.Descriptor'Fields.maybe'ccGenericServices' @:: Lens' FileOptions (Prelude.Maybe Prelude.Bool)@
-    * 'Proto.Google.Protobuf.Descriptor'Fields.javaGenericServices' @:: Lens' FileOptions Prelude.Bool@
-    * 'Proto.Google.Protobuf.Descriptor'Fields.maybe'javaGenericServices' @:: Lens' FileOptions (Prelude.Maybe Prelude.Bool)@
-    * 'Proto.Google.Protobuf.Descriptor'Fields.pyGenericServices' @:: Lens' FileOptions Prelude.Bool@
-    * 'Proto.Google.Protobuf.Descriptor'Fields.maybe'pyGenericServices' @:: Lens' FileOptions (Prelude.Maybe Prelude.Bool)@
-    * 'Proto.Google.Protobuf.Descriptor'Fields.deprecated' @:: Lens' FileOptions Prelude.Bool@
-    * 'Proto.Google.Protobuf.Descriptor'Fields.maybe'deprecated' @:: Lens' FileOptions (Prelude.Maybe Prelude.Bool)@
-    * 'Proto.Google.Protobuf.Descriptor'Fields.ccEnableArenas' @:: Lens' FileOptions Prelude.Bool@
-    * 'Proto.Google.Protobuf.Descriptor'Fields.maybe'ccEnableArenas' @:: Lens' FileOptions (Prelude.Maybe Prelude.Bool)@
-    * 'Proto.Google.Protobuf.Descriptor'Fields.objcClassPrefix' @:: Lens' FileOptions Data.Text.Text@
-    * 'Proto.Google.Protobuf.Descriptor'Fields.maybe'objcClassPrefix' @:: Lens' FileOptions (Prelude.Maybe Data.Text.Text)@
-    * 'Proto.Google.Protobuf.Descriptor'Fields.csharpNamespace' @:: Lens' FileOptions Data.Text.Text@
-    * 'Proto.Google.Protobuf.Descriptor'Fields.maybe'csharpNamespace' @:: Lens' FileOptions (Prelude.Maybe Data.Text.Text)@
-    * 'Proto.Google.Protobuf.Descriptor'Fields.uninterpretedOption' @:: Lens' FileOptions [UninterpretedOption]@
+    * 'Proto.Google.Protobuf.Descriptor_Fields.javaPackage' @:: Lens' FileOptions Data.Text.Text@
+    * 'Proto.Google.Protobuf.Descriptor_Fields.maybe'javaPackage' @:: Lens' FileOptions (Prelude.Maybe Data.Text.Text)@
+    * 'Proto.Google.Protobuf.Descriptor_Fields.javaOuterClassname' @:: Lens' FileOptions Data.Text.Text@
+    * 'Proto.Google.Protobuf.Descriptor_Fields.maybe'javaOuterClassname' @:: Lens' FileOptions (Prelude.Maybe Data.Text.Text)@
+    * 'Proto.Google.Protobuf.Descriptor_Fields.javaMultipleFiles' @:: Lens' FileOptions Prelude.Bool@
+    * 'Proto.Google.Protobuf.Descriptor_Fields.maybe'javaMultipleFiles' @:: Lens' FileOptions (Prelude.Maybe Prelude.Bool)@
+    * 'Proto.Google.Protobuf.Descriptor_Fields.javaGenerateEqualsAndHash' @:: Lens' FileOptions Prelude.Bool@
+    * 'Proto.Google.Protobuf.Descriptor_Fields.maybe'javaGenerateEqualsAndHash' @:: Lens' FileOptions (Prelude.Maybe Prelude.Bool)@
+    * 'Proto.Google.Protobuf.Descriptor_Fields.javaStringCheckUtf8' @:: Lens' FileOptions Prelude.Bool@
+    * 'Proto.Google.Protobuf.Descriptor_Fields.maybe'javaStringCheckUtf8' @:: Lens' FileOptions (Prelude.Maybe Prelude.Bool)@
+    * 'Proto.Google.Protobuf.Descriptor_Fields.optimizeFor' @:: Lens' FileOptions FileOptions'OptimizeMode@
+    * 'Proto.Google.Protobuf.Descriptor_Fields.maybe'optimizeFor' @:: Lens' FileOptions (Prelude.Maybe FileOptions'OptimizeMode)@
+    * 'Proto.Google.Protobuf.Descriptor_Fields.goPackage' @:: Lens' FileOptions Data.Text.Text@
+    * 'Proto.Google.Protobuf.Descriptor_Fields.maybe'goPackage' @:: Lens' FileOptions (Prelude.Maybe Data.Text.Text)@
+    * 'Proto.Google.Protobuf.Descriptor_Fields.ccGenericServices' @:: Lens' FileOptions Prelude.Bool@
+    * 'Proto.Google.Protobuf.Descriptor_Fields.maybe'ccGenericServices' @:: Lens' FileOptions (Prelude.Maybe Prelude.Bool)@
+    * 'Proto.Google.Protobuf.Descriptor_Fields.javaGenericServices' @:: Lens' FileOptions Prelude.Bool@
+    * 'Proto.Google.Protobuf.Descriptor_Fields.maybe'javaGenericServices' @:: Lens' FileOptions (Prelude.Maybe Prelude.Bool)@
+    * 'Proto.Google.Protobuf.Descriptor_Fields.pyGenericServices' @:: Lens' FileOptions Prelude.Bool@
+    * 'Proto.Google.Protobuf.Descriptor_Fields.maybe'pyGenericServices' @:: Lens' FileOptions (Prelude.Maybe Prelude.Bool)@
+    * 'Proto.Google.Protobuf.Descriptor_Fields.deprecated' @:: Lens' FileOptions Prelude.Bool@
+    * 'Proto.Google.Protobuf.Descriptor_Fields.maybe'deprecated' @:: Lens' FileOptions (Prelude.Maybe Prelude.Bool)@
+    * 'Proto.Google.Protobuf.Descriptor_Fields.ccEnableArenas' @:: Lens' FileOptions Prelude.Bool@
+    * 'Proto.Google.Protobuf.Descriptor_Fields.maybe'ccEnableArenas' @:: Lens' FileOptions (Prelude.Maybe Prelude.Bool)@
+    * 'Proto.Google.Protobuf.Descriptor_Fields.objcClassPrefix' @:: Lens' FileOptions Data.Text.Text@
+    * 'Proto.Google.Protobuf.Descriptor_Fields.maybe'objcClassPrefix' @:: Lens' FileOptions (Prelude.Maybe Data.Text.Text)@
+    * 'Proto.Google.Protobuf.Descriptor_Fields.csharpNamespace' @:: Lens' FileOptions Data.Text.Text@
+    * 'Proto.Google.Protobuf.Descriptor_Fields.maybe'csharpNamespace' @:: Lens' FileOptions (Prelude.Maybe Data.Text.Text)@
+    * 'Proto.Google.Protobuf.Descriptor_Fields.uninterpretedOption' @:: Lens' FileOptions [UninterpretedOption]@
  -}
 data FileOptions = FileOptions{_FileOptions'javaPackage ::
                                !(Prelude.Maybe Data.Text.Text),
@@ -2739,7 +2739,7 @@ instance Prelude.Bounded FileOptions'OptimizeMode where
         maxBound = FileOptions'LITE_RUNTIME
 {- | Fields :
 
-    * 'Proto.Google.Protobuf.Descriptor'Fields.annotation' @:: Lens' GeneratedCodeInfo [GeneratedCodeInfo'Annotation]@
+    * 'Proto.Google.Protobuf.Descriptor_Fields.annotation' @:: Lens' GeneratedCodeInfo [GeneratedCodeInfo'Annotation]@
  -}
 data GeneratedCodeInfo = GeneratedCodeInfo{_GeneratedCodeInfo'annotation
                                            :: ![GeneratedCodeInfo'Annotation],
@@ -2782,13 +2782,13 @@ instance Data.ProtoLens.Message GeneratedCodeInfo where
               (\ x__ y__ -> x__{_GeneratedCodeInfo'_unknownFields = y__})
 {- | Fields :
 
-    * 'Proto.Google.Protobuf.Descriptor'Fields.path' @:: Lens' GeneratedCodeInfo'Annotation [Data.Int.Int32]@
-    * 'Proto.Google.Protobuf.Descriptor'Fields.sourceFile' @:: Lens' GeneratedCodeInfo'Annotation Data.Text.Text@
-    * 'Proto.Google.Protobuf.Descriptor'Fields.maybe'sourceFile' @:: Lens' GeneratedCodeInfo'Annotation (Prelude.Maybe Data.Text.Text)@
-    * 'Proto.Google.Protobuf.Descriptor'Fields.begin' @:: Lens' GeneratedCodeInfo'Annotation Data.Int.Int32@
-    * 'Proto.Google.Protobuf.Descriptor'Fields.maybe'begin' @:: Lens' GeneratedCodeInfo'Annotation (Prelude.Maybe Data.Int.Int32)@
-    * 'Proto.Google.Protobuf.Descriptor'Fields.end' @:: Lens' GeneratedCodeInfo'Annotation Data.Int.Int32@
-    * 'Proto.Google.Protobuf.Descriptor'Fields.maybe'end' @:: Lens' GeneratedCodeInfo'Annotation (Prelude.Maybe Data.Int.Int32)@
+    * 'Proto.Google.Protobuf.Descriptor_Fields.path' @:: Lens' GeneratedCodeInfo'Annotation [Data.Int.Int32]@
+    * 'Proto.Google.Protobuf.Descriptor_Fields.sourceFile' @:: Lens' GeneratedCodeInfo'Annotation Data.Text.Text@
+    * 'Proto.Google.Protobuf.Descriptor_Fields.maybe'sourceFile' @:: Lens' GeneratedCodeInfo'Annotation (Prelude.Maybe Data.Text.Text)@
+    * 'Proto.Google.Protobuf.Descriptor_Fields.begin' @:: Lens' GeneratedCodeInfo'Annotation Data.Int.Int32@
+    * 'Proto.Google.Protobuf.Descriptor_Fields.maybe'begin' @:: Lens' GeneratedCodeInfo'Annotation (Prelude.Maybe Data.Int.Int32)@
+    * 'Proto.Google.Protobuf.Descriptor_Fields.end' @:: Lens' GeneratedCodeInfo'Annotation Data.Int.Int32@
+    * 'Proto.Google.Protobuf.Descriptor_Fields.maybe'end' @:: Lens' GeneratedCodeInfo'Annotation (Prelude.Maybe Data.Int.Int32)@
  -}
 data GeneratedCodeInfo'Annotation = GeneratedCodeInfo'Annotation{_GeneratedCodeInfo'Annotation'path
                                                                  :: ![Data.Int.Int32],
@@ -2934,15 +2934,15 @@ instance Data.ProtoLens.Message GeneratedCodeInfo'Annotation where
                  x__{_GeneratedCodeInfo'Annotation'_unknownFields = y__})
 {- | Fields :
 
-    * 'Proto.Google.Protobuf.Descriptor'Fields.messageSetWireFormat' @:: Lens' MessageOptions Prelude.Bool@
-    * 'Proto.Google.Protobuf.Descriptor'Fields.maybe'messageSetWireFormat' @:: Lens' MessageOptions (Prelude.Maybe Prelude.Bool)@
-    * 'Proto.Google.Protobuf.Descriptor'Fields.noStandardDescriptorAccessor' @:: Lens' MessageOptions Prelude.Bool@
-    * 'Proto.Google.Protobuf.Descriptor'Fields.maybe'noStandardDescriptorAccessor' @:: Lens' MessageOptions (Prelude.Maybe Prelude.Bool)@
-    * 'Proto.Google.Protobuf.Descriptor'Fields.deprecated' @:: Lens' MessageOptions Prelude.Bool@
-    * 'Proto.Google.Protobuf.Descriptor'Fields.maybe'deprecated' @:: Lens' MessageOptions (Prelude.Maybe Prelude.Bool)@
-    * 'Proto.Google.Protobuf.Descriptor'Fields.mapEntry' @:: Lens' MessageOptions Prelude.Bool@
-    * 'Proto.Google.Protobuf.Descriptor'Fields.maybe'mapEntry' @:: Lens' MessageOptions (Prelude.Maybe Prelude.Bool)@
-    * 'Proto.Google.Protobuf.Descriptor'Fields.uninterpretedOption' @:: Lens' MessageOptions [UninterpretedOption]@
+    * 'Proto.Google.Protobuf.Descriptor_Fields.messageSetWireFormat' @:: Lens' MessageOptions Prelude.Bool@
+    * 'Proto.Google.Protobuf.Descriptor_Fields.maybe'messageSetWireFormat' @:: Lens' MessageOptions (Prelude.Maybe Prelude.Bool)@
+    * 'Proto.Google.Protobuf.Descriptor_Fields.noStandardDescriptorAccessor' @:: Lens' MessageOptions Prelude.Bool@
+    * 'Proto.Google.Protobuf.Descriptor_Fields.maybe'noStandardDescriptorAccessor' @:: Lens' MessageOptions (Prelude.Maybe Prelude.Bool)@
+    * 'Proto.Google.Protobuf.Descriptor_Fields.deprecated' @:: Lens' MessageOptions Prelude.Bool@
+    * 'Proto.Google.Protobuf.Descriptor_Fields.maybe'deprecated' @:: Lens' MessageOptions (Prelude.Maybe Prelude.Bool)@
+    * 'Proto.Google.Protobuf.Descriptor_Fields.mapEntry' @:: Lens' MessageOptions Prelude.Bool@
+    * 'Proto.Google.Protobuf.Descriptor_Fields.maybe'mapEntry' @:: Lens' MessageOptions (Prelude.Maybe Prelude.Bool)@
+    * 'Proto.Google.Protobuf.Descriptor_Fields.uninterpretedOption' @:: Lens' MessageOptions [UninterpretedOption]@
  -}
 data MessageOptions = MessageOptions{_MessageOptions'messageSetWireFormat
                                      :: !(Prelude.Maybe Prelude.Bool),
@@ -3110,18 +3110,18 @@ instance Data.ProtoLens.Message MessageOptions where
               (\ x__ y__ -> x__{_MessageOptions'_unknownFields = y__})
 {- | Fields :
 
-    * 'Proto.Google.Protobuf.Descriptor'Fields.name' @:: Lens' MethodDescriptorProto Data.Text.Text@
-    * 'Proto.Google.Protobuf.Descriptor'Fields.maybe'name' @:: Lens' MethodDescriptorProto (Prelude.Maybe Data.Text.Text)@
-    * 'Proto.Google.Protobuf.Descriptor'Fields.inputType' @:: Lens' MethodDescriptorProto Data.Text.Text@
-    * 'Proto.Google.Protobuf.Descriptor'Fields.maybe'inputType' @:: Lens' MethodDescriptorProto (Prelude.Maybe Data.Text.Text)@
-    * 'Proto.Google.Protobuf.Descriptor'Fields.outputType' @:: Lens' MethodDescriptorProto Data.Text.Text@
-    * 'Proto.Google.Protobuf.Descriptor'Fields.maybe'outputType' @:: Lens' MethodDescriptorProto (Prelude.Maybe Data.Text.Text)@
-    * 'Proto.Google.Protobuf.Descriptor'Fields.options' @:: Lens' MethodDescriptorProto MethodOptions@
-    * 'Proto.Google.Protobuf.Descriptor'Fields.maybe'options' @:: Lens' MethodDescriptorProto (Prelude.Maybe MethodOptions)@
-    * 'Proto.Google.Protobuf.Descriptor'Fields.clientStreaming' @:: Lens' MethodDescriptorProto Prelude.Bool@
-    * 'Proto.Google.Protobuf.Descriptor'Fields.maybe'clientStreaming' @:: Lens' MethodDescriptorProto (Prelude.Maybe Prelude.Bool)@
-    * 'Proto.Google.Protobuf.Descriptor'Fields.serverStreaming' @:: Lens' MethodDescriptorProto Prelude.Bool@
-    * 'Proto.Google.Protobuf.Descriptor'Fields.maybe'serverStreaming' @:: Lens' MethodDescriptorProto (Prelude.Maybe Prelude.Bool)@
+    * 'Proto.Google.Protobuf.Descriptor_Fields.name' @:: Lens' MethodDescriptorProto Data.Text.Text@
+    * 'Proto.Google.Protobuf.Descriptor_Fields.maybe'name' @:: Lens' MethodDescriptorProto (Prelude.Maybe Data.Text.Text)@
+    * 'Proto.Google.Protobuf.Descriptor_Fields.inputType' @:: Lens' MethodDescriptorProto Data.Text.Text@
+    * 'Proto.Google.Protobuf.Descriptor_Fields.maybe'inputType' @:: Lens' MethodDescriptorProto (Prelude.Maybe Data.Text.Text)@
+    * 'Proto.Google.Protobuf.Descriptor_Fields.outputType' @:: Lens' MethodDescriptorProto Data.Text.Text@
+    * 'Proto.Google.Protobuf.Descriptor_Fields.maybe'outputType' @:: Lens' MethodDescriptorProto (Prelude.Maybe Data.Text.Text)@
+    * 'Proto.Google.Protobuf.Descriptor_Fields.options' @:: Lens' MethodDescriptorProto MethodOptions@
+    * 'Proto.Google.Protobuf.Descriptor_Fields.maybe'options' @:: Lens' MethodDescriptorProto (Prelude.Maybe MethodOptions)@
+    * 'Proto.Google.Protobuf.Descriptor_Fields.clientStreaming' @:: Lens' MethodDescriptorProto Prelude.Bool@
+    * 'Proto.Google.Protobuf.Descriptor_Fields.maybe'clientStreaming' @:: Lens' MethodDescriptorProto (Prelude.Maybe Prelude.Bool)@
+    * 'Proto.Google.Protobuf.Descriptor_Fields.serverStreaming' @:: Lens' MethodDescriptorProto Prelude.Bool@
+    * 'Proto.Google.Protobuf.Descriptor_Fields.maybe'serverStreaming' @:: Lens' MethodDescriptorProto (Prelude.Maybe Prelude.Bool)@
  -}
 data MethodDescriptorProto = MethodDescriptorProto{_MethodDescriptorProto'name
                                                    :: !(Prelude.Maybe Data.Text.Text),
@@ -3332,9 +3332,9 @@ instance Data.ProtoLens.Message MethodDescriptorProto where
               (\ x__ y__ -> x__{_MethodDescriptorProto'_unknownFields = y__})
 {- | Fields :
 
-    * 'Proto.Google.Protobuf.Descriptor'Fields.deprecated' @:: Lens' MethodOptions Prelude.Bool@
-    * 'Proto.Google.Protobuf.Descriptor'Fields.maybe'deprecated' @:: Lens' MethodOptions (Prelude.Maybe Prelude.Bool)@
-    * 'Proto.Google.Protobuf.Descriptor'Fields.uninterpretedOption' @:: Lens' MethodOptions [UninterpretedOption]@
+    * 'Proto.Google.Protobuf.Descriptor_Fields.deprecated' @:: Lens' MethodOptions Prelude.Bool@
+    * 'Proto.Google.Protobuf.Descriptor_Fields.maybe'deprecated' @:: Lens' MethodOptions (Prelude.Maybe Prelude.Bool)@
+    * 'Proto.Google.Protobuf.Descriptor_Fields.uninterpretedOption' @:: Lens' MethodOptions [UninterpretedOption]@
  -}
 data MethodOptions = MethodOptions{_MethodOptions'deprecated ::
                                    !(Prelude.Maybe Prelude.Bool),
@@ -3405,8 +3405,8 @@ instance Data.ProtoLens.Message MethodOptions where
               (\ x__ y__ -> x__{_MethodOptions'_unknownFields = y__})
 {- | Fields :
 
-    * 'Proto.Google.Protobuf.Descriptor'Fields.name' @:: Lens' OneofDescriptorProto Data.Text.Text@
-    * 'Proto.Google.Protobuf.Descriptor'Fields.maybe'name' @:: Lens' OneofDescriptorProto (Prelude.Maybe Data.Text.Text)@
+    * 'Proto.Google.Protobuf.Descriptor_Fields.name' @:: Lens' OneofDescriptorProto Data.Text.Text@
+    * 'Proto.Google.Protobuf.Descriptor_Fields.maybe'name' @:: Lens' OneofDescriptorProto (Prelude.Maybe Data.Text.Text)@
  -}
 data OneofDescriptorProto = OneofDescriptorProto{_OneofDescriptorProto'name
                                                  :: !(Prelude.Maybe Data.Text.Text),
@@ -3460,11 +3460,11 @@ instance Data.ProtoLens.Message OneofDescriptorProto where
               (\ x__ y__ -> x__{_OneofDescriptorProto'_unknownFields = y__})
 {- | Fields :
 
-    * 'Proto.Google.Protobuf.Descriptor'Fields.name' @:: Lens' ServiceDescriptorProto Data.Text.Text@
-    * 'Proto.Google.Protobuf.Descriptor'Fields.maybe'name' @:: Lens' ServiceDescriptorProto (Prelude.Maybe Data.Text.Text)@
-    * 'Proto.Google.Protobuf.Descriptor'Fields.method' @:: Lens' ServiceDescriptorProto [MethodDescriptorProto]@
-    * 'Proto.Google.Protobuf.Descriptor'Fields.options' @:: Lens' ServiceDescriptorProto ServiceOptions@
-    * 'Proto.Google.Protobuf.Descriptor'Fields.maybe'options' @:: Lens' ServiceDescriptorProto (Prelude.Maybe ServiceOptions)@
+    * 'Proto.Google.Protobuf.Descriptor_Fields.name' @:: Lens' ServiceDescriptorProto Data.Text.Text@
+    * 'Proto.Google.Protobuf.Descriptor_Fields.maybe'name' @:: Lens' ServiceDescriptorProto (Prelude.Maybe Data.Text.Text)@
+    * 'Proto.Google.Protobuf.Descriptor_Fields.method' @:: Lens' ServiceDescriptorProto [MethodDescriptorProto]@
+    * 'Proto.Google.Protobuf.Descriptor_Fields.options' @:: Lens' ServiceDescriptorProto ServiceOptions@
+    * 'Proto.Google.Protobuf.Descriptor_Fields.maybe'options' @:: Lens' ServiceDescriptorProto (Prelude.Maybe ServiceOptions)@
  -}
 data ServiceDescriptorProto = ServiceDescriptorProto{_ServiceDescriptorProto'name
                                                      :: !(Prelude.Maybe Data.Text.Text),
@@ -3574,9 +3574,9 @@ instance Data.ProtoLens.Message ServiceDescriptorProto where
               (\ x__ y__ -> x__{_ServiceDescriptorProto'_unknownFields = y__})
 {- | Fields :
 
-    * 'Proto.Google.Protobuf.Descriptor'Fields.deprecated' @:: Lens' ServiceOptions Prelude.Bool@
-    * 'Proto.Google.Protobuf.Descriptor'Fields.maybe'deprecated' @:: Lens' ServiceOptions (Prelude.Maybe Prelude.Bool)@
-    * 'Proto.Google.Protobuf.Descriptor'Fields.uninterpretedOption' @:: Lens' ServiceOptions [UninterpretedOption]@
+    * 'Proto.Google.Protobuf.Descriptor_Fields.deprecated' @:: Lens' ServiceOptions Prelude.Bool@
+    * 'Proto.Google.Protobuf.Descriptor_Fields.maybe'deprecated' @:: Lens' ServiceOptions (Prelude.Maybe Prelude.Bool)@
+    * 'Proto.Google.Protobuf.Descriptor_Fields.uninterpretedOption' @:: Lens' ServiceOptions [UninterpretedOption]@
  -}
 data ServiceOptions = ServiceOptions{_ServiceOptions'deprecated ::
                                      !(Prelude.Maybe Prelude.Bool),
@@ -3647,7 +3647,7 @@ instance Data.ProtoLens.Message ServiceOptions where
               (\ x__ y__ -> x__{_ServiceOptions'_unknownFields = y__})
 {- | Fields :
 
-    * 'Proto.Google.Protobuf.Descriptor'Fields.location' @:: Lens' SourceCodeInfo [SourceCodeInfo'Location]@
+    * 'Proto.Google.Protobuf.Descriptor_Fields.location' @:: Lens' SourceCodeInfo [SourceCodeInfo'Location]@
  -}
 data SourceCodeInfo = SourceCodeInfo{_SourceCodeInfo'location ::
                                      ![SourceCodeInfo'Location],
@@ -3689,13 +3689,13 @@ instance Data.ProtoLens.Message SourceCodeInfo where
               (\ x__ y__ -> x__{_SourceCodeInfo'_unknownFields = y__})
 {- | Fields :
 
-    * 'Proto.Google.Protobuf.Descriptor'Fields.path' @:: Lens' SourceCodeInfo'Location [Data.Int.Int32]@
-    * 'Proto.Google.Protobuf.Descriptor'Fields.span' @:: Lens' SourceCodeInfo'Location [Data.Int.Int32]@
-    * 'Proto.Google.Protobuf.Descriptor'Fields.leadingComments' @:: Lens' SourceCodeInfo'Location Data.Text.Text@
-    * 'Proto.Google.Protobuf.Descriptor'Fields.maybe'leadingComments' @:: Lens' SourceCodeInfo'Location (Prelude.Maybe Data.Text.Text)@
-    * 'Proto.Google.Protobuf.Descriptor'Fields.trailingComments' @:: Lens' SourceCodeInfo'Location Data.Text.Text@
-    * 'Proto.Google.Protobuf.Descriptor'Fields.maybe'trailingComments' @:: Lens' SourceCodeInfo'Location (Prelude.Maybe Data.Text.Text)@
-    * 'Proto.Google.Protobuf.Descriptor'Fields.leadingDetachedComments' @:: Lens' SourceCodeInfo'Location [Data.Text.Text]@
+    * 'Proto.Google.Protobuf.Descriptor_Fields.path' @:: Lens' SourceCodeInfo'Location [Data.Int.Int32]@
+    * 'Proto.Google.Protobuf.Descriptor_Fields.span' @:: Lens' SourceCodeInfo'Location [Data.Int.Int32]@
+    * 'Proto.Google.Protobuf.Descriptor_Fields.leadingComments' @:: Lens' SourceCodeInfo'Location Data.Text.Text@
+    * 'Proto.Google.Protobuf.Descriptor_Fields.maybe'leadingComments' @:: Lens' SourceCodeInfo'Location (Prelude.Maybe Data.Text.Text)@
+    * 'Proto.Google.Protobuf.Descriptor_Fields.trailingComments' @:: Lens' SourceCodeInfo'Location Data.Text.Text@
+    * 'Proto.Google.Protobuf.Descriptor_Fields.maybe'trailingComments' @:: Lens' SourceCodeInfo'Location (Prelude.Maybe Data.Text.Text)@
+    * 'Proto.Google.Protobuf.Descriptor_Fields.leadingDetachedComments' @:: Lens' SourceCodeInfo'Location [Data.Text.Text]@
  -}
 data SourceCodeInfo'Location = SourceCodeInfo'Location{_SourceCodeInfo'Location'path
                                                        :: ![Data.Int.Int32],
@@ -3861,20 +3861,20 @@ instance Data.ProtoLens.Message SourceCodeInfo'Location where
               (\ x__ y__ -> x__{_SourceCodeInfo'Location'_unknownFields = y__})
 {- | Fields :
 
-    * 'Proto.Google.Protobuf.Descriptor'Fields.name' @:: Lens' UninterpretedOption [UninterpretedOption'NamePart]@
-    * 'Proto.Google.Protobuf.Descriptor'Fields.identifierValue' @:: Lens' UninterpretedOption Data.Text.Text@
-    * 'Proto.Google.Protobuf.Descriptor'Fields.maybe'identifierValue' @:: Lens' UninterpretedOption (Prelude.Maybe Data.Text.Text)@
-    * 'Proto.Google.Protobuf.Descriptor'Fields.positiveIntValue' @:: Lens' UninterpretedOption Data.Word.Word64@
-    * 'Proto.Google.Protobuf.Descriptor'Fields.maybe'positiveIntValue' @:: Lens' UninterpretedOption (Prelude.Maybe Data.Word.Word64)@
-    * 'Proto.Google.Protobuf.Descriptor'Fields.negativeIntValue' @:: Lens' UninterpretedOption Data.Int.Int64@
-    * 'Proto.Google.Protobuf.Descriptor'Fields.maybe'negativeIntValue' @:: Lens' UninterpretedOption (Prelude.Maybe Data.Int.Int64)@
-    * 'Proto.Google.Protobuf.Descriptor'Fields.doubleValue' @:: Lens' UninterpretedOption Prelude.Double@
-    * 'Proto.Google.Protobuf.Descriptor'Fields.maybe'doubleValue' @:: Lens' UninterpretedOption (Prelude.Maybe Prelude.Double)@
-    * 'Proto.Google.Protobuf.Descriptor'Fields.stringValue' @:: Lens' UninterpretedOption Data.ByteString.ByteString@
-    * 'Proto.Google.Protobuf.Descriptor'Fields.maybe'stringValue' @:: Lens' UninterpretedOption
+    * 'Proto.Google.Protobuf.Descriptor_Fields.name' @:: Lens' UninterpretedOption [UninterpretedOption'NamePart]@
+    * 'Proto.Google.Protobuf.Descriptor_Fields.identifierValue' @:: Lens' UninterpretedOption Data.Text.Text@
+    * 'Proto.Google.Protobuf.Descriptor_Fields.maybe'identifierValue' @:: Lens' UninterpretedOption (Prelude.Maybe Data.Text.Text)@
+    * 'Proto.Google.Protobuf.Descriptor_Fields.positiveIntValue' @:: Lens' UninterpretedOption Data.Word.Word64@
+    * 'Proto.Google.Protobuf.Descriptor_Fields.maybe'positiveIntValue' @:: Lens' UninterpretedOption (Prelude.Maybe Data.Word.Word64)@
+    * 'Proto.Google.Protobuf.Descriptor_Fields.negativeIntValue' @:: Lens' UninterpretedOption Data.Int.Int64@
+    * 'Proto.Google.Protobuf.Descriptor_Fields.maybe'negativeIntValue' @:: Lens' UninterpretedOption (Prelude.Maybe Data.Int.Int64)@
+    * 'Proto.Google.Protobuf.Descriptor_Fields.doubleValue' @:: Lens' UninterpretedOption Prelude.Double@
+    * 'Proto.Google.Protobuf.Descriptor_Fields.maybe'doubleValue' @:: Lens' UninterpretedOption (Prelude.Maybe Prelude.Double)@
+    * 'Proto.Google.Protobuf.Descriptor_Fields.stringValue' @:: Lens' UninterpretedOption Data.ByteString.ByteString@
+    * 'Proto.Google.Protobuf.Descriptor_Fields.maybe'stringValue' @:: Lens' UninterpretedOption
   (Prelude.Maybe Data.ByteString.ByteString)@
-    * 'Proto.Google.Protobuf.Descriptor'Fields.aggregateValue' @:: Lens' UninterpretedOption Data.Text.Text@
-    * 'Proto.Google.Protobuf.Descriptor'Fields.maybe'aggregateValue' @:: Lens' UninterpretedOption (Prelude.Maybe Data.Text.Text)@
+    * 'Proto.Google.Protobuf.Descriptor_Fields.aggregateValue' @:: Lens' UninterpretedOption Data.Text.Text@
+    * 'Proto.Google.Protobuf.Descriptor_Fields.maybe'aggregateValue' @:: Lens' UninterpretedOption (Prelude.Maybe Data.Text.Text)@
  -}
 data UninterpretedOption = UninterpretedOption{_UninterpretedOption'name
                                                :: ![UninterpretedOption'NamePart],
@@ -4104,8 +4104,8 @@ instance Data.ProtoLens.Message UninterpretedOption where
               (\ x__ y__ -> x__{_UninterpretedOption'_unknownFields = y__})
 {- | Fields :
 
-    * 'Proto.Google.Protobuf.Descriptor'Fields.namePart' @:: Lens' UninterpretedOption'NamePart Data.Text.Text@
-    * 'Proto.Google.Protobuf.Descriptor'Fields.isExtension' @:: Lens' UninterpretedOption'NamePart Prelude.Bool@
+    * 'Proto.Google.Protobuf.Descriptor_Fields.namePart' @:: Lens' UninterpretedOption'NamePart Data.Text.Text@
+    * 'Proto.Google.Protobuf.Descriptor_Fields.isExtension' @:: Lens' UninterpretedOption'NamePart Prelude.Bool@
  -}
 data UninterpretedOption'NamePart = UninterpretedOption'NamePart{_UninterpretedOption'NamePart'namePart
                                                                  :: !Data.Text.Text,

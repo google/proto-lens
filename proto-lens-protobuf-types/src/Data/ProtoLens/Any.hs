@@ -23,7 +23,7 @@ import Data.ProtoLens
 import Data.Proxy (Proxy(..))
 import Lens.Family2 ((&), (.~), (^.))
 import Proto.Google.Protobuf.Any
-import Proto.Google.Protobuf.Any'Fields
+import Proto.Google.Protobuf.Any_Fields
 
 -- | Packs the given message into an 'Any' using the default type URL prefix
 -- "type.googleapis.com".

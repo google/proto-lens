@@ -5,7 +5,7 @@
   PatternSynonyms, MagicHash, NoImplicitPrelude, DataKinds #-}
 {-# OPTIONS_GHC -fno-warn-unused-imports#-}
 {-# OPTIONS_GHC -fno-warn-duplicate-exports#-}
-module Proto.Google.Protobuf.Descriptor'Fields where
+module Proto.Google.Protobuf.Descriptor_Fields where
 import qualified Prelude
 import qualified Data.Int
 import qualified Data.Word
