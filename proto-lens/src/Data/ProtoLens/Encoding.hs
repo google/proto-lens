@@ -95,7 +95,7 @@ parseAndAddField :: msg
                  -> Parser msg
 parseAndAddField
     !msg
-    (FieldDescriptor name typeDescriptor accessor)
+    (FieldDescriptor _ typeDescriptor accessor)
     (TaggedValue tag (WireValue wt val)) = let
           getSimpleVal = case typeDescriptor of
                             MessageField GroupType -> do
