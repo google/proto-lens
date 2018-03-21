@@ -1,5 +1,8 @@
 # Changelog for `proto-lens`
 
+## Latest
+- Improve references to types/fields in decoding error messages (#187).
+
 ## v0.3.0.0
 - Remove support for `ghc-7.10`. (#136)
 - Use a `.cabal` file that's auto-generated from `hpack`. (#138)
