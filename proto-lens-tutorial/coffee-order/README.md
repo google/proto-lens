@@ -1,6 +1,6 @@
 # Coffee Order Example
 
-In this example we will go through a more complicated data structure compared to our [Person Example](https://github.com/FintanH/proto-lens/blob/docs/codelab/proto-lens-tutorial/person/README.md).
+In this example we will go through a more complicated data structure compared to our [Person Example](../person/README.md).
 
 ## Table of Contents
 
