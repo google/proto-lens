@@ -1,5 +1,9 @@
 # Changelog for `proto-lens-arbitrary`
 
+## v0.1.2.1
+- Bump the dependency on `base` for `ghc-8.4.2`.
+- Bump the dependency for `QuickCheck-2.11`.
+
 ## v0.1.2.0
 - Remove support for `ghc-7.10`. (#136)
 - Use a `.cabal` file that's auto-generated from `hpack`. (#138)
