@@ -7,7 +7,7 @@ set -x
 echo Installing hpack
 curl -L https://github.com/sol/hpack/releases/download/0.28.2/hpack_linux.gz \
   | gunzip > $HOME/.local/bin/hpack
-chmod +x hpack_linux
+chmod +x $HOME/.local/bin/hpack
 
 # List all the packages in this repo.  Put certain ones first since
 # they're dependencies of the others.  (Unfortunately, "stack query" doesn't
