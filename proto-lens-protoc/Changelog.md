@@ -1,5 +1,10 @@
 # Changelog for `proto-lens-protoc`
 
+## v0.3.1.0
+- Bump the dependency on `base` for `ghc-8.4.2`.
+- Bump the dependency to `Cabal-2.2.*`.
+- Make `Symbol` an instance of Semigroup.
+
 ## v0.3.0.0
 - Remove support for `ghc-7.10`. (#136)
 - Use a `.cabal` file that's auto-generated from `hpack`. (#138)

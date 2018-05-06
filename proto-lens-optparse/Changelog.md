@@ -1,5 +1,8 @@
 # Changelog for `proto-lens-optparse`
 
+## v0.1.1.1
+- Bump the dependency on `base` for `ghc-8.4.2`.
+
 ## v0.1.1.0
 - Add MessageEnum ReadM and option builders (#181).
 
