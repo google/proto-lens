@@ -1,5 +1,8 @@
 # Changelog for `lens-labels`
 
+## v0.2.0.1
+- Bump the dependency on `base` to support `ghc-8.4.2`.
+
 ## v0.2.0.0
 - Improve readability of `HasLens` instances. (#118)
 - Remove support for `ghc-7.10`. (#136)

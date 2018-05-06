@@ -5,6 +5,7 @@
 -- https://developers.google.com/open-source/licenses/bsd
 
 -- | Functions for converting protocol buffers to a human-readable text format.
+{-# LANGUAGE CPP #-}
 {-# LANGUAGE GADTs #-}
 {-# LANGUAGE NamedFieldPuns #-}
 {-# LANGUAGE PatternGuards #-}
@@ -39,6 +40,10 @@ import qualified Data.Text as Text (unpack)
 import Numeric (showOct)
 import Text.Parsec (parse)
 import Text.PrettyPrint
+
+#if MIN_VERSION_base(4,11,0)
+import Prelude hiding ((<>))
+#endif
 
 import Data.ProtoLens.Encoding.Wire
 import Data.ProtoLens.Message
