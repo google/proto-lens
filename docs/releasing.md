@@ -35,7 +35,7 @@ with `cabal`.  First, install their prerequisites:
 Then we can upload those packages the same way as any other Cabal package.  For example:
 
     cd proto-lens-protobuf-types
-    cabal configure
+    cabal configure --enable-tests
     cabal sdist
     cabal upload dist/{path}.tar.gz
 
