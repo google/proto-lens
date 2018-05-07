@@ -2,3 +2,6 @@
 dist/
 # Generated automatically by hpack:
 *.cabal
+# For "cabal sandbox"
+.cabal-sandbox
+cabal.sandbox.config
