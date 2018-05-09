@@ -9,7 +9,6 @@ for p in lens-labels proto-lens proto-lens-protoc
 do
   (cd $p && \
     cabal install --force-reinstall)
-  cabal sandbox add-source $p
 done
 
 for p in proto-lens-combinators proto-lens-protobuf-types
