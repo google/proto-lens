@@ -202,6 +202,19 @@ generatingSpecificProtos root getProtos hooks = hooks
     generate l = getProtos l >>= generateSources root l
 
 -- | Generate Haskell source files for the given input .proto files.
+--
+-- Process all the proto files that are referenced in the exposed-modules
+-- or other-modules of some "active" component, and write them all to a
+-- single temporary directory.  (For example, passing --no-enable-tests
+-- makes all test-suite components inactive.)
+--
+-- Then, for each active component, copy the corresponding module files
+-- over to its specific autogen directory (if Cabal-2.*) or to the global
+-- autogen directory (if Cabal-1.*).  However, don't actually do the copy
+-- if it's the same as what's already there.  This way, we don't needlessly
+-- touch the generated .hs files when nothing changes, and thus don't
+-- needlessly make GHC recompile them (as it considers their modification
+-- times for that).
 generateSources :: FilePath -- ^ The root directory
                 -> LocalBuildInfo
                 -> [FilePath] -- ^ Proto files relative to the root directory.
@@ -212,12 +225,8 @@ generateSources root l files = withSystemTempDirectory "protoc-out" $ \tmpDir ->
                      [ InstalledPackageInfo.dataDir info </> protoLensImportsPrefix
                      | info <- collectDeps l
                      ]
-    -- Generate .hs files into a temporary directory, then move them over
-    -- to the target (autogen) directory only if they are different from
-    -- what's already there. This way, we don't needlessly touch the generated
-    -- .hs files when nothing changes, and thus don't needlessly make GHC
-    -- recompile them (as it considers their modification times for that).
-    -- Generate .hs files into temp dir.
+    -- Generate .hs files for all active components into a single temporary
+    -- directory.
     let activeModules = collectActiveModules l
     let allModules = Set.fromList . concat . map snd $ activeModules
     let usedInComponent f = ModuleName.fromString (Plugin.moduleNameStr "Proto" f)
@@ -226,6 +235,8 @@ generateSources root l files = withSystemTempDirectory "protoc-out" $ \tmpDir ->
                               -- Applying 'root </>' does nothing if the path is already
                               -- absolute.
                               $ map (root </>) $ filter usedInComponent files
+    -- Copy each active component's files over to its autogen directory, but
+    -- only if they've changed since last time.
     forM_ activeModules $ \(compBI, mods) -> forM_ mods $ \m -> do
           let f = T.unpack (Plugin.outputFilePath $ ModuleName.toFilePath m)
           let sourcePath = tmpDir </> f
