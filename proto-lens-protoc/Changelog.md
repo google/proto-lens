@@ -1,5 +1,8 @@
 # Changelog for `proto-lens-protoc`
 
+## v0.3.1.1
+- Fix management of generated files between Cabal components (#171).
+
 ## v0.3.1.0
 - Bump the dependency on `base` for `ghc-8.4.2`.
 - Bump the dependency to `Cabal-2.2.*`.
