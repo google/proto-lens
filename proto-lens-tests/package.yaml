@@ -38,6 +38,7 @@ library:
   source-dirs: src
   exposed-modules:
     - Data.ProtoLens.TestUtil
+    - Proto.Lib
 
 tests:
 
@@ -263,3 +264,11 @@ tests:
       - proto-lens-tests
     other-modules:
       - Proto.Pathological
+
+  dependent_test:
+    main: dependent_test.hs
+    source-dirs: tests
+    dependencies:
+      - proto-lens-tests
+    other-modules:
+      - Proto.Dependent
