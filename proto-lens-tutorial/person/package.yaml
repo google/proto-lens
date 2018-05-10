@@ -27,3 +27,6 @@ executables:
       - person
       - microlens
       - proto-lens
+      # The following dependency works around a bug with Cabal-1.*.  It is not
+      # needed with Cabal-2.0 or later (stack lts-10.0 or later).
+      - proto-lens-protoc
