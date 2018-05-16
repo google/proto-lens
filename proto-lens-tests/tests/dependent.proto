@@ -1,0 +1,9 @@
+syntax = "proto3";
+
+import "lib.proto";
+
+package dependent;
+
+message Dependent {
+  lib.LibMessage x = 1;
+}

@@ -40,6 +40,7 @@ import Data.List (mapAccumL)
 import qualified Data.Map as Map
 import Data.Maybe (fromMaybe)
 import Data.Monoid
+import qualified Data.Semigroup as Semigroup
 import qualified Data.Set as Set
 import Data.String (IsString(..))
 import Data.Text (Text, cons, splitOn, toLower, uncons, unpack)
@@ -174,7 +175,7 @@ data FieldName = FieldName
 -- a 'Symbol' is used to construct both the type-level argument to
 -- @HasLens@ and the name of the function @foo@.
 newtype Symbol = Symbol String
-    deriving (Eq, Ord, IsString, Monoid)
+    deriving (Eq, Ord, IsString, Semigroup.Semigroup, Monoid)
 
 nameFromSymbol :: Symbol -> Name
 nameFromSymbol (Symbol s) = fromString s
