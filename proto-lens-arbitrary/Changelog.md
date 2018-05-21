@@ -1,5 +1,8 @@
 # Changelog for `proto-lens-arbitrary`
 
+## v0.1.2.2
+- Bump the lower bound on `base` to indicate we require `ghc>=8.0`.
+
 ## v0.1.2.1
 - Bump the dependency on `base` for `ghc-8.4.2`.
 - Bump the dependency for `QuickCheck-2.11`.

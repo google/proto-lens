@@ -2,6 +2,7 @@
 
 ## v0.3.1.1
 - Fix management of generated files between Cabal components (#171).
+- Bump the lower bound on `base` to indicate we require `ghc>=8.0`.
 
 ## v0.3.1.0
 - Bump the dependency on `base` for `ghc-8.4.2`.
