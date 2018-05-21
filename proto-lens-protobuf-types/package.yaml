@@ -25,7 +25,7 @@ custom-setup:
 
 dependencies:
   - base >= 4.8 && < 4.12
-  - lens-family
+  - lens-labels == 0.2.*
   - proto-lens == 0.3.*
   - proto-lens-protoc == 0.3.*
   - text == 1.2.*
