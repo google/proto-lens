@@ -1,5 +1,8 @@
 # Changelog for `proto-lens-optparse`
 
+## v0.1.1.2
+- Bump the lower bound on `base` to indicate we require `ghc>=8.0`.
+
 ## v0.1.1.1
 - Bump the dependency on `base` for `ghc-8.4.2`.
 
