@@ -26,6 +26,8 @@ To build and test this repository from HEAD, run:
     git submodule update --init --recursive
     stack test
 
+Note: building this repository requires `stack-1.7.1` or newer.
+
 ## Using in a Cabal or Stack package
 `proto-lens` is available on Hackage and Stackage.  Cabal and Stack projects can use it
 to auto-generate Haskell source files from the original
@@ -56,6 +58,7 @@ For example, in `foo-bar-proto.cabal`:
 
     library
         exposed-modules: Proto.Foo.Bar, Proto.Foo.Bar_Fields
+        autogen-modules: Proto.Foo.Bar, Proto.Foo.Bar_Fields
         build-depends: proto-lens-protoc, ...
 
 Next, write a `Setup.hs` file that uses `Data.ProtoLens.Setup` and specifies the

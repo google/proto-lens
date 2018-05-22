@@ -185,11 +185,16 @@ generatingSpecificProtos root getProtos hooks = hooks
     { buildHook = \p l h f -> generate l >> buildHook hooks p l h f
     , haddockHook = \p l h f -> generate l >> haddockHook hooks p l h f
     , replHook = \p l h f args -> generate l >> replHook hooks p l h f args
+#if !MIN_VERSION_Cabal(2,0,0)
+    -- Older versions of Cabal don't support the autogen-modules field.
+    -- Work around it by manually generating the modules and putting them
+    -- in a place where `cabal sdist` will pick them up.
     , sDistHook = \p maybe_l h f -> case maybe_l of
             Nothing -> error "Can't run protoc; run 'cabal configure' first."
             Just l -> do
                         generate l
                         sDistHook hooks (fudgePackageDesc l p) maybe_l h f
+#endif
     , postCopy = \a flags pkg lbi -> do
                   let verb = fromFlag $ copyVerbosity flags
                   let destDir = datadir (absoluteInstallDirs pkg lbi
