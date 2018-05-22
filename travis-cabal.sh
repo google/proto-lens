@@ -13,6 +13,7 @@ chmod +x $HOME/.local/bin/hpack
 # they're dependencies of the others.  (Unfortunately, "stack query" doesn't
 # give them to us in the right order.)
 PACKAGES="
+    discrimination-ieee754
     lens-labels
     proto-lens
     proto-lens-protoc
@@ -22,6 +23,7 @@ PACKAGES="
     proto-lens-optparse
     proto-lens-tests-dep
     proto-lens-tests
+    proto-lens-discrimination
     proto-lens-benchmarks
 "
 echo Building: $PACKAGES

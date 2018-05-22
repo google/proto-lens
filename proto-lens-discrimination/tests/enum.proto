@@ -1,0 +1,44 @@
+syntax = "proto2";
+
+package enums;
+
+enum Bar {
+  // This order is intentional and important for tests.
+  BAR5 = 5;
+  BAR3 = 3;
+  NEGATIVE = -1;
+}
+
+enum Baz {
+  BAZ1 = 1;
+  BAZ2 = 2;
+  BAZ3 = 4;
+  BAZ4 = 6;
+  BAZ5 = 7;
+  BAZ6 = 9;
+  BAZ7 = 10;
+  BAZ8 = 12;
+}
+
+message Foo {
+  // TODO: clash name with external
+  enum Baz {
+    BAZ2 = 2;
+    BAZ4 = 4;
+  }
+
+  optional Bar bar = 1;
+  optional Baz baz = 2;
+  optional Bar bar_defaulted = 3 [default = BAR5];
+  optional Baz baz_defaulted = 4 [default = BAZ4];
+  optional bool true_defaulted = 5 [default = true];
+  optional bool false_defaulted = 6 [default = false];
+}
+
+enum Alias {
+  option allow_alias = true;
+  Alias1 = 1;
+  Alias2 = 2;
+  Alias2a = 2;
+  Alias3 = 3;
+}
