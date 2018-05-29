@@ -10,8 +10,8 @@
 6. [Repeated](#repeated)
 7. [Map](#map)
 8. [Lens Laws](#lens-laws)
-9. [Example: Person](./person/README.md)
-10. [Example: Coffee Order](./coffee-order/README.md)
+9. [Example: Person](https://github.com/google/proto-lens/tree/master/proto-lens-tutorial/person)
+10. [Example: Coffee Order](https://github.com/google/proto-lens/tree/master/proto-lens-tutorial/coffee-order)
 
 ## Message Generation
 
