@@ -1,0 +1,53 @@
+name: proto-lens-protoc-rt
+version: '0.3.1.1'
+synopsis: Protocol buffer compiler for the proto-lens library.
+description: >
+  Modules that are needed by the generated Haskell files.
+  For forwards compatibility, reexport them as new module names so that
+  other packages don't accidentally write non-generated code that
+  relies on these modules being reexported by proto-lens-protoc.
+
+  This was pulled out of the compiler for sake for cross compilation. In that
+  case, the compiler and run time are built for different platforms, so they
+  need to be separate packages (until Cabal is improved).
+
+  Nothing here is guaranteed to have a stable API. Use a compiler and runtime
+  from the same source revision.
+category: Data
+author: Judah Jacobson
+maintainer: proto-lens@googlegroups.com
+github: google/proto-lens/proto-lens-protoc
+copyright: Google Inc.
+license: BSD3
+extra-source-files:
+  - Changelog.md
+
+library:
+  dependencies:
+    - base >= 4.9 && < 4.12
+    - bytestring == 0.10.*
+    - containers == 0.5.*
+    - data-default-class >= 0.0 && < 0.2
+    - deepseq == 1.4.*
+    - lens-family == 1.2.*
+    - lens-labels == 0.2.*
+    - pretty == 1.1.*
+    - proto-lens == 0.3.*
+    - text == 1.2.*
+  reexported-modules:
+    - Prelude as Data.ProtoLens.Reexport.Prelude,
+    - Data.Int as Data.ProtoLens.Reexport.Data.Int,
+    - Data.Word as Data.ProtoLens.Reexport.Data.Word,
+    - Data.ByteString as Data.ProtoLens.Reexport.Data.ByteString,
+    - Data.ByteString.Char8 as Data.ProtoLens.Reexport.Data.ByteString.Char8,
+    - Data.Default.Class as Data.ProtoLens.Reexport.Data.Default.Class,
+    - Data.Map as Data.ProtoLens.Reexport.Data.Map,
+    - Data.ProtoLens as Data.ProtoLens.Reexport.Data.ProtoLens,
+    - Data.ProtoLens.Service.Types as Data.ProtoLens.Reexport.Data.ProtoLens.Service.Types,
+    - Data.ProtoLens.Message.Enum as Data.ProtoLens.Reexport.Data.ProtoLens.Message.Enum,
+    - Data.Text as Data.ProtoLens.Reexport.Data.Text,
+    - Lens.Family2 as Data.ProtoLens.Reexport.Lens.Family2,
+    - Lens.Family2.Unchecked as Data.ProtoLens.Reexport.Lens.Family2.Unchecked,
+    - Lens.Labels as Data.ProtoLens.Reexport.Lens.Labels,
+    - Lens.Labels.Prism as Data.ProtoLens.Reexport.Lens.Labels.Prism,
+    - Text.Read as Data.ProtoLens.Reexport.Text.Read

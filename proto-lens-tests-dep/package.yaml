@@ -25,7 +25,7 @@ custom-setup:
     - proto-lens-protoc
 
 dependencies:
-  - proto-lens-protoc
+  - proto-lens-protoc-rt
   - base
 
 library:

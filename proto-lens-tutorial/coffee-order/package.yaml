@@ -21,14 +21,14 @@ dependencies:
   - data-default
   - microlens
   - proto-lens
-  - proto-lens-protoc
+  - proto-lens-protoc-rt
   - lens-labels
   - text
 
 executables:
   gimme-coffee:
     dependencies:
-      - proto-lens-protoc
+      - proto-lens-protoc-rt
     other-modules:
       - Proto.Coffee.Order
       - Proto.Coffee.Order_Fields
