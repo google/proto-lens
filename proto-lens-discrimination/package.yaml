@@ -29,7 +29,7 @@ dependencies:
   - discrimination-ieee754 == 0.1.*
   - lens-family == 1.2.*
   - proto-lens >= 0.3 && < 0.4
-  - proto-lens-protoc >= 0.3 && < 0.4
+  - proto-lens-protoc-rt >= 0.3 && < 0.4
   - text == 1.2.*
 
 library:

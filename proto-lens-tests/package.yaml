@@ -27,7 +27,7 @@ dependencies:
     - pretty
     - proto-lens
     - proto-lens-arbitrary
-    - proto-lens-protoc
+    - proto-lens-protoc-rt
     - test-framework
     - test-framework-hunit
     - test-framework-quickcheck2

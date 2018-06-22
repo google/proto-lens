@@ -9,4 +9,5 @@ packages:
   subdirs:
     - proto-lens
     - proto-lens-protoc
+    - proto-lens-protoc-rt
     - lens-labels

@@ -4,6 +4,7 @@ packages:
 - lens-labels
 - proto-lens
 - proto-lens-protoc
+- proto-lens-protoc-rt
 - proto-lens-protobuf-types
 - proto-lens-arbitrary
 - proto-lens-combinators
