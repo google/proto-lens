@@ -1,5 +1,9 @@
 # Changelog for `proto-lens-protoc`
 
+## v0.4
+- Split out `proto-lens-setup` and `proto-lens-runtime` into separate
+  packages.
+
 ## v0.3.1.1
 - Fix management of generated files between Cabal components (#171).
 - Bump the lower bound on `base` to indicate we require `ghc>=8.0`.

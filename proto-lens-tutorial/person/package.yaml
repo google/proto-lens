@@ -4,14 +4,14 @@ custom-setup:
   dependencies:
     - base
     - Cabal
-    - proto-lens-protoc
+    - proto-lens-setup
 
 extra-source-files: proto/**/*.proto
 
 library:
   dependencies:
     - base
-    - proto-lens-protoc
+    - proto-lens-runtime
 
   exposed-modules:
     - Proto.Person
@@ -29,4 +29,4 @@ executables:
       - proto-lens
       # The following dependency works around a bug with Cabal-1.*.  It is not
       # needed with Cabal-2.0 or later (stack lts-10.0 or later).
-      - proto-lens-protoc
+      - proto-lens-runtime

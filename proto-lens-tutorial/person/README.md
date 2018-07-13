@@ -60,14 +60,14 @@ custom-setup:
   dependencies:
     - base
     - Cabal
-    - proto-lens-protoc
+    - proto-lens-setup
 
 extra-source-files: proto/**/*.proto
 
 library:
   dependencies:
     - base
-    - proto-lens-protoc
+    - proto-lens-runtime
 
   exposed-modules:
     - Proto.Person

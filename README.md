@@ -37,14 +37,15 @@ Note: if using Stack, these instructions require `v1.4.0` or newer.
 
 First, edit the `.cabal` file of your project to:
 
-* Specify `build-type: Custom`.
+* Specify `build-type: Custom`, and add a `custom-setup` clause that
+  depends on `proto-lens-setup`.
 * List the .proto files in `extra-source-files`.  Note that the field belongs
   at the top level of the `.cabal` file, rather than once per
   library/executable/etc.
 * List the generated modules (e.g. `Proto.Foo.Bar`) in `exposed-modules`
   or `other-modules` of the rule(s) that use them (e.g. the library or
   executables).
-* Add `proto-lens-protoc` to the build-depends of those rules.
+* Add `proto-lens-runtime` to the build-depends of those rules.
 * Add a `custom-setup` clause to your .cabal file.
 
 For example, in `foo-bar-proto.cabal`:
@@ -54,12 +55,16 @@ For example, in `foo-bar-proto.cabal`:
     extra-source-files: src/foo/bar.proto
     ...
     custom-setup
-      setup-depends: base, Cabal, proto-lens-protoc
+      setup-depends: base, Cabal, proto-lens-setup
 
     library
         exposed-modules: Proto.Foo.Bar, Proto.Foo.Bar_Fields
         autogen-modules: Proto.Foo.Bar, Proto.Foo.Bar_Fields
-        build-depends: proto-lens-protoc, ...
+        build-depends: proto-lens-runtime, ...
+
+(**Note:** if you do not have `proto-lens-{runtime/setup}`, you are probably
+using a version earlier than `0.4` and should replace those packages with
+`proto-lens-protoc`.)
 
 Next, write a `Setup.hs` file that uses `Data.ProtoLens.Setup` and specifies the
 directory containing the `.proto` files.  For example:

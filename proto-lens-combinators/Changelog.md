@@ -1,5 +1,8 @@
 # Changelog for `proto-lens-combinators`
 
+## v0.1.0.12
+- Switch to `proto-lens-{setup/runtime}` v0.4.
+
 ## v0.1.0.11
 - Bump the lower bound on `base` to indicate we require `ghc>=8.0`.
 
