@@ -14,7 +14,7 @@ custom-setup:
   dependencies:
     - base
     - Cabal
-    - proto-lens-protoc
+    - proto-lens-setup
 
 # Dependencies shared by the library and/or several of the tests:
 dependencies:
@@ -27,7 +27,7 @@ dependencies:
     - pretty
     - proto-lens
     - proto-lens-arbitrary
-    - proto-lens-protoc
+    - proto-lens-runtime
     - test-framework
     - test-framework-hunit
     - test-framework-quickcheck2

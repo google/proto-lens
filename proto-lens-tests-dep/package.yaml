@@ -22,10 +22,10 @@ custom-setup:
   dependencies:
     - base
     - Cabal
-    - proto-lens-protoc
+    - proto-lens-setup
 
 dependencies:
-  - proto-lens-protoc
+  - proto-lens-runtime
   - base
 
 library:

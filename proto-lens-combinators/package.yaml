@@ -1,5 +1,5 @@
 name: proto-lens-combinators
-version: '0.1.0.11'
+version: '0.1.0.12'
 synopsis: Utilities functions to proto-lens.
 description: Useful things for working with protos.
 category: Data
@@ -16,11 +16,10 @@ custom-setup:
   dependencies:
     - base >= 4.9 && < 4.12
     - Cabal
-    - proto-lens-protoc == 0.3.*
+    - proto-lens-setup == 0.4.*
 
 dependencies:
   - base >= 4.9 && < 4.12
-  - proto-lens-protoc == 0.3.*
   - lens-family == 1.2.*
 
 library:
@@ -42,7 +41,7 @@ tests:
       - lens-family-core
       - proto-lens
       - proto-lens-combinators
-      - proto-lens-protoc
+      - proto-lens-runtime == 0.4.*
       - test-framework
       - test-framework-hunit
     other-modules:

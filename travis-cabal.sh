@@ -21,6 +21,8 @@ PACKAGES_TO_INSTALL="
     lens-labels
     proto-lens
     proto-lens-protoc
+    proto-lens-runtime
+    proto-lens-setup
     proto-lens-protobuf-types
     proto-lens-arbitrary
     proto-lens-combinators

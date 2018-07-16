@@ -65,9 +65,9 @@ fileSyntaxType f = case f ^. syntax of
     "" -> Proto2  -- The proto compiler doesn't set syntax for proto2 files.
     s -> error $ "Unknown syntax type " ++ show s
 
--- Whether to import the "Reexport" modules or the originals;
--- e.g., Data.ProtoLens.Reexport.Data.Map vs Data.Map.
-data UseReexport = UseReexport | UseOriginal
+-- Whether to import the "Runtime" modules or the originals;
+-- e.g., Data.ProtoLens.Runtime.Data.Map vs Data.Map.
+data UseRuntime = UseRuntime | UseOriginal
     deriving (Eq, Read)
 
 -- | Generate a Haskell module for the given input file(s).
@@ -165,7 +165,7 @@ reexported :: ModifyImports
 reexported imp@ImportDecl {importModule = m}
     = imp { importAs = Just m, importModule = m' }
   where
-    m' = fromString $ "Data.ProtoLens.Reexport." ++ prettyPrint m
+    m' = fromString $ "Data.ProtoLens.Runtime." ++ prettyPrint m
 
 messageComment :: ModuleName -> Name -> [RecordField] -> String
 messageComment fieldModName n fields = unlines

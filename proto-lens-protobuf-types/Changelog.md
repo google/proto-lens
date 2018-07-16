@@ -1,5 +1,8 @@
 # Changelog for `proto-lens-protobuf-types`
 
+## v0.3.0.3
+- Switch to `proto-lens-{setup/runtime}` v0.4.
+
 ## v0.3.0.2
 - Bump the lower bound on `base` to indicate we require `ghc>=8.0`.
 

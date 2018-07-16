@@ -51,11 +51,11 @@ main = do
 
 makeResponse :: String -> CodeGeneratorRequest -> CodeGeneratorResponse
 makeResponse prog request = let
-    useReexport = case T.unpack $ request ^. parameter of
+    useRuntime = case T.unpack $ request ^. parameter of
                     "" -> reexported
-                    "no-reexports" -> id
+                    "no-runtime" -> id
                     p -> error $ "Error reading parameter: " ++ show p
-    outputFiles = generateFiles useReexport header
+    outputFiles = generateFiles useRuntime header
                       (request ^. protoFile)
                       (request ^. fileToGenerate)
     header :: FileDescriptorProto -> Text
