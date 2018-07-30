@@ -10,5 +10,6 @@ Links for more information:
 - [Tutorial](tutorial.md)
 - [Build Instructions](https://github.com/google/proto-lens/blob/master/README.md)
 - [Installing protoc](installing-protoc.md)
+- [Reference table of scalar types used by generated code](../TYPES.md)
 
 This is not an official Google product.
