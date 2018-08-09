@@ -54,6 +54,8 @@ library:
         Proto.Google.Protobuf.Any_Fields
         Proto.Google.Protobuf.Duration
         Proto.Google.Protobuf.Duration_Fields
+        Proto.Google.Protobuf.Empty
+        Proto.Google.Protobuf.Empty_Fields
         Proto.Google.Protobuf.Wrappers
         Proto.Google.Protobuf.Wrappers_Fields
         Proto.Google.Protobuf.Timestamp
