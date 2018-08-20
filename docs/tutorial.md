@@ -10,8 +10,8 @@
 6. [Repeated](#repeated)
 7. [Map](#map)
 8. [Lens Laws](#lens-laws)
-9. [Example: Person](./person/README.md)
-10. [Example: Coffee Order](./coffee-order/README.md)
+9. [Example: Person](https://github.com/google/proto-lens/tree/master/proto-lens-tutorial/person)
+10. [Example: Coffee Order](https://github.com/google/proto-lens/tree/master/proto-lens-tutorial/coffee-order)
 
 ## Message Generation
 
@@ -176,7 +176,7 @@ instance Prelude.Functor f =>
 instance Prelude.Functor f =>
         Lens.Labels.HasLens' f Bar "baz" (Data.Int.Int32)
 ```
-The fields are overloaded on the symbol `baz` but connect `Foo` to `Text` and `Bar` to `Int32`. Then we can find that there is one, polymorphic definition in the `Foo'Fields.hs` file:
+The fields are overloaded on the symbol `baz` but connect `Foo` to `Text` and `Bar` to `Int32`. Then we can find that there is one, polymorphic definition in the `Foo_Fields.hs` file:
 ``` haskell
 baz ::
     forall f s t a b . (Lens.Labels.HasLens f s t "baz" a b) =>
@@ -187,11 +187,11 @@ baz
 ```
 If we have any other records that also contain `baz` from other modules these lenses could also be used to access them. We should take care in these cases as to only import one version of `baz` when we are doing this, otherwise name clashes will occur.
 
-The use of `baz` can be done in two ways and which way you choose is up to you and your style. The first is by importing the `*'Fields.hs` module, for example:
+The use of `baz` can be done in two ways and which way you choose is up to you and your style. The first is by importing the `*_Fields.hs` module, for example:
 ``` haskell
 import Microlens           ((^.))
 import Proto.Foo        as P
-import Proto.Foo'Fields as P
+import Proto.Foo_Fields as P
 
 myBar :: P.Bar
 myBar = def & P.baz   .~ 42

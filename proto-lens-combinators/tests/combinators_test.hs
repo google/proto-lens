@@ -12,7 +12,7 @@ import Data.ProtoLens.Combinators
 import Lens.Family ((^.), (.~), (&))
 import Lens.Family.State ((.=), (<~), use, zoom)
 import Proto.Combinators
-import Proto.Combinators'Fields
+import Proto.Combinators_Fields
 import Test.Framework (defaultMain)
 import Test.Framework.Providers.HUnit (hUnitTestToTests)
 import Test.HUnit ((~:), (~?=))

@@ -1,36 +1,32 @@
-name:                person
-version:             0.1.0.0
-homepage:            https://github.com/google/proto-lens-tutorial/person#readme
-license:             BSD3
-author:              Fintan Halpenny
-maintainer:          fintan.halpenny@gmail.com
-copyright:           2017 Google Inc.
-category:            Data
-extra-source-files:
-- README.md
-- proto/**/*.proto
+name: person
 
 custom-setup:
   dependencies:
     - base
     - Cabal
-    - proto-lens-protoc
+    - proto-lens-setup
 
-dependencies:
-  - base >= 4.7 && < 5
-  - data-default
-  - microlens
-  - proto-lens
-  - proto-lens-protoc
-  - lens-labels
-  - text
+extra-source-files: proto/**/*.proto
+
+library:
+  dependencies:
+    - base
+    - proto-lens-runtime
+
+  exposed-modules:
+    - Proto.Person
+    - Proto.Person_Fields
 
 executables:
   person:
+    main: Main.hs
+    source-dirs:
+      - src
     dependencies:
-      - proto-lens-protoc
-    other-modules:
-      - Proto.Person
-      - Proto.Person'Fields
-    source-dirs:      src
-    main:             Main.hs
+      - base
+      - person
+      - microlens
+      - proto-lens
+      # The following dependency works around a bug with Cabal-1.*.  It is not
+      # needed with Cabal-2.0 or later (stack lts-10.0 or later).
+      - proto-lens-runtime

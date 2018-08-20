@@ -1,5 +1,20 @@
 # Changelog for `proto-lens-protoc`
 
+## v0.4
+- Split out `proto-lens-setup` and `proto-lens-runtime` into separate
+  packages.
+- Hide the constructors and record fields of message types, and make `Show`
+  instances call `showMessageShort`.
+
+## v0.3.1.1
+- Fix management of generated files between Cabal components (#171).
+- Bump the lower bound on `base` to indicate we require `ghc>=8.0`.
+
+## v0.3.1.0
+- Bump the dependency on `base` for `ghc-8.4.2`.
+- Bump the dependency to `Cabal-2.2.*`.
+- Make `Symbol` an instance of Semigroup.
+
 ## v0.3.0.0
 - Remove support for `ghc-7.10`. (#136)
 - Use a `.cabal` file that's auto-generated from `hpack`. (#138)
@@ -14,9 +29,6 @@
 - Track consolidation of `proto-lens-descriptors` into `proto-lens`. (#140)
 - Generate service definitions using promoted datatypes. (#154)
 - Generate prisms for `oneof` message fields. (#160)
-- Build with `haskell-src-exts-1.20.*`.
-- Hide the constructors and record fields of message types, and make `Show`
-  instances call `showMessageShort`.
 
 ## v0.2.2.3
 - Don't camel-case message names.  This reverts behavior which was added

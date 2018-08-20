@@ -14,7 +14,7 @@ import Test.HUnit ((@=?), assertBool)
 
 import Data.ProtoLens.TestUtil
 import Proto.UnknownFields
-import Proto.UnknownFields'Fields
+import Proto.UnknownFields_Fields
 
 main :: IO ()
 main = testMain

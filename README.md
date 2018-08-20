@@ -13,6 +13,8 @@ This is not an official Google product.
 
 You can find tutorial documentation in the [proto-lens-tutorial](./proto-lens-tutorial) subdir.
 
+There is also a [reference document, TYPES.md](./TYPES.md), showing the protobuf scalar type -> haskell type mappings used by the generated lenses.
+
 # Instructions
 
 ## Setup
@@ -26,6 +28,8 @@ To build and test this repository from HEAD, run:
     git submodule update --init --recursive
     stack test
 
+Note: building this repository requires `stack-1.7.1` or newer.
+
 ## Using in a Cabal or Stack package
 `proto-lens` is available on Hackage and Stackage.  Cabal and Stack projects can use it
 to auto-generate Haskell source files from the original
@@ -35,14 +39,15 @@ Note: if using Stack, these instructions require `v1.4.0` or newer.
 
 First, edit the `.cabal` file of your project to:
 
-* Specify `build-type: Custom`.
+* Specify `build-type: Custom`, and add a `custom-setup` clause that
+  depends on `proto-lens-setup`.
 * List the .proto files in `extra-source-files`.  Note that the field belongs
   at the top level of the `.cabal` file, rather than once per
   library/executable/etc.
 * List the generated modules (e.g. `Proto.Foo.Bar`) in `exposed-modules`
   or `other-modules` of the rule(s) that use them (e.g. the library or
   executables).
-* Add `proto-lens-protoc` to the build-depends of those rules.
+* Add `proto-lens-runtime` to the build-depends of those rules.
 * Add a `custom-setup` clause to your .cabal file.
 
 For example, in `foo-bar-proto.cabal`:
@@ -52,11 +57,16 @@ For example, in `foo-bar-proto.cabal`:
     extra-source-files: src/foo/bar.proto
     ...
     custom-setup
-      setup-depends: base, Cabal, proto-lens-protoc
+      setup-depends: base, Cabal, proto-lens-setup
 
     library
-        exposed-modules: Proto.Foo.Bar, Proto.Foo.Bar'Fields
-        build-depends: proto-lens-protoc, ...
+        exposed-modules: Proto.Foo.Bar, Proto.Foo.Bar_Fields
+        autogen-modules: Proto.Foo.Bar, Proto.Foo.Bar_Fields
+        build-depends: proto-lens-runtime, ...
+
+(**Note:** if you do not have `proto-lens-{runtime/setup}`, you are probably
+using a version earlier than `0.4` and should replace those packages with
+`proto-lens-protoc`.)
 
 Next, write a `Setup.hs` file that uses `Data.ProtoLens.Setup` and specifies the
 directory containing the `.proto` files.  For example:

@@ -61,6 +61,7 @@ import qualified Data.Text as T
 import Data.Word
 import Lens.Family2 (Lens', over, set)
 import Lens.Family2.Unchecked (lens)
+import qualified Data.Semigroup as Semigroup
 
 import Data.ProtoLens.Encoding.Wire
     ( Tag(..)
@@ -285,7 +286,7 @@ reverseRepeatedFields fields x0
 --
 -- See the @withRegistry@ functions in 'Data.ProtoLens.TextFormat'
 newtype Registry = Registry (Map.Map T.Text SomeMessageType)
-    deriving Monoid
+    deriving (Semigroup.Semigroup, Monoid)
 
 -- | Build a 'Registry' containing a single proto type.
 --

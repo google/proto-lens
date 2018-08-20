@@ -9,7 +9,7 @@
 module Main where
 
 import Proto.Map
-import Proto.Map'Fields
+import Proto.Map_Fields
 import Data.ProtoLens
 import Lens.Family2 ((&), (.~))
 import qualified Data.ByteString.Char8 as C

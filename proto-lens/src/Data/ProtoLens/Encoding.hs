@@ -14,6 +14,7 @@
 {-# LANGUAGE PatternGuards #-}
 {-# LANGUAGE RankNTypes #-}
 {-# LANGUAGE ScopedTypeVariables #-}
+{-# LANGUAGE TypeApplications #-}
 module Data.ProtoLens.Encoding(
     encodeMessage,
     buildMessage,
@@ -31,8 +32,10 @@ import Control.Monad (guard)
 import Data.Attoparsec.ByteString as Parse
 import Data.Bool (bool)
 import Data.Monoid ((<>))
+import Data.Proxy (Proxy(Proxy))
 import Data.Text.Encoding (encodeUtf8, decodeUtf8')
 import Data.Text.Encoding.Error (UnicodeException(..))
+import qualified Data.Text as T
 import qualified Data.ByteString as B
 import qualified Data.Map.Strict as Map
 import Data.ByteString.Lazy.Builder as Builder
@@ -51,7 +54,7 @@ decodeMessage input = parseOnly (parseMessage endOfInput) input
 -- | Parse a message with the given ending delimiter (which will be EndGroup in
 -- the case of a group, and end-of-input otherwise).
 parseMessage :: forall msg . Message msg => Parser () -> Parser msg
-parseMessage end = do
+parseMessage end = (Parse.<?> T.unpack (messageName (Proxy @msg))) $ do
     (msg, unsetFields) <- loop def requiredFields
     if Map.null unsetFields
         then return $ over unknownFields reverse
@@ -73,6 +76,7 @@ parseMessage end = do
                         Nothing -> (loop $! addUnknown tv msg) unsetFields
                         Just field -> do
                             !msg' <- parseAndAddField msg field tv
+                                      <?> fieldDescriptorName field
                             loop msg' $! Map.delete tag unsetFields
 
 -- | Decode a message from its wire format.  Throws an error if the decoding
@@ -91,25 +95,25 @@ parseAndAddField :: msg
                  -> Parser msg
 parseAndAddField
     !msg
-    (FieldDescriptor name typeDescriptor accessor)
+    (FieldDescriptor _ typeDescriptor accessor)
     (TaggedValue tag (WireValue wt val)) = let
           getSimpleVal = case typeDescriptor of
                             MessageField GroupType -> do
-                                Equal <- equalWireTypes name StartGroup wt
-                                parseMessage (endOfGroup name tag)
+                                Equal <- equalWireTypes StartGroup wt
+                                parseMessage (endOfGroup tag)
                             MessageField MessageType -> do
-                                Equal <- equalWireTypes name Lengthy wt
+                                Equal <- equalWireTypes Lengthy wt
                                 runEither $ decodeMessage val
                             ScalarField f -> case fieldWireType f of
                                 FieldWireType fieldWt _ get -> do
-                                    Equal <- equalWireTypes name fieldWt wt
+                                    Equal <- equalWireTypes fieldWt wt
                                     runEither $ get val
           -- Get a block of packed values, reversed.
           getPackedVals = case typeDescriptor of
             MessageField _ -> fail "Messages can't be packed"
             ScalarField f -> case fieldWireType f of
               FieldWireType fieldWt _ get -> do
-                Equal <- equalWireTypes name Lengthy wt
+                Equal <- equalWireTypes Lengthy wt
                 let getElt = do
                           wv <- getWireValue fieldWt
                           x <- runEither $ get wv
@@ -133,8 +137,7 @@ parseAndAddField
                 <|> (do
                         xs <- getPackedVals
                         return $! over' f (xs ++) msg)
-                <|> fail ("Field " ++ name
-                            ++ " expects a repeated field wire type but found "
+                <|> fail ("Expected a repeated field wire type but found "
                             ++ show wt)
               MapField keyLens valueLens f -> do
                   entry <- getSimpleVal
@@ -259,10 +262,10 @@ fieldWireType StringField = FieldWireType Lengthy encodeUtf8
                                     (stringizeError . decodeUtf8')
 fieldWireType BytesField = identityFieldWireType Lengthy
 
-endOfGroup :: String -> Tag -> Parser ()
-endOfGroup name tag = do
+endOfGroup :: Tag -> Parser ()
+endOfGroup tag = do
     TaggedValue tag' (WireValue wt _) <- getTaggedValue
-    Equal <- equalWireTypes name EndGroup wt
+    Equal <- equalWireTypes EndGroup wt
     guard (tag == tag')
 
 -- | Helper function to define a field type whose decoding operation can't fail.

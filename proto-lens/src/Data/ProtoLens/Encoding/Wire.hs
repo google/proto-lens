@@ -87,27 +87,27 @@ data Equal a b where
 -- Assert that two wire types are the same, or fail with a message about this
 -- field.
 {-# INLINE equalWireTypes #-}
-equalWireTypes :: Monad m => String -> WireType a -> WireType b
+equalWireTypes :: Monad m => WireType a -> WireType b
                -> m (Equal a b)
-equalWireTypes _ VarInt VarInt = return Equal
-equalWireTypes _ Fixed64 Fixed64 = return Equal
-equalWireTypes _ Fixed32 Fixed32 = return Equal
-equalWireTypes _ Lengthy Lengthy = return Equal
-equalWireTypes _ StartGroup StartGroup = return Equal
-equalWireTypes _ EndGroup EndGroup = return Equal
-equalWireTypes name expected actual
-    = fail $ "Field " ++ name ++ " expects wire type " ++ show expected
+equalWireTypes VarInt VarInt = return Equal
+equalWireTypes Fixed64 Fixed64 = return Equal
+equalWireTypes Fixed32 Fixed32 = return Equal
+equalWireTypes Lengthy Lengthy = return Equal
+equalWireTypes StartGroup StartGroup = return Equal
+equalWireTypes EndGroup EndGroup = return Equal
+equalWireTypes expected actual
+    = fail $ "Expected wire type " ++ show expected
         ++ " but found " ++ show actual
 
 instance Eq WireValue where
     WireValue t v == WireValue t' v'
-        | Just Equal <- equalWireTypes "" t t'
+        | Just Equal <- equalWireTypes t t'
             = v == v'
         | otherwise = False
 
 instance Ord WireValue where
     WireValue t v `compare` WireValue t' v'
-        | Just Equal <- equalWireTypes "" t t'
+        | Just Equal <- equalWireTypes t t'
             = v `compare` v'
         | otherwise = wireTypeToInt t `compare` wireTypeToInt t'
 

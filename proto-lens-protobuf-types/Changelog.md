@@ -1,5 +1,14 @@
 # Changelog for `proto-lens-protobuf-types`
 
+## v0.3.0.3
+- Switch to `proto-lens-{setup/runtime}` v0.4.
+
+## v0.3.0.2
+- Bump the lower bound on `base` to indicate we require `ghc>=8.0`.
+
+## v0.3.0.1
+- Bump the dependency on `base` for `ghc-8.4.2`.
+
 ## v0.3.0.0
 - Remove support for `ghc-7.10`. (#136)
 - Use a `.cabal` file that's auto-generated from `hpack`. (#138)

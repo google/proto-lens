@@ -8,7 +8,7 @@
 module Main where
 
 import Proto.Repeated
-import Proto.Repeated'Fields
+import Proto.Repeated_Fields
 import Test.Framework (testGroup)
 import Data.ProtoLens
 import Lens.Family2 ((&), (.~))

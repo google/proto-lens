@@ -1,5 +1,5 @@
 name: proto-lens
-version: "0.3.0.0"
+version: "0.3.1.1"
 synopsis: A lens-based implementation of protocol buffers in Haskell.
 description: >
   The proto-lens library provides to protocol buffers using modern
@@ -38,15 +38,15 @@ library:
     - Data.ProtoLens.Service.Types
     - Data.ProtoLens.TextFormat
     - Proto.Google.Protobuf.Compiler.Plugin
-    - Proto.Google.Protobuf.Compiler.Plugin'Fields
+    - Proto.Google.Protobuf.Compiler.Plugin_Fields
     - Proto.Google.Protobuf.Descriptor
-    - Proto.Google.Protobuf.Descriptor'Fields
+    - Proto.Google.Protobuf.Descriptor_Fields
   other-modules:
     - Data.ProtoLens.Encoding.Bytes
     - Data.ProtoLens.TextFormat.Parser
   dependencies:
     - attoparsec == 0.13.*
-    - base >= 4.8 && < 4.11
+    - base >= 4.9 && < 4.12
     - bytestring == 0.10.*
     - containers == 0.5.*
     - deepseq == 1.4.*

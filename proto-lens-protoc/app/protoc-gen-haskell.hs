@@ -20,7 +20,7 @@ import Proto.Google.Protobuf.Compiler.Plugin
     ( CodeGeneratorRequest
     , CodeGeneratorResponse
     )
-import Proto.Google.Protobuf.Compiler.Plugin'Fields
+import Proto.Google.Protobuf.Compiler.Plugin_Fields
     ( content
     , file
     , fileToGenerate
@@ -28,7 +28,7 @@ import Proto.Google.Protobuf.Compiler.Plugin'Fields
     , protoFile
     )
 import Proto.Google.Protobuf.Descriptor (FileDescriptorProto)
-import Proto.Google.Protobuf.Descriptor'Fields (name, dependency)
+import Proto.Google.Protobuf.Descriptor_Fields (name, dependency)
 import System.Environment (getProgName)
 import System.Exit (exitWith, ExitCode(..))
 import System.IO as IO
@@ -51,11 +51,11 @@ main = do
 
 makeResponse :: String -> CodeGeneratorRequest -> CodeGeneratorResponse
 makeResponse prog request = let
-    useReexport = case T.unpack $ request ^. parameter of
+    useRuntime = case T.unpack $ request ^. parameter of
                     "" -> reexported
-                    "no-reexports" -> id
+                    "no-runtime" -> id
                     p -> error $ "Error reading parameter: " ++ show p
-    outputFiles = generateFiles useReexport header
+    outputFiles = generateFiles useRuntime header
                       (request ^. protoFile)
                       (request ^. fileToGenerate)
     header :: FileDescriptorProto -> Text

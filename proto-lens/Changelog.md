@@ -1,5 +1,13 @@
 # Changelog for `proto-lens`
 
+## v0.3.1.1
+- Bump the lower bound on `base` to indicate we require `ghc>=8.0`.
+
+## v0.3.1.0
+- Improve references to types/fields in decoding error messages (#187).
+- Bump the dependency on `base` for `ghc-8.4.2`.
+- Make `Registry` an instance of `Semigroup`.
+
 ## v0.3.0.0
 - Remove support for `ghc-7.10`. (#136)
 - Use a `.cabal` file that's auto-generated from `hpack`. (#138)
@@ -16,6 +24,7 @@
 - Refactor the `FieldDescriptorType. (#147)
 - Improve text format error messages. (#148)
 - Add module `Data.ProtoLens.Service.Types`. (#154)
+- Add Haddock comments to fields. (#172)
 
 ## v0.2.2.0
 - Bump the dependency on `base` to support `ghc-8.2.1`.

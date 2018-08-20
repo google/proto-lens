@@ -5,7 +5,7 @@ module Main (main) where
 import Data.ProtoLens
 import Data.ProtoLens.Any
 import Data.ProtoLens.Arbitrary (ArbitraryMessage(..))
-import Proto.Google.Protobuf.Any'Fields (typeUrl, value)
+import Proto.Google.Protobuf.Any_Fields (typeUrl, value)
 import Lens.Family2 ((&), (.~), (^.))
 import Test.Framework.Providers.HUnit (testCase)
 import Test.HUnit ((@=?))
@@ -14,7 +14,7 @@ import Test.QuickCheck ((===), counterexample, listOf, elements)
 
 import Data.ProtoLens.TestUtil
 import Proto.Any
-import Proto.Any'Fields
+import Proto.Any_Fields
 
 main :: IO ()
 main = testMain

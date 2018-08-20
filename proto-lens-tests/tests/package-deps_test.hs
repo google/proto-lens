@@ -7,8 +7,8 @@ import Test.HUnit ((@=?))
 
 import Data.ProtoLens.TestUtil (Test, testMain)
 import Proto.PackageDeps (Bar)
-import Proto.PackageDeps'Fields (foo)
-import Proto.TestDep.Foo'Fields (value)
+import Proto.PackageDeps_Fields (foo)
+import Proto.TestDep.Foo_Fields (value)
 
 main :: IO ()
 main = testMain [testWrapper]
