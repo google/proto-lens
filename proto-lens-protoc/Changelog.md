@@ -3,6 +3,7 @@
 ## v0.4
 - Split out `proto-lens-setup` and `proto-lens-runtime` into separate
   packages.
+- Generate explicit `NFData` instances for each type.
 
 ## v0.3.1.1
 - Fix management of generated files between Cabal components (#171).
