@@ -274,24 +274,13 @@ generateMessageDecls fieldModName syntaxType env protoName info =
       $ deriving' ["Prelude.Show", "Prelude.Eq", "Prelude.Ord"]
     | oneofInfo <- messageOneofFields info
     ] ++
-    -- instance (HasLens' f Foo x a, HasLens' f Foo x b, a ~ b)
-    --    => HasLens f Foo Foo x a b
-    [ uncommented $
-          instDecl [classA "Lens.Labels.HasLens'" ["f", dataType, "x", "a"],
-                    equalP "a" "b"]
-              ("Lens.Labels.HasLens" `ihApp`
-                  ["f", dataType, dataType, "x", "a", "b"])
-              [[match "lensOf" [] "Lens.Labels.lensOf'"]]
-    ]
-    ++
-    -- instance Functor f
-    --     => HasLens' f Foo "foo" Bar
+    -- instance HasLens' Foo "foo" Bar
     --   lensOf _ = ...
     -- Note: for optional fields, this generates an instance both for "foo" and
     -- for "maybe'foo" (see plainRecordField below).
-    [ uncommented $ instDecl [classA "Prelude.Functor" ["f"]]
+    [ uncommented $ instDecl []
         ("Lens.Labels.HasLens'" `ihApp`
-            ["f", dataType, sym, tyParen t])
+            [dataType, sym, tyParen t])
             [[match "lensOf'" [pWildCard] $
                 "Prelude.."
                     @@ rawFieldAccessor (unQual $ recordFieldName li)
@@ -738,14 +727,14 @@ generateEnumDecls Proto2 info =
 
 generateFieldDecls :: Symbol -> [Decl]
 generateFieldDecls xStr =
-    -- foo :: forall x f s t a b
-    --        . HasLens f s t x a b => LensLike f s t a b
-    -- -- Note: `Lens.Family2.LensLike f` implies Functor f.
+    -- foo :: forall f s a
+    --        . (Functor f, HasLens s x a) => LensLike' f s a
     -- foo = lensOf (Proxy# :: Proxy# x)
     [ typeSig [x]
-          $ tyForAll ["f", "s", "t", "a", "b"]
-                  [classA "Lens.Labels.HasLens" ["f", "s", "t", xSym, "a", "b"]]
-                    $ "Lens.Family2.LensLike" @@ "f" @@ "s" @@ "t" @@ "a" @@ "b"
+          $ tyForAll ["f", "s", "a"]
+                  [classA "Prelude.Functor" ["f"],
+                   classA "Lens.Labels.HasLens'" ["s", xSym, "a"]]
+                    $ "Lens.Family2.LensLike'" @@ "f" @@ "s" @@ "a"
     , funBind [match x [] $ lensOfExp xStr]
     ]
   where
@@ -763,7 +752,7 @@ data RecordField = RecordField
         -- ^ All of the (overloaded) lenses accessing this record field.
     }
 
--- | An instance of HasLens for a particualr field.
+-- | An instance of HasLens' for a particular field.
 data LensInstance = LensInstance
     { lensSymbol :: Symbol
           -- ^ The overloaded name for this lens.
@@ -1129,7 +1118,7 @@ fieldAccessorExpr syntaxType env f = accessorCon @@ lensOfExp hsFieldName
               _ -> overloadedField f
 
 lensOfExp :: Symbol -> Exp
-lensOfExp sym = ("Lens.Labels.lensOf"
+lensOfExp sym = ("Lens.Labels.lensOf'"
                   @@ ("Lens.Labels.proxy#" @::@
                       ("Lens.Labels.Proxy#" @@ promoteSymbol sym)))
 
