@@ -14,7 +14,7 @@ import Data.ProtoLens
 import Data.ProtoLens.TestUtil
 
 defFoo :: Foo
-defFoo = def
+defFoo = defMessage
 
 main :: IO ()
 main = testMain

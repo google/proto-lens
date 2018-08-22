@@ -1,5 +1,8 @@
 # Changelog for `proto-lens-arbitrary`
 
+## v0.1.2.3
+- Update to (and require) `proto-lens-0.4.*`.
+
 ## v0.1.2.2
 - Bump the lower bound on `base` to indicate we require `ghc>=8.0`.
 

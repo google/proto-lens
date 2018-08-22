@@ -1,5 +1,8 @@
 # Changelog for `proto-lens-combinators`
 
+## v0.4.0.0
+- Update to (and require) `proto-lens-0.4.*`.
+
 ## v0.1.0.12
 - Switch to `proto-lens-{setup/runtime}` v0.4.
 

@@ -160,7 +160,7 @@ instance Prelude.Functor f =>
 
 We have a bunch of lenses (or prisms) to access the data relating to `Coffee`. We can inspect the possibility of a `Coffee'CoffeeType` value in a `Coffee` value by using `maybe'coffeeType`. If we want to focus on a certain coffee within that sum type, for example `Mocha` we can use `maybe'mocha`. The word "inspect" is key here, we are viewing the possibility of values. So we if we used `mocha` for viewing a `Mocha` in `Coffee` we would end up with unknown data because it could be something entirely different, such as a `FlatWhite`.<br>
 
-What we can use them for is setting values! When we are defining the value we will know (and have to know) what type our `CoffeeType` will be. Thus we can do the following, `def & mocha .~ def` where the second `def` is secretly our empty `Mocha` value.<br>
+What we can use them for is setting values! When we are defining the value we will know (and have to know) what type our `CoffeeType` will be. Thus we can do the following, `defMessage & mocha .~ defMessage` where the second `defMessage` is secretly our empty `Mocha` value.<br>
 
 As of commit `87efe00a0fa16b657493ba4043abd014d5c04cd3`, `Prism'` functions are also available for use on `Coffee'Type` sum. The `Prism'` functions are of of the naming convention `_Coffee'Americano`, `_Coffee'Latte`, etc. There is more information on `Prism'`s [here](../../docs/tutorial.md#oneof-generation)
 

@@ -7,7 +7,7 @@
 {-# LANGUAGE OverloadedStrings #-}
 module Main where
 
-import Data.ProtoLens (def)
+import Data.ProtoLens (defMessage)
 import Data.ProtoLens.Combinators
 import Lens.Family ((^.), (.~), (&))
 import Lens.Family.State ((.=), (<~), use, zoom)
@@ -19,7 +19,7 @@ import Test.HUnit ((~:), (~?=))
 
 main :: IO ()
 main = defaultMain $ hUnitTestToTests $ "" ~:
-    [ let proto = def & quux .~ 1 & foo .~ def :: Foo
+    [ let proto = defMessage & quux .~ 1 & foo .~ defMessage :: Foo
       in "has" ~:
           [ "True" ~: proto ^. has maybe'quux ~?= True
           , "False" ~: proto ^. has maybe'bar ~?= False
@@ -28,13 +28,13 @@ main = defaultMain $ hUnitTestToTests $ "" ~:
               , "False" ~: proto ^. has (foo . maybe'buzz) ~?= False
               ]
           ]
-    , let proto = def & quux .~ 2 & foo . fizz .~ 3 :: Foo
+    , let proto = defMessage & quux .~ 2 & foo . fizz .~ 3 :: Foo
       in "clear" ~:
           [ "no-op" ~: clear maybe'bar proto ~?= proto
-          , "scalar" ~: clear maybe'quux proto ~?= (def & foo . fizz .~ 3)
-          , "group" ~: clear maybe'foo proto ~?= (def & quux .~ 2)
+          , "scalar" ~: clear maybe'quux proto ~?= (defMessage & foo . fizz .~ 3)
+          , "group" ~: clear maybe'foo proto ~?= (defMessage & quux .~ 2)
           , "nested" ~: clear (foo . maybe'fizz) proto ~?=
-              (def & quux .~ 2 & foo .~ def)
+              (defMessage & quux .~ 2 & foo .~ defMessage)
           ]
     , let actual :: Foo
           actual = make $ do
@@ -44,13 +44,13 @@ main = defaultMain $ hUnitTestToTests $ "" ~:
                   fizz .= 5
                   buzz .= "B"
               zoom baz $ return ()
-          expected = def & quux .~ 4 & foo . buzz .~ "A" &
-              bar .~ (def & fizz .~ 5 & buzz .~ "B") & baz .~ def
+          expected = defMessage & quux .~ 4 & foo . buzz .~ "A" &
+              bar .~ (defMessage & fizz .~ 5 & buzz .~ "B") & baz .~ defMessage
       in "make" ~: actual ~?= expected
-    , let original = def & quux .~ 6 & baz . fizz .~ 7 :: Foo
+    , let original = defMessage & quux .~ 6 & baz . fizz .~ 7 :: Foo
           actual = modifyInState original $ do
               bar . fizz <~ use quux
               quux .= 8
-          expected = def & quux .~ 8 & bar . fizz .~ 6 & baz . fizz .~ 7
+          expected = defMessage & quux .~ 8 & bar . fizz .~ 6 & baz . fizz .~ 7
       in "modifyInState" ~: actual ~?= expected
     ]

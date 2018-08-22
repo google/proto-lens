@@ -28,7 +28,7 @@ testPreserveUnknownFields =
     let sub = tagged 50 (VarInt 43) <> tagged 51 (Lengthy $ tagged 52 (Fixed32 44))
     in testUnknownSerialization
         "unknown fields"
-        ((def :: Raw)
+        ((defMessage :: Raw)
             & a .~ 42
               & b .~ 17
               & unknownFields .~
@@ -61,7 +61,7 @@ testPreserveUnknownFields =
 testUnknownGroup :: Test
 testUnknownGroup =
     testUnknownSerialization "unknown group"
-          ((def :: Raw)
+          ((defMessage :: Raw)
               & a .~ 42
               & b .~ 17
               & unknownFields .~

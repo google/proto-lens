@@ -5,7 +5,7 @@
 
 module Main where
 
-import           Data.Default
+import           Data.ProtoLens (defMessage)
 import           Lens.Labels.Unwrapped ()
 import           Lens.Micro
 import           Lens.Micro.Extras (view)
@@ -36,36 +36,41 @@ instance Show TransactionError where
 --   with a price of €2.70
 americano :: P.Coffee
 americano =
-  def & #cost      .~ 2.70
-      & #americano .~ def
+  defMessage
+      & #cost      .~ 2.70
+      & #americano .~ defMessage
 
 -- | Smart constructor for making an 'Latte'
 --   with a price of €3.20
 latte :: P.Coffee
 latte =
-  def & #cost  .~ 3.20
-      & #latte .~ def
+  defMessage
+      & #cost  .~ 3.20
+      & #latte .~ defMessage
 
 -- | Smart constructor for making an 'FlatWhite'
 --   with a price of €3.30
 flatWhite :: P.Coffee
 flatWhite =
-  def & #cost      .~ 3.30
-      & #flatWhite .~ def
+  defMessage
+      & #cost      .~ 3.30
+      & #flatWhite .~ defMessage
 
 -- | Smart constructor for making an 'Americano'
 --   with a price of €3.00
 cappuccino :: P.Coffee
 cappuccino =
-  def & #cost       .~ 3.00
-      & #cappuccino .~ def
+  defMessage
+      & #cost       .~ 3.00
+      & #cappuccino .~ defMessage
 
 -- | Smart constructor for making an 'Americano'
 --   with a price of €3.50
 mocha :: P.Coffee
 mocha =
-  def & #cost  .~ 3.50
-      & #mocha .~ def
+  defMessage
+      & #cost  .~ 3.50
+      & #mocha .~ defMessage
 
 -- | A silly function showing that you can add milk to an Americano
 --   but not the other coffees because they already have milk in them.
@@ -134,9 +139,9 @@ main = do
   putStrLn "Cash, please"
 
   let order1 :: P.Order
-      order1 =
-        def & #coffees .~ [americano, americano, flatWhite]
-            & #cash    .~ (def & #amount .~ totalCost1)
+      order1 = defMessage
+                    & #coffees .~ [americano, americano, flatWhite]
+                    & #cash . #amount .~ totalCost1
 
   putStrLn $ case takeOrder totalCost1 order1 of
     Left err -> show err

@@ -29,7 +29,7 @@ serializeSimple, deserializeEndMismatch, roundTripSimple,
 
 serializeSimple = serializeTo
     "serialize Simple"
-    (def & (grp . int) .~ 12 :: Simple)
+    (defMessage & (grp . int) .~ 12 :: Simple)
     (braced "Grp" (keyedInt "int" 12))
     (tagged 1 GroupStart <> tagged 2 (VarInt 12) <> tagged 1 GroupEnd)
 

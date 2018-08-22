@@ -14,7 +14,7 @@ import Data.Monoid ((<>))
 import qualified Data.Text.Lazy
 import qualified Data.ProtoLens.Any as Any
 import Data.ProtoLens (
-    def, Message, showMessage, showMessageShort, pprintMessage, register,
+    defMessage, Message, showMessage, showMessageShort, pprintMessage, register,
     showMessageWithRegistry )
 import Data.Proxy (Proxy(..))
 import Lens.Family2 ((&), (.~))
@@ -27,13 +27,13 @@ import Text.PrettyPrint (renderStyle, style, lineLength)
 import Data.ProtoLens.TestUtil
 
 def1 :: Test1
-def1 = def
+def1 = defMessage
 
 def2 :: Test2
-def2 = def
+def2 = defMessage
 
 def3 :: AnyHolder
-def3 = def
+def3 = defMessage
 
 failed1 :: Maybe Test1
 failed1 = Nothing
@@ -138,11 +138,11 @@ main = testMain
                                         & b .~ "test"
                                         & d .~ [1,2,4,9]
                                         & e .~ "\0\0\0")
-             & sub    .~ (def & thing2 .~
+             & sub . thing2 .~
                           Any.pack (def2 & c . a .~ 35
                                          & c . b .~ "hello world"
                                          & c . d .~ [1,3,5]
-                                         & c . e .~ "\n\n\n"))
+                                         & c . e .~ "\n\n\n")
     anyExpText =
       Data.Text.Lazy.unlines
         [ "thing1 {"

@@ -1,6 +1,6 @@
 # Changelog for `proto-lens-protobuf-types`
 
-## v0.3.0.3
+## v0.4.0.0
 - Switch to `proto-lens-{setup/runtime}` v0.4.
 
 ## v0.3.0.2

@@ -42,7 +42,7 @@ readSucceeds name value = readFrom name (Just value)
 
 main :: IO ()
 main = testMain
-    [ serializeTo "default" (def :: Raw) mempty mempty
+    [ serializeTo "default" (defMessage :: Raw) mempty mempty
     , testInt32
     , testInt64
     , testUInt32
@@ -77,7 +77,7 @@ testRawValuePairs :: String -> Lens' Raw a -> (a -> Doc)
                   -> (b -> Builder) -> [(String, a, b)] -> Test
 testRawValuePairs groupName access showMsg encode values
     = testGroup groupName
-          [ serializeTo name (def & access .~ x) (showMsg x)
+          [ serializeTo name (defMessage & access .~ x) (showMsg x)
                       (encode y)
           | (name, x, y) <- values
           ]
@@ -214,8 +214,8 @@ testBool = testGroup "bool"
         , ("false", False, 0)
         ]
     , readFails "invalid string" "g: blah"
-    , readSucceeds "int true" (def & g .~ True) "g: 1"
-    , readSucceeds "int false" (def & g .~ False) "g: 0"
+    , readSucceeds "int true" (defMessage & g .~ True) "g: 1"
+    , readSucceeds "int false" (defMessage & g .~ False) "g: 0"
     , readFails "invalid int" "g: 3"
     ]
 
@@ -236,7 +236,7 @@ testUnicode = testGroup "unicode"
     ]
   where
      test name value text =
-         serializeTo name ((def :: Raw) & h .~ value) text
+         serializeTo name ((defMessage :: Raw) & h .~ value) text
                      ((tagged 8 . Lengthy . byteString . encodeUtf8) value)
 
 
@@ -252,5 +252,5 @@ testBytes = testRawValues "bytes" i
         ])
 
 testFailedDecoding = testGroup "failedDecoding"
-    [ deserializeFails "different types" (def & a .~ fromString "foo")
+    [ deserializeFails "different types" (defMessage & a .~ fromString "foo")
     ]

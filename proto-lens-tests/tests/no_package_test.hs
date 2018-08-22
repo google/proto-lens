@@ -16,7 +16,7 @@ main = testMain [testNames]
 
 testNames :: Test
 testNames = testCase "testNoPackage" $ do
-    42 @=? (def & c . a .~ 42 :: Foo) ^. c . a
-    42 @=? (def & d . e .~ 42 :: Foo) ^. d . e
-    [(42, "answer")] @=? (def & b .~ [(42, "answer")] :: Foo) ^. b
+    42 @=? (defMessage & c . a .~ 42 :: Foo) ^. c . a
+    42 @=? (defMessage & d . e .~ 42 :: Foo) ^. d . e
+    [(42, "answer")] @=? (defMessage & b .~ [(42, "answer")] :: Foo) ^. b
 

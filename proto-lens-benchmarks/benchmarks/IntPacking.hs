@@ -18,7 +18,7 @@ import Control.DeepSeq (NFData)
 import Criterion.Main (Benchmark)
 import Lens.Family ((&), (.~))
 import Data.Int (Int32)
-import Data.ProtoLens (def)
+import Data.ProtoLens (defMessage)
 import Proto.IntPacking
 import Proto.IntPacking_Fields
 
@@ -35,10 +35,10 @@ defaultNumInt32s :: Int
 defaultNumInt32s = 10000
 
 populateUnpacked :: Int -> Int32 -> FooUnpacked
-populateUnpacked n k = def & num .~ replicate n k
+populateUnpacked n k = defMessage & num .~ replicate n k
 
 populatePacked :: Int -> Int32 -> FooPacked
-populatePacked n k = def & num .~ replicate n k
+populatePacked n k = defMessage & num .~ replicate n k
 
 benchmaker :: Int -> [Benchmark]
 benchmaker size =

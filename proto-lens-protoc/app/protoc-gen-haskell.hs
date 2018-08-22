@@ -14,7 +14,7 @@ import Data.Monoid ((<>))
 import qualified Data.Set as Set
 import qualified Data.Text as T
 import Data.Text (Text, pack)
-import Data.ProtoLens (decodeMessage, def, encodeMessage)
+import Data.ProtoLens (decodeMessage, defMessage, encodeMessage)
 import Lens.Family2
 import Proto.Google.Protobuf.Compiler.Plugin
     ( CodeGeneratorRequest
@@ -62,8 +62,10 @@ makeResponse prog request = let
     header f = "{- This file was auto-generated from "
                 <> (f ^. name)
                 <> " by the " <> pack prog <> " program. -}\n"
-    in def & file .~ [ def & name .~ outputName
-                           & content .~ outputContent
+    in defMessage
+           & file .~ [ defMessage
+                            & name .~ outputName
+                            & content .~ outputContent
                      | (outputName, outputContent) <- outputFiles
                      ]
 

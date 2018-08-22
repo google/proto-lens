@@ -1,5 +1,8 @@
 # Changelog for `proto-lens`
 
+## v0.4
+- Don't use `data-default` for default proto values (#194).
+
 ## v0.3.1.1
 - Bump the lower bound on `base` to indicate we require `ghc>=8.0`.
 

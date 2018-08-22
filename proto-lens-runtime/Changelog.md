@@ -1,6 +1,6 @@
 # Changelog for `proto-lens-runtime`
 
-## v0.4
+## v0.4.0.0
 - Split out from `proto-lens-protoc`.
 
 ## Older

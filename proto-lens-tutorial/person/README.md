@@ -100,13 +100,15 @@ import Lens.Micro
 
 person :: P.Person
 person =
-  def & P.name      .~ "Fintan"
+  defMessage
+      & P.name      .~ "Fintan"
       & P.age       .~ 24
       & P.addresses .~ [address]
   where
     address :: P.Address
     address =
-      def & P.street  .~ "Yolo street"
+      defMessage
+          & P.street  .~ "Yolo street"
           & P.zipCode .~ "D8"
 
 
@@ -159,6 +161,9 @@ data Address = Address
   }
   deriving (Prelude.Show, Prelude.Eq, Prelude.Ord)
 
+instance Data.ProtoLens.Message Address where
+  -- instance definition
+
 instance (Lens.Labels.HasLens' f Address x a, a ~ b) =>
          Lens.Labels.HasLens f Address Address x a b
 -- instance definition
@@ -172,11 +177,6 @@ instance Prelude.Functor f =>
          Lens.Labels.HasLens' f Address "zipCode" (Data.Text.Text)
 -- instance definition
 
-instance Data.Default.Class.Default Address where
--- instance definition
-
-instance Data.ProtoLens.Message Address where
--- instance definition
 
 data Person = Person
   { _Person'name :: !Data.Text.Text
@@ -251,7 +251,8 @@ import Proto.Person as P
 import Proto.Person_Fields as P
 
 fintan :: P.Person                      -- Signal the compiler what we are creating a Person
-fintan = def & P.name      .~ "Fintan"  -- set the `name` of our person
+fintan = defMessage
+             & P.name      .~ "Fintan"  -- set the `name` of our person
              & P.age       .~ 24        -- set the `age` of our person
              & P.addresses .~ addresses -- set the `addresses` of our person
 ```

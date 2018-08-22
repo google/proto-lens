@@ -3,11 +3,10 @@
 module Main where
 
 import Control.Applicative ((<$>))
-import Data.Default (Default(def))
 import Data.Discrimination (Sort, runSort, sorting, sorting1)
 import Data.Int (Int32)
 import Data.List (sortBy)
-import Lens.Family2 ((&), (^.), (.~))
+import Lens.Family2 (Lens', (&), (^.), (.~))
 import Lens.Family2.Stock (_1, _2)
 import Test.HUnit ((@=?), Assertion)
 import Test.Framework (testGroup, defaultMain)
@@ -24,12 +23,15 @@ import Data.ProtoLens.Message
     , Message(fieldsByTextFormatName)
     , ScalarField(..)
     , MessageOrGroup(..)
+    , defMessage
     )
 import Data.ProtoLens.Discrimination (discProtoMapAssocs)
 import Data.ProtoLens.Sort
 
 import Proto.Enum
 import Proto.Enum_Fields
+import Proto.Map
+import Proto.Map_Fields
 
 
 sortCompare :: Sort a -> a -> a -> Ordering
@@ -60,10 +62,11 @@ fieldValueSortTest = testGroup "field value"
           comparesAs EQ BAR5 BAR5 $ sortingScalarField EnumField
     -- Message fields.
     , testCase "message Foo eq" $
-          comparesAs EQ def def $ sortingFieldValue
+          comparesAs EQ defMessage defMessage $ sortingFieldValue
               (MessageField MessageType :: FieldTypeDescriptor Foo)
     , testCase "message Foo lt" $
-          (def & bar .~ BAR3) <? (def & bar .~ BAR5) $ sortingFieldValue
+          (defMessage & bar .~ BAR3) <? (defMessage & bar .~ BAR5) $
+             sortingFieldValue
               (MessageField MessageType :: FieldTypeDescriptor Foo)
     ]
 
@@ -96,7 +99,9 @@ protoMapSortTest = testGroup "map"
           in compare x' y' == sortCompare c x' y'
     ]
   where
-    c = discProtoMapAssocs sorting1 sorting _1 _2
+    c = discProtoMapAssocs sorting1 sortingMessage
+            (key :: Lens' MapWrapper'IntMapEntry Int32)
+            value
 
 fieldSortTest :: Test
 fieldSortTest = testProperty "compares by field" $
@@ -109,10 +114,11 @@ fieldSortTest = testProperty "compares by field" $
 
 messageSortTest :: Test
 messageSortTest = testGroup "Message"
-    [ testCase "def EQ def" $ comparesAs EQ def def s
+    [ testCase "defMessage EQ defMessage" $
+        comparesAs EQ defMessage defMessage s
     , testCase "lower tags compared first" $
-        (def & bar .~ BAR3 & barDefaulted .~ BAR5) <?
-        (def & bar .~ BAR5 & barDefaulted .~ BAR3) $ s
+        (defMessage & bar .~ BAR3 & barDefaulted .~ BAR5) <?
+        (defMessage & bar .~ BAR5 & barDefaulted .~ BAR3) $ s
     , testProperty "symmetry" $
         \(ArbitraryMessage msg1) (ArbitraryMessage msg2) ->
             (LT == sortCompare s msg1 msg2) ==

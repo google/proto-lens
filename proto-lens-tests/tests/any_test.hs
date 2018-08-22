@@ -19,7 +19,7 @@ import Proto.Any_Fields
 main :: IO ()
 main = testMain
     [ testCase "pack/unpack" $ do
-          let foo = def & a .~ 42 & b .~ "hello" :: Foo
+          let foo = defMessage & a .~ 42 & b .~ "hello" :: Foo
           let any1 = pack foo
           "type.googleapis.com/test.any.Foo" @=? (any1 ^. typeUrl)
           encodeMessage foo @=? (any1 ^. value)

@@ -29,7 +29,7 @@ import Test.HUnit ((@?=))
 import Data.ProtoLens.TestUtil
 
 defFoo :: Foo
-defFoo = def
+defFoo = defMessage
 
 main :: IO ()
 main = testMain

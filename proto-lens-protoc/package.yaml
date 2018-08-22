@@ -20,7 +20,7 @@ dependencies:
   - base >= 4.9 && < 4.12
   - containers == 0.5.*
   - lens-family == 1.2.*
-  - proto-lens == 0.3.*
+  - proto-lens == 0.4.*
   - text == 1.2.*
 
 
@@ -42,5 +42,4 @@ executables:
     source-dirs: app
     dependencies:
       - bytestring == 0.10.*
-      - data-default-class >= 0.0 && < 0.2
       - proto-lens-protoc

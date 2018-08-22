@@ -16,7 +16,7 @@ module Data.ProtoLens.Combinators
     ) where
 
 import Control.Monad.Trans.State (State, execState)
-import Data.Default.Class (Default(def))
+import Data.ProtoLens (Message(..))
 import Data.Maybe (isJust)
 import Lens.Family2 (LensLike, Phantom, Setter, to, (.~))
 
@@ -33,8 +33,8 @@ clear = (.~ Nothing)
 
 -- | Creates a 'Default' and then applies the provided `State` to it.  This is
 -- convenient for creating complicated structures.
-make :: Default def => State def a -> def
-make = modifyInState def
+make :: Message msg => State msg a -> msg
+make = modifyInState defMessage
 
 -- | Allows one to modify a value in the 'State' monad.  Note that this is
 -- just for syntactic convenience with @do@ blocks, e.g.
