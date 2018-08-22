@@ -4,7 +4,7 @@
 {-# LANGUAGE TypeApplications #-}
 module Main where
 
-import Data.Default.Class (Default(def))
+import Data.ProtoLens (Message, def)
 import Lens.Labels (Lens', view, set)
 import Test.Framework.Providers.HUnit (testCase)
 import Test.HUnit ((@=?))
@@ -30,7 +30,7 @@ main = testMain
 -- (In this test, we're checking that the sub-field type got imported
 -- correctly from another file.)
 testField
-    :: forall a b . (Default a, Default b, Eq b, Show b)
+    :: forall a b . (Message a, Message b, Eq b, Show b)
     => Lens' a b -> IO ()
 testField f = def @=? view f (set f def def)
 

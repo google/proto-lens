@@ -7,8 +7,8 @@
 {-# LANGUAGE OverloadedStrings #-}
 module Main where
 
-import Data.Default.Class (def)
 import Data.Monoid ((<>))
+import Data.ProtoLens (def)
 import Lens.Family ((&), (.~))
 import Proto.Required (Foo)
 import Proto.Required_Fields (a, b)

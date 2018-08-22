@@ -32,7 +32,6 @@ import qualified Data.ProtoLens.Message.Enum
 import qualified Data.ProtoLens.Service.Types
 import qualified Lens.Family2
 import qualified Lens.Family2.Unchecked
-import qualified Data.Default.Class
 import qualified Data.Text
 import qualified Data.Map
 import qualified Data.ByteString
@@ -152,7 +151,7 @@ instance Prelude.Functor f =>
           = (Prelude..)
               (Lens.Family2.Unchecked.lens _DescriptorProto'options
                  (\ x__ y__ -> x__{_DescriptorProto'options = y__}))
-              (Data.ProtoLens.maybeLens Data.Default.Class.def)
+              (Data.ProtoLens.maybeLens Data.ProtoLens.defaultMessage)
 instance Prelude.Functor f =>
          Lens.Labels.HasLens' f DescriptorProto "maybe'options"
            (Prelude.Maybe MessageOptions)
@@ -180,17 +179,6 @@ instance Prelude.Functor f =>
               (Lens.Family2.Unchecked.lens _DescriptorProto'reservedName
                  (\ x__ y__ -> x__{_DescriptorProto'reservedName = y__}))
               Prelude.id
-instance Data.Default.Class.Default DescriptorProto where
-        def
-          = DescriptorProto{_DescriptorProto'name = Prelude.Nothing,
-                            _DescriptorProto'field = [], _DescriptorProto'extension = [],
-                            _DescriptorProto'nestedType = [], _DescriptorProto'enumType = [],
-                            _DescriptorProto'extensionRange = [],
-                            _DescriptorProto'oneofDecl = [],
-                            _DescriptorProto'options = Prelude.Nothing,
-                            _DescriptorProto'reservedRange = [],
-                            _DescriptorProto'reservedName = [],
-                            _DescriptorProto'_unknownFields = ([])}
 instance Data.ProtoLens.Message DescriptorProto where
         messageName _ = Data.Text.pack "google.protobuf.DescriptorProto"
         fieldsByTag
@@ -289,6 +277,16 @@ instance Data.ProtoLens.Message DescriptorProto where
         unknownFields
           = Lens.Family2.Unchecked.lens _DescriptorProto'_unknownFields
               (\ x__ y__ -> x__{_DescriptorProto'_unknownFields = y__})
+        defaultMessage
+          = DescriptorProto{_DescriptorProto'name = Prelude.Nothing,
+                            _DescriptorProto'field = [], _DescriptorProto'extension = [],
+                            _DescriptorProto'nestedType = [], _DescriptorProto'enumType = [],
+                            _DescriptorProto'extensionRange = [],
+                            _DescriptorProto'oneofDecl = [],
+                            _DescriptorProto'options = Prelude.Nothing,
+                            _DescriptorProto'reservedRange = [],
+                            _DescriptorProto'reservedName = [],
+                            _DescriptorProto'_unknownFields = ([])}
 {- | Fields :
 
     * 'Proto.Google.Protobuf.Descriptor_Fields.start' @:: Lens' DescriptorProto'ExtensionRange Data.Int.Int32@
@@ -353,13 +351,6 @@ instance Prelude.Functor f =>
               (Lens.Family2.Unchecked.lens _DescriptorProto'ExtensionRange'end
                  (\ x__ y__ -> x__{_DescriptorProto'ExtensionRange'end = y__}))
               Prelude.id
-instance Data.Default.Class.Default DescriptorProto'ExtensionRange
-         where
-        def
-          = DescriptorProto'ExtensionRange{_DescriptorProto'ExtensionRange'start
-                                             = Prelude.Nothing,
-                                           _DescriptorProto'ExtensionRange'end = Prelude.Nothing,
-                                           _DescriptorProto'ExtensionRange'_unknownFields = ([])}
 instance Data.ProtoLens.Message DescriptorProto'ExtensionRange
          where
         messageName _
@@ -390,6 +381,11 @@ instance Data.ProtoLens.Message DescriptorProto'ExtensionRange
               _DescriptorProto'ExtensionRange'_unknownFields
               (\ x__ y__ ->
                  x__{_DescriptorProto'ExtensionRange'_unknownFields = y__})
+        defaultMessage
+          = DescriptorProto'ExtensionRange{_DescriptorProto'ExtensionRange'start
+                                             = Prelude.Nothing,
+                                           _DescriptorProto'ExtensionRange'end = Prelude.Nothing,
+                                           _DescriptorProto'ExtensionRange'_unknownFields = ([])}
 {- | Fields :
 
     * 'Proto.Google.Protobuf.Descriptor_Fields.start' @:: Lens' DescriptorProto'ReservedRange Data.Int.Int32@
@@ -451,13 +447,6 @@ instance Prelude.Functor f =>
               (Lens.Family2.Unchecked.lens _DescriptorProto'ReservedRange'end
                  (\ x__ y__ -> x__{_DescriptorProto'ReservedRange'end = y__}))
               Prelude.id
-instance Data.Default.Class.Default DescriptorProto'ReservedRange
-         where
-        def
-          = DescriptorProto'ReservedRange{_DescriptorProto'ReservedRange'start
-                                            = Prelude.Nothing,
-                                          _DescriptorProto'ReservedRange'end = Prelude.Nothing,
-                                          _DescriptorProto'ReservedRange'_unknownFields = ([])}
 instance Data.ProtoLens.Message DescriptorProto'ReservedRange where
         messageName _
           = Data.Text.pack "google.protobuf.DescriptorProto.ReservedRange"
@@ -487,6 +476,11 @@ instance Data.ProtoLens.Message DescriptorProto'ReservedRange where
               _DescriptorProto'ReservedRange'_unknownFields
               (\ x__ y__ ->
                  x__{_DescriptorProto'ReservedRange'_unknownFields = y__})
+        defaultMessage
+          = DescriptorProto'ReservedRange{_DescriptorProto'ReservedRange'start
+                                            = Prelude.Nothing,
+                                          _DescriptorProto'ReservedRange'end = Prelude.Nothing,
+                                          _DescriptorProto'ReservedRange'_unknownFields = ([])}
 {- | Fields :
 
     * 'Proto.Google.Protobuf.Descriptor_Fields.name' @:: Lens' EnumDescriptorProto Data.Text.Text@
@@ -541,7 +535,7 @@ instance Prelude.Functor f =>
           = (Prelude..)
               (Lens.Family2.Unchecked.lens _EnumDescriptorProto'options
                  (\ x__ y__ -> x__{_EnumDescriptorProto'options = y__}))
-              (Data.ProtoLens.maybeLens Data.Default.Class.def)
+              (Data.ProtoLens.maybeLens Data.ProtoLens.defaultMessage)
 instance Prelude.Functor f =>
          Lens.Labels.HasLens' f EnumDescriptorProto "maybe'options"
            (Prelude.Maybe EnumOptions)
@@ -551,12 +545,6 @@ instance Prelude.Functor f =>
               (Lens.Family2.Unchecked.lens _EnumDescriptorProto'options
                  (\ x__ y__ -> x__{_EnumDescriptorProto'options = y__}))
               Prelude.id
-instance Data.Default.Class.Default EnumDescriptorProto where
-        def
-          = EnumDescriptorProto{_EnumDescriptorProto'name = Prelude.Nothing,
-                                _EnumDescriptorProto'value = [],
-                                _EnumDescriptorProto'options = Prelude.Nothing,
-                                _EnumDescriptorProto'_unknownFields = ([])}
 instance Data.ProtoLens.Message EnumDescriptorProto where
         messageName _
           = Data.Text.pack "google.protobuf.EnumDescriptorProto"
@@ -593,6 +581,11 @@ instance Data.ProtoLens.Message EnumDescriptorProto where
         unknownFields
           = Lens.Family2.Unchecked.lens _EnumDescriptorProto'_unknownFields
               (\ x__ y__ -> x__{_EnumDescriptorProto'_unknownFields = y__})
+        defaultMessage
+          = EnumDescriptorProto{_EnumDescriptorProto'name = Prelude.Nothing,
+                                _EnumDescriptorProto'value = [],
+                                _EnumDescriptorProto'options = Prelude.Nothing,
+                                _EnumDescriptorProto'_unknownFields = ([])}
 {- | Fields :
 
     * 'Proto.Google.Protobuf.Descriptor_Fields.allowAlias' @:: Lens' EnumOptions Prelude.Bool@
@@ -654,12 +647,6 @@ instance Prelude.Functor f =>
               (Lens.Family2.Unchecked.lens _EnumOptions'uninterpretedOption
                  (\ x__ y__ -> x__{_EnumOptions'uninterpretedOption = y__}))
               Prelude.id
-instance Data.Default.Class.Default EnumOptions where
-        def
-          = EnumOptions{_EnumOptions'allowAlias = Prelude.Nothing,
-                        _EnumOptions'deprecated = Prelude.Nothing,
-                        _EnumOptions'uninterpretedOption = [],
-                        _EnumOptions'_unknownFields = ([])}
 instance Data.ProtoLens.Message EnumOptions where
         messageName _ = Data.Text.pack "google.protobuf.EnumOptions"
         fieldsByTag
@@ -696,6 +683,11 @@ instance Data.ProtoLens.Message EnumOptions where
         unknownFields
           = Lens.Family2.Unchecked.lens _EnumOptions'_unknownFields
               (\ x__ y__ -> x__{_EnumOptions'_unknownFields = y__})
+        defaultMessage
+          = EnumOptions{_EnumOptions'allowAlias = Prelude.Nothing,
+                        _EnumOptions'deprecated = Prelude.Nothing,
+                        _EnumOptions'uninterpretedOption = [],
+                        _EnumOptions'_unknownFields = ([])}
 {- | Fields :
 
     * 'Proto.Google.Protobuf.Descriptor_Fields.name' @:: Lens' EnumValueDescriptorProto Data.Text.Text@
@@ -767,7 +759,7 @@ instance Prelude.Functor f =>
           = (Prelude..)
               (Lens.Family2.Unchecked.lens _EnumValueDescriptorProto'options
                  (\ x__ y__ -> x__{_EnumValueDescriptorProto'options = y__}))
-              (Data.ProtoLens.maybeLens Data.Default.Class.def)
+              (Data.ProtoLens.maybeLens Data.ProtoLens.defaultMessage)
 instance Prelude.Functor f =>
          Lens.Labels.HasLens' f EnumValueDescriptorProto "maybe'options"
            (Prelude.Maybe EnumValueOptions)
@@ -777,13 +769,6 @@ instance Prelude.Functor f =>
               (Lens.Family2.Unchecked.lens _EnumValueDescriptorProto'options
                  (\ x__ y__ -> x__{_EnumValueDescriptorProto'options = y__}))
               Prelude.id
-instance Data.Default.Class.Default EnumValueDescriptorProto where
-        def
-          = EnumValueDescriptorProto{_EnumValueDescriptorProto'name =
-                                       Prelude.Nothing,
-                                     _EnumValueDescriptorProto'number = Prelude.Nothing,
-                                     _EnumValueDescriptorProto'options = Prelude.Nothing,
-                                     _EnumValueDescriptorProto'_unknownFields = ([])}
 instance Data.ProtoLens.Message EnumValueDescriptorProto where
         messageName _
           = Data.Text.pack "google.protobuf.EnumValueDescriptorProto"
@@ -821,6 +806,12 @@ instance Data.ProtoLens.Message EnumValueDescriptorProto where
           = Lens.Family2.Unchecked.lens
               _EnumValueDescriptorProto'_unknownFields
               (\ x__ y__ -> x__{_EnumValueDescriptorProto'_unknownFields = y__})
+        defaultMessage
+          = EnumValueDescriptorProto{_EnumValueDescriptorProto'name =
+                                       Prelude.Nothing,
+                                     _EnumValueDescriptorProto'number = Prelude.Nothing,
+                                     _EnumValueDescriptorProto'options = Prelude.Nothing,
+                                     _EnumValueDescriptorProto'_unknownFields = ([])}
 {- | Fields :
 
     * 'Proto.Google.Protobuf.Descriptor_Fields.deprecated' @:: Lens' EnumValueOptions Prelude.Bool@
@@ -864,11 +855,6 @@ instance Prelude.Functor f =>
               (Lens.Family2.Unchecked.lens _EnumValueOptions'uninterpretedOption
                  (\ x__ y__ -> x__{_EnumValueOptions'uninterpretedOption = y__}))
               Prelude.id
-instance Data.Default.Class.Default EnumValueOptions where
-        def
-          = EnumValueOptions{_EnumValueOptions'deprecated = Prelude.Nothing,
-                             _EnumValueOptions'uninterpretedOption = [],
-                             _EnumValueOptions'_unknownFields = ([])}
 instance Data.ProtoLens.Message EnumValueOptions where
         messageName _ = Data.Text.pack "google.protobuf.EnumValueOptions"
         fieldsByTag
@@ -896,6 +882,10 @@ instance Data.ProtoLens.Message EnumValueOptions where
         unknownFields
           = Lens.Family2.Unchecked.lens _EnumValueOptions'_unknownFields
               (\ x__ y__ -> x__{_EnumValueOptions'_unknownFields = y__})
+        defaultMessage
+          = EnumValueOptions{_EnumValueOptions'deprecated = Prelude.Nothing,
+                             _EnumValueOptions'uninterpretedOption = [],
+                             _EnumValueOptions'_unknownFields = ([])}
 {- | Fields :
 
     * 'Proto.Google.Protobuf.Descriptor_Fields.name' @:: Lens' FieldDescriptorProto Data.Text.Text@
@@ -993,7 +983,7 @@ instance Prelude.Functor f =>
           = (Prelude..)
               (Lens.Family2.Unchecked.lens _FieldDescriptorProto'label
                  (\ x__ y__ -> x__{_FieldDescriptorProto'label = y__}))
-              (Data.ProtoLens.maybeLens Data.Default.Class.def)
+              (Data.ProtoLens.maybeLens Data.ProtoLens.fieldDefault)
 instance Prelude.Functor f =>
          Lens.Labels.HasLens' f FieldDescriptorProto "maybe'label"
            (Prelude.Maybe FieldDescriptorProto'Label)
@@ -1011,7 +1001,7 @@ instance Prelude.Functor f =>
           = (Prelude..)
               (Lens.Family2.Unchecked.lens _FieldDescriptorProto'type'
                  (\ x__ y__ -> x__{_FieldDescriptorProto'type' = y__}))
-              (Data.ProtoLens.maybeLens Data.Default.Class.def)
+              (Data.ProtoLens.maybeLens Data.ProtoLens.fieldDefault)
 instance Prelude.Functor f =>
          Lens.Labels.HasLens' f FieldDescriptorProto "maybe'type'"
            (Prelude.Maybe FieldDescriptorProto'Type)
@@ -1119,7 +1109,7 @@ instance Prelude.Functor f =>
           = (Prelude..)
               (Lens.Family2.Unchecked.lens _FieldDescriptorProto'options
                  (\ x__ y__ -> x__{_FieldDescriptorProto'options = y__}))
-              (Data.ProtoLens.maybeLens Data.Default.Class.def)
+              (Data.ProtoLens.maybeLens Data.ProtoLens.defaultMessage)
 instance Prelude.Functor f =>
          Lens.Labels.HasLens' f FieldDescriptorProto "maybe'options"
            (Prelude.Maybe FieldOptions)
@@ -1129,20 +1119,6 @@ instance Prelude.Functor f =>
               (Lens.Family2.Unchecked.lens _FieldDescriptorProto'options
                  (\ x__ y__ -> x__{_FieldDescriptorProto'options = y__}))
               Prelude.id
-instance Data.Default.Class.Default FieldDescriptorProto where
-        def
-          = FieldDescriptorProto{_FieldDescriptorProto'name =
-                                   Prelude.Nothing,
-                                 _FieldDescriptorProto'number = Prelude.Nothing,
-                                 _FieldDescriptorProto'label = Prelude.Nothing,
-                                 _FieldDescriptorProto'type' = Prelude.Nothing,
-                                 _FieldDescriptorProto'typeName = Prelude.Nothing,
-                                 _FieldDescriptorProto'extendee = Prelude.Nothing,
-                                 _FieldDescriptorProto'defaultValue = Prelude.Nothing,
-                                 _FieldDescriptorProto'oneofIndex = Prelude.Nothing,
-                                 _FieldDescriptorProto'jsonName = Prelude.Nothing,
-                                 _FieldDescriptorProto'options = Prelude.Nothing,
-                                 _FieldDescriptorProto'_unknownFields = ([])}
 instance Data.ProtoLens.Message FieldDescriptorProto where
         messageName _
           = Data.Text.pack "google.protobuf.FieldDescriptorProto"
@@ -1243,13 +1219,23 @@ instance Data.ProtoLens.Message FieldDescriptorProto where
         unknownFields
           = Lens.Family2.Unchecked.lens _FieldDescriptorProto'_unknownFields
               (\ x__ y__ -> x__{_FieldDescriptorProto'_unknownFields = y__})
+        defaultMessage
+          = FieldDescriptorProto{_FieldDescriptorProto'name =
+                                   Prelude.Nothing,
+                                 _FieldDescriptorProto'number = Prelude.Nothing,
+                                 _FieldDescriptorProto'label = Prelude.Nothing,
+                                 _FieldDescriptorProto'type' = Prelude.Nothing,
+                                 _FieldDescriptorProto'typeName = Prelude.Nothing,
+                                 _FieldDescriptorProto'extendee = Prelude.Nothing,
+                                 _FieldDescriptorProto'defaultValue = Prelude.Nothing,
+                                 _FieldDescriptorProto'oneofIndex = Prelude.Nothing,
+                                 _FieldDescriptorProto'jsonName = Prelude.Nothing,
+                                 _FieldDescriptorProto'options = Prelude.Nothing,
+                                 _FieldDescriptorProto'_unknownFields = ([])}
 data FieldDescriptorProto'Label = FieldDescriptorProto'LABEL_OPTIONAL
                                 | FieldDescriptorProto'LABEL_REQUIRED
                                 | FieldDescriptorProto'LABEL_REPEATED
                                 deriving (Prelude.Show, Prelude.Eq, Prelude.Ord)
-instance Data.Default.Class.Default FieldDescriptorProto'Label
-         where
-        def = FieldDescriptorProto'LABEL_OPTIONAL
 instance Data.ProtoLens.FieldDefault FieldDescriptorProto'Label
          where
         fieldDefault = FieldDescriptorProto'LABEL_OPTIONAL
@@ -1320,8 +1306,6 @@ data FieldDescriptorProto'Type = FieldDescriptorProto'TYPE_DOUBLE
                                | FieldDescriptorProto'TYPE_SINT32
                                | FieldDescriptorProto'TYPE_SINT64
                                deriving (Prelude.Show, Prelude.Eq, Prelude.Ord)
-instance Data.Default.Class.Default FieldDescriptorProto'Type where
-        def = FieldDescriptorProto'TYPE_DOUBLE
 instance Data.ProtoLens.FieldDefault FieldDescriptorProto'Type
          where
         fieldDefault = FieldDescriptorProto'TYPE_DOUBLE
@@ -1646,16 +1630,6 @@ instance Prelude.Functor f =>
               (Lens.Family2.Unchecked.lens _FieldOptions'uninterpretedOption
                  (\ x__ y__ -> x__{_FieldOptions'uninterpretedOption = y__}))
               Prelude.id
-instance Data.Default.Class.Default FieldOptions where
-        def
-          = FieldOptions{_FieldOptions'ctype = Prelude.Nothing,
-                         _FieldOptions'packed = Prelude.Nothing,
-                         _FieldOptions'jstype = Prelude.Nothing,
-                         _FieldOptions'lazy = Prelude.Nothing,
-                         _FieldOptions'deprecated = Prelude.Nothing,
-                         _FieldOptions'weak = Prelude.Nothing,
-                         _FieldOptions'uninterpretedOption = [],
-                         _FieldOptions'_unknownFields = ([])}
 instance Data.ProtoLens.Message FieldOptions where
         messageName _ = Data.Text.pack "google.protobuf.FieldOptions"
         fieldsByTag
@@ -1728,12 +1702,19 @@ instance Data.ProtoLens.Message FieldOptions where
         unknownFields
           = Lens.Family2.Unchecked.lens _FieldOptions'_unknownFields
               (\ x__ y__ -> x__{_FieldOptions'_unknownFields = y__})
+        defaultMessage
+          = FieldOptions{_FieldOptions'ctype = Prelude.Nothing,
+                         _FieldOptions'packed = Prelude.Nothing,
+                         _FieldOptions'jstype = Prelude.Nothing,
+                         _FieldOptions'lazy = Prelude.Nothing,
+                         _FieldOptions'deprecated = Prelude.Nothing,
+                         _FieldOptions'weak = Prelude.Nothing,
+                         _FieldOptions'uninterpretedOption = [],
+                         _FieldOptions'_unknownFields = ([])}
 data FieldOptions'CType = FieldOptions'STRING
                         | FieldOptions'CORD
                         | FieldOptions'STRING_PIECE
                         deriving (Prelude.Show, Prelude.Eq, Prelude.Ord)
-instance Data.Default.Class.Default FieldOptions'CType where
-        def = FieldOptions'STRING
 instance Data.ProtoLens.FieldDefault FieldOptions'CType where
         fieldDefault = FieldOptions'STRING
 instance Data.ProtoLens.MessageEnum FieldOptions'CType where
@@ -1780,8 +1761,6 @@ data FieldOptions'JSType = FieldOptions'JS_NORMAL
                          | FieldOptions'JS_STRING
                          | FieldOptions'JS_NUMBER
                          deriving (Prelude.Show, Prelude.Eq, Prelude.Ord)
-instance Data.Default.Class.Default FieldOptions'JSType where
-        def = FieldOptions'JS_NORMAL
 instance Data.ProtoLens.FieldDefault FieldOptions'JSType where
         fieldDefault = FieldOptions'JS_NORMAL
 instance Data.ProtoLens.MessageEnum FieldOptions'JSType where
@@ -1979,7 +1958,7 @@ instance Prelude.Functor f =>
           = (Prelude..)
               (Lens.Family2.Unchecked.lens _FileDescriptorProto'options
                  (\ x__ y__ -> x__{_FileDescriptorProto'options = y__}))
-              (Data.ProtoLens.maybeLens Data.Default.Class.def)
+              (Data.ProtoLens.maybeLens Data.ProtoLens.defaultMessage)
 instance Prelude.Functor f =>
          Lens.Labels.HasLens' f FileDescriptorProto "maybe'options"
            (Prelude.Maybe FileOptions)
@@ -1997,7 +1976,7 @@ instance Prelude.Functor f =>
           = (Prelude..)
               (Lens.Family2.Unchecked.lens _FileDescriptorProto'sourceCodeInfo
                  (\ x__ y__ -> x__{_FileDescriptorProto'sourceCodeInfo = y__}))
-              (Data.ProtoLens.maybeLens Data.Default.Class.def)
+              (Data.ProtoLens.maybeLens Data.ProtoLens.defaultMessage)
 instance Prelude.Functor f =>
          Lens.Labels.HasLens' f FileDescriptorProto "maybe'sourceCodeInfo"
            (Prelude.Maybe SourceCodeInfo)
@@ -2025,21 +2004,6 @@ instance Prelude.Functor f =>
               (Lens.Family2.Unchecked.lens _FileDescriptorProto'syntax
                  (\ x__ y__ -> x__{_FileDescriptorProto'syntax = y__}))
               Prelude.id
-instance Data.Default.Class.Default FileDescriptorProto where
-        def
-          = FileDescriptorProto{_FileDescriptorProto'name = Prelude.Nothing,
-                                _FileDescriptorProto'package = Prelude.Nothing,
-                                _FileDescriptorProto'dependency = [],
-                                _FileDescriptorProto'publicDependency = [],
-                                _FileDescriptorProto'weakDependency = [],
-                                _FileDescriptorProto'messageType = [],
-                                _FileDescriptorProto'enumType = [],
-                                _FileDescriptorProto'service = [],
-                                _FileDescriptorProto'extension = [],
-                                _FileDescriptorProto'options = Prelude.Nothing,
-                                _FileDescriptorProto'sourceCodeInfo = Prelude.Nothing,
-                                _FileDescriptorProto'syntax = Prelude.Nothing,
-                                _FileDescriptorProto'_unknownFields = ([])}
 instance Data.ProtoLens.Message FileDescriptorProto where
         messageName _
           = Data.Text.pack "google.protobuf.FileDescriptorProto"
@@ -2158,6 +2122,20 @@ instance Data.ProtoLens.Message FileDescriptorProto where
         unknownFields
           = Lens.Family2.Unchecked.lens _FileDescriptorProto'_unknownFields
               (\ x__ y__ -> x__{_FileDescriptorProto'_unknownFields = y__})
+        defaultMessage
+          = FileDescriptorProto{_FileDescriptorProto'name = Prelude.Nothing,
+                                _FileDescriptorProto'package = Prelude.Nothing,
+                                _FileDescriptorProto'dependency = [],
+                                _FileDescriptorProto'publicDependency = [],
+                                _FileDescriptorProto'weakDependency = [],
+                                _FileDescriptorProto'messageType = [],
+                                _FileDescriptorProto'enumType = [],
+                                _FileDescriptorProto'service = [],
+                                _FileDescriptorProto'extension = [],
+                                _FileDescriptorProto'options = Prelude.Nothing,
+                                _FileDescriptorProto'sourceCodeInfo = Prelude.Nothing,
+                                _FileDescriptorProto'syntax = Prelude.Nothing,
+                                _FileDescriptorProto'_unknownFields = ([])}
 {- | Fields :
 
     * 'Proto.Google.Protobuf.Descriptor_Fields.file' @:: Lens' FileDescriptorSet [FileDescriptorProto]@
@@ -2180,10 +2158,6 @@ instance Prelude.Functor f =>
               (Lens.Family2.Unchecked.lens _FileDescriptorSet'file
                  (\ x__ y__ -> x__{_FileDescriptorSet'file = y__}))
               Prelude.id
-instance Data.Default.Class.Default FileDescriptorSet where
-        def
-          = FileDescriptorSet{_FileDescriptorSet'file = [],
-                              _FileDescriptorSet'_unknownFields = ([])}
 instance Data.ProtoLens.Message FileDescriptorSet where
         messageName _ = Data.Text.pack "google.protobuf.FileDescriptorSet"
         fieldsByTag
@@ -2200,6 +2174,9 @@ instance Data.ProtoLens.Message FileDescriptorSet where
         unknownFields
           = Lens.Family2.Unchecked.lens _FileDescriptorSet'_unknownFields
               (\ x__ y__ -> x__{_FileDescriptorSet'_unknownFields = y__})
+        defaultMessage
+          = FileDescriptorSet{_FileDescriptorSet'file = [],
+                              _FileDescriptorSet'_unknownFields = ([])}
 {- | Fields :
 
     * 'Proto.Google.Protobuf.Descriptor_Fields.javaPackage' @:: Lens' FileOptions Data.Text.Text@
@@ -2514,24 +2491,6 @@ instance Prelude.Functor f =>
               (Lens.Family2.Unchecked.lens _FileOptions'uninterpretedOption
                  (\ x__ y__ -> x__{_FileOptions'uninterpretedOption = y__}))
               Prelude.id
-instance Data.Default.Class.Default FileOptions where
-        def
-          = FileOptions{_FileOptions'javaPackage = Prelude.Nothing,
-                        _FileOptions'javaOuterClassname = Prelude.Nothing,
-                        _FileOptions'javaMultipleFiles = Prelude.Nothing,
-                        _FileOptions'javaGenerateEqualsAndHash = Prelude.Nothing,
-                        _FileOptions'javaStringCheckUtf8 = Prelude.Nothing,
-                        _FileOptions'optimizeFor = Prelude.Nothing,
-                        _FileOptions'goPackage = Prelude.Nothing,
-                        _FileOptions'ccGenericServices = Prelude.Nothing,
-                        _FileOptions'javaGenericServices = Prelude.Nothing,
-                        _FileOptions'pyGenericServices = Prelude.Nothing,
-                        _FileOptions'deprecated = Prelude.Nothing,
-                        _FileOptions'ccEnableArenas = Prelude.Nothing,
-                        _FileOptions'objcClassPrefix = Prelude.Nothing,
-                        _FileOptions'csharpNamespace = Prelude.Nothing,
-                        _FileOptions'uninterpretedOption = [],
-                        _FileOptions'_unknownFields = ([])}
 instance Data.ProtoLens.Message FileOptions where
         messageName _ = Data.Text.pack "google.protobuf.FileOptions"
         fieldsByTag
@@ -2689,12 +2648,27 @@ instance Data.ProtoLens.Message FileOptions where
         unknownFields
           = Lens.Family2.Unchecked.lens _FileOptions'_unknownFields
               (\ x__ y__ -> x__{_FileOptions'_unknownFields = y__})
+        defaultMessage
+          = FileOptions{_FileOptions'javaPackage = Prelude.Nothing,
+                        _FileOptions'javaOuterClassname = Prelude.Nothing,
+                        _FileOptions'javaMultipleFiles = Prelude.Nothing,
+                        _FileOptions'javaGenerateEqualsAndHash = Prelude.Nothing,
+                        _FileOptions'javaStringCheckUtf8 = Prelude.Nothing,
+                        _FileOptions'optimizeFor = Prelude.Nothing,
+                        _FileOptions'goPackage = Prelude.Nothing,
+                        _FileOptions'ccGenericServices = Prelude.Nothing,
+                        _FileOptions'javaGenericServices = Prelude.Nothing,
+                        _FileOptions'pyGenericServices = Prelude.Nothing,
+                        _FileOptions'deprecated = Prelude.Nothing,
+                        _FileOptions'ccEnableArenas = Prelude.Nothing,
+                        _FileOptions'objcClassPrefix = Prelude.Nothing,
+                        _FileOptions'csharpNamespace = Prelude.Nothing,
+                        _FileOptions'uninterpretedOption = [],
+                        _FileOptions'_unknownFields = ([])}
 data FileOptions'OptimizeMode = FileOptions'SPEED
                               | FileOptions'CODE_SIZE
                               | FileOptions'LITE_RUNTIME
                               deriving (Prelude.Show, Prelude.Eq, Prelude.Ord)
-instance Data.Default.Class.Default FileOptions'OptimizeMode where
-        def = FileOptions'SPEED
 instance Data.ProtoLens.FieldDefault FileOptions'OptimizeMode where
         fieldDefault = FileOptions'SPEED
 instance Data.ProtoLens.MessageEnum FileOptions'OptimizeMode where
@@ -2759,10 +2733,6 @@ instance Prelude.Functor f =>
               (Lens.Family2.Unchecked.lens _GeneratedCodeInfo'annotation
                  (\ x__ y__ -> x__{_GeneratedCodeInfo'annotation = y__}))
               Prelude.id
-instance Data.Default.Class.Default GeneratedCodeInfo where
-        def
-          = GeneratedCodeInfo{_GeneratedCodeInfo'annotation = [],
-                              _GeneratedCodeInfo'_unknownFields = ([])}
 instance Data.ProtoLens.Message GeneratedCodeInfo where
         messageName _ = Data.Text.pack "google.protobuf.GeneratedCodeInfo"
         fieldsByTag
@@ -2780,6 +2750,9 @@ instance Data.ProtoLens.Message GeneratedCodeInfo where
         unknownFields
           = Lens.Family2.Unchecked.lens _GeneratedCodeInfo'_unknownFields
               (\ x__ y__ -> x__{_GeneratedCodeInfo'_unknownFields = y__})
+        defaultMessage
+          = GeneratedCodeInfo{_GeneratedCodeInfo'annotation = [],
+                              _GeneratedCodeInfo'_unknownFields = ([])}
 {- | Fields :
 
     * 'Proto.Google.Protobuf.Descriptor_Fields.path' @:: Lens' GeneratedCodeInfo'Annotation [Data.Int.Int32]@
@@ -2876,15 +2849,6 @@ instance Prelude.Functor f =>
               (Lens.Family2.Unchecked.lens _GeneratedCodeInfo'Annotation'end
                  (\ x__ y__ -> x__{_GeneratedCodeInfo'Annotation'end = y__}))
               Prelude.id
-instance Data.Default.Class.Default GeneratedCodeInfo'Annotation
-         where
-        def
-          = GeneratedCodeInfo'Annotation{_GeneratedCodeInfo'Annotation'path =
-                                           [],
-                                         _GeneratedCodeInfo'Annotation'sourceFile = Prelude.Nothing,
-                                         _GeneratedCodeInfo'Annotation'begin = Prelude.Nothing,
-                                         _GeneratedCodeInfo'Annotation'end = Prelude.Nothing,
-                                         _GeneratedCodeInfo'Annotation'_unknownFields = ([])}
 instance Data.ProtoLens.Message GeneratedCodeInfo'Annotation where
         messageName _
           = Data.Text.pack "google.protobuf.GeneratedCodeInfo.Annotation"
@@ -2932,6 +2896,13 @@ instance Data.ProtoLens.Message GeneratedCodeInfo'Annotation where
               _GeneratedCodeInfo'Annotation'_unknownFields
               (\ x__ y__ ->
                  x__{_GeneratedCodeInfo'Annotation'_unknownFields = y__})
+        defaultMessage
+          = GeneratedCodeInfo'Annotation{_GeneratedCodeInfo'Annotation'path =
+                                           [],
+                                         _GeneratedCodeInfo'Annotation'sourceFile = Prelude.Nothing,
+                                         _GeneratedCodeInfo'Annotation'begin = Prelude.Nothing,
+                                         _GeneratedCodeInfo'Annotation'end = Prelude.Nothing,
+                                         _GeneratedCodeInfo'Annotation'_unknownFields = ([])}
 {- | Fields :
 
     * 'Proto.Google.Protobuf.Descriptor_Fields.messageSetWireFormat' @:: Lens' MessageOptions Prelude.Bool@
@@ -3042,15 +3013,6 @@ instance Prelude.Functor f =>
               (Lens.Family2.Unchecked.lens _MessageOptions'uninterpretedOption
                  (\ x__ y__ -> x__{_MessageOptions'uninterpretedOption = y__}))
               Prelude.id
-instance Data.Default.Class.Default MessageOptions where
-        def
-          = MessageOptions{_MessageOptions'messageSetWireFormat =
-                             Prelude.Nothing,
-                           _MessageOptions'noStandardDescriptorAccessor = Prelude.Nothing,
-                           _MessageOptions'deprecated = Prelude.Nothing,
-                           _MessageOptions'mapEntry = Prelude.Nothing,
-                           _MessageOptions'uninterpretedOption = [],
-                           _MessageOptions'_unknownFields = ([])}
 instance Data.ProtoLens.Message MessageOptions where
         messageName _ = Data.Text.pack "google.protobuf.MessageOptions"
         fieldsByTag
@@ -3108,6 +3070,14 @@ instance Data.ProtoLens.Message MessageOptions where
         unknownFields
           = Lens.Family2.Unchecked.lens _MessageOptions'_unknownFields
               (\ x__ y__ -> x__{_MessageOptions'_unknownFields = y__})
+        defaultMessage
+          = MessageOptions{_MessageOptions'messageSetWireFormat =
+                             Prelude.Nothing,
+                           _MessageOptions'noStandardDescriptorAccessor = Prelude.Nothing,
+                           _MessageOptions'deprecated = Prelude.Nothing,
+                           _MessageOptions'mapEntry = Prelude.Nothing,
+                           _MessageOptions'uninterpretedOption = [],
+                           _MessageOptions'_unknownFields = ([])}
 {- | Fields :
 
     * 'Proto.Google.Protobuf.Descriptor_Fields.name' @:: Lens' MethodDescriptorProto Data.Text.Text@
@@ -3207,7 +3177,7 @@ instance Prelude.Functor f =>
           = (Prelude..)
               (Lens.Family2.Unchecked.lens _MethodDescriptorProto'options
                  (\ x__ y__ -> x__{_MethodDescriptorProto'options = y__}))
-              (Data.ProtoLens.maybeLens Data.Default.Class.def)
+              (Data.ProtoLens.maybeLens Data.ProtoLens.defaultMessage)
 instance Prelude.Functor f =>
          Lens.Labels.HasLens' f MethodDescriptorProto "maybe'options"
            (Prelude.Maybe MethodOptions)
@@ -3255,16 +3225,6 @@ instance Prelude.Functor f =>
               (Lens.Family2.Unchecked.lens _MethodDescriptorProto'serverStreaming
                  (\ x__ y__ -> x__{_MethodDescriptorProto'serverStreaming = y__}))
               Prelude.id
-instance Data.Default.Class.Default MethodDescriptorProto where
-        def
-          = MethodDescriptorProto{_MethodDescriptorProto'name =
-                                    Prelude.Nothing,
-                                  _MethodDescriptorProto'inputType = Prelude.Nothing,
-                                  _MethodDescriptorProto'outputType = Prelude.Nothing,
-                                  _MethodDescriptorProto'options = Prelude.Nothing,
-                                  _MethodDescriptorProto'clientStreaming = Prelude.Nothing,
-                                  _MethodDescriptorProto'serverStreaming = Prelude.Nothing,
-                                  _MethodDescriptorProto'_unknownFields = ([])}
 instance Data.ProtoLens.Message MethodDescriptorProto where
         messageName _
           = Data.Text.pack "google.protobuf.MethodDescriptorProto"
@@ -3330,6 +3290,15 @@ instance Data.ProtoLens.Message MethodDescriptorProto where
         unknownFields
           = Lens.Family2.Unchecked.lens _MethodDescriptorProto'_unknownFields
               (\ x__ y__ -> x__{_MethodDescriptorProto'_unknownFields = y__})
+        defaultMessage
+          = MethodDescriptorProto{_MethodDescriptorProto'name =
+                                    Prelude.Nothing,
+                                  _MethodDescriptorProto'inputType = Prelude.Nothing,
+                                  _MethodDescriptorProto'outputType = Prelude.Nothing,
+                                  _MethodDescriptorProto'options = Prelude.Nothing,
+                                  _MethodDescriptorProto'clientStreaming = Prelude.Nothing,
+                                  _MethodDescriptorProto'serverStreaming = Prelude.Nothing,
+                                  _MethodDescriptorProto'_unknownFields = ([])}
 {- | Fields :
 
     * 'Proto.Google.Protobuf.Descriptor_Fields.deprecated' @:: Lens' MethodOptions Prelude.Bool@
@@ -3371,11 +3340,6 @@ instance Prelude.Functor f =>
               (Lens.Family2.Unchecked.lens _MethodOptions'uninterpretedOption
                  (\ x__ y__ -> x__{_MethodOptions'uninterpretedOption = y__}))
               Prelude.id
-instance Data.Default.Class.Default MethodOptions where
-        def
-          = MethodOptions{_MethodOptions'deprecated = Prelude.Nothing,
-                          _MethodOptions'uninterpretedOption = [],
-                          _MethodOptions'_unknownFields = ([])}
 instance Data.ProtoLens.Message MethodOptions where
         messageName _ = Data.Text.pack "google.protobuf.MethodOptions"
         fieldsByTag
@@ -3403,6 +3367,10 @@ instance Data.ProtoLens.Message MethodOptions where
         unknownFields
           = Lens.Family2.Unchecked.lens _MethodOptions'_unknownFields
               (\ x__ y__ -> x__{_MethodOptions'_unknownFields = y__})
+        defaultMessage
+          = MethodOptions{_MethodOptions'deprecated = Prelude.Nothing,
+                          _MethodOptions'uninterpretedOption = [],
+                          _MethodOptions'_unknownFields = ([])}
 {- | Fields :
 
     * 'Proto.Google.Protobuf.Descriptor_Fields.name' @:: Lens' OneofDescriptorProto Data.Text.Text@
@@ -3436,11 +3404,6 @@ instance Prelude.Functor f =>
               (Lens.Family2.Unchecked.lens _OneofDescriptorProto'name
                  (\ x__ y__ -> x__{_OneofDescriptorProto'name = y__}))
               Prelude.id
-instance Data.Default.Class.Default OneofDescriptorProto where
-        def
-          = OneofDescriptorProto{_OneofDescriptorProto'name =
-                                   Prelude.Nothing,
-                                 _OneofDescriptorProto'_unknownFields = ([])}
 instance Data.ProtoLens.Message OneofDescriptorProto where
         messageName _
           = Data.Text.pack "google.protobuf.OneofDescriptorProto"
@@ -3458,6 +3421,10 @@ instance Data.ProtoLens.Message OneofDescriptorProto where
         unknownFields
           = Lens.Family2.Unchecked.lens _OneofDescriptorProto'_unknownFields
               (\ x__ y__ -> x__{_OneofDescriptorProto'_unknownFields = y__})
+        defaultMessage
+          = OneofDescriptorProto{_OneofDescriptorProto'name =
+                                   Prelude.Nothing,
+                                 _OneofDescriptorProto'_unknownFields = ([])}
 {- | Fields :
 
     * 'Proto.Google.Protobuf.Descriptor_Fields.name' @:: Lens' ServiceDescriptorProto Data.Text.Text@
@@ -3518,7 +3485,7 @@ instance Prelude.Functor f =>
           = (Prelude..)
               (Lens.Family2.Unchecked.lens _ServiceDescriptorProto'options
                  (\ x__ y__ -> x__{_ServiceDescriptorProto'options = y__}))
-              (Data.ProtoLens.maybeLens Data.Default.Class.def)
+              (Data.ProtoLens.maybeLens Data.ProtoLens.defaultMessage)
 instance Prelude.Functor f =>
          Lens.Labels.HasLens' f ServiceDescriptorProto "maybe'options"
            (Prelude.Maybe ServiceOptions)
@@ -3528,13 +3495,6 @@ instance Prelude.Functor f =>
               (Lens.Family2.Unchecked.lens _ServiceDescriptorProto'options
                  (\ x__ y__ -> x__{_ServiceDescriptorProto'options = y__}))
               Prelude.id
-instance Data.Default.Class.Default ServiceDescriptorProto where
-        def
-          = ServiceDescriptorProto{_ServiceDescriptorProto'name =
-                                     Prelude.Nothing,
-                                   _ServiceDescriptorProto'method = [],
-                                   _ServiceDescriptorProto'options = Prelude.Nothing,
-                                   _ServiceDescriptorProto'_unknownFields = ([])}
 instance Data.ProtoLens.Message ServiceDescriptorProto where
         messageName _
           = Data.Text.pack "google.protobuf.ServiceDescriptorProto"
@@ -3572,6 +3532,12 @@ instance Data.ProtoLens.Message ServiceDescriptorProto where
           = Lens.Family2.Unchecked.lens
               _ServiceDescriptorProto'_unknownFields
               (\ x__ y__ -> x__{_ServiceDescriptorProto'_unknownFields = y__})
+        defaultMessage
+          = ServiceDescriptorProto{_ServiceDescriptorProto'name =
+                                     Prelude.Nothing,
+                                   _ServiceDescriptorProto'method = [],
+                                   _ServiceDescriptorProto'options = Prelude.Nothing,
+                                   _ServiceDescriptorProto'_unknownFields = ([])}
 {- | Fields :
 
     * 'Proto.Google.Protobuf.Descriptor_Fields.deprecated' @:: Lens' ServiceOptions Prelude.Bool@
@@ -3613,11 +3579,6 @@ instance Prelude.Functor f =>
               (Lens.Family2.Unchecked.lens _ServiceOptions'uninterpretedOption
                  (\ x__ y__ -> x__{_ServiceOptions'uninterpretedOption = y__}))
               Prelude.id
-instance Data.Default.Class.Default ServiceOptions where
-        def
-          = ServiceOptions{_ServiceOptions'deprecated = Prelude.Nothing,
-                           _ServiceOptions'uninterpretedOption = [],
-                           _ServiceOptions'_unknownFields = ([])}
 instance Data.ProtoLens.Message ServiceOptions where
         messageName _ = Data.Text.pack "google.protobuf.ServiceOptions"
         fieldsByTag
@@ -3645,6 +3606,10 @@ instance Data.ProtoLens.Message ServiceOptions where
         unknownFields
           = Lens.Family2.Unchecked.lens _ServiceOptions'_unknownFields
               (\ x__ y__ -> x__{_ServiceOptions'_unknownFields = y__})
+        defaultMessage
+          = ServiceOptions{_ServiceOptions'deprecated = Prelude.Nothing,
+                           _ServiceOptions'uninterpretedOption = [],
+                           _ServiceOptions'_unknownFields = ([])}
 {- | Fields :
 
     * 'Proto.Google.Protobuf.Descriptor_Fields.location' @:: Lens' SourceCodeInfo [SourceCodeInfo'Location]@
@@ -3666,10 +3631,6 @@ instance Prelude.Functor f =>
               (Lens.Family2.Unchecked.lens _SourceCodeInfo'location
                  (\ x__ y__ -> x__{_SourceCodeInfo'location = y__}))
               Prelude.id
-instance Data.Default.Class.Default SourceCodeInfo where
-        def
-          = SourceCodeInfo{_SourceCodeInfo'location = [],
-                           _SourceCodeInfo'_unknownFields = ([])}
 instance Data.ProtoLens.Message SourceCodeInfo where
         messageName _ = Data.Text.pack "google.protobuf.SourceCodeInfo"
         fieldsByTag
@@ -3687,6 +3648,9 @@ instance Data.ProtoLens.Message SourceCodeInfo where
         unknownFields
           = Lens.Family2.Unchecked.lens _SourceCodeInfo'_unknownFields
               (\ x__ y__ -> x__{_SourceCodeInfo'_unknownFields = y__})
+        defaultMessage
+          = SourceCodeInfo{_SourceCodeInfo'location = [],
+                           _SourceCodeInfo'_unknownFields = ([])}
 {- | Fields :
 
     * 'Proto.Google.Protobuf.Descriptor_Fields.path' @:: Lens' SourceCodeInfo'Location [Data.Int.Int32]@
@@ -3793,14 +3757,6 @@ instance Prelude.Functor f =>
                  (\ x__ y__ ->
                     x__{_SourceCodeInfo'Location'leadingDetachedComments = y__}))
               Prelude.id
-instance Data.Default.Class.Default SourceCodeInfo'Location where
-        def
-          = SourceCodeInfo'Location{_SourceCodeInfo'Location'path = [],
-                                    _SourceCodeInfo'Location'span = [],
-                                    _SourceCodeInfo'Location'leadingComments = Prelude.Nothing,
-                                    _SourceCodeInfo'Location'trailingComments = Prelude.Nothing,
-                                    _SourceCodeInfo'Location'leadingDetachedComments = [],
-                                    _SourceCodeInfo'Location'_unknownFields = ([])}
 instance Data.ProtoLens.Message SourceCodeInfo'Location where
         messageName _
           = Data.Text.pack "google.protobuf.SourceCodeInfo.Location"
@@ -3859,6 +3815,13 @@ instance Data.ProtoLens.Message SourceCodeInfo'Location where
           = Lens.Family2.Unchecked.lens
               _SourceCodeInfo'Location'_unknownFields
               (\ x__ y__ -> x__{_SourceCodeInfo'Location'_unknownFields = y__})
+        defaultMessage
+          = SourceCodeInfo'Location{_SourceCodeInfo'Location'path = [],
+                                    _SourceCodeInfo'Location'span = [],
+                                    _SourceCodeInfo'Location'leadingComments = Prelude.Nothing,
+                                    _SourceCodeInfo'Location'trailingComments = Prelude.Nothing,
+                                    _SourceCodeInfo'Location'leadingDetachedComments = [],
+                                    _SourceCodeInfo'Location'_unknownFields = ([])}
 {- | Fields :
 
     * 'Proto.Google.Protobuf.Descriptor_Fields.name' @:: Lens' UninterpretedOption [UninterpretedOption'NamePart]@
@@ -4014,16 +3977,6 @@ instance Prelude.Functor f =>
               (Lens.Family2.Unchecked.lens _UninterpretedOption'aggregateValue
                  (\ x__ y__ -> x__{_UninterpretedOption'aggregateValue = y__}))
               Prelude.id
-instance Data.Default.Class.Default UninterpretedOption where
-        def
-          = UninterpretedOption{_UninterpretedOption'name = [],
-                                _UninterpretedOption'identifierValue = Prelude.Nothing,
-                                _UninterpretedOption'positiveIntValue = Prelude.Nothing,
-                                _UninterpretedOption'negativeIntValue = Prelude.Nothing,
-                                _UninterpretedOption'doubleValue = Prelude.Nothing,
-                                _UninterpretedOption'stringValue = Prelude.Nothing,
-                                _UninterpretedOption'aggregateValue = Prelude.Nothing,
-                                _UninterpretedOption'_unknownFields = ([])}
 instance Data.ProtoLens.Message UninterpretedOption where
         messageName _
           = Data.Text.pack "google.protobuf.UninterpretedOption"
@@ -4102,6 +4055,15 @@ instance Data.ProtoLens.Message UninterpretedOption where
         unknownFields
           = Lens.Family2.Unchecked.lens _UninterpretedOption'_unknownFields
               (\ x__ y__ -> x__{_UninterpretedOption'_unknownFields = y__})
+        defaultMessage
+          = UninterpretedOption{_UninterpretedOption'name = [],
+                                _UninterpretedOption'identifierValue = Prelude.Nothing,
+                                _UninterpretedOption'positiveIntValue = Prelude.Nothing,
+                                _UninterpretedOption'negativeIntValue = Prelude.Nothing,
+                                _UninterpretedOption'doubleValue = Prelude.Nothing,
+                                _UninterpretedOption'stringValue = Prelude.Nothing,
+                                _UninterpretedOption'aggregateValue = Prelude.Nothing,
+                                _UninterpretedOption'_unknownFields = ([])}
 {- | Fields :
 
     * 'Proto.Google.Protobuf.Descriptor_Fields.namePart' @:: Lens' UninterpretedOption'NamePart Data.Text.Text@
@@ -4143,14 +4105,6 @@ instance Prelude.Functor f =>
                  (\ x__ y__ ->
                     x__{_UninterpretedOption'NamePart'isExtension = y__}))
               Prelude.id
-instance Data.Default.Class.Default UninterpretedOption'NamePart
-         where
-        def
-          = UninterpretedOption'NamePart{_UninterpretedOption'NamePart'namePart
-                                           = Data.ProtoLens.fieldDefault,
-                                         _UninterpretedOption'NamePart'isExtension =
-                                           Data.ProtoLens.fieldDefault,
-                                         _UninterpretedOption'NamePart'_unknownFields = ([])}
 instance Data.ProtoLens.Message UninterpretedOption'NamePart where
         messageName _
           = Data.Text.pack "google.protobuf.UninterpretedOption.NamePart"
@@ -4180,3 +4134,9 @@ instance Data.ProtoLens.Message UninterpretedOption'NamePart where
               _UninterpretedOption'NamePart'_unknownFields
               (\ x__ y__ ->
                  x__{_UninterpretedOption'NamePart'_unknownFields = y__})
+        defaultMessage
+          = UninterpretedOption'NamePart{_UninterpretedOption'NamePart'namePart
+                                           = Data.ProtoLens.fieldDefault,
+                                         _UninterpretedOption'NamePart'isExtension =
+                                           Data.ProtoLens.fieldDefault,
+                                         _UninterpretedOption'NamePart'_unknownFields = ([])}

@@ -30,7 +30,7 @@ module Data.ProtoLens.Message (
     FieldDefault(..),
     MessageEnum(..),
     -- * Building protocol buffers
-    Default(..),
+    def,
     build,
     -- * Proto registries
     Registry,
@@ -51,7 +51,6 @@ module Data.ProtoLens.Message (
     ) where
 
 import qualified Data.ByteString as B
-import Data.Default.Class
 import Data.Int
 import qualified Data.Map as Map
 import Data.Map (Map)
@@ -71,12 +70,19 @@ import Data.ProtoLens.Encoding.Wire
 -- | Every protocol buffer is an instance of 'Message'.  This class enables
 -- serialization by providing reflection of all of the fields that may be used
 -- by this type.
-class Default msg => Message msg where
+class Message msg where
     -- | A unique identifier for this type, of the format
     -- @"packagename.messagename"@.
     messageName :: Proxy msg -> T.Text
+
+    -- | A message with all fields set to their default values.
+    --
+    -- Satisfies @encodeMessage defaultMessage == ""@ and @decodeMessage "" == Right defaultMessage@.
+    defaultMessage :: msg
+
     -- | The fields of the proto, indexed by their (integer) tag.
     fieldsByTag :: Map Tag (FieldDescriptor msg)
+
     -- | This map is keyed by the name of the field used for text format protos.
     -- This is just the field name for every field except for group fields,
     -- which use their Message type name in text protos instead of their
@@ -85,6 +91,7 @@ class Default msg => Message msg where
     fieldsByTextFormatName :: Map String (FieldDescriptor msg)
     fieldsByTextFormatName =
         Map.fromList [(n, f) | f@(FieldDescriptor n _ _) <- allFields]
+
     -- | Access the unknown fields of a Message.
     unknownFields :: Lens' msg FieldSet
 
@@ -142,8 +149,9 @@ data WireDefault value where
 
 -- | A proto3 field type with an implicit default value.
 --
--- This is distinct from 'Data.Default' to avoid orphan instances, and because
--- 'Bool' doesn't necessarily have a good Default instance for general usage.
+-- This is distinct from, say, 'Data.Default' to avoid orphan instances, and
+-- because 'Bool' doesn't necessarily have a good Default instance for general
+-- usage.
 class FieldDefault value where
     fieldDefault :: value
 
@@ -236,6 +244,12 @@ class (Enum a, Bounded a) => MessageEnum a where
     -- no corresponding value was defined in the .proto file.
     readEnum :: String -> Maybe a
 
+-- | A message with all fields set to their default values.
+--
+-- This is an elided version 'defaultMessage'.
+def :: Message a => a
+def = defaultMessage
+
 -- | Utility function for building a message from a default value.
 -- For example:
 --
@@ -243,7 +257,7 @@ class (Enum a, Bounded a) => MessageEnum a where
 -- > x, y :: Lens' A Int
 -- > m :: A
 -- > m = build ((x .~ 5) . (y .~ 7))
-build :: Default a => (a -> a) -> a
+build :: Message a => (a -> a) -> a
 build = ($ def)
 
 -- | A helper lens for accessing optional fields.

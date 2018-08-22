@@ -8,8 +8,7 @@ import Lens.Family ((&), (.~), (^.))
 import Lens.Labels.Unwrapped ()
 import Proto.Canonical (Test3)
 
-import Data.Default.Class (def)
-import Data.ProtoLens (build)
+import Data.ProtoLens (build, def)
 import Data.ProtoLens.TestUtil
 import Test.HUnit ((@?=))
 import Test.Framework.Providers.HUnit (testCase)

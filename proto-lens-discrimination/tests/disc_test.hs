@@ -3,11 +3,10 @@
 module Main where
 
 import Control.Applicative ((<$>))
-import Data.Default (Default(def))
 import Data.Discrimination (Sort, runSort, sorting, sorting1)
 import Data.Int (Int32)
 import Data.List (sortBy)
-import Lens.Family2 ((&), (^.), (.~))
+import Lens.Family2 (Lens', (&), (^.), (.~))
 import Lens.Family2.Stock (_1, _2)
 import Test.HUnit ((@=?), Assertion)
 import Test.Framework (testGroup, defaultMain)
@@ -24,12 +23,15 @@ import Data.ProtoLens.Message
     , Message(fieldsByTextFormatName)
     , ScalarField(..)
     , MessageOrGroup(..)
+    , def
     )
 import Data.ProtoLens.Discrimination (discProtoMapAssocs)
 import Data.ProtoLens.Sort
 
 import Proto.Enum
 import Proto.Enum_Fields
+import Proto.Map
+import Proto.Map_Fields
 
 
 sortCompare :: Sort a -> a -> a -> Ordering
@@ -96,7 +98,9 @@ protoMapSortTest = testGroup "map"
           in compare x' y' == sortCompare c x' y'
     ]
   where
-    c = discProtoMapAssocs sorting1 sorting _1 _2
+    c = discProtoMapAssocs sorting1 sortingMessage
+            (key :: Lens' MapWrapper'IntMapEntry Int32)
+            value
 
 fieldSortTest :: Test
 fieldSortTest = testProperty "compares by field" $

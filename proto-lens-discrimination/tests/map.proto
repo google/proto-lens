@@ -1,0 +1,8 @@
+syntax = "proto2";
+
+package map;
+
+message MapWrapper {
+    map<int32, int32> int_map = 1;
+}
+
