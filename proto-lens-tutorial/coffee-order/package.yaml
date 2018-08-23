@@ -14,21 +14,18 @@ custom-setup:
   dependencies:
     - base
     - Cabal
-    - proto-lens-protoc
+    - proto-lens-setup
 
 dependencies:
   - base >= 4.7 && < 5
   - data-default
   - microlens
-  - proto-lens
-  - proto-lens-protoc
+  - proto-lens-runtime
   - lens-labels
   - text
 
 executables:
   gimme-coffee:
-    dependencies:
-      - proto-lens-protoc
     other-modules:
       - Proto.Coffee.Order
       - Proto.Coffee.Order_Fields

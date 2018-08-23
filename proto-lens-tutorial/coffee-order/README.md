@@ -1,6 +1,6 @@
 # Coffee Order Example
 
-In this example we will go through a more complicated data structure compared to our [Person Example](https://github.com/FintanH/proto-lens/blob/docs/codelab/proto-lens-tutorial/person/README.md).
+In this example we will go through a more complicated data structure compared to our [Person Example](../person/README.md).
 
 ## Table of Contents
 
@@ -162,11 +162,11 @@ We have a bunch of lenses (or prisms) to access the data relating to `Coffee`. W
 
 What we can use them for is setting values! When we are defining the value we will know (and have to know) what type our `CoffeeType` will be. Thus we can do the following, `def & mocha .~ def` where the second `def` is secretly our empty `Mocha` value.<br>
 
-As of commit `87efe00a0fa16b657493ba4043abd014d5c04cd3`, `Prism'` functions are also available for use on `Coffee'Type` sum. The `Prism'` functions are of of the naming convention `_Coffee'Americano`, `_Coffee'Latte`, etc. There is more information on `Prism'`s [here](https://github.com/FintanH/proto-lens/tree/docs/codelab/proto-lens-tutorial#oneof-generation)
+As of commit `87efe00a0fa16b657493ba4043abd014d5c04cd3`, `Prism'` functions are also available for use on `Coffee'Type` sum. The `Prism'` functions are of of the naming convention `_Coffee'Americano`, `_Coffee'Latte`, etc. There is more information on `Prism'`s [here](../../docs/tutorial.md#oneof-generation)
 
 ## Full Code Example
 
-We can find a full example using the different features [here](https://github.com/FintanH/proto-lens/blob/docs/codelab/proto-lens-tutorial/coffee-order/src/Main.hs).
+We can find a full example using the different features [here](./src/Main.hs).
 
 ## Did We Miss Something?
 
