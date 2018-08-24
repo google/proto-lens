@@ -3,11 +3,10 @@
 module Main where
 
 import Control.Applicative ((<$>))
-import Data.Discrimination (Sort, runSort, sorting, sorting1)
+import Data.Discrimination (Sort, runSort, sorting1)
 import Data.Int (Int32)
 import Data.List (sortBy)
 import Lens.Family2 (Lens', (&), (^.), (.~))
-import Lens.Family2.Stock (_1, _2)
 import Test.HUnit ((@=?), Assertion)
 import Test.Framework (testGroup, defaultMain)
 import Test.Framework.Providers.API (Test)
