@@ -23,9 +23,9 @@ matrix:
     addons: {apt: {packages: [libgmp-dev]}}
   - env: BUILD=stack STACK='stack --resolver=lts-9.6'
     addons: {apt: {packages: [libgmp-dev]}}
-  - env: BUILD=stack STACK=stack # Use the resolver in stack.yaml
+  - env: BUILD=stack STACK=stack --resolver=11.22'
     addons: {apt: {packages: [libgmp-dev]}}
-  - env: BUILD=stack STACK='stack --resolver=nightly-2018-05-04'
+  - env: BUILD=stack STACK='stack'  # Use the resolver in stack.yaml
     addons: {apt: {packages: [libgmp-dev]}}
 
 before_install:
