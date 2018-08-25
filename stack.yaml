@@ -3,16 +3,17 @@ packages:
 - discrimination-ieee754
 - lens-labels
 - proto-lens
-- proto-lens-protoc
-- proto-lens-protobuf-types
 - proto-lens-arbitrary
-- proto-lens-combinators
-- proto-lens-optparse
-- proto-lens-tests-dep
-- proto-lens-tests
 - proto-lens-benchmarks
+- proto-lens-combinators
 - proto-lens-discrimination
-
+- proto-lens-optparse
+- proto-lens-protobuf-types
+- proto-lens-protoc
+- proto-lens-runtime
+- proto-lens-setup
+- proto-lens-tests
+- proto-lens-tests-dep
 extra-deps:
 - discrimination-0.3
 - promises-0.3

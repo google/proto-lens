@@ -17,7 +17,7 @@ custom-setup:
   dependencies:
     - base >= 4.9 && < 4.12
     - Cabal
-    - proto-lens-protoc == 0.3.*
+    - proto-lens-setup >= 0.4 && < 0.5
 
 dependencies:
   - base >= 4.9 && < 4.12
@@ -29,7 +29,7 @@ dependencies:
   - discrimination-ieee754 == 0.1.*
   - lens-family == 1.2.*
   - proto-lens >= 0.3 && < 0.4
-  - proto-lens-protoc >= 0.3 && < 0.4
+  - proto-lens-runtime >= 0.4 && < 0.5
   - text == 1.2.*
 
 library:

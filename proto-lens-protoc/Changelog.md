@@ -1,5 +1,9 @@
 # Changelog for `proto-lens-protoc`
 
+## v0.4
+- Split out `proto-lens-setup` and `proto-lens-runtime` into separate
+  packages.
+
 ## v0.3.1.2
 - Bump the upper bound to `temporary-1.3`.
 - Fix warnings.

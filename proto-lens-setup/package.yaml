@@ -1,0 +1,69 @@
+name: proto-lens-setup
+version: '0.4.0.0'
+synopsis: 'Cabal support for codegen with proto-lens.'
+description: |
+  This package provides Cabal support for the @proto-lens@ package.
+  It automatically generates Haskell source files from protocol buffer
+  files (@.proto@).
+
+  To generate Haskell modules for a Cabal package, import
+  "Data.ProtoLens.Setup" from the @Setup.hs@ file.  For example:
+
+  > import Data.ProtoLens.Setup
+  > -- Here, "src" is the directory where .proto source files may be found
+  > main = defaultMainGeneratingProtos "src"
+
+  Then, edit the @.cabal@ file of your project to:
+
+  * Specify @build-type: Custom@, and add a @custom-setup@ clause that
+    depends on @proto-lens-setup@.
+
+  * List the .proto files in @extra-source-files@.  Note that the field belongs
+    at the top level of the @.cabal@ file, rather than once per
+    library\/executable\/etc.
+
+  * List the generated modules (e.g. @Proto.Foo.Bar@) in @exposed-modules@
+    or @other-modules@ of the rule(s) that use them (e.g. the library or
+    executables).  Additionally, add @proto-lens-runtime@ to the @build-depends@
+    of those rules.
+
+  For example, in @foo-bar-proto.cabal@:
+
+  > build-type: Custom
+  > extra-source-files: src/foo/bar.proto
+  > ...
+  > custom-setup
+  >   setup-depends: base, Cabal, proto-lens-setup
+
+  > library
+  >     exposed-modules: Proto.Foo.Bar, Proto.Foo.Bar_Fields
+  >     autogen-modules: Proto.Foo.Bar, Proto.Foo.Bar_Fields
+  >     build-depends: proto-lens-runtime, ...
+author: Judah Jacobson
+maintainer: proto-lens@googlegroups.com
+github: google/proto-lens/proto-lens-setup
+copyright: Google Inc.
+license: BSD3
+extra-source-files:
+  - Changelog.md
+
+library:
+  source-dirs: src
+  dependencies:
+    - base >= 4.9 && < 4.12
+    - bytestring == 0.10.*
+    - containers == 0.5.*
+    - Cabal >= 1.22 && < 2.3
+    - deepseq == 1.4.*
+    - directory >= 1.2 && < 1.4
+    - filepath >= 1.4 && < 1.6
+    - process >= 1.2 && < 1.7
+    # Depend transitively on the binary.
+    # TODO: once there's sufficient support from Stack and Cabal,
+    # make this a build-tool dependency.
+    - proto-lens-protoc == 0.4.*
+    - temporary >= 1.2 && < 1.4
+    - text == 1.2.*
+  exposed-modules:
+    - Data.ProtoLens.Setup
+
