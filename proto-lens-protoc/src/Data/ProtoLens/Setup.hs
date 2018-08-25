@@ -24,8 +24,7 @@ module Data.ProtoLens.Setup
     , generateProtos
     ) where
 
-import Control.DeepSeq (force)
-import Control.Monad (filterM, forM_, guard, when)
+import Control.Monad (filterM, forM_, when)
 import qualified Data.ByteString as BS
 import qualified Data.Map as Map
 import Data.Maybe (maybeToList)
@@ -42,7 +41,9 @@ import Distribution.PackageDescription
     , exeName
     , exposedModules
     , extraSrcFiles
+#if !MIN_VERSION_Cabal(2,0,0)
     , hsSourceDirs
+#endif
     , libBuildInfo
     , otherModules
     , testBuildInfo
@@ -66,7 +67,6 @@ import qualified Distribution.Simple.PackageIndex as PackageIndex
 import Distribution.Simple.Setup (fromFlag, copyDest, copyVerbosity)
 import Distribution.Simple.Utils
     ( createDirectoryIfMissingVerbose
-    , getDirectoryContentsRecursive
     , installOrdinaryFile
     , matchFileGlob
     )
@@ -78,7 +78,6 @@ import Distribution.Simple
 import Distribution.Verbosity (Verbosity)
 import System.FilePath
     ( (</>)
-    , (<.>)
     , equalFilePath
     , isRelative
     , makeRelative
@@ -296,6 +295,7 @@ copyProtosToDataDir verb root destDir files = do
 protoLensImportsPrefix :: FilePath
 protoLensImportsPrefix = "proto-lens-imports"
 
+#if !MIN_VERSION_Cabal(2,0,0)
 -- | Add the autogen directory to the hs-source-dirs of all the targets in the
 -- .cabal file.  Used to fool 'sdist' by pointing it to the generated source
 -- files.
@@ -326,6 +326,7 @@ fudgePackageDesc lbi p = p
                                     : hsSourceDirs bi }
         | otherwise = bi -- Could happen if a component isn't active; try
                          -- anyway and see whether Cabal complains later on.
+#endif
 
 -- | Returns whether the @root@ is a parent folder of @f@.
 isSubdirectoryOf :: FilePath -> FilePath -> Bool
@@ -398,11 +399,12 @@ findExecutableOrDie name debugMsg = do
 -- (e.g., `stack test` vs `stack build`).
 collectActiveModules
     :: LocalBuildInfo -> [(ComponentLocalBuildInfo, [ModuleName])]
-collectActiveModules l = map (\(n, l) -> (l, f n)) $ Map.toList $ allComponents l
+collectActiveModules l = map (\(n, c) -> (c, f n)) $ Map.toList $ allComponents l
   where
     p = localPkgDescr l
-    f CLibName = maybeToList (library p) >>= \l -> exposedModules l
-                                                    ++ otherModules (libBuildInfo l)
+    f CLibName = maybeToList (library p) >>=
+                    \lib -> exposedModules lib
+                                ++ otherModules (libBuildInfo lib)
     f (CExeName n) = otherModules . buildInfo $ exes Map.! n
     f (CTestName n) = otherModules . testBuildInfo $ tests Map.! n
     f (CBenchName n) = otherModules . benchmarkBuildInfo $ benchs Map.! n
