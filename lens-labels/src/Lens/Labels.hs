@@ -35,7 +35,6 @@ module Lens.Labels (
     Lens,
     Lens',
     -- * HasLens
-    HasLens(..),
     Proxy#,
     proxy#,
     HasLens'(..),
@@ -73,36 +72,18 @@ type LensLike' f s a = LensLike f s s a a
 type Lens s t a b = forall f . Functor f => LensLike f s t a b
 type Lens' s a = Lens s s a a
 
--- | A type class for lens fields.
-class HasLens f s t (x :: Symbol) a b
-        | x s -> a, x t -> b, x s b -> t, x t a -> s where
-    lensOf :: Proxy# x -> (a -> f b) -> s -> f t
-
 instance
-    (p ~ (a -> f b), q ~ (s -> f t), HasLens f s t x a b)
+    (Functor f, p ~ (a -> f b), q ~ (s -> f t), s ~ t, a ~ b, HasLens' s x a)
     => IsLabel x (LensFn p q) where
 #if __GLASGOW_HASKELL__ >= 802
-    fromLabel = LensFn $ lensOf (proxy# :: Proxy# x)
+    fromLabel = LensFn $ lensOf' (proxy# :: Proxy# x)
 #else
-    fromLabel p = LensFn $ lensOf p
+    fromLabel p = LensFn $ lensOf' p
 #endif
 
--- | A type class for lens fields of monomorphic types (i.e., where the lens
--- doesn't change the outer type).
---
--- This class can be used to simplify instance declarations and type
--- errors, by "forwarding" 'HasLens' to simpler instances.  For example:
---
--- @
---     instance (HasLens' f Foo x a, a ~ b) => HasLens f Foo Foo x a b where
---         where lensOf = lensOf'
---     instance Functor f => HasLens' f Foo "a" Int where ...
---     instance Functor f => HasLens' f Foo "b" Double where ...
---     instance Functor f => HasLens' f Foo "c" [Float]  where ...
---     ...
--- @
-class HasLens f s s x a a => HasLens' f s x a | x s -> a where
-    lensOf' :: Proxy# x -> (a -> f a) -> s -> f s
+-- | A type class for lens fields.
+class HasLens' s (x :: Symbol) a | s x -> a where
+    lensOf' :: Functor f => Proxy# x -> (a -> f a) -> s -> f s
 
 type ASetter s t a b = LensLike Identity s t a b
 
