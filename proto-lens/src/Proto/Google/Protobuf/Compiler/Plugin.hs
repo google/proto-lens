@@ -9,6 +9,7 @@ module Proto.Google.Protobuf.Compiler.Plugin
        (CodeGeneratorRequest(..), CodeGeneratorResponse(..),
         CodeGeneratorResponse'File(..))
        where
+import qualified Control.DeepSeq
 import qualified Lens.Labels.Prism
 import qualified Prelude
 import qualified Data.Int
@@ -120,6 +121,14 @@ instance Data.ProtoLens.Message CodeGeneratorRequest where
         unknownFields
           = Lens.Family2.Unchecked.lens _CodeGeneratorRequest'_unknownFields
               (\ x__ y__ -> x__{_CodeGeneratorRequest'_unknownFields = y__})
+instance Control.DeepSeq.NFData CodeGeneratorRequest where
+        rnf
+          = \ x__ ->
+              Control.DeepSeq.deepseq (_CodeGeneratorRequest'_unknownFields x__)
+                (Control.DeepSeq.deepseq (_CodeGeneratorRequest'fileToGenerate x__)
+                   (Control.DeepSeq.deepseq (_CodeGeneratorRequest'parameter x__)
+                      (Control.DeepSeq.deepseq (_CodeGeneratorRequest'protoFile x__)
+                         (()))))
 {- | Fields :
 
     * 'Proto.Google.Protobuf.Compiler.Plugin_Fields.error' @:: Lens' CodeGeneratorResponse Data.Text.Text@
@@ -190,6 +199,12 @@ instance Data.ProtoLens.Message CodeGeneratorResponse where
         unknownFields
           = Lens.Family2.Unchecked.lens _CodeGeneratorResponse'_unknownFields
               (\ x__ y__ -> x__{_CodeGeneratorResponse'_unknownFields = y__})
+instance Control.DeepSeq.NFData CodeGeneratorResponse where
+        rnf
+          = \ x__ ->
+              Control.DeepSeq.deepseq (_CodeGeneratorResponse'_unknownFields x__)
+                (Control.DeepSeq.deepseq (_CodeGeneratorResponse'error x__)
+                   (Control.DeepSeq.deepseq (_CodeGeneratorResponse'file x__) (())))
 {- | Fields :
 
     * 'Proto.Google.Protobuf.Compiler.Plugin_Fields.name' @:: Lens' CodeGeneratorResponse'File Data.Text.Text@
@@ -312,3 +327,13 @@ instance Data.ProtoLens.Message CodeGeneratorResponse'File where
               _CodeGeneratorResponse'File'_unknownFields
               (\ x__ y__ ->
                  x__{_CodeGeneratorResponse'File'_unknownFields = y__})
+instance Control.DeepSeq.NFData CodeGeneratorResponse'File where
+        rnf
+          = \ x__ ->
+              Control.DeepSeq.deepseq
+                (_CodeGeneratorResponse'File'_unknownFields x__)
+                (Control.DeepSeq.deepseq (_CodeGeneratorResponse'File'name x__)
+                   (Control.DeepSeq.deepseq
+                      (_CodeGeneratorResponse'File'insertionPoint x__)
+                      (Control.DeepSeq.deepseq (_CodeGeneratorResponse'File'content x__)
+                         (()))))
