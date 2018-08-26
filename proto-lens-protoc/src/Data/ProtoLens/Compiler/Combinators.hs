@@ -157,6 +157,9 @@ alt p e = Syntax.Alt () p (Syntax.UnGuardedRhs () e) Nothing
 stringExp :: String -> Exp
 stringExp = Syntax.Lit () . string
 
+charExp :: Char -> Exp
+charExp = Syntax.Lit () . char
+
 tuple :: [Exp] -> Exp
 tuple = Syntax.Tuple () Syntax.Boxed
 
@@ -406,6 +409,9 @@ pLitInt n = Syntax.PLit () sign $ Syntax.Int () n' (show n')
 
 string :: String -> Syntax.Literal ()
 string s = Syntax.String () s (show s)
+
+char :: Char -> Syntax.Literal ()
+char c = Syntax.Char () c [c]
 
 modifyModuleName :: (String -> String) -> ModuleName -> ModuleName
 modifyModuleName f (Syntax.ModuleName _ unpacked) =

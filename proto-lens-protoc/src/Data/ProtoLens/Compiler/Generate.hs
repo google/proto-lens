@@ -182,8 +182,10 @@ messageComment fieldModName n fields = unlines
 
 generateMessageExports :: MessageInfo Name -> [ExportSpec]
 generateMessageExports m =
-    map (exportAll . unQual)
-        $ messageName m : map oneofTypeName (messageOneofFields m)
+    -- Hide the message contructor, but expose "oneof" case constructors.
+    exportWith (unQual $ messageName m) []
+        : map (exportAll . unQual . oneofTypeName)
+                (messageOneofFields m)
 
 generateServiceDecls :: Env QName -> ServiceInfo -> [Decl]
 generateServiceDecls env si =
@@ -254,9 +256,16 @@ generateMessageDecls fieldModName syntaxType env protoName info =
                       ]
                       ++ [(messageUnknownFields info, "Data.ProtoLens.FieldSet")]
             ]
-            $ deriving' ["Prelude.Show", "Prelude.Eq", "Prelude.Ord"]
+            $ deriving' ["Prelude.Eq", "Prelude.Ord"]
+    -- instance Show Bar where
+    --   showsPrec __x __s = showChar '{' (showString (showMessageShort __x) (showChar '}' s))
+    , uncommented $
+        instDecl [] ("Prelude.Show" `ihApp` [dataType])
+            [[match "showsPrec" ["_", "__x", "__s"]
+                $ "Prelude.showChar" @@ charExp '{'
+                    @@ ("Prelude.showString" @@ ("Data.ProtoLens.showMessageShort" @@ "__x")
+                        @@ ("Prelude.showChar" @@ charExp '}' @@ "__s"))]]
     ] ++
-
     -- oneof field data type declarations
     -- proto: message Foo {
     --          oneof bar {

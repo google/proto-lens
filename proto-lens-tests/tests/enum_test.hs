@@ -10,8 +10,8 @@ module Main where
 import Proto.Enum
     ( Bar(..)
     , Baz(..)
-    , TwoBazs(..)
-    , Foo(..)
+    , TwoBazs
+    , Foo
     , Foo'Baz(..)
     -- explicit import to make sure we get pattern synonyms
     , Alias(..)
