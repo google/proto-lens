@@ -5,10 +5,12 @@
   packages.
 - Hide the constructors and record fields of message types, and make `Show`
   instances call `showMessageShort`.
+- Generate explicit `NFData` instances for each type.
 
 ## v0.3.1.1
 - Fix management of generated files between Cabal components (#171).
 - Bump the lower bound on `base` to indicate we require `ghc>=8.0`.
+- Use autogen-modules. (#196)
 
 ## v0.3.1.0
 - Bump the dependency on `base` for `ghc-8.4.2`.

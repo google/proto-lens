@@ -84,7 +84,7 @@ generateModule modName imports syntaxType modifyImport definitions importedEnv s
     = [ Module modName
                 (Just $ (serviceExports ++) $ concatMap generateExports $ Map.elems definitions)
                 pragmas
-                (prismImport:sharedImports)
+                (mainImports ++ sharedImports)
           $ (concatMap generateDecls $ Map.toList definitions)
          ++ map uncommented (concatMap (generateServiceDecls env) services)
       , Module fieldModName
@@ -110,7 +110,8 @@ generateModule modName imports syntaxType modifyImport definitions importedEnv s
           -- in a single entry, so we use two: `Foo(..)` and `Foo(A, B)`.
           , optionsGhcPragma "-fno-warn-duplicate-exports"
           ]
-    prismImport = modifyImport $ importSimple "Lens.Labels.Prism"
+    mainImports = map (modifyImport . importSimple)
+                    [ "Control.DeepSeq", "Lens.Labels.Prism" ]
     sharedImports = map (modifyImport . importSimple)
               [ "Prelude", "Data.Int", "Data.Word"
               , "Data.ProtoLens", "Data.ProtoLens.Message.Enum", "Data.ProtoLens.Service.Types"
@@ -283,24 +284,13 @@ generateMessageDecls fieldModName syntaxType env protoName info =
       $ deriving' ["Prelude.Show", "Prelude.Eq", "Prelude.Ord"]
     | oneofInfo <- messageOneofFields info
     ] ++
-    -- instance (HasLens' f Foo x a, HasLens' f Foo x b, a ~ b)
-    --    => HasLens f Foo Foo x a b
-    [ uncommented $
-          instDecl [classA "Lens.Labels.HasLens'" ["f", dataType, "x", "a"],
-                    equalP "a" "b"]
-              ("Lens.Labels.HasLens" `ihApp`
-                  ["f", dataType, dataType, "x", "a", "b"])
-              [[match "lensOf" [] "Lens.Labels.lensOf'"]]
-    ]
-    ++
-    -- instance Functor f
-    --     => HasLens' f Foo "foo" Bar
+    -- instance HasLens' Foo "foo" Bar
     --   lensOf _ = ...
     -- Note: for optional fields, this generates an instance both for "foo" and
     -- for "maybe'foo" (see plainRecordField below).
-    [ uncommented $ instDecl [classA "Prelude.Functor" ["f"]]
+    [ uncommented $ instDecl []
         ("Lens.Labels.HasLens'" `ihApp`
-            ["f", dataType, sym, tyParen t])
+            [dataType, sym, tyParen t])
             [[match "lensOf'" [pWildCard] $
                 "Prelude.."
                     @@ rawFieldAccessor (unQual $ recordFieldName li)
@@ -332,6 +322,16 @@ generateMessageDecls fieldModName syntaxType env protoName info =
     -- instance Message.Message Bar where
     , uncommented $ instDecl [] ("Data.ProtoLens.Message" `ihApp` [dataType])
         $ messageInstance syntaxType env protoName info
+    -- instance NFData Bar where
+    , uncommented $ instDecl [] ("Control.DeepSeq.NFData" `ihApp` [dataType])
+        [[match "rnf" [] $ messageRnfExpr info]]
+    ] ++
+    -- instance NFData Foo'Bar where
+    [ uncommented $
+        instDecl [] ("Control.DeepSeq.NFData" `ihApp`
+                        [tyCon $ unQual $ oneofTypeName o])
+        [map oneofRnfMatch $ oneofCases o]
+    | o <- messageOneofFields info
     ]
   where
     dataType = tyCon $ unQual dataName
@@ -540,6 +540,11 @@ generateEnumDecls Proto3 info =
     --   fieldDefault = FirstEnumValue
     , instDecl [] ("Data.ProtoLens.FieldDefault" `ihApp` [dataType])
         [[match "fieldDefault" [] defaultCon]]
+    -- instance NFData Foo where
+    --   rnf x__ = seq x__ ()
+    -- (Trivial since enum types are already strict)
+    , instDecl [] ("Control.DeepSeq.NFData" `ihApp` [dataType])
+        [[ match "rnf" ["x__"] $ "Prelude.seq" @@ "x__" @@ "()" ]]
     ] ++
     -- pattern Enum2a :: FooEnum
     -- pattern Enum2a = Enum2
@@ -693,6 +698,11 @@ generateEnumDecls Proto2 info =
         [[ match "minBound" [] $ con $ unQual minBoundName
          , match "maxBound" [] $ con $ unQual maxBoundName
          ]]
+    -- instance NFData Foo where
+    --   rnf x__ = seq x__ ()
+    -- (Trivial since enum types are already strict)
+    , instDecl [] ("Control.DeepSeq.NFData" `ihApp` [dataType])
+        [[ match "rnf" ["x__"] $ "Prelude.seq" @@ "x__" @@ "()" ]]
     ]
     ++
     -- pattern FooAlias :: Foo
@@ -747,14 +757,14 @@ generateEnumDecls Proto2 info =
 
 generateFieldDecls :: Symbol -> [Decl]
 generateFieldDecls xStr =
-    -- foo :: forall x f s t a b
-    --        . HasLens f s t x a b => LensLike f s t a b
-    -- -- Note: `Lens.Family2.LensLike f` implies Functor f.
+    -- foo :: forall f s a
+    --        . (Functor f, HasLens s x a) => LensLike' f s a
     -- foo = lensOf (Proxy# :: Proxy# x)
     [ typeSig [x]
-          $ tyForAll ["f", "s", "t", "a", "b"]
-                  [classA "Lens.Labels.HasLens" ["f", "s", "t", xSym, "a", "b"]]
-                    $ "Lens.Family2.LensLike" @@ "f" @@ "s" @@ "t" @@ "a" @@ "b"
+          $ tyForAll ["f", "s", "a"]
+                  [classA "Prelude.Functor" ["f"],
+                   classA "Lens.Labels.HasLens'" ["s", xSym, "a"]]
+                    $ "Lens.Family2.LensLike'" @@ "f" @@ "s" @@ "a"
     , funBind [match x [] $ lensOfExp xStr]
     ]
   where
@@ -772,7 +782,7 @@ data RecordField = RecordField
         -- ^ All of the (overloaded) lenses accessing this record field.
     }
 
--- | An instance of HasLens for a particualr field.
+-- | An instance of HasLens' for a particular field.
 data LensInstance = LensInstance
     { lensSymbol :: Symbol
           -- ^ The overloaded name for this lens.
@@ -1138,7 +1148,7 @@ fieldAccessorExpr syntaxType env f = accessorCon @@ lensOfExp hsFieldName
               _ -> overloadedField f
 
 lensOfExp :: Symbol -> Exp
-lensOfExp sym = ("Lens.Labels.lensOf"
+lensOfExp sym = ("Lens.Labels.lensOf'"
                   @@ ("Lens.Labels.proxy#" @::@
                       ("Lens.Labels.Proxy#" @@ promoteSymbol sym)))
 
@@ -1190,3 +1200,25 @@ fieldTypeDescriptorExpr = \case
   where
     mk x y = fromString ("Data.ProtoLens." ++ x)
               @@ fromString ("Data.ProtoLens." ++ y)
+
+-- | Generate the implementation of NFData.rnf for the given message.
+--
+-- instance NFData Bar where
+--    rnf = \x -> deepseq (_Bar'foo x) (deepseq (_Bar'bar x) ())
+messageRnfExpr :: MessageInfo Name -> Exp
+messageRnfExpr msg = lambda ["x__"] $ foldr (@@) "()" (map seqField fieldNames)
+  where
+    fieldNames = messageUnknownFields msg
+                : map (haskellRecordFieldName . plainFieldName)
+                       (messageFields msg)
+                ++ map (haskellRecordFieldName . oneofFieldName)
+                       (messageOneofFields msg)
+    seqField :: Name -> Exp
+    seqField f = "Control.DeepSeq.deepseq" @@ (var (unQual f) @@ "x__")
+
+-- instance NFData Bar where
+--   rnf (Foo'a x__) = rnf x__
+--   rnf (Bar'b x__) = rnf x__
+oneofRnfMatch :: OneofCase -> Match
+oneofRnfMatch c = match "rnf" [unQual (caseConstructorName c) `pApp` ["x__"]]
+                    $ "Control.DeepSeq.rnf" @@ "x__"
