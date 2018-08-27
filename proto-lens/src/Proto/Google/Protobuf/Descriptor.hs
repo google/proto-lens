@@ -6,23 +6,23 @@
 {-# OPTIONS_GHC -fno-warn-unused-imports#-}
 {-# OPTIONS_GHC -fno-warn-duplicate-exports#-}
 module Proto.Google.Protobuf.Descriptor
-       (DescriptorProto(..), DescriptorProto'ExtensionRange(..),
-        DescriptorProto'ReservedRange(..), EnumDescriptorProto(..),
-        EnumOptions(..), EnumValueDescriptorProto(..),
-        EnumValueOptions(..), FieldDescriptorProto(..),
-        FieldDescriptorProto'Label(..), FieldDescriptorProto'Label(),
-        FieldDescriptorProto'Type(..), FieldDescriptorProto'Type(),
-        FieldOptions(..), FieldOptions'CType(..), FieldOptions'CType(),
+       (DescriptorProto(), DescriptorProto'ExtensionRange(),
+        DescriptorProto'ReservedRange(), EnumDescriptorProto(),
+        EnumOptions(), EnumValueDescriptorProto(), EnumValueOptions(),
+        FieldDescriptorProto(), FieldDescriptorProto'Label(..),
+        FieldDescriptorProto'Label(), FieldDescriptorProto'Type(..),
+        FieldDescriptorProto'Type(), FieldOptions(),
+        FieldOptions'CType(..), FieldOptions'CType(),
         FieldOptions'JSType(..), FieldOptions'JSType(),
-        FileDescriptorProto(..), FileDescriptorSet(..), FileOptions(..),
+        FileDescriptorProto(), FileDescriptorSet(), FileOptions(),
         FileOptions'OptimizeMode(..), FileOptions'OptimizeMode(),
-        GeneratedCodeInfo(..), GeneratedCodeInfo'Annotation(..),
-        MessageOptions(..), MethodDescriptorProto(..), MethodOptions(..),
-        OneofDescriptorProto(..), ServiceDescriptorProto(..),
-        ServiceOptions(..), SourceCodeInfo(..),
-        SourceCodeInfo'Location(..), UninterpretedOption(..),
-        UninterpretedOption'NamePart(..))
+        GeneratedCodeInfo(), GeneratedCodeInfo'Annotation(),
+        MessageOptions(), MethodDescriptorProto(), MethodOptions(),
+        OneofDescriptorProto(), ServiceDescriptorProto(), ServiceOptions(),
+        SourceCodeInfo(), SourceCodeInfo'Location(), UninterpretedOption(),
+        UninterpretedOption'NamePart())
        where
+import qualified Control.DeepSeq
 import qualified Lens.Labels.Prism
 import qualified Prelude
 import qualified Data.Int
@@ -69,7 +69,12 @@ data DescriptorProto = DescriptorProto{_DescriptorProto'name ::
                                        ![DescriptorProto'ReservedRange],
                                        _DescriptorProto'reservedName :: ![Data.Text.Text],
                                        _DescriptorProto'_unknownFields :: !Data.ProtoLens.FieldSet}
-                     deriving (Prelude.Show, Prelude.Eq, Prelude.Ord)
+                     deriving (Prelude.Eq, Prelude.Ord)
+instance Prelude.Show DescriptorProto where
+        showsPrec _ __x __s
+          = Prelude.showChar '{'
+              (Prelude.showString (Data.ProtoLens.showMessageShort __x)
+                 (Prelude.showChar '}' __s))
 instance Lens.Labels.HasLens' DescriptorProto "name"
            (Data.Text.Text)
          where
@@ -275,6 +280,23 @@ instance Data.ProtoLens.Message DescriptorProto where
         unknownFields
           = Lens.Family2.Unchecked.lens _DescriptorProto'_unknownFields
               (\ x__ y__ -> x__{_DescriptorProto'_unknownFields = y__})
+instance Control.DeepSeq.NFData DescriptorProto where
+        rnf
+          = \ x__ ->
+              Control.DeepSeq.deepseq (_DescriptorProto'_unknownFields x__)
+                (Control.DeepSeq.deepseq (_DescriptorProto'name x__)
+                   (Control.DeepSeq.deepseq (_DescriptorProto'field x__)
+                      (Control.DeepSeq.deepseq (_DescriptorProto'extension x__)
+                         (Control.DeepSeq.deepseq (_DescriptorProto'nestedType x__)
+                            (Control.DeepSeq.deepseq (_DescriptorProto'enumType x__)
+                               (Control.DeepSeq.deepseq (_DescriptorProto'extensionRange x__)
+                                  (Control.DeepSeq.deepseq (_DescriptorProto'oneofDecl x__)
+                                     (Control.DeepSeq.deepseq (_DescriptorProto'options x__)
+                                        (Control.DeepSeq.deepseq
+                                           (_DescriptorProto'reservedRange x__)
+                                           (Control.DeepSeq.deepseq
+                                              (_DescriptorProto'reservedName x__)
+                                              (())))))))))))
 {- | Fields :
 
     * 'Proto.Google.Protobuf.Descriptor_Fields.start' @:: Lens' DescriptorProto'ExtensionRange Data.Int.Int32@
@@ -292,7 +314,12 @@ data DescriptorProto'ExtensionRange = DescriptorProto'ExtensionRange{_Descriptor
                                                                          Data.Int.Int32),
                                                                      _DescriptorProto'ExtensionRange'_unknownFields
                                                                      :: !Data.ProtoLens.FieldSet}
-                                    deriving (Prelude.Show, Prelude.Eq, Prelude.Ord)
+                                    deriving (Prelude.Eq, Prelude.Ord)
+instance Prelude.Show DescriptorProto'ExtensionRange where
+        showsPrec _ __x __s
+          = Prelude.showChar '{'
+              (Prelude.showString (Data.ProtoLens.showMessageShort __x)
+                 (Prelude.showChar '}' __s))
 instance Lens.Labels.HasLens' DescriptorProto'ExtensionRange
            "start"
            (Data.Int.Int32)
@@ -365,6 +392,16 @@ instance Data.ProtoLens.Message DescriptorProto'ExtensionRange
               _DescriptorProto'ExtensionRange'_unknownFields
               (\ x__ y__ ->
                  x__{_DescriptorProto'ExtensionRange'_unknownFields = y__})
+instance Control.DeepSeq.NFData DescriptorProto'ExtensionRange
+         where
+        rnf
+          = \ x__ ->
+              Control.DeepSeq.deepseq
+                (_DescriptorProto'ExtensionRange'_unknownFields x__)
+                (Control.DeepSeq.deepseq
+                   (_DescriptorProto'ExtensionRange'start x__)
+                   (Control.DeepSeq.deepseq (_DescriptorProto'ExtensionRange'end x__)
+                      (())))
 {- | Fields :
 
     * 'Proto.Google.Protobuf.Descriptor_Fields.start' @:: Lens' DescriptorProto'ReservedRange Data.Int.Int32@
@@ -380,7 +417,12 @@ data DescriptorProto'ReservedRange = DescriptorProto'ReservedRange{_DescriptorPr
                                                                    !(Prelude.Maybe Data.Int.Int32),
                                                                    _DescriptorProto'ReservedRange'_unknownFields
                                                                    :: !Data.ProtoLens.FieldSet}
-                                   deriving (Prelude.Show, Prelude.Eq, Prelude.Ord)
+                                   deriving (Prelude.Eq, Prelude.Ord)
+instance Prelude.Show DescriptorProto'ReservedRange where
+        showsPrec _ __x __s
+          = Prelude.showChar '{'
+              (Prelude.showString (Data.ProtoLens.showMessageShort __x)
+                 (Prelude.showChar '}' __s))
 instance Lens.Labels.HasLens' DescriptorProto'ReservedRange "start"
            (Data.Int.Int32)
          where
@@ -451,6 +493,14 @@ instance Data.ProtoLens.Message DescriptorProto'ReservedRange where
               _DescriptorProto'ReservedRange'_unknownFields
               (\ x__ y__ ->
                  x__{_DescriptorProto'ReservedRange'_unknownFields = y__})
+instance Control.DeepSeq.NFData DescriptorProto'ReservedRange where
+        rnf
+          = \ x__ ->
+              Control.DeepSeq.deepseq
+                (_DescriptorProto'ReservedRange'_unknownFields x__)
+                (Control.DeepSeq.deepseq (_DescriptorProto'ReservedRange'start x__)
+                   (Control.DeepSeq.deepseq (_DescriptorProto'ReservedRange'end x__)
+                      (())))
 {- | Fields :
 
     * 'Proto.Google.Protobuf.Descriptor_Fields.name' @:: Lens' EnumDescriptorProto Data.Text.Text@
@@ -467,7 +517,12 @@ data EnumDescriptorProto = EnumDescriptorProto{_EnumDescriptorProto'name
                                                !(Prelude.Maybe EnumOptions),
                                                _EnumDescriptorProto'_unknownFields ::
                                                !Data.ProtoLens.FieldSet}
-                         deriving (Prelude.Show, Prelude.Eq, Prelude.Ord)
+                         deriving (Prelude.Eq, Prelude.Ord)
+instance Prelude.Show EnumDescriptorProto where
+        showsPrec _ __x __s
+          = Prelude.showChar '{'
+              (Prelude.showString (Data.ProtoLens.showMessageShort __x)
+                 (Prelude.showChar '}' __s))
 instance Lens.Labels.HasLens' EnumDescriptorProto "name"
            (Data.Text.Text)
          where
@@ -550,6 +605,13 @@ instance Data.ProtoLens.Message EnumDescriptorProto where
         unknownFields
           = Lens.Family2.Unchecked.lens _EnumDescriptorProto'_unknownFields
               (\ x__ y__ -> x__{_EnumDescriptorProto'_unknownFields = y__})
+instance Control.DeepSeq.NFData EnumDescriptorProto where
+        rnf
+          = \ x__ ->
+              Control.DeepSeq.deepseq (_EnumDescriptorProto'_unknownFields x__)
+                (Control.DeepSeq.deepseq (_EnumDescriptorProto'name x__)
+                   (Control.DeepSeq.deepseq (_EnumDescriptorProto'value x__)
+                      (Control.DeepSeq.deepseq (_EnumDescriptorProto'options x__) (()))))
 {- | Fields :
 
     * 'Proto.Google.Protobuf.Descriptor_Fields.allowAlias' @:: Lens' EnumOptions Prelude.Bool@
@@ -563,7 +625,12 @@ data EnumOptions = EnumOptions{_EnumOptions'allowAlias ::
                                _EnumOptions'deprecated :: !(Prelude.Maybe Prelude.Bool),
                                _EnumOptions'uninterpretedOption :: ![UninterpretedOption],
                                _EnumOptions'_unknownFields :: !Data.ProtoLens.FieldSet}
-                 deriving (Prelude.Show, Prelude.Eq, Prelude.Ord)
+                 deriving (Prelude.Eq, Prelude.Ord)
+instance Prelude.Show EnumOptions where
+        showsPrec _ __x __s
+          = Prelude.showChar '{'
+              (Prelude.showString (Data.ProtoLens.showMessageShort __x)
+                 (Prelude.showChar '}' __s))
 instance Lens.Labels.HasLens' EnumOptions "allowAlias"
            (Prelude.Bool)
          where
@@ -646,6 +713,14 @@ instance Data.ProtoLens.Message EnumOptions where
         unknownFields
           = Lens.Family2.Unchecked.lens _EnumOptions'_unknownFields
               (\ x__ y__ -> x__{_EnumOptions'_unknownFields = y__})
+instance Control.DeepSeq.NFData EnumOptions where
+        rnf
+          = \ x__ ->
+              Control.DeepSeq.deepseq (_EnumOptions'_unknownFields x__)
+                (Control.DeepSeq.deepseq (_EnumOptions'allowAlias x__)
+                   (Control.DeepSeq.deepseq (_EnumOptions'deprecated x__)
+                      (Control.DeepSeq.deepseq (_EnumOptions'uninterpretedOption x__)
+                         (()))))
 {- | Fields :
 
     * 'Proto.Google.Protobuf.Descriptor_Fields.name' @:: Lens' EnumValueDescriptorProto Data.Text.Text@
@@ -663,7 +738,12 @@ data EnumValueDescriptorProto = EnumValueDescriptorProto{_EnumValueDescriptorPro
                                                          !(Prelude.Maybe EnumValueOptions),
                                                          _EnumValueDescriptorProto'_unknownFields ::
                                                          !Data.ProtoLens.FieldSet}
-                              deriving (Prelude.Show, Prelude.Eq, Prelude.Ord)
+                              deriving (Prelude.Eq, Prelude.Ord)
+instance Prelude.Show EnumValueDescriptorProto where
+        showsPrec _ __x __s
+          = Prelude.showChar '{'
+              (Prelude.showString (Data.ProtoLens.showMessageShort __x)
+                 (Prelude.showChar '}' __s))
 instance Lens.Labels.HasLens' EnumValueDescriptorProto "name"
            (Data.Text.Text)
          where
@@ -758,6 +838,15 @@ instance Data.ProtoLens.Message EnumValueDescriptorProto where
           = Lens.Family2.Unchecked.lens
               _EnumValueDescriptorProto'_unknownFields
               (\ x__ y__ -> x__{_EnumValueDescriptorProto'_unknownFields = y__})
+instance Control.DeepSeq.NFData EnumValueDescriptorProto where
+        rnf
+          = \ x__ ->
+              Control.DeepSeq.deepseq
+                (_EnumValueDescriptorProto'_unknownFields x__)
+                (Control.DeepSeq.deepseq (_EnumValueDescriptorProto'name x__)
+                   (Control.DeepSeq.deepseq (_EnumValueDescriptorProto'number x__)
+                      (Control.DeepSeq.deepseq (_EnumValueDescriptorProto'options x__)
+                         (()))))
 {- | Fields :
 
     * 'Proto.Google.Protobuf.Descriptor_Fields.deprecated' @:: Lens' EnumValueOptions Prelude.Bool@
@@ -770,7 +859,12 @@ data EnumValueOptions = EnumValueOptions{_EnumValueOptions'deprecated
                                          ![UninterpretedOption],
                                          _EnumValueOptions'_unknownFields ::
                                          !Data.ProtoLens.FieldSet}
-                      deriving (Prelude.Show, Prelude.Eq, Prelude.Ord)
+                      deriving (Prelude.Eq, Prelude.Ord)
+instance Prelude.Show EnumValueOptions where
+        showsPrec _ __x __s
+          = Prelude.showChar '{'
+              (Prelude.showString (Data.ProtoLens.showMessageShort __x)
+                 (Prelude.showChar '}' __s))
 instance Lens.Labels.HasLens' EnumValueOptions "deprecated"
            (Prelude.Bool)
          where
@@ -828,6 +922,14 @@ instance Data.ProtoLens.Message EnumValueOptions where
         unknownFields
           = Lens.Family2.Unchecked.lens _EnumValueOptions'_unknownFields
               (\ x__ y__ -> x__{_EnumValueOptions'_unknownFields = y__})
+instance Control.DeepSeq.NFData EnumValueOptions where
+        rnf
+          = \ x__ ->
+              Control.DeepSeq.deepseq (_EnumValueOptions'_unknownFields x__)
+                (Control.DeepSeq.deepseq (_EnumValueOptions'deprecated x__)
+                   (Control.DeepSeq.deepseq
+                      (_EnumValueOptions'uninterpretedOption x__)
+                      (())))
 {- | Fields :
 
     * 'Proto.Google.Protobuf.Descriptor_Fields.name' @:: Lens' FieldDescriptorProto Data.Text.Text@
@@ -875,7 +977,12 @@ data FieldDescriptorProto = FieldDescriptorProto{_FieldDescriptorProto'name
                                                  !(Prelude.Maybe FieldOptions),
                                                  _FieldDescriptorProto'_unknownFields ::
                                                  !Data.ProtoLens.FieldSet}
-                          deriving (Prelude.Show, Prelude.Eq, Prelude.Ord)
+                          deriving (Prelude.Eq, Prelude.Ord)
+instance Prelude.Show FieldDescriptorProto where
+        showsPrec _ __x __s
+          = Prelude.showChar '{'
+              (Prelude.showString (Data.ProtoLens.showMessageShort __x)
+                 (Prelude.showChar '}' __s))
 instance Lens.Labels.HasLens' FieldDescriptorProto "name"
            (Data.Text.Text)
          where
@@ -1152,6 +1259,23 @@ instance Data.ProtoLens.Message FieldDescriptorProto where
         unknownFields
           = Lens.Family2.Unchecked.lens _FieldDescriptorProto'_unknownFields
               (\ x__ y__ -> x__{_FieldDescriptorProto'_unknownFields = y__})
+instance Control.DeepSeq.NFData FieldDescriptorProto where
+        rnf
+          = \ x__ ->
+              Control.DeepSeq.deepseq (_FieldDescriptorProto'_unknownFields x__)
+                (Control.DeepSeq.deepseq (_FieldDescriptorProto'name x__)
+                   (Control.DeepSeq.deepseq (_FieldDescriptorProto'number x__)
+                      (Control.DeepSeq.deepseq (_FieldDescriptorProto'label x__)
+                         (Control.DeepSeq.deepseq (_FieldDescriptorProto'type' x__)
+                            (Control.DeepSeq.deepseq (_FieldDescriptorProto'typeName x__)
+                               (Control.DeepSeq.deepseq (_FieldDescriptorProto'extendee x__)
+                                  (Control.DeepSeq.deepseq (_FieldDescriptorProto'defaultValue x__)
+                                     (Control.DeepSeq.deepseq (_FieldDescriptorProto'oneofIndex x__)
+                                        (Control.DeepSeq.deepseq
+                                           (_FieldDescriptorProto'jsonName x__)
+                                           (Control.DeepSeq.deepseq
+                                              (_FieldDescriptorProto'options x__)
+                                              (())))))))))))
 data FieldDescriptorProto'Label = FieldDescriptorProto'LABEL_OPTIONAL
                                 | FieldDescriptorProto'LABEL_REQUIRED
                                 | FieldDescriptorProto'LABEL_REPEATED
@@ -1210,6 +1334,8 @@ instance Prelude.Enum FieldDescriptorProto'Label where
 instance Prelude.Bounded FieldDescriptorProto'Label where
         minBound = FieldDescriptorProto'LABEL_OPTIONAL
         maxBound = FieldDescriptorProto'LABEL_REPEATED
+instance Control.DeepSeq.NFData FieldDescriptorProto'Label where
+        rnf x__ = Prelude.seq x__ (())
 data FieldDescriptorProto'Type = FieldDescriptorProto'TYPE_DOUBLE
                                | FieldDescriptorProto'TYPE_FLOAT
                                | FieldDescriptorProto'TYPE_INT64
@@ -1414,6 +1540,8 @@ instance Prelude.Enum FieldDescriptorProto'Type where
 instance Prelude.Bounded FieldDescriptorProto'Type where
         minBound = FieldDescriptorProto'TYPE_DOUBLE
         maxBound = FieldDescriptorProto'TYPE_SINT64
+instance Control.DeepSeq.NFData FieldDescriptorProto'Type where
+        rnf x__ = Prelude.seq x__ (())
 {- | Fields :
 
     * 'Proto.Google.Protobuf.Descriptor_Fields.ctype' @:: Lens' FieldOptions FieldOptions'CType@
@@ -1439,7 +1567,12 @@ data FieldOptions = FieldOptions{_FieldOptions'ctype ::
                                  _FieldOptions'weak :: !(Prelude.Maybe Prelude.Bool),
                                  _FieldOptions'uninterpretedOption :: ![UninterpretedOption],
                                  _FieldOptions'_unknownFields :: !Data.ProtoLens.FieldSet}
-                  deriving (Prelude.Show, Prelude.Eq, Prelude.Ord)
+                  deriving (Prelude.Eq, Prelude.Ord)
+instance Prelude.Show FieldOptions where
+        showsPrec _ __x __s
+          = Prelude.showChar '{'
+              (Prelude.showString (Data.ProtoLens.showMessageShort __x)
+                 (Prelude.showChar '}' __s))
 instance Lens.Labels.HasLens' FieldOptions "ctype"
            (FieldOptions'CType)
          where
@@ -1623,6 +1756,18 @@ instance Data.ProtoLens.Message FieldOptions where
         unknownFields
           = Lens.Family2.Unchecked.lens _FieldOptions'_unknownFields
               (\ x__ y__ -> x__{_FieldOptions'_unknownFields = y__})
+instance Control.DeepSeq.NFData FieldOptions where
+        rnf
+          = \ x__ ->
+              Control.DeepSeq.deepseq (_FieldOptions'_unknownFields x__)
+                (Control.DeepSeq.deepseq (_FieldOptions'ctype x__)
+                   (Control.DeepSeq.deepseq (_FieldOptions'packed x__)
+                      (Control.DeepSeq.deepseq (_FieldOptions'jstype x__)
+                         (Control.DeepSeq.deepseq (_FieldOptions'lazy x__)
+                            (Control.DeepSeq.deepseq (_FieldOptions'deprecated x__)
+                               (Control.DeepSeq.deepseq (_FieldOptions'weak x__)
+                                  (Control.DeepSeq.deepseq (_FieldOptions'uninterpretedOption x__)
+                                     (()))))))))
 data FieldOptions'CType = FieldOptions'STRING
                         | FieldOptions'CORD
                         | FieldOptions'STRING_PIECE
@@ -1671,6 +1816,8 @@ instance Prelude.Enum FieldOptions'CType where
 instance Prelude.Bounded FieldOptions'CType where
         minBound = FieldOptions'STRING
         maxBound = FieldOptions'STRING_PIECE
+instance Control.DeepSeq.NFData FieldOptions'CType where
+        rnf x__ = Prelude.seq x__ (())
 data FieldOptions'JSType = FieldOptions'JS_NORMAL
                          | FieldOptions'JS_STRING
                          | FieldOptions'JS_NUMBER
@@ -1719,6 +1866,8 @@ instance Prelude.Enum FieldOptions'JSType where
 instance Prelude.Bounded FieldOptions'JSType where
         minBound = FieldOptions'JS_NORMAL
         maxBound = FieldOptions'JS_NUMBER
+instance Control.DeepSeq.NFData FieldOptions'JSType where
+        rnf x__ = Prelude.seq x__ (())
 {- | Fields :
 
     * 'Proto.Google.Protobuf.Descriptor_Fields.name' @:: Lens' FileDescriptorProto Data.Text.Text@
@@ -1764,7 +1913,12 @@ data FileDescriptorProto = FileDescriptorProto{_FileDescriptorProto'name
                                                !(Prelude.Maybe Data.Text.Text),
                                                _FileDescriptorProto'_unknownFields ::
                                                !Data.ProtoLens.FieldSet}
-                         deriving (Prelude.Show, Prelude.Eq, Prelude.Ord)
+                         deriving (Prelude.Eq, Prelude.Ord)
+instance Prelude.Show FileDescriptorProto where
+        showsPrec _ __x __s
+          = Prelude.showChar '{'
+              (Prelude.showString (Data.ProtoLens.showMessageShort __x)
+                 (Prelude.showChar '}' __s))
 instance Lens.Labels.HasLens' FileDescriptorProto "name"
            (Data.Text.Text)
          where
@@ -2036,6 +2190,28 @@ instance Data.ProtoLens.Message FileDescriptorProto where
         unknownFields
           = Lens.Family2.Unchecked.lens _FileDescriptorProto'_unknownFields
               (\ x__ y__ -> x__{_FileDescriptorProto'_unknownFields = y__})
+instance Control.DeepSeq.NFData FileDescriptorProto where
+        rnf
+          = \ x__ ->
+              Control.DeepSeq.deepseq (_FileDescriptorProto'_unknownFields x__)
+                (Control.DeepSeq.deepseq (_FileDescriptorProto'name x__)
+                   (Control.DeepSeq.deepseq (_FileDescriptorProto'package x__)
+                      (Control.DeepSeq.deepseq (_FileDescriptorProto'dependency x__)
+                         (Control.DeepSeq.deepseq
+                            (_FileDescriptorProto'publicDependency x__)
+                            (Control.DeepSeq.deepseq (_FileDescriptorProto'weakDependency x__)
+                               (Control.DeepSeq.deepseq (_FileDescriptorProto'messageType x__)
+                                  (Control.DeepSeq.deepseq (_FileDescriptorProto'enumType x__)
+                                     (Control.DeepSeq.deepseq (_FileDescriptorProto'service x__)
+                                        (Control.DeepSeq.deepseq
+                                           (_FileDescriptorProto'extension x__)
+                                           (Control.DeepSeq.deepseq
+                                              (_FileDescriptorProto'options x__)
+                                              (Control.DeepSeq.deepseq
+                                                 (_FileDescriptorProto'sourceCodeInfo x__)
+                                                 (Control.DeepSeq.deepseq
+                                                    (_FileDescriptorProto'syntax x__)
+                                                    (())))))))))))))
 {- | Fields :
 
     * 'Proto.Google.Protobuf.Descriptor_Fields.file' @:: Lens' FileDescriptorSet [FileDescriptorProto]@
@@ -2044,7 +2220,12 @@ data FileDescriptorSet = FileDescriptorSet{_FileDescriptorSet'file
                                            :: ![FileDescriptorProto],
                                            _FileDescriptorSet'_unknownFields ::
                                            !Data.ProtoLens.FieldSet}
-                       deriving (Prelude.Show, Prelude.Eq, Prelude.Ord)
+                       deriving (Prelude.Eq, Prelude.Ord)
+instance Prelude.Show FileDescriptorSet where
+        showsPrec _ __x __s
+          = Prelude.showChar '{'
+              (Prelude.showString (Data.ProtoLens.showMessageShort __x)
+                 (Prelude.showChar '}' __s))
 instance Lens.Labels.HasLens' FileDescriptorSet "file"
            ([FileDescriptorProto])
          where
@@ -2073,6 +2254,11 @@ instance Data.ProtoLens.Message FileDescriptorSet where
         unknownFields
           = Lens.Family2.Unchecked.lens _FileDescriptorSet'_unknownFields
               (\ x__ y__ -> x__{_FileDescriptorSet'_unknownFields = y__})
+instance Control.DeepSeq.NFData FileDescriptorSet where
+        rnf
+          = \ x__ ->
+              Control.DeepSeq.deepseq (_FileDescriptorSet'_unknownFields x__)
+                (Control.DeepSeq.deepseq (_FileDescriptorSet'file x__) (()))
 {- | Fields :
 
     * 'Proto.Google.Protobuf.Descriptor_Fields.javaPackage' @:: Lens' FileOptions Data.Text.Text@
@@ -2124,7 +2310,12 @@ data FileOptions = FileOptions{_FileOptions'javaPackage ::
                                _FileOptions'csharpNamespace :: !(Prelude.Maybe Data.Text.Text),
                                _FileOptions'uninterpretedOption :: ![UninterpretedOption],
                                _FileOptions'_unknownFields :: !Data.ProtoLens.FieldSet}
-                 deriving (Prelude.Show, Prelude.Eq, Prelude.Ord)
+                 deriving (Prelude.Eq, Prelude.Ord)
+instance Prelude.Show FileOptions where
+        showsPrec _ __x __s
+          = Prelude.showChar '{'
+              (Prelude.showString (Data.ProtoLens.showMessageShort __x)
+                 (Prelude.showChar '}' __s))
 instance Lens.Labels.HasLens' FileOptions "javaPackage"
            (Data.Text.Text)
          where
@@ -2537,6 +2728,33 @@ instance Data.ProtoLens.Message FileOptions where
         unknownFields
           = Lens.Family2.Unchecked.lens _FileOptions'_unknownFields
               (\ x__ y__ -> x__{_FileOptions'_unknownFields = y__})
+instance Control.DeepSeq.NFData FileOptions where
+        rnf
+          = \ x__ ->
+              Control.DeepSeq.deepseq (_FileOptions'_unknownFields x__)
+                (Control.DeepSeq.deepseq (_FileOptions'javaPackage x__)
+                   (Control.DeepSeq.deepseq (_FileOptions'javaOuterClassname x__)
+                      (Control.DeepSeq.deepseq (_FileOptions'javaMultipleFiles x__)
+                         (Control.DeepSeq.deepseq
+                            (_FileOptions'javaGenerateEqualsAndHash x__)
+                            (Control.DeepSeq.deepseq (_FileOptions'javaStringCheckUtf8 x__)
+                               (Control.DeepSeq.deepseq (_FileOptions'optimizeFor x__)
+                                  (Control.DeepSeq.deepseq (_FileOptions'goPackage x__)
+                                     (Control.DeepSeq.deepseq (_FileOptions'ccGenericServices x__)
+                                        (Control.DeepSeq.deepseq
+                                           (_FileOptions'javaGenericServices x__)
+                                           (Control.DeepSeq.deepseq
+                                              (_FileOptions'pyGenericServices x__)
+                                              (Control.DeepSeq.deepseq (_FileOptions'deprecated x__)
+                                                 (Control.DeepSeq.deepseq
+                                                    (_FileOptions'ccEnableArenas x__)
+                                                    (Control.DeepSeq.deepseq
+                                                       (_FileOptions'objcClassPrefix x__)
+                                                       (Control.DeepSeq.deepseq
+                                                          (_FileOptions'csharpNamespace x__)
+                                                          (Control.DeepSeq.deepseq
+                                                             (_FileOptions'uninterpretedOption x__)
+                                                             (()))))))))))))))))
 data FileOptions'OptimizeMode = FileOptions'SPEED
                               | FileOptions'CODE_SIZE
                               | FileOptions'LITE_RUNTIME
@@ -2585,6 +2803,8 @@ instance Prelude.Enum FileOptions'OptimizeMode where
 instance Prelude.Bounded FileOptions'OptimizeMode where
         minBound = FileOptions'SPEED
         maxBound = FileOptions'LITE_RUNTIME
+instance Control.DeepSeq.NFData FileOptions'OptimizeMode where
+        rnf x__ = Prelude.seq x__ (())
 {- | Fields :
 
     * 'Proto.Google.Protobuf.Descriptor_Fields.annotation' @:: Lens' GeneratedCodeInfo [GeneratedCodeInfo'Annotation]@
@@ -2593,7 +2813,12 @@ data GeneratedCodeInfo = GeneratedCodeInfo{_GeneratedCodeInfo'annotation
                                            :: ![GeneratedCodeInfo'Annotation],
                                            _GeneratedCodeInfo'_unknownFields ::
                                            !Data.ProtoLens.FieldSet}
-                       deriving (Prelude.Show, Prelude.Eq, Prelude.Ord)
+                       deriving (Prelude.Eq, Prelude.Ord)
+instance Prelude.Show GeneratedCodeInfo where
+        showsPrec _ __x __s
+          = Prelude.showChar '{'
+              (Prelude.showString (Data.ProtoLens.showMessageShort __x)
+                 (Prelude.showChar '}' __s))
 instance Lens.Labels.HasLens' GeneratedCodeInfo "annotation"
            ([GeneratedCodeInfo'Annotation])
          where
@@ -2623,6 +2848,11 @@ instance Data.ProtoLens.Message GeneratedCodeInfo where
         unknownFields
           = Lens.Family2.Unchecked.lens _GeneratedCodeInfo'_unknownFields
               (\ x__ y__ -> x__{_GeneratedCodeInfo'_unknownFields = y__})
+instance Control.DeepSeq.NFData GeneratedCodeInfo where
+        rnf
+          = \ x__ ->
+              Control.DeepSeq.deepseq (_GeneratedCodeInfo'_unknownFields x__)
+                (Control.DeepSeq.deepseq (_GeneratedCodeInfo'annotation x__) (()))
 {- | Fields :
 
     * 'Proto.Google.Protobuf.Descriptor_Fields.path' @:: Lens' GeneratedCodeInfo'Annotation [Data.Int.Int32]@
@@ -2643,7 +2873,12 @@ data GeneratedCodeInfo'Annotation = GeneratedCodeInfo'Annotation{_GeneratedCodeI
                                                                  :: !(Prelude.Maybe Data.Int.Int32),
                                                                  _GeneratedCodeInfo'Annotation'_unknownFields
                                                                  :: !Data.ProtoLens.FieldSet}
-                                  deriving (Prelude.Show, Prelude.Eq, Prelude.Ord)
+                                  deriving (Prelude.Eq, Prelude.Ord)
+instance Prelude.Show GeneratedCodeInfo'Annotation where
+        showsPrec _ __x __s
+          = Prelude.showChar '{'
+              (Prelude.showString (Data.ProtoLens.showMessageShort __x)
+                 (Prelude.showChar '}' __s))
 instance Lens.Labels.HasLens' GeneratedCodeInfo'Annotation "path"
            ([Data.Int.Int32])
          where
@@ -2762,6 +2997,17 @@ instance Data.ProtoLens.Message GeneratedCodeInfo'Annotation where
               _GeneratedCodeInfo'Annotation'_unknownFields
               (\ x__ y__ ->
                  x__{_GeneratedCodeInfo'Annotation'_unknownFields = y__})
+instance Control.DeepSeq.NFData GeneratedCodeInfo'Annotation where
+        rnf
+          = \ x__ ->
+              Control.DeepSeq.deepseq
+                (_GeneratedCodeInfo'Annotation'_unknownFields x__)
+                (Control.DeepSeq.deepseq (_GeneratedCodeInfo'Annotation'path x__)
+                   (Control.DeepSeq.deepseq
+                      (_GeneratedCodeInfo'Annotation'sourceFile x__)
+                      (Control.DeepSeq.deepseq (_GeneratedCodeInfo'Annotation'begin x__)
+                         (Control.DeepSeq.deepseq (_GeneratedCodeInfo'Annotation'end x__)
+                            (())))))
 {- | Fields :
 
     * 'Proto.Google.Protobuf.Descriptor_Fields.messageSetWireFormat' @:: Lens' MessageOptions Prelude.Bool@
@@ -2782,7 +3028,12 @@ data MessageOptions = MessageOptions{_MessageOptions'messageSetWireFormat
                                      _MessageOptions'mapEntry :: !(Prelude.Maybe Prelude.Bool),
                                      _MessageOptions'uninterpretedOption :: ![UninterpretedOption],
                                      _MessageOptions'_unknownFields :: !Data.ProtoLens.FieldSet}
-                    deriving (Prelude.Show, Prelude.Eq, Prelude.Ord)
+                    deriving (Prelude.Eq, Prelude.Ord)
+instance Prelude.Show MessageOptions where
+        showsPrec _ __x __s
+          = Prelude.showChar '{'
+              (Prelude.showString (Data.ProtoLens.showMessageShort __x)
+                 (Prelude.showChar '}' __s))
 instance Lens.Labels.HasLens' MessageOptions "messageSetWireFormat"
            (Prelude.Bool)
          where
@@ -2928,6 +3179,17 @@ instance Data.ProtoLens.Message MessageOptions where
         unknownFields
           = Lens.Family2.Unchecked.lens _MessageOptions'_unknownFields
               (\ x__ y__ -> x__{_MessageOptions'_unknownFields = y__})
+instance Control.DeepSeq.NFData MessageOptions where
+        rnf
+          = \ x__ ->
+              Control.DeepSeq.deepseq (_MessageOptions'_unknownFields x__)
+                (Control.DeepSeq.deepseq (_MessageOptions'messageSetWireFormat x__)
+                   (Control.DeepSeq.deepseq
+                      (_MessageOptions'noStandardDescriptorAccessor x__)
+                      (Control.DeepSeq.deepseq (_MessageOptions'deprecated x__)
+                         (Control.DeepSeq.deepseq (_MessageOptions'mapEntry x__)
+                            (Control.DeepSeq.deepseq (_MessageOptions'uninterpretedOption x__)
+                               (()))))))
 {- | Fields :
 
     * 'Proto.Google.Protobuf.Descriptor_Fields.name' @:: Lens' MethodDescriptorProto Data.Text.Text@
@@ -2957,7 +3219,12 @@ data MethodDescriptorProto = MethodDescriptorProto{_MethodDescriptorProto'name
                                                    !(Prelude.Maybe Prelude.Bool),
                                                    _MethodDescriptorProto'_unknownFields ::
                                                    !Data.ProtoLens.FieldSet}
-                           deriving (Prelude.Show, Prelude.Eq, Prelude.Ord)
+                           deriving (Prelude.Eq, Prelude.Ord)
+instance Prelude.Show MethodDescriptorProto where
+        showsPrec _ __x __s
+          = Prelude.showChar '{'
+              (Prelude.showString (Data.ProtoLens.showMessageShort __x)
+                 (Prelude.showChar '}' __s))
 instance Lens.Labels.HasLens' MethodDescriptorProto "name"
            (Data.Text.Text)
          where
@@ -3135,6 +3402,19 @@ instance Data.ProtoLens.Message MethodDescriptorProto where
         unknownFields
           = Lens.Family2.Unchecked.lens _MethodDescriptorProto'_unknownFields
               (\ x__ y__ -> x__{_MethodDescriptorProto'_unknownFields = y__})
+instance Control.DeepSeq.NFData MethodDescriptorProto where
+        rnf
+          = \ x__ ->
+              Control.DeepSeq.deepseq (_MethodDescriptorProto'_unknownFields x__)
+                (Control.DeepSeq.deepseq (_MethodDescriptorProto'name x__)
+                   (Control.DeepSeq.deepseq (_MethodDescriptorProto'inputType x__)
+                      (Control.DeepSeq.deepseq (_MethodDescriptorProto'outputType x__)
+                         (Control.DeepSeq.deepseq (_MethodDescriptorProto'options x__)
+                            (Control.DeepSeq.deepseq
+                               (_MethodDescriptorProto'clientStreaming x__)
+                               (Control.DeepSeq.deepseq
+                                  (_MethodDescriptorProto'serverStreaming x__)
+                                  (())))))))
 {- | Fields :
 
     * 'Proto.Google.Protobuf.Descriptor_Fields.deprecated' @:: Lens' MethodOptions Prelude.Bool@
@@ -3145,7 +3425,12 @@ data MethodOptions = MethodOptions{_MethodOptions'deprecated ::
                                    !(Prelude.Maybe Prelude.Bool),
                                    _MethodOptions'uninterpretedOption :: ![UninterpretedOption],
                                    _MethodOptions'_unknownFields :: !Data.ProtoLens.FieldSet}
-                   deriving (Prelude.Show, Prelude.Eq, Prelude.Ord)
+                   deriving (Prelude.Eq, Prelude.Ord)
+instance Prelude.Show MethodOptions where
+        showsPrec _ __x __s
+          = Prelude.showChar '{'
+              (Prelude.showString (Data.ProtoLens.showMessageShort __x)
+                 (Prelude.showChar '}' __s))
 instance Lens.Labels.HasLens' MethodOptions "deprecated"
            (Prelude.Bool)
          where
@@ -3202,6 +3487,13 @@ instance Data.ProtoLens.Message MethodOptions where
         unknownFields
           = Lens.Family2.Unchecked.lens _MethodOptions'_unknownFields
               (\ x__ y__ -> x__{_MethodOptions'_unknownFields = y__})
+instance Control.DeepSeq.NFData MethodOptions where
+        rnf
+          = \ x__ ->
+              Control.DeepSeq.deepseq (_MethodOptions'_unknownFields x__)
+                (Control.DeepSeq.deepseq (_MethodOptions'deprecated x__)
+                   (Control.DeepSeq.deepseq (_MethodOptions'uninterpretedOption x__)
+                      (())))
 {- | Fields :
 
     * 'Proto.Google.Protobuf.Descriptor_Fields.name' @:: Lens' OneofDescriptorProto Data.Text.Text@
@@ -3211,7 +3503,12 @@ data OneofDescriptorProto = OneofDescriptorProto{_OneofDescriptorProto'name
                                                  :: !(Prelude.Maybe Data.Text.Text),
                                                  _OneofDescriptorProto'_unknownFields ::
                                                  !Data.ProtoLens.FieldSet}
-                          deriving (Prelude.Show, Prelude.Eq, Prelude.Ord)
+                          deriving (Prelude.Eq, Prelude.Ord)
+instance Prelude.Show OneofDescriptorProto where
+        showsPrec _ __x __s
+          = Prelude.showChar '{'
+              (Prelude.showString (Data.ProtoLens.showMessageShort __x)
+                 (Prelude.showChar '}' __s))
 instance Lens.Labels.HasLens' OneofDescriptorProto "name"
            (Data.Text.Text)
          where
@@ -3250,6 +3547,11 @@ instance Data.ProtoLens.Message OneofDescriptorProto where
         unknownFields
           = Lens.Family2.Unchecked.lens _OneofDescriptorProto'_unknownFields
               (\ x__ y__ -> x__{_OneofDescriptorProto'_unknownFields = y__})
+instance Control.DeepSeq.NFData OneofDescriptorProto where
+        rnf
+          = \ x__ ->
+              Control.DeepSeq.deepseq (_OneofDescriptorProto'_unknownFields x__)
+                (Control.DeepSeq.deepseq (_OneofDescriptorProto'name x__) (()))
 {- | Fields :
 
     * 'Proto.Google.Protobuf.Descriptor_Fields.name' @:: Lens' ServiceDescriptorProto Data.Text.Text@
@@ -3266,7 +3568,12 @@ data ServiceDescriptorProto = ServiceDescriptorProto{_ServiceDescriptorProto'nam
                                                      !(Prelude.Maybe ServiceOptions),
                                                      _ServiceDescriptorProto'_unknownFields ::
                                                      !Data.ProtoLens.FieldSet}
-                            deriving (Prelude.Show, Prelude.Eq, Prelude.Ord)
+                            deriving (Prelude.Eq, Prelude.Ord)
+instance Prelude.Show ServiceDescriptorProto where
+        showsPrec _ __x __s
+          = Prelude.showChar '{'
+              (Prelude.showString (Data.ProtoLens.showMessageShort __x)
+                 (Prelude.showChar '}' __s))
 instance Lens.Labels.HasLens' ServiceDescriptorProto "name"
            (Data.Text.Text)
          where
@@ -3352,6 +3659,15 @@ instance Data.ProtoLens.Message ServiceDescriptorProto where
           = Lens.Family2.Unchecked.lens
               _ServiceDescriptorProto'_unknownFields
               (\ x__ y__ -> x__{_ServiceDescriptorProto'_unknownFields = y__})
+instance Control.DeepSeq.NFData ServiceDescriptorProto where
+        rnf
+          = \ x__ ->
+              Control.DeepSeq.deepseq
+                (_ServiceDescriptorProto'_unknownFields x__)
+                (Control.DeepSeq.deepseq (_ServiceDescriptorProto'name x__)
+                   (Control.DeepSeq.deepseq (_ServiceDescriptorProto'method x__)
+                      (Control.DeepSeq.deepseq (_ServiceDescriptorProto'options x__)
+                         (()))))
 {- | Fields :
 
     * 'Proto.Google.Protobuf.Descriptor_Fields.deprecated' @:: Lens' ServiceOptions Prelude.Bool@
@@ -3362,7 +3678,12 @@ data ServiceOptions = ServiceOptions{_ServiceOptions'deprecated ::
                                      !(Prelude.Maybe Prelude.Bool),
                                      _ServiceOptions'uninterpretedOption :: ![UninterpretedOption],
                                      _ServiceOptions'_unknownFields :: !Data.ProtoLens.FieldSet}
-                    deriving (Prelude.Show, Prelude.Eq, Prelude.Ord)
+                    deriving (Prelude.Eq, Prelude.Ord)
+instance Prelude.Show ServiceOptions where
+        showsPrec _ __x __s
+          = Prelude.showChar '{'
+              (Prelude.showString (Data.ProtoLens.showMessageShort __x)
+                 (Prelude.showChar '}' __s))
 instance Lens.Labels.HasLens' ServiceOptions "deprecated"
            (Prelude.Bool)
          where
@@ -3419,6 +3740,13 @@ instance Data.ProtoLens.Message ServiceOptions where
         unknownFields
           = Lens.Family2.Unchecked.lens _ServiceOptions'_unknownFields
               (\ x__ y__ -> x__{_ServiceOptions'_unknownFields = y__})
+instance Control.DeepSeq.NFData ServiceOptions where
+        rnf
+          = \ x__ ->
+              Control.DeepSeq.deepseq (_ServiceOptions'_unknownFields x__)
+                (Control.DeepSeq.deepseq (_ServiceOptions'deprecated x__)
+                   (Control.DeepSeq.deepseq (_ServiceOptions'uninterpretedOption x__)
+                      (())))
 {- | Fields :
 
     * 'Proto.Google.Protobuf.Descriptor_Fields.location' @:: Lens' SourceCodeInfo [SourceCodeInfo'Location]@
@@ -3426,7 +3754,12 @@ instance Data.ProtoLens.Message ServiceOptions where
 data SourceCodeInfo = SourceCodeInfo{_SourceCodeInfo'location ::
                                      ![SourceCodeInfo'Location],
                                      _SourceCodeInfo'_unknownFields :: !Data.ProtoLens.FieldSet}
-                    deriving (Prelude.Show, Prelude.Eq, Prelude.Ord)
+                    deriving (Prelude.Eq, Prelude.Ord)
+instance Prelude.Show SourceCodeInfo where
+        showsPrec _ __x __s
+          = Prelude.showChar '{'
+              (Prelude.showString (Data.ProtoLens.showMessageShort __x)
+                 (Prelude.showChar '}' __s))
 instance Lens.Labels.HasLens' SourceCodeInfo "location"
            ([SourceCodeInfo'Location])
          where
@@ -3456,6 +3789,11 @@ instance Data.ProtoLens.Message SourceCodeInfo where
         unknownFields
           = Lens.Family2.Unchecked.lens _SourceCodeInfo'_unknownFields
               (\ x__ y__ -> x__{_SourceCodeInfo'_unknownFields = y__})
+instance Control.DeepSeq.NFData SourceCodeInfo where
+        rnf
+          = \ x__ ->
+              Control.DeepSeq.deepseq (_SourceCodeInfo'_unknownFields x__)
+                (Control.DeepSeq.deepseq (_SourceCodeInfo'location x__) (()))
 {- | Fields :
 
     * 'Proto.Google.Protobuf.Descriptor_Fields.path' @:: Lens' SourceCodeInfo'Location [Data.Int.Int32]@
@@ -3478,7 +3816,12 @@ data SourceCodeInfo'Location = SourceCodeInfo'Location{_SourceCodeInfo'Location'
                                                        :: ![Data.Text.Text],
                                                        _SourceCodeInfo'Location'_unknownFields ::
                                                        !Data.ProtoLens.FieldSet}
-                             deriving (Prelude.Show, Prelude.Eq, Prelude.Ord)
+                             deriving (Prelude.Eq, Prelude.Ord)
+instance Prelude.Show SourceCodeInfo'Location where
+        showsPrec _ __x __s
+          = Prelude.showChar '{'
+              (Prelude.showString (Data.ProtoLens.showMessageShort __x)
+                 (Prelude.showChar '}' __s))
 instance Lens.Labels.HasLens' SourceCodeInfo'Location "path"
            ([Data.Int.Int32])
          where
@@ -3614,6 +3957,20 @@ instance Data.ProtoLens.Message SourceCodeInfo'Location where
           = Lens.Family2.Unchecked.lens
               _SourceCodeInfo'Location'_unknownFields
               (\ x__ y__ -> x__{_SourceCodeInfo'Location'_unknownFields = y__})
+instance Control.DeepSeq.NFData SourceCodeInfo'Location where
+        rnf
+          = \ x__ ->
+              Control.DeepSeq.deepseq
+                (_SourceCodeInfo'Location'_unknownFields x__)
+                (Control.DeepSeq.deepseq (_SourceCodeInfo'Location'path x__)
+                   (Control.DeepSeq.deepseq (_SourceCodeInfo'Location'span x__)
+                      (Control.DeepSeq.deepseq
+                         (_SourceCodeInfo'Location'leadingComments x__)
+                         (Control.DeepSeq.deepseq
+                            (_SourceCodeInfo'Location'trailingComments x__)
+                            (Control.DeepSeq.deepseq
+                               (_SourceCodeInfo'Location'leadingDetachedComments x__)
+                               (()))))))
 {- | Fields :
 
     * 'Proto.Google.Protobuf.Descriptor_Fields.name' @:: Lens' UninterpretedOption [UninterpretedOption'NamePart]@
@@ -3647,7 +4004,12 @@ data UninterpretedOption = UninterpretedOption{_UninterpretedOption'name
                                                !(Prelude.Maybe Data.Text.Text),
                                                _UninterpretedOption'_unknownFields ::
                                                !Data.ProtoLens.FieldSet}
-                         deriving (Prelude.Show, Prelude.Eq, Prelude.Ord)
+                         deriving (Prelude.Eq, Prelude.Ord)
+instance Prelude.Show UninterpretedOption where
+        showsPrec _ __x __s
+          = Prelude.showChar '{'
+              (Prelude.showString (Data.ProtoLens.showMessageShort __x)
+                 (Prelude.showChar '}' __s))
 instance Lens.Labels.HasLens' UninterpretedOption "name"
            ([UninterpretedOption'NamePart])
          where
@@ -3848,6 +4210,20 @@ instance Data.ProtoLens.Message UninterpretedOption where
         unknownFields
           = Lens.Family2.Unchecked.lens _UninterpretedOption'_unknownFields
               (\ x__ y__ -> x__{_UninterpretedOption'_unknownFields = y__})
+instance Control.DeepSeq.NFData UninterpretedOption where
+        rnf
+          = \ x__ ->
+              Control.DeepSeq.deepseq (_UninterpretedOption'_unknownFields x__)
+                (Control.DeepSeq.deepseq (_UninterpretedOption'name x__)
+                   (Control.DeepSeq.deepseq (_UninterpretedOption'identifierValue x__)
+                      (Control.DeepSeq.deepseq
+                         (_UninterpretedOption'positiveIntValue x__)
+                         (Control.DeepSeq.deepseq
+                            (_UninterpretedOption'negativeIntValue x__)
+                            (Control.DeepSeq.deepseq (_UninterpretedOption'doubleValue x__)
+                               (Control.DeepSeq.deepseq (_UninterpretedOption'stringValue x__)
+                                  (Control.DeepSeq.deepseq (_UninterpretedOption'aggregateValue x__)
+                                     (()))))))))
 {- | Fields :
 
     * 'Proto.Google.Protobuf.Descriptor_Fields.namePart' @:: Lens' UninterpretedOption'NamePart Data.Text.Text@
@@ -3859,7 +4235,12 @@ data UninterpretedOption'NamePart = UninterpretedOption'NamePart{_UninterpretedO
                                                                  :: !Prelude.Bool,
                                                                  _UninterpretedOption'NamePart'_unknownFields
                                                                  :: !Data.ProtoLens.FieldSet}
-                                  deriving (Prelude.Show, Prelude.Eq, Prelude.Ord)
+                                  deriving (Prelude.Eq, Prelude.Ord)
+instance Prelude.Show UninterpretedOption'NamePart where
+        showsPrec _ __x __s
+          = Prelude.showChar '{'
+              (Prelude.showString (Data.ProtoLens.showMessageShort __x)
+                 (Prelude.showChar '}' __s))
 instance Lens.Labels.HasLens' UninterpretedOption'NamePart
            "namePart"
            (Data.Text.Text)
@@ -3917,3 +4298,13 @@ instance Data.ProtoLens.Message UninterpretedOption'NamePart where
               _UninterpretedOption'NamePart'_unknownFields
               (\ x__ y__ ->
                  x__{_UninterpretedOption'NamePart'_unknownFields = y__})
+instance Control.DeepSeq.NFData UninterpretedOption'NamePart where
+        rnf
+          = \ x__ ->
+              Control.DeepSeq.deepseq
+                (_UninterpretedOption'NamePart'_unknownFields x__)
+                (Control.DeepSeq.deepseq
+                   (_UninterpretedOption'NamePart'namePart x__)
+                   (Control.DeepSeq.deepseq
+                      (_UninterpretedOption'NamePart'isExtension x__)
+                      (())))

@@ -6,9 +6,10 @@
 {-# OPTIONS_GHC -fno-warn-unused-imports#-}
 {-# OPTIONS_GHC -fno-warn-duplicate-exports#-}
 module Proto.Google.Protobuf.Compiler.Plugin
-       (CodeGeneratorRequest(..), CodeGeneratorResponse(..),
-        CodeGeneratorResponse'File(..))
+       (CodeGeneratorRequest(), CodeGeneratorResponse(),
+        CodeGeneratorResponse'File())
        where
+import qualified Control.DeepSeq
 import qualified Lens.Labels.Prism
 import qualified Prelude
 import qualified Data.Int
@@ -43,7 +44,12 @@ data CodeGeneratorRequest = CodeGeneratorRequest{_CodeGeneratorRequest'fileToGen
                                                  ![Proto.Google.Protobuf.Descriptor.FileDescriptorProto],
                                                  _CodeGeneratorRequest'_unknownFields ::
                                                  !Data.ProtoLens.FieldSet}
-                          deriving (Prelude.Show, Prelude.Eq, Prelude.Ord)
+                          deriving (Prelude.Eq, Prelude.Ord)
+instance Prelude.Show CodeGeneratorRequest where
+        showsPrec _ __x __s
+          = Prelude.showChar '{'
+              (Prelude.showString (Data.ProtoLens.showMessageShort __x)
+                 (Prelude.showChar '}' __s))
 instance Lens.Labels.HasLens' CodeGeneratorRequest "fileToGenerate"
            ([Data.Text.Text])
          where
@@ -120,6 +126,14 @@ instance Data.ProtoLens.Message CodeGeneratorRequest where
         unknownFields
           = Lens.Family2.Unchecked.lens _CodeGeneratorRequest'_unknownFields
               (\ x__ y__ -> x__{_CodeGeneratorRequest'_unknownFields = y__})
+instance Control.DeepSeq.NFData CodeGeneratorRequest where
+        rnf
+          = \ x__ ->
+              Control.DeepSeq.deepseq (_CodeGeneratorRequest'_unknownFields x__)
+                (Control.DeepSeq.deepseq (_CodeGeneratorRequest'fileToGenerate x__)
+                   (Control.DeepSeq.deepseq (_CodeGeneratorRequest'parameter x__)
+                      (Control.DeepSeq.deepseq (_CodeGeneratorRequest'protoFile x__)
+                         (()))))
 {- | Fields :
 
     * 'Proto.Google.Protobuf.Compiler.Plugin_Fields.error' @:: Lens' CodeGeneratorResponse Data.Text.Text@
@@ -132,7 +146,12 @@ data CodeGeneratorResponse = CodeGeneratorResponse{_CodeGeneratorResponse'error
                                                    ![CodeGeneratorResponse'File],
                                                    _CodeGeneratorResponse'_unknownFields ::
                                                    !Data.ProtoLens.FieldSet}
-                           deriving (Prelude.Show, Prelude.Eq, Prelude.Ord)
+                           deriving (Prelude.Eq, Prelude.Ord)
+instance Prelude.Show CodeGeneratorResponse where
+        showsPrec _ __x __s
+          = Prelude.showChar '{'
+              (Prelude.showString (Data.ProtoLens.showMessageShort __x)
+                 (Prelude.showChar '}' __s))
 instance Lens.Labels.HasLens' CodeGeneratorResponse "error"
            (Data.Text.Text)
          where
@@ -190,6 +209,12 @@ instance Data.ProtoLens.Message CodeGeneratorResponse where
         unknownFields
           = Lens.Family2.Unchecked.lens _CodeGeneratorResponse'_unknownFields
               (\ x__ y__ -> x__{_CodeGeneratorResponse'_unknownFields = y__})
+instance Control.DeepSeq.NFData CodeGeneratorResponse where
+        rnf
+          = \ x__ ->
+              Control.DeepSeq.deepseq (_CodeGeneratorResponse'_unknownFields x__)
+                (Control.DeepSeq.deepseq (_CodeGeneratorResponse'error x__)
+                   (Control.DeepSeq.deepseq (_CodeGeneratorResponse'file x__) (())))
 {- | Fields :
 
     * 'Proto.Google.Protobuf.Compiler.Plugin_Fields.name' @:: Lens' CodeGeneratorResponse'File Data.Text.Text@
@@ -207,7 +232,12 @@ data CodeGeneratorResponse'File = CodeGeneratorResponse'File{_CodeGeneratorRespo
                                                              !(Prelude.Maybe Data.Text.Text),
                                                              _CodeGeneratorResponse'File'_unknownFields
                                                              :: !Data.ProtoLens.FieldSet}
-                                deriving (Prelude.Show, Prelude.Eq, Prelude.Ord)
+                                deriving (Prelude.Eq, Prelude.Ord)
+instance Prelude.Show CodeGeneratorResponse'File where
+        showsPrec _ __x __s
+          = Prelude.showChar '{'
+              (Prelude.showString (Data.ProtoLens.showMessageShort __x)
+                 (Prelude.showChar '}' __s))
 instance Lens.Labels.HasLens' CodeGeneratorResponse'File "name"
            (Data.Text.Text)
          where
@@ -312,3 +342,13 @@ instance Data.ProtoLens.Message CodeGeneratorResponse'File where
               _CodeGeneratorResponse'File'_unknownFields
               (\ x__ y__ ->
                  x__{_CodeGeneratorResponse'File'_unknownFields = y__})
+instance Control.DeepSeq.NFData CodeGeneratorResponse'File where
+        rnf
+          = \ x__ ->
+              Control.DeepSeq.deepseq
+                (_CodeGeneratorResponse'File'_unknownFields x__)
+                (Control.DeepSeq.deepseq (_CodeGeneratorResponse'File'name x__)
+                   (Control.DeepSeq.deepseq
+                      (_CodeGeneratorResponse'File'insertionPoint x__)
+                      (Control.DeepSeq.deepseq (_CodeGeneratorResponse'File'content x__)
+                         (()))))

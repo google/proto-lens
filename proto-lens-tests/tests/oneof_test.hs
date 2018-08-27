@@ -75,13 +75,10 @@ main = testMain
         -- A oneof type and constructor that overlap with an enum
         trivial (Disambiguated'EnumCon' 42 :: Disambiguated'EnumType')
 
-        -- And we don't change the message or enum types and constructors.
-        trivial (Disambiguated'MessageTypeA
-                    {_Disambiguated'MessageTypeA'_unknownFields = []}
-                    :: Disambiguated'MessageTypeA)
-        trivial (Disambiguated'MessageTypeB
-                    {_Disambiguated'MessageTypeB'_unknownFields = []}
-                    :: Disambiguated'MessageTypeB)
+        -- And we don't change the types of messages, nor the types or
+        -- constructors of enums.
+        trivial (def :: Disambiguated'MessageTypeA)
+        trivial (def :: Disambiguated'MessageTypeB)
         trivial (Disambiguated'EnumCon :: Disambiguated'EnumType)
 
     , testCase "not disambiguated names" $ do
