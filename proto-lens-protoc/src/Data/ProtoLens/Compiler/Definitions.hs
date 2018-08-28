@@ -7,6 +7,7 @@
 -- | This module takes care of collecting all the definitions in a .proto file
 -- and assigning Haskell names to all of the defined things (messages, enums
 -- and field names).
+{-# LANGUAGE CPP #-}
 {-# LANGUAGE DeriveFunctor #-}
 {-# LANGUAGE GeneralizedNewtypeDeriving #-}
 {-# LANGUAGE OverloadedStrings #-}
@@ -39,7 +40,9 @@ import Data.Int (Int32)
 import Data.List (mapAccumL)
 import qualified Data.Map as Map
 import Data.Maybe (fromMaybe)
-import Data.Monoid
+#if !MIN_VERSION_base(4,11,0)
+import Data.Monoid ((<>))
+#endif
 import qualified Data.Semigroup as Semigroup
 import qualified Data.Set as Set
 import Data.String (IsString(..))

@@ -14,7 +14,7 @@ import Data.Monoid ((<>))
 import Proto.Proto3
     ( Foo
     , Foo'FooEnum(..)
-    , Foo'Sub(..)
+    , Foo'Sub
     , Strings
     )
 import Proto.Proto3_Fields

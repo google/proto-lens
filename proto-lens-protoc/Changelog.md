@@ -3,10 +3,18 @@
 ## v0.4
 - Split out `proto-lens-setup` and `proto-lens-runtime` into separate
   packages.
+- Hide the constructors and record fields of message types, and make `Show`
+  instances call `showMessageShort`.
+- Generate explicit `NFData` instances for each type.
+
+## v0.3.1.2
+- Bump the upper bound to `temporary-1.3`.
+- Fix warnings.
 
 ## v0.3.1.1
 - Fix management of generated files between Cabal components (#171).
 - Bump the lower bound on `base` to indicate we require `ghc>=8.0`.
+- Use autogen-modules. (#196)
 
 ## v0.3.1.0
 - Bump the dependency on `base` for `ghc-8.4.2`.
@@ -22,14 +30,11 @@
 - Don't generate Haskell modules if they won't be used. (#126)
 - Bundle enum pattern synonyms exports with their type. (#136)
 - Split the `Message` class into separate methods. (#139)
-- Refactor the `FieldDescriptorType. (#147)
+- Refactor the `FieldDescriptorType`. (#147)
 - Add a case to proto3 enums for unknown values. (#137)
 - Track consolidation of `proto-lens-descriptors` into `proto-lens`. (#140)
 - Generate service definitions using promoted datatypes. (#154)
 - Generate prisms for `oneof` message fields. (#160)
-- Build with `haskell-src-exts-1.20.*`. (#170)
-- Add Haddock comments to fields. (#172)
-- Don't unnecessarily touch files. (#177)
 
 ## v0.2.2.3
 - Don't camel-case message names.  This reverts behavior which was added

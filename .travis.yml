@@ -23,9 +23,9 @@ matrix:
     addons: {apt: {packages: [libgmp-dev]}}
   - env: BUILD=stack STACK='stack --resolver=lts-9.6'
     addons: {apt: {packages: [libgmp-dev]}}
-  - env: BUILD=stack STACK=stack # Use the resolver in stack.yaml
+  - env: BUILD=stack STACK=stack --resolver=11.22'
     addons: {apt: {packages: [libgmp-dev]}}
-  - env: BUILD=stack STACK='stack --resolver=nightly-2018-05-04'
+  - env: BUILD=stack STACK='stack'  # Use the resolver in stack.yaml
     addons: {apt: {packages: [libgmp-dev]}}
 
 before_install:
@@ -56,11 +56,14 @@ install:
 script:
   # Separate stack's build and test commands, since build by itself hits some
   # edge cases around custom Setup.hs script dependencies.
+  # Also build the tutorial, with proto-lens-* as extra-deps.  Note that
+  # since stack is not hermetic, the extra-deps for the tutorial reuse some
+  # build outputs from the regular build.
   - case "$BUILD" in
       stack)
         STACK_ARGS=(--haddock --no-haddock-deps --ghc-options="-Wall -Werror");
-        cd proto-lens-tutorial && $STACK build "${STACK_ARGS[@]}" && cd ..
-        $STACK build --bench --no-run-benchmarks "${STACK_ARGS[@]}" && $STACK test "${STACK_ARGS[@]}";;
+        $STACK build --bench --no-run-benchmarks "${STACK_ARGS[@]}" && $STACK test "${STACK_ARGS[@]}";
+        cd proto-lens-tutorial && $STACK build "${STACK_ARGS[@]}" && cd ..;;
       cabal)
         ./travis-cabal.sh;;
     esac

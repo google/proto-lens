@@ -3,10 +3,6 @@
 -- Use of this source code is governed by a BSD-style
 -- license that can be found in the LICENSE file or at
 -- https://developers.google.com/open-source/licenses/bsd
-{-# LANGUAGE StandaloneDeriving #-}
-{-# LANGUAGE DeriveGeneric #-}
-{-# LANGUAGE DeriveAnyClass #-}
-{-# OPTIONS_GHC -fno-warn-orphans #-}
 
 -- | A benchmark to measure the overhead of including a lot of unused fields
 -- in a proto message. Because protos are modeled as Haskell records, decoding
@@ -16,23 +12,12 @@
 module Main where
 
 import Data.ProtoLens.BenchmarkUtil (protoBenchmark, benchmarkMain)
-import GHC.Generics (Generic)
-import Control.DeepSeq (NFData)
 import Criterion.Main (Benchmark)
 import Lens.Family2 ((&), (.~))
 import Data.Int (Int32)
 import Data.ProtoLens.Message (defMessage)
 import Proto.UnusedFields
 import Proto.UnusedFields_Fields
-
--- These instances are required by Criterion to benchmark proto decoding.
-deriving instance Generic Foo
-
-deriving instance Generic FooWithUnusedFields
-
-deriving instance NFData Foo
-
-deriving instance NFData FooWithUnusedFields
 
 defaultNumInt32s :: Int
 defaultNumInt32s = 10000

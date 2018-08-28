@@ -5,6 +5,8 @@
 
 ## v0.3.0.2
 - Bump the lower bound on `base` to indicate we require `ghc>=8.0`.
+- Use autogen-modules. (#196)
+- Use OverloadedLabels internally, rather than the `_Fields` modules. (#198)
 
 ## v0.3.0.1
 - Bump the dependency on `base` for `ghc-8.4.2`.
