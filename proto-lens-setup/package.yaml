@@ -62,7 +62,7 @@ library:
     # TODO: once there's sufficient support from Stack and Cabal,
     # make this a build-tool dependency.
     - proto-lens-protoc == 0.4.*
-    - temporary == 1.2.*
+    - temporary >= 1.2 && < 1.4
     - text == 1.2.*
   exposed-modules:
     - Data.ProtoLens.Setup

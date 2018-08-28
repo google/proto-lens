@@ -7,6 +7,10 @@
   instances call `showMessageShort`.
 - Generate explicit `NFData` instances for each type.
 
+## v0.3.1.2
+- Bump the upper bound to `temporary-1.3`.
+- Fix warnings.
+
 ## v0.3.1.1
 - Fix management of generated files between Cabal components (#171).
 - Bump the lower bound on `base` to indicate we require `ghc>=8.0`.
