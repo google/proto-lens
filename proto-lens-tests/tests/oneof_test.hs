@@ -77,8 +77,8 @@ main = testMain
 
         -- And we don't change the types of messages, nor the types or
         -- constructors of enums.
-        trivial (def :: Disambiguated'MessageTypeA)
-        trivial (def :: Disambiguated'MessageTypeB)
+        trivial (defMessage :: Disambiguated'MessageTypeA)
+        trivial (defMessage :: Disambiguated'MessageTypeB)
         trivial (Disambiguated'EnumCon :: Disambiguated'EnumType)
 
     , testCase "not disambiguated names" $ do
