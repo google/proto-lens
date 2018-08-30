@@ -63,7 +63,7 @@ script:
       stack)
         STACK_ARGS=(--haddock --no-haddock-deps --ghc-options="-Wall -Werror");
         $STACK build --bench --no-run-benchmarks "${STACK_ARGS[@]}" && $STACK test "${STACK_ARGS[@]}" &&
-        cd proto-lens-tutorial && $STACK build "${STACK_ARGS[@]}" && cd ..;;
+        (cd proto-lens-tutorial && $STACK build "${STACK_ARGS[@]}");;
       cabal)
         ./travis-cabal.sh;;
     esac
