@@ -6,6 +6,8 @@
 - Hide the constructors and record fields of message types, and make `Show`
   instances call `showMessageShort`.
 - Generate explicit `NFData` instances for each type.
+- Track the change to `proto-lens`: Don't use `data-default` for
+  defaul proto values (#194).
 
 ## v0.3.1.2
 - Bump the upper bound to `temporary-1.3`.
