@@ -22,6 +22,13 @@ import qualified Lens.Labels
 import qualified Text.Read
 import qualified Proto.Google.Protobuf.Descriptor
 
+compilerVersion ::
+                forall f s a .
+                  (Prelude.Functor f, Lens.Labels.HasLens' s "compilerVersion" a) =>
+                  Lens.Family2.LensLike' f s a
+compilerVersion
+  = Lens.Labels.lensOf'
+      ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "compilerVersion")
 content ::
         forall f s a .
           (Prelude.Functor f, Lens.Labels.HasLens' s "content" a) =>
@@ -57,6 +64,22 @@ insertionPoint ::
 insertionPoint
   = Lens.Labels.lensOf'
       ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "insertionPoint")
+major ::
+      forall f s a .
+        (Prelude.Functor f, Lens.Labels.HasLens' s "major" a) =>
+        Lens.Family2.LensLike' f s a
+major
+  = Lens.Labels.lensOf'
+      ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "major")
+maybe'compilerVersion ::
+                      forall f s a .
+                        (Prelude.Functor f,
+                         Lens.Labels.HasLens' s "maybe'compilerVersion" a) =>
+                        Lens.Family2.LensLike' f s a
+maybe'compilerVersion
+  = Lens.Labels.lensOf'
+      ((Lens.Labels.proxy#) ::
+         (Lens.Labels.Proxy#) "maybe'compilerVersion")
 maybe'content ::
               forall f s a .
                 (Prelude.Functor f, Lens.Labels.HasLens' s "maybe'content" a) =>
@@ -80,6 +103,20 @@ maybe'insertionPoint
   = Lens.Labels.lensOf'
       ((Lens.Labels.proxy#) ::
          (Lens.Labels.Proxy#) "maybe'insertionPoint")
+maybe'major ::
+            forall f s a .
+              (Prelude.Functor f, Lens.Labels.HasLens' s "maybe'major" a) =>
+              Lens.Family2.LensLike' f s a
+maybe'major
+  = Lens.Labels.lensOf'
+      ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "maybe'major")
+maybe'minor ::
+            forall f s a .
+              (Prelude.Functor f, Lens.Labels.HasLens' s "maybe'minor" a) =>
+              Lens.Family2.LensLike' f s a
+maybe'minor
+  = Lens.Labels.lensOf'
+      ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "maybe'minor")
 maybe'name ::
            forall f s a .
              (Prelude.Functor f, Lens.Labels.HasLens' s "maybe'name" a) =>
@@ -94,6 +131,27 @@ maybe'parameter ::
 maybe'parameter
   = Lens.Labels.lensOf'
       ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "maybe'parameter")
+maybe'patch ::
+            forall f s a .
+              (Prelude.Functor f, Lens.Labels.HasLens' s "maybe'patch" a) =>
+              Lens.Family2.LensLike' f s a
+maybe'patch
+  = Lens.Labels.lensOf'
+      ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "maybe'patch")
+maybe'suffix ::
+             forall f s a .
+               (Prelude.Functor f, Lens.Labels.HasLens' s "maybe'suffix" a) =>
+               Lens.Family2.LensLike' f s a
+maybe'suffix
+  = Lens.Labels.lensOf'
+      ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "maybe'suffix")
+minor ::
+      forall f s a .
+        (Prelude.Functor f, Lens.Labels.HasLens' s "minor" a) =>
+        Lens.Family2.LensLike' f s a
+minor
+  = Lens.Labels.lensOf'
+      ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "minor")
 name ::
      forall f s a .
        (Prelude.Functor f, Lens.Labels.HasLens' s "name" a) =>
@@ -108,6 +166,13 @@ parameter ::
 parameter
   = Lens.Labels.lensOf'
       ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "parameter")
+patch ::
+      forall f s a .
+        (Prelude.Functor f, Lens.Labels.HasLens' s "patch" a) =>
+        Lens.Family2.LensLike' f s a
+patch
+  = Lens.Labels.lensOf'
+      ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "patch")
 protoFile ::
           forall f s a .
             (Prelude.Functor f, Lens.Labels.HasLens' s "protoFile" a) =>
@@ -115,3 +180,10 @@ protoFile ::
 protoFile
   = Lens.Labels.lensOf'
       ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "protoFile")
+suffix ::
+       forall f s a .
+         (Prelude.Functor f, Lens.Labels.HasLens' s "suffix" a) =>
+         Lens.Family2.LensLike' f s a
+suffix
+  = Lens.Labels.lensOf'
+      ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "suffix")

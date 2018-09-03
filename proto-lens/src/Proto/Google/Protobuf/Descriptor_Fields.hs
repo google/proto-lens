@@ -169,6 +169,13 @@ goPackage ::
 goPackage
   = Lens.Labels.lensOf'
       ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "goPackage")
+idempotencyLevel ::
+                 forall f s a .
+                   (Prelude.Functor f, Lens.Labels.HasLens' s "idempotencyLevel" a) =>
+                   Lens.Family2.LensLike' f s a
+idempotencyLevel
+  = Lens.Labels.lensOf'
+      ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "idempotencyLevel")
 identifierValue ::
                 forall f s a .
                   (Prelude.Functor f, Lens.Labels.HasLens' s "identifierValue" a) =>
@@ -408,6 +415,15 @@ maybe'goPackage ::
 maybe'goPackage
   = Lens.Labels.lensOf'
       ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "maybe'goPackage")
+maybe'idempotencyLevel ::
+                       forall f s a .
+                         (Prelude.Functor f,
+                          Lens.Labels.HasLens' s "maybe'idempotencyLevel" a) =>
+                         Lens.Family2.LensLike' f s a
+maybe'idempotencyLevel
+  = Lens.Labels.lensOf'
+      ((Lens.Labels.proxy#) ::
+         (Lens.Labels.Proxy#) "maybe'idempotencyLevel")
 maybe'identifierValue ::
                       forall f s a .
                         (Prelude.Functor f,
@@ -615,6 +631,41 @@ maybe'packed ::
 maybe'packed
   = Lens.Labels.lensOf'
       ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "maybe'packed")
+maybe'phpClassPrefix ::
+                     forall f s a .
+                       (Prelude.Functor f,
+                        Lens.Labels.HasLens' s "maybe'phpClassPrefix" a) =>
+                       Lens.Family2.LensLike' f s a
+maybe'phpClassPrefix
+  = Lens.Labels.lensOf'
+      ((Lens.Labels.proxy#) ::
+         (Lens.Labels.Proxy#) "maybe'phpClassPrefix")
+maybe'phpGenericServices ::
+                         forall f s a .
+                           (Prelude.Functor f,
+                            Lens.Labels.HasLens' s "maybe'phpGenericServices" a) =>
+                           Lens.Family2.LensLike' f s a
+maybe'phpGenericServices
+  = Lens.Labels.lensOf'
+      ((Lens.Labels.proxy#) ::
+         (Lens.Labels.Proxy#) "maybe'phpGenericServices")
+maybe'phpMetadataNamespace ::
+                           forall f s a .
+                             (Prelude.Functor f,
+                              Lens.Labels.HasLens' s "maybe'phpMetadataNamespace" a) =>
+                             Lens.Family2.LensLike' f s a
+maybe'phpMetadataNamespace
+  = Lens.Labels.lensOf'
+      ((Lens.Labels.proxy#) ::
+         (Lens.Labels.Proxy#) "maybe'phpMetadataNamespace")
+maybe'phpNamespace ::
+                   forall f s a .
+                     (Prelude.Functor f,
+                      Lens.Labels.HasLens' s "maybe'phpNamespace" a) =>
+                     Lens.Family2.LensLike' f s a
+maybe'phpNamespace
+  = Lens.Labels.lensOf'
+      ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "maybe'phpNamespace")
 maybe'positiveIntValue ::
                        forall f s a .
                          (Prelude.Functor f,
@@ -633,6 +684,14 @@ maybe'pyGenericServices
   = Lens.Labels.lensOf'
       ((Lens.Labels.proxy#) ::
          (Lens.Labels.Proxy#) "maybe'pyGenericServices")
+maybe'rubyPackage ::
+                  forall f s a .
+                    (Prelude.Functor f,
+                     Lens.Labels.HasLens' s "maybe'rubyPackage" a) =>
+                    Lens.Family2.LensLike' f s a
+maybe'rubyPackage
+  = Lens.Labels.lensOf'
+      ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "maybe'rubyPackage")
 maybe'serverStreaming ::
                       forall f s a .
                         (Prelude.Functor f,
@@ -673,6 +732,14 @@ maybe'stringValue ::
 maybe'stringValue
   = Lens.Labels.lensOf'
       ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "maybe'stringValue")
+maybe'swiftPrefix ::
+                  forall f s a .
+                    (Prelude.Functor f,
+                     Lens.Labels.HasLens' s "maybe'swiftPrefix" a) =>
+                    Lens.Family2.LensLike' f s a
+maybe'swiftPrefix
+  = Lens.Labels.lensOf'
+      ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "maybe'swiftPrefix")
 maybe'syntax ::
              forall f s a .
                (Prelude.Functor f, Lens.Labels.HasLens' s "maybe'syntax" a) =>
@@ -840,6 +907,37 @@ path ::
 path
   = Lens.Labels.lensOf'
       ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "path")
+phpClassPrefix ::
+               forall f s a .
+                 (Prelude.Functor f, Lens.Labels.HasLens' s "phpClassPrefix" a) =>
+                 Lens.Family2.LensLike' f s a
+phpClassPrefix
+  = Lens.Labels.lensOf'
+      ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "phpClassPrefix")
+phpGenericServices ::
+                   forall f s a .
+                     (Prelude.Functor f,
+                      Lens.Labels.HasLens' s "phpGenericServices" a) =>
+                     Lens.Family2.LensLike' f s a
+phpGenericServices
+  = Lens.Labels.lensOf'
+      ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "phpGenericServices")
+phpMetadataNamespace ::
+                     forall f s a .
+                       (Prelude.Functor f,
+                        Lens.Labels.HasLens' s "phpMetadataNamespace" a) =>
+                       Lens.Family2.LensLike' f s a
+phpMetadataNamespace
+  = Lens.Labels.lensOf'
+      ((Lens.Labels.proxy#) ::
+         (Lens.Labels.Proxy#) "phpMetadataNamespace")
+phpNamespace ::
+             forall f s a .
+               (Prelude.Functor f, Lens.Labels.HasLens' s "phpNamespace" a) =>
+               Lens.Family2.LensLike' f s a
+phpNamespace
+  = Lens.Labels.lensOf'
+      ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "phpNamespace")
 positiveIntValue ::
                  forall f s a .
                    (Prelude.Functor f, Lens.Labels.HasLens' s "positiveIntValue" a) =>
@@ -876,6 +974,13 @@ reservedRange ::
 reservedRange
   = Lens.Labels.lensOf'
       ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "reservedRange")
+rubyPackage ::
+            forall f s a .
+              (Prelude.Functor f, Lens.Labels.HasLens' s "rubyPackage" a) =>
+              Lens.Family2.LensLike' f s a
+rubyPackage
+  = Lens.Labels.lensOf'
+      ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "rubyPackage")
 serverStreaming ::
                 forall f s a .
                   (Prelude.Functor f, Lens.Labels.HasLens' s "serverStreaming" a) =>
@@ -925,6 +1030,13 @@ stringValue ::
 stringValue
   = Lens.Labels.lensOf'
       ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "stringValue")
+swiftPrefix ::
+            forall f s a .
+              (Prelude.Functor f, Lens.Labels.HasLens' s "swiftPrefix" a) =>
+              Lens.Family2.LensLike' f s a
+swiftPrefix
+  = Lens.Labels.lensOf'
+      ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "swiftPrefix")
 syntax ::
        forall f s a .
          (Prelude.Functor f, Lens.Labels.HasLens' s "syntax" a) =>
