@@ -4,7 +4,7 @@
 {-# LANGUAGE TypeApplications #-}
 module Main where
 
-import Data.Default.Class (Default(def))
+import Data.ProtoLens (Message, defMessage)
 import Lens.Labels (Lens', view, set)
 import Test.Framework.Providers.HUnit (testCase)
 import Test.HUnit ((@=?))
@@ -30,9 +30,9 @@ main = testMain
 -- (In this test, we're checking that the sub-field type got imported
 -- correctly from another file.)
 testField
-    :: forall a b . (Default a, Default b, Eq b, Show b)
+    :: forall a b . (Message a, Message b, Eq b, Show b)
     => Lens' a b -> IO ()
-testField f = def @=? view f (set f def def)
+testField f = defMessage @=? view f (set f defMessage defMessage)
 
 testFoo :: Test
 testFoo = testCase "testFoo" $ do
@@ -40,8 +40,8 @@ testFoo = testCase "testFoo" $ do
     testField @Imports.Foo @Nested.A'B #b
     -- Check that it uses the (proto2 non-zero) default values which were
     -- part of a different module:
-    Enum.BAR5 @=? view #bar (def :: Imports.Foo)
-    Enum.Foo'BAZ4 @=? view #baz (def :: Imports.Foo)
+    Enum.BAR5 @=? view #bar (defMessage :: Imports.Foo)
+    Enum.Foo'BAZ4 @=? view #baz (defMessage :: Imports.Foo)
 
 testUseDep :: Test
 testUseDep = testCase "testUseDep" $ do

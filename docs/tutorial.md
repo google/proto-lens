@@ -42,8 +42,9 @@ Notice `_Foo'_unknownFields :: !Data.ProtoLens.FieldSet`; it stores fields that 
 Instances generated are:
 
 * `Lens.Labels.HasLens` and `Lens.Labels.HasLens'` are for overloading field names (see [Field Overloading](#field-overloading).
-* `Data.Default.Class.Default` for having [default message values](https://developers.google.com/protocol-buffers/docs/proto3#default).
-* `Data.ProtoLens.Message` for enabling serialization by providing reflection of all of the fields that may be used by this type.
+* `Data.ProtoLens.Message` for having [default message values] and enabling serialization by providing reflection of all of the fields that may be used by this type.
+
+[default message values]: https://developers.google.com/protocol-buffers/docs/proto3#default
 
 ## Oneof Generation
 
@@ -102,7 +103,7 @@ accessBaz foo = foo
 
 -- | Creates a 'Foo' with an incoming 'Int32'
 createFoo :: Int32 -> Foo
-createFoo i = def & maybe'bar .~ (_Just # _Foo'Baz # i)
+createFoo i = defMessage & maybe'bar .~ (_Just # _Foo'Baz # i)
 
 -- | Sets a new `bippy` value
 updateFoo :: String -> Foo -> Foo
@@ -148,7 +149,6 @@ Instances generated are:
 * `Data.ProtoLens.MessageEnum` for enabling safe decoding.
 * `Prelude.Bounded` where `maxBound` is the maximum numbered field, and `minBound` is the minimum.
 * `Prelude.Enum` where the numbering of the fields dictates the enumeration.
-* `Data.Default.Class.Default` where the default value is `minBound`.
 * `Data.ProtoLens.FieldDefault` same as `Default`.
 
 ## Field Overloading
@@ -194,7 +194,8 @@ import Proto.Foo        as P
 import Proto.Foo_Fields as P
 
 myBar :: P.Bar
-myBar = def & P.baz   .~ 42
+myBar = defMessage
+            & P.baz   .~ 42
             & P.bippy .~ "querty"
 
 main :: IO ()
@@ -210,7 +211,8 @@ import Microlens             ((^.))
 import Proto.Foo          as P
 
 myBar :: P.Bar
-myBar = def & #baz   .~ 42
+myBar = defMessage
+            & #baz   .~ 42
             & #bippy .~ "querty"
 
 main :: IO ()
@@ -319,7 +321,7 @@ message Foo {
 we can end up doing the following:
 ``` haskell
 fooVal :: P.Foo
-fooVal = def & P.maybe'baz ?~ 42
+fooVal = defMessage & P.maybe'baz ?~ 42
 
 fooVal' :: P.Foo
 fooVal' = fooVal & P.maybe'bippy .~ Nothing

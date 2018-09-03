@@ -14,7 +14,7 @@ import Data.ProtoLens.BenchmarkUtil (protoBenchmark, benchmarkMain)
 import Criterion.Main (Benchmark)
 import Data.Text (Text)
 import Lens.Family ((&), (.~))
-import Data.ProtoLens.Message (def)
+import Data.ProtoLens.Message (defMessage)
 import Proto.Nested
 import Proto.Nested_Fields
 
@@ -29,13 +29,13 @@ strValue = "foo"
 
 populateFlat :: Int -> FooFlat
 populateFlat n =
-    def & (intField .~ replicate n intValue) .
+    defMessage & (intField .~ replicate n intValue) .
     (strField .~ replicate n strValue)
 
 populateNested :: Int -> FooNested
-populateNested n = def & sub .~ replicate n subMessage
+populateNested n = defMessage & sub .~ replicate n subMessage
   where
-    subMessage = def & (intField .~ intValue) . (strField .~ strValue)
+    subMessage = defMessage & (intField .~ intValue) . (strField .~ strValue)
 
 benchmaker :: Int -> [Benchmark]
 benchmaker size =

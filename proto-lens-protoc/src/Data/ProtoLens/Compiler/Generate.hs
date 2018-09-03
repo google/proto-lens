@@ -115,7 +115,7 @@ generateModule modName imports syntaxType modifyImport definitions importedEnv s
     sharedImports = map (modifyImport . importSimple)
               [ "Prelude", "Data.Int", "Data.Word"
               , "Data.ProtoLens", "Data.ProtoLens.Message.Enum", "Data.ProtoLens.Service.Types"
-              , "Lens.Family2", "Lens.Family2.Unchecked", "Data.Default.Class"
+              , "Lens.Family2", "Lens.Family2.Unchecked"
               , "Data.Text",  "Data.Map", "Data.ByteString", "Data.ByteString.Char8"
               , "Lens.Labels", "Text.Read"
               ]
@@ -301,26 +301,8 @@ generateMessageDecls fieldModName syntaxType env protoName info =
     , let sym = promoteSymbol $ lensSymbol i
     ]
     ++
-    -- instance Data.Default.Class.Default Bar where
-    [ uncommented $ instDecl [] ("Data.Default.Class.Default" `ihApp` [dataType])
-        -- def = Bar { _Bar_foo = 0 }
-        [
-            [ match "def" []
-                $ recConstr (unQual dataName) $
-                      [ fieldUpdate (unQual $ haskellRecordFieldName $ plainFieldName f)
-                            (hsFieldDefault syntaxType env (fieldDescriptor f))
-                      | f <- messageFields info
-                      ] ++
-                      [ fieldUpdate (unQual $ haskellRecordFieldName $ oneofFieldName o)
-                            "Prelude.Nothing"
-                      | o <- messageOneofFields info
-                      ] ++
-                      [ fieldUpdate (unQual $ messageUnknownFields info)
-                            "[]"]
-            ]
-        ]
     -- instance Message.Message Bar where
-    , uncommented $ instDecl [] ("Data.ProtoLens.Message" `ihApp` [dataType])
+    [ uncommented $ instDecl [] ("Data.ProtoLens.Message" `ihApp` [dataType])
         $ messageInstance syntaxType env protoName info
     -- instance NFData Bar where
     , uncommented $ instDecl [] ("Control.DeepSeq.NFData" `ihApp` [dataType])
@@ -532,10 +514,6 @@ generateEnumDecls Proto3 info =
             "Data.ProtoLens.Message.Enum.messageEnumFromThenTo"
         ]
 
-    -- instance Data.Default.Class.Default Foo where
-    --   def = FirstEnumValue
-    , instDecl [] ("Data.Default.Class.Default" `ihApp` [dataType])
-        [[match "def" [] defaultCon]]
     -- instance Data.ProtoLens.FieldDefault Foo where
     --   fieldDefault = FirstEnumValue
     , instDecl [] ("Data.ProtoLens.FieldDefault" `ihApp` [dataType])
@@ -615,10 +593,6 @@ generateEnumDecls Proto2 info =
     [ dataDecl dataName
         [conDecl n [] | n <- constructorNames]
         $ deriving' ["Prelude.Show", "Prelude.Eq", "Prelude.Ord"]
-    -- instance Data.Default.Class.Default Foo where
-    --   def = FirstEnumValue
-    , instDecl [] ("Data.Default.Class.Default" `ihApp` [dataType])
-        [[match "def" [] defaultCon]]
     -- instance Data.ProtoLens.FieldDefault Foo where
     --   fieldDefault = FirstEnumValue
     , instDecl [] ("Data.ProtoLens.FieldDefault" `ihApp` [dataType])
@@ -968,10 +942,10 @@ hsFieldDefault syntaxType env fd
 
 hsFieldValueDefault :: Env QName -> FieldDescriptorProto -> Exp
 hsFieldValueDefault env fd = case fd ^. type' of
-    FieldDescriptorProto'TYPE_MESSAGE -> "Data.Default.Class.def"
-    FieldDescriptorProto'TYPE_GROUP -> "Data.Default.Class.def"
+    FieldDescriptorProto'TYPE_MESSAGE -> "Data.ProtoLens.defMessage"
+    FieldDescriptorProto'TYPE_GROUP -> "Data.ProtoLens.defMessage"
     FieldDescriptorProto'TYPE_ENUM
-        | T.null def -> "Data.Default.Class.def"
+        | T.null def -> "Data.ProtoLens.fieldDefault"
         | Enum e <- definedFieldType fd env
         , Just v <- List.lookup def [ (enumValueDescriptor v ^. name, enumValueName v)
                                     | v <- enumValues e
@@ -1066,6 +1040,19 @@ messageInstance syntaxType env protoName m =
           let' (map (fieldDescriptorVarBind $ messageName m) $ fields)
               $ "Data.Map.fromList" @@ list fieldsByTag ]
     , [ match "unknownFields" [] $ rawFieldAccessor (unQual $ messageUnknownFields m) ]
+    , [ match "defMessage" []
+           $ recConstr (unQual $ messageName m) $
+                  [ fieldUpdate (unQual $ haskellRecordFieldName $ plainFieldName f)
+                        (hsFieldDefault syntaxType env (fieldDescriptor f))
+                  | f <- messageFields m
+                  ] ++
+                  [ fieldUpdate (unQual $ haskellRecordFieldName $ oneofFieldName o)
+                        "Prelude.Nothing"
+                  | o <- messageOneofFields m
+                  ] ++
+                  [ fieldUpdate (unQual $ messageUnknownFields m)
+                        "[]"]
+      ]
     ]
   where
     fieldsByTag =

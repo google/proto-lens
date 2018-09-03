@@ -105,8 +105,9 @@ pprintField reg msg (FieldDescriptor name typeDescr accessor)
         -- TODO: better printing for packed fields
         RepeatedField _ f -> msg ^. f
         MapField k v f -> pairToMsg <$> Map.assocs (msg ^. f)
-          where pairToMsg (x,y) = def & k .~ x
-                                      & v .~ y
+          where pairToMsg (x,y) = defMessage
+                                    & k .~ x
+                                    & v .~ y
 
 pprintFieldValue :: Registry -> String -> FieldTypeDescriptor value -> value -> Doc
 pprintFieldValue reg name field@(MessageField MessageType) m
@@ -222,7 +223,7 @@ buildMessage reg fields
     | missing <- missingFields (Proxy @msg) fields, not $ null missing
         = Left $ "Missing fields " ++ show missing
     | otherwise = reverseRepeatedFields fieldsByTag
-                      <$> buildMessageFromDescriptor reg def fields
+                      <$> buildMessageFromDescriptor reg defMessage fields
 
 missingFields :: forall msg . Message msg => Proxy msg -> Parser.Message -> [String]
 missingFields _ = Set.toList . foldl' deleteField requiredFieldNames
@@ -283,8 +284,9 @@ makeValue name reg field@(MessageField MessageType) (Parser.MessageValue (Just t
           Just (SomeMessageType (Proxy :: Proxy value')) ->
             case buildMessage reg x :: Either String value' of
               Left err -> Left err
-              Right value' -> Right (def & anyTypeUrlLens .~ typeUri
-                                         & anyValueLens .~ encodeMessage value')
+              Right value' -> Right (defMessage
+                                        & anyTypeUrlLens .~ typeUri
+                                        & anyValueLens .~ encodeMessage value')
     | otherwise = Left ("Type mismatch parsing explicitly typed message. Expected " ++
                         show (messageName (Proxy @value))  ++
                         ", got " ++ show typeUri)

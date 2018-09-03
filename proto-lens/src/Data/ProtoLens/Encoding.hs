@@ -55,7 +55,7 @@ decodeMessage input = parseOnly (parseMessage endOfInput) input
 -- the case of a group, and end-of-input otherwise).
 parseMessage :: forall msg . Message msg => Parser () -> Parser msg
 parseMessage end = (Parse.<?> T.unpack (messageName (Proxy @msg))) $ do
-    (msg, unsetFields) <- loop def requiredFields
+    (msg, unsetFields) <- loop defMessage requiredFields
     if Map.null unsetFields
         then return $ over unknownFields reverse
                     $ reverseRepeatedFields fields msg
@@ -227,7 +227,9 @@ messageFieldToVals tag (FieldDescriptor _ typeDescriptor accessor) msg =
             RepeatedField Unpacked f -> concatMap embed (msg ^. f)
             RepeatedField Packed f -> embedPacked (msg ^. f)
             MapField keyLens valueLens f ->
-                concatMap (\(k, v) -> embed $ def & set keyLens k & set valueLens v)
+                concatMap (\(k, v) -> embed $ defMessage
+                                                & set keyLens k
+                                                & set valueLens v)
                     $ Map.toList (msg ^. f)
 
 data FieldWireType value where

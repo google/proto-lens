@@ -15,7 +15,6 @@ module Data.ProtoLens.Discrimination
 import Data.Bits ((.|.), shift)
 import qualified Data.ByteString as B
 import qualified Data.ByteString.Unsafe as B (unsafeIndex)
-import Data.Default (Default(def))
 import Data.Foldable (foldMap)
 import Data.Functor.Contravariant
     ( Contravariant(contramap)
@@ -42,6 +41,8 @@ import Data.ProtoLens.Message
     ( FieldDescriptor(FieldDescriptor)
     , FieldTypeDescriptor(..)
     , FieldAccessor(..)
+    , Message
+    , defMessage
     )
 
 -- | Sort values according to a Foldable of field descriptors.
@@ -126,7 +127,7 @@ discFieldSet discList disc32 disc64 discBS discInt =
 -- This should be identical to sorting @Map key value@s using the 'Ord' of
 -- @key@ and the 'Message' of value.
 discProtoMapAssocs
-    :: forall f entry key value. (Contravariant f, Default entry)
+    :: forall f entry key value. (Contravariant f, Message entry)
     => (forall a. f a -> f [a])
     -> f entry
     -> Lens' entry key
@@ -136,7 +137,7 @@ discProtoMapAssocs discList c key value =
     discMapAssocs discList sortAssocViaProtobuf
   where
     sortAssocViaProtobuf =
-      (\(k, v) -> (def :: entry) & key .~ k & value .~ v) >$< c
+      (\(k, v) -> (defMessage :: entry) & key .~ k & value .~ v) >$< c
 
 -- Sort on a field given a Sort of that field and an accessor for it.
 discFieldAccessor

@@ -19,7 +19,6 @@ import qualified Data.ProtoLens.Message.Enum
 import qualified Data.ProtoLens.Service.Types
 import qualified Lens.Family2
 import qualified Lens.Family2.Unchecked
-import qualified Data.Default.Class
 import qualified Data.Text
 import qualified Data.Map
 import qualified Data.ByteString
@@ -44,7 +43,7 @@ data CodeGeneratorRequest = CodeGeneratorRequest{_CodeGeneratorRequest'fileToGen
                                                  ![Proto.Google.Protobuf.Descriptor.FileDescriptorProto],
                                                  _CodeGeneratorRequest'_unknownFields ::
                                                  !Data.ProtoLens.FieldSet}
-                          deriving (Prelude.Eq, Prelude.Ord)
+                              deriving (Prelude.Eq, Prelude.Ord)
 instance Prelude.Show CodeGeneratorRequest where
         showsPrec _ __x __s
           = Prelude.showChar '{'
@@ -83,12 +82,6 @@ instance Lens.Labels.HasLens' CodeGeneratorRequest "protoFile"
               (Lens.Family2.Unchecked.lens _CodeGeneratorRequest'protoFile
                  (\ x__ y__ -> x__{_CodeGeneratorRequest'protoFile = y__}))
               Prelude.id
-instance Data.Default.Class.Default CodeGeneratorRequest where
-        def
-          = CodeGeneratorRequest{_CodeGeneratorRequest'fileToGenerate = [],
-                                 _CodeGeneratorRequest'parameter = Prelude.Nothing,
-                                 _CodeGeneratorRequest'protoFile = [],
-                                 _CodeGeneratorRequest'_unknownFields = ([])}
 instance Data.ProtoLens.Message CodeGeneratorRequest where
         messageName _
           = Data.Text.pack "google.protobuf.compiler.CodeGeneratorRequest"
@@ -126,6 +119,11 @@ instance Data.ProtoLens.Message CodeGeneratorRequest where
         unknownFields
           = Lens.Family2.Unchecked.lens _CodeGeneratorRequest'_unknownFields
               (\ x__ y__ -> x__{_CodeGeneratorRequest'_unknownFields = y__})
+        defMessage
+          = CodeGeneratorRequest{_CodeGeneratorRequest'fileToGenerate = [],
+                                 _CodeGeneratorRequest'parameter = Prelude.Nothing,
+                                 _CodeGeneratorRequest'protoFile = [],
+                                 _CodeGeneratorRequest'_unknownFields = ([])}
 instance Control.DeepSeq.NFData CodeGeneratorRequest where
         rnf
           = \ x__ ->
@@ -146,7 +144,7 @@ data CodeGeneratorResponse = CodeGeneratorResponse{_CodeGeneratorResponse'error
                                                    ![CodeGeneratorResponse'File],
                                                    _CodeGeneratorResponse'_unknownFields ::
                                                    !Data.ProtoLens.FieldSet}
-                           deriving (Prelude.Eq, Prelude.Ord)
+                               deriving (Prelude.Eq, Prelude.Ord)
 instance Prelude.Show CodeGeneratorResponse where
         showsPrec _ __x __s
           = Prelude.showChar '{'
@@ -176,12 +174,6 @@ instance Lens.Labels.HasLens' CodeGeneratorResponse "file"
               (Lens.Family2.Unchecked.lens _CodeGeneratorResponse'file
                  (\ x__ y__ -> x__{_CodeGeneratorResponse'file = y__}))
               Prelude.id
-instance Data.Default.Class.Default CodeGeneratorResponse where
-        def
-          = CodeGeneratorResponse{_CodeGeneratorResponse'error =
-                                    Prelude.Nothing,
-                                  _CodeGeneratorResponse'file = [],
-                                  _CodeGeneratorResponse'_unknownFields = ([])}
 instance Data.ProtoLens.Message CodeGeneratorResponse where
         messageName _
           = Data.Text.pack "google.protobuf.compiler.CodeGeneratorResponse"
@@ -209,6 +201,11 @@ instance Data.ProtoLens.Message CodeGeneratorResponse where
         unknownFields
           = Lens.Family2.Unchecked.lens _CodeGeneratorResponse'_unknownFields
               (\ x__ y__ -> x__{_CodeGeneratorResponse'_unknownFields = y__})
+        defMessage
+          = CodeGeneratorResponse{_CodeGeneratorResponse'error =
+                                    Prelude.Nothing,
+                                  _CodeGeneratorResponse'file = [],
+                                  _CodeGeneratorResponse'_unknownFields = ([])}
 instance Control.DeepSeq.NFData CodeGeneratorResponse where
         rnf
           = \ x__ ->
@@ -232,7 +229,7 @@ data CodeGeneratorResponse'File = CodeGeneratorResponse'File{_CodeGeneratorRespo
                                                              !(Prelude.Maybe Data.Text.Text),
                                                              _CodeGeneratorResponse'File'_unknownFields
                                                              :: !Data.ProtoLens.FieldSet}
-                                deriving (Prelude.Eq, Prelude.Ord)
+                                    deriving (Prelude.Eq, Prelude.Ord)
 instance Prelude.Show CodeGeneratorResponse'File where
         showsPrec _ __x __s
           = Prelude.showChar '{'
@@ -294,14 +291,6 @@ instance Lens.Labels.HasLens' CodeGeneratorResponse'File
               (Lens.Family2.Unchecked.lens _CodeGeneratorResponse'File'content
                  (\ x__ y__ -> x__{_CodeGeneratorResponse'File'content = y__}))
               Prelude.id
-instance Data.Default.Class.Default CodeGeneratorResponse'File
-         where
-        def
-          = CodeGeneratorResponse'File{_CodeGeneratorResponse'File'name =
-                                         Prelude.Nothing,
-                                       _CodeGeneratorResponse'File'insertionPoint = Prelude.Nothing,
-                                       _CodeGeneratorResponse'File'content = Prelude.Nothing,
-                                       _CodeGeneratorResponse'File'_unknownFields = ([])}
 instance Data.ProtoLens.Message CodeGeneratorResponse'File where
         messageName _
           = Data.Text.pack
@@ -342,6 +331,12 @@ instance Data.ProtoLens.Message CodeGeneratorResponse'File where
               _CodeGeneratorResponse'File'_unknownFields
               (\ x__ y__ ->
                  x__{_CodeGeneratorResponse'File'_unknownFields = y__})
+        defMessage
+          = CodeGeneratorResponse'File{_CodeGeneratorResponse'File'name =
+                                         Prelude.Nothing,
+                                       _CodeGeneratorResponse'File'insertionPoint = Prelude.Nothing,
+                                       _CodeGeneratorResponse'File'content = Prelude.Nothing,
+                                       _CodeGeneratorResponse'File'_unknownFields = ([])}
 instance Control.DeepSeq.NFData CodeGeneratorResponse'File where
         rnf
           = \ x__ ->

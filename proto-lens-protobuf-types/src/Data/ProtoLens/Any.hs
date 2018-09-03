@@ -17,7 +17,7 @@ import Data.Text (Text)
 import Data.Typeable (Typeable)
 import Data.ProtoLens
     ( decodeMessage
-    , def
+    , defMessage
     , encodeMessage
     , Message(..)
     )
@@ -36,7 +36,8 @@ googleApisPrefix = "type.googleapis.com"
 -- | Packs the given message into an 'Any' using the given type URL prefix.
 packWithPrefix :: forall a . Message a => Text -> a -> Any
 packWithPrefix prefix x =
-    def & #typeUrl .~ (prefix <> "/" <> name)
+    defMessage
+        & #typeUrl .~ (prefix <> "/" <> name)
         & #value .~ encodeMessage x
   where
     name = messageName (Proxy @a)

@@ -12,7 +12,7 @@ import Test.HUnit
 import Data.ProtoLens.TestUtil
 
 defFoo :: Foo
-defFoo = def
+defFoo = defMessage
 
 main :: IO ()
 main = testMain
@@ -57,10 +57,10 @@ main = testMain
 
     , testCase "dupe field names" $
         Just (DupeFieldNames'Baz 42) @=?
-            view maybe'bar (def & baz .~ 42 :: DupeFieldNames)
+            view maybe'bar (defMessage & baz .~ 42 :: DupeFieldNames)
 
     , testCase "set another oneof" $
-        Just (Foo'Baz2 42) @=? view maybe'bar2 (def & baz2 .~ 42 :: Foo)
+        Just (Foo'Baz2 42) @=? view maybe'bar2 (defMessage & baz2 .~ 42 :: Foo)
     , serializeTo "to another oneof"
         (defFoo & baz2 .~ 42)
         "baz2: 42"
@@ -77,8 +77,8 @@ main = testMain
 
         -- And we don't change the types of messages, nor the types or
         -- constructors of enums.
-        trivial (def :: Disambiguated'MessageTypeA)
-        trivial (def :: Disambiguated'MessageTypeB)
+        trivial (defMessage :: Disambiguated'MessageTypeA)
+        trivial (defMessage :: Disambiguated'MessageTypeB)
         trivial (Disambiguated'EnumCon :: Disambiguated'EnumType)
 
     , testCase "not disambiguated names" $ do

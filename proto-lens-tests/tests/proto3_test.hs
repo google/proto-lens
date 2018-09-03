@@ -43,49 +43,49 @@ main :: IO ()
 main = testMain
   [ testGroup "Foo"
     [ serializeTo "int32"
-        (def & a .~ 150 :: Foo)
+        (defMessage & a .~ 150 :: Foo)
         "a: 150"
         $ tagged 1 $ VarInt 150
     , serializeTo "repeated-string"
-        (def & b .~ ["one", "two"] :: Foo)
+        (defMessage & b .~ ["one", "two"] :: Foo)
         (vcat $ map (keyedStr "b") ["one", "two"])
         $ mconcat (map (tagged 2 . Lengthy) ["one", "two"])
     , testGroup "oneof"
         [ serializeTo "float"
             -- Use denominators that aren't divisible by 2, to fill out the bits.
-            (def & c .~ (20 / 3) :: Foo)
+            (defMessage & c .~ (20 / 3) :: Foo)
             "c: 6.6666665"
             $ tagged 3 $ Fixed32 0x40d55555
         , serializeTo "bytes"
-            (def & d .~ "a\0b" :: Foo)
+            (defMessage & d .~ "a\0b" :: Foo)
             "d: \"a\\000b\""
             $ tagged 4 $ Lengthy "a\0b"
         , serializeTo "overridden value"
-            (def & d .~ "a\0b" & c .~ (20 / 3) :: Foo)
+            (defMessage & d .~ "a\0b" & c .~ (20 / 3) :: Foo)
             "c: 6.6666665"
             $ tagged 3 $ Fixed32 0x40d55555
         -- Scalar "oneof" fields should have a "maybe" selector.
         , testCase "maybe" $ do
-            Nothing @=? (def :: Foo) ^. maybe'c
-            Just 42 @=? ((def :: Foo) & c .~ 42) ^. maybe'c
-            Nothing @=? (def :: Foo) ^. maybe's
+            Nothing @=? (defMessage :: Foo) ^. maybe'c
+            Just 42 @=? ((defMessage :: Foo) & c .~ 42) ^. maybe'c
+            Nothing @=? (defMessage :: Foo) ^. maybe's
         , testCase "message" $ do
-            Just 42 @=? ((def :: Foo) & s .~ (def :: Foo'Sub) & c .~ 42) ^. maybe'c
-            Nothing @=? ((def :: Foo) & s .~ (def :: Foo'Sub) & c .~ 42) ^. maybe's
-            17 @=? ((def :: Foo) & s . e .~ 17) ^. s . e
-            let val = (def :: Foo'Sub) & e .~ 17
-            Just val @=? ((def :: Foo) & s .~ val) ^. maybe's
+            Just 42 @=? ((defMessage :: Foo) & s .~ (defMessage :: Foo'Sub) & c .~ 42) ^. maybe'c
+            Nothing @=? ((defMessage :: Foo) & s .~ (defMessage :: Foo'Sub) & c .~ 42) ^. maybe's
+            17 @=? ((defMessage :: Foo) & s . e .~ 17) ^. s . e
+            let val = (defMessage :: Foo'Sub) & e .~ 17
+            Just val @=? ((defMessage :: Foo) & s .~ val) ^. maybe's
         ]
     -- Repeated scalar fields in proto3 should serialize as "packed" by default.
     , serializeTo "packed-by-default"
-        (def & f .~ [1,2,3] :: Foo)
+        (defMessage & f .~ [1,2,3] :: Foo)
         (vcat [keyedInt "f" x | x <- [1..3]])
         $ tagged 7 $ Lengthy $ mconcat [varInt x | x <- [1..3]]
     , runTypedTest (roundTripTest "foo" :: TypedTest Foo)
     ]
   , testGroup "Strings"
     [ deserializeFrom "bytes"
-        (Just $ def & bytes .~ toStrictByteString invalidUtf8 :: Maybe Strings)
+        (Just $ defMessage & bytes .~ toStrictByteString invalidUtf8 :: Maybe Strings)
         $ tagged 1 $ Lengthy invalidUtf8
     , deserializeFrom "string"
         (Nothing :: Maybe Strings)
@@ -93,20 +93,20 @@ main = testMain
     ]
   -- Scalar field defaults are indistinguishable from unset fields.
   , testGroup "defaulting"
-      [ testCase "int" $ (def :: Foo) @=? (def & a .~ 0)
-      , testCase "bytes" $ (def :: Strings) @=? (def & bytes .~ "")
-      , testCase "string" $ (def :: Strings) @=? (def & string .~ "")
-      , testCase "enum" $ (def :: Foo) @=? (def & enum .~ Foo'Enum1)
+      [ testCase "int" $ (defMessage :: Foo) @=? (defMessage & a .~ 0)
+      , testCase "bytes" $ (defMessage :: Strings) @=? (defMessage & bytes .~ "")
+      , testCase "string" $ (defMessage :: Strings) @=? (defMessage & string .~ "")
+      , testCase "enum" $ (defMessage :: Foo) @=? (defMessage & enum .~ Foo'Enum1)
       ]
   -- Enums are sum types, except for aliases
   , testGroup "enum"
       [ testCase "aliases are exported" $ Foo'Enum2 @=? Foo'Enum2a
       , serializeTo "serializeTo enum"
-          (def & enum .~ Foo'Enum2 :: Foo)
+          (defMessage & enum .~ Foo'Enum2 :: Foo)
           "enum: Enum2"
           $ tagged 6 $ VarInt 3
       , serializeTo "serializeTo unrecognized"
-          (def & enum .~ toEnum 9 :: Foo)
+          (defMessage & enum .~ toEnum 9 :: Foo)
           "enum: 9"
           $ tagged 6 $ VarInt 9
       , testCase "enum values" $ do
@@ -129,10 +129,10 @@ main = testMain
       ]
   -- Unset proto3 messages are different than the default value.
   , testGroup "submessage"
-      [ testCase "Nothing" $ Nothing @=? ((def :: Foo) ^. maybe'sub)
+      [ testCase "Nothing" $ Nothing @=? ((defMessage :: Foo) ^. maybe'sub)
       , testCase "Just" $ do
-          let val = (def :: Foo'Sub) & e .~ 3
-          Just val @=? ((def :: Foo) & sub .~ val) ^. maybe'sub
+          let val = (defMessage :: Foo'Sub) & e .~ 3
+          Just val @=? ((defMessage :: Foo) & sub .~ val) ^. maybe'sub
       ]
   ]
 

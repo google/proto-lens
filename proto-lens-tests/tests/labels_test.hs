@@ -8,8 +8,7 @@ import qualified Lens.Family2
 import qualified Lens.Family
 import Proto.Canonical (Test1, Test3)
 
-import Data.Default.Class (def)
-import Data.ProtoLens (build)
+import Data.ProtoLens (build, defMessage)
 import Data.ProtoLens.TestUtil
 import Test.HUnit ((@?=))
 import Test.Framework.Providers.HUnit (testCase)
@@ -24,13 +23,13 @@ main = testMain
     ]
 
 -- Test that type inference works in both directions compatibly with
--- Data.Default.Class.
+-- `defMessage :: Message a => a`.
 inside :: IO ()
-inside = let msg = (def :: Test3) & #c . #a .~ 42
+inside = let msg = (defMessage :: Test3) & #c . #a .~ 42
          in 42 @?= msg ^. #c . #a
 
 outside :: IO ()
-outside = let msg = def & #c . #a .~ 42 :: Test3
+outside = let msg = defMessage & #c . #a .~ 42 :: Test3
           in 42 @?= msg ^. #c . #a
 
 fromBuild :: IO ()
@@ -44,11 +43,11 @@ fromBuild = let msg = build (#c . #a .~ 42) :: Test3
 -- (see below), and neither do the 'lens' or 'microlens' packages.
 lensFamily :: IO ()
 lensFamily = do
-    let msg1 = def & set #a 42 :: Test1
-    let msg2 = def & Lens.Family2.set
+    let msg1 = defMessage & set #a 42 :: Test1
+    let msg2 = defMessage & Lens.Family2.set
                         (runLens #a :: Lens.Family2.Lens' Test1 Int32)
                         42
-    let msg3 = def & Lens.Family2.set (runLens #a) 42 :: Test1
+    let msg3 = defMessage & Lens.Family2.set (runLens #a) 42 :: Test1
     msg1 @?= msg2
     msg1 @?= msg3
 
@@ -56,6 +55,6 @@ lensFamily = do
 -- of `msg2`.
 lensFamilyCore :: IO ()
 lensFamilyCore = let
-    msg1 = def & set #a 42 :: Test1
-    msg2 = def & Lens.Family.set (runLens #a) 42
+    msg1 = defMessage & set #a 42 :: Test1
+    msg2 = defMessage & Lens.Family.set (runLens #a) 42
     in msg1 @?= msg2

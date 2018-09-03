@@ -36,25 +36,25 @@ canonicalTest name val text bytes
 int32Test, stringTest, embeddedTest, packedIntsTest, roundTripTests :: Test
 int32Test = canonicalTest
     "int32"
-    (def & a .~ 150 :: Test1)
+    (defMessage & a .~ 150 :: Test1)
     "a: 150"
     [0x08, 0x96, 0x01]
 
 stringTest = canonicalTest
     "string"
-    (def & b .~ "testing" :: Test2)
+    (defMessage & b .~ "testing" :: Test2)
     "b: \"testing\""
     ([0x12, 0x07] ++ B.unpack "testing")
 
 embeddedTest = canonicalTest
     "embedded"
-    (def & c.a .~ 150 :: Test3)
+    (defMessage & c.a .~ 150 :: Test3)
     "c {\n  a: 150\n}"
     [0x1a, 0x03, 0x08, 0x96, 0x01]
 
 packedIntsTest = canonicalTest
     "packed-ints"
-    (def & d .~ [3,270,86942] :: Test4)
+    (defMessage & d .~ [3,270,86942] :: Test4)
     "d: 3\nd: 270\nd: 86942"
     [0x22, 0x06, 0x03, 0x8e, 0x02, 0x9e, 0xa7, 0x05]
 

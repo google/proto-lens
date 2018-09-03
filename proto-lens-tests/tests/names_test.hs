@@ -12,7 +12,7 @@
 module Main where
 
 import Data.Int (Int32)
-import Data.ProtoLens (def, Message)
+import Data.ProtoLens (Message(defMessage))
 import Lens.Family2 (Lens', (&), view, set)
 import Prelude hiding (Maybe, maybe, map, head, span)
 import qualified Prelude
@@ -63,7 +63,7 @@ verifyLens x f y = y @=? view f (set f y x)
 -- without ImpredicativeTypes.
 newtype SomeLens a b = SomeLens (Lens' a b)
 
-testNames = testFields "names" (def :: Names)
+testNames = testFields "names" (defMessage :: Names)
     [ SomeLens head
     , SomeLens span
     , SomeLens multiWordName
@@ -72,9 +72,9 @@ testNames = testFields "names" (def :: Names)
     , SomeLens camelCasedName
     ]
 
-testPreludeType = testFields "preludeType" (def :: Maybe) [SomeLens maybe]
+testPreludeType = testFields "preludeType" (defMessage :: Maybe) [SomeLens maybe]
 
-testHaskellKeywords = testFields "haskellKeywords" (def :: HaskellKeywords)
+testHaskellKeywords = testFields "haskellKeywords" (defMessage :: HaskellKeywords)
     [ SomeLens case'
     , SomeLens class'
     , SomeLens data'
@@ -123,12 +123,12 @@ testOddCasedMessage = testGroup "oddCasedMessage"
           trivial (DeFA_ult :: Odd_CAsed_enum)
     ]
   where
-    defMsg = def :: Odd_CAsed_message
+    defMsg = defMessage :: Odd_CAsed_message
 
 trivial :: (Show a, Eq a) => a -> IO ()
 trivial a = a @=? a
 
-testProtoKeywords = testFields "protoKeywords" (def :: ProtoKeywords)
+testProtoKeywords = testFields "protoKeywords" (defMessage :: ProtoKeywords)
     [ SomeLens required
     , SomeLens message
     , SomeLens enum
@@ -142,7 +142,7 @@ testProtoKeywords = testFields "protoKeywords" (def :: ProtoKeywords)
     , SomeLens import'
     ]
 
-testProtoKeywordTypes = testFields "protoKeywordTypes" (def :: ProtoKeywordTypes)
+testProtoKeywordTypes = testFields "protoKeywordTypes" (defMessage :: ProtoKeywordTypes)
     [ SomeLens (syntax . foo)
     , SomeLens (package . foo)
     , SomeLens (import' . foo)
@@ -153,5 +153,5 @@ testProtoKeywordTypes = testFields "protoKeywordTypes" (def :: ProtoKeywordTypes
 -- make sure we don't expect that apostrophe when parsing TextFormat.
 -- "import" field.
 testReadReservedName = readFrom "testReadReservedName"
-      (Just $ def & set import' 1 :: Prelude.Maybe HaskellKeywords)
+      (Just $ defMessage & set import' 1 :: Prelude.Maybe HaskellKeywords)
       "import: 1"

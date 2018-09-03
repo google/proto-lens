@@ -40,7 +40,7 @@ instance Message a => Arbitrary (ArbitraryMessage a) where
     shrink (ArbitraryMessage a) = ArbitraryMessage <$> shrinkMessage a
 
 arbitraryMessage :: Message a => Gen a
-arbitraryMessage = foldM (flip arbitraryField) def allFields
+arbitraryMessage = foldM (flip arbitraryField) defMessage allFields
 
 -- | Imitation of the (Arbitrary a => Arbitrary (Maybe a)) instance from
 -- QuickCheck.
@@ -153,7 +153,7 @@ mapToEntries :: Message entry =>
                 Lens' entry key -> Lens' entry value -> Map key value -> [entry]
 mapToEntries keyLens valueLens m = makeEntry <$> M.toList m
   where
-    makeEntry (k, v) = (set keyLens k . set valueLens v) def
+    makeEntry (k, v) = (set keyLens k . set valueLens v) defMessage
 
 entriesToMap :: Ord key =>
                 Lens' entry key -> Lens' entry value -> [entry] -> Map key value

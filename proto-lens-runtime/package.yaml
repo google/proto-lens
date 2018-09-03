@@ -24,7 +24,7 @@ library:
     - filepath >= 1.4 && < 1.6
     - lens-family == 1.2.*
     - lens-labels == 0.2.*
-    - proto-lens == 0.3.*
+    - proto-lens == 0.4.*
     - text == 1.2.*
 
 
@@ -35,7 +35,6 @@ library:
     - Data.Word as Data.ProtoLens.Runtime.Data.Word,
     - Data.ByteString as Data.ProtoLens.Runtime.Data.ByteString,
     - Data.ByteString.Char8 as Data.ProtoLens.Runtime.Data.ByteString.Char8,
-    - Data.Default.Class as Data.ProtoLens.Runtime.Data.Default.Class,
     - Data.Map as Data.ProtoLens.Runtime.Data.Map,
     - Data.ProtoLens as Data.ProtoLens.Runtime.Data.ProtoLens,
     - Data.ProtoLens.Service.Types as Data.ProtoLens.Runtime.Data.ProtoLens.Service.Types,

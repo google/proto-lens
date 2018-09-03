@@ -22,7 +22,6 @@ dependencies:
     - QuickCheck
     - base
     - bytestring
-    - data-default-class
     - lens-family
     - pretty
     - proto-lens

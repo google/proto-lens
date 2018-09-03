@@ -20,7 +20,7 @@ import Data.Word (Word64)
 import Data.ProtoLens.TestUtil
 
 defFoo :: Foo
-defFoo = def
+defFoo = defMessage
 
 entry :: Word64 -> String -> Builder
 entry k v = tagged 1 $ Lengthy $ tagged 1 (VarInt k)

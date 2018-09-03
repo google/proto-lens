@@ -18,10 +18,10 @@ import Data.Monoid ((<>))
 import Data.ProtoLens.TestUtil
 
 defFoo :: Foo
-defFoo = def
+defFoo = defMessage
 
 defBar :: Bar
-defBar = def
+defBar = defMessage
 
 main :: IO ()
 main = testMain
@@ -37,7 +37,7 @@ main = testMain
                     | x <- ["one", "two", "three"]
                     ]
     , serializeTo "nested/empty"
-          (defFoo & c .~ [def, def])
+          (defFoo & c .~ [defMessage, defMessage])
           (braced "c" mempty $+$ braced "c" mempty)
           $ tagged 3 (Lengthy mempty) <> tagged 3 (Lengthy mempty)
     , serializeTo "nested/fixed32"

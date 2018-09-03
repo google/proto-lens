@@ -8,8 +8,7 @@ import Lens.Family ((&), (.~), (^.))
 import Lens.Labels.Unwrapped ()
 import Proto.Canonical (Test3)
 
-import Data.Default.Class (def)
-import Data.ProtoLens (build)
+import Data.ProtoLens (build, defMessage)
 import Data.ProtoLens.TestUtil
 import Test.HUnit ((@?=))
 import Test.Framework.Providers.HUnit (testCase)
@@ -22,11 +21,11 @@ main = testMain
     ]
 
 inside :: IO ()
-inside = let msg = (def :: Test3) & #c . #a .~ 42
+inside = let msg = (defMessage :: Test3) & #c . #a .~ 42
          in 42 @?= msg ^. #c . #a
 
 outside :: IO ()
-outside = let msg = def & #c . #a .~ 42 :: Test3
+outside = let msg = defMessage & #c . #a .~ 42 :: Test3
           in 42 @?= msg ^. #c . #a
 
 fromBuild :: IO ()

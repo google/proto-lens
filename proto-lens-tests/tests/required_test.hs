@@ -7,8 +7,8 @@
 {-# LANGUAGE OverloadedStrings #-}
 module Main where
 
-import Data.Default.Class (def)
 import Data.Monoid ((<>))
+import Data.ProtoLens (defMessage)
 import Lens.Family ((&), (.~))
 import Proto.Required (Foo)
 import Proto.Required_Fields (a, b)
@@ -17,7 +17,7 @@ import Test.Framework (testGroup)
 import Data.ProtoLens.TestUtil
 
 defFoo :: Foo
-defFoo = def
+defFoo = defMessage
 
 failedFoo :: Maybe Foo
 failedFoo = Nothing
