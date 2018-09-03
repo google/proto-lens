@@ -7,7 +7,7 @@
 {-# OPTIONS_GHC -fno-warn-duplicate-exports#-}
 module Proto.Google.Protobuf.Compiler.Plugin
        (CodeGeneratorRequest(), CodeGeneratorResponse(),
-        CodeGeneratorResponse'File())
+        CodeGeneratorResponse'File(), Version())
        where
 import qualified Control.DeepSeq
 import qualified Lens.Labels.Prism
@@ -34,6 +34,8 @@ import qualified Proto.Google.Protobuf.Descriptor
     * 'Proto.Google.Protobuf.Compiler.Plugin_Fields.maybe'parameter' @:: Lens' CodeGeneratorRequest (Prelude.Maybe Data.Text.Text)@
     * 'Proto.Google.Protobuf.Compiler.Plugin_Fields.protoFile' @:: Lens' CodeGeneratorRequest
   [Proto.Google.Protobuf.Descriptor.FileDescriptorProto]@
+    * 'Proto.Google.Protobuf.Compiler.Plugin_Fields.compilerVersion' @:: Lens' CodeGeneratorRequest Version@
+    * 'Proto.Google.Protobuf.Compiler.Plugin_Fields.maybe'compilerVersion' @:: Lens' CodeGeneratorRequest (Prelude.Maybe Version)@
  -}
 data CodeGeneratorRequest = CodeGeneratorRequest{_CodeGeneratorRequest'fileToGenerate
                                                  :: ![Data.Text.Text],
@@ -41,6 +43,8 @@ data CodeGeneratorRequest = CodeGeneratorRequest{_CodeGeneratorRequest'fileToGen
                                                  !(Prelude.Maybe Data.Text.Text),
                                                  _CodeGeneratorRequest'protoFile ::
                                                  ![Proto.Google.Protobuf.Descriptor.FileDescriptorProto],
+                                                 _CodeGeneratorRequest'compilerVersion ::
+                                                 !(Prelude.Maybe Version),
                                                  _CodeGeneratorRequest'_unknownFields ::
                                                  !Data.ProtoLens.FieldSet}
                               deriving (Prelude.Eq, Prelude.Ord)
@@ -82,6 +86,24 @@ instance Lens.Labels.HasLens' CodeGeneratorRequest "protoFile"
               (Lens.Family2.Unchecked.lens _CodeGeneratorRequest'protoFile
                  (\ x__ y__ -> x__{_CodeGeneratorRequest'protoFile = y__}))
               Prelude.id
+instance Lens.Labels.HasLens' CodeGeneratorRequest
+           "compilerVersion"
+           (Version)
+         where
+        lensOf' _
+          = (Prelude..)
+              (Lens.Family2.Unchecked.lens _CodeGeneratorRequest'compilerVersion
+                 (\ x__ y__ -> x__{_CodeGeneratorRequest'compilerVersion = y__}))
+              (Data.ProtoLens.maybeLens Data.ProtoLens.defMessage)
+instance Lens.Labels.HasLens' CodeGeneratorRequest
+           "maybe'compilerVersion"
+           (Prelude.Maybe Version)
+         where
+        lensOf' _
+          = (Prelude..)
+              (Lens.Family2.Unchecked.lens _CodeGeneratorRequest'compilerVersion
+                 (\ x__ y__ -> x__{_CodeGeneratorRequest'compilerVersion = y__}))
+              Prelude.id
 instance Data.ProtoLens.Message CodeGeneratorRequest where
         messageName _
           = Data.Text.pack "google.protobuf.compiler.CodeGeneratorRequest"
@@ -111,11 +133,21 @@ instance Data.ProtoLens.Message CodeGeneratorRequest where
                          (Lens.Labels.lensOf'
                             ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "protoFile")))
                       :: Data.ProtoLens.FieldDescriptor CodeGeneratorRequest
+                compilerVersion__field_descriptor
+                  = Data.ProtoLens.FieldDescriptor "compiler_version"
+                      (Data.ProtoLens.MessageField Data.ProtoLens.MessageType ::
+                         Data.ProtoLens.FieldTypeDescriptor Version)
+                      (Data.ProtoLens.OptionalField
+                         (Lens.Labels.lensOf'
+                            ((Lens.Labels.proxy#) ::
+                               (Lens.Labels.Proxy#) "maybe'compilerVersion")))
+                      :: Data.ProtoLens.FieldDescriptor CodeGeneratorRequest
               in
               Data.Map.fromList
                 [(Data.ProtoLens.Tag 1, fileToGenerate__field_descriptor),
                  (Data.ProtoLens.Tag 2, parameter__field_descriptor),
-                 (Data.ProtoLens.Tag 15, protoFile__field_descriptor)]
+                 (Data.ProtoLens.Tag 15, protoFile__field_descriptor),
+                 (Data.ProtoLens.Tag 3, compilerVersion__field_descriptor)]
         unknownFields
           = Lens.Family2.Unchecked.lens _CodeGeneratorRequest'_unknownFields
               (\ x__ y__ -> x__{_CodeGeneratorRequest'_unknownFields = y__})
@@ -123,6 +155,7 @@ instance Data.ProtoLens.Message CodeGeneratorRequest where
           = CodeGeneratorRequest{_CodeGeneratorRequest'fileToGenerate = [],
                                  _CodeGeneratorRequest'parameter = Prelude.Nothing,
                                  _CodeGeneratorRequest'protoFile = [],
+                                 _CodeGeneratorRequest'compilerVersion = Prelude.Nothing,
                                  _CodeGeneratorRequest'_unknownFields = ([])}
 instance Control.DeepSeq.NFData CodeGeneratorRequest where
         rnf
@@ -131,7 +164,9 @@ instance Control.DeepSeq.NFData CodeGeneratorRequest where
                 (Control.DeepSeq.deepseq (_CodeGeneratorRequest'fileToGenerate x__)
                    (Control.DeepSeq.deepseq (_CodeGeneratorRequest'parameter x__)
                       (Control.DeepSeq.deepseq (_CodeGeneratorRequest'protoFile x__)
-                         (()))))
+                         (Control.DeepSeq.deepseq
+                            (_CodeGeneratorRequest'compilerVersion x__)
+                            (())))))
 {- | Fields :
 
     * 'Proto.Google.Protobuf.Compiler.Plugin_Fields.error' @:: Lens' CodeGeneratorResponse Data.Text.Text@
@@ -347,3 +382,142 @@ instance Control.DeepSeq.NFData CodeGeneratorResponse'File where
                       (_CodeGeneratorResponse'File'insertionPoint x__)
                       (Control.DeepSeq.deepseq (_CodeGeneratorResponse'File'content x__)
                          (()))))
+{- | Fields :
+
+    * 'Proto.Google.Protobuf.Compiler.Plugin_Fields.major' @:: Lens' Version Data.Int.Int32@
+    * 'Proto.Google.Protobuf.Compiler.Plugin_Fields.maybe'major' @:: Lens' Version (Prelude.Maybe Data.Int.Int32)@
+    * 'Proto.Google.Protobuf.Compiler.Plugin_Fields.minor' @:: Lens' Version Data.Int.Int32@
+    * 'Proto.Google.Protobuf.Compiler.Plugin_Fields.maybe'minor' @:: Lens' Version (Prelude.Maybe Data.Int.Int32)@
+    * 'Proto.Google.Protobuf.Compiler.Plugin_Fields.patch' @:: Lens' Version Data.Int.Int32@
+    * 'Proto.Google.Protobuf.Compiler.Plugin_Fields.maybe'patch' @:: Lens' Version (Prelude.Maybe Data.Int.Int32)@
+    * 'Proto.Google.Protobuf.Compiler.Plugin_Fields.suffix' @:: Lens' Version Data.Text.Text@
+    * 'Proto.Google.Protobuf.Compiler.Plugin_Fields.maybe'suffix' @:: Lens' Version (Prelude.Maybe Data.Text.Text)@
+ -}
+data Version = Version{_Version'major ::
+                       !(Prelude.Maybe Data.Int.Int32),
+                       _Version'minor :: !(Prelude.Maybe Data.Int.Int32),
+                       _Version'patch :: !(Prelude.Maybe Data.Int.Int32),
+                       _Version'suffix :: !(Prelude.Maybe Data.Text.Text),
+                       _Version'_unknownFields :: !Data.ProtoLens.FieldSet}
+                 deriving (Prelude.Eq, Prelude.Ord)
+instance Prelude.Show Version where
+        showsPrec _ __x __s
+          = Prelude.showChar '{'
+              (Prelude.showString (Data.ProtoLens.showMessageShort __x)
+                 (Prelude.showChar '}' __s))
+instance Lens.Labels.HasLens' Version "major" (Data.Int.Int32)
+         where
+        lensOf' _
+          = (Prelude..)
+              (Lens.Family2.Unchecked.lens _Version'major
+                 (\ x__ y__ -> x__{_Version'major = y__}))
+              (Data.ProtoLens.maybeLens Data.ProtoLens.fieldDefault)
+instance Lens.Labels.HasLens' Version "maybe'major"
+           (Prelude.Maybe Data.Int.Int32)
+         where
+        lensOf' _
+          = (Prelude..)
+              (Lens.Family2.Unchecked.lens _Version'major
+                 (\ x__ y__ -> x__{_Version'major = y__}))
+              Prelude.id
+instance Lens.Labels.HasLens' Version "minor" (Data.Int.Int32)
+         where
+        lensOf' _
+          = (Prelude..)
+              (Lens.Family2.Unchecked.lens _Version'minor
+                 (\ x__ y__ -> x__{_Version'minor = y__}))
+              (Data.ProtoLens.maybeLens Data.ProtoLens.fieldDefault)
+instance Lens.Labels.HasLens' Version "maybe'minor"
+           (Prelude.Maybe Data.Int.Int32)
+         where
+        lensOf' _
+          = (Prelude..)
+              (Lens.Family2.Unchecked.lens _Version'minor
+                 (\ x__ y__ -> x__{_Version'minor = y__}))
+              Prelude.id
+instance Lens.Labels.HasLens' Version "patch" (Data.Int.Int32)
+         where
+        lensOf' _
+          = (Prelude..)
+              (Lens.Family2.Unchecked.lens _Version'patch
+                 (\ x__ y__ -> x__{_Version'patch = y__}))
+              (Data.ProtoLens.maybeLens Data.ProtoLens.fieldDefault)
+instance Lens.Labels.HasLens' Version "maybe'patch"
+           (Prelude.Maybe Data.Int.Int32)
+         where
+        lensOf' _
+          = (Prelude..)
+              (Lens.Family2.Unchecked.lens _Version'patch
+                 (\ x__ y__ -> x__{_Version'patch = y__}))
+              Prelude.id
+instance Lens.Labels.HasLens' Version "suffix" (Data.Text.Text)
+         where
+        lensOf' _
+          = (Prelude..)
+              (Lens.Family2.Unchecked.lens _Version'suffix
+                 (\ x__ y__ -> x__{_Version'suffix = y__}))
+              (Data.ProtoLens.maybeLens Data.ProtoLens.fieldDefault)
+instance Lens.Labels.HasLens' Version "maybe'suffix"
+           (Prelude.Maybe Data.Text.Text)
+         where
+        lensOf' _
+          = (Prelude..)
+              (Lens.Family2.Unchecked.lens _Version'suffix
+                 (\ x__ y__ -> x__{_Version'suffix = y__}))
+              Prelude.id
+instance Data.ProtoLens.Message Version where
+        messageName _ = Data.Text.pack "google.protobuf.compiler.Version"
+        fieldsByTag
+          = let major__field_descriptor
+                  = Data.ProtoLens.FieldDescriptor "major"
+                      (Data.ProtoLens.ScalarField Data.ProtoLens.Int32Field ::
+                         Data.ProtoLens.FieldTypeDescriptor Data.Int.Int32)
+                      (Data.ProtoLens.OptionalField
+                         (Lens.Labels.lensOf'
+                            ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "maybe'major")))
+                      :: Data.ProtoLens.FieldDescriptor Version
+                minor__field_descriptor
+                  = Data.ProtoLens.FieldDescriptor "minor"
+                      (Data.ProtoLens.ScalarField Data.ProtoLens.Int32Field ::
+                         Data.ProtoLens.FieldTypeDescriptor Data.Int.Int32)
+                      (Data.ProtoLens.OptionalField
+                         (Lens.Labels.lensOf'
+                            ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "maybe'minor")))
+                      :: Data.ProtoLens.FieldDescriptor Version
+                patch__field_descriptor
+                  = Data.ProtoLens.FieldDescriptor "patch"
+                      (Data.ProtoLens.ScalarField Data.ProtoLens.Int32Field ::
+                         Data.ProtoLens.FieldTypeDescriptor Data.Int.Int32)
+                      (Data.ProtoLens.OptionalField
+                         (Lens.Labels.lensOf'
+                            ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "maybe'patch")))
+                      :: Data.ProtoLens.FieldDescriptor Version
+                suffix__field_descriptor
+                  = Data.ProtoLens.FieldDescriptor "suffix"
+                      (Data.ProtoLens.ScalarField Data.ProtoLens.StringField ::
+                         Data.ProtoLens.FieldTypeDescriptor Data.Text.Text)
+                      (Data.ProtoLens.OptionalField
+                         (Lens.Labels.lensOf'
+                            ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "maybe'suffix")))
+                      :: Data.ProtoLens.FieldDescriptor Version
+              in
+              Data.Map.fromList
+                [(Data.ProtoLens.Tag 1, major__field_descriptor),
+                 (Data.ProtoLens.Tag 2, minor__field_descriptor),
+                 (Data.ProtoLens.Tag 3, patch__field_descriptor),
+                 (Data.ProtoLens.Tag 4, suffix__field_descriptor)]
+        unknownFields
+          = Lens.Family2.Unchecked.lens _Version'_unknownFields
+              (\ x__ y__ -> x__{_Version'_unknownFields = y__})
+        defMessage
+          = Version{_Version'major = Prelude.Nothing,
+                    _Version'minor = Prelude.Nothing, _Version'patch = Prelude.Nothing,
+                    _Version'suffix = Prelude.Nothing, _Version'_unknownFields = ([])}
+instance Control.DeepSeq.NFData Version where
+        rnf
+          = \ x__ ->
+              Control.DeepSeq.deepseq (_Version'_unknownFields x__)
+                (Control.DeepSeq.deepseq (_Version'major x__)
+                   (Control.DeepSeq.deepseq (_Version'minor x__)
+                      (Control.DeepSeq.deepseq (_Version'patch x__)
+                         (Control.DeepSeq.deepseq (_Version'suffix x__) (())))))
