@@ -26,7 +26,7 @@ custom-setup:
 
 dependencies:
   - base >= 4.9 && < 4.12
-  - lens-labels == 0.2.*
+  - lens-labels == 0.3.*
   - proto-lens == 0.4.*
   - proto-lens-runtime == 0.4.*
   - text == 1.2.*

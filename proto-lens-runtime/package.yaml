@@ -23,7 +23,7 @@ library:
     - deepseq == 1.4.*
     - filepath >= 1.4 && < 1.6
     - lens-family == 1.2.*
-    - lens-labels == 0.2.*
+    - lens-labels == 0.3.*
     - proto-lens == 0.4.*
     - text == 1.2.*
 

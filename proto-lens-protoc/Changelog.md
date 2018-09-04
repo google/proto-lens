@@ -8,6 +8,7 @@
 - Generate explicit `NFData` instances for each type.
 - Track the change to `proto-lens`: Don't use `data-default` for
   defaul proto values (#194).
+- Use simplified lens-labels instances. (#208)
 
 ## v0.3.1.2
 - Bump the upper bound to `temporary-1.3`.

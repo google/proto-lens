@@ -2,6 +2,8 @@
 
 ## v0.4.0.0
 - Switch to `proto-lens-{setup/runtime}` v0.4.
+- Bump the lens-labels dependency to `0.3.*` for consistency with other
+  packages.
 
 ## v0.3.0.2
 - Bump the lower bound on `base` to indicate we require `ghc>=8.0`.
