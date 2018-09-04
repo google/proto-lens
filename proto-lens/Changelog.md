@@ -3,6 +3,7 @@
 ## v0.4
 - Don't use `data-default` for default proto values (#194).
 - Update the proto descriptors to protobuf-3.6.1.
+- Use simplified lens-labels instances. (#208)
 
 ## v0.3.1.1
 - Bump the lower bound on `base` to indicate we require `ghc>=8.0`.
