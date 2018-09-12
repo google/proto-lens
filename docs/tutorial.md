@@ -149,7 +149,7 @@ Instances generated are:
 * `Data.ProtoLens.MessageEnum` for enabling safe decoding.
 * `Prelude.Bounded` where `maxBound` is the maximum numbered field, and `minBound` is the minimum.
 * `Prelude.Enum` where the numbering of the fields dictates the enumeration.
-* `Data.ProtoLens.FieldDefault` same as `Default`.
+* `Data.ProtoLens.FieldDefault` for determining the default value when used as a field.
 
 ## Field Overloading
 
@@ -170,17 +170,13 @@ message Foo {
 ```
 we can see that `baz` is common to both `Bar` and `Foo`. The difference will be that the instances for `HasLens'` will be:
 ``` haskell
-instance Prelude.Functor f =>
-         Lens.Labels.HasLens' f Foo "baz" (Data.Text.Text)
+instance Lens.Labels.HasLens' Foo "baz" (Data.Text.Text)
 
-instance Prelude.Functor f =>
-        Lens.Labels.HasLens' f Bar "baz" (Data.Int.Int32)
+instance Lens.Labels.HasLens' Bar "baz" (Data.Int.Int32)
 ```
 The fields are overloaded on the symbol `baz` but connect `Foo` to `Text` and `Bar` to `Int32`. Then we can find that there is one, polymorphic definition in the `Foo_Fields.hs` file:
 ``` haskell
-baz ::
-    forall f s t a b . (Lens.Labels.HasLens f s t "baz" a b) =>
-      Lens.Family2.LensLike f s t a b
+baz :: Lens.Labels.HasLens' s "baz" a => Lens.Family2.Lens' s a
 baz
   = Lens.Labels.lensOf
       ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "baz")
@@ -328,7 +324,7 @@ fooVal' = fooVal & P.maybe'bippy .~ Nothing
 
 main :: IO ()
 main = do
-  print fooVal  -- outputs: Foo {_Foo'bar = Just (Foo'Baz 42), _Foo'_unknownFields = []}
-  print fooVal' -- outputs: Foo {_Foo'bar = Nothing, _Foo'_unknownFields = []}
+  print fooVal  -- outputs: "{ bar: 42 }"
+  print fooVal' -- outputs: "{}"
 ```
 We have cleared the previously set `Just (Foo'Baz 42)` value by doing `P.maybe'bippy .~ Nothing`. To try and avoid this it would be best to organise your code by using the `Prism'` functions for `oneof` fields instead.
