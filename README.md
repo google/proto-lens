@@ -13,7 +13,7 @@ This is not an official Google product.
 
 You can find tutorial documentation in the [proto-lens-tutorial](./proto-lens-tutorial) subdir.
 
-There is also a [reference document, TYPES.md](docs/TYPES.md), showing the protobuf scalar type -> haskell type mappings used by the generated lenses.
+There is also a [reference document](docs/types.md) showing the protobuf scalar type -> haskell type mappings used by the generated lenses.
 
 # Instructions
 
