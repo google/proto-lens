@@ -95,7 +95,7 @@ module Main where
 
 import Proto.Person as P
 import Proto.Person_Fields as P
-import Data.ProtoLens (def, showMessage)
+import Data.ProtoLens (defMessage, showMessage)
 import Lens.Micro
 
 person :: P.Person
@@ -206,6 +206,7 @@ Using your favourite lens library we can create our proto data by doing the foll
 ``` haskell
 import Proto.Person as P
 import Proto.Person_Fields as P
+import Data.ProtoLens (defMessage)
 
 fintan :: P.Person                      -- Signal the compiler what we are creating a Person
 fintan = defMessage
