@@ -132,7 +132,7 @@ We have a bunch of lenses (or prisms) to access the data relating to `Coffee`. W
 
 What we can use them for is setting values! When we are defining the value we will know (and have to know) what type our `CoffeeType` will be. Thus we can do the following, `defMessage & mocha .~ defMessage` where the second `defMessage` is secretly our empty `Mocha` value.<br>
 
-As of `proto-lens-protoc-0.3.0.0` and later, `Prism'` functions are also available for use on `Coffee'Type` sum. The `Prism'` functions are of of the naming convention `_Coffee'Americano`, `_Coffee'Latte`, etc. There is more information on `Prism'`s [here](../../docs/tutorial.md#oneof-generation)
+As of `proto-lens-protoc-0.3.0.0` and later, `Prism'` functions are also available for use on `Coffee'Type` sum. The `Prism'` functions are of the naming convention `_Coffee'Americano`, `_Coffee'Latte`, etc. There is more information on `Prism'`s [here](../../docs/tutorial.md#oneof-generation)
 
 ## Full Code Example
 
