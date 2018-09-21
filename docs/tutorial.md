@@ -230,7 +230,7 @@ Further information on `Any` and how it works in the protocol can found in the [
 
 ## Repeated
 
-`repeated` fields signify that the type of the field is a list of values, narturally fitting to the `[a]` type in Haskell. For example:
+`repeated` fields signify that the type of the field is a list of values, naturally fitting to the `[a]` type in Haskell. For example:
 ``` protobuf
 message Foo {
   repeated int32 a = 1;
@@ -249,7 +249,7 @@ data Foo = Foo
 
 ## Map
 
-`map` fields signify that the type of the field is mapping from one value to another, narturally fitting to the `Data.Map a b` type in Haskell. For exmaple:
+`map` fields signify that the type of the field is mapping from one value to another, naturally fitting to the `Data.Map a b` type in Haskell. For exmaple:
 ``` protobuf
 message Foo {
   map<int32, string> bar = 1;
