@@ -142,7 +142,7 @@ When using `proto2` syntax there are a few notes to remember when using `enum` d
   * The default is `minBound` unless an [explicit default value](https://developers.google.com/protocol-buffers/docs/proto#optional) is given.
   * `Bar'Unrecognized` would not be generated.
 
-When using `proto3` syntax it is important to rememver that the first `enum` value must be zero.
+When using `proto3` syntax it is important to remember that the first `enum` value must be zero.
 
 Instances generated are:
 
@@ -217,7 +217,7 @@ main = putStrLn $ myBar ^. #bippy
 
 ## Any
 
-An `Any` field stands for any arbitrary message and thus is represented by an arbitrary blob of bytes. We can see this as a placeholder for any user defined message where the message becomes concrete when we unpack it to some message we have chosen. There are two utility functions for packing any `Message a` into an `Any` and its dual for unpacking an `Any` into a `Message a`. These functions are called `pack` and `unpack` rsepectively and their type signatures are below:
+An `Any` field stands for any arbitrary message and thus is represented by an arbitrary blob of bytes. We can see this as a placeholder for any user defined message where the message becomes concrete when we unpack it to some message we have chosen. There are two utility functions for packing any `Message a` into an `Any` and its dual for unpacking an `Any` into a `Message a`. These functions are called `pack` and `unpack` respectively and their type signatures are below:
 
 ``` haskell
 pack :: forall a. Message a => a -> Any
