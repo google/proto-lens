@@ -249,7 +249,7 @@ data Foo = Foo
 
 ## Map
 
-`map` fields signify that the type of the field is mapping from one value to another, naturally fitting to the `Data.Map a b` type in Haskell. For exmaple:
+`map` fields signify that the type of the field is mapping from one value to another, naturally fitting to the `Data.Map a b` type in Haskell. For example:
 ``` protobuf
 message Foo {
   map<int32, string> bar = 1;
