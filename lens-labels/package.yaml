@@ -20,7 +20,7 @@ library:
     - Lens.Labels.Unwrapped
     - Lens.Labels.Prism
   dependencies:
-    - base >= 4.9 && < 4.12
+    - base >= 4.9 && < 4.13
     - ghc-prim >= 0.4 && < 0.6
     - profunctors >= 5.2
     - tagged >= 0.8
