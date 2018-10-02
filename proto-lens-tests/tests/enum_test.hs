@@ -51,7 +51,8 @@ main = testMain
 
 testExternalEnum, testNestedEnum, testDefaults, testBadEnumValues,
     testNamedEnumValues, testRoundTrip, testBounded, testMaybeSuccAndPred,
-    testEnumFromThenTo, testMonotonicFromEnum, testAliases :: Test
+    testEnumFromThenTo, testMonotonicFromEnum, testAliases,
+    testManyCases :: Test
 
 testExternalEnum = testGroup "external"
     [ serializeTo (show e1)
