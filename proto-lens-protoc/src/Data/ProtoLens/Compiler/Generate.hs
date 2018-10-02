@@ -397,14 +397,14 @@ generateServiceExports :: ServiceInfo -> ExportSpec
 generateServiceExports si = exportAll $ unQual $ fromString $ T.unpack $ serviceName si
 
 generateEnumDecls :: SyntaxType -> EnumInfo Name -> [Decl]
-generateEnumDecls syntax info =
+generateEnumDecls syntaxType info =
     -- Proto3-only:
     -- newtype FooEnum'UnrecognizedValue = FooEnum'UnrecognizedValue Data.Int.Int32
     --   deriving (Prelude.Eq, Prelude.Ord, Prelude.Show, Prelude.Read)
     [ newtypeDecl unrecognizedValueName
        "Data.Int.Int32"
         $ deriving' ["Prelude.Eq", "Prelude.Ord", "Prelude.Show"]
-    | syntax == Proto3
+    | syntaxType == Proto3
     ]
     ++
 
@@ -416,7 +416,7 @@ generateEnumDecls syntax info =
     [ dataDecl dataName
         (  (flip conDecl [] <$> constructorNames)
         ++ [ conDecl unrecognizedName [tyCon $ unQual unrecognizedValueName]
-           | syntax == Proto3
+           | syntaxType == Proto3
            ]
         )
         $ deriving' ["Prelude.Show", "Prelude.Eq", "Prelude.Ord"]
@@ -446,7 +446,7 @@ generateEnumDecls syntax info =
           | (c, k) <- constructorNumbers
           ]
           ++
-          [match "maybeToEnum" ["k"] $ case syntax of
+          [match "maybeToEnum" ["k"] $ case syntaxType of
               Proto2 -> "Prelude.Nothing"
               Proto3 -> "Prelude.Just" @@
                             (con (unQual unrecognizedName)
@@ -465,7 +465,7 @@ generateEnumDecls syntax info =
                               [pApp (unQual unrecognizedValueName) [pVar "k"]]
                             ]
                   $ "Prelude.show" @@ "k"
-          | syntax == Proto3
+          | syntaxType == Proto3
           ]
         , [ match "readEnum" [stringPat pn]
               $ "Prelude.Just" @@ con (unQual n)
@@ -517,7 +517,7 @@ generateEnumDecls syntax info =
                               [pApp (unQual unrecognizedValueName) [pVar "k"]]
                             ]
                   $ "Prelude.fromIntegral" @@ "k"
-          | syntax == Proto3
+          | syntaxType == Proto3
           ]
         , succDecl "succ" maxBoundName succPairs
         , succDecl "pred" minBoundName $ map swap succPairs
@@ -568,8 +568,6 @@ generateEnumDecls syntax info =
 
     dataType = tyCon $ unQual dataName
 
-
-
     constructors :: [(Name, EnumValueDescriptorProto)]
     constructors = List.sortBy (comparing ((^. number) . snd))
                             [(n, d) | EnumValueInfo
@@ -603,7 +601,7 @@ generateEnumDecls syntax info =
             ("Prelude.error" @@ stringExp (concat
                 [ prettyPrint dataName, ".", prettyPrint funName, ": bad argument: unrecognized value"
                 ]))
-        | syntax == Proto3
+        | syntaxType == Proto3
         ]
 
 generateFieldDecls :: Symbol -> [Decl]
