@@ -200,8 +200,16 @@ tyParen = Syntax.TyParen ()
 type Match = Syntax.Match ()
 
 -- | A simple clause of a function binding.
-match :: Name -> [Pat] -> Exp -> Syntax.Match ()
+match :: Name -> [Pat] -> Exp -> Match
 match n ps e = Syntax.Match () n ps (Syntax.UnGuardedRhs () e) Nothing
+
+guardedMatch :: Name -> [Pat] -> [(Exp, Exp)] -> Match
+guardedMatch n ps gs =
+    Syntax.Match () n ps
+       (Syntax.GuardedRhss ()
+           $ map (\g -> Syntax.GuardedRhs () [Syntax.Qualifier () $ fst g]
+                            (snd g)) gs)
+       Nothing
 
 -- | A hand-rolled type for modules, which allows comments on top-level
 -- declarations.

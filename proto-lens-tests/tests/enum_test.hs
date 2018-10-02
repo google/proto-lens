@@ -15,6 +15,7 @@ import Proto.Enum
     , Foo'Baz(..)
     -- explicit import to make sure we get pattern synonyms
     , Alias(..)
+    , ManyCasesProto
     )
 import Proto.Enum_Fields
 import Data.Function (on)
@@ -45,11 +46,13 @@ main = testMain
     , testEnumFromThenTo
     , testMonotonicFromEnum
     , testAliases
+    , testManyCases
     ]
 
 testExternalEnum, testNestedEnum, testDefaults, testBadEnumValues,
     testNamedEnumValues, testRoundTrip, testBounded, testMaybeSuccAndPred,
-    testEnumFromThenTo, testMonotonicFromEnum, testAliases :: Test
+    testEnumFromThenTo, testMonotonicFromEnum, testAliases,
+    testManyCases :: Test
 
 testExternalEnum = testGroup "external"
     [ serializeTo (show e1)
@@ -158,3 +161,6 @@ testAliases = testCase "alias" $ do
         Alias1 -> Alias1
         Alias2 -> Alias2
         Alias3 -> Alias3
+
+testManyCases =
+    runTypedTest (roundTripTest "many cases" :: TypedTest ManyCasesProto)
