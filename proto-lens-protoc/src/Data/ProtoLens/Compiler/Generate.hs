@@ -446,9 +446,10 @@ generateEnumDecls syntaxType info =
           | (c, k) <- constructorNumbers
           ]
           ++
-          [match "maybeToEnum" ["k"] $ case syntaxType of
-              Proto2 -> "Prelude.Nothing"
-              Proto3 -> "Prelude.Just" @@
+          [ case syntaxType of
+              Proto2 -> match "maybeToEnum" [pWildCard] "Prelude.Nothing"
+              Proto3 -> match "maybeToEnum" ["k"]
+                          $ "Prelude.Just" @@
                             (con (unQual unrecognizedName)
                               @@ (con (unQual unrecognizedValueName)
                                   @@ ("Prelude.fromIntegral" @@ "k")
