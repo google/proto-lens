@@ -437,9 +437,10 @@ generateEnumDecls syntaxType info =
     --       showEnum (FooEnum'Unrecognized (FooEnum'UnrecognizedValue k))
     --         = Prelude.show k
     --
-    --       readEnum "Enum2a" = Prelude.Just Enum2a -- alias
-    --       readEnum "Enum2" = Prelude.Just Enum2
-    --       readEnum "Enum1" = Prelude.Just Enum1
+    --       readEnum k
+    --           | k == "Enum2a" = Prelude.Just Enum2a -- alias
+    --           | k == "Enum2" = Prelude.Just Enum2
+    --           | k == "Enum1" = Prelude.Just Enum1
     --       readEnum k = Text.Read.readMaybe k >>= maybeToEnum
     , instDecl [] ("Data.ProtoLens.MessageEnum" `ihApp` [dataType])
         [ [ match "maybeToEnum" [pLitInt k] $ "Prelude.Just" @@ con (unQual c)
@@ -468,13 +469,13 @@ generateEnumDecls syntaxType info =
                   $ "Prelude.show" @@ "k"
           | syntaxType == Proto3
           ]
-        , [ match "readEnum" [stringPat pn]
-              $ "Prelude.Just" @@ con (unQual n)
-          | v <- enumValues info
-          , let n = enumValueName v
-          , let pn = T.unpack $ enumValueDescriptor v ^. name
-          ] ++
-          [match "readEnum" [pVar "k"] $ "Prelude.>>="
+        , [ guardedMatch "readEnum" [pVar "k"]
+              [ ("Prelude.==" @@ "k" @@ stringExp pn, "Prelude.Just" @@ con (unQual n))
+              | v <- enumValues info
+              , let n = enumValueName v
+              , let pn = T.unpack $ enumValueDescriptor v ^. name
+              ]
+          , match "readEnum" [pVar "k"] $ "Prelude.>>="
                                       @@ ("Text.Read.readMaybe" @@ "k")
                                       @@ "Data.ProtoLens.maybeToEnum"]
         ]
