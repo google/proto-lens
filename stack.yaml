@@ -17,6 +17,3 @@ packages:
 extra-deps:
 - discrimination-0.3
 - promises-0.3
-
-ghc-options:
-  "$locals": -Wall -Werror
