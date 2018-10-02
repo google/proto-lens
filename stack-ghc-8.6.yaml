@@ -4,6 +4,7 @@ packages:
 - lens-labels
 - proto-lens
 - proto-lens-arbitrary
+# Criterion doesn't build with nightly yet:
 # - proto-lens-benchmarks
 - proto-lens-combinators
 # - proto-lens-discrimination
@@ -15,5 +16,6 @@ packages:
 - proto-lens-tests
 - proto-lens-tests-dep
 extra-deps:
+# These don't build with nightly yet:
 # - discrimination-0.3
 # - promises-0.3
