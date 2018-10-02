@@ -43,7 +43,6 @@ before_install:
   - rm protoc-release.zip
 
 install:
-  # Don't use '-Wall -Werror' to build the snapshot packages.
   - case "$BUILD" in
       stack)
         $STACK setup --no-terminal;
@@ -61,7 +60,7 @@ script:
   # build outputs from the regular build.
   - case "$BUILD" in
       stack)
-        STACK_ARGS=(--haddock --no-haddock-deps --ghc-options="-Wall -Werror");
+        STACK_ARGS=(--haddock --no-haddock-deps);
         $STACK build --bench --no-run-benchmarks "${STACK_ARGS[@]}" && $STACK test "${STACK_ARGS[@]}" &&
         (cd proto-lens-tutorial && $STACK build "${STACK_ARGS[@]}");;
       cabal)
