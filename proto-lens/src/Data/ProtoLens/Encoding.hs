@@ -145,7 +145,7 @@ parseAndAddField
                         !x <- getSimpleVal
                         return $! over' f (`V.snoc` x) msg)
                 <|> (do
-                        xs <- getPackedVals
+                        xs <- reverse <$> getPackedVals
                         return $! over' f (V.++ V.fromList xs) msg)
                 <|> fail ("Expected a repeated field wire type but found "
                             ++ show wt)

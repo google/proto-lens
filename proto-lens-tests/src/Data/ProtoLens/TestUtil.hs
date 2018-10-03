@@ -70,15 +70,18 @@ testMain = defaultMain
 
 serializeTo :: (Show a, Eq a, Message a)
             => String -> a -> Doc -> Builder.Builder -> Test
-serializeTo name x text bs = testCase name $ do
-    let bs' = toStrictByteString bs
-    bs' @=? encodeMessage x
-    x @=? decodeMessageOrDie bs'
-    let text' = show text
-    -- For consistency in the tests, make them put each field and submessage on
-    -- a separate line.
-    text' @=? renderIndenting (pprintMessage x)
-    x @=? readMessageOrDie (LT.pack text')
+serializeTo name x text bs = testGroup name
+    [ testCase "encoding" $ do
+        let bs' = toStrictByteString bs
+        bs' @=? encodeMessage x
+        x @=? decodeMessageOrDie bs'
+    , testCase "text format" $ do
+        let text' = show text
+        -- For consistency in the tests, make them put each field and submessage on
+        -- a separate line.
+        text' @=? renderIndenting (pprintMessage x)
+        x @=? readMessageOrDie (LT.pack text')
+    ]
 
 renderIndenting :: Doc -> String
 renderIndenting = renderStyle style { lineLength = 1 }
