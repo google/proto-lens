@@ -1,8 +1,9 @@
 # Changelog for `proto-lens-protoc`
 
-## v0.3.1.2
+## v0.3.1.3
 - Bump the upper bound to `temporary-1.3`.
 - Fix warnings.
+- Add support for ghc-8.6.
 
 ## v0.3.1.1
 - Fix management of generated files between Cabal components (#171).

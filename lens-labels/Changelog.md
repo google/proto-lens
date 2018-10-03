@@ -1,5 +1,8 @@
 # Changelog for `lens-labels`
 
+## v0.2.0.3
+- Add support for ghc-8.6.
+
 ## v0.2.0.2
 - Bump the lower bound on `base` to indicate we require `ghc>=8.0`.
 

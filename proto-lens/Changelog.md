@@ -1,7 +1,8 @@
 # Changelog for `proto-lens`
 
-## v0.3.1.1
+## v0.3.1.3
 - Bump the lower bound on `base` to indicate we require `ghc>=8.0`.
+- Add support for ghc-8.6.
 
 ## v0.3.1.0
 - Improve references to types/fields in decoding error messages (#187).

@@ -1,5 +1,5 @@
 name: proto-lens-protobuf-types
-version: '0.3.0.2'
+version: '0.3.0.3'
 synopsis: Basic protocol buffer message types.
 description: >
   This package provides bindings standard protocol message types,
@@ -19,12 +19,12 @@ extra-source-files:
 
 custom-setup:
   dependencies:
-    - base >= 4.9 && < 4.12
+    - base >= 4.9 && < 4.13
     - Cabal
     - proto-lens-protoc == 0.3.*
 
 dependencies:
-  - base >= 4.9 && < 4.12
+  - base >= 4.9 && < 4.13
   - lens-labels == 0.2.*
   - proto-lens == 0.3.*
   - proto-lens-protoc == 0.3.*

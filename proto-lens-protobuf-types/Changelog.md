@@ -1,5 +1,8 @@
 # Changelog for `proto-lens-protobuf-types`
 
+## v0.3.0.3
+- Add support for ghc-8.6.
+
 ## v0.3.0.2
 - Bump the lower bound on `base` to indicate we require `ghc>=8.0`.
 - Use autogen-modules. (#196)

@@ -1,5 +1,5 @@
 name: lens-labels
-version: "0.2.0.2"
+version: "0.2.0.3"
 synopsis: Integration of lenses with OverloadedLabels.
 description: >
   Provides a framework to integrate lenses with GHC's OverloadedLabels
@@ -20,7 +20,7 @@ library:
     - Lens.Labels.Unwrapped
     - Lens.Labels.Prism
   dependencies:
-    - base >= 4.9 && < 4.12
+    - base >= 4.9 && < 4.13
     - ghc-prim >= 0.4 && < 0.6
     - profunctors >= 5.2
     - tagged >= 0.8
