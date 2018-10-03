@@ -37,6 +37,7 @@ import qualified Data.Set as Set
 import qualified Data.Text.Encoding as Text
 import qualified Data.Text.Lazy as Lazy
 import qualified Data.Text as Text (unpack)
+import qualified Data.Vector.Unboxed as V
 import Numeric (showOct)
 import Text.Parsec (parse)
 import Text.PrettyPrint
@@ -103,7 +104,8 @@ pprintField reg msg (FieldDescriptor name typeDescr accessor)
           where val = msg ^. f
         OptionalField f -> catMaybes [msg ^. f]
         -- TODO: better printing for packed fields
-        RepeatedField _ f -> msg ^. f
+        RepeatedField f -> msg ^. f
+        PackedField f -> V.toList $ msg ^. f
         MapField k v f -> pairToMsg <$> Map.assocs (msg ^. f)
           where pairToMsg (x,y) = defMessage
                                     & k .~ x
@@ -262,7 +264,9 @@ addField reg msg (Parser.Field key rawValue) = do
 modifyField :: FieldAccessor msg value -> value -> msg -> msg
 modifyField (PlainField _ f) value = set f value
 modifyField (OptionalField f) value = set f (Just value)
-modifyField (RepeatedField _ f) value = over f (value :)
+modifyField (RepeatedField f) value = over f (value :)
+-- TODO: this could also be more efficient...
+modifyField (PackedField f) value = over f (`V.snoc` value)
 modifyField (MapField key value f) mapElem
     = over f (Map.insert (mapElem ^. key) (mapElem ^. value))
 

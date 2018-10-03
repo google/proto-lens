@@ -41,6 +41,7 @@ import qualified Data.Map.Strict as Map
 import Data.ByteString.Lazy.Builder as Builder
 import qualified Data.ByteString.Lazy as L
 import Lens.Family2 (Lens', set, over, (^.), (&))
+import qualified Data.Vector.Unboxed as V
 
 -- TODO: We could be more incremental when parsing/encoding length-based fields,
 -- rather than forcing the whole thing.  E.g., for encoding we're doing extra
@@ -130,7 +131,7 @@ parseAndAddField
               -- depending on how it was encoded.
               -- Note that if fieldWt is Lengthy (e.g., "string" or
               -- message) we should always parse it as unpacked.
-              RepeatedField _ f
+              RepeatedField f
                 -> (do
                         !x <- getSimpleVal
                         return $! over' f (x :) msg)
@@ -139,6 +140,16 @@ parseAndAddField
                         return $! over' f (xs ++) msg)
                 <|> fail ("Expected a repeated field wire type but found "
                             ++ show wt)
+              PackedField f
+                -> (do
+                        !x <- getSimpleVal
+                        return $! over' f (`V.snoc` x) msg)
+                <|> (do
+                        xs <- getPackedVals
+                        return $! over' f (V.++ V.fromList xs) msg)
+                <|> fail ("Expected a repeated field wire type but found "
+                            ++ show wt)
+
               MapField keyLens valueLens f -> do
                   entry <- getSimpleVal
                   let !key = entry ^. keyLens
@@ -224,8 +235,8 @@ messageFieldToVals tag (FieldDescriptor _ typeDescriptor accessor) msg =
             OptionalField f -> foldMap embed (msg ^. f)
             -- Note: using 'concatMap' instead of 'foldMap' below
             -- seems to allow better list fusion.
-            RepeatedField Unpacked f -> concatMap embed (msg ^. f)
-            RepeatedField Packed f -> embedPacked (msg ^. f)
+            RepeatedField f -> concatMap embed (msg ^. f)
+            PackedField f -> embedPacked $ V.toList $ msg ^. f
             MapField keyLens valueLens f ->
                 concatMap (\(k, v) -> embed $ defMessage
                                                 & set keyLens k
