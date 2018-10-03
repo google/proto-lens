@@ -41,6 +41,7 @@ import qualified Data.ByteString
 import qualified Data.ByteString.Char8
 import qualified Lens.Labels
 import qualified Text.Read
+import qualified Data.Vector.Unboxed
 
 {- | Fields :
 
@@ -188,7 +189,7 @@ instance Data.ProtoLens.Message DescriptorProto where
                   = Data.ProtoLens.FieldDescriptor "field"
                       (Data.ProtoLens.MessageField Data.ProtoLens.MessageType ::
                          Data.ProtoLens.FieldTypeDescriptor FieldDescriptorProto)
-                      (Data.ProtoLens.RepeatedField Data.ProtoLens.Unpacked
+                      (Data.ProtoLens.RepeatedField
                          (Lens.Labels.lensOf'
                             ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "field")))
                       :: Data.ProtoLens.FieldDescriptor DescriptorProto
@@ -196,7 +197,7 @@ instance Data.ProtoLens.Message DescriptorProto where
                   = Data.ProtoLens.FieldDescriptor "extension"
                       (Data.ProtoLens.MessageField Data.ProtoLens.MessageType ::
                          Data.ProtoLens.FieldTypeDescriptor FieldDescriptorProto)
-                      (Data.ProtoLens.RepeatedField Data.ProtoLens.Unpacked
+                      (Data.ProtoLens.RepeatedField
                          (Lens.Labels.lensOf'
                             ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "extension")))
                       :: Data.ProtoLens.FieldDescriptor DescriptorProto
@@ -204,7 +205,7 @@ instance Data.ProtoLens.Message DescriptorProto where
                   = Data.ProtoLens.FieldDescriptor "nested_type"
                       (Data.ProtoLens.MessageField Data.ProtoLens.MessageType ::
                          Data.ProtoLens.FieldTypeDescriptor DescriptorProto)
-                      (Data.ProtoLens.RepeatedField Data.ProtoLens.Unpacked
+                      (Data.ProtoLens.RepeatedField
                          (Lens.Labels.lensOf'
                             ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "nestedType")))
                       :: Data.ProtoLens.FieldDescriptor DescriptorProto
@@ -212,7 +213,7 @@ instance Data.ProtoLens.Message DescriptorProto where
                   = Data.ProtoLens.FieldDescriptor "enum_type"
                       (Data.ProtoLens.MessageField Data.ProtoLens.MessageType ::
                          Data.ProtoLens.FieldTypeDescriptor EnumDescriptorProto)
-                      (Data.ProtoLens.RepeatedField Data.ProtoLens.Unpacked
+                      (Data.ProtoLens.RepeatedField
                          (Lens.Labels.lensOf'
                             ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "enumType")))
                       :: Data.ProtoLens.FieldDescriptor DescriptorProto
@@ -220,7 +221,7 @@ instance Data.ProtoLens.Message DescriptorProto where
                   = Data.ProtoLens.FieldDescriptor "extension_range"
                       (Data.ProtoLens.MessageField Data.ProtoLens.MessageType ::
                          Data.ProtoLens.FieldTypeDescriptor DescriptorProto'ExtensionRange)
-                      (Data.ProtoLens.RepeatedField Data.ProtoLens.Unpacked
+                      (Data.ProtoLens.RepeatedField
                          (Lens.Labels.lensOf'
                             ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "extensionRange")))
                       :: Data.ProtoLens.FieldDescriptor DescriptorProto
@@ -228,7 +229,7 @@ instance Data.ProtoLens.Message DescriptorProto where
                   = Data.ProtoLens.FieldDescriptor "oneof_decl"
                       (Data.ProtoLens.MessageField Data.ProtoLens.MessageType ::
                          Data.ProtoLens.FieldTypeDescriptor OneofDescriptorProto)
-                      (Data.ProtoLens.RepeatedField Data.ProtoLens.Unpacked
+                      (Data.ProtoLens.RepeatedField
                          (Lens.Labels.lensOf'
                             ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "oneofDecl")))
                       :: Data.ProtoLens.FieldDescriptor DescriptorProto
@@ -244,7 +245,7 @@ instance Data.ProtoLens.Message DescriptorProto where
                   = Data.ProtoLens.FieldDescriptor "reserved_range"
                       (Data.ProtoLens.MessageField Data.ProtoLens.MessageType ::
                          Data.ProtoLens.FieldTypeDescriptor DescriptorProto'ReservedRange)
-                      (Data.ProtoLens.RepeatedField Data.ProtoLens.Unpacked
+                      (Data.ProtoLens.RepeatedField
                          (Lens.Labels.lensOf'
                             ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "reservedRange")))
                       :: Data.ProtoLens.FieldDescriptor DescriptorProto
@@ -252,7 +253,7 @@ instance Data.ProtoLens.Message DescriptorProto where
                   = Data.ProtoLens.FieldDescriptor "reserved_name"
                       (Data.ProtoLens.ScalarField Data.ProtoLens.StringField ::
                          Data.ProtoLens.FieldTypeDescriptor Data.Text.Text)
-                      (Data.ProtoLens.RepeatedField Data.ProtoLens.Unpacked
+                      (Data.ProtoLens.RepeatedField
                          (Lens.Labels.lensOf'
                             ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "reservedName")))
                       :: Data.ProtoLens.FieldDescriptor DescriptorProto
@@ -638,7 +639,7 @@ instance Data.ProtoLens.Message EnumDescriptorProto where
                   = Data.ProtoLens.FieldDescriptor "value"
                       (Data.ProtoLens.MessageField Data.ProtoLens.MessageType ::
                          Data.ProtoLens.FieldTypeDescriptor EnumValueDescriptorProto)
-                      (Data.ProtoLens.RepeatedField Data.ProtoLens.Unpacked
+                      (Data.ProtoLens.RepeatedField
                          (Lens.Labels.lensOf'
                             ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "value")))
                       :: Data.ProtoLens.FieldDescriptor EnumDescriptorProto
@@ -655,7 +656,7 @@ instance Data.ProtoLens.Message EnumDescriptorProto where
                       (Data.ProtoLens.MessageField Data.ProtoLens.MessageType ::
                          Data.ProtoLens.FieldTypeDescriptor
                            EnumDescriptorProto'EnumReservedRange)
-                      (Data.ProtoLens.RepeatedField Data.ProtoLens.Unpacked
+                      (Data.ProtoLens.RepeatedField
                          (Lens.Labels.lensOf'
                             ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "reservedRange")))
                       :: Data.ProtoLens.FieldDescriptor EnumDescriptorProto
@@ -663,7 +664,7 @@ instance Data.ProtoLens.Message EnumDescriptorProto where
                   = Data.ProtoLens.FieldDescriptor "reserved_name"
                       (Data.ProtoLens.ScalarField Data.ProtoLens.StringField ::
                          Data.ProtoLens.FieldTypeDescriptor Data.Text.Text)
-                      (Data.ProtoLens.RepeatedField Data.ProtoLens.Unpacked
+                      (Data.ProtoLens.RepeatedField
                          (Lens.Labels.lensOf'
                             ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "reservedName")))
                       :: Data.ProtoLens.FieldDescriptor EnumDescriptorProto
@@ -901,7 +902,7 @@ instance Data.ProtoLens.Message EnumOptions where
                   = Data.ProtoLens.FieldDescriptor "uninterpreted_option"
                       (Data.ProtoLens.MessageField Data.ProtoLens.MessageType ::
                          Data.ProtoLens.FieldTypeDescriptor UninterpretedOption)
-                      (Data.ProtoLens.RepeatedField Data.ProtoLens.Unpacked
+                      (Data.ProtoLens.RepeatedField
                          (Lens.Labels.lensOf'
                             ((Lens.Labels.proxy#) ::
                                (Lens.Labels.Proxy#) "uninterpretedOption")))
@@ -1110,7 +1111,7 @@ instance Data.ProtoLens.Message EnumValueOptions where
                   = Data.ProtoLens.FieldDescriptor "uninterpreted_option"
                       (Data.ProtoLens.MessageField Data.ProtoLens.MessageType ::
                          Data.ProtoLens.FieldTypeDescriptor UninterpretedOption)
-                      (Data.ProtoLens.RepeatedField Data.ProtoLens.Unpacked
+                      (Data.ProtoLens.RepeatedField
                          (Lens.Labels.lensOf'
                             ((Lens.Labels.proxy#) ::
                                (Lens.Labels.Proxy#) "uninterpretedOption")))
@@ -1167,7 +1168,7 @@ instance Data.ProtoLens.Message ExtensionRangeOptions where
                   = Data.ProtoLens.FieldDescriptor "uninterpreted_option"
                       (Data.ProtoLens.MessageField Data.ProtoLens.MessageType ::
                          Data.ProtoLens.FieldTypeDescriptor UninterpretedOption)
-                      (Data.ProtoLens.RepeatedField Data.ProtoLens.Unpacked
+                      (Data.ProtoLens.RepeatedField
                          (Lens.Labels.lensOf'
                             ((Lens.Labels.proxy#) ::
                                (Lens.Labels.Proxy#) "uninterpretedOption")))
@@ -1538,9 +1539,6 @@ data FieldDescriptorProto'Label = FieldDescriptorProto'LABEL_OPTIONAL
                                 | FieldDescriptorProto'LABEL_REQUIRED
                                 | FieldDescriptorProto'LABEL_REPEATED
                                     deriving (Prelude.Show, Prelude.Eq, Prelude.Ord)
-instance Data.ProtoLens.FieldDefault FieldDescriptorProto'Label
-         where
-        fieldDefault = FieldDescriptorProto'LABEL_OPTIONAL
 instance Data.ProtoLens.MessageEnum FieldDescriptorProto'Label
          where
         maybeToEnum 1 = Prelude.Just FieldDescriptorProto'LABEL_OPTIONAL
@@ -1550,13 +1548,18 @@ instance Data.ProtoLens.MessageEnum FieldDescriptorProto'Label
         showEnum FieldDescriptorProto'LABEL_OPTIONAL = "LABEL_OPTIONAL"
         showEnum FieldDescriptorProto'LABEL_REQUIRED = "LABEL_REQUIRED"
         showEnum FieldDescriptorProto'LABEL_REPEATED = "LABEL_REPEATED"
-        readEnum "LABEL_OPTIONAL"
-          = Prelude.Just FieldDescriptorProto'LABEL_OPTIONAL
-        readEnum "LABEL_REQUIRED"
-          = Prelude.Just FieldDescriptorProto'LABEL_REQUIRED
-        readEnum "LABEL_REPEATED"
-          = Prelude.Just FieldDescriptorProto'LABEL_REPEATED
-        readEnum _ = Prelude.Nothing
+        readEnum k
+          | (Prelude.==) k "LABEL_OPTIONAL" =
+            Prelude.Just FieldDescriptorProto'LABEL_OPTIONAL
+          | (Prelude.==) k "LABEL_REQUIRED" =
+            Prelude.Just FieldDescriptorProto'LABEL_REQUIRED
+          | (Prelude.==) k "LABEL_REPEATED" =
+            Prelude.Just FieldDescriptorProto'LABEL_REPEATED
+        readEnum k
+          = (Prelude.>>=) (Text.Read.readMaybe k) Data.ProtoLens.maybeToEnum
+instance Prelude.Bounded FieldDescriptorProto'Label where
+        minBound = FieldDescriptorProto'LABEL_OPTIONAL
+        maxBound = FieldDescriptorProto'LABEL_REPEATED
 instance Prelude.Enum FieldDescriptorProto'Label where
         toEnum k__
           = Prelude.maybe
@@ -1586,9 +1589,9 @@ instance Prelude.Enum FieldDescriptorProto'Label where
         enumFromTo = Data.ProtoLens.Message.Enum.messageEnumFromTo
         enumFromThen = Data.ProtoLens.Message.Enum.messageEnumFromThen
         enumFromThenTo = Data.ProtoLens.Message.Enum.messageEnumFromThenTo
-instance Prelude.Bounded FieldDescriptorProto'Label where
-        minBound = FieldDescriptorProto'LABEL_OPTIONAL
-        maxBound = FieldDescriptorProto'LABEL_REPEATED
+instance Data.ProtoLens.FieldDefault FieldDescriptorProto'Label
+         where
+        fieldDefault = FieldDescriptorProto'LABEL_OPTIONAL
 instance Control.DeepSeq.NFData FieldDescriptorProto'Label where
         rnf x__ = Prelude.seq x__ (())
 data FieldDescriptorProto'Type = FieldDescriptorProto'TYPE_DOUBLE
@@ -1610,9 +1613,6 @@ data FieldDescriptorProto'Type = FieldDescriptorProto'TYPE_DOUBLE
                                | FieldDescriptorProto'TYPE_SINT32
                                | FieldDescriptorProto'TYPE_SINT64
                                    deriving (Prelude.Show, Prelude.Eq, Prelude.Ord)
-instance Data.ProtoLens.FieldDefault FieldDescriptorProto'Type
-         where
-        fieldDefault = FieldDescriptorProto'TYPE_DOUBLE
 instance Data.ProtoLens.MessageEnum FieldDescriptorProto'Type where
         maybeToEnum 1 = Prelude.Just FieldDescriptorProto'TYPE_DOUBLE
         maybeToEnum 2 = Prelude.Just FieldDescriptorProto'TYPE_FLOAT
@@ -1651,41 +1651,48 @@ instance Data.ProtoLens.MessageEnum FieldDescriptorProto'Type where
         showEnum FieldDescriptorProto'TYPE_SFIXED64 = "TYPE_SFIXED64"
         showEnum FieldDescriptorProto'TYPE_SINT32 = "TYPE_SINT32"
         showEnum FieldDescriptorProto'TYPE_SINT64 = "TYPE_SINT64"
-        readEnum "TYPE_DOUBLE"
-          = Prelude.Just FieldDescriptorProto'TYPE_DOUBLE
-        readEnum "TYPE_FLOAT"
-          = Prelude.Just FieldDescriptorProto'TYPE_FLOAT
-        readEnum "TYPE_INT64"
-          = Prelude.Just FieldDescriptorProto'TYPE_INT64
-        readEnum "TYPE_UINT64"
-          = Prelude.Just FieldDescriptorProto'TYPE_UINT64
-        readEnum "TYPE_INT32"
-          = Prelude.Just FieldDescriptorProto'TYPE_INT32
-        readEnum "TYPE_FIXED64"
-          = Prelude.Just FieldDescriptorProto'TYPE_FIXED64
-        readEnum "TYPE_FIXED32"
-          = Prelude.Just FieldDescriptorProto'TYPE_FIXED32
-        readEnum "TYPE_BOOL" = Prelude.Just FieldDescriptorProto'TYPE_BOOL
-        readEnum "TYPE_STRING"
-          = Prelude.Just FieldDescriptorProto'TYPE_STRING
-        readEnum "TYPE_GROUP"
-          = Prelude.Just FieldDescriptorProto'TYPE_GROUP
-        readEnum "TYPE_MESSAGE"
-          = Prelude.Just FieldDescriptorProto'TYPE_MESSAGE
-        readEnum "TYPE_BYTES"
-          = Prelude.Just FieldDescriptorProto'TYPE_BYTES
-        readEnum "TYPE_UINT32"
-          = Prelude.Just FieldDescriptorProto'TYPE_UINT32
-        readEnum "TYPE_ENUM" = Prelude.Just FieldDescriptorProto'TYPE_ENUM
-        readEnum "TYPE_SFIXED32"
-          = Prelude.Just FieldDescriptorProto'TYPE_SFIXED32
-        readEnum "TYPE_SFIXED64"
-          = Prelude.Just FieldDescriptorProto'TYPE_SFIXED64
-        readEnum "TYPE_SINT32"
-          = Prelude.Just FieldDescriptorProto'TYPE_SINT32
-        readEnum "TYPE_SINT64"
-          = Prelude.Just FieldDescriptorProto'TYPE_SINT64
-        readEnum _ = Prelude.Nothing
+        readEnum k
+          | (Prelude.==) k "TYPE_DOUBLE" =
+            Prelude.Just FieldDescriptorProto'TYPE_DOUBLE
+          | (Prelude.==) k "TYPE_FLOAT" =
+            Prelude.Just FieldDescriptorProto'TYPE_FLOAT
+          | (Prelude.==) k "TYPE_INT64" =
+            Prelude.Just FieldDescriptorProto'TYPE_INT64
+          | (Prelude.==) k "TYPE_UINT64" =
+            Prelude.Just FieldDescriptorProto'TYPE_UINT64
+          | (Prelude.==) k "TYPE_INT32" =
+            Prelude.Just FieldDescriptorProto'TYPE_INT32
+          | (Prelude.==) k "TYPE_FIXED64" =
+            Prelude.Just FieldDescriptorProto'TYPE_FIXED64
+          | (Prelude.==) k "TYPE_FIXED32" =
+            Prelude.Just FieldDescriptorProto'TYPE_FIXED32
+          | (Prelude.==) k "TYPE_BOOL" =
+            Prelude.Just FieldDescriptorProto'TYPE_BOOL
+          | (Prelude.==) k "TYPE_STRING" =
+            Prelude.Just FieldDescriptorProto'TYPE_STRING
+          | (Prelude.==) k "TYPE_GROUP" =
+            Prelude.Just FieldDescriptorProto'TYPE_GROUP
+          | (Prelude.==) k "TYPE_MESSAGE" =
+            Prelude.Just FieldDescriptorProto'TYPE_MESSAGE
+          | (Prelude.==) k "TYPE_BYTES" =
+            Prelude.Just FieldDescriptorProto'TYPE_BYTES
+          | (Prelude.==) k "TYPE_UINT32" =
+            Prelude.Just FieldDescriptorProto'TYPE_UINT32
+          | (Prelude.==) k "TYPE_ENUM" =
+            Prelude.Just FieldDescriptorProto'TYPE_ENUM
+          | (Prelude.==) k "TYPE_SFIXED32" =
+            Prelude.Just FieldDescriptorProto'TYPE_SFIXED32
+          | (Prelude.==) k "TYPE_SFIXED64" =
+            Prelude.Just FieldDescriptorProto'TYPE_SFIXED64
+          | (Prelude.==) k "TYPE_SINT32" =
+            Prelude.Just FieldDescriptorProto'TYPE_SINT32
+          | (Prelude.==) k "TYPE_SINT64" =
+            Prelude.Just FieldDescriptorProto'TYPE_SINT64
+        readEnum k
+          = (Prelude.>>=) (Text.Read.readMaybe k) Data.ProtoLens.maybeToEnum
+instance Prelude.Bounded FieldDescriptorProto'Type where
+        minBound = FieldDescriptorProto'TYPE_DOUBLE
+        maxBound = FieldDescriptorProto'TYPE_SINT64
 instance Prelude.Enum FieldDescriptorProto'Type where
         toEnum k__
           = Prelude.maybe
@@ -1790,9 +1797,9 @@ instance Prelude.Enum FieldDescriptorProto'Type where
         enumFromTo = Data.ProtoLens.Message.Enum.messageEnumFromTo
         enumFromThen = Data.ProtoLens.Message.Enum.messageEnumFromThen
         enumFromThenTo = Data.ProtoLens.Message.Enum.messageEnumFromThenTo
-instance Prelude.Bounded FieldDescriptorProto'Type where
-        minBound = FieldDescriptorProto'TYPE_DOUBLE
-        maxBound = FieldDescriptorProto'TYPE_SINT64
+instance Data.ProtoLens.FieldDefault FieldDescriptorProto'Type
+         where
+        fieldDefault = FieldDescriptorProto'TYPE_DOUBLE
 instance Control.DeepSeq.NFData FieldDescriptorProto'Type where
         rnf x__ = Prelude.seq x__ (())
 {- | Fields :
@@ -1982,7 +1989,7 @@ instance Data.ProtoLens.Message FieldOptions where
                   = Data.ProtoLens.FieldDescriptor "uninterpreted_option"
                       (Data.ProtoLens.MessageField Data.ProtoLens.MessageType ::
                          Data.ProtoLens.FieldTypeDescriptor UninterpretedOption)
-                      (Data.ProtoLens.RepeatedField Data.ProtoLens.Unpacked
+                      (Data.ProtoLens.RepeatedField
                          (Lens.Labels.lensOf'
                             ((Lens.Labels.proxy#) ::
                                (Lens.Labels.Proxy#) "uninterpretedOption")))
@@ -2024,8 +2031,6 @@ data FieldOptions'CType = FieldOptions'STRING
                         | FieldOptions'CORD
                         | FieldOptions'STRING_PIECE
                             deriving (Prelude.Show, Prelude.Eq, Prelude.Ord)
-instance Data.ProtoLens.FieldDefault FieldOptions'CType where
-        fieldDefault = FieldOptions'STRING
 instance Data.ProtoLens.MessageEnum FieldOptions'CType where
         maybeToEnum 0 = Prelude.Just FieldOptions'STRING
         maybeToEnum 1 = Prelude.Just FieldOptions'CORD
@@ -2034,10 +2039,16 @@ instance Data.ProtoLens.MessageEnum FieldOptions'CType where
         showEnum FieldOptions'STRING = "STRING"
         showEnum FieldOptions'CORD = "CORD"
         showEnum FieldOptions'STRING_PIECE = "STRING_PIECE"
-        readEnum "STRING" = Prelude.Just FieldOptions'STRING
-        readEnum "CORD" = Prelude.Just FieldOptions'CORD
-        readEnum "STRING_PIECE" = Prelude.Just FieldOptions'STRING_PIECE
-        readEnum _ = Prelude.Nothing
+        readEnum k
+          | (Prelude.==) k "STRING" = Prelude.Just FieldOptions'STRING
+          | (Prelude.==) k "CORD" = Prelude.Just FieldOptions'CORD
+          | (Prelude.==) k "STRING_PIECE" =
+            Prelude.Just FieldOptions'STRING_PIECE
+        readEnum k
+          = (Prelude.>>=) (Text.Read.readMaybe k) Data.ProtoLens.maybeToEnum
+instance Prelude.Bounded FieldOptions'CType where
+        minBound = FieldOptions'STRING
+        maxBound = FieldOptions'STRING_PIECE
 instance Prelude.Enum FieldOptions'CType where
         toEnum k__
           = Prelude.maybe
@@ -2063,17 +2074,14 @@ instance Prelude.Enum FieldOptions'CType where
         enumFromTo = Data.ProtoLens.Message.Enum.messageEnumFromTo
         enumFromThen = Data.ProtoLens.Message.Enum.messageEnumFromThen
         enumFromThenTo = Data.ProtoLens.Message.Enum.messageEnumFromThenTo
-instance Prelude.Bounded FieldOptions'CType where
-        minBound = FieldOptions'STRING
-        maxBound = FieldOptions'STRING_PIECE
+instance Data.ProtoLens.FieldDefault FieldOptions'CType where
+        fieldDefault = FieldOptions'STRING
 instance Control.DeepSeq.NFData FieldOptions'CType where
         rnf x__ = Prelude.seq x__ (())
 data FieldOptions'JSType = FieldOptions'JS_NORMAL
                          | FieldOptions'JS_STRING
                          | FieldOptions'JS_NUMBER
                              deriving (Prelude.Show, Prelude.Eq, Prelude.Ord)
-instance Data.ProtoLens.FieldDefault FieldOptions'JSType where
-        fieldDefault = FieldOptions'JS_NORMAL
 instance Data.ProtoLens.MessageEnum FieldOptions'JSType where
         maybeToEnum 0 = Prelude.Just FieldOptions'JS_NORMAL
         maybeToEnum 1 = Prelude.Just FieldOptions'JS_STRING
@@ -2082,10 +2090,15 @@ instance Data.ProtoLens.MessageEnum FieldOptions'JSType where
         showEnum FieldOptions'JS_NORMAL = "JS_NORMAL"
         showEnum FieldOptions'JS_STRING = "JS_STRING"
         showEnum FieldOptions'JS_NUMBER = "JS_NUMBER"
-        readEnum "JS_NORMAL" = Prelude.Just FieldOptions'JS_NORMAL
-        readEnum "JS_STRING" = Prelude.Just FieldOptions'JS_STRING
-        readEnum "JS_NUMBER" = Prelude.Just FieldOptions'JS_NUMBER
-        readEnum _ = Prelude.Nothing
+        readEnum k
+          | (Prelude.==) k "JS_NORMAL" = Prelude.Just FieldOptions'JS_NORMAL
+          | (Prelude.==) k "JS_STRING" = Prelude.Just FieldOptions'JS_STRING
+          | (Prelude.==) k "JS_NUMBER" = Prelude.Just FieldOptions'JS_NUMBER
+        readEnum k
+          = (Prelude.>>=) (Text.Read.readMaybe k) Data.ProtoLens.maybeToEnum
+instance Prelude.Bounded FieldOptions'JSType where
+        minBound = FieldOptions'JS_NORMAL
+        maxBound = FieldOptions'JS_NUMBER
 instance Prelude.Enum FieldOptions'JSType where
         toEnum k__
           = Prelude.maybe
@@ -2111,9 +2124,8 @@ instance Prelude.Enum FieldOptions'JSType where
         enumFromTo = Data.ProtoLens.Message.Enum.messageEnumFromTo
         enumFromThen = Data.ProtoLens.Message.Enum.messageEnumFromThen
         enumFromThenTo = Data.ProtoLens.Message.Enum.messageEnumFromThenTo
-instance Prelude.Bounded FieldOptions'JSType where
-        minBound = FieldOptions'JS_NORMAL
-        maxBound = FieldOptions'JS_NUMBER
+instance Data.ProtoLens.FieldDefault FieldOptions'JSType where
+        fieldDefault = FieldOptions'JS_NORMAL
 instance Control.DeepSeq.NFData FieldOptions'JSType where
         rnf x__ = Prelude.seq x__ (())
 {- | Fields :
@@ -2329,7 +2341,7 @@ instance Data.ProtoLens.Message FileDescriptorProto where
                   = Data.ProtoLens.FieldDescriptor "dependency"
                       (Data.ProtoLens.ScalarField Data.ProtoLens.StringField ::
                          Data.ProtoLens.FieldTypeDescriptor Data.Text.Text)
-                      (Data.ProtoLens.RepeatedField Data.ProtoLens.Unpacked
+                      (Data.ProtoLens.RepeatedField
                          (Lens.Labels.lensOf'
                             ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "dependency")))
                       :: Data.ProtoLens.FieldDescriptor FileDescriptorProto
@@ -2337,7 +2349,7 @@ instance Data.ProtoLens.Message FileDescriptorProto where
                   = Data.ProtoLens.FieldDescriptor "public_dependency"
                       (Data.ProtoLens.ScalarField Data.ProtoLens.Int32Field ::
                          Data.ProtoLens.FieldTypeDescriptor Data.Int.Int32)
-                      (Data.ProtoLens.RepeatedField Data.ProtoLens.Unpacked
+                      (Data.ProtoLens.RepeatedField
                          (Lens.Labels.lensOf'
                             ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "publicDependency")))
                       :: Data.ProtoLens.FieldDescriptor FileDescriptorProto
@@ -2345,7 +2357,7 @@ instance Data.ProtoLens.Message FileDescriptorProto where
                   = Data.ProtoLens.FieldDescriptor "weak_dependency"
                       (Data.ProtoLens.ScalarField Data.ProtoLens.Int32Field ::
                          Data.ProtoLens.FieldTypeDescriptor Data.Int.Int32)
-                      (Data.ProtoLens.RepeatedField Data.ProtoLens.Unpacked
+                      (Data.ProtoLens.RepeatedField
                          (Lens.Labels.lensOf'
                             ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "weakDependency")))
                       :: Data.ProtoLens.FieldDescriptor FileDescriptorProto
@@ -2353,7 +2365,7 @@ instance Data.ProtoLens.Message FileDescriptorProto where
                   = Data.ProtoLens.FieldDescriptor "message_type"
                       (Data.ProtoLens.MessageField Data.ProtoLens.MessageType ::
                          Data.ProtoLens.FieldTypeDescriptor DescriptorProto)
-                      (Data.ProtoLens.RepeatedField Data.ProtoLens.Unpacked
+                      (Data.ProtoLens.RepeatedField
                          (Lens.Labels.lensOf'
                             ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "messageType")))
                       :: Data.ProtoLens.FieldDescriptor FileDescriptorProto
@@ -2361,7 +2373,7 @@ instance Data.ProtoLens.Message FileDescriptorProto where
                   = Data.ProtoLens.FieldDescriptor "enum_type"
                       (Data.ProtoLens.MessageField Data.ProtoLens.MessageType ::
                          Data.ProtoLens.FieldTypeDescriptor EnumDescriptorProto)
-                      (Data.ProtoLens.RepeatedField Data.ProtoLens.Unpacked
+                      (Data.ProtoLens.RepeatedField
                          (Lens.Labels.lensOf'
                             ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "enumType")))
                       :: Data.ProtoLens.FieldDescriptor FileDescriptorProto
@@ -2369,7 +2381,7 @@ instance Data.ProtoLens.Message FileDescriptorProto where
                   = Data.ProtoLens.FieldDescriptor "service"
                       (Data.ProtoLens.MessageField Data.ProtoLens.MessageType ::
                          Data.ProtoLens.FieldTypeDescriptor ServiceDescriptorProto)
-                      (Data.ProtoLens.RepeatedField Data.ProtoLens.Unpacked
+                      (Data.ProtoLens.RepeatedField
                          (Lens.Labels.lensOf'
                             ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "service")))
                       :: Data.ProtoLens.FieldDescriptor FileDescriptorProto
@@ -2377,7 +2389,7 @@ instance Data.ProtoLens.Message FileDescriptorProto where
                   = Data.ProtoLens.FieldDescriptor "extension"
                       (Data.ProtoLens.MessageField Data.ProtoLens.MessageType ::
                          Data.ProtoLens.FieldTypeDescriptor FieldDescriptorProto)
-                      (Data.ProtoLens.RepeatedField Data.ProtoLens.Unpacked
+                      (Data.ProtoLens.RepeatedField
                          (Lens.Labels.lensOf'
                             ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "extension")))
                       :: Data.ProtoLens.FieldDescriptor FileDescriptorProto
@@ -2488,7 +2500,7 @@ instance Data.ProtoLens.Message FileDescriptorSet where
                   = Data.ProtoLens.FieldDescriptor "file"
                       (Data.ProtoLens.MessageField Data.ProtoLens.MessageType ::
                          Data.ProtoLens.FieldTypeDescriptor FileDescriptorProto)
-                      (Data.ProtoLens.RepeatedField Data.ProtoLens.Unpacked
+                      (Data.ProtoLens.RepeatedField
                          (Lens.Labels.lensOf'
                             ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "file")))
                       :: Data.ProtoLens.FieldDescriptor FileDescriptorSet
@@ -3101,7 +3113,7 @@ instance Data.ProtoLens.Message FileOptions where
                   = Data.ProtoLens.FieldDescriptor "uninterpreted_option"
                       (Data.ProtoLens.MessageField Data.ProtoLens.MessageType ::
                          Data.ProtoLens.FieldTypeDescriptor UninterpretedOption)
-                      (Data.ProtoLens.RepeatedField Data.ProtoLens.Unpacked
+                      (Data.ProtoLens.RepeatedField
                          (Lens.Labels.lensOf'
                             ((Lens.Labels.proxy#) ::
                                (Lens.Labels.Proxy#) "uninterpretedOption")))
@@ -3204,8 +3216,6 @@ data FileOptions'OptimizeMode = FileOptions'SPEED
                               | FileOptions'CODE_SIZE
                               | FileOptions'LITE_RUNTIME
                                   deriving (Prelude.Show, Prelude.Eq, Prelude.Ord)
-instance Data.ProtoLens.FieldDefault FileOptions'OptimizeMode where
-        fieldDefault = FileOptions'SPEED
 instance Data.ProtoLens.MessageEnum FileOptions'OptimizeMode where
         maybeToEnum 1 = Prelude.Just FileOptions'SPEED
         maybeToEnum 2 = Prelude.Just FileOptions'CODE_SIZE
@@ -3214,10 +3224,16 @@ instance Data.ProtoLens.MessageEnum FileOptions'OptimizeMode where
         showEnum FileOptions'SPEED = "SPEED"
         showEnum FileOptions'CODE_SIZE = "CODE_SIZE"
         showEnum FileOptions'LITE_RUNTIME = "LITE_RUNTIME"
-        readEnum "SPEED" = Prelude.Just FileOptions'SPEED
-        readEnum "CODE_SIZE" = Prelude.Just FileOptions'CODE_SIZE
-        readEnum "LITE_RUNTIME" = Prelude.Just FileOptions'LITE_RUNTIME
-        readEnum _ = Prelude.Nothing
+        readEnum k
+          | (Prelude.==) k "SPEED" = Prelude.Just FileOptions'SPEED
+          | (Prelude.==) k "CODE_SIZE" = Prelude.Just FileOptions'CODE_SIZE
+          | (Prelude.==) k "LITE_RUNTIME" =
+            Prelude.Just FileOptions'LITE_RUNTIME
+        readEnum k
+          = (Prelude.>>=) (Text.Read.readMaybe k) Data.ProtoLens.maybeToEnum
+instance Prelude.Bounded FileOptions'OptimizeMode where
+        minBound = FileOptions'SPEED
+        maxBound = FileOptions'LITE_RUNTIME
 instance Prelude.Enum FileOptions'OptimizeMode where
         toEnum k__
           = Prelude.maybe
@@ -3243,9 +3259,8 @@ instance Prelude.Enum FileOptions'OptimizeMode where
         enumFromTo = Data.ProtoLens.Message.Enum.messageEnumFromTo
         enumFromThen = Data.ProtoLens.Message.Enum.messageEnumFromThen
         enumFromThenTo = Data.ProtoLens.Message.Enum.messageEnumFromThenTo
-instance Prelude.Bounded FileOptions'OptimizeMode where
-        minBound = FileOptions'SPEED
-        maxBound = FileOptions'LITE_RUNTIME
+instance Data.ProtoLens.FieldDefault FileOptions'OptimizeMode where
+        fieldDefault = FileOptions'SPEED
 instance Control.DeepSeq.NFData FileOptions'OptimizeMode where
         rnf x__ = Prelude.seq x__ (())
 {- | Fields :
@@ -3277,7 +3292,7 @@ instance Data.ProtoLens.Message GeneratedCodeInfo where
                   = Data.ProtoLens.FieldDescriptor "annotation"
                       (Data.ProtoLens.MessageField Data.ProtoLens.MessageType ::
                          Data.ProtoLens.FieldTypeDescriptor GeneratedCodeInfo'Annotation)
-                      (Data.ProtoLens.RepeatedField Data.ProtoLens.Unpacked
+                      (Data.ProtoLens.RepeatedField
                          (Lens.Labels.lensOf'
                             ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "annotation")))
                       :: Data.ProtoLens.FieldDescriptor GeneratedCodeInfo
@@ -3297,7 +3312,9 @@ instance Control.DeepSeq.NFData GeneratedCodeInfo where
                 (Control.DeepSeq.deepseq (_GeneratedCodeInfo'annotation x__) (()))
 {- | Fields :
 
-    * 'Proto.Google.Protobuf.Descriptor_Fields.path' @:: Lens' GeneratedCodeInfo'Annotation [Data.Int.Int32]@
+    * 'Proto.Google.Protobuf.Descriptor_Fields.path' @:: Lens' GeneratedCodeInfo'Annotation
+  (Data.Vector.Unboxed.Vector Data.Int.Int32)@
+    * 'Proto.Google.Protobuf.Descriptor_Fields.path'packed' @:: Lens' GeneratedCodeInfo'Annotation [Data.Int.Int32]@
     * 'Proto.Google.Protobuf.Descriptor_Fields.sourceFile' @:: Lens' GeneratedCodeInfo'Annotation Data.Text.Text@
     * 'Proto.Google.Protobuf.Descriptor_Fields.maybe'sourceFile' @:: Lens' GeneratedCodeInfo'Annotation (Prelude.Maybe Data.Text.Text)@
     * 'Proto.Google.Protobuf.Descriptor_Fields.begin' @:: Lens' GeneratedCodeInfo'Annotation Data.Int.Int32@
@@ -3306,7 +3323,9 @@ instance Control.DeepSeq.NFData GeneratedCodeInfo where
     * 'Proto.Google.Protobuf.Descriptor_Fields.maybe'end' @:: Lens' GeneratedCodeInfo'Annotation (Prelude.Maybe Data.Int.Int32)@
  -}
 data GeneratedCodeInfo'Annotation = GeneratedCodeInfo'Annotation{_GeneratedCodeInfo'Annotation'path
-                                                                 :: ![Data.Int.Int32],
+                                                                 ::
+                                                                 !(Data.Vector.Unboxed.Vector
+                                                                     Data.Int.Int32),
                                                                  _GeneratedCodeInfo'Annotation'sourceFile
                                                                  :: !(Prelude.Maybe Data.Text.Text),
                                                                  _GeneratedCodeInfo'Annotation'begin
@@ -3322,13 +3341,23 @@ instance Prelude.Show GeneratedCodeInfo'Annotation where
               (Prelude.showString (Data.ProtoLens.showMessageShort __x)
                  (Prelude.showChar '}' __s))
 instance Lens.Labels.HasLens' GeneratedCodeInfo'Annotation "path"
-           ([Data.Int.Int32])
+           (Data.Vector.Unboxed.Vector Data.Int.Int32)
          where
         lensOf' _
           = (Prelude..)
               (Lens.Family2.Unchecked.lens _GeneratedCodeInfo'Annotation'path
                  (\ x__ y__ -> x__{_GeneratedCodeInfo'Annotation'path = y__}))
               Prelude.id
+instance Lens.Labels.HasLens' GeneratedCodeInfo'Annotation
+           "path'packed"
+           ([Data.Int.Int32])
+         where
+        lensOf' _
+          = (Prelude..)
+              (Lens.Family2.Unchecked.lens _GeneratedCodeInfo'Annotation'path
+                 (\ x__ y__ -> x__{_GeneratedCodeInfo'Annotation'path = y__}))
+              (Lens.Family2.Unchecked.iso Data.Vector.Unboxed.toList
+                 Data.Vector.Unboxed.fromList)
 instance Lens.Labels.HasLens' GeneratedCodeInfo'Annotation
            "sourceFile"
            (Data.Text.Text)
@@ -3391,7 +3420,7 @@ instance Data.ProtoLens.Message GeneratedCodeInfo'Annotation where
                   = Data.ProtoLens.FieldDescriptor "path"
                       (Data.ProtoLens.ScalarField Data.ProtoLens.Int32Field ::
                          Data.ProtoLens.FieldTypeDescriptor Data.Int.Int32)
-                      (Data.ProtoLens.RepeatedField Data.ProtoLens.Packed
+                      (Data.ProtoLens.PackedField
                          (Lens.Labels.lensOf'
                             ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "path")))
                       :: Data.ProtoLens.FieldDescriptor GeneratedCodeInfo'Annotation
@@ -3432,7 +3461,7 @@ instance Data.ProtoLens.Message GeneratedCodeInfo'Annotation where
                  x__{_GeneratedCodeInfo'Annotation'_unknownFields = y__})
         defMessage
           = GeneratedCodeInfo'Annotation{_GeneratedCodeInfo'Annotation'path =
-                                           [],
+                                           Data.Vector.Unboxed.empty,
                                          _GeneratedCodeInfo'Annotation'sourceFile = Prelude.Nothing,
                                          _GeneratedCodeInfo'Annotation'begin = Prelude.Nothing,
                                          _GeneratedCodeInfo'Annotation'end = Prelude.Nothing,
@@ -3594,7 +3623,7 @@ instance Data.ProtoLens.Message MessageOptions where
                   = Data.ProtoLens.FieldDescriptor "uninterpreted_option"
                       (Data.ProtoLens.MessageField Data.ProtoLens.MessageType ::
                          Data.ProtoLens.FieldTypeDescriptor UninterpretedOption)
-                      (Data.ProtoLens.RepeatedField Data.ProtoLens.Unpacked
+                      (Data.ProtoLens.RepeatedField
                          (Lens.Labels.lensOf'
                             ((Lens.Labels.proxy#) ::
                                (Lens.Labels.Proxy#) "uninterpretedOption")))
@@ -3938,7 +3967,7 @@ instance Data.ProtoLens.Message MethodOptions where
                   = Data.ProtoLens.FieldDescriptor "uninterpreted_option"
                       (Data.ProtoLens.MessageField Data.ProtoLens.MessageType ::
                          Data.ProtoLens.FieldTypeDescriptor UninterpretedOption)
-                      (Data.ProtoLens.RepeatedField Data.ProtoLens.Unpacked
+                      (Data.ProtoLens.RepeatedField
                          (Lens.Labels.lensOf'
                             ((Lens.Labels.proxy#) ::
                                (Lens.Labels.Proxy#) "uninterpretedOption")))
@@ -3968,9 +3997,6 @@ data MethodOptions'IdempotencyLevel = MethodOptions'IDEMPOTENCY_UNKNOWN
                                     | MethodOptions'NO_SIDE_EFFECTS
                                     | MethodOptions'IDEMPOTENT
                                         deriving (Prelude.Show, Prelude.Eq, Prelude.Ord)
-instance Data.ProtoLens.FieldDefault MethodOptions'IdempotencyLevel
-         where
-        fieldDefault = MethodOptions'IDEMPOTENCY_UNKNOWN
 instance Data.ProtoLens.MessageEnum MethodOptions'IdempotencyLevel
          where
         maybeToEnum 0 = Prelude.Just MethodOptions'IDEMPOTENCY_UNKNOWN
@@ -3980,12 +4006,18 @@ instance Data.ProtoLens.MessageEnum MethodOptions'IdempotencyLevel
         showEnum MethodOptions'IDEMPOTENCY_UNKNOWN = "IDEMPOTENCY_UNKNOWN"
         showEnum MethodOptions'NO_SIDE_EFFECTS = "NO_SIDE_EFFECTS"
         showEnum MethodOptions'IDEMPOTENT = "IDEMPOTENT"
-        readEnum "IDEMPOTENCY_UNKNOWN"
-          = Prelude.Just MethodOptions'IDEMPOTENCY_UNKNOWN
-        readEnum "NO_SIDE_EFFECTS"
-          = Prelude.Just MethodOptions'NO_SIDE_EFFECTS
-        readEnum "IDEMPOTENT" = Prelude.Just MethodOptions'IDEMPOTENT
-        readEnum _ = Prelude.Nothing
+        readEnum k
+          | (Prelude.==) k "IDEMPOTENCY_UNKNOWN" =
+            Prelude.Just MethodOptions'IDEMPOTENCY_UNKNOWN
+          | (Prelude.==) k "NO_SIDE_EFFECTS" =
+            Prelude.Just MethodOptions'NO_SIDE_EFFECTS
+          | (Prelude.==) k "IDEMPOTENT" =
+            Prelude.Just MethodOptions'IDEMPOTENT
+        readEnum k
+          = (Prelude.>>=) (Text.Read.readMaybe k) Data.ProtoLens.maybeToEnum
+instance Prelude.Bounded MethodOptions'IdempotencyLevel where
+        minBound = MethodOptions'IDEMPOTENCY_UNKNOWN
+        maxBound = MethodOptions'IDEMPOTENT
 instance Prelude.Enum MethodOptions'IdempotencyLevel where
         toEnum k__
           = Prelude.maybe
@@ -4013,9 +4045,9 @@ instance Prelude.Enum MethodOptions'IdempotencyLevel where
         enumFromTo = Data.ProtoLens.Message.Enum.messageEnumFromTo
         enumFromThen = Data.ProtoLens.Message.Enum.messageEnumFromThen
         enumFromThenTo = Data.ProtoLens.Message.Enum.messageEnumFromThenTo
-instance Prelude.Bounded MethodOptions'IdempotencyLevel where
-        minBound = MethodOptions'IDEMPOTENCY_UNKNOWN
-        maxBound = MethodOptions'IDEMPOTENT
+instance Data.ProtoLens.FieldDefault MethodOptions'IdempotencyLevel
+         where
+        fieldDefault = MethodOptions'IDEMPOTENCY_UNKNOWN
 instance Control.DeepSeq.NFData MethodOptions'IdempotencyLevel
          where
         rnf x__ = Prelude.seq x__ (())
@@ -4136,7 +4168,7 @@ instance Data.ProtoLens.Message OneofOptions where
                   = Data.ProtoLens.FieldDescriptor "uninterpreted_option"
                       (Data.ProtoLens.MessageField Data.ProtoLens.MessageType ::
                          Data.ProtoLens.FieldTypeDescriptor UninterpretedOption)
-                      (Data.ProtoLens.RepeatedField Data.ProtoLens.Unpacked
+                      (Data.ProtoLens.RepeatedField
                          (Lens.Labels.lensOf'
                             ((Lens.Labels.proxy#) ::
                                (Lens.Labels.Proxy#) "uninterpretedOption")))
@@ -4235,7 +4267,7 @@ instance Data.ProtoLens.Message ServiceDescriptorProto where
                   = Data.ProtoLens.FieldDescriptor "method"
                       (Data.ProtoLens.MessageField Data.ProtoLens.MessageType ::
                          Data.ProtoLens.FieldTypeDescriptor MethodDescriptorProto)
-                      (Data.ProtoLens.RepeatedField Data.ProtoLens.Unpacked
+                      (Data.ProtoLens.RepeatedField
                          (Lens.Labels.lensOf'
                             ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "method")))
                       :: Data.ProtoLens.FieldDescriptor ServiceDescriptorProto
@@ -4326,7 +4358,7 @@ instance Data.ProtoLens.Message ServiceOptions where
                   = Data.ProtoLens.FieldDescriptor "uninterpreted_option"
                       (Data.ProtoLens.MessageField Data.ProtoLens.MessageType ::
                          Data.ProtoLens.FieldTypeDescriptor UninterpretedOption)
-                      (Data.ProtoLens.RepeatedField Data.ProtoLens.Unpacked
+                      (Data.ProtoLens.RepeatedField
                          (Lens.Labels.lensOf'
                             ((Lens.Labels.proxy#) ::
                                (Lens.Labels.Proxy#) "uninterpretedOption")))
@@ -4377,7 +4409,7 @@ instance Data.ProtoLens.Message SourceCodeInfo where
                   = Data.ProtoLens.FieldDescriptor "location"
                       (Data.ProtoLens.MessageField Data.ProtoLens.MessageType ::
                          Data.ProtoLens.FieldTypeDescriptor SourceCodeInfo'Location)
-                      (Data.ProtoLens.RepeatedField Data.ProtoLens.Unpacked
+                      (Data.ProtoLens.RepeatedField
                          (Lens.Labels.lensOf'
                             ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "location")))
                       :: Data.ProtoLens.FieldDescriptor SourceCodeInfo
@@ -4397,8 +4429,12 @@ instance Control.DeepSeq.NFData SourceCodeInfo where
                 (Control.DeepSeq.deepseq (_SourceCodeInfo'location x__) (()))
 {- | Fields :
 
-    * 'Proto.Google.Protobuf.Descriptor_Fields.path' @:: Lens' SourceCodeInfo'Location [Data.Int.Int32]@
-    * 'Proto.Google.Protobuf.Descriptor_Fields.span' @:: Lens' SourceCodeInfo'Location [Data.Int.Int32]@
+    * 'Proto.Google.Protobuf.Descriptor_Fields.path' @:: Lens' SourceCodeInfo'Location
+  (Data.Vector.Unboxed.Vector Data.Int.Int32)@
+    * 'Proto.Google.Protobuf.Descriptor_Fields.path'packed' @:: Lens' SourceCodeInfo'Location [Data.Int.Int32]@
+    * 'Proto.Google.Protobuf.Descriptor_Fields.span' @:: Lens' SourceCodeInfo'Location
+  (Data.Vector.Unboxed.Vector Data.Int.Int32)@
+    * 'Proto.Google.Protobuf.Descriptor_Fields.span'packed' @:: Lens' SourceCodeInfo'Location [Data.Int.Int32]@
     * 'Proto.Google.Protobuf.Descriptor_Fields.leadingComments' @:: Lens' SourceCodeInfo'Location Data.Text.Text@
     * 'Proto.Google.Protobuf.Descriptor_Fields.maybe'leadingComments' @:: Lens' SourceCodeInfo'Location (Prelude.Maybe Data.Text.Text)@
     * 'Proto.Google.Protobuf.Descriptor_Fields.trailingComments' @:: Lens' SourceCodeInfo'Location Data.Text.Text@
@@ -4406,9 +4442,10 @@ instance Control.DeepSeq.NFData SourceCodeInfo where
     * 'Proto.Google.Protobuf.Descriptor_Fields.leadingDetachedComments' @:: Lens' SourceCodeInfo'Location [Data.Text.Text]@
  -}
 data SourceCodeInfo'Location = SourceCodeInfo'Location{_SourceCodeInfo'Location'path
-                                                       :: ![Data.Int.Int32],
+                                                       ::
+                                                       !(Data.Vector.Unboxed.Vector Data.Int.Int32),
                                                        _SourceCodeInfo'Location'span ::
-                                                       ![Data.Int.Int32],
+                                                       !(Data.Vector.Unboxed.Vector Data.Int.Int32),
                                                        _SourceCodeInfo'Location'leadingComments ::
                                                        !(Prelude.Maybe Data.Text.Text),
                                                        _SourceCodeInfo'Location'trailingComments ::
@@ -4424,21 +4461,39 @@ instance Prelude.Show SourceCodeInfo'Location where
               (Prelude.showString (Data.ProtoLens.showMessageShort __x)
                  (Prelude.showChar '}' __s))
 instance Lens.Labels.HasLens' SourceCodeInfo'Location "path"
-           ([Data.Int.Int32])
+           (Data.Vector.Unboxed.Vector Data.Int.Int32)
          where
         lensOf' _
           = (Prelude..)
               (Lens.Family2.Unchecked.lens _SourceCodeInfo'Location'path
                  (\ x__ y__ -> x__{_SourceCodeInfo'Location'path = y__}))
               Prelude.id
-instance Lens.Labels.HasLens' SourceCodeInfo'Location "span"
+instance Lens.Labels.HasLens' SourceCodeInfo'Location "path'packed"
            ([Data.Int.Int32])
+         where
+        lensOf' _
+          = (Prelude..)
+              (Lens.Family2.Unchecked.lens _SourceCodeInfo'Location'path
+                 (\ x__ y__ -> x__{_SourceCodeInfo'Location'path = y__}))
+              (Lens.Family2.Unchecked.iso Data.Vector.Unboxed.toList
+                 Data.Vector.Unboxed.fromList)
+instance Lens.Labels.HasLens' SourceCodeInfo'Location "span"
+           (Data.Vector.Unboxed.Vector Data.Int.Int32)
          where
         lensOf' _
           = (Prelude..)
               (Lens.Family2.Unchecked.lens _SourceCodeInfo'Location'span
                  (\ x__ y__ -> x__{_SourceCodeInfo'Location'span = y__}))
               Prelude.id
+instance Lens.Labels.HasLens' SourceCodeInfo'Location "span'packed"
+           ([Data.Int.Int32])
+         where
+        lensOf' _
+          = (Prelude..)
+              (Lens.Family2.Unchecked.lens _SourceCodeInfo'Location'span
+                 (\ x__ y__ -> x__{_SourceCodeInfo'Location'span = y__}))
+              (Lens.Family2.Unchecked.iso Data.Vector.Unboxed.toList
+                 Data.Vector.Unboxed.fromList)
 instance Lens.Labels.HasLens' SourceCodeInfo'Location
            "leadingComments"
            (Data.Text.Text)
@@ -4500,7 +4555,7 @@ instance Data.ProtoLens.Message SourceCodeInfo'Location where
                   = Data.ProtoLens.FieldDescriptor "path"
                       (Data.ProtoLens.ScalarField Data.ProtoLens.Int32Field ::
                          Data.ProtoLens.FieldTypeDescriptor Data.Int.Int32)
-                      (Data.ProtoLens.RepeatedField Data.ProtoLens.Packed
+                      (Data.ProtoLens.PackedField
                          (Lens.Labels.lensOf'
                             ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "path")))
                       :: Data.ProtoLens.FieldDescriptor SourceCodeInfo'Location
@@ -4508,7 +4563,7 @@ instance Data.ProtoLens.Message SourceCodeInfo'Location where
                   = Data.ProtoLens.FieldDescriptor "span"
                       (Data.ProtoLens.ScalarField Data.ProtoLens.Int32Field ::
                          Data.ProtoLens.FieldTypeDescriptor Data.Int.Int32)
-                      (Data.ProtoLens.RepeatedField Data.ProtoLens.Packed
+                      (Data.ProtoLens.PackedField
                          (Lens.Labels.lensOf'
                             ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "span")))
                       :: Data.ProtoLens.FieldDescriptor SourceCodeInfo'Location
@@ -4534,7 +4589,7 @@ instance Data.ProtoLens.Message SourceCodeInfo'Location where
                   = Data.ProtoLens.FieldDescriptor "leading_detached_comments"
                       (Data.ProtoLens.ScalarField Data.ProtoLens.StringField ::
                          Data.ProtoLens.FieldTypeDescriptor Data.Text.Text)
-                      (Data.ProtoLens.RepeatedField Data.ProtoLens.Unpacked
+                      (Data.ProtoLens.RepeatedField
                          (Lens.Labels.lensOf'
                             ((Lens.Labels.proxy#) ::
                                (Lens.Labels.Proxy#) "leadingDetachedComments")))
@@ -4551,8 +4606,9 @@ instance Data.ProtoLens.Message SourceCodeInfo'Location where
               _SourceCodeInfo'Location'_unknownFields
               (\ x__ y__ -> x__{_SourceCodeInfo'Location'_unknownFields = y__})
         defMessage
-          = SourceCodeInfo'Location{_SourceCodeInfo'Location'path = [],
-                                    _SourceCodeInfo'Location'span = [],
+          = SourceCodeInfo'Location{_SourceCodeInfo'Location'path =
+                                      Data.Vector.Unboxed.empty,
+                                    _SourceCodeInfo'Location'span = Data.Vector.Unboxed.empty,
                                     _SourceCodeInfo'Location'leadingComments = Prelude.Nothing,
                                     _SourceCodeInfo'Location'trailingComments = Prelude.Nothing,
                                     _SourceCodeInfo'Location'leadingDetachedComments = [],
@@ -4730,7 +4786,7 @@ instance Data.ProtoLens.Message UninterpretedOption where
                   = Data.ProtoLens.FieldDescriptor "name"
                       (Data.ProtoLens.MessageField Data.ProtoLens.MessageType ::
                          Data.ProtoLens.FieldTypeDescriptor UninterpretedOption'NamePart)
-                      (Data.ProtoLens.RepeatedField Data.ProtoLens.Unpacked
+                      (Data.ProtoLens.RepeatedField
                          (Lens.Labels.lensOf'
                             ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "name")))
                       :: Data.ProtoLens.FieldDescriptor UninterpretedOption

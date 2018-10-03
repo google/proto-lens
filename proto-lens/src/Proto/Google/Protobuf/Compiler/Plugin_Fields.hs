@@ -20,6 +20,7 @@ import qualified Data.ByteString
 import qualified Data.ByteString.Char8
 import qualified Lens.Labels
 import qualified Text.Read
+import qualified Data.Vector.Unboxed
 import qualified Proto.Google.Protobuf.Descriptor
 
 compilerVersion ::

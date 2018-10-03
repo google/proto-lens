@@ -25,6 +25,7 @@ import qualified Data.ByteString
 import qualified Data.ByteString.Char8
 import qualified Lens.Labels
 import qualified Text.Read
+import qualified Data.Vector.Unboxed
 import qualified Proto.Google.Protobuf.Descriptor
 
 {- | Fields :
@@ -112,7 +113,7 @@ instance Data.ProtoLens.Message CodeGeneratorRequest where
                   = Data.ProtoLens.FieldDescriptor "file_to_generate"
                       (Data.ProtoLens.ScalarField Data.ProtoLens.StringField ::
                          Data.ProtoLens.FieldTypeDescriptor Data.Text.Text)
-                      (Data.ProtoLens.RepeatedField Data.ProtoLens.Unpacked
+                      (Data.ProtoLens.RepeatedField
                          (Lens.Labels.lensOf'
                             ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "fileToGenerate")))
                       :: Data.ProtoLens.FieldDescriptor CodeGeneratorRequest
@@ -129,7 +130,7 @@ instance Data.ProtoLens.Message CodeGeneratorRequest where
                       (Data.ProtoLens.MessageField Data.ProtoLens.MessageType ::
                          Data.ProtoLens.FieldTypeDescriptor
                            Proto.Google.Protobuf.Descriptor.FileDescriptorProto)
-                      (Data.ProtoLens.RepeatedField Data.ProtoLens.Unpacked
+                      (Data.ProtoLens.RepeatedField
                          (Lens.Labels.lensOf'
                             ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "protoFile")))
                       :: Data.ProtoLens.FieldDescriptor CodeGeneratorRequest
@@ -225,7 +226,7 @@ instance Data.ProtoLens.Message CodeGeneratorResponse where
                   = Data.ProtoLens.FieldDescriptor "file"
                       (Data.ProtoLens.MessageField Data.ProtoLens.MessageType ::
                          Data.ProtoLens.FieldTypeDescriptor CodeGeneratorResponse'File)
-                      (Data.ProtoLens.RepeatedField Data.ProtoLens.Unpacked
+                      (Data.ProtoLens.RepeatedField
                          (Lens.Labels.lensOf'
                             ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "file")))
                       :: Data.ProtoLens.FieldDescriptor CodeGeneratorResponse

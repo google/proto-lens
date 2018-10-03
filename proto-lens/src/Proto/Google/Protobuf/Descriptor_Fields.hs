@@ -20,6 +20,7 @@ import qualified Data.ByteString
 import qualified Data.ByteString.Char8
 import qualified Lens.Labels
 import qualified Text.Read
+import qualified Data.Vector.Unboxed
 
 aggregateValue ::
                forall f s a .
@@ -907,6 +908,13 @@ path ::
 path
   = Lens.Labels.lensOf'
       ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "path")
+path'packed ::
+            forall f s a .
+              (Prelude.Functor f, Lens.Labels.HasLens' s "path'packed" a) =>
+              Lens.Family2.LensLike' f s a
+path'packed
+  = Lens.Labels.lensOf'
+      ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "path'packed")
 phpClassPrefix ::
                forall f s a .
                  (Prelude.Functor f, Lens.Labels.HasLens' s "phpClassPrefix" a) =>
@@ -1016,6 +1024,13 @@ span ::
 span
   = Lens.Labels.lensOf'
       ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "span")
+span'packed ::
+            forall f s a .
+              (Prelude.Functor f, Lens.Labels.HasLens' s "span'packed" a) =>
+              Lens.Family2.LensLike' f s a
+span'packed
+  = Lens.Labels.lensOf'
+      ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "span'packed")
 start ::
       forall f s a .
         (Prelude.Functor f, Lens.Labels.HasLens' s "start" a) =>

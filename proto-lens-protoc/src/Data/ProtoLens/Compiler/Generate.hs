@@ -117,7 +117,7 @@ generateModule modName imports syntaxType modifyImport definitions importedEnv s
               , "Data.ProtoLens", "Data.ProtoLens.Message.Enum", "Data.ProtoLens.Service.Types"
               , "Lens.Family2", "Lens.Family2.Unchecked"
               , "Data.Text",  "Data.Map", "Data.ByteString", "Data.ByteString.Char8"
-              , "Lens.Labels", "Text.Read"
+              , "Lens.Labels", "Text.Read", "Data.Vector.Unboxed"
               ]
             ++ map importSimple imports
     env = Map.union (unqualifyEnv definitions) importedEnv
@@ -698,6 +698,21 @@ plainRecordField syntaxType env f = case fd ^. label of
                        }]
         -- data Foo = Foo { _Foo_bar :: [Bar] }
         -- type instance Field "bar" Foo = [Bar]
+        | isPackedField syntaxType fd
+            -> recordField packedType
+                [ LensInstance
+                    { lensSymbol = baseName
+                    , lensFieldType = packedType
+                    , lensExp = rawAccessor
+                    }
+                , LensInstance
+                    { lensSymbol = baseName <> "'packed"
+                    , lensFieldType = listType
+                    , lensExp = "Lens.Family2.Unchecked.iso"
+                                    @@ "Data.Vector.Unboxed.toList"
+                                    @@ "Data.Vector.Unboxed.fromList"
+                    }
+                ]
         | otherwise -> recordField listType
                   [LensInstance
                       { lensSymbol = baseName
@@ -711,6 +726,7 @@ plainRecordField syntaxType env f = case fd ^. label of
     baseType = hsFieldType env fd
     maybeType = "Prelude.Maybe" @@ baseType
     listType = tyList baseType
+    packedType = "Data.Vector.Unboxed.Vector" @@ baseType
     rawAccessor = "Prelude.id"
     maybeAccessor = "Data.ProtoLens.maybeLens"
                           @@ hsFieldValueDefault env fd
@@ -813,6 +829,7 @@ hsFieldDefault syntaxType env fd
               | otherwise -> "Prelude.Nothing"
           FieldDescriptorProto'LABEL_REPEATED
               | Just _ <- getMapFields env fd -> "Data.Map.empty"
+              | isPackedField syntaxType fd -> "Data.Vector.Unboxed.empty"
               | otherwise -> list []
           -- TODO: More sensible initialization of required fields.
           FieldDescriptorProto'LABEL_REQUIRED -> hsFieldValueDefault env fd
@@ -1000,10 +1017,8 @@ fieldAccessorExpr syntaxType env f = accessorCon @@ lensOfExp hsFieldName
                   -> "Data.ProtoLens.MapField"
                          @@ lensOfExp (overloadedField k)
                          @@ lensOfExp (overloadedField v)
+              | isPackedField syntaxType fd -> "Data.ProtoLens.PackedField"
               | otherwise -> "Data.ProtoLens.RepeatedField"
-                  @@ if isPackedField syntaxType fd
-                        then "Data.ProtoLens.Packed"
-                        else "Data.ProtoLens.Unpacked"
     hsFieldName
         = case fd ^. label of
               FieldDescriptorProto'LABEL_OPTIONAL
