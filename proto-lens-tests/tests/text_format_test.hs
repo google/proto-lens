@@ -17,6 +17,7 @@ import Data.ProtoLens (
     defMessage, Message, showMessage, showMessageShort, pprintMessage, register,
     showMessageWithRegistry )
 import Data.Proxy (Proxy(..))
+import qualified Data.Vector.Unboxed as V
 import Lens.Family2 ((&), (.~))
 import Proto.TextFormat
 import Proto.TextFormat_Fields
@@ -47,7 +48,7 @@ main = testMain
     , readFrom "string concat" (Just $ def1 & b .~ "abcdef")
           "b: \"a\"\"bcd\" \n   \"ef\""
     , readFrom "bad char" failed1 "a: 5="
-    , readFrom "same line" (Just $ def1 & d .~ [1, 2, 3])
+    , readFrom "same line" (Just $ def1 & d .~ V.fromList [1, 2, 3])
           "d: 1 d: 2    d: 3   "
     , readFrom "int field" (Just $ def1 & a .~ 5) "4: 5"
     , readFrom "bad int field" failed1 "1: 5"
@@ -60,14 +61,14 @@ main = testMain
     -- sure the test case still fails when they are.
     , readFrom "empty extension" failed1 "[]: 5"
     , testCase "Render same line" $
-        "d: 1 d: 2 d: 3" @=? showMessage (def1 & d .~ [1, 2, 3])
+        "d: 1 d: 2 d: 3" @=? showMessage (def1 & d .~ V.fromList [1, 2, 3])
     , testCase "Render multiple lines" $
         "d: 1\nd: 2\nd: 3" @=?
-            showMessageWithLineLength 3 (def1 & d .~ [1, 2, 3])
+            showMessageWithLineLength 3 (def1 & d .~ V.fromList [1, 2, 3])
     , testCase "Field order" $
         "b: \"xyz\" d: 1 d: 2 a: 3" @=?
             showMessage (def1 & b .~ "xyz"
-                              & d .~ [1,2]
+                              & d .~ V.fromList [1, 2]
                               & a .~ 3)
     , readFrom
          ("Parse string with numeric escape sequences"
@@ -108,7 +109,7 @@ main = testMain
     , let kNums = [0..99]  -- The default line limit is 100 so we exceed it.
           kExpected = unwords $ map (("d: " ++) . show) kNums
       in testCase "Render single line for debugString" $
-          kExpected @=? showMessageShort (def1 & d .~ kNums)
+          kExpected @=? showMessageShort (def1 & d .~ V.fromList kNums)
     ]
   where
     escapeMessage  = def1 & b
@@ -136,12 +137,12 @@ main = testMain
     anyExpProto =
         def3 & thing1 .~ Any.pack (def1 & a .~ 3
                                         & b .~ "test"
-                                        & d .~ [1,2,4,9]
+                                        & d .~ V.fromList [1,2,4,9]
                                         & e .~ "\0\0\0")
              & sub . thing2 .~
                           Any.pack (def2 & c . a .~ 35
                                          & c . b .~ "hello world"
-                                         & c . d .~ [1,3,5]
+                                         & c . d .~ V.fromList [1,3,5]
                                          & c . e .~ "\n\n\n")
     anyExpText =
       Data.Text.Lazy.unlines

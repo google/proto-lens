@@ -24,6 +24,7 @@ import Data.Map (Map)
 import qualified Data.Map as M
 import Data.Maybe (isJust, fromJust)
 import qualified Data.Text as T
+import qualified Data.Vector.Unboxed as Vector
 import Lens.Family2 (Lens', view, set)
 import Lens.Family2.Unchecked (lens)
 import Test.QuickCheck (Arbitrary(..), Gen, suchThat, frequency, listOf,
@@ -59,7 +60,8 @@ arbitraryField :: FieldDescriptor msg -> msg -> Gen msg
 arbitraryField (FieldDescriptor _ ftd fa) = case fa of
     PlainField _ l -> setGen l fieldGen
     OptionalField l -> setGen l (maybeGen fieldGen)
-    RepeatedField _ l -> setGen l (listOf fieldGen)
+    RepeatedField l -> setGen l (listOf fieldGen)
+    PackedField l -> setGen l (Vector.fromList <$> listOf fieldGen)
     MapField keyLens valueLens mapLens ->
         setGen mapLens (mapGen keyLens valueLens fieldGen)
   where
@@ -113,7 +115,8 @@ shrinkField :: FieldDescriptor msg -> msg -> [msg]
 shrinkField (FieldDescriptor _ ftd fa) = case fa of
     PlainField _ l -> l fieldShrinker
     OptionalField l -> l (shrinkMaybe fieldShrinker)
-    RepeatedField _ l -> l (shrinkList fieldShrinker)
+    RepeatedField l -> l (shrinkList fieldShrinker)
+    PackedField l -> l (map Vector.fromList . shrinkList fieldShrinker . Vector.toList)
     MapField keyLens valueLens mapLens ->
         mapLens (shrinkMap keyLens valueLens fieldShrinker)
   where

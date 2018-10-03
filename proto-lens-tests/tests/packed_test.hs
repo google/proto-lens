@@ -10,6 +10,7 @@ import Proto.Packed
 import Proto.Packed_Fields
 import Lens.Family2 ((&), (.~))
 import Data.ProtoLens
+import qualified Data.Vector.Unboxed as Vector
 
 import Data.ProtoLens.TestUtil
 
@@ -24,14 +25,14 @@ main = testMain
           (vcat [keyedInt "a" x | x <- [1..3]])
           $ mconcat [tagged 1 $ VarInt x | x <- [1..3]]
     , serializeTo "packed"
-          (defFoo & b .~ [1..3])
+          (defFoo & b .~ Vector.fromList [1..3])
           (vcat [keyedInt "b" x | x <- [1..3]])
           $ tagged 2 $ Lengthy $ mconcat [varInt x | x <- [1..3]]
     , deserializeFrom "unpacked-as-packed"
           (Just $ defFoo & a .~ [1..3])
           $ tagged 1 $ Lengthy $ mconcat [varInt x | x <- [1..3]]
     , deserializeFrom "packed-as-unpacked"
-          (Just $ defFoo & b .~ [1..3])
+          (Just $ defFoo & b .~ Vector.fromList [1..3])
           $ mconcat [tagged 2 $ VarInt x | x <- [1..3]]
     , runTypedTest (roundTripTest "roundtrip" :: TypedTest Foo)
     ]

@@ -31,6 +31,7 @@ dependencies:
     - test-framework-hunit
     - test-framework-quickcheck2
     - text
+    - vector
 
 
 library:

@@ -8,6 +8,7 @@
 module Main where
 
 import Data.ProtoLens
+import qualified Data.Vector.Unboxed as Vector
 import Lens.Family2 ((&), (.~), (^.))
 import qualified Data.ByteString.Builder as Builder
 import Data.Monoid ((<>))
@@ -78,7 +79,7 @@ main = testMain
         ]
     -- Repeated scalar fields in proto3 should serialize as "packed" by default.
     , serializeTo "packed-by-default"
-        (defMessage & f .~ [1,2,3] :: Foo)
+        (defMessage & f .~ Vector.fromList [1,2,3] :: Foo)
         (vcat [keyedInt "f" x | x <- [1..3]])
         $ tagged 7 $ Lengthy $ mconcat [varInt x | x <- [1..3]]
     , runTypedTest (roundTripTest "foo" :: TypedTest Foo)

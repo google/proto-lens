@@ -21,6 +21,7 @@ dependencies:
   - text == 1.2.*
   - lens-family == 1.2.*
   - QuickCheck >= 2.8 && < 2.12
+  - vector >= 0.11 && < 0.13
 
 library:
   source-dirs: src

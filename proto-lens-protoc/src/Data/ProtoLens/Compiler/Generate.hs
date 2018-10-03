@@ -700,19 +700,11 @@ plainRecordField syntaxType env f = case fd ^. label of
         -- type instance Field "bar" Foo = [Bar]
         | isPackedField syntaxType fd
             -> recordField packedType
-                [ LensInstance
-                    { lensSymbol = baseName
-                    , lensFieldType = packedType
-                    , lensExp = rawAccessor
-                    }
-                , LensInstance
-                    { lensSymbol = baseName <> "'packed"
-                    , lensFieldType = listType
-                    , lensExp = "Lens.Family2.Unchecked.iso"
-                                    @@ "Data.Vector.Unboxed.toList"
-                                    @@ "Data.Vector.Unboxed.fromList"
-                    }
-                ]
+                  [LensInstance
+                      { lensSymbol = baseName
+                      , lensFieldType = packedType
+                      , lensExp = rawAccessor
+                      }]
         | otherwise -> recordField listType
                   [LensInstance
                       { lensSymbol = baseName
