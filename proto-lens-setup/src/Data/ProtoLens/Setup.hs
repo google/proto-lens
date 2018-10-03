@@ -44,6 +44,9 @@ import Distribution.PackageDescription
 #if !MIN_VERSION_Cabal(2,0,0)
     , hsSourceDirs
 #endif
+#if MIN_VERSION_Cabal(2,4,0)
+    , specVersion
+#endif
     , libBuildInfo
     , otherModules
     , testBuildInfo
@@ -68,14 +71,25 @@ import Distribution.Simple.Setup (fromFlag, copyDest, copyVerbosity)
 import Distribution.Simple.Utils
     ( createDirectoryIfMissingVerbose
     , installOrdinaryFile
+#if MIN_VERSION_Cabal(2,4,0)
+#else
     , matchFileGlob
+#endif
     )
+#if MIN_VERSION_Cabal(2,4,0)
+import Distribution.Simple.Glob (matchDirFileGlob)
+#endif
 import Distribution.Simple
     ( defaultMainWithHooks
     , simpleUserHooks
     , UserHooks(..)
     )
-import Distribution.Verbosity (Verbosity)
+import Distribution.Verbosity
+    ( Verbosity
+#if MIN_VERSION_Cabal(2,4,0)
+    , normal
+#endif
+    )
 import System.FilePath
     ( (</>)
     , equalFilePath
@@ -158,13 +172,20 @@ generatingProtos root = generatingSpecificProtos root getProtos
   where
     getProtos l = do
       -- Replicate Cabal's own logic for parsing file globs.
-      files <- concat <$> mapM matchFileGlob (extraSrcFiles $ localPkgDescr l)
+      files <- concat <$> mapM (match $ localPkgDescr l)
+                               (extraSrcFiles $ localPkgDescr l)
       pure
            . filter (\f -> takeExtension f == ".proto")
            . map (makeRelative root)
            . filter (isSubdirectoryOf root)
            $ files
 
+match :: PackageDescription -> FilePath -> IO [FilePath]
+#if MIN_VERSION_Cabal(2,4,0)
+match desc f = matchDirFileGlob normal (specVersion desc) "." f
+#else
+match _ f = matchFileGlob f
+#endif
 
 -- | Augment the given 'UserHooks' to auto-generate Haskell files from the
 -- .proto files returned by a function @getProtos@.

@@ -7,8 +7,11 @@ author: Judah Jacobson
 maintainer: proto-lens@googlegroups.com
 copyright: Google Inc.
 license: BSD3
-extra-source-files:
-  - tests/*.proto
+# Use extra-source-files verbatim since hpack otherwise expands the glob
+# to an explicit list in the Cabal file.
+# We want to test that globs within Cabal files are supported.
+verbatim:
+  extra-source-files: tests/*.proto
 
 custom-setup:
   dependencies:
