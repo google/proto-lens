@@ -16,6 +16,7 @@ import Criterion.Main (Benchmark)
 import Lens.Family2 ((&), (.~))
 import Data.Int (Int32)
 import Data.ProtoLens.Message (defMessage)
+import qualified Data.Vector.Unboxed as V
 import Proto.UnusedFields
 import Proto.UnusedFields_Fields
 
@@ -23,10 +24,10 @@ defaultNumInt32s :: Int
 defaultNumInt32s = 10000
 
 populateFoo :: Int -> Int32 -> Foo
-populateFoo n k = defMessage & field .~ replicate n k
+populateFoo n k = defMessage & field .~ V.replicate n k
 
 populateFooWithUnusedFields :: Int -> Int32 -> FooWithUnusedFields
-populateFooWithUnusedFields n k = defMessage & field .~ replicate n k
+populateFooWithUnusedFields n k = defMessage & field .~ V.replicate n k
 
 benchmaker :: Int -> [Benchmark]
 benchmaker size =

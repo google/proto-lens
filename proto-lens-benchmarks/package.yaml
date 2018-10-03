@@ -25,6 +25,7 @@ dependencies:
   - proto-lens
   - proto-lens-runtime
   - text
+  - vector
 
 ghc-options:
   - -O2

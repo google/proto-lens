@@ -30,6 +30,7 @@ dependencies:
   - proto-lens == 0.4.*
   - proto-lens-runtime >= 0.4 && < 0.5
   - text == 1.2.*
+  - vector >= 0.11 && < 0.13
 
 library:
   source-dirs: src

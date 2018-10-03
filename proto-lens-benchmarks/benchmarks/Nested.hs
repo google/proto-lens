@@ -15,6 +15,7 @@ import Criterion.Main (Benchmark)
 import Data.Text (Text)
 import Lens.Family ((&), (.~))
 import Data.ProtoLens.Message (defMessage)
+import qualified Data.Vector.Unboxed as V
 import Proto.Nested
 import Proto.Nested_Fields
 
@@ -29,7 +30,7 @@ strValue = "foo"
 
 populateFlat :: Int -> FooFlat
 populateFlat n =
-    defMessage & (intField .~ replicate n intValue) .
+    defMessage & (intField .~ V.replicate n intValue) .
     (strField .~ replicate n strValue)
 
 populateNested :: Int -> FooNested

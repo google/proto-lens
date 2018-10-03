@@ -29,6 +29,7 @@ import Data.Functor.Contravariant.Divisible
     )
 import qualified Data.IntMap as IM
 import Data.Map (Map)
+import qualified Data.Vector.Unboxed as V
 import Data.Word (Word8, Word16, Word32, Word64)
 import qualified Data.Map as M
 import qualified Data.Text as T
@@ -150,7 +151,8 @@ discFieldAccessor
 discFieldAccessor discList discMaybe c f = case f of
     PlainField _ l    -> view l >$< c
     OptionalField l   -> view l >$< discMaybe c
-    RepeatedField _ l -> view l >$< discList c
+    RepeatedField l -> view l >$< discList c
+    PackedField l -> V.toList . view l >$< discList c
     MapField k v l    -> view l >$< discProtoMapAssocs discList c k v
 
 -- Unpack a ByteString into a Word16 and the remainder, or the leftover 0 or 1

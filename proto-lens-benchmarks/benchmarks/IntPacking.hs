@@ -9,6 +9,7 @@
 module Main (main) where
 
 import Data.ProtoLens.BenchmarkUtil (protoBenchmark, benchmarkMain)
+import qualified Data.Vector.Unboxed as V
 import Criterion.Main (Benchmark)
 import Lens.Family ((&), (.~))
 import Data.Int (Int32)
@@ -23,7 +24,7 @@ populateUnpacked :: Int -> Int32 -> FooUnpacked
 populateUnpacked n k = defMessage & num .~ replicate n k
 
 populatePacked :: Int -> Int32 -> FooPacked
-populatePacked n k = defMessage & num .~ replicate n k
+populatePacked n k = defMessage & num .~ V.replicate n k
 
 benchmaker :: Int -> [Benchmark]
 benchmaker size =
