@@ -17,6 +17,8 @@ import qualified Data.Word
 import qualified Data.ProtoLens
 import qualified Data.ProtoLens.Message.Enum
 import qualified Data.ProtoLens.Service.Types
+import qualified Data.ProtoLens.Encoding.Bytes
+import qualified Data.ProtoLens.Encoding.Parser
 import qualified Lens.Family2
 import qualified Lens.Family2.Unchecked
 import qualified Data.Text
@@ -151,7 +153,33 @@ instance Data.ProtoLens.Message CodeGeneratorRequest where
         unknownFields
           = Lens.Family2.Unchecked.lens _CodeGeneratorRequest'_unknownFields
               (\ x__ y__ -> x__{_CodeGeneratorRequest'_unknownFields = y__})
-        newParseMessage = Prelude.undefined
+        newParseMessage
+          = let loop x
+                  = do end <- Data.ProtoLens.Encoding.Parser.isEnd
+                       if end then Prelude.return x else
+                         do tv <- Data.ProtoLens.Encoding.Bytes.getVarInt
+                            x' <- case tv of
+                                      10 -> Prelude.undefined
+                                      18 -> do y <- Prelude.return Prelude.undefined
+                                               (Prelude.$!) Prelude.return
+                                                 (Lens.Family2.set
+                                                    (Lens.Labels.lensOf'
+                                                       ((Lens.Labels.proxy#) ::
+                                                          (Lens.Labels.Proxy#) "parameter"))
+                                                    y
+                                                    x)
+                                      122 -> Prelude.undefined
+                                      26 -> do y <- Prelude.return Prelude.undefined
+                                               (Prelude.$!) Prelude.return
+                                                 (Lens.Family2.set
+                                                    (Lens.Labels.lensOf'
+                                                       ((Lens.Labels.proxy#) ::
+                                                          (Lens.Labels.Proxy#) "compilerVersion"))
+                                                    y
+                                                    x)
+                                      _ -> Prelude.undefined
+                            (Prelude.$!) loop x'
+              in loop Data.ProtoLens.defMessage
         defMessage
           = CodeGeneratorRequest{_CodeGeneratorRequest'fileToGenerate = [],
                                  _CodeGeneratorRequest'parameter = Prelude.Nothing,
@@ -237,7 +265,24 @@ instance Data.ProtoLens.Message CodeGeneratorResponse where
         unknownFields
           = Lens.Family2.Unchecked.lens _CodeGeneratorResponse'_unknownFields
               (\ x__ y__ -> x__{_CodeGeneratorResponse'_unknownFields = y__})
-        newParseMessage = Prelude.undefined
+        newParseMessage
+          = let loop x
+                  = do end <- Data.ProtoLens.Encoding.Parser.isEnd
+                       if end then Prelude.return x else
+                         do tv <- Data.ProtoLens.Encoding.Bytes.getVarInt
+                            x' <- case tv of
+                                      10 -> do y <- Prelude.return Prelude.undefined
+                                               (Prelude.$!) Prelude.return
+                                                 (Lens.Family2.set
+                                                    (Lens.Labels.lensOf'
+                                                       ((Lens.Labels.proxy#) ::
+                                                          (Lens.Labels.Proxy#) "error"))
+                                                    y
+                                                    x)
+                                      122 -> Prelude.undefined
+                                      _ -> Prelude.undefined
+                            (Prelude.$!) loop x'
+              in loop Data.ProtoLens.defMessage
         defMessage
           = CodeGeneratorResponse{_CodeGeneratorResponse'error =
                                     Prelude.Nothing,
@@ -368,7 +413,39 @@ instance Data.ProtoLens.Message CodeGeneratorResponse'File where
               _CodeGeneratorResponse'File'_unknownFields
               (\ x__ y__ ->
                  x__{_CodeGeneratorResponse'File'_unknownFields = y__})
-        newParseMessage = Prelude.undefined
+        newParseMessage
+          = let loop x
+                  = do end <- Data.ProtoLens.Encoding.Parser.isEnd
+                       if end then Prelude.return x else
+                         do tv <- Data.ProtoLens.Encoding.Bytes.getVarInt
+                            x' <- case tv of
+                                      10 -> do y <- Prelude.return Prelude.undefined
+                                               (Prelude.$!) Prelude.return
+                                                 (Lens.Family2.set
+                                                    (Lens.Labels.lensOf'
+                                                       ((Lens.Labels.proxy#) ::
+                                                          (Lens.Labels.Proxy#) "name"))
+                                                    y
+                                                    x)
+                                      18 -> do y <- Prelude.return Prelude.undefined
+                                               (Prelude.$!) Prelude.return
+                                                 (Lens.Family2.set
+                                                    (Lens.Labels.lensOf'
+                                                       ((Lens.Labels.proxy#) ::
+                                                          (Lens.Labels.Proxy#) "insertionPoint"))
+                                                    y
+                                                    x)
+                                      122 -> do y <- Prelude.return Prelude.undefined
+                                                (Prelude.$!) Prelude.return
+                                                  (Lens.Family2.set
+                                                     (Lens.Labels.lensOf'
+                                                        ((Lens.Labels.proxy#) ::
+                                                           (Lens.Labels.Proxy#) "content"))
+                                                     y
+                                                     x)
+                                      _ -> Prelude.undefined
+                            (Prelude.$!) loop x'
+              in loop Data.ProtoLens.defMessage
         defMessage
           = CodeGeneratorResponse'File{_CodeGeneratorResponse'File'name =
                                          Prelude.Nothing,
@@ -512,7 +589,50 @@ instance Data.ProtoLens.Message Version where
         unknownFields
           = Lens.Family2.Unchecked.lens _Version'_unknownFields
               (\ x__ y__ -> x__{_Version'_unknownFields = y__})
-        newParseMessage = Prelude.undefined
+        newParseMessage
+          = let loop x
+                  = do end <- Data.ProtoLens.Encoding.Parser.isEnd
+                       if end then Prelude.return x else
+                         do tv <- Data.ProtoLens.Encoding.Bytes.getVarInt
+                            x' <- case tv of
+                                      8 -> do y <- Prelude.fmap Prelude.fromIntegral
+                                                     Data.ProtoLens.Encoding.Bytes.getVarInt
+                                              (Prelude.$!) Prelude.return
+                                                (Lens.Family2.set
+                                                   (Lens.Labels.lensOf'
+                                                      ((Lens.Labels.proxy#) ::
+                                                         (Lens.Labels.Proxy#) "major"))
+                                                   y
+                                                   x)
+                                      16 -> do y <- Prelude.fmap Prelude.fromIntegral
+                                                      Data.ProtoLens.Encoding.Bytes.getVarInt
+                                               (Prelude.$!) Prelude.return
+                                                 (Lens.Family2.set
+                                                    (Lens.Labels.lensOf'
+                                                       ((Lens.Labels.proxy#) ::
+                                                          (Lens.Labels.Proxy#) "minor"))
+                                                    y
+                                                    x)
+                                      24 -> do y <- Prelude.fmap Prelude.fromIntegral
+                                                      Data.ProtoLens.Encoding.Bytes.getVarInt
+                                               (Prelude.$!) Prelude.return
+                                                 (Lens.Family2.set
+                                                    (Lens.Labels.lensOf'
+                                                       ((Lens.Labels.proxy#) ::
+                                                          (Lens.Labels.Proxy#) "patch"))
+                                                    y
+                                                    x)
+                                      34 -> do y <- Prelude.return Prelude.undefined
+                                               (Prelude.$!) Prelude.return
+                                                 (Lens.Family2.set
+                                                    (Lens.Labels.lensOf'
+                                                       ((Lens.Labels.proxy#) ::
+                                                          (Lens.Labels.Proxy#) "suffix"))
+                                                    y
+                                                    x)
+                                      _ -> Prelude.undefined
+                            (Prelude.$!) loop x'
+              in loop Data.ProtoLens.defMessage
         defMessage
           = Version{_Version'major = Prelude.Nothing,
                     _Version'minor = Prelude.Nothing, _Version'patch = Prelude.Nothing,

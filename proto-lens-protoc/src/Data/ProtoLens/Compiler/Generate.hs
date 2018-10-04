@@ -36,7 +36,6 @@ import Proto.Google.Protobuf.Descriptor
     , FieldDescriptorProto
     , FieldDescriptorProto'Label(..)
     , FieldDescriptorProto'Type(..)
-    , FileDescriptorProto
     )
 import Proto.Google.Protobuf.Descriptor_Fields
     ( defaultValue
@@ -47,7 +46,6 @@ import Proto.Google.Protobuf.Descriptor_Fields
     , name
     , number
     , options
-    , syntax
     , type'
     , typeName
     )
@@ -104,11 +102,24 @@ generateModule modName imports syntaxType modifyImport definitions importedEnv s
     mainImports = map (modifyImport . importSimple)
                     [ "Control.DeepSeq", "Lens.Labels.Prism" ]
     sharedImports = map (modifyImport . importSimple)
-              [ "Prelude", "Data.Int", "Data.Word"
-              , "Data.ProtoLens", "Data.ProtoLens.Message.Enum", "Data.ProtoLens.Service.Types"
-              , "Lens.Family2", "Lens.Family2.Unchecked"
-              , "Data.Text",  "Data.Map", "Data.ByteString", "Data.ByteString.Char8"
-              , "Lens.Labels", "Text.Read"
+              [ "Prelude"
+              , "Data.Int"
+              , "Data.Word"
+              , "Data.ProtoLens"
+              , "Data.ProtoLens.Message.Enum"
+              , "Data.ProtoLens.Service.Types"
+              -- TODO: probably just merge Bytes into Parser
+              -- also unroll word32/word64/etc
+              , "Data.ProtoLens.Encoding.Bytes"
+              , "Data.ProtoLens.Encoding.Parser"
+              , "Lens.Family2"
+              , "Lens.Family2.Unchecked"
+              , "Data.Text"
+              ,  "Data.Map"
+              , "Data.ByteString"
+              , "Data.ByteString.Char8"
+              , "Lens.Labels"
+              , "Text.Read"
               ]
             ++ map importSimple imports
     env = Map.union (unqualifyEnv definitions) importedEnv
@@ -908,7 +919,7 @@ messageInstance syntaxType env protoName m =
           let' (map (fieldDescriptorVarBind $ messageName m) $ fields)
               $ "Data.Map.fromList" @@ list fieldsByTag ]
     , [ match "unknownFields" [] $ rawFieldAccessor (unQual $ messageUnknownFields m) ]
-    , [ match "newParseMessage" [] $ generateParser syntaxType env m ]
+    , [ match "newParseMessage" [] $ generateParser syntaxType m ]
     , [ match "defMessage" []
            $ recConstr (unQual $ messageName m) $
                   [ fieldUpdate (unQual $ haskellRecordFieldName $ plainFieldName f)

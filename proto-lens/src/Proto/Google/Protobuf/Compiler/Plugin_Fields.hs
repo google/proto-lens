@@ -12,6 +12,8 @@ import qualified Data.Word
 import qualified Data.ProtoLens
 import qualified Data.ProtoLens.Message.Enum
 import qualified Data.ProtoLens.Service.Types
+import qualified Data.ProtoLens.Encoding.Bytes
+import qualified Data.ProtoLens.Encoding.Parser
 import qualified Lens.Family2
 import qualified Lens.Family2.Unchecked
 import qualified Data.Text

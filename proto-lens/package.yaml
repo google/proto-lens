@@ -33,6 +33,9 @@ library:
     - Data.ProtoLens
     - Data.ProtoLens.Default
     - Data.ProtoLens.Encoding
+    # TODO: merge Bytes into Parser?
+    - Data.ProtoLens.Encoding.Bytes
+    - Data.ProtoLens.Encoding.Parser
     - Data.ProtoLens.Encoding.Wire
     - Data.ProtoLens.Message
     - Data.ProtoLens.Message.Enum
@@ -43,8 +46,6 @@ library:
     - Proto.Google.Protobuf.Descriptor
     - Proto.Google.Protobuf.Descriptor_Fields
   other-modules:
-    - Data.ProtoLens.Encoding.Bytes
-    - Data.ProtoLens.Encoding.Parser
     - Data.ProtoLens.TextFormat.Parser
   dependencies:
     - base >= 4.9 && < 4.13

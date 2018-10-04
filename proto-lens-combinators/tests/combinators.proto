@@ -3,6 +3,7 @@ syntax = "proto2";
 package combinators;
 
 message Foo {
+
   optional int32 quux = 1;
 
   message Bar {

@@ -183,6 +183,22 @@ con = Syntax.Con ()
 list :: [Exp] -> Exp
 list = Syntax.List ()
 
+letE :: [Decl] -> Exp -> Exp
+letE ds = Syntax.Let () (Syntax.BDecls () ds)
+
+if' :: Exp -> Exp -> Exp -> Exp
+if' = Syntax.If ()
+
+type Stmt = Syntax.Stmt ()
+
+do' :: [Stmt] -> Exp
+do' = Syntax.Do ()
+
+genStmt :: Pat -> Exp -> Stmt
+genStmt = Syntax.Generator ()
+
+qualStmt :: Exp -> Stmt
+qualStmt = Syntax.Qualifier ()
 
 type FieldUpdate = Syntax.FieldUpdate ()
 
