@@ -7,9 +7,9 @@ module Data.ProtoLens.Encoding.Parser
     , anyWord8
     , takeN
     , (<?>)
+    , pFail
     ) where
 
-import GHC.Stack
 import Control.Monad.Trans.Class
 import Control.Monad.Trans.Reader
 import Foreign.Ptr
@@ -23,12 +23,20 @@ import Data.ByteString (ByteString)
 import System.IO.Unsafe
 import Control.Monad.IO.Class
 
-newtype Parser a = Parser (ReaderT (Ptr Word8) (StateT (Ptr Word8) (ExceptT String IO)) a)
-    deriving (Functor, Applicative, Monad)
+newtype Parser a = Parser { unParser :: ReaderT (Ptr Word8) (StateT (Ptr Word8) (ExceptT String IO)) a}
+    deriving (Functor, Applicative)
+
+instance Monad Parser where
+    fail = Parser . lift . lift . throwE
+    Parser f >>= g = Parser $ f >>= unParser . g
+    Parser f >> Parser g = Parser $ f >> g
 
 runParser :: Parser a -> ByteString -> Either String a
 runParser (Parser m) b = unsafePerformIO $ B.unsafeUseAsCStringLen b $ \(p, len)
     -> runExceptT (evalStateT (runReaderT m (p `plusPtr` len)) (castPtr p))
+
+pFail :: String -> Parser a
+pFail = Parser . lift . lift . throwE
 
 isEnd :: Parser Bool
 isEnd = Parser $ do
@@ -47,7 +55,7 @@ anyWord8 = Parser $ do
             lift $ put $! p `plusPtr` 1
             return b
 
-takeN :: HasCallStack => Int -> Parser B.ByteString
+takeN :: Int -> Parser B.ByteString
 takeN n = Parser $ do
     p <- lift get
     end <- ask

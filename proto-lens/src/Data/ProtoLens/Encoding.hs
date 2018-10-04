@@ -57,7 +57,7 @@ parseMessage end = (<?> T.unpack (messageName (Proxy @msg))) $ do
     if Map.null unsetFields
         then return $ over unknownFields reverse
                     $ reverseRepeatedFields fields msg
-        else fail $ "Missing required fields "
+        else pFail $ "Missing required fields "
                         ++ show (map fieldDescriptorName
                                     $ Map.elems $ unsetFields)
   where
@@ -88,7 +88,7 @@ decodeMessageOrDie bs = case decodeMessage bs of
     Right x -> x
 
 runEither :: Either String a -> Parser a
-runEither = either fail return
+runEither = either pFail return
 
 parseAndAddField :: forall msg . msg
                  -> FieldDescriptor msg

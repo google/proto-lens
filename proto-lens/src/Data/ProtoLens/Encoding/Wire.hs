@@ -37,8 +37,6 @@ import Data.Word
 import Data.ProtoLens.Encoding.Bytes
 import Data.ProtoLens.Encoding.Parser
 
-import GHC.Stack
-
 data WireType a where
     -- Note: all of these types are fully strict (vs, say,
     -- Data.ByteString.Lazy.ByteString).  If that changes, we'll
@@ -118,7 +116,7 @@ instance Ord WireValue where
             = v `compare` v'
         | otherwise = wireTypeToInt t `compare` wireTypeToInt t'
 
-getWireValue :: HasCallStack => WireType a -> Parser a
+getWireValue :: WireType a -> Parser a
 getWireValue VarInt = getVarInt
 getWireValue Fixed64 = anyBits
 getWireValue Fixed32 = anyBits
