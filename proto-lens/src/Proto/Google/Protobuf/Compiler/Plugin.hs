@@ -151,6 +151,7 @@ instance Data.ProtoLens.Message CodeGeneratorRequest where
         unknownFields
           = Lens.Family2.Unchecked.lens _CodeGeneratorRequest'_unknownFields
               (\ x__ y__ -> x__{_CodeGeneratorRequest'_unknownFields = y__})
+        newParseMessage = Prelude.undefined
         defMessage
           = CodeGeneratorRequest{_CodeGeneratorRequest'fileToGenerate = [],
                                  _CodeGeneratorRequest'parameter = Prelude.Nothing,
@@ -236,6 +237,7 @@ instance Data.ProtoLens.Message CodeGeneratorResponse where
         unknownFields
           = Lens.Family2.Unchecked.lens _CodeGeneratorResponse'_unknownFields
               (\ x__ y__ -> x__{_CodeGeneratorResponse'_unknownFields = y__})
+        newParseMessage = Prelude.undefined
         defMessage
           = CodeGeneratorResponse{_CodeGeneratorResponse'error =
                                     Prelude.Nothing,
@@ -366,6 +368,7 @@ instance Data.ProtoLens.Message CodeGeneratorResponse'File where
               _CodeGeneratorResponse'File'_unknownFields
               (\ x__ y__ ->
                  x__{_CodeGeneratorResponse'File'_unknownFields = y__})
+        newParseMessage = Prelude.undefined
         defMessage
           = CodeGeneratorResponse'File{_CodeGeneratorResponse'File'name =
                                          Prelude.Nothing,
@@ -509,6 +512,7 @@ instance Data.ProtoLens.Message Version where
         unknownFields
           = Lens.Family2.Unchecked.lens _Version'_unknownFields
               (\ x__ y__ -> x__{_Version'_unknownFields = y__})
+        newParseMessage = Prelude.undefined
         defMessage
           = Version{_Version'major = Prelude.Nothing,
                     _Version'minor = Prelude.Nothing, _Version'patch = Prelude.Nothing,

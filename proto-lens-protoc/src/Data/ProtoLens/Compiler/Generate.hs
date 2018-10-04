@@ -54,16 +54,7 @@ import Proto.Google.Protobuf.Descriptor_Fields
 
 import Data.ProtoLens.Compiler.Combinators
 import Data.ProtoLens.Compiler.Definitions
-
-data SyntaxType = Proto2 | Proto3
-    deriving (Show, Eq)
-
-fileSyntaxType :: FileDescriptorProto -> SyntaxType
-fileSyntaxType f = case f ^. syntax of
-    "proto2" -> Proto2
-    "proto3" -> Proto3
-    "" -> Proto2  -- The proto compiler doesn't set syntax for proto2 files.
-    s -> error $ "Unknown syntax type " ++ show s
+import Data.ProtoLens.Compiler.Generate.Encoding
 
 -- Whether to import the "Runtime" modules or the originals;
 -- e.g., Data.ProtoLens.Runtime.Data.Map vs Data.Map.
@@ -917,6 +908,7 @@ messageInstance syntaxType env protoName m =
           let' (map (fieldDescriptorVarBind $ messageName m) $ fields)
               $ "Data.Map.fromList" @@ list fieldsByTag ]
     , [ match "unknownFields" [] $ rawFieldAccessor (unQual $ messageUnknownFields m) ]
+    , [ match "newParseMessage" [] $ generateParser syntaxType env m ]
     , [ match "defMessage" []
            $ recConstr (unQual $ messageName m) $
                   [ fieldUpdate (unQual $ haskellRecordFieldName $ plainFieldName f)

@@ -12,7 +12,9 @@
 {-# LANGUAGE GeneralizedNewtypeDeriving #-}
 {-# LANGUAGE OverloadedStrings #-}
 module Data.ProtoLens.Compiler.Definitions
-    ( Env
+    ( SyntaxType(..)
+    , fileSyntaxType
+    , Env
     , Definition(..)
     , MessageInfo(..)
     , ServiceInfo(..)
@@ -74,6 +76,7 @@ import Proto.Google.Protobuf.Descriptor_Fields
     , package
     , serverStreaming
     , service
+    , syntax
     , typeName
     , value
     )
@@ -87,6 +90,16 @@ import Data.ProtoLens.Compiler.Combinators
     , tyPromotedString
     , unQual
     )
+
+data SyntaxType = Proto2 | Proto3
+    deriving (Show, Eq)
+
+fileSyntaxType :: FileDescriptorProto -> SyntaxType
+fileSyntaxType f = case f ^. syntax of
+    "proto2" -> Proto2
+    "proto3" -> Proto3
+    "" -> Proto2  -- The proto compiler doesn't set syntax for proto2 files.
+    s -> error $ "Unknown syntax type " ++ show s
 
 -- | 'Env' contains a mapping of proto names (as specified in the .proto file)
 -- to Haskell names.  The keys are fully-qualified names, for example,

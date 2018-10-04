@@ -61,6 +61,7 @@ import Lens.Family2 (Lens', over, set)
 import Lens.Family2.Unchecked (lens)
 import qualified Data.Semigroup as Semigroup
 
+import Data.ProtoLens.Encoding.Parser
 import Data.ProtoLens.Encoding.Wire
     ( Tag(..)
     , TaggedValue(..)
@@ -93,6 +94,8 @@ class Message msg where
 
     -- | Access the unknown fields of a Message.
     unknownFields :: Lens' msg FieldSet
+
+    newParseMessage :: Parser msg
 
 allFields :: Message msg => [FieldDescriptor msg]
 allFields = Map.elems fieldsByTag

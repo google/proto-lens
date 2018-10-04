@@ -271,6 +271,7 @@ instance Data.ProtoLens.Message DescriptorProto where
         unknownFields
           = Lens.Family2.Unchecked.lens _DescriptorProto'_unknownFields
               (\ x__ y__ -> x__{_DescriptorProto'_unknownFields = y__})
+        newParseMessage = Prelude.undefined
         defMessage
           = DescriptorProto{_DescriptorProto'name = Prelude.Nothing,
                             _DescriptorProto'field = [], _DescriptorProto'extension = [],
@@ -422,6 +423,7 @@ instance Data.ProtoLens.Message DescriptorProto'ExtensionRange
               _DescriptorProto'ExtensionRange'_unknownFields
               (\ x__ y__ ->
                  x__{_DescriptorProto'ExtensionRange'_unknownFields = y__})
+        newParseMessage = Prelude.undefined
         defMessage
           = DescriptorProto'ExtensionRange{_DescriptorProto'ExtensionRange'start
                                              = Prelude.Nothing,
@@ -525,6 +527,7 @@ instance Data.ProtoLens.Message DescriptorProto'ReservedRange where
               _DescriptorProto'ReservedRange'_unknownFields
               (\ x__ y__ ->
                  x__{_DescriptorProto'ReservedRange'_unknownFields = y__})
+        newParseMessage = Prelude.undefined
         defMessage
           = DescriptorProto'ReservedRange{_DescriptorProto'ReservedRange'start
                                             = Prelude.Nothing,
@@ -677,6 +680,7 @@ instance Data.ProtoLens.Message EnumDescriptorProto where
         unknownFields
           = Lens.Family2.Unchecked.lens _EnumDescriptorProto'_unknownFields
               (\ x__ y__ -> x__{_EnumDescriptorProto'_unknownFields = y__})
+        newParseMessage = Prelude.undefined
         defMessage
           = EnumDescriptorProto{_EnumDescriptorProto'name = Prelude.Nothing,
                                 _EnumDescriptorProto'value = [],
@@ -800,6 +804,7 @@ instance Data.ProtoLens.Message
               _EnumDescriptorProto'EnumReservedRange'_unknownFields
               (\ x__ y__ ->
                  x__{_EnumDescriptorProto'EnumReservedRange'_unknownFields = y__})
+        newParseMessage = Prelude.undefined
         defMessage
           = EnumDescriptorProto'EnumReservedRange{_EnumDescriptorProto'EnumReservedRange'start
                                                     = Prelude.Nothing,
@@ -914,6 +919,7 @@ instance Data.ProtoLens.Message EnumOptions where
         unknownFields
           = Lens.Family2.Unchecked.lens _EnumOptions'_unknownFields
               (\ x__ y__ -> x__{_EnumOptions'_unknownFields = y__})
+        newParseMessage = Prelude.undefined
         defMessage
           = EnumOptions{_EnumOptions'allowAlias = Prelude.Nothing,
                         _EnumOptions'deprecated = Prelude.Nothing,
@@ -1037,6 +1043,7 @@ instance Data.ProtoLens.Message EnumValueDescriptorProto where
           = Lens.Family2.Unchecked.lens
               _EnumValueDescriptorProto'_unknownFields
               (\ x__ y__ -> x__{_EnumValueDescriptorProto'_unknownFields = y__})
+        newParseMessage = Prelude.undefined
         defMessage
           = EnumValueDescriptorProto{_EnumValueDescriptorProto'name =
                                        Prelude.Nothing,
@@ -1122,6 +1129,7 @@ instance Data.ProtoLens.Message EnumValueOptions where
         unknownFields
           = Lens.Family2.Unchecked.lens _EnumValueOptions'_unknownFields
               (\ x__ y__ -> x__{_EnumValueOptions'_unknownFields = y__})
+        newParseMessage = Prelude.undefined
         defMessage
           = EnumValueOptions{_EnumValueOptions'deprecated = Prelude.Nothing,
                              _EnumValueOptions'uninterpretedOption = [],
@@ -1178,6 +1186,7 @@ instance Data.ProtoLens.Message ExtensionRangeOptions where
         unknownFields
           = Lens.Family2.Unchecked.lens _ExtensionRangeOptions'_unknownFields
               (\ x__ y__ -> x__{_ExtensionRangeOptions'_unknownFields = y__})
+        newParseMessage = Prelude.undefined
         defMessage
           = ExtensionRangeOptions{_ExtensionRangeOptions'uninterpretedOption
                                     = [],
@@ -1504,6 +1513,7 @@ instance Data.ProtoLens.Message FieldDescriptorProto where
         unknownFields
           = Lens.Family2.Unchecked.lens _FieldDescriptorProto'_unknownFields
               (\ x__ y__ -> x__{_FieldDescriptorProto'_unknownFields = y__})
+        newParseMessage = Prelude.undefined
         defMessage
           = FieldDescriptorProto{_FieldDescriptorProto'name =
                                    Prelude.Nothing,
@@ -1538,9 +1548,6 @@ data FieldDescriptorProto'Label = FieldDescriptorProto'LABEL_OPTIONAL
                                 | FieldDescriptorProto'LABEL_REQUIRED
                                 | FieldDescriptorProto'LABEL_REPEATED
                                     deriving (Prelude.Show, Prelude.Eq, Prelude.Ord)
-instance Data.ProtoLens.FieldDefault FieldDescriptorProto'Label
-         where
-        fieldDefault = FieldDescriptorProto'LABEL_OPTIONAL
 instance Data.ProtoLens.MessageEnum FieldDescriptorProto'Label
          where
         maybeToEnum 1 = Prelude.Just FieldDescriptorProto'LABEL_OPTIONAL
@@ -1550,13 +1557,18 @@ instance Data.ProtoLens.MessageEnum FieldDescriptorProto'Label
         showEnum FieldDescriptorProto'LABEL_OPTIONAL = "LABEL_OPTIONAL"
         showEnum FieldDescriptorProto'LABEL_REQUIRED = "LABEL_REQUIRED"
         showEnum FieldDescriptorProto'LABEL_REPEATED = "LABEL_REPEATED"
-        readEnum "LABEL_OPTIONAL"
-          = Prelude.Just FieldDescriptorProto'LABEL_OPTIONAL
-        readEnum "LABEL_REQUIRED"
-          = Prelude.Just FieldDescriptorProto'LABEL_REQUIRED
-        readEnum "LABEL_REPEATED"
-          = Prelude.Just FieldDescriptorProto'LABEL_REPEATED
-        readEnum _ = Prelude.Nothing
+        readEnum k
+          | (Prelude.==) k "LABEL_OPTIONAL" =
+            Prelude.Just FieldDescriptorProto'LABEL_OPTIONAL
+          | (Prelude.==) k "LABEL_REQUIRED" =
+            Prelude.Just FieldDescriptorProto'LABEL_REQUIRED
+          | (Prelude.==) k "LABEL_REPEATED" =
+            Prelude.Just FieldDescriptorProto'LABEL_REPEATED
+        readEnum k
+          = (Prelude.>>=) (Text.Read.readMaybe k) Data.ProtoLens.maybeToEnum
+instance Prelude.Bounded FieldDescriptorProto'Label where
+        minBound = FieldDescriptorProto'LABEL_OPTIONAL
+        maxBound = FieldDescriptorProto'LABEL_REPEATED
 instance Prelude.Enum FieldDescriptorProto'Label where
         toEnum k__
           = Prelude.maybe
@@ -1586,9 +1598,9 @@ instance Prelude.Enum FieldDescriptorProto'Label where
         enumFromTo = Data.ProtoLens.Message.Enum.messageEnumFromTo
         enumFromThen = Data.ProtoLens.Message.Enum.messageEnumFromThen
         enumFromThenTo = Data.ProtoLens.Message.Enum.messageEnumFromThenTo
-instance Prelude.Bounded FieldDescriptorProto'Label where
-        minBound = FieldDescriptorProto'LABEL_OPTIONAL
-        maxBound = FieldDescriptorProto'LABEL_REPEATED
+instance Data.ProtoLens.FieldDefault FieldDescriptorProto'Label
+         where
+        fieldDefault = FieldDescriptorProto'LABEL_OPTIONAL
 instance Control.DeepSeq.NFData FieldDescriptorProto'Label where
         rnf x__ = Prelude.seq x__ (())
 data FieldDescriptorProto'Type = FieldDescriptorProto'TYPE_DOUBLE
@@ -1610,9 +1622,6 @@ data FieldDescriptorProto'Type = FieldDescriptorProto'TYPE_DOUBLE
                                | FieldDescriptorProto'TYPE_SINT32
                                | FieldDescriptorProto'TYPE_SINT64
                                    deriving (Prelude.Show, Prelude.Eq, Prelude.Ord)
-instance Data.ProtoLens.FieldDefault FieldDescriptorProto'Type
-         where
-        fieldDefault = FieldDescriptorProto'TYPE_DOUBLE
 instance Data.ProtoLens.MessageEnum FieldDescriptorProto'Type where
         maybeToEnum 1 = Prelude.Just FieldDescriptorProto'TYPE_DOUBLE
         maybeToEnum 2 = Prelude.Just FieldDescriptorProto'TYPE_FLOAT
@@ -1651,41 +1660,48 @@ instance Data.ProtoLens.MessageEnum FieldDescriptorProto'Type where
         showEnum FieldDescriptorProto'TYPE_SFIXED64 = "TYPE_SFIXED64"
         showEnum FieldDescriptorProto'TYPE_SINT32 = "TYPE_SINT32"
         showEnum FieldDescriptorProto'TYPE_SINT64 = "TYPE_SINT64"
-        readEnum "TYPE_DOUBLE"
-          = Prelude.Just FieldDescriptorProto'TYPE_DOUBLE
-        readEnum "TYPE_FLOAT"
-          = Prelude.Just FieldDescriptorProto'TYPE_FLOAT
-        readEnum "TYPE_INT64"
-          = Prelude.Just FieldDescriptorProto'TYPE_INT64
-        readEnum "TYPE_UINT64"
-          = Prelude.Just FieldDescriptorProto'TYPE_UINT64
-        readEnum "TYPE_INT32"
-          = Prelude.Just FieldDescriptorProto'TYPE_INT32
-        readEnum "TYPE_FIXED64"
-          = Prelude.Just FieldDescriptorProto'TYPE_FIXED64
-        readEnum "TYPE_FIXED32"
-          = Prelude.Just FieldDescriptorProto'TYPE_FIXED32
-        readEnum "TYPE_BOOL" = Prelude.Just FieldDescriptorProto'TYPE_BOOL
-        readEnum "TYPE_STRING"
-          = Prelude.Just FieldDescriptorProto'TYPE_STRING
-        readEnum "TYPE_GROUP"
-          = Prelude.Just FieldDescriptorProto'TYPE_GROUP
-        readEnum "TYPE_MESSAGE"
-          = Prelude.Just FieldDescriptorProto'TYPE_MESSAGE
-        readEnum "TYPE_BYTES"
-          = Prelude.Just FieldDescriptorProto'TYPE_BYTES
-        readEnum "TYPE_UINT32"
-          = Prelude.Just FieldDescriptorProto'TYPE_UINT32
-        readEnum "TYPE_ENUM" = Prelude.Just FieldDescriptorProto'TYPE_ENUM
-        readEnum "TYPE_SFIXED32"
-          = Prelude.Just FieldDescriptorProto'TYPE_SFIXED32
-        readEnum "TYPE_SFIXED64"
-          = Prelude.Just FieldDescriptorProto'TYPE_SFIXED64
-        readEnum "TYPE_SINT32"
-          = Prelude.Just FieldDescriptorProto'TYPE_SINT32
-        readEnum "TYPE_SINT64"
-          = Prelude.Just FieldDescriptorProto'TYPE_SINT64
-        readEnum _ = Prelude.Nothing
+        readEnum k
+          | (Prelude.==) k "TYPE_DOUBLE" =
+            Prelude.Just FieldDescriptorProto'TYPE_DOUBLE
+          | (Prelude.==) k "TYPE_FLOAT" =
+            Prelude.Just FieldDescriptorProto'TYPE_FLOAT
+          | (Prelude.==) k "TYPE_INT64" =
+            Prelude.Just FieldDescriptorProto'TYPE_INT64
+          | (Prelude.==) k "TYPE_UINT64" =
+            Prelude.Just FieldDescriptorProto'TYPE_UINT64
+          | (Prelude.==) k "TYPE_INT32" =
+            Prelude.Just FieldDescriptorProto'TYPE_INT32
+          | (Prelude.==) k "TYPE_FIXED64" =
+            Prelude.Just FieldDescriptorProto'TYPE_FIXED64
+          | (Prelude.==) k "TYPE_FIXED32" =
+            Prelude.Just FieldDescriptorProto'TYPE_FIXED32
+          | (Prelude.==) k "TYPE_BOOL" =
+            Prelude.Just FieldDescriptorProto'TYPE_BOOL
+          | (Prelude.==) k "TYPE_STRING" =
+            Prelude.Just FieldDescriptorProto'TYPE_STRING
+          | (Prelude.==) k "TYPE_GROUP" =
+            Prelude.Just FieldDescriptorProto'TYPE_GROUP
+          | (Prelude.==) k "TYPE_MESSAGE" =
+            Prelude.Just FieldDescriptorProto'TYPE_MESSAGE
+          | (Prelude.==) k "TYPE_BYTES" =
+            Prelude.Just FieldDescriptorProto'TYPE_BYTES
+          | (Prelude.==) k "TYPE_UINT32" =
+            Prelude.Just FieldDescriptorProto'TYPE_UINT32
+          | (Prelude.==) k "TYPE_ENUM" =
+            Prelude.Just FieldDescriptorProto'TYPE_ENUM
+          | (Prelude.==) k "TYPE_SFIXED32" =
+            Prelude.Just FieldDescriptorProto'TYPE_SFIXED32
+          | (Prelude.==) k "TYPE_SFIXED64" =
+            Prelude.Just FieldDescriptorProto'TYPE_SFIXED64
+          | (Prelude.==) k "TYPE_SINT32" =
+            Prelude.Just FieldDescriptorProto'TYPE_SINT32
+          | (Prelude.==) k "TYPE_SINT64" =
+            Prelude.Just FieldDescriptorProto'TYPE_SINT64
+        readEnum k
+          = (Prelude.>>=) (Text.Read.readMaybe k) Data.ProtoLens.maybeToEnum
+instance Prelude.Bounded FieldDescriptorProto'Type where
+        minBound = FieldDescriptorProto'TYPE_DOUBLE
+        maxBound = FieldDescriptorProto'TYPE_SINT64
 instance Prelude.Enum FieldDescriptorProto'Type where
         toEnum k__
           = Prelude.maybe
@@ -1790,9 +1806,9 @@ instance Prelude.Enum FieldDescriptorProto'Type where
         enumFromTo = Data.ProtoLens.Message.Enum.messageEnumFromTo
         enumFromThen = Data.ProtoLens.Message.Enum.messageEnumFromThen
         enumFromThenTo = Data.ProtoLens.Message.Enum.messageEnumFromThenTo
-instance Prelude.Bounded FieldDescriptorProto'Type where
-        minBound = FieldDescriptorProto'TYPE_DOUBLE
-        maxBound = FieldDescriptorProto'TYPE_SINT64
+instance Data.ProtoLens.FieldDefault FieldDescriptorProto'Type
+         where
+        fieldDefault = FieldDescriptorProto'TYPE_DOUBLE
 instance Control.DeepSeq.NFData FieldDescriptorProto'Type where
         rnf x__ = Prelude.seq x__ (())
 {- | Fields :
@@ -1999,6 +2015,7 @@ instance Data.ProtoLens.Message FieldOptions where
         unknownFields
           = Lens.Family2.Unchecked.lens _FieldOptions'_unknownFields
               (\ x__ y__ -> x__{_FieldOptions'_unknownFields = y__})
+        newParseMessage = Prelude.undefined
         defMessage
           = FieldOptions{_FieldOptions'ctype = Prelude.Nothing,
                          _FieldOptions'packed = Prelude.Nothing,
@@ -2024,8 +2041,6 @@ data FieldOptions'CType = FieldOptions'STRING
                         | FieldOptions'CORD
                         | FieldOptions'STRING_PIECE
                             deriving (Prelude.Show, Prelude.Eq, Prelude.Ord)
-instance Data.ProtoLens.FieldDefault FieldOptions'CType where
-        fieldDefault = FieldOptions'STRING
 instance Data.ProtoLens.MessageEnum FieldOptions'CType where
         maybeToEnum 0 = Prelude.Just FieldOptions'STRING
         maybeToEnum 1 = Prelude.Just FieldOptions'CORD
@@ -2034,10 +2049,16 @@ instance Data.ProtoLens.MessageEnum FieldOptions'CType where
         showEnum FieldOptions'STRING = "STRING"
         showEnum FieldOptions'CORD = "CORD"
         showEnum FieldOptions'STRING_PIECE = "STRING_PIECE"
-        readEnum "STRING" = Prelude.Just FieldOptions'STRING
-        readEnum "CORD" = Prelude.Just FieldOptions'CORD
-        readEnum "STRING_PIECE" = Prelude.Just FieldOptions'STRING_PIECE
-        readEnum _ = Prelude.Nothing
+        readEnum k
+          | (Prelude.==) k "STRING" = Prelude.Just FieldOptions'STRING
+          | (Prelude.==) k "CORD" = Prelude.Just FieldOptions'CORD
+          | (Prelude.==) k "STRING_PIECE" =
+            Prelude.Just FieldOptions'STRING_PIECE
+        readEnum k
+          = (Prelude.>>=) (Text.Read.readMaybe k) Data.ProtoLens.maybeToEnum
+instance Prelude.Bounded FieldOptions'CType where
+        minBound = FieldOptions'STRING
+        maxBound = FieldOptions'STRING_PIECE
 instance Prelude.Enum FieldOptions'CType where
         toEnum k__
           = Prelude.maybe
@@ -2063,17 +2084,14 @@ instance Prelude.Enum FieldOptions'CType where
         enumFromTo = Data.ProtoLens.Message.Enum.messageEnumFromTo
         enumFromThen = Data.ProtoLens.Message.Enum.messageEnumFromThen
         enumFromThenTo = Data.ProtoLens.Message.Enum.messageEnumFromThenTo
-instance Prelude.Bounded FieldOptions'CType where
-        minBound = FieldOptions'STRING
-        maxBound = FieldOptions'STRING_PIECE
+instance Data.ProtoLens.FieldDefault FieldOptions'CType where
+        fieldDefault = FieldOptions'STRING
 instance Control.DeepSeq.NFData FieldOptions'CType where
         rnf x__ = Prelude.seq x__ (())
 data FieldOptions'JSType = FieldOptions'JS_NORMAL
                          | FieldOptions'JS_STRING
                          | FieldOptions'JS_NUMBER
                              deriving (Prelude.Show, Prelude.Eq, Prelude.Ord)
-instance Data.ProtoLens.FieldDefault FieldOptions'JSType where
-        fieldDefault = FieldOptions'JS_NORMAL
 instance Data.ProtoLens.MessageEnum FieldOptions'JSType where
         maybeToEnum 0 = Prelude.Just FieldOptions'JS_NORMAL
         maybeToEnum 1 = Prelude.Just FieldOptions'JS_STRING
@@ -2082,10 +2100,15 @@ instance Data.ProtoLens.MessageEnum FieldOptions'JSType where
         showEnum FieldOptions'JS_NORMAL = "JS_NORMAL"
         showEnum FieldOptions'JS_STRING = "JS_STRING"
         showEnum FieldOptions'JS_NUMBER = "JS_NUMBER"
-        readEnum "JS_NORMAL" = Prelude.Just FieldOptions'JS_NORMAL
-        readEnum "JS_STRING" = Prelude.Just FieldOptions'JS_STRING
-        readEnum "JS_NUMBER" = Prelude.Just FieldOptions'JS_NUMBER
-        readEnum _ = Prelude.Nothing
+        readEnum k
+          | (Prelude.==) k "JS_NORMAL" = Prelude.Just FieldOptions'JS_NORMAL
+          | (Prelude.==) k "JS_STRING" = Prelude.Just FieldOptions'JS_STRING
+          | (Prelude.==) k "JS_NUMBER" = Prelude.Just FieldOptions'JS_NUMBER
+        readEnum k
+          = (Prelude.>>=) (Text.Read.readMaybe k) Data.ProtoLens.maybeToEnum
+instance Prelude.Bounded FieldOptions'JSType where
+        minBound = FieldOptions'JS_NORMAL
+        maxBound = FieldOptions'JS_NUMBER
 instance Prelude.Enum FieldOptions'JSType where
         toEnum k__
           = Prelude.maybe
@@ -2111,9 +2134,8 @@ instance Prelude.Enum FieldOptions'JSType where
         enumFromTo = Data.ProtoLens.Message.Enum.messageEnumFromTo
         enumFromThen = Data.ProtoLens.Message.Enum.messageEnumFromThen
         enumFromThenTo = Data.ProtoLens.Message.Enum.messageEnumFromThenTo
-instance Prelude.Bounded FieldOptions'JSType where
-        minBound = FieldOptions'JS_NORMAL
-        maxBound = FieldOptions'JS_NUMBER
+instance Data.ProtoLens.FieldDefault FieldOptions'JSType where
+        fieldDefault = FieldOptions'JS_NORMAL
 instance Control.DeepSeq.NFData FieldOptions'JSType where
         rnf x__ = Prelude.seq x__ (())
 {- | Fields :
@@ -2423,6 +2445,7 @@ instance Data.ProtoLens.Message FileDescriptorProto where
         unknownFields
           = Lens.Family2.Unchecked.lens _FileDescriptorProto'_unknownFields
               (\ x__ y__ -> x__{_FileDescriptorProto'_unknownFields = y__})
+        newParseMessage = Prelude.undefined
         defMessage
           = FileDescriptorProto{_FileDescriptorProto'name = Prelude.Nothing,
                                 _FileDescriptorProto'package = Prelude.Nothing,
@@ -2497,6 +2520,7 @@ instance Data.ProtoLens.Message FileDescriptorSet where
         unknownFields
           = Lens.Family2.Unchecked.lens _FileDescriptorSet'_unknownFields
               (\ x__ y__ -> x__{_FileDescriptorSet'_unknownFields = y__})
+        newParseMessage = Prelude.undefined
         defMessage
           = FileDescriptorSet{_FileDescriptorSet'file = [],
                               _FileDescriptorSet'_unknownFields = ([])}
@@ -3133,6 +3157,7 @@ instance Data.ProtoLens.Message FileOptions where
         unknownFields
           = Lens.Family2.Unchecked.lens _FileOptions'_unknownFields
               (\ x__ y__ -> x__{_FileOptions'_unknownFields = y__})
+        newParseMessage = Prelude.undefined
         defMessage
           = FileOptions{_FileOptions'javaPackage = Prelude.Nothing,
                         _FileOptions'javaOuterClassname = Prelude.Nothing,
@@ -3204,8 +3229,6 @@ data FileOptions'OptimizeMode = FileOptions'SPEED
                               | FileOptions'CODE_SIZE
                               | FileOptions'LITE_RUNTIME
                                   deriving (Prelude.Show, Prelude.Eq, Prelude.Ord)
-instance Data.ProtoLens.FieldDefault FileOptions'OptimizeMode where
-        fieldDefault = FileOptions'SPEED
 instance Data.ProtoLens.MessageEnum FileOptions'OptimizeMode where
         maybeToEnum 1 = Prelude.Just FileOptions'SPEED
         maybeToEnum 2 = Prelude.Just FileOptions'CODE_SIZE
@@ -3214,10 +3237,16 @@ instance Data.ProtoLens.MessageEnum FileOptions'OptimizeMode where
         showEnum FileOptions'SPEED = "SPEED"
         showEnum FileOptions'CODE_SIZE = "CODE_SIZE"
         showEnum FileOptions'LITE_RUNTIME = "LITE_RUNTIME"
-        readEnum "SPEED" = Prelude.Just FileOptions'SPEED
-        readEnum "CODE_SIZE" = Prelude.Just FileOptions'CODE_SIZE
-        readEnum "LITE_RUNTIME" = Prelude.Just FileOptions'LITE_RUNTIME
-        readEnum _ = Prelude.Nothing
+        readEnum k
+          | (Prelude.==) k "SPEED" = Prelude.Just FileOptions'SPEED
+          | (Prelude.==) k "CODE_SIZE" = Prelude.Just FileOptions'CODE_SIZE
+          | (Prelude.==) k "LITE_RUNTIME" =
+            Prelude.Just FileOptions'LITE_RUNTIME
+        readEnum k
+          = (Prelude.>>=) (Text.Read.readMaybe k) Data.ProtoLens.maybeToEnum
+instance Prelude.Bounded FileOptions'OptimizeMode where
+        minBound = FileOptions'SPEED
+        maxBound = FileOptions'LITE_RUNTIME
 instance Prelude.Enum FileOptions'OptimizeMode where
         toEnum k__
           = Prelude.maybe
@@ -3243,9 +3272,8 @@ instance Prelude.Enum FileOptions'OptimizeMode where
         enumFromTo = Data.ProtoLens.Message.Enum.messageEnumFromTo
         enumFromThen = Data.ProtoLens.Message.Enum.messageEnumFromThen
         enumFromThenTo = Data.ProtoLens.Message.Enum.messageEnumFromThenTo
-instance Prelude.Bounded FileOptions'OptimizeMode where
-        minBound = FileOptions'SPEED
-        maxBound = FileOptions'LITE_RUNTIME
+instance Data.ProtoLens.FieldDefault FileOptions'OptimizeMode where
+        fieldDefault = FileOptions'SPEED
 instance Control.DeepSeq.NFData FileOptions'OptimizeMode where
         rnf x__ = Prelude.seq x__ (())
 {- | Fields :
@@ -3287,6 +3315,7 @@ instance Data.ProtoLens.Message GeneratedCodeInfo where
         unknownFields
           = Lens.Family2.Unchecked.lens _GeneratedCodeInfo'_unknownFields
               (\ x__ y__ -> x__{_GeneratedCodeInfo'_unknownFields = y__})
+        newParseMessage = Prelude.undefined
         defMessage
           = GeneratedCodeInfo{_GeneratedCodeInfo'annotation = [],
                               _GeneratedCodeInfo'_unknownFields = ([])}
@@ -3430,6 +3459,7 @@ instance Data.ProtoLens.Message GeneratedCodeInfo'Annotation where
               _GeneratedCodeInfo'Annotation'_unknownFields
               (\ x__ y__ ->
                  x__{_GeneratedCodeInfo'Annotation'_unknownFields = y__})
+        newParseMessage = Prelude.undefined
         defMessage
           = GeneratedCodeInfo'Annotation{_GeneratedCodeInfo'Annotation'path =
                                            [],
@@ -3610,6 +3640,7 @@ instance Data.ProtoLens.Message MessageOptions where
         unknownFields
           = Lens.Family2.Unchecked.lens _MessageOptions'_unknownFields
               (\ x__ y__ -> x__{_MessageOptions'_unknownFields = y__})
+        newParseMessage = Prelude.undefined
         defMessage
           = MessageOptions{_MessageOptions'messageSetWireFormat =
                              Prelude.Nothing,
@@ -3831,6 +3862,7 @@ instance Data.ProtoLens.Message MethodDescriptorProto where
         unknownFields
           = Lens.Family2.Unchecked.lens _MethodDescriptorProto'_unknownFields
               (\ x__ y__ -> x__{_MethodDescriptorProto'_unknownFields = y__})
+        newParseMessage = Prelude.undefined
         defMessage
           = MethodDescriptorProto{_MethodDescriptorProto'name =
                                     Prelude.Nothing,
@@ -3951,6 +3983,7 @@ instance Data.ProtoLens.Message MethodOptions where
         unknownFields
           = Lens.Family2.Unchecked.lens _MethodOptions'_unknownFields
               (\ x__ y__ -> x__{_MethodOptions'_unknownFields = y__})
+        newParseMessage = Prelude.undefined
         defMessage
           = MethodOptions{_MethodOptions'deprecated = Prelude.Nothing,
                           _MethodOptions'idempotencyLevel = Prelude.Nothing,
@@ -3968,9 +4001,6 @@ data MethodOptions'IdempotencyLevel = MethodOptions'IDEMPOTENCY_UNKNOWN
                                     | MethodOptions'NO_SIDE_EFFECTS
                                     | MethodOptions'IDEMPOTENT
                                         deriving (Prelude.Show, Prelude.Eq, Prelude.Ord)
-instance Data.ProtoLens.FieldDefault MethodOptions'IdempotencyLevel
-         where
-        fieldDefault = MethodOptions'IDEMPOTENCY_UNKNOWN
 instance Data.ProtoLens.MessageEnum MethodOptions'IdempotencyLevel
          where
         maybeToEnum 0 = Prelude.Just MethodOptions'IDEMPOTENCY_UNKNOWN
@@ -3980,12 +4010,18 @@ instance Data.ProtoLens.MessageEnum MethodOptions'IdempotencyLevel
         showEnum MethodOptions'IDEMPOTENCY_UNKNOWN = "IDEMPOTENCY_UNKNOWN"
         showEnum MethodOptions'NO_SIDE_EFFECTS = "NO_SIDE_EFFECTS"
         showEnum MethodOptions'IDEMPOTENT = "IDEMPOTENT"
-        readEnum "IDEMPOTENCY_UNKNOWN"
-          = Prelude.Just MethodOptions'IDEMPOTENCY_UNKNOWN
-        readEnum "NO_SIDE_EFFECTS"
-          = Prelude.Just MethodOptions'NO_SIDE_EFFECTS
-        readEnum "IDEMPOTENT" = Prelude.Just MethodOptions'IDEMPOTENT
-        readEnum _ = Prelude.Nothing
+        readEnum k
+          | (Prelude.==) k "IDEMPOTENCY_UNKNOWN" =
+            Prelude.Just MethodOptions'IDEMPOTENCY_UNKNOWN
+          | (Prelude.==) k "NO_SIDE_EFFECTS" =
+            Prelude.Just MethodOptions'NO_SIDE_EFFECTS
+          | (Prelude.==) k "IDEMPOTENT" =
+            Prelude.Just MethodOptions'IDEMPOTENT
+        readEnum k
+          = (Prelude.>>=) (Text.Read.readMaybe k) Data.ProtoLens.maybeToEnum
+instance Prelude.Bounded MethodOptions'IdempotencyLevel where
+        minBound = MethodOptions'IDEMPOTENCY_UNKNOWN
+        maxBound = MethodOptions'IDEMPOTENT
 instance Prelude.Enum MethodOptions'IdempotencyLevel where
         toEnum k__
           = Prelude.maybe
@@ -4013,9 +4049,9 @@ instance Prelude.Enum MethodOptions'IdempotencyLevel where
         enumFromTo = Data.ProtoLens.Message.Enum.messageEnumFromTo
         enumFromThen = Data.ProtoLens.Message.Enum.messageEnumFromThen
         enumFromThenTo = Data.ProtoLens.Message.Enum.messageEnumFromThenTo
-instance Prelude.Bounded MethodOptions'IdempotencyLevel where
-        minBound = MethodOptions'IDEMPOTENCY_UNKNOWN
-        maxBound = MethodOptions'IDEMPOTENT
+instance Data.ProtoLens.FieldDefault MethodOptions'IdempotencyLevel
+         where
+        fieldDefault = MethodOptions'IDEMPOTENCY_UNKNOWN
 instance Control.DeepSeq.NFData MethodOptions'IdempotencyLevel
          where
         rnf x__ = Prelude.seq x__ (())
@@ -4097,6 +4133,7 @@ instance Data.ProtoLens.Message OneofDescriptorProto where
         unknownFields
           = Lens.Family2.Unchecked.lens _OneofDescriptorProto'_unknownFields
               (\ x__ y__ -> x__{_OneofDescriptorProto'_unknownFields = y__})
+        newParseMessage = Prelude.undefined
         defMessage
           = OneofDescriptorProto{_OneofDescriptorProto'name =
                                    Prelude.Nothing,
@@ -4147,6 +4184,7 @@ instance Data.ProtoLens.Message OneofOptions where
         unknownFields
           = Lens.Family2.Unchecked.lens _OneofOptions'_unknownFields
               (\ x__ y__ -> x__{_OneofOptions'_unknownFields = y__})
+        newParseMessage = Prelude.undefined
         defMessage
           = OneofOptions{_OneofOptions'uninterpretedOption = [],
                          _OneofOptions'_unknownFields = ([])}
@@ -4256,6 +4294,7 @@ instance Data.ProtoLens.Message ServiceDescriptorProto where
           = Lens.Family2.Unchecked.lens
               _ServiceDescriptorProto'_unknownFields
               (\ x__ y__ -> x__{_ServiceDescriptorProto'_unknownFields = y__})
+        newParseMessage = Prelude.undefined
         defMessage
           = ServiceDescriptorProto{_ServiceDescriptorProto'name =
                                      Prelude.Nothing,
@@ -4338,6 +4377,7 @@ instance Data.ProtoLens.Message ServiceOptions where
         unknownFields
           = Lens.Family2.Unchecked.lens _ServiceOptions'_unknownFields
               (\ x__ y__ -> x__{_ServiceOptions'_unknownFields = y__})
+        newParseMessage = Prelude.undefined
         defMessage
           = ServiceOptions{_ServiceOptions'deprecated = Prelude.Nothing,
                            _ServiceOptions'uninterpretedOption = [],
@@ -4387,6 +4427,7 @@ instance Data.ProtoLens.Message SourceCodeInfo where
         unknownFields
           = Lens.Family2.Unchecked.lens _SourceCodeInfo'_unknownFields
               (\ x__ y__ -> x__{_SourceCodeInfo'_unknownFields = y__})
+        newParseMessage = Prelude.undefined
         defMessage
           = SourceCodeInfo{_SourceCodeInfo'location = [],
                            _SourceCodeInfo'_unknownFields = ([])}
@@ -4550,6 +4591,7 @@ instance Data.ProtoLens.Message SourceCodeInfo'Location where
           = Lens.Family2.Unchecked.lens
               _SourceCodeInfo'Location'_unknownFields
               (\ x__ y__ -> x__{_SourceCodeInfo'Location'_unknownFields = y__})
+        newParseMessage = Prelude.undefined
         defMessage
           = SourceCodeInfo'Location{_SourceCodeInfo'Location'path = [],
                                     _SourceCodeInfo'Location'span = [],
@@ -4800,6 +4842,7 @@ instance Data.ProtoLens.Message UninterpretedOption where
         unknownFields
           = Lens.Family2.Unchecked.lens _UninterpretedOption'_unknownFields
               (\ x__ y__ -> x__{_UninterpretedOption'_unknownFields = y__})
+        newParseMessage = Prelude.undefined
         defMessage
           = UninterpretedOption{_UninterpretedOption'name = [],
                                 _UninterpretedOption'identifierValue = Prelude.Nothing,
@@ -4889,6 +4932,7 @@ instance Data.ProtoLens.Message UninterpretedOption'NamePart where
               _UninterpretedOption'NamePart'_unknownFields
               (\ x__ y__ ->
                  x__{_UninterpretedOption'NamePart'_unknownFields = y__})
+        newParseMessage = Prelude.undefined
         defMessage
           = UninterpretedOption'NamePart{_UninterpretedOption'NamePart'namePart
                                            = Data.ProtoLens.fieldDefault,
