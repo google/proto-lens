@@ -44,9 +44,9 @@ library:
     - Proto.Google.Protobuf.Descriptor_Fields
   other-modules:
     - Data.ProtoLens.Encoding.Bytes
+    - Data.ProtoLens.Encoding.Parser
     - Data.ProtoLens.TextFormat.Parser
   dependencies:
-    - attoparsec == 0.13.*
     - base >= 4.9 && < 4.13
     - bytestring == 0.10.*
     - containers >= 0.5 && < 0.7

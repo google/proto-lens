@@ -25,11 +25,9 @@ module Data.ProtoLens.Encoding(
 
 import Data.ProtoLens.Message
 import Data.ProtoLens.Encoding.Bytes
+import Data.ProtoLens.Encoding.Parser
 import Data.ProtoLens.Encoding.Wire
 
-import Control.Applicative ((<|>))
-import Control.Monad (guard)
-import Data.Attoparsec.ByteString as Parse
 import Data.Bool (bool)
 import Data.Monoid ((<>))
 import Data.Proxy (Proxy(Proxy))
@@ -49,12 +47,12 @@ import Lens.Family2 (Lens', set, over, (^.), (&))
 -- | Decode a message from its wire format.  Returns 'Left' if the decoding
 -- fails.
 decodeMessage :: Message msg => B.ByteString -> Either String msg
-decodeMessage input = parseOnly (parseMessage endOfInput) input
+decodeMessage input = runParser (parseMessage isEnd) input
 
 -- | Parse a message with the given ending delimiter (which will be EndGroup in
 -- the case of a group, and end-of-input otherwise).
-parseMessage :: forall msg . Message msg => Parser () -> Parser msg
-parseMessage end = (Parse.<?> T.unpack (messageName (Proxy @msg))) $ do
+parseMessage :: forall msg . Message msg => Parser Bool -> Parser msg
+parseMessage end = (<?> T.unpack (messageName (Proxy @msg))) $ do
     (msg, unsetFields) <- loop defMessage requiredFields
     if Map.null unsetFields
         then return $ over unknownFields reverse
@@ -69,8 +67,11 @@ parseMessage end = (Parse.<?> T.unpack (messageName (Proxy @msg))) $ do
     requiredFields = Map.filter isRequired fields
     loop :: msg -> Map.Map Tag (FieldDescriptor msg)
             -> Parser (msg, Map.Map Tag (FieldDescriptor msg))
-    loop msg unsetFields = ((msg, unsetFields) <$ end)
-                <|> do
+    loop msg unsetFields = do
+        atEnd <- end
+        if atEnd
+            then return (msg, unsetFields)
+            else do
                     tv@(TaggedValue tag _) <- getTaggedValue
                     case Map.lookup tag fields of
                         Nothing -> (loop $! addUnknown tv msg) unsetFields
@@ -89,7 +90,7 @@ decodeMessageOrDie bs = case decodeMessage bs of
 runEither :: Either String a -> Parser a
 runEither = either fail return
 
-parseAndAddField :: msg
+parseAndAddField :: forall msg . msg
                  -> FieldDescriptor msg
                  -> TaggedValue
                  -> Parser msg
@@ -108,17 +109,29 @@ parseAndAddField
                                 FieldWireType fieldWt _ get -> do
                                     Equal <- equalWireTypes fieldWt wt
                                     runEither $ get val
-          -- Get a block of packed values, reversed.
-          getPackedVals = case typeDescriptor of
-            MessageField _ -> fail "Messages can't be packed"
-            ScalarField f -> case fieldWireType f of
-              FieldWireType fieldWt _ get -> do
-                Equal <- equalWireTypes Lengthy wt
-                let getElt = do
-                          wv <- getWireValue fieldWt
-                          x <- runEither $ get wv
-                          return $! x
-                runEither $ parseOnly (manyReversedTill getElt endOfInput) val
+          getRepeatedVals :: Lens' msg [value] -> FieldTypeDescriptor value -> Parser msg
+          getRepeatedVals f (MessageField GroupType) = do
+                    Equal <- equalWireTypes StartGroup wt
+                    !x <- parseMessage (endOfGroup tag)
+                    return $! over' f (x :) msg
+          getRepeatedVals f (MessageField MessageType) = do
+                    Equal <- equalWireTypes Lengthy wt
+                    x <- runEither $ decodeMessage val
+                    return $! over' f (x :) msg
+          getRepeatedVals f (ScalarField ff) = case fieldWireType ff of
+                    FieldWireType fieldWt _ get ->
+                        case wt of
+                            Lengthy | notLengthy fieldWt -> do -- Packed representation
+                                let getElt = do
+                                        wv <- getWireValue fieldWt
+                                        x <- runEither $ get wv
+                                        return $! x
+                                xs <- runEither $ runParser (manyReversedTillEnd getElt) val
+                                return $! over' f (xs ++) msg
+                            _ -> do
+                                Equal <- equalWireTypes fieldWt wt
+                                x <- runEither $ get val
+                                return $! over' f (x :) msg
           in case accessor of
               PlainField _ f -> do
                   !x <- getSimpleVal
@@ -130,15 +143,7 @@ parseAndAddField
               -- depending on how it was encoded.
               -- Note that if fieldWt is Lengthy (e.g., "string" or
               -- message) we should always parse it as unpacked.
-              RepeatedField _ f
-                -> (do
-                        !x <- getSimpleVal
-                        return $! over' f (x :) msg)
-                <|> (do
-                        xs <- getPackedVals
-                        return $! over' f (xs ++) msg)
-                <|> fail ("Expected a repeated field wire type but found "
-                            ++ show wt)
+              RepeatedField _ f -> getRepeatedVals f typeDescriptor
               MapField keyLens valueLens f -> do
                   entry <- getSimpleVal
                   let !key = entry ^. keyLens
@@ -156,12 +161,16 @@ parseAndAddField
 over' :: Lens' a b -> (b -> b) -> a -> a
 over' f g = over f (\(!x) -> g x)
 
--- | Run the parser zero or more times, until the "end" parser succeeds.
--- Returns a list of the parsed elements, in reverse order.
-manyReversedTill :: Parser a -> Parser b -> Parser [a]
-manyReversedTill p end = loop []
+manyReversedTillEnd :: Parser a -> Parser [a]
+manyReversedTillEnd p = loop []
   where
-    loop xs = (end >> return xs) <|> (p >>= \x -> loop (x:xs))
+    loop xs = do
+        atEnd <- isEnd
+        if atEnd
+            then return xs
+            else do
+                x <- p
+                loop (x:xs)
 
 -- | Encode a message to the wire format as a strict 'ByteString'.
 encodeMessage :: Message msg => msg -> B.ByteString
@@ -264,11 +273,11 @@ fieldWireType StringField = FieldWireType Lengthy encodeUtf8
                                     (stringizeError . decodeUtf8')
 fieldWireType BytesField = identityFieldWireType Lengthy
 
-endOfGroup :: Tag -> Parser ()
+endOfGroup :: Tag -> Parser Bool
 endOfGroup tag = do
     TaggedValue tag' (WireValue wt _) <- getTaggedValue
     Equal <- equalWireTypes EndGroup wt
-    guard (tag == tag')
+    return (tag == tag')
 
 -- | Helper function to define a field type whose decoding operation can't fail.
 simpleFieldWireType :: WireType w -> (value -> w) -> (w -> value)

@@ -23,7 +23,6 @@ module Data.ProtoLens.Encoding.Bytes(
     wordToSignedInt64,
     ) where
 
-import Data.Attoparsec.ByteString as Parse
 import Data.Bits
 import Data.ByteString.Lazy.Builder as Builder
 import Data.Int (Int32, Int64)
@@ -33,6 +32,8 @@ import Foreign.Ptr (castPtr)
 import Foreign.Marshal.Alloc (alloca)
 import Foreign.Storable (Storable, peek, poke)
 import System.IO.Unsafe (unsafePerformIO)
+
+import Data.ProtoLens.Encoding.Parser
 
 -- VarInts are inherently unsigned; there are different ways of encoding
 -- negative numbers for int32/64 and sint32/64.

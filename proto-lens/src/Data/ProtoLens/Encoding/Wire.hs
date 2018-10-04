@@ -24,10 +24,10 @@ module Data.ProtoLens.Encoding.Wire(
     Equal(..),
     equalWireTypes,
     decodeFieldSet,
+    notLengthy,
     ) where
 
 import Control.DeepSeq (NFData(..))
-import Data.Attoparsec.ByteString as Parse
 import Data.Bits
 import qualified Data.ByteString as B
 import Data.ByteString.Lazy.Builder as Builder
@@ -35,6 +35,9 @@ import Data.Monoid ((<>))
 import Data.Word
 
 import Data.ProtoLens.Encoding.Bytes
+import Data.ProtoLens.Encoding.Parser
+
+import GHC.Stack
 
 data WireType a where
     -- Note: all of these types are fully strict (vs, say,
@@ -49,6 +52,10 @@ data WireType a where
 
 instance Show (WireType a) where
     show = show . wireTypeToInt
+
+notLengthy :: WireType a -> Bool
+notLengthy Lengthy = False
+notLengthy _ = True
 
 
 -- A value read from the wire
@@ -111,11 +118,11 @@ instance Ord WireValue where
             = v `compare` v'
         | otherwise = wireTypeToInt t `compare` wireTypeToInt t'
 
-getWireValue :: WireType a -> Parser a
+getWireValue :: HasCallStack => WireType a -> Parser a
 getWireValue VarInt = getVarInt
 getWireValue Fixed64 = anyBits
 getWireValue Fixed32 = anyBits
-getWireValue Lengthy = getVarInt >>= Parse.take . fromIntegral
+getWireValue Lengthy = getVarInt >>= takeN . fromIntegral
 getWireValue StartGroup = return ()
 getWireValue EndGroup = return ()
 
@@ -169,4 +176,4 @@ putTaggedValue (TaggedValue tag (WireValue wt val)) =
     putTypeAndTag wt tag <> putWireValue wt val
 
 decodeFieldSet :: B.ByteString -> Either String [TaggedValue]
-decodeFieldSet = parseOnly (manyTill getTaggedValue endOfInput)
+decodeFieldSet = undefined -- runParser (manyTill getTaggedValue endOfInput)
