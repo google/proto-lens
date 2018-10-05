@@ -47,6 +47,7 @@ getVarInt = loop 1 0
             then return $! n'
             else loop (128*s) n'
 
+-- TODO: make more efficient
 -- | Little-endian decoding function.
 anyBits :: forall a . (Num a, FiniteBits a) => Parser a
 anyBits = loop 0 0
