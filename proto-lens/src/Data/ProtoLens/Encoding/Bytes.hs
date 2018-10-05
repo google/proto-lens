@@ -21,6 +21,7 @@ module Data.ProtoLens.Encoding.Bytes(
     wordToSignedInt32,
     signedInt64ToWord,
     wordToSignedInt64,
+    parseString,
     ) where
 
 import Data.Bits
@@ -28,6 +29,9 @@ import Data.ByteString.Lazy.Builder as Builder
 import Data.Int (Int32, Int64)
 import Data.Monoid ((<>))
 import Data.Word (Word32, Word64)
+import qualified Data.ByteString as B
+import qualified Data.Text as T
+import qualified Data.Text.Encoding as T
 import Foreign.Ptr (castPtr)
 import Foreign.Marshal.Alloc (alloca)
 import Foreign.Storable (Storable, peek, poke)
@@ -104,3 +108,8 @@ signedInt64ToWord n = fromIntegral $ shiftL n 1 `xor` shiftR n 63
 wordToSignedInt64 :: Word64 -> Int64
 wordToSignedInt64 n
     = fromIntegral (shiftR n 1) `xor` negate (fromIntegral $ n .&. 1)
+
+parseString :: B.ByteString -> Parser T.Text
+parseString s = case T.decodeUtf8' s of
+    Left e -> fail (show e)
+    Right x -> return x

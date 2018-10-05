@@ -9,6 +9,7 @@ import Data.Int (Int32)
 
 import Data.ProtoLens.Compiler.Combinators
 import Data.ProtoLens.Compiler.Definitions
+import Data.String (fromString)
 import Lens.Family2 ((^.))
 
 import Proto.Google.Protobuf.Descriptor
@@ -122,6 +123,20 @@ typeTag tag typ = fromIntegral tag `shiftL` 3 .|. wireType
 
 parseValue :: FieldDescriptorProto'Type -> Exp
 parseValue FieldDescriptorProto'TYPE_INT32 = fmap' @@ fromIntegral' @@ getVarInt
+parseValue FieldDescriptorProto'TYPE_BYTES = do'
+    [ "len" `genStmt` getVarInt
+    , qualStmt $ protoLensId "Encoding.Parser.takeN" @@ (fromIntegral' @@ "len")
+    ]
+parseValue FieldDescriptorProto'TYPE_STRING = do'
+    [ "len" `genStmt` getVarInt
+    , "b" `genStmt` (protoLensId "Encoding.Parser.takeN" @@ (fromIntegral' @@ "len"))
+    , qualStmt $ protoLensId "Encoding.Bytes.parseString" @@ "b"
+    ]
+parseValue FieldDescriptorProto'TYPE_MESSAGE = do'
+    [ "len" `genStmt` getVarInt
+    , qualStmt $ protoLensId "Encoding.Parser.isolate" @@ (fromIntegral' @@ "len")
+            @@ protoLensId "newParseMessage"
+    ]
 parseValue _ = "Prelude.return" @@ "Prelude.undefined"
 
 -- TODO: don't duplicate
@@ -130,4 +145,6 @@ lensOfExp sym = ("Lens.Labels.lensOf'"
                   @@ ("Lens.Labels.proxy#" @::@
                       ("Lens.Labels.Proxy#" @@ promoteSymbol sym)))
 
+protoLensId :: String -> Exp
+protoLensId n = fromString $ "Data.ProtoLens." ++ n
 

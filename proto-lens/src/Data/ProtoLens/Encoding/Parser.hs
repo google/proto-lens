@@ -6,6 +6,7 @@ module Data.ProtoLens.Encoding.Parser
     , isEnd
     , anyWord8
     , takeN
+    , isolate
     , (<?>)
     , pFail
     ) where
@@ -92,10 +93,16 @@ takeN n = do
     let p' = p `plusPtr` n
     if p' > end
         then fail $ "takeN: Unexpected EOF" ++ show (end `minusPtr` p, end)
-        else do
-            b <- liftIO $ B.packCStringLen (castPtr p, n)
-            put $ p'
-            return b
+        else liftIO (B.packCStringLen (castPtr p, n)) <* put p'
+
+isolate :: Int -> Parser a -> Parser a
+isolate n (Parser m) = do
+    p <- get
+    end <- ask
+    let p' = p `plusPtr` n
+    if p' > end
+        then fail $ "isolate: Unexpected EOF"
+        else Parser (\_ _ -> m p p') <* put p'
 
 -- TODO: I'm not convinced this works...
 (<?>) :: Parser a -> String -> Parser a
