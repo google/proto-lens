@@ -9,7 +9,7 @@ import Data.Int (Int32)
 
 import Data.ProtoLens.Compiler.Combinators
 import Data.ProtoLens.Compiler.Definitions
-import Data.String (fromString)
+import Data.String (IsString(..))
 import Lens.Family2 ((^.))
 
 import Proto.Google.Protobuf.Descriptor
@@ -27,28 +27,38 @@ generateParser syntaxType info =
     letE [funBind [match loop [x] loopExpr]]
         (loop @@ "Data.ProtoLens.defMessage")
   where
-    loop = "loop"
     x = "x"
-    x' = "x'"
     tag = "tv"
     loopExpr = do'
         [ "end" `genStmt` isEnd
         , qualStmt $ if' "end"
             ("Prelude.return" @@ x)
             $ do'
-                -- TODO: no intermediate tags, instead just isolate?
                 [tag `genStmt` getVarInt
-                , x' `genStmt` case' tag
-                                (parseTagCases syntaxType info x)
-                , qualStmt $ "Prelude.$!" @@ loop @@ x'
+                , qualStmt $ case' tag $ 
+                    [ a
+                    | Just t <- [messageGroupTag info]
+                    , a <- parseGroupEnd t x
+                    ]
+                    ++ parseTagCases syntaxType info x
                 ]
         ]
+
+loop :: IsString a => a
+loop = "loop"
 
 isEnd, getVarInt, fmap', fromIntegral' :: Exp
 isEnd = "Data.ProtoLens.Encoding.Parser.isEnd"
 getVarInt = "Data.ProtoLens.Encoding.Bytes.getVarInt"
 fmap' = "Prelude.fmap"
 fromIntegral' = "Prelude.fromIntegral"
+
+parseGroupEnd :: Int32 -> Exp -> [Alt]
+parseGroupEnd t x =
+    [ alt (pLitInt $ fromIntegral $ t `shiftL` 3 .|. 4)
+        $ "Prelude.return" @@ x
+    -- TODO: catch wrong end-groups
+    ]
 
 parseTagCases ::
     SyntaxType -> MessageInfo Name
@@ -75,7 +85,7 @@ scalarFieldCase :: Exp -> FieldInfo -> Alt
 scalarFieldCase x f = alt (pLitInt $ typeTag (fd ^. number) (fd ^. type'))
     $ do'
         [ y `genStmt` parseValue (fd ^. type')
-        , qualStmt $ "Prelude.$!" @@ "Prelude.return"
+        , qualStmt $ "Prelude.$!" @@ loop
                 @@ ("Lens.Family2.set"
                         @@ lensOfExp (overloadedName $ plainFieldName f)
                         @@ y

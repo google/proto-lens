@@ -59,6 +59,7 @@ import Proto.Google.Protobuf.Descriptor
     , FileDescriptorProto
     , MethodDescriptorProto
     , ServiceDescriptorProto
+    , FieldDescriptorProto'Type(..)
     )
 import Proto.Google.Protobuf.Descriptor_Fields
     ( clientStreaming
@@ -77,6 +78,7 @@ import Proto.Google.Protobuf.Descriptor_Fields
     , serverStreaming
     , service
     , syntax
+    , type'
     , typeName
     , value
     )
@@ -118,6 +120,9 @@ data Definition n = Message (MessageInfo n) | Enum (EnumInfo n)
 data MessageInfo n = MessageInfo
     { messageName :: n  -- ^ Haskell type name
     , messageDescriptor :: DescriptorProto
+    , messageGroupTag :: Maybe Int32
+      -- ^ If this message is a group, the tag of its field in the parent
+      -- message.
     , messageFields :: [FieldInfo] -- ^ Fields not belonging to a oneof.
     , messageOneofFields :: [OneofInfo]
       -- ^ The oneofs in this message, associated with the fields that
@@ -253,7 +258,9 @@ collectDefinitions fd = let
         "" -> "."
         p -> "." <> p <> "."
     hsPrefix = ""
-    in Map.fromList $ messageAndEnumDefs protoPrefix hsPrefix
+    in Map.fromList $ messageAndEnumDefs
+                          Map.empty
+                          protoPrefix hsPrefix
                           (fd ^. messageType) (fd ^. enumType)
 
 collectServices :: FileDescriptorProto -> [ServiceInfo]
@@ -278,20 +285,21 @@ collectServices fd = fmap (toServiceInfo $ fd ^. package) $ fd ^. service
             , methodServerStreaming = md ^. serverStreaming
             }
 
-messageAndEnumDefs :: Text -> String -> [DescriptorProto]
+messageAndEnumDefs :: Groups -> Text -> String -> [DescriptorProto]
                    -> [EnumDescriptorProto] -> [(Text, Definition Name)]
-messageAndEnumDefs protoPrefix hsPrefix messages enums
-    = concatMap (messageDefs protoPrefix hsPrefix) messages
+messageAndEnumDefs groups protoPrefix hsPrefix messages enums
+    = concatMap (messageDefs groups protoPrefix hsPrefix) messages
         ++ map (enumDef protoPrefix hsPrefix) enums
 
 -- | Generate the definitions for a message and its nested types (if any).
-messageDefs :: Text -> String -> DescriptorProto
+messageDefs :: Groups -> Text -> String -> DescriptorProto
             -> [(Text, Definition Name)]
-messageDefs protoPrefix hsPrefix d
+messageDefs groups protoPrefix hsPrefix d
     = (protoName, thisDef)
           : messageAndEnumDefs
+                (collectGroups $ d ^. field)
                 (protoName <> ".")
-                hsPrefix'
+                hsPrefix
                 (d ^. nestedType)
                 (d ^. enumType)
   where
@@ -302,6 +310,7 @@ messageDefs protoPrefix hsPrefix d
         Message MessageInfo
             { messageName = fromString $ hsPrefix ++ hsName (d ^. name)
             , messageDescriptor = d
+            , messageGroupTag = Map.lookup protoName groups
             , messageFields =
                   map (fieldInfo hsPrefix')
                       $ Map.findWithDefault [] Nothing allFields
@@ -480,3 +489,13 @@ capitalize :: Text -> Text
 capitalize s
     | Just (c, s') <- uncons s = cons (toUpper c) s'
     | otherwise = s
+
+-- Mapping from group message names to their tag number.
+type Groups = Map.Map Text Int32
+
+collectGroups :: [FieldDescriptorProto] -> Groups
+collectGroups fs = Map.fromList
+    [ (f ^. typeName, f ^. number)
+    | f <- fs
+    , (f ^. type') == FieldDescriptorProto'TYPE_GROUP
+    ]
