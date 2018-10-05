@@ -299,7 +299,7 @@ messageDefs groups protoPrefix hsPrefix d
           : messageAndEnumDefs
                 (collectGroups $ d ^. field)
                 (protoName <> ".")
-                hsPrefix
+                hsPrefix'
                 (d ^. nestedType)
                 (d ^. enumType)
   where
