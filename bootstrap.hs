@@ -20,7 +20,7 @@ useBootstrappingYaml = "--stack-yaml=stack-bootstrap.yaml"
 
 main = do
   callProcess "stack" [useBootstrappingYaml, "setup"]
-  wrapClean $ do
+  do
       [installRoot] <- lines <$> readProcess "stack"
                         [useBootstrappingYaml, "path", "--local-install-root"] ""
       let protocGenHaskell = installRoot </> "bin/proto-lens-protoc"
@@ -34,15 +34,5 @@ main = do
               [ "google/protobuf/descriptor.proto"
               , "google/protobuf/compiler/plugin.proto"
               ]
-
--- | Stack' rebuild logic doesn't seem robust enough for this case, and
--- sometimes reuses the HEAD version of proto-lens for bootstrapping (or vice
--- versa).
--- To make this script more robust, do "stack clean" before and after running it.
-wrapClean :: IO a -> IO a
-wrapClean = bracket_ cleanBootstrap cleanHead
-  where
-    -- Prepare for running bootstrapping:
-    cleanBootstrap = callProcess "stack" [useBootstrappingYaml, "clean"]
-    -- Prepare for a normal build:
-    cleanHead = callProcess "stack" ["clean"]
+      -- Verify that the generated code compiles successfully.
+      callProcess "stack" ["build", "proto-lens"]
