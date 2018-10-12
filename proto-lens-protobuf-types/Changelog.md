@@ -1,6 +1,9 @@
 # Changelog for `proto-lens-protobuf-types`
 
 ## v0.4.0.0
+- Bump the dependency on `base` to support `ghc-8.6.1`.
+
+## v0.4.0.0
 - Switch to `proto-lens-{setup/runtime}` v0.4.
 - Bump the lens-labels dependency to `0.3.*` for consistency with other
   packages.

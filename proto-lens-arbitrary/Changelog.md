@@ -1,5 +1,8 @@
 # Changelog for `proto-lens-arbitrary`
 
+## v0.1.2.4
+- Bump the dependencies on `base` and `containers` to support `ghc-8.6.1`.
+
 ## v0.1.2.3
 - Update to (and require) `proto-lens-0.4.*`.
 

@@ -1,6 +1,10 @@
 # Changelog for `proto-lens-protoc`
 
-## v0.4
+## v0.4.0.1
+- Bump the dependency on `base` and `containers` to support `ghc-8.6.1`.
+- Fix a GHC error on enums with a very large number of cases (#241).
+
+## v0.4.0.0
 - Split out `proto-lens-setup` and `proto-lens-runtime` into separate
   packages.
 - Hide the constructors and record fields of message types, and make `Show`

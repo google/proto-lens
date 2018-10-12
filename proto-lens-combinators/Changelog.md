@@ -1,5 +1,8 @@
 # Changelog for `proto-lens-combinators`
 
+## v0.4.0.1
+- Bump the dependency on `base` to support `ghc-8.6.1`.
+
 ## v0.4.0.0
 - Update to (and require) `proto-lens-0.4.*`.
 
