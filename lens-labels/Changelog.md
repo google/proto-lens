@@ -1,5 +1,8 @@
 # Changelog for `lens-labels`
 
+## v0.3.0.1
+- Bump the dependency on `base` to support `ghc-8.6.1`.
+
 ## v0.3.0.0
 - Simplify instances to make them more readable. (#208)
 

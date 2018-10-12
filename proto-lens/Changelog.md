@@ -1,6 +1,9 @@
 # Changelog for `proto-lens`
 
-## v0.4
+## v0.4.0.1
+- Bump the dependencies on `base` and `containers` to `0.4.0.1`.
+
+## v0.4.0.0
 - Don't use `data-default` for default proto values (#194).
 - Update the proto descriptors to protobuf-3.6.1.
 - Use simplified lens-labels instances. (#208)
