@@ -1,5 +1,8 @@
 # Changelog for `proto-lens`
 
+## Unreleased changes
+- Merge proto-lens-combinators into the proto-lens library.
+
 ## v0.4.0.1
 - Bump the dependencies on `base` and `containers` to `0.4.0.1`.
 
