@@ -121,6 +121,7 @@ testOddCasedMessage = testGroup "oddCasedMessage"
     , testCase "enums" $ do
           trivial (Odd_CAsed_message'DeFA_ult :: Odd_CAsed_message'odd_CAsed_enum)
           trivial (DeFA_ult :: Odd_CAsed_enum)
+          trivial (Xunder_scored :: Odd_CAsed_enum)
     ]
   where
     defMsg = defMessage :: Odd_CAsed_message

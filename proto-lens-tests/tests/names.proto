@@ -90,6 +90,7 @@ message ABBREVName {}
 enum Odd_CAsed_enum {
   // TODO: deFA_ult = 0;
   DeFA_ult = 0;
+  _under_scored = 1;
 }
 
 // Messages whose name conflicts with a proto keyword.
