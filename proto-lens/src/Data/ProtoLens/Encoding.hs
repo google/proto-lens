@@ -158,6 +158,7 @@ over' f g = over f (\(!x) -> g x)
 
 -- | Run the parser zero or more times, until the "end" parser succeeds.
 -- Returns a list of the parsed elements, in reverse order.
+{-# INLINE manyReversedTill #-}
 manyReversedTill :: Parser a -> Parser b -> Parser [a]
 manyReversedTill p end = loop []
   where
@@ -233,9 +234,10 @@ messageFieldToVals tag (FieldDescriptor _ typeDescriptor accessor) msg =
                     $ Map.toList (msg ^. f)
 
 data FieldWireType value where
-    FieldWireType :: WireType w -> (value -> w) -> (w -> Either String value)
+    FieldWireType :: !(WireType w) -> !(value -> w) -> !(w -> Either String value)
                   -> FieldWireType value
 
+{-# INLINE fieldWireType #-}
 fieldWireType :: ScalarField value -> FieldWireType value
 -- TODO: Don't let toEnum crash on unknown enum values.
 fieldWireType EnumField = simpleFieldWireType VarInt
@@ -271,16 +273,19 @@ endOfGroup tag = do
     guard (tag == tag')
 
 -- | Helper function to define a field type whose decoding operation can't fail.
+{-# INLINE simpleFieldWireType #-}
 simpleFieldWireType :: WireType w -> (value -> w) -> (w -> value)
                     -> FieldWireType value
 simpleFieldWireType w f g = FieldWireType w f (return . g)
 
+{-# INLINE identityFieldWireType #-}
 -- | A simple field type which is the same as its wire type.
 identityFieldWireType :: WireType w -> FieldWireType w
 identityFieldWireType w = simpleFieldWireType w id id
 
 -- | A simple field type which converts to/from its wire type via
 -- "fromIntegral".
+{-# INLINE integralFieldWireType #-}
 integralFieldWireType
     :: (Integral w, Integral value) => WireType w -> FieldWireType value
 integralFieldWireType w = simpleFieldWireType w fromIntegral fromIntegral
