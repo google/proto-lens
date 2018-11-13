@@ -47,9 +47,10 @@ generateParser syntaxType info =
 loop :: IsString a => a
 loop = "loop"
 
-isEnd, getVarInt, fmap', fromIntegral' :: Exp
+isEnd, getVarInt, fmap', fromIntegral', anyBits :: Exp
 isEnd = "Data.ProtoLens.Encoding.Parser.isEnd"
 getVarInt = "Data.ProtoLens.Encoding.Bytes.getVarInt"
+anyBits = "Data.ProtoLens.Encoding.Bytes.anyBits"
 fmap' = "Prelude.fmap"
 fromIntegral' = "Prelude.fromIntegral"
 
@@ -133,6 +134,13 @@ typeTag tag typ = fromIntegral tag `shiftL` 3 .|. wireType
 
 parseValue :: FieldDescriptorProto'Type -> Exp
 parseValue FieldDescriptorProto'TYPE_INT32 = fmap' @@ fromIntegral' @@ getVarInt
+parseValue FieldDescriptorProto'TYPE_INT64 = fmap' @@ fromIntegral' @@ getVarInt
+parseValue FieldDescriptorProto'TYPE_UINT32 = fmap' @@ fromIntegral' @@ getVarInt
+parseValue FieldDescriptorProto'TYPE_UINT64 = fmap' @@ fromIntegral' @@ getVarInt
+parseValue FieldDescriptorProto'TYPE_FIXED64 = fmap' @@ fromIntegral' @@ anyBits
+parseValue FieldDescriptorProto'TYPE_FIXED32 = fmap' @@ fromIntegral' @@ anyBits
+parseValue FieldDescriptorProto'TYPE_SFIXED64 = fmap' @@ fromIntegral' @@ anyBits
+parseValue FieldDescriptorProto'TYPE_SFIXED32 = fmap' @@ fromIntegral' @@ anyBits
 parseValue FieldDescriptorProto'TYPE_BYTES = do'
     [ "len" `genStmt` getVarInt
     , qualStmt $ protoLensId "Encoding.Parser.takeN" @@ (fromIntegral' @@ "len")
