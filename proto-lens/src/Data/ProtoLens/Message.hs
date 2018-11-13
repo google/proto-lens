@@ -4,6 +4,7 @@
 -- license that can be found in the LICENSE file or at
 -- https://developers.google.com/open-source/licenses/bsd
 
+{-# LANGUAGE CPP #-}
 {-# LANGUAGE GADTs #-}
 {-# LANGUAGE GeneralizedNewtypeDeriving #-}
 {-# LANGUAGE OverloadedStrings #-}
@@ -29,7 +30,7 @@ module Data.ProtoLens.Message (
     MessageOrGroup(..),
     FieldDefault(..),
     MessageEnum(..),
-    -- * Building protocol buffers
+    -- * Constructing protocol buffers
     build,
     -- * Proto registries
     Registry,
@@ -60,6 +61,8 @@ import Data.Word
 import Lens.Family2 (Lens', over, set)
 import Lens.Family2.Unchecked (lens)
 import qualified Data.Semigroup as Semigroup
+import Data.Attoparsec.ByteString (Parser)
+import Data.ByteString.Builder (Builder)
 
 import Data.ProtoLens.Encoding.Wire
     ( Tag(..)
@@ -93,6 +96,20 @@ class Message msg where
 
     -- | Access the unknown fields of a Message.
     unknownFields :: Lens' msg FieldSet
+
+    -- | Decode a message value.
+    --
+    -- See also the functions in "Data.ProtoLens.Encoding".
+    --
+    -- NOTE: This function is not fully implemented.
+    unfinishedParseMessage :: Parser msg
+
+    -- | Encode a message value.
+    --
+    -- See also the functions in "Data.ProtoLens.Encoding".
+    --
+    -- NOTE: This function is not fully implemented.
+    unfinishedBuildMessage :: msg -> Builder
 
 allFields :: Message msg => [FieldDescriptor msg]
 allFields = Map.elems fieldsByTag

@@ -11,7 +11,7 @@
 {-# LANGUAGE RankNTypes #-}
 -- | Module defining the individual base wire types (e.g. VarInt, Fixed64) and
 -- how to encode/decode them.
-module Data.ProtoLens.Encoding.Wire(
+module Data.ProtoLens.Encoding.Reflected.Wire(
     WireType(..),
     SomeWireType(..),
     WireValue(..),
@@ -24,6 +24,7 @@ module Data.ProtoLens.Encoding.Wire(
     Equal(..),
     equalWireTypes,
     decodeFieldSet,
+    FieldSet,
     ) where
 
 import Control.DeepSeq (NFData(..))
@@ -35,6 +36,11 @@ import Data.Monoid ((<>))
 import Data.Word
 
 import Data.ProtoLens.Encoding.Bytes
+
+-- | A tag that identifies a particular field of the message when converting
+-- to/from the wire format.
+newtype Tag = Tag { unTag :: Int}
+    deriving (Show, Eq, Ord, Num, NFData)
 
 data WireType a where
     -- Note: all of these types are fully strict (vs, say,
@@ -74,11 +80,6 @@ instance NFData TaggedValue where
 
 instance NFData WireValue where
     rnf = (`seq` ())
-
--- | A tag that identifies a particular field of the message when converting
--- to/from the wire format.
-newtype Tag = Tag { unTag :: Int}
-    deriving (Show, Eq, Ord, Num, NFData)
 
 data Equal a b where
     -- TODO: move Eq/Ord instance somewhere else?
@@ -168,5 +169,7 @@ putTaggedValue :: TaggedValue -> Builder
 putTaggedValue (TaggedValue tag (WireValue wt val)) =
     putTypeAndTag wt tag <> putWireValue wt val
 
-decodeFieldSet :: B.ByteString -> Either String [TaggedValue]
+type FieldSet = [TaggedValue]
+
+decodeFieldSet :: B.ByteString -> Either String FieldSet
 decodeFieldSet = parseOnly (manyTill getTaggedValue endOfInput)

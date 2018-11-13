@@ -29,6 +29,7 @@ import qualified Control.DeepSeq
 import qualified Lens.Labels.Prism
 import qualified Prelude
 import qualified Data.Int
+import qualified Data.Monoid
 import qualified Data.Word
 import qualified Data.ProtoLens
 import qualified Data.ProtoLens.Message.Enum
@@ -281,6 +282,8 @@ instance Data.ProtoLens.Message DescriptorProto where
                             _DescriptorProto'reservedRange = [],
                             _DescriptorProto'reservedName = [],
                             _DescriptorProto'_unknownFields = ([])}
+        unfinishedParseMessage = Prelude.return Data.ProtoLens.defMessage
+        unfinishedBuildMessage = Prelude.const Data.Monoid.mempty
 instance Control.DeepSeq.NFData DescriptorProto where
         rnf
           = \ x__ ->
@@ -425,6 +428,8 @@ instance Data.ProtoLens.Message DescriptorProto'ExtensionRange
                                            _DescriptorProto'ExtensionRange'options =
                                              Prelude.Nothing,
                                            _DescriptorProto'ExtensionRange'_unknownFields = ([])}
+        unfinishedParseMessage = Prelude.return Data.ProtoLens.defMessage
+        unfinishedBuildMessage = Prelude.const Data.Monoid.mempty
 instance Control.DeepSeq.NFData DescriptorProto'ExtensionRange
          where
         rnf
@@ -524,6 +529,8 @@ instance Data.ProtoLens.Message DescriptorProto'ReservedRange where
                                             = Prelude.Nothing,
                                           _DescriptorProto'ReservedRange'end = Prelude.Nothing,
                                           _DescriptorProto'ReservedRange'_unknownFields = ([])}
+        unfinishedParseMessage = Prelude.return Data.ProtoLens.defMessage
+        unfinishedBuildMessage = Prelude.const Data.Monoid.mempty
 instance Control.DeepSeq.NFData DescriptorProto'ReservedRange where
         rnf
           = \ x__ ->
@@ -678,6 +685,8 @@ instance Data.ProtoLens.Message EnumDescriptorProto where
                                 _EnumDescriptorProto'reservedRange = [],
                                 _EnumDescriptorProto'reservedName = [],
                                 _EnumDescriptorProto'_unknownFields = ([])}
+        unfinishedParseMessage = Prelude.return Data.ProtoLens.defMessage
+        unfinishedBuildMessage = Prelude.const Data.Monoid.mempty
 instance Control.DeepSeq.NFData EnumDescriptorProto where
         rnf
           = \ x__ ->
@@ -802,6 +811,8 @@ instance Data.ProtoLens.Message
                                                     Prelude.Nothing,
                                                   _EnumDescriptorProto'EnumReservedRange'_unknownFields
                                                     = ([])}
+        unfinishedParseMessage = Prelude.return Data.ProtoLens.defMessage
+        unfinishedBuildMessage = Prelude.const Data.Monoid.mempty
 instance Control.DeepSeq.NFData
            EnumDescriptorProto'EnumReservedRange
          where
@@ -914,6 +925,8 @@ instance Data.ProtoLens.Message EnumOptions where
                         _EnumOptions'deprecated = Prelude.Nothing,
                         _EnumOptions'uninterpretedOption = [],
                         _EnumOptions'_unknownFields = ([])}
+        unfinishedParseMessage = Prelude.return Data.ProtoLens.defMessage
+        unfinishedBuildMessage = Prelude.const Data.Monoid.mempty
 instance Control.DeepSeq.NFData EnumOptions where
         rnf
           = \ x__ ->
@@ -1036,6 +1049,8 @@ instance Data.ProtoLens.Message EnumValueDescriptorProto where
                                      _EnumValueDescriptorProto'number = Prelude.Nothing,
                                      _EnumValueDescriptorProto'options = Prelude.Nothing,
                                      _EnumValueDescriptorProto'_unknownFields = ([])}
+        unfinishedParseMessage = Prelude.return Data.ProtoLens.defMessage
+        unfinishedBuildMessage = Prelude.const Data.Monoid.mempty
 instance Control.DeepSeq.NFData EnumValueDescriptorProto where
         rnf
           = \ x__ ->
@@ -1118,6 +1133,8 @@ instance Data.ProtoLens.Message EnumValueOptions where
           = EnumValueOptions{_EnumValueOptions'deprecated = Prelude.Nothing,
                              _EnumValueOptions'uninterpretedOption = [],
                              _EnumValueOptions'_unknownFields = ([])}
+        unfinishedParseMessage = Prelude.return Data.ProtoLens.defMessage
+        unfinishedBuildMessage = Prelude.const Data.Monoid.mempty
 instance Control.DeepSeq.NFData EnumValueOptions where
         rnf
           = \ x__ ->
@@ -1173,6 +1190,8 @@ instance Data.ProtoLens.Message ExtensionRangeOptions where
           = ExtensionRangeOptions{_ExtensionRangeOptions'uninterpretedOption
                                     = [],
                                   _ExtensionRangeOptions'_unknownFields = ([])}
+        unfinishedParseMessage = Prelude.return Data.ProtoLens.defMessage
+        unfinishedBuildMessage = Prelude.const Data.Monoid.mempty
 instance Control.DeepSeq.NFData ExtensionRangeOptions where
         rnf
           = \ x__ ->
@@ -1506,6 +1525,8 @@ instance Data.ProtoLens.Message FieldDescriptorProto where
                                  _FieldDescriptorProto'jsonName = Prelude.Nothing,
                                  _FieldDescriptorProto'options = Prelude.Nothing,
                                  _FieldDescriptorProto'_unknownFields = ([])}
+        unfinishedParseMessage = Prelude.return Data.ProtoLens.defMessage
+        unfinishedBuildMessage = Prelude.const Data.Monoid.mempty
 instance Control.DeepSeq.NFData FieldDescriptorProto where
         rnf
           = \ x__ ->
@@ -2006,6 +2027,8 @@ instance Data.ProtoLens.Message FieldOptions where
                          _FieldOptions'weak = Prelude.Nothing,
                          _FieldOptions'uninterpretedOption = [],
                          _FieldOptions'_unknownFields = ([])}
+        unfinishedParseMessage = Prelude.return Data.ProtoLens.defMessage
+        unfinishedBuildMessage = Prelude.const Data.Monoid.mempty
 instance Control.DeepSeq.NFData FieldOptions where
         rnf
           = \ x__ ->
@@ -2438,6 +2461,8 @@ instance Data.ProtoLens.Message FileDescriptorProto where
                                 _FileDescriptorProto'sourceCodeInfo = Prelude.Nothing,
                                 _FileDescriptorProto'syntax = Prelude.Nothing,
                                 _FileDescriptorProto'_unknownFields = ([])}
+        unfinishedParseMessage = Prelude.return Data.ProtoLens.defMessage
+        unfinishedBuildMessage = Prelude.const Data.Monoid.mempty
 instance Control.DeepSeq.NFData FileDescriptorProto where
         rnf
           = \ x__ ->
@@ -2501,6 +2526,8 @@ instance Data.ProtoLens.Message FileDescriptorSet where
         defMessage
           = FileDescriptorSet{_FileDescriptorSet'file = [],
                               _FileDescriptorSet'_unknownFields = ([])}
+        unfinishedParseMessage = Prelude.return Data.ProtoLens.defMessage
+        unfinishedBuildMessage = Prelude.const Data.Monoid.mempty
 instance Control.DeepSeq.NFData FileDescriptorSet where
         rnf
           = \ x__ ->
@@ -3151,6 +3178,8 @@ instance Data.ProtoLens.Message FileOptions where
                         _FileOptions'rubyPackage = Prelude.Nothing,
                         _FileOptions'uninterpretedOption = [],
                         _FileOptions'_unknownFields = ([])}
+        unfinishedParseMessage = Prelude.return Data.ProtoLens.defMessage
+        unfinishedBuildMessage = Prelude.const Data.Monoid.mempty
 instance Control.DeepSeq.NFData FileOptions where
         rnf
           = \ x__ ->
@@ -3288,6 +3317,8 @@ instance Data.ProtoLens.Message GeneratedCodeInfo where
         defMessage
           = GeneratedCodeInfo{_GeneratedCodeInfo'annotation = [],
                               _GeneratedCodeInfo'_unknownFields = ([])}
+        unfinishedParseMessage = Prelude.return Data.ProtoLens.defMessage
+        unfinishedBuildMessage = Prelude.const Data.Monoid.mempty
 instance Control.DeepSeq.NFData GeneratedCodeInfo where
         rnf
           = \ x__ ->
@@ -3433,6 +3464,8 @@ instance Data.ProtoLens.Message GeneratedCodeInfo'Annotation where
                                          _GeneratedCodeInfo'Annotation'begin = Prelude.Nothing,
                                          _GeneratedCodeInfo'Annotation'end = Prelude.Nothing,
                                          _GeneratedCodeInfo'Annotation'_unknownFields = ([])}
+        unfinishedParseMessage = Prelude.return Data.ProtoLens.defMessage
+        unfinishedBuildMessage = Prelude.const Data.Monoid.mempty
 instance Control.DeepSeq.NFData GeneratedCodeInfo'Annotation where
         rnf
           = \ x__ ->
@@ -3614,6 +3647,8 @@ instance Data.ProtoLens.Message MessageOptions where
                            _MessageOptions'mapEntry = Prelude.Nothing,
                            _MessageOptions'uninterpretedOption = [],
                            _MessageOptions'_unknownFields = ([])}
+        unfinishedParseMessage = Prelude.return Data.ProtoLens.defMessage
+        unfinishedBuildMessage = Prelude.const Data.Monoid.mempty
 instance Control.DeepSeq.NFData MessageOptions where
         rnf
           = \ x__ ->
@@ -3832,6 +3867,8 @@ instance Data.ProtoLens.Message MethodDescriptorProto where
                                   _MethodDescriptorProto'clientStreaming = Prelude.Nothing,
                                   _MethodDescriptorProto'serverStreaming = Prelude.Nothing,
                                   _MethodDescriptorProto'_unknownFields = ([])}
+        unfinishedParseMessage = Prelude.return Data.ProtoLens.defMessage
+        unfinishedBuildMessage = Prelude.const Data.Monoid.mempty
 instance Control.DeepSeq.NFData MethodDescriptorProto where
         rnf
           = \ x__ ->
@@ -3947,6 +3984,8 @@ instance Data.ProtoLens.Message MethodOptions where
                           _MethodOptions'idempotencyLevel = Prelude.Nothing,
                           _MethodOptions'uninterpretedOption = [],
                           _MethodOptions'_unknownFields = ([])}
+        unfinishedParseMessage = Prelude.return Data.ProtoLens.defMessage
+        unfinishedBuildMessage = Prelude.const Data.Monoid.mempty
 instance Control.DeepSeq.NFData MethodOptions where
         rnf
           = \ x__ ->
@@ -4096,6 +4135,8 @@ instance Data.ProtoLens.Message OneofDescriptorProto where
                                    Prelude.Nothing,
                                  _OneofDescriptorProto'options = Prelude.Nothing,
                                  _OneofDescriptorProto'_unknownFields = ([])}
+        unfinishedParseMessage = Prelude.return Data.ProtoLens.defMessage
+        unfinishedBuildMessage = Prelude.const Data.Monoid.mempty
 instance Control.DeepSeq.NFData OneofDescriptorProto where
         rnf
           = \ x__ ->
@@ -4144,6 +4185,8 @@ instance Data.ProtoLens.Message OneofOptions where
         defMessage
           = OneofOptions{_OneofOptions'uninterpretedOption = [],
                          _OneofOptions'_unknownFields = ([])}
+        unfinishedParseMessage = Prelude.return Data.ProtoLens.defMessage
+        unfinishedBuildMessage = Prelude.const Data.Monoid.mempty
 instance Control.DeepSeq.NFData OneofOptions where
         rnf
           = \ x__ ->
@@ -4255,6 +4298,8 @@ instance Data.ProtoLens.Message ServiceDescriptorProto where
                                    _ServiceDescriptorProto'method = [],
                                    _ServiceDescriptorProto'options = Prelude.Nothing,
                                    _ServiceDescriptorProto'_unknownFields = ([])}
+        unfinishedParseMessage = Prelude.return Data.ProtoLens.defMessage
+        unfinishedBuildMessage = Prelude.const Data.Monoid.mempty
 instance Control.DeepSeq.NFData ServiceDescriptorProto where
         rnf
           = \ x__ ->
@@ -4335,6 +4380,8 @@ instance Data.ProtoLens.Message ServiceOptions where
           = ServiceOptions{_ServiceOptions'deprecated = Prelude.Nothing,
                            _ServiceOptions'uninterpretedOption = [],
                            _ServiceOptions'_unknownFields = ([])}
+        unfinishedParseMessage = Prelude.return Data.ProtoLens.defMessage
+        unfinishedBuildMessage = Prelude.const Data.Monoid.mempty
 instance Control.DeepSeq.NFData ServiceOptions where
         rnf
           = \ x__ ->
@@ -4383,6 +4430,8 @@ instance Data.ProtoLens.Message SourceCodeInfo where
         defMessage
           = SourceCodeInfo{_SourceCodeInfo'location = [],
                            _SourceCodeInfo'_unknownFields = ([])}
+        unfinishedParseMessage = Prelude.return Data.ProtoLens.defMessage
+        unfinishedBuildMessage = Prelude.const Data.Monoid.mempty
 instance Control.DeepSeq.NFData SourceCodeInfo where
         rnf
           = \ x__ ->
@@ -4551,6 +4600,8 @@ instance Data.ProtoLens.Message SourceCodeInfo'Location where
                                     _SourceCodeInfo'Location'trailingComments = Prelude.Nothing,
                                     _SourceCodeInfo'Location'leadingDetachedComments = [],
                                     _SourceCodeInfo'Location'_unknownFields = ([])}
+        unfinishedParseMessage = Prelude.return Data.ProtoLens.defMessage
+        unfinishedBuildMessage = Prelude.const Data.Monoid.mempty
 instance Control.DeepSeq.NFData SourceCodeInfo'Location where
         rnf
           = \ x__ ->
@@ -4795,6 +4846,8 @@ instance Data.ProtoLens.Message UninterpretedOption where
                                 _UninterpretedOption'stringValue = Prelude.Nothing,
                                 _UninterpretedOption'aggregateValue = Prelude.Nothing,
                                 _UninterpretedOption'_unknownFields = ([])}
+        unfinishedParseMessage = Prelude.return Data.ProtoLens.defMessage
+        unfinishedBuildMessage = Prelude.const Data.Monoid.mempty
 instance Control.DeepSeq.NFData UninterpretedOption where
         rnf
           = \ x__ ->
@@ -4879,6 +4932,8 @@ instance Data.ProtoLens.Message UninterpretedOption'NamePart where
                                          _UninterpretedOption'NamePart'isExtension =
                                            Data.ProtoLens.fieldDefault,
                                          _UninterpretedOption'NamePart'_unknownFields = ([])}
+        unfinishedParseMessage = Prelude.return Data.ProtoLens.defMessage
+        unfinishedBuildMessage = Prelude.const Data.Monoid.mempty
 instance Control.DeepSeq.NFData UninterpretedOption'NamePart where
         rnf
           = \ x__ ->

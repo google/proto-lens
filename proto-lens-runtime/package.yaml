@@ -31,6 +31,7 @@ library:
     - Prelude as Data.ProtoLens.Runtime.Prelude,
     - Control.DeepSeq as Data.ProtoLens.Runtime.Control.DeepSeq,
     - Data.Int as Data.ProtoLens.Runtime.Data.Int,
+    - Data.Monoid as Data.ProtoLens.Runtime.Data.Monoid,
     - Data.Word as Data.ProtoLens.Runtime.Data.Word,
     - Data.ByteString as Data.ProtoLens.Runtime.Data.ByteString,
     - Data.ByteString.Char8 as Data.ProtoLens.Runtime.Data.ByteString.Char8,

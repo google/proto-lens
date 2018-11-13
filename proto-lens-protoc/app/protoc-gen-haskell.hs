@@ -14,7 +14,12 @@ import Data.Monoid ((<>))
 import qualified Data.Set as Set
 import qualified Data.Text as T
 import Data.Text (Text, pack)
-import Data.ProtoLens (decodeMessage, defMessage, encodeMessage)
+import Data.ProtoLens (defMessage)
+-- Force the use of the Reflected API when decoding DescriptorProto
+-- so that we can run the test suite against the Generated API.
+-- TODO: switch back to Data.ProtoLens.Encoding once the Generated encoding is
+-- good enough.
+import Data.ProtoLens.Encoding.Reflected (decodeMessage, encodeMessage)
 import Lens.Family2
 import Proto.Google.Protobuf.Compiler.Plugin
     ( CodeGeneratorRequest
