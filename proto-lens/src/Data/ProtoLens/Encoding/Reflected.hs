@@ -4,10 +4,13 @@
 -- license that can be found in the LICENSE file or at
 -- https://developers.google.com/open-source/licenses/bsd
 
--- | Functions for encoding and decoding protocol buffer Messages.
+-- | A reference implementation of encoding and decoding protocol buffer Messages.
 --
--- TODO: Currently all operations are on strict ByteStrings;
--- we should try to generalize to lazy Bytestrings as well.
+-- NOTE: The functions in Data.ProtoLens.Encoding are more efficient and in general
+-- should always be used instead.
+--
+-- TODO(judah): Move this and the Wire module to proto-lens-tests, once
+-- Data.ProtoLens.Encoding has been filled out.
 {-# LANGUAGE BangPatterns #-}
 {-# LANGUAGE GADTs #-}
 {-# LANGUAGE LambdaCase #-}
@@ -15,23 +18,21 @@
 {-# LANGUAGE RankNTypes #-}
 {-# LANGUAGE ScopedTypeVariables #-}
 {-# LANGUAGE TypeApplications #-}
-module Data.ProtoLens.Encoding(
+module Data.ProtoLens.Encoding.Reflected(
     encodeMessage,
-    buildMessage,
-    buildMessageDelimited,
+    parseMessage,
     decodeMessage,
-    decodeMessageOrDie,
+    buildMessage,
     ) where
 
 import Data.ProtoLens.Message
 import Data.ProtoLens.Encoding.Bytes
-import Data.ProtoLens.Encoding.Wire
+import Data.ProtoLens.Encoding.Reflected.Wire
 
 import Control.Applicative ((<|>))
 import Control.Monad (guard)
 import Data.Attoparsec.ByteString as Parse
 import Data.Bool (bool)
-import Data.Monoid ((<>))
 import Data.Proxy (Proxy(Proxy))
 import Data.Text.Encoding (encodeUtf8, decodeUtf8')
 import Data.Text.Encoding.Error (UnicodeException(..))
@@ -42,19 +43,18 @@ import Data.ByteString.Lazy.Builder as Builder
 import qualified Data.ByteString.Lazy as L
 import Lens.Family2 (Lens', set, over, (^.), (&))
 
--- TODO: We could be more incremental when parsing/encoding length-based fields,
--- rather than forcing the whole thing.  E.g., for encoding we're doing extra
--- allocation by building an intermediate bytestring.
-
 -- | Decode a message from its wire format.  Returns 'Left' if the decoding
 -- fails.
 decodeMessage :: Message msg => B.ByteString -> Either String msg
-decodeMessage input = parseOnly (parseMessage endOfInput) input
+decodeMessage = Parse.parseOnly parseMessage
+
+parseMessage :: Message msg => Parser msg
+parseMessage = parseMessageToEnd endOfInput
 
 -- | Parse a message with the given ending delimiter (which will be EndGroup in
 -- the case of a group, and end-of-input otherwise).
-parseMessage :: forall msg . Message msg => Parser () -> Parser msg
-parseMessage end = (Parse.<?> T.unpack (messageName (Proxy @msg))) $ do
+parseMessageToEnd :: forall msg . Message msg => Parser () -> Parser msg
+parseMessageToEnd end = (Parse.<?> T.unpack (messageName (Proxy @msg))) $ do
     (msg, unsetFields) <- loop defMessage requiredFields
     if Map.null unsetFields
         then return $ over unknownFields reverse
@@ -79,13 +79,6 @@ parseMessage end = (Parse.<?> T.unpack (messageName (Proxy @msg))) $ do
                                       <?> fieldDescriptorName field
                             loop msg' $! Map.delete tag unsetFields
 
--- | Decode a message from its wire format.  Throws an error if the decoding
--- fails.
-decodeMessageOrDie :: Message msg => B.ByteString -> msg
-decodeMessageOrDie bs = case decodeMessage bs of
-    Left e -> error $ "decodeMessageOrDie: " ++ e
-    Right x -> x
-
 runEither :: Either String a -> Parser a
 runEither = either fail return
 
@@ -100,7 +93,7 @@ parseAndAddField
           getSimpleVal = case typeDescriptor of
                             MessageField GroupType -> do
                                 Equal <- equalWireTypes StartGroup wt
-                                parseMessage (endOfGroup tag)
+                                parseMessageToEnd (endOfGroup tag)
                             MessageField MessageType -> do
                                 Equal <- equalWireTypes Lengthy wt
                                 runEither $ decodeMessage val
@@ -172,16 +165,6 @@ encodeMessage = L.toStrict . toLazyByteString . buildMessage
 buildMessage :: Message msg => msg -> Builder
 buildMessage = foldMap putTaggedValue . messageToTaggedValues
 
--- | Encode a message to the wire format, prefixed by its size as a VarInt,
--- as part of a 'Builder'.
---
--- This can be used to build up streams of messages in the size-delimited
--- format expected by some protocols.
-buildMessageDelimited :: Message msg => msg -> Builder
-buildMessageDelimited msg =
-  let b = L.toStrict . toLazyByteString $ buildMessage msg in
-    putVarInt (fromIntegral $ B.length b) <> byteString b
-
 -- | Encode a message as a sequence of key-value pairs.
 messageToTaggedValues :: Message msg => msg -> [TaggedValue]
 messageToTaggedValues msg =
@@ -189,7 +172,7 @@ messageToTaggedValues msg =
         [ messageFieldToVals tag fieldDescr msg
         | (tag, fieldDescr) <- Map.toList fieldsByTag
         ]
-    ++ msg ^. unknownFields
+    ++ (msg ^. unknownFields)
 
 messageFieldToVals :: Tag -> FieldDescriptor a -> a -> [TaggedValue]
 messageFieldToVals tag (FieldDescriptor _ typeDescriptor accessor) msg =

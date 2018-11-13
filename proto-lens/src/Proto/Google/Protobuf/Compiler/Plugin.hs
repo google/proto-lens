@@ -13,6 +13,7 @@ import qualified Control.DeepSeq
 import qualified Lens.Labels.Prism
 import qualified Prelude
 import qualified Data.Int
+import qualified Data.Monoid
 import qualified Data.Word
 import qualified Data.ProtoLens
 import qualified Data.ProtoLens.Message.Enum
@@ -155,6 +156,8 @@ instance Data.ProtoLens.Message CodeGeneratorRequest where
                                  _CodeGeneratorRequest'protoFile = [],
                                  _CodeGeneratorRequest'compilerVersion = Prelude.Nothing,
                                  _CodeGeneratorRequest'_unknownFields = ([])}
+        unfinishedParseMessage = Prelude.return Data.ProtoLens.defMessage
+        unfinishedBuildMessage = Prelude.const Data.Monoid.mempty
 instance Control.DeepSeq.NFData CodeGeneratorRequest where
         rnf
           = \ x__ ->
@@ -239,6 +242,8 @@ instance Data.ProtoLens.Message CodeGeneratorResponse where
                                     Prelude.Nothing,
                                   _CodeGeneratorResponse'file = [],
                                   _CodeGeneratorResponse'_unknownFields = ([])}
+        unfinishedParseMessage = Prelude.return Data.ProtoLens.defMessage
+        unfinishedBuildMessage = Prelude.const Data.Monoid.mempty
 instance Control.DeepSeq.NFData CodeGeneratorResponse where
         rnf
           = \ x__ ->
@@ -368,6 +373,8 @@ instance Data.ProtoLens.Message CodeGeneratorResponse'File where
                                        _CodeGeneratorResponse'File'insertionPoint = Prelude.Nothing,
                                        _CodeGeneratorResponse'File'content = Prelude.Nothing,
                                        _CodeGeneratorResponse'File'_unknownFields = ([])}
+        unfinishedParseMessage = Prelude.return Data.ProtoLens.defMessage
+        unfinishedBuildMessage = Prelude.const Data.Monoid.mempty
 instance Control.DeepSeq.NFData CodeGeneratorResponse'File where
         rnf
           = \ x__ ->
@@ -513,6 +520,8 @@ instance Data.ProtoLens.Message Version where
           = Version{_Version'major = Prelude.Nothing,
                     _Version'minor = Prelude.Nothing, _Version'patch = Prelude.Nothing,
                     _Version'suffix = Prelude.Nothing, _Version'_unknownFields = ([])}
+        unfinishedParseMessage = Prelude.return Data.ProtoLens.defMessage
+        unfinishedBuildMessage = Prelude.const Data.Monoid.mempty
 instance Control.DeepSeq.NFData Version where
         rnf
           = \ x__ ->

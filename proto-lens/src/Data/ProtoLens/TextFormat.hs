@@ -32,7 +32,6 @@ import Data.Foldable (foldlM, foldl')
 import qualified Data.Map as Map
 import Data.Maybe (catMaybes)
 import Data.Proxy (Proxy(Proxy))
-import Data.ProtoLens.Encoding (encodeMessage, decodeMessage)
 import qualified Data.Set as Set
 import qualified Data.Text.Encoding as Text
 import qualified Data.Text.Lazy as Lazy
@@ -45,7 +44,8 @@ import Text.PrettyPrint
 import Prelude hiding ((<>))
 #endif
 
-import Data.ProtoLens.Encoding.Wire
+import Data.ProtoLens.Encoding (decodeMessage, encodeMessage)
+import Data.ProtoLens.Encoding.Reflected.Wire
 import Data.ProtoLens.Message
 import qualified Data.ProtoLens.TextFormat.Parser as Parser
 
