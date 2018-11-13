@@ -8,6 +8,7 @@
 module Proto.Google.Protobuf.Compiler.Plugin_Fields where
 import qualified Prelude
 import qualified Data.Int
+import qualified Data.Monoid
 import qualified Data.Word
 import qualified Data.ProtoLens
 import qualified Data.ProtoLens.Message.Enum

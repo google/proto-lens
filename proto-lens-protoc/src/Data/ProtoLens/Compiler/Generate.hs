@@ -113,7 +113,7 @@ generateModule modName imports syntaxType modifyImport definitions importedEnv s
     mainImports = map (modifyImport . importSimple)
                     [ "Control.DeepSeq", "Lens.Labels.Prism" ]
     sharedImports = map (modifyImport . importSimple)
-              [ "Prelude", "Data.Int", "Data.Word"
+              [ "Prelude", "Data.Int", "Data.Monoid", "Data.Word"
               , "Data.ProtoLens", "Data.ProtoLens.Message.Enum", "Data.ProtoLens.Service.Types"
               , "Lens.Family2", "Lens.Family2.Unchecked"
               , "Data.Text",  "Data.Map", "Data.ByteString", "Data.ByteString.Char8"
@@ -930,6 +930,8 @@ messageInstance syntaxType env protoName m =
                   [ fieldUpdate (unQual $ messageUnknownFields m)
                         "[]"]
       ]
+    , [ match "unfinishedParseMessage" [] $ "Prelude.return" @@ "Data.ProtoLens.defMessage" ]
+    , [ match "unfinishedBuildMessage" [] $ "Prelude.const" @@ "Data.Monoid.mempty" ]
     ]
   where
     fieldsByTag =
