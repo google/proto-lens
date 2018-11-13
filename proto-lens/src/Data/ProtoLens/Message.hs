@@ -50,6 +50,7 @@ module Data.ProtoLens.Message (
     ) where
 
 import qualified Data.ByteString as B
+import Data.ByteString.Builder (Builder)
 import Data.Int
 import qualified Data.Map as Map
 import Data.Map (Map)
@@ -96,6 +97,8 @@ class Message msg where
     unknownFields :: Lens' msg FieldSet
 
     newParseMessage :: Parser msg
+
+    newEncodeMessage :: msg -> Builder
 
 allFields :: Message msg => [FieldDescriptor msg]
 allFields = Map.elems fieldsByTag

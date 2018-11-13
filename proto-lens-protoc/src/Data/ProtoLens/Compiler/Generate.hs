@@ -52,7 +52,8 @@ import Proto.Google.Protobuf.Descriptor_Fields
 
 import Data.ProtoLens.Compiler.Combinators
 import Data.ProtoLens.Compiler.Definitions
-import Data.ProtoLens.Compiler.Generate.Encoding
+import Data.ProtoLens.Compiler.Generate.Encode
+import Data.ProtoLens.Compiler.Generate.Parse
 
 -- Whether to import the "Runtime" modules or the originals;
 -- e.g., Data.ProtoLens.Runtime.Data.Map vs Data.Map.
@@ -920,6 +921,7 @@ messageInstance syntaxType env protoName m =
               $ "Data.Map.fromList" @@ list fieldsByTag ]
     , [ match "unknownFields" [] $ rawFieldAccessor (unQual $ messageUnknownFields m) ]
     , [ match "newParseMessage" [] $ generateParser syntaxType m ]
+    , [ match "newEncodeMessage" [] $ generateEncoder syntaxType m ]
     , [ match "defMessage" []
            $ recConstr (unQual $ messageName m) $
                   [ fieldUpdate (unQual $ haskellRecordFieldName $ plainFieldName f)

@@ -278,34 +278,40 @@ instance Data.ProtoLens.Message DescriptorProto where
                   = do end <- Data.ProtoLens.Encoding.Parser.isEnd
                        if end then Prelude.return x else
                          do tv <- Data.ProtoLens.Encoding.Bytes.getVarInt
-                            x' <- case tv of
-                                      10 -> do y <- Prelude.return Prelude.undefined
-                                               (Prelude.$!) Prelude.return
-                                                 (Lens.Family2.set
-                                                    (Lens.Labels.lensOf'
-                                                       ((Lens.Labels.proxy#) ::
-                                                          (Lens.Labels.Proxy#) "name"))
-                                                    y
-                                                    x)
-                                      18 -> Prelude.undefined
-                                      50 -> Prelude.undefined
-                                      26 -> Prelude.undefined
-                                      34 -> Prelude.undefined
-                                      42 -> Prelude.undefined
-                                      66 -> Prelude.undefined
-                                      58 -> do y <- Prelude.return Prelude.undefined
-                                               (Prelude.$!) Prelude.return
-                                                 (Lens.Family2.set
-                                                    (Lens.Labels.lensOf'
-                                                       ((Lens.Labels.proxy#) ::
-                                                          (Lens.Labels.Proxy#) "options"))
-                                                    y
-                                                    x)
-                                      74 -> Prelude.undefined
-                                      82 -> Prelude.undefined
-                                      _ -> Prelude.undefined
-                            (Prelude.$!) loop x'
+                            case tv of
+                                10 -> do y <- do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
+                                                 b <- Data.ProtoLens.Encoding.Parser.takeN
+                                                        (Prelude.fromIntegral len)
+                                                 Data.ProtoLens.Encoding.Bytes.parseString b
+                                         (Prelude.$!) loop
+                                           (Lens.Family2.set
+                                              (Lens.Labels.lensOf'
+                                                 ((Lens.Labels.proxy#) ::
+                                                    (Lens.Labels.Proxy#) "name"))
+                                              y
+                                              x)
+                                18 -> Prelude.undefined
+                                50 -> Prelude.undefined
+                                26 -> Prelude.undefined
+                                34 -> Prelude.undefined
+                                42 -> Prelude.undefined
+                                66 -> Prelude.undefined
+                                58 -> do y <- do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
+                                                 Data.ProtoLens.Encoding.Parser.isolate
+                                                   (Prelude.fromIntegral len)
+                                                   Data.ProtoLens.newParseMessage
+                                         (Prelude.$!) loop
+                                           (Lens.Family2.set
+                                              (Lens.Labels.lensOf'
+                                                 ((Lens.Labels.proxy#) ::
+                                                    (Lens.Labels.Proxy#) "options"))
+                                              y
+                                              x)
+                                74 -> Prelude.undefined
+                                82 -> Prelude.undefined
+                                _ -> Prelude.undefined
               in loop Data.ProtoLens.defMessage
+        newEncodeMessage = Prelude.undefined
         defMessage
           = DescriptorProto{_DescriptorProto'name = Prelude.Nothing,
                             _DescriptorProto'field = [], _DescriptorProto'extension = [],
@@ -462,36 +468,39 @@ instance Data.ProtoLens.Message DescriptorProto'ExtensionRange
                   = do end <- Data.ProtoLens.Encoding.Parser.isEnd
                        if end then Prelude.return x else
                          do tv <- Data.ProtoLens.Encoding.Bytes.getVarInt
-                            x' <- case tv of
-                                      8 -> do y <- Prelude.fmap Prelude.fromIntegral
-                                                     Data.ProtoLens.Encoding.Bytes.getVarInt
-                                              (Prelude.$!) Prelude.return
-                                                (Lens.Family2.set
-                                                   (Lens.Labels.lensOf'
-                                                      ((Lens.Labels.proxy#) ::
-                                                         (Lens.Labels.Proxy#) "start"))
-                                                   y
-                                                   x)
-                                      16 -> do y <- Prelude.fmap Prelude.fromIntegral
-                                                      Data.ProtoLens.Encoding.Bytes.getVarInt
-                                               (Prelude.$!) Prelude.return
-                                                 (Lens.Family2.set
-                                                    (Lens.Labels.lensOf'
-                                                       ((Lens.Labels.proxy#) ::
-                                                          (Lens.Labels.Proxy#) "end"))
-                                                    y
-                                                    x)
-                                      26 -> do y <- Prelude.return Prelude.undefined
-                                               (Prelude.$!) Prelude.return
-                                                 (Lens.Family2.set
-                                                    (Lens.Labels.lensOf'
-                                                       ((Lens.Labels.proxy#) ::
-                                                          (Lens.Labels.Proxy#) "options"))
-                                                    y
-                                                    x)
-                                      _ -> Prelude.undefined
-                            (Prelude.$!) loop x'
+                            case tv of
+                                8 -> do y <- Prelude.fmap Prelude.fromIntegral
+                                               Data.ProtoLens.Encoding.Bytes.getVarInt
+                                        (Prelude.$!) loop
+                                          (Lens.Family2.set
+                                             (Lens.Labels.lensOf'
+                                                ((Lens.Labels.proxy#) ::
+                                                   (Lens.Labels.Proxy#) "start"))
+                                             y
+                                             x)
+                                16 -> do y <- Prelude.fmap Prelude.fromIntegral
+                                                Data.ProtoLens.Encoding.Bytes.getVarInt
+                                         (Prelude.$!) loop
+                                           (Lens.Family2.set
+                                              (Lens.Labels.lensOf'
+                                                 ((Lens.Labels.proxy#) ::
+                                                    (Lens.Labels.Proxy#) "end"))
+                                              y
+                                              x)
+                                26 -> do y <- do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
+                                                 Data.ProtoLens.Encoding.Parser.isolate
+                                                   (Prelude.fromIntegral len)
+                                                   Data.ProtoLens.newParseMessage
+                                         (Prelude.$!) loop
+                                           (Lens.Family2.set
+                                              (Lens.Labels.lensOf'
+                                                 ((Lens.Labels.proxy#) ::
+                                                    (Lens.Labels.Proxy#) "options"))
+                                              y
+                                              x)
+                                _ -> Prelude.undefined
               in loop Data.ProtoLens.defMessage
+        newEncodeMessage = Prelude.undefined
         defMessage
           = DescriptorProto'ExtensionRange{_DescriptorProto'ExtensionRange'start
                                              = Prelude.Nothing,
@@ -600,28 +609,28 @@ instance Data.ProtoLens.Message DescriptorProto'ReservedRange where
                   = do end <- Data.ProtoLens.Encoding.Parser.isEnd
                        if end then Prelude.return x else
                          do tv <- Data.ProtoLens.Encoding.Bytes.getVarInt
-                            x' <- case tv of
-                                      8 -> do y <- Prelude.fmap Prelude.fromIntegral
-                                                     Data.ProtoLens.Encoding.Bytes.getVarInt
-                                              (Prelude.$!) Prelude.return
-                                                (Lens.Family2.set
-                                                   (Lens.Labels.lensOf'
-                                                      ((Lens.Labels.proxy#) ::
-                                                         (Lens.Labels.Proxy#) "start"))
-                                                   y
-                                                   x)
-                                      16 -> do y <- Prelude.fmap Prelude.fromIntegral
-                                                      Data.ProtoLens.Encoding.Bytes.getVarInt
-                                               (Prelude.$!) Prelude.return
-                                                 (Lens.Family2.set
-                                                    (Lens.Labels.lensOf'
-                                                       ((Lens.Labels.proxy#) ::
-                                                          (Lens.Labels.Proxy#) "end"))
-                                                    y
-                                                    x)
-                                      _ -> Prelude.undefined
-                            (Prelude.$!) loop x'
+                            case tv of
+                                8 -> do y <- Prelude.fmap Prelude.fromIntegral
+                                               Data.ProtoLens.Encoding.Bytes.getVarInt
+                                        (Prelude.$!) loop
+                                          (Lens.Family2.set
+                                             (Lens.Labels.lensOf'
+                                                ((Lens.Labels.proxy#) ::
+                                                   (Lens.Labels.Proxy#) "start"))
+                                             y
+                                             x)
+                                16 -> do y <- Prelude.fmap Prelude.fromIntegral
+                                                Data.ProtoLens.Encoding.Bytes.getVarInt
+                                         (Prelude.$!) loop
+                                           (Lens.Family2.set
+                                              (Lens.Labels.lensOf'
+                                                 ((Lens.Labels.proxy#) ::
+                                                    (Lens.Labels.Proxy#) "end"))
+                                              y
+                                              x)
+                                _ -> Prelude.undefined
               in loop Data.ProtoLens.defMessage
+        newEncodeMessage = Prelude.undefined
         defMessage
           = DescriptorProto'ReservedRange{_DescriptorProto'ReservedRange'start
                                             = Prelude.Nothing,
@@ -779,29 +788,35 @@ instance Data.ProtoLens.Message EnumDescriptorProto where
                   = do end <- Data.ProtoLens.Encoding.Parser.isEnd
                        if end then Prelude.return x else
                          do tv <- Data.ProtoLens.Encoding.Bytes.getVarInt
-                            x' <- case tv of
-                                      10 -> do y <- Prelude.return Prelude.undefined
-                                               (Prelude.$!) Prelude.return
-                                                 (Lens.Family2.set
-                                                    (Lens.Labels.lensOf'
-                                                       ((Lens.Labels.proxy#) ::
-                                                          (Lens.Labels.Proxy#) "name"))
-                                                    y
-                                                    x)
-                                      18 -> Prelude.undefined
-                                      26 -> do y <- Prelude.return Prelude.undefined
-                                               (Prelude.$!) Prelude.return
-                                                 (Lens.Family2.set
-                                                    (Lens.Labels.lensOf'
-                                                       ((Lens.Labels.proxy#) ::
-                                                          (Lens.Labels.Proxy#) "options"))
-                                                    y
-                                                    x)
-                                      34 -> Prelude.undefined
-                                      42 -> Prelude.undefined
-                                      _ -> Prelude.undefined
-                            (Prelude.$!) loop x'
+                            case tv of
+                                10 -> do y <- do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
+                                                 b <- Data.ProtoLens.Encoding.Parser.takeN
+                                                        (Prelude.fromIntegral len)
+                                                 Data.ProtoLens.Encoding.Bytes.parseString b
+                                         (Prelude.$!) loop
+                                           (Lens.Family2.set
+                                              (Lens.Labels.lensOf'
+                                                 ((Lens.Labels.proxy#) ::
+                                                    (Lens.Labels.Proxy#) "name"))
+                                              y
+                                              x)
+                                18 -> Prelude.undefined
+                                26 -> do y <- do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
+                                                 Data.ProtoLens.Encoding.Parser.isolate
+                                                   (Prelude.fromIntegral len)
+                                                   Data.ProtoLens.newParseMessage
+                                         (Prelude.$!) loop
+                                           (Lens.Family2.set
+                                              (Lens.Labels.lensOf'
+                                                 ((Lens.Labels.proxy#) ::
+                                                    (Lens.Labels.Proxy#) "options"))
+                                              y
+                                              x)
+                                34 -> Prelude.undefined
+                                42 -> Prelude.undefined
+                                _ -> Prelude.undefined
               in loop Data.ProtoLens.defMessage
+        newEncodeMessage = Prelude.undefined
         defMessage
           = EnumDescriptorProto{_EnumDescriptorProto'name = Prelude.Nothing,
                                 _EnumDescriptorProto'value = [],
@@ -930,28 +945,28 @@ instance Data.ProtoLens.Message
                   = do end <- Data.ProtoLens.Encoding.Parser.isEnd
                        if end then Prelude.return x else
                          do tv <- Data.ProtoLens.Encoding.Bytes.getVarInt
-                            x' <- case tv of
-                                      8 -> do y <- Prelude.fmap Prelude.fromIntegral
-                                                     Data.ProtoLens.Encoding.Bytes.getVarInt
-                                              (Prelude.$!) Prelude.return
-                                                (Lens.Family2.set
-                                                   (Lens.Labels.lensOf'
-                                                      ((Lens.Labels.proxy#) ::
-                                                         (Lens.Labels.Proxy#) "start"))
-                                                   y
-                                                   x)
-                                      16 -> do y <- Prelude.fmap Prelude.fromIntegral
-                                                      Data.ProtoLens.Encoding.Bytes.getVarInt
-                                               (Prelude.$!) Prelude.return
-                                                 (Lens.Family2.set
-                                                    (Lens.Labels.lensOf'
-                                                       ((Lens.Labels.proxy#) ::
-                                                          (Lens.Labels.Proxy#) "end"))
-                                                    y
-                                                    x)
-                                      _ -> Prelude.undefined
-                            (Prelude.$!) loop x'
+                            case tv of
+                                8 -> do y <- Prelude.fmap Prelude.fromIntegral
+                                               Data.ProtoLens.Encoding.Bytes.getVarInt
+                                        (Prelude.$!) loop
+                                          (Lens.Family2.set
+                                             (Lens.Labels.lensOf'
+                                                ((Lens.Labels.proxy#) ::
+                                                   (Lens.Labels.Proxy#) "start"))
+                                             y
+                                             x)
+                                16 -> do y <- Prelude.fmap Prelude.fromIntegral
+                                                Data.ProtoLens.Encoding.Bytes.getVarInt
+                                         (Prelude.$!) loop
+                                           (Lens.Family2.set
+                                              (Lens.Labels.lensOf'
+                                                 ((Lens.Labels.proxy#) ::
+                                                    (Lens.Labels.Proxy#) "end"))
+                                              y
+                                              x)
+                                _ -> Prelude.undefined
               in loop Data.ProtoLens.defMessage
+        newEncodeMessage = Prelude.undefined
         defMessage
           = EnumDescriptorProto'EnumReservedRange{_EnumDescriptorProto'EnumReservedRange'start
                                                     = Prelude.Nothing,
@@ -1071,27 +1086,27 @@ instance Data.ProtoLens.Message EnumOptions where
                   = do end <- Data.ProtoLens.Encoding.Parser.isEnd
                        if end then Prelude.return x else
                          do tv <- Data.ProtoLens.Encoding.Bytes.getVarInt
-                            x' <- case tv of
-                                      16 -> do y <- Prelude.return Prelude.undefined
-                                               (Prelude.$!) Prelude.return
-                                                 (Lens.Family2.set
-                                                    (Lens.Labels.lensOf'
-                                                       ((Lens.Labels.proxy#) ::
-                                                          (Lens.Labels.Proxy#) "allowAlias"))
-                                                    y
-                                                    x)
-                                      24 -> do y <- Prelude.return Prelude.undefined
-                                               (Prelude.$!) Prelude.return
-                                                 (Lens.Family2.set
-                                                    (Lens.Labels.lensOf'
-                                                       ((Lens.Labels.proxy#) ::
-                                                          (Lens.Labels.Proxy#) "deprecated"))
-                                                    y
-                                                    x)
-                                      7994 -> Prelude.undefined
-                                      _ -> Prelude.undefined
-                            (Prelude.$!) loop x'
+                            case tv of
+                                16 -> do y <- Prelude.return Prelude.undefined
+                                         (Prelude.$!) loop
+                                           (Lens.Family2.set
+                                              (Lens.Labels.lensOf'
+                                                 ((Lens.Labels.proxy#) ::
+                                                    (Lens.Labels.Proxy#) "allowAlias"))
+                                              y
+                                              x)
+                                24 -> do y <- Prelude.return Prelude.undefined
+                                         (Prelude.$!) loop
+                                           (Lens.Family2.set
+                                              (Lens.Labels.lensOf'
+                                                 ((Lens.Labels.proxy#) ::
+                                                    (Lens.Labels.Proxy#) "deprecated"))
+                                              y
+                                              x)
+                                7994 -> Prelude.undefined
+                                _ -> Prelude.undefined
               in loop Data.ProtoLens.defMessage
+        newEncodeMessage = Prelude.undefined
         defMessage
           = EnumOptions{_EnumOptions'allowAlias = Prelude.Nothing,
                         _EnumOptions'deprecated = Prelude.Nothing,
@@ -1220,35 +1235,41 @@ instance Data.ProtoLens.Message EnumValueDescriptorProto where
                   = do end <- Data.ProtoLens.Encoding.Parser.isEnd
                        if end then Prelude.return x else
                          do tv <- Data.ProtoLens.Encoding.Bytes.getVarInt
-                            x' <- case tv of
-                                      10 -> do y <- Prelude.return Prelude.undefined
-                                               (Prelude.$!) Prelude.return
-                                                 (Lens.Family2.set
-                                                    (Lens.Labels.lensOf'
-                                                       ((Lens.Labels.proxy#) ::
-                                                          (Lens.Labels.Proxy#) "name"))
-                                                    y
-                                                    x)
-                                      16 -> do y <- Prelude.fmap Prelude.fromIntegral
-                                                      Data.ProtoLens.Encoding.Bytes.getVarInt
-                                               (Prelude.$!) Prelude.return
-                                                 (Lens.Family2.set
-                                                    (Lens.Labels.lensOf'
-                                                       ((Lens.Labels.proxy#) ::
-                                                          (Lens.Labels.Proxy#) "number"))
-                                                    y
-                                                    x)
-                                      26 -> do y <- Prelude.return Prelude.undefined
-                                               (Prelude.$!) Prelude.return
-                                                 (Lens.Family2.set
-                                                    (Lens.Labels.lensOf'
-                                                       ((Lens.Labels.proxy#) ::
-                                                          (Lens.Labels.Proxy#) "options"))
-                                                    y
-                                                    x)
-                                      _ -> Prelude.undefined
-                            (Prelude.$!) loop x'
+                            case tv of
+                                10 -> do y <- do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
+                                                 b <- Data.ProtoLens.Encoding.Parser.takeN
+                                                        (Prelude.fromIntegral len)
+                                                 Data.ProtoLens.Encoding.Bytes.parseString b
+                                         (Prelude.$!) loop
+                                           (Lens.Family2.set
+                                              (Lens.Labels.lensOf'
+                                                 ((Lens.Labels.proxy#) ::
+                                                    (Lens.Labels.Proxy#) "name"))
+                                              y
+                                              x)
+                                16 -> do y <- Prelude.fmap Prelude.fromIntegral
+                                                Data.ProtoLens.Encoding.Bytes.getVarInt
+                                         (Prelude.$!) loop
+                                           (Lens.Family2.set
+                                              (Lens.Labels.lensOf'
+                                                 ((Lens.Labels.proxy#) ::
+                                                    (Lens.Labels.Proxy#) "number"))
+                                              y
+                                              x)
+                                26 -> do y <- do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
+                                                 Data.ProtoLens.Encoding.Parser.isolate
+                                                   (Prelude.fromIntegral len)
+                                                   Data.ProtoLens.newParseMessage
+                                         (Prelude.$!) loop
+                                           (Lens.Family2.set
+                                              (Lens.Labels.lensOf'
+                                                 ((Lens.Labels.proxy#) ::
+                                                    (Lens.Labels.Proxy#) "options"))
+                                              y
+                                              x)
+                                _ -> Prelude.undefined
               in loop Data.ProtoLens.defMessage
+        newEncodeMessage = Prelude.undefined
         defMessage
           = EnumValueDescriptorProto{_EnumValueDescriptorProto'name =
                                        Prelude.Nothing,
@@ -1339,19 +1360,19 @@ instance Data.ProtoLens.Message EnumValueOptions where
                   = do end <- Data.ProtoLens.Encoding.Parser.isEnd
                        if end then Prelude.return x else
                          do tv <- Data.ProtoLens.Encoding.Bytes.getVarInt
-                            x' <- case tv of
-                                      8 -> do y <- Prelude.return Prelude.undefined
-                                              (Prelude.$!) Prelude.return
-                                                (Lens.Family2.set
-                                                   (Lens.Labels.lensOf'
-                                                      ((Lens.Labels.proxy#) ::
-                                                         (Lens.Labels.Proxy#) "deprecated"))
-                                                   y
-                                                   x)
-                                      7994 -> Prelude.undefined
-                                      _ -> Prelude.undefined
-                            (Prelude.$!) loop x'
+                            case tv of
+                                8 -> do y <- Prelude.return Prelude.undefined
+                                        (Prelude.$!) loop
+                                          (Lens.Family2.set
+                                             (Lens.Labels.lensOf'
+                                                ((Lens.Labels.proxy#) ::
+                                                   (Lens.Labels.Proxy#) "deprecated"))
+                                             y
+                                             x)
+                                7994 -> Prelude.undefined
+                                _ -> Prelude.undefined
               in loop Data.ProtoLens.defMessage
+        newEncodeMessage = Prelude.undefined
         defMessage
           = EnumValueOptions{_EnumValueOptions'deprecated = Prelude.Nothing,
                              _EnumValueOptions'uninterpretedOption = [],
@@ -1413,11 +1434,11 @@ instance Data.ProtoLens.Message ExtensionRangeOptions where
                   = do end <- Data.ProtoLens.Encoding.Parser.isEnd
                        if end then Prelude.return x else
                          do tv <- Data.ProtoLens.Encoding.Bytes.getVarInt
-                            x' <- case tv of
-                                      7994 -> Prelude.undefined
-                                      _ -> Prelude.undefined
-                            (Prelude.$!) loop x'
+                            case tv of
+                                7994 -> Prelude.undefined
+                                _ -> Prelude.undefined
               in loop Data.ProtoLens.defMessage
+        newEncodeMessage = Prelude.undefined
         defMessage
           = ExtensionRangeOptions{_ExtensionRangeOptions'uninterpretedOption
                                     = [],
@@ -1749,92 +1770,110 @@ instance Data.ProtoLens.Message FieldDescriptorProto where
                   = do end <- Data.ProtoLens.Encoding.Parser.isEnd
                        if end then Prelude.return x else
                          do tv <- Data.ProtoLens.Encoding.Bytes.getVarInt
-                            x' <- case tv of
-                                      10 -> do y <- Prelude.return Prelude.undefined
-                                               (Prelude.$!) Prelude.return
-                                                 (Lens.Family2.set
-                                                    (Lens.Labels.lensOf'
-                                                       ((Lens.Labels.proxy#) ::
-                                                          (Lens.Labels.Proxy#) "name"))
-                                                    y
-                                                    x)
-                                      24 -> do y <- Prelude.fmap Prelude.fromIntegral
-                                                      Data.ProtoLens.Encoding.Bytes.getVarInt
-                                               (Prelude.$!) Prelude.return
-                                                 (Lens.Family2.set
-                                                    (Lens.Labels.lensOf'
-                                                       ((Lens.Labels.proxy#) ::
-                                                          (Lens.Labels.Proxy#) "number"))
-                                                    y
-                                                    x)
-                                      32 -> do y <- Prelude.return Prelude.undefined
-                                               (Prelude.$!) Prelude.return
-                                                 (Lens.Family2.set
-                                                    (Lens.Labels.lensOf'
-                                                       ((Lens.Labels.proxy#) ::
-                                                          (Lens.Labels.Proxy#) "label"))
-                                                    y
-                                                    x)
-                                      40 -> do y <- Prelude.return Prelude.undefined
-                                               (Prelude.$!) Prelude.return
-                                                 (Lens.Family2.set
-                                                    (Lens.Labels.lensOf'
-                                                       ((Lens.Labels.proxy#) ::
-                                                          (Lens.Labels.Proxy#) "type'"))
-                                                    y
-                                                    x)
-                                      50 -> do y <- Prelude.return Prelude.undefined
-                                               (Prelude.$!) Prelude.return
-                                                 (Lens.Family2.set
-                                                    (Lens.Labels.lensOf'
-                                                       ((Lens.Labels.proxy#) ::
-                                                          (Lens.Labels.Proxy#) "typeName"))
-                                                    y
-                                                    x)
-                                      18 -> do y <- Prelude.return Prelude.undefined
-                                               (Prelude.$!) Prelude.return
-                                                 (Lens.Family2.set
-                                                    (Lens.Labels.lensOf'
-                                                       ((Lens.Labels.proxy#) ::
-                                                          (Lens.Labels.Proxy#) "extendee"))
-                                                    y
-                                                    x)
-                                      58 -> do y <- Prelude.return Prelude.undefined
-                                               (Prelude.$!) Prelude.return
-                                                 (Lens.Family2.set
-                                                    (Lens.Labels.lensOf'
-                                                       ((Lens.Labels.proxy#) ::
-                                                          (Lens.Labels.Proxy#) "defaultValue"))
-                                                    y
-                                                    x)
-                                      72 -> do y <- Prelude.fmap Prelude.fromIntegral
-                                                      Data.ProtoLens.Encoding.Bytes.getVarInt
-                                               (Prelude.$!) Prelude.return
-                                                 (Lens.Family2.set
-                                                    (Lens.Labels.lensOf'
-                                                       ((Lens.Labels.proxy#) ::
-                                                          (Lens.Labels.Proxy#) "oneofIndex"))
-                                                    y
-                                                    x)
-                                      82 -> do y <- Prelude.return Prelude.undefined
-                                               (Prelude.$!) Prelude.return
-                                                 (Lens.Family2.set
-                                                    (Lens.Labels.lensOf'
-                                                       ((Lens.Labels.proxy#) ::
-                                                          (Lens.Labels.Proxy#) "jsonName"))
-                                                    y
-                                                    x)
-                                      66 -> do y <- Prelude.return Prelude.undefined
-                                               (Prelude.$!) Prelude.return
-                                                 (Lens.Family2.set
-                                                    (Lens.Labels.lensOf'
-                                                       ((Lens.Labels.proxy#) ::
-                                                          (Lens.Labels.Proxy#) "options"))
-                                                    y
-                                                    x)
-                                      _ -> Prelude.undefined
-                            (Prelude.$!) loop x'
+                            case tv of
+                                10 -> do y <- do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
+                                                 b <- Data.ProtoLens.Encoding.Parser.takeN
+                                                        (Prelude.fromIntegral len)
+                                                 Data.ProtoLens.Encoding.Bytes.parseString b
+                                         (Prelude.$!) loop
+                                           (Lens.Family2.set
+                                              (Lens.Labels.lensOf'
+                                                 ((Lens.Labels.proxy#) ::
+                                                    (Lens.Labels.Proxy#) "name"))
+                                              y
+                                              x)
+                                24 -> do y <- Prelude.fmap Prelude.fromIntegral
+                                                Data.ProtoLens.Encoding.Bytes.getVarInt
+                                         (Prelude.$!) loop
+                                           (Lens.Family2.set
+                                              (Lens.Labels.lensOf'
+                                                 ((Lens.Labels.proxy#) ::
+                                                    (Lens.Labels.Proxy#) "number"))
+                                              y
+                                              x)
+                                32 -> do y <- Prelude.return Prelude.undefined
+                                         (Prelude.$!) loop
+                                           (Lens.Family2.set
+                                              (Lens.Labels.lensOf'
+                                                 ((Lens.Labels.proxy#) ::
+                                                    (Lens.Labels.Proxy#) "label"))
+                                              y
+                                              x)
+                                40 -> do y <- Prelude.return Prelude.undefined
+                                         (Prelude.$!) loop
+                                           (Lens.Family2.set
+                                              (Lens.Labels.lensOf'
+                                                 ((Lens.Labels.proxy#) ::
+                                                    (Lens.Labels.Proxy#) "type'"))
+                                              y
+                                              x)
+                                50 -> do y <- do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
+                                                 b <- Data.ProtoLens.Encoding.Parser.takeN
+                                                        (Prelude.fromIntegral len)
+                                                 Data.ProtoLens.Encoding.Bytes.parseString b
+                                         (Prelude.$!) loop
+                                           (Lens.Family2.set
+                                              (Lens.Labels.lensOf'
+                                                 ((Lens.Labels.proxy#) ::
+                                                    (Lens.Labels.Proxy#) "typeName"))
+                                              y
+                                              x)
+                                18 -> do y <- do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
+                                                 b <- Data.ProtoLens.Encoding.Parser.takeN
+                                                        (Prelude.fromIntegral len)
+                                                 Data.ProtoLens.Encoding.Bytes.parseString b
+                                         (Prelude.$!) loop
+                                           (Lens.Family2.set
+                                              (Lens.Labels.lensOf'
+                                                 ((Lens.Labels.proxy#) ::
+                                                    (Lens.Labels.Proxy#) "extendee"))
+                                              y
+                                              x)
+                                58 -> do y <- do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
+                                                 b <- Data.ProtoLens.Encoding.Parser.takeN
+                                                        (Prelude.fromIntegral len)
+                                                 Data.ProtoLens.Encoding.Bytes.parseString b
+                                         (Prelude.$!) loop
+                                           (Lens.Family2.set
+                                              (Lens.Labels.lensOf'
+                                                 ((Lens.Labels.proxy#) ::
+                                                    (Lens.Labels.Proxy#) "defaultValue"))
+                                              y
+                                              x)
+                                72 -> do y <- Prelude.fmap Prelude.fromIntegral
+                                                Data.ProtoLens.Encoding.Bytes.getVarInt
+                                         (Prelude.$!) loop
+                                           (Lens.Family2.set
+                                              (Lens.Labels.lensOf'
+                                                 ((Lens.Labels.proxy#) ::
+                                                    (Lens.Labels.Proxy#) "oneofIndex"))
+                                              y
+                                              x)
+                                82 -> do y <- do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
+                                                 b <- Data.ProtoLens.Encoding.Parser.takeN
+                                                        (Prelude.fromIntegral len)
+                                                 Data.ProtoLens.Encoding.Bytes.parseString b
+                                         (Prelude.$!) loop
+                                           (Lens.Family2.set
+                                              (Lens.Labels.lensOf'
+                                                 ((Lens.Labels.proxy#) ::
+                                                    (Lens.Labels.Proxy#) "jsonName"))
+                                              y
+                                              x)
+                                66 -> do y <- do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
+                                                 Data.ProtoLens.Encoding.Parser.isolate
+                                                   (Prelude.fromIntegral len)
+                                                   Data.ProtoLens.newParseMessage
+                                         (Prelude.$!) loop
+                                           (Lens.Family2.set
+                                              (Lens.Labels.lensOf'
+                                                 ((Lens.Labels.proxy#) ::
+                                                    (Lens.Labels.Proxy#) "options"))
+                                              y
+                                              x)
+                                _ -> Prelude.undefined
               in loop Data.ProtoLens.defMessage
+        newEncodeMessage = Prelude.undefined
         defMessage
           = FieldDescriptorProto{_FieldDescriptorProto'name =
                                    Prelude.Nothing,
@@ -2341,59 +2380,59 @@ instance Data.ProtoLens.Message FieldOptions where
                   = do end <- Data.ProtoLens.Encoding.Parser.isEnd
                        if end then Prelude.return x else
                          do tv <- Data.ProtoLens.Encoding.Bytes.getVarInt
-                            x' <- case tv of
-                                      8 -> do y <- Prelude.return Prelude.undefined
-                                              (Prelude.$!) Prelude.return
-                                                (Lens.Family2.set
-                                                   (Lens.Labels.lensOf'
-                                                      ((Lens.Labels.proxy#) ::
-                                                         (Lens.Labels.Proxy#) "ctype"))
-                                                   y
-                                                   x)
-                                      16 -> do y <- Prelude.return Prelude.undefined
-                                               (Prelude.$!) Prelude.return
-                                                 (Lens.Family2.set
-                                                    (Lens.Labels.lensOf'
-                                                       ((Lens.Labels.proxy#) ::
-                                                          (Lens.Labels.Proxy#) "packed"))
-                                                    y
-                                                    x)
-                                      48 -> do y <- Prelude.return Prelude.undefined
-                                               (Prelude.$!) Prelude.return
-                                                 (Lens.Family2.set
-                                                    (Lens.Labels.lensOf'
-                                                       ((Lens.Labels.proxy#) ::
-                                                          (Lens.Labels.Proxy#) "jstype"))
-                                                    y
-                                                    x)
-                                      40 -> do y <- Prelude.return Prelude.undefined
-                                               (Prelude.$!) Prelude.return
-                                                 (Lens.Family2.set
-                                                    (Lens.Labels.lensOf'
-                                                       ((Lens.Labels.proxy#) ::
-                                                          (Lens.Labels.Proxy#) "lazy"))
-                                                    y
-                                                    x)
-                                      24 -> do y <- Prelude.return Prelude.undefined
-                                               (Prelude.$!) Prelude.return
-                                                 (Lens.Family2.set
-                                                    (Lens.Labels.lensOf'
-                                                       ((Lens.Labels.proxy#) ::
-                                                          (Lens.Labels.Proxy#) "deprecated"))
-                                                    y
-                                                    x)
-                                      80 -> do y <- Prelude.return Prelude.undefined
-                                               (Prelude.$!) Prelude.return
-                                                 (Lens.Family2.set
-                                                    (Lens.Labels.lensOf'
-                                                       ((Lens.Labels.proxy#) ::
-                                                          (Lens.Labels.Proxy#) "weak"))
-                                                    y
-                                                    x)
-                                      7994 -> Prelude.undefined
-                                      _ -> Prelude.undefined
-                            (Prelude.$!) loop x'
+                            case tv of
+                                8 -> do y <- Prelude.return Prelude.undefined
+                                        (Prelude.$!) loop
+                                          (Lens.Family2.set
+                                             (Lens.Labels.lensOf'
+                                                ((Lens.Labels.proxy#) ::
+                                                   (Lens.Labels.Proxy#) "ctype"))
+                                             y
+                                             x)
+                                16 -> do y <- Prelude.return Prelude.undefined
+                                         (Prelude.$!) loop
+                                           (Lens.Family2.set
+                                              (Lens.Labels.lensOf'
+                                                 ((Lens.Labels.proxy#) ::
+                                                    (Lens.Labels.Proxy#) "packed"))
+                                              y
+                                              x)
+                                48 -> do y <- Prelude.return Prelude.undefined
+                                         (Prelude.$!) loop
+                                           (Lens.Family2.set
+                                              (Lens.Labels.lensOf'
+                                                 ((Lens.Labels.proxy#) ::
+                                                    (Lens.Labels.Proxy#) "jstype"))
+                                              y
+                                              x)
+                                40 -> do y <- Prelude.return Prelude.undefined
+                                         (Prelude.$!) loop
+                                           (Lens.Family2.set
+                                              (Lens.Labels.lensOf'
+                                                 ((Lens.Labels.proxy#) ::
+                                                    (Lens.Labels.Proxy#) "lazy"))
+                                              y
+                                              x)
+                                24 -> do y <- Prelude.return Prelude.undefined
+                                         (Prelude.$!) loop
+                                           (Lens.Family2.set
+                                              (Lens.Labels.lensOf'
+                                                 ((Lens.Labels.proxy#) ::
+                                                    (Lens.Labels.Proxy#) "deprecated"))
+                                              y
+                                              x)
+                                80 -> do y <- Prelude.return Prelude.undefined
+                                         (Prelude.$!) loop
+                                           (Lens.Family2.set
+                                              (Lens.Labels.lensOf'
+                                                 ((Lens.Labels.proxy#) ::
+                                                    (Lens.Labels.Proxy#) "weak"))
+                                              y
+                                              x)
+                                7994 -> Prelude.undefined
+                                _ -> Prelude.undefined
               in loop Data.ProtoLens.defMessage
+        newEncodeMessage = Prelude.undefined
         defMessage
           = FieldOptions{_FieldOptions'ctype = Prelude.Nothing,
                          _FieldOptions'packed = Prelude.Nothing,
@@ -2828,57 +2867,72 @@ instance Data.ProtoLens.Message FileDescriptorProto where
                   = do end <- Data.ProtoLens.Encoding.Parser.isEnd
                        if end then Prelude.return x else
                          do tv <- Data.ProtoLens.Encoding.Bytes.getVarInt
-                            x' <- case tv of
-                                      10 -> do y <- Prelude.return Prelude.undefined
-                                               (Prelude.$!) Prelude.return
-                                                 (Lens.Family2.set
-                                                    (Lens.Labels.lensOf'
-                                                       ((Lens.Labels.proxy#) ::
-                                                          (Lens.Labels.Proxy#) "name"))
-                                                    y
-                                                    x)
-                                      18 -> do y <- Prelude.return Prelude.undefined
-                                               (Prelude.$!) Prelude.return
-                                                 (Lens.Family2.set
-                                                    (Lens.Labels.lensOf'
-                                                       ((Lens.Labels.proxy#) ::
-                                                          (Lens.Labels.Proxy#) "package"))
-                                                    y
-                                                    x)
-                                      26 -> Prelude.undefined
-                                      80 -> Prelude.undefined
-                                      88 -> Prelude.undefined
-                                      34 -> Prelude.undefined
-                                      42 -> Prelude.undefined
-                                      50 -> Prelude.undefined
-                                      58 -> Prelude.undefined
-                                      66 -> do y <- Prelude.return Prelude.undefined
-                                               (Prelude.$!) Prelude.return
-                                                 (Lens.Family2.set
-                                                    (Lens.Labels.lensOf'
-                                                       ((Lens.Labels.proxy#) ::
-                                                          (Lens.Labels.Proxy#) "options"))
-                                                    y
-                                                    x)
-                                      74 -> do y <- Prelude.return Prelude.undefined
-                                               (Prelude.$!) Prelude.return
-                                                 (Lens.Family2.set
-                                                    (Lens.Labels.lensOf'
-                                                       ((Lens.Labels.proxy#) ::
-                                                          (Lens.Labels.Proxy#) "sourceCodeInfo"))
-                                                    y
-                                                    x)
-                                      98 -> do y <- Prelude.return Prelude.undefined
-                                               (Prelude.$!) Prelude.return
-                                                 (Lens.Family2.set
-                                                    (Lens.Labels.lensOf'
-                                                       ((Lens.Labels.proxy#) ::
-                                                          (Lens.Labels.Proxy#) "syntax"))
-                                                    y
-                                                    x)
-                                      _ -> Prelude.undefined
-                            (Prelude.$!) loop x'
+                            case tv of
+                                10 -> do y <- do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
+                                                 b <- Data.ProtoLens.Encoding.Parser.takeN
+                                                        (Prelude.fromIntegral len)
+                                                 Data.ProtoLens.Encoding.Bytes.parseString b
+                                         (Prelude.$!) loop
+                                           (Lens.Family2.set
+                                              (Lens.Labels.lensOf'
+                                                 ((Lens.Labels.proxy#) ::
+                                                    (Lens.Labels.Proxy#) "name"))
+                                              y
+                                              x)
+                                18 -> do y <- do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
+                                                 b <- Data.ProtoLens.Encoding.Parser.takeN
+                                                        (Prelude.fromIntegral len)
+                                                 Data.ProtoLens.Encoding.Bytes.parseString b
+                                         (Prelude.$!) loop
+                                           (Lens.Family2.set
+                                              (Lens.Labels.lensOf'
+                                                 ((Lens.Labels.proxy#) ::
+                                                    (Lens.Labels.Proxy#) "package"))
+                                              y
+                                              x)
+                                26 -> Prelude.undefined
+                                80 -> Prelude.undefined
+                                88 -> Prelude.undefined
+                                34 -> Prelude.undefined
+                                42 -> Prelude.undefined
+                                50 -> Prelude.undefined
+                                58 -> Prelude.undefined
+                                66 -> do y <- do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
+                                                 Data.ProtoLens.Encoding.Parser.isolate
+                                                   (Prelude.fromIntegral len)
+                                                   Data.ProtoLens.newParseMessage
+                                         (Prelude.$!) loop
+                                           (Lens.Family2.set
+                                              (Lens.Labels.lensOf'
+                                                 ((Lens.Labels.proxy#) ::
+                                                    (Lens.Labels.Proxy#) "options"))
+                                              y
+                                              x)
+                                74 -> do y <- do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
+                                                 Data.ProtoLens.Encoding.Parser.isolate
+                                                   (Prelude.fromIntegral len)
+                                                   Data.ProtoLens.newParseMessage
+                                         (Prelude.$!) loop
+                                           (Lens.Family2.set
+                                              (Lens.Labels.lensOf'
+                                                 ((Lens.Labels.proxy#) ::
+                                                    (Lens.Labels.Proxy#) "sourceCodeInfo"))
+                                              y
+                                              x)
+                                98 -> do y <- do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
+                                                 b <- Data.ProtoLens.Encoding.Parser.takeN
+                                                        (Prelude.fromIntegral len)
+                                                 Data.ProtoLens.Encoding.Bytes.parseString b
+                                         (Prelude.$!) loop
+                                           (Lens.Family2.set
+                                              (Lens.Labels.lensOf'
+                                                 ((Lens.Labels.proxy#) ::
+                                                    (Lens.Labels.Proxy#) "syntax"))
+                                              y
+                                              x)
+                                _ -> Prelude.undefined
               in loop Data.ProtoLens.defMessage
+        newEncodeMessage = Prelude.undefined
         defMessage
           = FileDescriptorProto{_FileDescriptorProto'name = Prelude.Nothing,
                                 _FileDescriptorProto'package = Prelude.Nothing,
@@ -2958,11 +3012,11 @@ instance Data.ProtoLens.Message FileDescriptorSet where
                   = do end <- Data.ProtoLens.Encoding.Parser.isEnd
                        if end then Prelude.return x else
                          do tv <- Data.ProtoLens.Encoding.Bytes.getVarInt
-                            x' <- case tv of
-                                      10 -> Prelude.undefined
-                                      _ -> Prelude.undefined
-                            (Prelude.$!) loop x'
+                            case tv of
+                                10 -> Prelude.undefined
+                                _ -> Prelude.undefined
               in loop Data.ProtoLens.defMessage
+        newEncodeMessage = Prelude.undefined
         defMessage
           = FileDescriptorSet{_FileDescriptorSet'file = [],
                               _FileDescriptorSet'_unknownFields = ([])}
@@ -3604,179 +3658,202 @@ instance Data.ProtoLens.Message FileOptions where
                   = do end <- Data.ProtoLens.Encoding.Parser.isEnd
                        if end then Prelude.return x else
                          do tv <- Data.ProtoLens.Encoding.Bytes.getVarInt
-                            x' <- case tv of
-                                      10 -> do y <- Prelude.return Prelude.undefined
-                                               (Prelude.$!) Prelude.return
-                                                 (Lens.Family2.set
-                                                    (Lens.Labels.lensOf'
-                                                       ((Lens.Labels.proxy#) ::
-                                                          (Lens.Labels.Proxy#) "javaPackage"))
-                                                    y
-                                                    x)
-                                      66 -> do y <- Prelude.return Prelude.undefined
-                                               (Prelude.$!) Prelude.return
-                                                 (Lens.Family2.set
-                                                    (Lens.Labels.lensOf'
-                                                       ((Lens.Labels.proxy#) ::
-                                                          (Lens.Labels.Proxy#)
-                                                            "javaOuterClassname"))
-                                                    y
-                                                    x)
-                                      80 -> do y <- Prelude.return Prelude.undefined
-                                               (Prelude.$!) Prelude.return
-                                                 (Lens.Family2.set
-                                                    (Lens.Labels.lensOf'
-                                                       ((Lens.Labels.proxy#) ::
-                                                          (Lens.Labels.Proxy#) "javaMultipleFiles"))
-                                                    y
-                                                    x)
-                                      160 -> do y <- Prelude.return Prelude.undefined
-                                                (Prelude.$!) Prelude.return
-                                                  (Lens.Family2.set
-                                                     (Lens.Labels.lensOf'
-                                                        ((Lens.Labels.proxy#) ::
-                                                           (Lens.Labels.Proxy#)
-                                                             "javaGenerateEqualsAndHash"))
-                                                     y
-                                                     x)
-                                      216 -> do y <- Prelude.return Prelude.undefined
-                                                (Prelude.$!) Prelude.return
-                                                  (Lens.Family2.set
-                                                     (Lens.Labels.lensOf'
-                                                        ((Lens.Labels.proxy#) ::
-                                                           (Lens.Labels.Proxy#)
-                                                             "javaStringCheckUtf8"))
-                                                     y
-                                                     x)
-                                      72 -> do y <- Prelude.return Prelude.undefined
-                                               (Prelude.$!) Prelude.return
-                                                 (Lens.Family2.set
-                                                    (Lens.Labels.lensOf'
-                                                       ((Lens.Labels.proxy#) ::
-                                                          (Lens.Labels.Proxy#) "optimizeFor"))
-                                                    y
-                                                    x)
-                                      90 -> do y <- Prelude.return Prelude.undefined
-                                               (Prelude.$!) Prelude.return
-                                                 (Lens.Family2.set
-                                                    (Lens.Labels.lensOf'
-                                                       ((Lens.Labels.proxy#) ::
-                                                          (Lens.Labels.Proxy#) "goPackage"))
-                                                    y
-                                                    x)
-                                      128 -> do y <- Prelude.return Prelude.undefined
-                                                (Prelude.$!) Prelude.return
-                                                  (Lens.Family2.set
-                                                     (Lens.Labels.lensOf'
-                                                        ((Lens.Labels.proxy#) ::
-                                                           (Lens.Labels.Proxy#)
-                                                             "ccGenericServices"))
-                                                     y
-                                                     x)
-                                      136 -> do y <- Prelude.return Prelude.undefined
-                                                (Prelude.$!) Prelude.return
-                                                  (Lens.Family2.set
-                                                     (Lens.Labels.lensOf'
-                                                        ((Lens.Labels.proxy#) ::
-                                                           (Lens.Labels.Proxy#)
-                                                             "javaGenericServices"))
-                                                     y
-                                                     x)
-                                      144 -> do y <- Prelude.return Prelude.undefined
-                                                (Prelude.$!) Prelude.return
-                                                  (Lens.Family2.set
-                                                     (Lens.Labels.lensOf'
-                                                        ((Lens.Labels.proxy#) ::
-                                                           (Lens.Labels.Proxy#)
-                                                             "pyGenericServices"))
-                                                     y
-                                                     x)
-                                      336 -> do y <- Prelude.return Prelude.undefined
-                                                (Prelude.$!) Prelude.return
-                                                  (Lens.Family2.set
-                                                     (Lens.Labels.lensOf'
-                                                        ((Lens.Labels.proxy#) ::
-                                                           (Lens.Labels.Proxy#)
-                                                             "phpGenericServices"))
-                                                     y
-                                                     x)
-                                      184 -> do y <- Prelude.return Prelude.undefined
-                                                (Prelude.$!) Prelude.return
-                                                  (Lens.Family2.set
-                                                     (Lens.Labels.lensOf'
-                                                        ((Lens.Labels.proxy#) ::
-                                                           (Lens.Labels.Proxy#) "deprecated"))
-                                                     y
-                                                     x)
-                                      248 -> do y <- Prelude.return Prelude.undefined
-                                                (Prelude.$!) Prelude.return
-                                                  (Lens.Family2.set
-                                                     (Lens.Labels.lensOf'
-                                                        ((Lens.Labels.proxy#) ::
-                                                           (Lens.Labels.Proxy#) "ccEnableArenas"))
-                                                     y
-                                                     x)
-                                      290 -> do y <- Prelude.return Prelude.undefined
-                                                (Prelude.$!) Prelude.return
-                                                  (Lens.Family2.set
-                                                     (Lens.Labels.lensOf'
-                                                        ((Lens.Labels.proxy#) ::
-                                                           (Lens.Labels.Proxy#) "objcClassPrefix"))
-                                                     y
-                                                     x)
-                                      298 -> do y <- Prelude.return Prelude.undefined
-                                                (Prelude.$!) Prelude.return
-                                                  (Lens.Family2.set
-                                                     (Lens.Labels.lensOf'
-                                                        ((Lens.Labels.proxy#) ::
-                                                           (Lens.Labels.Proxy#) "csharpNamespace"))
-                                                     y
-                                                     x)
-                                      314 -> do y <- Prelude.return Prelude.undefined
-                                                (Prelude.$!) Prelude.return
-                                                  (Lens.Family2.set
-                                                     (Lens.Labels.lensOf'
-                                                        ((Lens.Labels.proxy#) ::
-                                                           (Lens.Labels.Proxy#) "swiftPrefix"))
-                                                     y
-                                                     x)
-                                      322 -> do y <- Prelude.return Prelude.undefined
-                                                (Prelude.$!) Prelude.return
-                                                  (Lens.Family2.set
-                                                     (Lens.Labels.lensOf'
-                                                        ((Lens.Labels.proxy#) ::
-                                                           (Lens.Labels.Proxy#) "phpClassPrefix"))
-                                                     y
-                                                     x)
-                                      330 -> do y <- Prelude.return Prelude.undefined
-                                                (Prelude.$!) Prelude.return
-                                                  (Lens.Family2.set
-                                                     (Lens.Labels.lensOf'
-                                                        ((Lens.Labels.proxy#) ::
-                                                           (Lens.Labels.Proxy#) "phpNamespace"))
-                                                     y
-                                                     x)
-                                      354 -> do y <- Prelude.return Prelude.undefined
-                                                (Prelude.$!) Prelude.return
-                                                  (Lens.Family2.set
-                                                     (Lens.Labels.lensOf'
-                                                        ((Lens.Labels.proxy#) ::
-                                                           (Lens.Labels.Proxy#)
-                                                             "phpMetadataNamespace"))
-                                                     y
-                                                     x)
-                                      362 -> do y <- Prelude.return Prelude.undefined
-                                                (Prelude.$!) Prelude.return
-                                                  (Lens.Family2.set
-                                                     (Lens.Labels.lensOf'
-                                                        ((Lens.Labels.proxy#) ::
-                                                           (Lens.Labels.Proxy#) "rubyPackage"))
-                                                     y
-                                                     x)
-                                      7994 -> Prelude.undefined
-                                      _ -> Prelude.undefined
-                            (Prelude.$!) loop x'
+                            case tv of
+                                10 -> do y <- do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
+                                                 b <- Data.ProtoLens.Encoding.Parser.takeN
+                                                        (Prelude.fromIntegral len)
+                                                 Data.ProtoLens.Encoding.Bytes.parseString b
+                                         (Prelude.$!) loop
+                                           (Lens.Family2.set
+                                              (Lens.Labels.lensOf'
+                                                 ((Lens.Labels.proxy#) ::
+                                                    (Lens.Labels.Proxy#) "javaPackage"))
+                                              y
+                                              x)
+                                66 -> do y <- do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
+                                                 b <- Data.ProtoLens.Encoding.Parser.takeN
+                                                        (Prelude.fromIntegral len)
+                                                 Data.ProtoLens.Encoding.Bytes.parseString b
+                                         (Prelude.$!) loop
+                                           (Lens.Family2.set
+                                              (Lens.Labels.lensOf'
+                                                 ((Lens.Labels.proxy#) ::
+                                                    (Lens.Labels.Proxy#) "javaOuterClassname"))
+                                              y
+                                              x)
+                                80 -> do y <- Prelude.return Prelude.undefined
+                                         (Prelude.$!) loop
+                                           (Lens.Family2.set
+                                              (Lens.Labels.lensOf'
+                                                 ((Lens.Labels.proxy#) ::
+                                                    (Lens.Labels.Proxy#) "javaMultipleFiles"))
+                                              y
+                                              x)
+                                160 -> do y <- Prelude.return Prelude.undefined
+                                          (Prelude.$!) loop
+                                            (Lens.Family2.set
+                                               (Lens.Labels.lensOf'
+                                                  ((Lens.Labels.proxy#) ::
+                                                     (Lens.Labels.Proxy#)
+                                                       "javaGenerateEqualsAndHash"))
+                                               y
+                                               x)
+                                216 -> do y <- Prelude.return Prelude.undefined
+                                          (Prelude.$!) loop
+                                            (Lens.Family2.set
+                                               (Lens.Labels.lensOf'
+                                                  ((Lens.Labels.proxy#) ::
+                                                     (Lens.Labels.Proxy#) "javaStringCheckUtf8"))
+                                               y
+                                               x)
+                                72 -> do y <- Prelude.return Prelude.undefined
+                                         (Prelude.$!) loop
+                                           (Lens.Family2.set
+                                              (Lens.Labels.lensOf'
+                                                 ((Lens.Labels.proxy#) ::
+                                                    (Lens.Labels.Proxy#) "optimizeFor"))
+                                              y
+                                              x)
+                                90 -> do y <- do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
+                                                 b <- Data.ProtoLens.Encoding.Parser.takeN
+                                                        (Prelude.fromIntegral len)
+                                                 Data.ProtoLens.Encoding.Bytes.parseString b
+                                         (Prelude.$!) loop
+                                           (Lens.Family2.set
+                                              (Lens.Labels.lensOf'
+                                                 ((Lens.Labels.proxy#) ::
+                                                    (Lens.Labels.Proxy#) "goPackage"))
+                                              y
+                                              x)
+                                128 -> do y <- Prelude.return Prelude.undefined
+                                          (Prelude.$!) loop
+                                            (Lens.Family2.set
+                                               (Lens.Labels.lensOf'
+                                                  ((Lens.Labels.proxy#) ::
+                                                     (Lens.Labels.Proxy#) "ccGenericServices"))
+                                               y
+                                               x)
+                                136 -> do y <- Prelude.return Prelude.undefined
+                                          (Prelude.$!) loop
+                                            (Lens.Family2.set
+                                               (Lens.Labels.lensOf'
+                                                  ((Lens.Labels.proxy#) ::
+                                                     (Lens.Labels.Proxy#) "javaGenericServices"))
+                                               y
+                                               x)
+                                144 -> do y <- Prelude.return Prelude.undefined
+                                          (Prelude.$!) loop
+                                            (Lens.Family2.set
+                                               (Lens.Labels.lensOf'
+                                                  ((Lens.Labels.proxy#) ::
+                                                     (Lens.Labels.Proxy#) "pyGenericServices"))
+                                               y
+                                               x)
+                                336 -> do y <- Prelude.return Prelude.undefined
+                                          (Prelude.$!) loop
+                                            (Lens.Family2.set
+                                               (Lens.Labels.lensOf'
+                                                  ((Lens.Labels.proxy#) ::
+                                                     (Lens.Labels.Proxy#) "phpGenericServices"))
+                                               y
+                                               x)
+                                184 -> do y <- Prelude.return Prelude.undefined
+                                          (Prelude.$!) loop
+                                            (Lens.Family2.set
+                                               (Lens.Labels.lensOf'
+                                                  ((Lens.Labels.proxy#) ::
+                                                     (Lens.Labels.Proxy#) "deprecated"))
+                                               y
+                                               x)
+                                248 -> do y <- Prelude.return Prelude.undefined
+                                          (Prelude.$!) loop
+                                            (Lens.Family2.set
+                                               (Lens.Labels.lensOf'
+                                                  ((Lens.Labels.proxy#) ::
+                                                     (Lens.Labels.Proxy#) "ccEnableArenas"))
+                                               y
+                                               x)
+                                290 -> do y <- do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
+                                                  b <- Data.ProtoLens.Encoding.Parser.takeN
+                                                         (Prelude.fromIntegral len)
+                                                  Data.ProtoLens.Encoding.Bytes.parseString b
+                                          (Prelude.$!) loop
+                                            (Lens.Family2.set
+                                               (Lens.Labels.lensOf'
+                                                  ((Lens.Labels.proxy#) ::
+                                                     (Lens.Labels.Proxy#) "objcClassPrefix"))
+                                               y
+                                               x)
+                                298 -> do y <- do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
+                                                  b <- Data.ProtoLens.Encoding.Parser.takeN
+                                                         (Prelude.fromIntegral len)
+                                                  Data.ProtoLens.Encoding.Bytes.parseString b
+                                          (Prelude.$!) loop
+                                            (Lens.Family2.set
+                                               (Lens.Labels.lensOf'
+                                                  ((Lens.Labels.proxy#) ::
+                                                     (Lens.Labels.Proxy#) "csharpNamespace"))
+                                               y
+                                               x)
+                                314 -> do y <- do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
+                                                  b <- Data.ProtoLens.Encoding.Parser.takeN
+                                                         (Prelude.fromIntegral len)
+                                                  Data.ProtoLens.Encoding.Bytes.parseString b
+                                          (Prelude.$!) loop
+                                            (Lens.Family2.set
+                                               (Lens.Labels.lensOf'
+                                                  ((Lens.Labels.proxy#) ::
+                                                     (Lens.Labels.Proxy#) "swiftPrefix"))
+                                               y
+                                               x)
+                                322 -> do y <- do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
+                                                  b <- Data.ProtoLens.Encoding.Parser.takeN
+                                                         (Prelude.fromIntegral len)
+                                                  Data.ProtoLens.Encoding.Bytes.parseString b
+                                          (Prelude.$!) loop
+                                            (Lens.Family2.set
+                                               (Lens.Labels.lensOf'
+                                                  ((Lens.Labels.proxy#) ::
+                                                     (Lens.Labels.Proxy#) "phpClassPrefix"))
+                                               y
+                                               x)
+                                330 -> do y <- do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
+                                                  b <- Data.ProtoLens.Encoding.Parser.takeN
+                                                         (Prelude.fromIntegral len)
+                                                  Data.ProtoLens.Encoding.Bytes.parseString b
+                                          (Prelude.$!) loop
+                                            (Lens.Family2.set
+                                               (Lens.Labels.lensOf'
+                                                  ((Lens.Labels.proxy#) ::
+                                                     (Lens.Labels.Proxy#) "phpNamespace"))
+                                               y
+                                               x)
+                                354 -> do y <- do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
+                                                  b <- Data.ProtoLens.Encoding.Parser.takeN
+                                                         (Prelude.fromIntegral len)
+                                                  Data.ProtoLens.Encoding.Bytes.parseString b
+                                          (Prelude.$!) loop
+                                            (Lens.Family2.set
+                                               (Lens.Labels.lensOf'
+                                                  ((Lens.Labels.proxy#) ::
+                                                     (Lens.Labels.Proxy#) "phpMetadataNamespace"))
+                                               y
+                                               x)
+                                362 -> do y <- do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
+                                                  b <- Data.ProtoLens.Encoding.Parser.takeN
+                                                         (Prelude.fromIntegral len)
+                                                  Data.ProtoLens.Encoding.Bytes.parseString b
+                                          (Prelude.$!) loop
+                                            (Lens.Family2.set
+                                               (Lens.Labels.lensOf'
+                                                  ((Lens.Labels.proxy#) ::
+                                                     (Lens.Labels.Proxy#) "rubyPackage"))
+                                               y
+                                               x)
+                                7994 -> Prelude.undefined
+                                _ -> Prelude.undefined
               in loop Data.ProtoLens.defMessage
+        newEncodeMessage = Prelude.undefined
         defMessage
           = FileOptions{_FileOptions'javaPackage = Prelude.Nothing,
                         _FileOptions'javaOuterClassname = Prelude.Nothing,
@@ -3939,11 +4016,11 @@ instance Data.ProtoLens.Message GeneratedCodeInfo where
                   = do end <- Data.ProtoLens.Encoding.Parser.isEnd
                        if end then Prelude.return x else
                          do tv <- Data.ProtoLens.Encoding.Bytes.getVarInt
-                            x' <- case tv of
-                                      10 -> Prelude.undefined
-                                      _ -> Prelude.undefined
-                            (Prelude.$!) loop x'
+                            case tv of
+                                10 -> Prelude.undefined
+                                _ -> Prelude.undefined
               in loop Data.ProtoLens.defMessage
+        newEncodeMessage = Prelude.undefined
         defMessage
           = GeneratedCodeInfo{_GeneratedCodeInfo'annotation = [],
                               _GeneratedCodeInfo'_unknownFields = ([])}
@@ -4092,37 +4169,40 @@ instance Data.ProtoLens.Message GeneratedCodeInfo'Annotation where
                   = do end <- Data.ProtoLens.Encoding.Parser.isEnd
                        if end then Prelude.return x else
                          do tv <- Data.ProtoLens.Encoding.Bytes.getVarInt
-                            x' <- case tv of
-                                      8 -> Prelude.undefined
-                                      18 -> do y <- Prelude.return Prelude.undefined
-                                               (Prelude.$!) Prelude.return
-                                                 (Lens.Family2.set
-                                                    (Lens.Labels.lensOf'
-                                                       ((Lens.Labels.proxy#) ::
-                                                          (Lens.Labels.Proxy#) "sourceFile"))
-                                                    y
-                                                    x)
-                                      24 -> do y <- Prelude.fmap Prelude.fromIntegral
-                                                      Data.ProtoLens.Encoding.Bytes.getVarInt
-                                               (Prelude.$!) Prelude.return
-                                                 (Lens.Family2.set
-                                                    (Lens.Labels.lensOf'
-                                                       ((Lens.Labels.proxy#) ::
-                                                          (Lens.Labels.Proxy#) "begin"))
-                                                    y
-                                                    x)
-                                      32 -> do y <- Prelude.fmap Prelude.fromIntegral
-                                                      Data.ProtoLens.Encoding.Bytes.getVarInt
-                                               (Prelude.$!) Prelude.return
-                                                 (Lens.Family2.set
-                                                    (Lens.Labels.lensOf'
-                                                       ((Lens.Labels.proxy#) ::
-                                                          (Lens.Labels.Proxy#) "end"))
-                                                    y
-                                                    x)
-                                      _ -> Prelude.undefined
-                            (Prelude.$!) loop x'
+                            case tv of
+                                8 -> Prelude.undefined
+                                18 -> do y <- do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
+                                                 b <- Data.ProtoLens.Encoding.Parser.takeN
+                                                        (Prelude.fromIntegral len)
+                                                 Data.ProtoLens.Encoding.Bytes.parseString b
+                                         (Prelude.$!) loop
+                                           (Lens.Family2.set
+                                              (Lens.Labels.lensOf'
+                                                 ((Lens.Labels.proxy#) ::
+                                                    (Lens.Labels.Proxy#) "sourceFile"))
+                                              y
+                                              x)
+                                24 -> do y <- Prelude.fmap Prelude.fromIntegral
+                                                Data.ProtoLens.Encoding.Bytes.getVarInt
+                                         (Prelude.$!) loop
+                                           (Lens.Family2.set
+                                              (Lens.Labels.lensOf'
+                                                 ((Lens.Labels.proxy#) ::
+                                                    (Lens.Labels.Proxy#) "begin"))
+                                              y
+                                              x)
+                                32 -> do y <- Prelude.fmap Prelude.fromIntegral
+                                                Data.ProtoLens.Encoding.Bytes.getVarInt
+                                         (Prelude.$!) loop
+                                           (Lens.Family2.set
+                                              (Lens.Labels.lensOf'
+                                                 ((Lens.Labels.proxy#) ::
+                                                    (Lens.Labels.Proxy#) "end"))
+                                              y
+                                              x)
+                                _ -> Prelude.undefined
               in loop Data.ProtoLens.defMessage
+        newEncodeMessage = Prelude.undefined
         defMessage
           = GeneratedCodeInfo'Annotation{_GeneratedCodeInfo'Annotation'path =
                                            [],
@@ -4308,45 +4388,44 @@ instance Data.ProtoLens.Message MessageOptions where
                   = do end <- Data.ProtoLens.Encoding.Parser.isEnd
                        if end then Prelude.return x else
                          do tv <- Data.ProtoLens.Encoding.Bytes.getVarInt
-                            x' <- case tv of
-                                      8 -> do y <- Prelude.return Prelude.undefined
-                                              (Prelude.$!) Prelude.return
-                                                (Lens.Family2.set
-                                                   (Lens.Labels.lensOf'
-                                                      ((Lens.Labels.proxy#) ::
-                                                         (Lens.Labels.Proxy#)
-                                                           "messageSetWireFormat"))
-                                                   y
-                                                   x)
-                                      16 -> do y <- Prelude.return Prelude.undefined
-                                               (Prelude.$!) Prelude.return
-                                                 (Lens.Family2.set
-                                                    (Lens.Labels.lensOf'
-                                                       ((Lens.Labels.proxy#) ::
-                                                          (Lens.Labels.Proxy#)
-                                                            "noStandardDescriptorAccessor"))
-                                                    y
-                                                    x)
-                                      24 -> do y <- Prelude.return Prelude.undefined
-                                               (Prelude.$!) Prelude.return
-                                                 (Lens.Family2.set
-                                                    (Lens.Labels.lensOf'
-                                                       ((Lens.Labels.proxy#) ::
-                                                          (Lens.Labels.Proxy#) "deprecated"))
-                                                    y
-                                                    x)
-                                      56 -> do y <- Prelude.return Prelude.undefined
-                                               (Prelude.$!) Prelude.return
-                                                 (Lens.Family2.set
-                                                    (Lens.Labels.lensOf'
-                                                       ((Lens.Labels.proxy#) ::
-                                                          (Lens.Labels.Proxy#) "mapEntry"))
-                                                    y
-                                                    x)
-                                      7994 -> Prelude.undefined
-                                      _ -> Prelude.undefined
-                            (Prelude.$!) loop x'
+                            case tv of
+                                8 -> do y <- Prelude.return Prelude.undefined
+                                        (Prelude.$!) loop
+                                          (Lens.Family2.set
+                                             (Lens.Labels.lensOf'
+                                                ((Lens.Labels.proxy#) ::
+                                                   (Lens.Labels.Proxy#) "messageSetWireFormat"))
+                                             y
+                                             x)
+                                16 -> do y <- Prelude.return Prelude.undefined
+                                         (Prelude.$!) loop
+                                           (Lens.Family2.set
+                                              (Lens.Labels.lensOf'
+                                                 ((Lens.Labels.proxy#) ::
+                                                    (Lens.Labels.Proxy#)
+                                                      "noStandardDescriptorAccessor"))
+                                              y
+                                              x)
+                                24 -> do y <- Prelude.return Prelude.undefined
+                                         (Prelude.$!) loop
+                                           (Lens.Family2.set
+                                              (Lens.Labels.lensOf'
+                                                 ((Lens.Labels.proxy#) ::
+                                                    (Lens.Labels.Proxy#) "deprecated"))
+                                              y
+                                              x)
+                                56 -> do y <- Prelude.return Prelude.undefined
+                                         (Prelude.$!) loop
+                                           (Lens.Family2.set
+                                              (Lens.Labels.lensOf'
+                                                 ((Lens.Labels.proxy#) ::
+                                                    (Lens.Labels.Proxy#) "mapEntry"))
+                                              y
+                                              x)
+                                7994 -> Prelude.undefined
+                                _ -> Prelude.undefined
               in loop Data.ProtoLens.defMessage
+        newEncodeMessage = Prelude.undefined
         defMessage
           = MessageOptions{_MessageOptions'messageSetWireFormat =
                              Prelude.Nothing,
@@ -4573,58 +4652,70 @@ instance Data.ProtoLens.Message MethodDescriptorProto where
                   = do end <- Data.ProtoLens.Encoding.Parser.isEnd
                        if end then Prelude.return x else
                          do tv <- Data.ProtoLens.Encoding.Bytes.getVarInt
-                            x' <- case tv of
-                                      10 -> do y <- Prelude.return Prelude.undefined
-                                               (Prelude.$!) Prelude.return
-                                                 (Lens.Family2.set
-                                                    (Lens.Labels.lensOf'
-                                                       ((Lens.Labels.proxy#) ::
-                                                          (Lens.Labels.Proxy#) "name"))
-                                                    y
-                                                    x)
-                                      18 -> do y <- Prelude.return Prelude.undefined
-                                               (Prelude.$!) Prelude.return
-                                                 (Lens.Family2.set
-                                                    (Lens.Labels.lensOf'
-                                                       ((Lens.Labels.proxy#) ::
-                                                          (Lens.Labels.Proxy#) "inputType"))
-                                                    y
-                                                    x)
-                                      26 -> do y <- Prelude.return Prelude.undefined
-                                               (Prelude.$!) Prelude.return
-                                                 (Lens.Family2.set
-                                                    (Lens.Labels.lensOf'
-                                                       ((Lens.Labels.proxy#) ::
-                                                          (Lens.Labels.Proxy#) "outputType"))
-                                                    y
-                                                    x)
-                                      34 -> do y <- Prelude.return Prelude.undefined
-                                               (Prelude.$!) Prelude.return
-                                                 (Lens.Family2.set
-                                                    (Lens.Labels.lensOf'
-                                                       ((Lens.Labels.proxy#) ::
-                                                          (Lens.Labels.Proxy#) "options"))
-                                                    y
-                                                    x)
-                                      40 -> do y <- Prelude.return Prelude.undefined
-                                               (Prelude.$!) Prelude.return
-                                                 (Lens.Family2.set
-                                                    (Lens.Labels.lensOf'
-                                                       ((Lens.Labels.proxy#) ::
-                                                          (Lens.Labels.Proxy#) "clientStreaming"))
-                                                    y
-                                                    x)
-                                      48 -> do y <- Prelude.return Prelude.undefined
-                                               (Prelude.$!) Prelude.return
-                                                 (Lens.Family2.set
-                                                    (Lens.Labels.lensOf'
-                                                       ((Lens.Labels.proxy#) ::
-                                                          (Lens.Labels.Proxy#) "serverStreaming"))
-                                                    y
-                                                    x)
-                                      _ -> Prelude.undefined
-                            (Prelude.$!) loop x'
+                            case tv of
+                                10 -> do y <- do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
+                                                 b <- Data.ProtoLens.Encoding.Parser.takeN
+                                                        (Prelude.fromIntegral len)
+                                                 Data.ProtoLens.Encoding.Bytes.parseString b
+                                         (Prelude.$!) loop
+                                           (Lens.Family2.set
+                                              (Lens.Labels.lensOf'
+                                                 ((Lens.Labels.proxy#) ::
+                                                    (Lens.Labels.Proxy#) "name"))
+                                              y
+                                              x)
+                                18 -> do y <- do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
+                                                 b <- Data.ProtoLens.Encoding.Parser.takeN
+                                                        (Prelude.fromIntegral len)
+                                                 Data.ProtoLens.Encoding.Bytes.parseString b
+                                         (Prelude.$!) loop
+                                           (Lens.Family2.set
+                                              (Lens.Labels.lensOf'
+                                                 ((Lens.Labels.proxy#) ::
+                                                    (Lens.Labels.Proxy#) "inputType"))
+                                              y
+                                              x)
+                                26 -> do y <- do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
+                                                 b <- Data.ProtoLens.Encoding.Parser.takeN
+                                                        (Prelude.fromIntegral len)
+                                                 Data.ProtoLens.Encoding.Bytes.parseString b
+                                         (Prelude.$!) loop
+                                           (Lens.Family2.set
+                                              (Lens.Labels.lensOf'
+                                                 ((Lens.Labels.proxy#) ::
+                                                    (Lens.Labels.Proxy#) "outputType"))
+                                              y
+                                              x)
+                                34 -> do y <- do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
+                                                 Data.ProtoLens.Encoding.Parser.isolate
+                                                   (Prelude.fromIntegral len)
+                                                   Data.ProtoLens.newParseMessage
+                                         (Prelude.$!) loop
+                                           (Lens.Family2.set
+                                              (Lens.Labels.lensOf'
+                                                 ((Lens.Labels.proxy#) ::
+                                                    (Lens.Labels.Proxy#) "options"))
+                                              y
+                                              x)
+                                40 -> do y <- Prelude.return Prelude.undefined
+                                         (Prelude.$!) loop
+                                           (Lens.Family2.set
+                                              (Lens.Labels.lensOf'
+                                                 ((Lens.Labels.proxy#) ::
+                                                    (Lens.Labels.Proxy#) "clientStreaming"))
+                                              y
+                                              x)
+                                48 -> do y <- Prelude.return Prelude.undefined
+                                         (Prelude.$!) loop
+                                           (Lens.Family2.set
+                                              (Lens.Labels.lensOf'
+                                                 ((Lens.Labels.proxy#) ::
+                                                    (Lens.Labels.Proxy#) "serverStreaming"))
+                                              y
+                                              x)
+                                _ -> Prelude.undefined
               in loop Data.ProtoLens.defMessage
+        newEncodeMessage = Prelude.undefined
         defMessage
           = MethodDescriptorProto{_MethodDescriptorProto'name =
                                     Prelude.Nothing,
@@ -4750,27 +4841,27 @@ instance Data.ProtoLens.Message MethodOptions where
                   = do end <- Data.ProtoLens.Encoding.Parser.isEnd
                        if end then Prelude.return x else
                          do tv <- Data.ProtoLens.Encoding.Bytes.getVarInt
-                            x' <- case tv of
-                                      264 -> do y <- Prelude.return Prelude.undefined
-                                                (Prelude.$!) Prelude.return
-                                                  (Lens.Family2.set
-                                                     (Lens.Labels.lensOf'
-                                                        ((Lens.Labels.proxy#) ::
-                                                           (Lens.Labels.Proxy#) "deprecated"))
-                                                     y
-                                                     x)
-                                      272 -> do y <- Prelude.return Prelude.undefined
-                                                (Prelude.$!) Prelude.return
-                                                  (Lens.Family2.set
-                                                     (Lens.Labels.lensOf'
-                                                        ((Lens.Labels.proxy#) ::
-                                                           (Lens.Labels.Proxy#) "idempotencyLevel"))
-                                                     y
-                                                     x)
-                                      7994 -> Prelude.undefined
-                                      _ -> Prelude.undefined
-                            (Prelude.$!) loop x'
+                            case tv of
+                                264 -> do y <- Prelude.return Prelude.undefined
+                                          (Prelude.$!) loop
+                                            (Lens.Family2.set
+                                               (Lens.Labels.lensOf'
+                                                  ((Lens.Labels.proxy#) ::
+                                                     (Lens.Labels.Proxy#) "deprecated"))
+                                               y
+                                               x)
+                                272 -> do y <- Prelude.return Prelude.undefined
+                                          (Prelude.$!) loop
+                                            (Lens.Family2.set
+                                               (Lens.Labels.lensOf'
+                                                  ((Lens.Labels.proxy#) ::
+                                                     (Lens.Labels.Proxy#) "idempotencyLevel"))
+                                               y
+                                               x)
+                                7994 -> Prelude.undefined
+                                _ -> Prelude.undefined
               in loop Data.ProtoLens.defMessage
+        newEncodeMessage = Prelude.undefined
         defMessage
           = MethodOptions{_MethodOptions'deprecated = Prelude.Nothing,
                           _MethodOptions'idempotencyLevel = Prelude.Nothing,
@@ -4925,26 +5016,32 @@ instance Data.ProtoLens.Message OneofDescriptorProto where
                   = do end <- Data.ProtoLens.Encoding.Parser.isEnd
                        if end then Prelude.return x else
                          do tv <- Data.ProtoLens.Encoding.Bytes.getVarInt
-                            x' <- case tv of
-                                      10 -> do y <- Prelude.return Prelude.undefined
-                                               (Prelude.$!) Prelude.return
-                                                 (Lens.Family2.set
-                                                    (Lens.Labels.lensOf'
-                                                       ((Lens.Labels.proxy#) ::
-                                                          (Lens.Labels.Proxy#) "name"))
-                                                    y
-                                                    x)
-                                      18 -> do y <- Prelude.return Prelude.undefined
-                                               (Prelude.$!) Prelude.return
-                                                 (Lens.Family2.set
-                                                    (Lens.Labels.lensOf'
-                                                       ((Lens.Labels.proxy#) ::
-                                                          (Lens.Labels.Proxy#) "options"))
-                                                    y
-                                                    x)
-                                      _ -> Prelude.undefined
-                            (Prelude.$!) loop x'
+                            case tv of
+                                10 -> do y <- do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
+                                                 b <- Data.ProtoLens.Encoding.Parser.takeN
+                                                        (Prelude.fromIntegral len)
+                                                 Data.ProtoLens.Encoding.Bytes.parseString b
+                                         (Prelude.$!) loop
+                                           (Lens.Family2.set
+                                              (Lens.Labels.lensOf'
+                                                 ((Lens.Labels.proxy#) ::
+                                                    (Lens.Labels.Proxy#) "name"))
+                                              y
+                                              x)
+                                18 -> do y <- do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
+                                                 Data.ProtoLens.Encoding.Parser.isolate
+                                                   (Prelude.fromIntegral len)
+                                                   Data.ProtoLens.newParseMessage
+                                         (Prelude.$!) loop
+                                           (Lens.Family2.set
+                                              (Lens.Labels.lensOf'
+                                                 ((Lens.Labels.proxy#) ::
+                                                    (Lens.Labels.Proxy#) "options"))
+                                              y
+                                              x)
+                                _ -> Prelude.undefined
               in loop Data.ProtoLens.defMessage
+        newEncodeMessage = Prelude.undefined
         defMessage
           = OneofDescriptorProto{_OneofDescriptorProto'name =
                                    Prelude.Nothing,
@@ -5000,11 +5097,11 @@ instance Data.ProtoLens.Message OneofOptions where
                   = do end <- Data.ProtoLens.Encoding.Parser.isEnd
                        if end then Prelude.return x else
                          do tv <- Data.ProtoLens.Encoding.Bytes.getVarInt
-                            x' <- case tv of
-                                      7994 -> Prelude.undefined
-                                      _ -> Prelude.undefined
-                            (Prelude.$!) loop x'
+                            case tv of
+                                7994 -> Prelude.undefined
+                                _ -> Prelude.undefined
               in loop Data.ProtoLens.defMessage
+        newEncodeMessage = Prelude.undefined
         defMessage
           = OneofOptions{_OneofOptions'uninterpretedOption = [],
                          _OneofOptions'_unknownFields = ([])}
@@ -5119,27 +5216,33 @@ instance Data.ProtoLens.Message ServiceDescriptorProto where
                   = do end <- Data.ProtoLens.Encoding.Parser.isEnd
                        if end then Prelude.return x else
                          do tv <- Data.ProtoLens.Encoding.Bytes.getVarInt
-                            x' <- case tv of
-                                      10 -> do y <- Prelude.return Prelude.undefined
-                                               (Prelude.$!) Prelude.return
-                                                 (Lens.Family2.set
-                                                    (Lens.Labels.lensOf'
-                                                       ((Lens.Labels.proxy#) ::
-                                                          (Lens.Labels.Proxy#) "name"))
-                                                    y
-                                                    x)
-                                      18 -> Prelude.undefined
-                                      26 -> do y <- Prelude.return Prelude.undefined
-                                               (Prelude.$!) Prelude.return
-                                                 (Lens.Family2.set
-                                                    (Lens.Labels.lensOf'
-                                                       ((Lens.Labels.proxy#) ::
-                                                          (Lens.Labels.Proxy#) "options"))
-                                                    y
-                                                    x)
-                                      _ -> Prelude.undefined
-                            (Prelude.$!) loop x'
+                            case tv of
+                                10 -> do y <- do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
+                                                 b <- Data.ProtoLens.Encoding.Parser.takeN
+                                                        (Prelude.fromIntegral len)
+                                                 Data.ProtoLens.Encoding.Bytes.parseString b
+                                         (Prelude.$!) loop
+                                           (Lens.Family2.set
+                                              (Lens.Labels.lensOf'
+                                                 ((Lens.Labels.proxy#) ::
+                                                    (Lens.Labels.Proxy#) "name"))
+                                              y
+                                              x)
+                                18 -> Prelude.undefined
+                                26 -> do y <- do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
+                                                 Data.ProtoLens.Encoding.Parser.isolate
+                                                   (Prelude.fromIntegral len)
+                                                   Data.ProtoLens.newParseMessage
+                                         (Prelude.$!) loop
+                                           (Lens.Family2.set
+                                              (Lens.Labels.lensOf'
+                                                 ((Lens.Labels.proxy#) ::
+                                                    (Lens.Labels.Proxy#) "options"))
+                                              y
+                                              x)
+                                _ -> Prelude.undefined
               in loop Data.ProtoLens.defMessage
+        newEncodeMessage = Prelude.undefined
         defMessage
           = ServiceDescriptorProto{_ServiceDescriptorProto'name =
                                      Prelude.Nothing,
@@ -5227,19 +5330,19 @@ instance Data.ProtoLens.Message ServiceOptions where
                   = do end <- Data.ProtoLens.Encoding.Parser.isEnd
                        if end then Prelude.return x else
                          do tv <- Data.ProtoLens.Encoding.Bytes.getVarInt
-                            x' <- case tv of
-                                      264 -> do y <- Prelude.return Prelude.undefined
-                                                (Prelude.$!) Prelude.return
-                                                  (Lens.Family2.set
-                                                     (Lens.Labels.lensOf'
-                                                        ((Lens.Labels.proxy#) ::
-                                                           (Lens.Labels.Proxy#) "deprecated"))
-                                                     y
-                                                     x)
-                                      7994 -> Prelude.undefined
-                                      _ -> Prelude.undefined
-                            (Prelude.$!) loop x'
+                            case tv of
+                                264 -> do y <- Prelude.return Prelude.undefined
+                                          (Prelude.$!) loop
+                                            (Lens.Family2.set
+                                               (Lens.Labels.lensOf'
+                                                  ((Lens.Labels.proxy#) ::
+                                                     (Lens.Labels.Proxy#) "deprecated"))
+                                               y
+                                               x)
+                                7994 -> Prelude.undefined
+                                _ -> Prelude.undefined
               in loop Data.ProtoLens.defMessage
+        newEncodeMessage = Prelude.undefined
         defMessage
           = ServiceOptions{_ServiceOptions'deprecated = Prelude.Nothing,
                            _ServiceOptions'uninterpretedOption = [],
@@ -5294,11 +5397,11 @@ instance Data.ProtoLens.Message SourceCodeInfo where
                   = do end <- Data.ProtoLens.Encoding.Parser.isEnd
                        if end then Prelude.return x else
                          do tv <- Data.ProtoLens.Encoding.Bytes.getVarInt
-                            x' <- case tv of
-                                      10 -> Prelude.undefined
-                                      _ -> Prelude.undefined
-                            (Prelude.$!) loop x'
+                            case tv of
+                                10 -> Prelude.undefined
+                                _ -> Prelude.undefined
               in loop Data.ProtoLens.defMessage
+        newEncodeMessage = Prelude.undefined
         defMessage
           = SourceCodeInfo{_SourceCodeInfo'location = [],
                            _SourceCodeInfo'_unknownFields = ([])}
@@ -5467,29 +5570,35 @@ instance Data.ProtoLens.Message SourceCodeInfo'Location where
                   = do end <- Data.ProtoLens.Encoding.Parser.isEnd
                        if end then Prelude.return x else
                          do tv <- Data.ProtoLens.Encoding.Bytes.getVarInt
-                            x' <- case tv of
-                                      8 -> Prelude.undefined
-                                      16 -> Prelude.undefined
-                                      26 -> do y <- Prelude.return Prelude.undefined
-                                               (Prelude.$!) Prelude.return
-                                                 (Lens.Family2.set
-                                                    (Lens.Labels.lensOf'
-                                                       ((Lens.Labels.proxy#) ::
-                                                          (Lens.Labels.Proxy#) "leadingComments"))
-                                                    y
-                                                    x)
-                                      34 -> do y <- Prelude.return Prelude.undefined
-                                               (Prelude.$!) Prelude.return
-                                                 (Lens.Family2.set
-                                                    (Lens.Labels.lensOf'
-                                                       ((Lens.Labels.proxy#) ::
-                                                          (Lens.Labels.Proxy#) "trailingComments"))
-                                                    y
-                                                    x)
-                                      50 -> Prelude.undefined
-                                      _ -> Prelude.undefined
-                            (Prelude.$!) loop x'
+                            case tv of
+                                8 -> Prelude.undefined
+                                16 -> Prelude.undefined
+                                26 -> do y <- do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
+                                                 b <- Data.ProtoLens.Encoding.Parser.takeN
+                                                        (Prelude.fromIntegral len)
+                                                 Data.ProtoLens.Encoding.Bytes.parseString b
+                                         (Prelude.$!) loop
+                                           (Lens.Family2.set
+                                              (Lens.Labels.lensOf'
+                                                 ((Lens.Labels.proxy#) ::
+                                                    (Lens.Labels.Proxy#) "leadingComments"))
+                                              y
+                                              x)
+                                34 -> do y <- do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
+                                                 b <- Data.ProtoLens.Encoding.Parser.takeN
+                                                        (Prelude.fromIntegral len)
+                                                 Data.ProtoLens.Encoding.Bytes.parseString b
+                                         (Prelude.$!) loop
+                                           (Lens.Family2.set
+                                              (Lens.Labels.lensOf'
+                                                 ((Lens.Labels.proxy#) ::
+                                                    (Lens.Labels.Proxy#) "trailingComments"))
+                                              y
+                                              x)
+                                50 -> Prelude.undefined
+                                _ -> Prelude.undefined
               in loop Data.ProtoLens.defMessage
+        newEncodeMessage = Prelude.undefined
         defMessage
           = SourceCodeInfo'Location{_SourceCodeInfo'Location'path = [],
                                     _SourceCodeInfo'Location'span = [],
@@ -5745,59 +5854,69 @@ instance Data.ProtoLens.Message UninterpretedOption where
                   = do end <- Data.ProtoLens.Encoding.Parser.isEnd
                        if end then Prelude.return x else
                          do tv <- Data.ProtoLens.Encoding.Bytes.getVarInt
-                            x' <- case tv of
-                                      18 -> Prelude.undefined
-                                      26 -> do y <- Prelude.return Prelude.undefined
-                                               (Prelude.$!) Prelude.return
-                                                 (Lens.Family2.set
-                                                    (Lens.Labels.lensOf'
-                                                       ((Lens.Labels.proxy#) ::
-                                                          (Lens.Labels.Proxy#) "identifierValue"))
-                                                    y
-                                                    x)
-                                      32 -> do y <- Prelude.return Prelude.undefined
-                                               (Prelude.$!) Prelude.return
-                                                 (Lens.Family2.set
-                                                    (Lens.Labels.lensOf'
-                                                       ((Lens.Labels.proxy#) ::
-                                                          (Lens.Labels.Proxy#) "positiveIntValue"))
-                                                    y
-                                                    x)
-                                      40 -> do y <- Prelude.return Prelude.undefined
-                                               (Prelude.$!) Prelude.return
-                                                 (Lens.Family2.set
-                                                    (Lens.Labels.lensOf'
-                                                       ((Lens.Labels.proxy#) ::
-                                                          (Lens.Labels.Proxy#) "negativeIntValue"))
-                                                    y
-                                                    x)
-                                      49 -> do y <- Prelude.return Prelude.undefined
-                                               (Prelude.$!) Prelude.return
-                                                 (Lens.Family2.set
-                                                    (Lens.Labels.lensOf'
-                                                       ((Lens.Labels.proxy#) ::
-                                                          (Lens.Labels.Proxy#) "doubleValue"))
-                                                    y
-                                                    x)
-                                      58 -> do y <- Prelude.return Prelude.undefined
-                                               (Prelude.$!) Prelude.return
-                                                 (Lens.Family2.set
-                                                    (Lens.Labels.lensOf'
-                                                       ((Lens.Labels.proxy#) ::
-                                                          (Lens.Labels.Proxy#) "stringValue"))
-                                                    y
-                                                    x)
-                                      66 -> do y <- Prelude.return Prelude.undefined
-                                               (Prelude.$!) Prelude.return
-                                                 (Lens.Family2.set
-                                                    (Lens.Labels.lensOf'
-                                                       ((Lens.Labels.proxy#) ::
-                                                          (Lens.Labels.Proxy#) "aggregateValue"))
-                                                    y
-                                                    x)
-                                      _ -> Prelude.undefined
-                            (Prelude.$!) loop x'
+                            case tv of
+                                18 -> Prelude.undefined
+                                26 -> do y <- do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
+                                                 b <- Data.ProtoLens.Encoding.Parser.takeN
+                                                        (Prelude.fromIntegral len)
+                                                 Data.ProtoLens.Encoding.Bytes.parseString b
+                                         (Prelude.$!) loop
+                                           (Lens.Family2.set
+                                              (Lens.Labels.lensOf'
+                                                 ((Lens.Labels.proxy#) ::
+                                                    (Lens.Labels.Proxy#) "identifierValue"))
+                                              y
+                                              x)
+                                32 -> do y <- Prelude.fmap Prelude.fromIntegral
+                                                Data.ProtoLens.Encoding.Bytes.getVarInt
+                                         (Prelude.$!) loop
+                                           (Lens.Family2.set
+                                              (Lens.Labels.lensOf'
+                                                 ((Lens.Labels.proxy#) ::
+                                                    (Lens.Labels.Proxy#) "positiveIntValue"))
+                                              y
+                                              x)
+                                40 -> do y <- Prelude.fmap Prelude.fromIntegral
+                                                Data.ProtoLens.Encoding.Bytes.getVarInt
+                                         (Prelude.$!) loop
+                                           (Lens.Family2.set
+                                              (Lens.Labels.lensOf'
+                                                 ((Lens.Labels.proxy#) ::
+                                                    (Lens.Labels.Proxy#) "negativeIntValue"))
+                                              y
+                                              x)
+                                49 -> do y <- Prelude.return Prelude.undefined
+                                         (Prelude.$!) loop
+                                           (Lens.Family2.set
+                                              (Lens.Labels.lensOf'
+                                                 ((Lens.Labels.proxy#) ::
+                                                    (Lens.Labels.Proxy#) "doubleValue"))
+                                              y
+                                              x)
+                                58 -> do y <- do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
+                                                 Data.ProtoLens.Encoding.Parser.takeN
+                                                   (Prelude.fromIntegral len)
+                                         (Prelude.$!) loop
+                                           (Lens.Family2.set
+                                              (Lens.Labels.lensOf'
+                                                 ((Lens.Labels.proxy#) ::
+                                                    (Lens.Labels.Proxy#) "stringValue"))
+                                              y
+                                              x)
+                                66 -> do y <- do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
+                                                 b <- Data.ProtoLens.Encoding.Parser.takeN
+                                                        (Prelude.fromIntegral len)
+                                                 Data.ProtoLens.Encoding.Bytes.parseString b
+                                         (Prelude.$!) loop
+                                           (Lens.Family2.set
+                                              (Lens.Labels.lensOf'
+                                                 ((Lens.Labels.proxy#) ::
+                                                    (Lens.Labels.Proxy#) "aggregateValue"))
+                                              y
+                                              x)
+                                _ -> Prelude.undefined
               in loop Data.ProtoLens.defMessage
+        newEncodeMessage = Prelude.undefined
         defMessage
           = UninterpretedOption{_UninterpretedOption'name = [],
                                 _UninterpretedOption'identifierValue = Prelude.Nothing,
@@ -5892,26 +6011,29 @@ instance Data.ProtoLens.Message UninterpretedOption'NamePart where
                   = do end <- Data.ProtoLens.Encoding.Parser.isEnd
                        if end then Prelude.return x else
                          do tv <- Data.ProtoLens.Encoding.Bytes.getVarInt
-                            x' <- case tv of
-                                      10 -> do y <- Prelude.return Prelude.undefined
-                                               (Prelude.$!) Prelude.return
-                                                 (Lens.Family2.set
-                                                    (Lens.Labels.lensOf'
-                                                       ((Lens.Labels.proxy#) ::
-                                                          (Lens.Labels.Proxy#) "namePart"))
-                                                    y
-                                                    x)
-                                      16 -> do y <- Prelude.return Prelude.undefined
-                                               (Prelude.$!) Prelude.return
-                                                 (Lens.Family2.set
-                                                    (Lens.Labels.lensOf'
-                                                       ((Lens.Labels.proxy#) ::
-                                                          (Lens.Labels.Proxy#) "isExtension"))
-                                                    y
-                                                    x)
-                                      _ -> Prelude.undefined
-                            (Prelude.$!) loop x'
+                            case tv of
+                                10 -> do y <- do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
+                                                 b <- Data.ProtoLens.Encoding.Parser.takeN
+                                                        (Prelude.fromIntegral len)
+                                                 Data.ProtoLens.Encoding.Bytes.parseString b
+                                         (Prelude.$!) loop
+                                           (Lens.Family2.set
+                                              (Lens.Labels.lensOf'
+                                                 ((Lens.Labels.proxy#) ::
+                                                    (Lens.Labels.Proxy#) "namePart"))
+                                              y
+                                              x)
+                                16 -> do y <- Prelude.return Prelude.undefined
+                                         (Prelude.$!) loop
+                                           (Lens.Family2.set
+                                              (Lens.Labels.lensOf'
+                                                 ((Lens.Labels.proxy#) ::
+                                                    (Lens.Labels.Proxy#) "isExtension"))
+                                              y
+                                              x)
+                                _ -> Prelude.undefined
               in loop Data.ProtoLens.defMessage
+        newEncodeMessage = Prelude.undefined
         defMessage
           = UninterpretedOption'NamePart{_UninterpretedOption'NamePart'namePart
                                            = Data.ProtoLens.fieldDefault,

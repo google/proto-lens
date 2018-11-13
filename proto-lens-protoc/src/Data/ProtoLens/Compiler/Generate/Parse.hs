@@ -1,6 +1,6 @@
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE NoMonomorphismRestriction #-}
-module Data.ProtoLens.Compiler.Generate.Encoding
+module Data.ProtoLens.Compiler.Generate.Parse
     ( generateParser
     ) where
 
