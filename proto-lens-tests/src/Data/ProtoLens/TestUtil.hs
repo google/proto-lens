@@ -41,6 +41,7 @@ import qualified Data.ByteString as B
 import qualified Data.ByteString.Builder as Builder
 import qualified Data.ByteString.Lazy as L
 import qualified Data.Text.Lazy as LT
+import Test.QuickCheck (noShrinking, withMaxSuccess)
 import Test.Framework (defaultMain, testGroup)
 import Test.Framework.Providers.HUnit (testCase)
 import Test.Framework.Providers.API (Test)
@@ -105,11 +106,24 @@ textRoundTripProperty (ArbitraryMessage msg) =
     let msg' = (readMessage . TL.pack . showMessage) msg
     in msg' == Right msg
 
+-- | A basic santity check that shrinking a message doesn't return the
+-- original message as one of the "shrunken" values.  If it did, QuickCheck
+-- could go into an infinite loop.
+shrinkSanityProperty :: (Message a, Eq a) => MessageProperty a
+shrinkSanityProperty (ArbitraryMessage msg) = msg `notElem` shrinkMessage msg
+
 newtype TypedTest a = TypedTest { runTypedTest :: Test }
 
 roundTripTest :: forall a . (Show a, Message a, Eq a) => String -> TypedTest a
 roundTripTest name = TypedTest $ testGroup name
-    [ testProperty "wire" (wireRoundTripProperty :: MessageProperty a)
+    [ testProperty "shrink sanity" $
+            -- Disable automatic shrinking so the test behaves
+            -- sensibly if there's a bug in shrinkMessage.
+            noShrinking $
+            -- Limit the number of tests since shrinking is slow for large messages.
+            withMaxSuccess 20
+                (shrinkSanityProperty :: MessageProperty a)
+    , testProperty "wire" (wireRoundTripProperty :: MessageProperty a)
     , testProperty "text" (textRoundTripProperty :: MessageProperty a)
     ]
 

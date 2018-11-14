@@ -107,7 +107,24 @@ shrinkMaybe _ Nothing  = []
 
 shrinkMap :: (Ord key, Message entry) => Lens' entry key -> Lens' entry value
           -> (entry -> [entry]) -> Map key value -> [Map key value]
-shrinkMap keyLens valueLens f = mapEntriesLens keyLens valueLens (shrinkList f)
+shrinkMap keyLens valueLens f = mapEntriesLens keyLens valueLens (shrinkList f')
+  where
+    f' = filter allFieldsAreSet . f
+    -- Strip out all entries whose key or value is not set (and which distinguish
+    -- between being unset and being the default value (proto2, or in proto3 for a
+    -- message value type).
+    -- The representation in the Map (as, effectively, a pair of key and value)
+    -- does not distinguish between unset/default values.  This can lead to
+    -- shrinkMap behaving incorrectly; for example,
+    -- `Map.singleton 0 "abc"` gets represented as
+    -- `[defMessage & #maybe'key .~ Just 0 & #value .~ "abc"]`, which might be
+    -- shrunk to `[defMessage & #maybe'key .~ Nothing & #value .~ "abc"]`,
+    -- which maps back to the same Map representation.
+    -- Work around this for now by just filtering out entries with unset
+    -- optional fields.
+    allFieldsAreSet msg = all (fieldIsSet msg) allFields
+    fieldIsSet msg (FieldDescriptor _ _ (OptionalField l)) = isJust (view l msg)
+    fieldIsSet _ _ = True
 
 shrinkField :: FieldDescriptor msg -> msg -> [msg]
 shrinkField (FieldDescriptor _ ftd fa) = case fa of
@@ -166,6 +183,8 @@ entriesToMap keyLens valueLens entries = M.fromList kvs
 -- contain duplicate keys that would become de-duped inside the Map. It's only
 -- included here to make it easy to convert from a list of entry Messages to
 -- a Map.
+-- See the comment in shrinkMap for why this is a problem.
+-- TODO: consider a different Message representation for maps.
 mapEntriesLens :: (Ord key, Message entry) =>
         Lens' entry key -> Lens' entry value -> Lens' (Map key value) [entry]
 mapEntriesLens kl vl = lens (mapToEntries kl vl) (const (entriesToMap kl vl))
