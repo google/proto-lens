@@ -1,6 +1,9 @@
 # Changelog for `proto-lens-arbitrary`
 
 ## v0.1.2.4
+- Bump the dependency for `QuickCheck-2.12`.
+
+## v0.1.2.4
 - Bump the dependencies on `base` and `containers` to support `ghc-8.6.1`.
 
 ## v0.1.2.3
