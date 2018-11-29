@@ -77,96 +77,96 @@ instance Prelude.Show DescriptorProto where
           = Prelude.showChar '{'
               (Prelude.showString (Data.ProtoLens.showMessageShort __x)
                  (Prelude.showChar '}' __s))
-instance Lens.Labels.HasLens' DescriptorProto "name"
-           (Data.Text.Text)
+instance a ~ (Data.Text.Text) =>
+         Lens.Labels.HasLens' DescriptorProto "name" a
          where
         lensOf' _
           = (Prelude..)
               (Lens.Family2.Unchecked.lens _DescriptorProto'name
                  (\ x__ y__ -> x__{_DescriptorProto'name = y__}))
               (Data.ProtoLens.maybeLens Data.ProtoLens.fieldDefault)
-instance Lens.Labels.HasLens' DescriptorProto "maybe'name"
-           (Prelude.Maybe Data.Text.Text)
+instance a ~ (Prelude.Maybe Data.Text.Text) =>
+         Lens.Labels.HasLens' DescriptorProto "maybe'name" a
          where
         lensOf' _
           = (Prelude..)
               (Lens.Family2.Unchecked.lens _DescriptorProto'name
                  (\ x__ y__ -> x__{_DescriptorProto'name = y__}))
               Prelude.id
-instance Lens.Labels.HasLens' DescriptorProto "field"
-           ([FieldDescriptorProto])
+instance a ~ ([FieldDescriptorProto]) =>
+         Lens.Labels.HasLens' DescriptorProto "field" a
          where
         lensOf' _
           = (Prelude..)
               (Lens.Family2.Unchecked.lens _DescriptorProto'field
                  (\ x__ y__ -> x__{_DescriptorProto'field = y__}))
               Prelude.id
-instance Lens.Labels.HasLens' DescriptorProto "extension"
-           ([FieldDescriptorProto])
+instance a ~ ([FieldDescriptorProto]) =>
+         Lens.Labels.HasLens' DescriptorProto "extension" a
          where
         lensOf' _
           = (Prelude..)
               (Lens.Family2.Unchecked.lens _DescriptorProto'extension
                  (\ x__ y__ -> x__{_DescriptorProto'extension = y__}))
               Prelude.id
-instance Lens.Labels.HasLens' DescriptorProto "nestedType"
-           ([DescriptorProto])
+instance a ~ ([DescriptorProto]) =>
+         Lens.Labels.HasLens' DescriptorProto "nestedType" a
          where
         lensOf' _
           = (Prelude..)
               (Lens.Family2.Unchecked.lens _DescriptorProto'nestedType
                  (\ x__ y__ -> x__{_DescriptorProto'nestedType = y__}))
               Prelude.id
-instance Lens.Labels.HasLens' DescriptorProto "enumType"
-           ([EnumDescriptorProto])
+instance a ~ ([EnumDescriptorProto]) =>
+         Lens.Labels.HasLens' DescriptorProto "enumType" a
          where
         lensOf' _
           = (Prelude..)
               (Lens.Family2.Unchecked.lens _DescriptorProto'enumType
                  (\ x__ y__ -> x__{_DescriptorProto'enumType = y__}))
               Prelude.id
-instance Lens.Labels.HasLens' DescriptorProto "extensionRange"
-           ([DescriptorProto'ExtensionRange])
+instance a ~ ([DescriptorProto'ExtensionRange]) =>
+         Lens.Labels.HasLens' DescriptorProto "extensionRange" a
          where
         lensOf' _
           = (Prelude..)
               (Lens.Family2.Unchecked.lens _DescriptorProto'extensionRange
                  (\ x__ y__ -> x__{_DescriptorProto'extensionRange = y__}))
               Prelude.id
-instance Lens.Labels.HasLens' DescriptorProto "oneofDecl"
-           ([OneofDescriptorProto])
+instance a ~ ([OneofDescriptorProto]) =>
+         Lens.Labels.HasLens' DescriptorProto "oneofDecl" a
          where
         lensOf' _
           = (Prelude..)
               (Lens.Family2.Unchecked.lens _DescriptorProto'oneofDecl
                  (\ x__ y__ -> x__{_DescriptorProto'oneofDecl = y__}))
               Prelude.id
-instance Lens.Labels.HasLens' DescriptorProto "options"
-           (MessageOptions)
+instance a ~ (MessageOptions) =>
+         Lens.Labels.HasLens' DescriptorProto "options" a
          where
         lensOf' _
           = (Prelude..)
               (Lens.Family2.Unchecked.lens _DescriptorProto'options
                  (\ x__ y__ -> x__{_DescriptorProto'options = y__}))
               (Data.ProtoLens.maybeLens Data.ProtoLens.defMessage)
-instance Lens.Labels.HasLens' DescriptorProto "maybe'options"
-           (Prelude.Maybe MessageOptions)
+instance a ~ (Prelude.Maybe MessageOptions) =>
+         Lens.Labels.HasLens' DescriptorProto "maybe'options" a
          where
         lensOf' _
           = (Prelude..)
               (Lens.Family2.Unchecked.lens _DescriptorProto'options
                  (\ x__ y__ -> x__{_DescriptorProto'options = y__}))
               Prelude.id
-instance Lens.Labels.HasLens' DescriptorProto "reservedRange"
-           ([DescriptorProto'ReservedRange])
+instance a ~ ([DescriptorProto'ReservedRange]) =>
+         Lens.Labels.HasLens' DescriptorProto "reservedRange" a
          where
         lensOf' _
           = (Prelude..)
               (Lens.Family2.Unchecked.lens _DescriptorProto'reservedRange
                  (\ x__ y__ -> x__{_DescriptorProto'reservedRange = y__}))
               Prelude.id
-instance Lens.Labels.HasLens' DescriptorProto "reservedName"
-           ([Data.Text.Text])
+instance a ~ ([Data.Text.Text]) =>
+         Lens.Labels.HasLens' DescriptorProto "reservedName" a
          where
         lensOf' _
           = (Prelude..)
@@ -328,44 +328,40 @@ instance Prelude.Show DescriptorProto'ExtensionRange where
           = Prelude.showChar '{'
               (Prelude.showString (Data.ProtoLens.showMessageShort __x)
                  (Prelude.showChar '}' __s))
-instance Lens.Labels.HasLens' DescriptorProto'ExtensionRange
-           "start"
-           (Data.Int.Int32)
+instance a ~ (Data.Int.Int32) =>
+         Lens.Labels.HasLens' DescriptorProto'ExtensionRange "start" a
          where
         lensOf' _
           = (Prelude..)
               (Lens.Family2.Unchecked.lens _DescriptorProto'ExtensionRange'start
                  (\ x__ y__ -> x__{_DescriptorProto'ExtensionRange'start = y__}))
               (Data.ProtoLens.maybeLens Data.ProtoLens.fieldDefault)
-instance Lens.Labels.HasLens' DescriptorProto'ExtensionRange
-           "maybe'start"
-           (Prelude.Maybe Data.Int.Int32)
+instance a ~ (Prelude.Maybe Data.Int.Int32) =>
+         Lens.Labels.HasLens' DescriptorProto'ExtensionRange "maybe'start" a
          where
         lensOf' _
           = (Prelude..)
               (Lens.Family2.Unchecked.lens _DescriptorProto'ExtensionRange'start
                  (\ x__ y__ -> x__{_DescriptorProto'ExtensionRange'start = y__}))
               Prelude.id
-instance Lens.Labels.HasLens' DescriptorProto'ExtensionRange "end"
-           (Data.Int.Int32)
+instance a ~ (Data.Int.Int32) =>
+         Lens.Labels.HasLens' DescriptorProto'ExtensionRange "end" a
          where
         lensOf' _
           = (Prelude..)
               (Lens.Family2.Unchecked.lens _DescriptorProto'ExtensionRange'end
                  (\ x__ y__ -> x__{_DescriptorProto'ExtensionRange'end = y__}))
               (Data.ProtoLens.maybeLens Data.ProtoLens.fieldDefault)
-instance Lens.Labels.HasLens' DescriptorProto'ExtensionRange
-           "maybe'end"
-           (Prelude.Maybe Data.Int.Int32)
+instance a ~ (Prelude.Maybe Data.Int.Int32) =>
+         Lens.Labels.HasLens' DescriptorProto'ExtensionRange "maybe'end" a
          where
         lensOf' _
           = (Prelude..)
               (Lens.Family2.Unchecked.lens _DescriptorProto'ExtensionRange'end
                  (\ x__ y__ -> x__{_DescriptorProto'ExtensionRange'end = y__}))
               Prelude.id
-instance Lens.Labels.HasLens' DescriptorProto'ExtensionRange
-           "options"
-           (ExtensionRangeOptions)
+instance a ~ (ExtensionRangeOptions) =>
+         Lens.Labels.HasLens' DescriptorProto'ExtensionRange "options" a
          where
         lensOf' _
           = (Prelude..)
@@ -373,9 +369,9 @@ instance Lens.Labels.HasLens' DescriptorProto'ExtensionRange
                  _DescriptorProto'ExtensionRange'options
                  (\ x__ y__ -> x__{_DescriptorProto'ExtensionRange'options = y__}))
               (Data.ProtoLens.maybeLens Data.ProtoLens.defMessage)
-instance Lens.Labels.HasLens' DescriptorProto'ExtensionRange
-           "maybe'options"
-           (Prelude.Maybe ExtensionRangeOptions)
+instance a ~ (Prelude.Maybe ExtensionRangeOptions) =>
+         Lens.Labels.HasLens' DescriptorProto'ExtensionRange "maybe'options"
+           a
          where
         lensOf' _
           = (Prelude..)
@@ -462,34 +458,32 @@ instance Prelude.Show DescriptorProto'ReservedRange where
           = Prelude.showChar '{'
               (Prelude.showString (Data.ProtoLens.showMessageShort __x)
                  (Prelude.showChar '}' __s))
-instance Lens.Labels.HasLens' DescriptorProto'ReservedRange "start"
-           (Data.Int.Int32)
+instance a ~ (Data.Int.Int32) =>
+         Lens.Labels.HasLens' DescriptorProto'ReservedRange "start" a
          where
         lensOf' _
           = (Prelude..)
               (Lens.Family2.Unchecked.lens _DescriptorProto'ReservedRange'start
                  (\ x__ y__ -> x__{_DescriptorProto'ReservedRange'start = y__}))
               (Data.ProtoLens.maybeLens Data.ProtoLens.fieldDefault)
-instance Lens.Labels.HasLens' DescriptorProto'ReservedRange
-           "maybe'start"
-           (Prelude.Maybe Data.Int.Int32)
+instance a ~ (Prelude.Maybe Data.Int.Int32) =>
+         Lens.Labels.HasLens' DescriptorProto'ReservedRange "maybe'start" a
          where
         lensOf' _
           = (Prelude..)
               (Lens.Family2.Unchecked.lens _DescriptorProto'ReservedRange'start
                  (\ x__ y__ -> x__{_DescriptorProto'ReservedRange'start = y__}))
               Prelude.id
-instance Lens.Labels.HasLens' DescriptorProto'ReservedRange "end"
-           (Data.Int.Int32)
+instance a ~ (Data.Int.Int32) =>
+         Lens.Labels.HasLens' DescriptorProto'ReservedRange "end" a
          where
         lensOf' _
           = (Prelude..)
               (Lens.Family2.Unchecked.lens _DescriptorProto'ReservedRange'end
                  (\ x__ y__ -> x__{_DescriptorProto'ReservedRange'end = y__}))
               (Data.ProtoLens.maybeLens Data.ProtoLens.fieldDefault)
-instance Lens.Labels.HasLens' DescriptorProto'ReservedRange
-           "maybe'end"
-           (Prelude.Maybe Data.Int.Int32)
+instance a ~ (Prelude.Maybe Data.Int.Int32) =>
+         Lens.Labels.HasLens' DescriptorProto'ReservedRange "maybe'end" a
          where
         lensOf' _
           = (Prelude..)
@@ -566,56 +560,56 @@ instance Prelude.Show EnumDescriptorProto where
           = Prelude.showChar '{'
               (Prelude.showString (Data.ProtoLens.showMessageShort __x)
                  (Prelude.showChar '}' __s))
-instance Lens.Labels.HasLens' EnumDescriptorProto "name"
-           (Data.Text.Text)
+instance a ~ (Data.Text.Text) =>
+         Lens.Labels.HasLens' EnumDescriptorProto "name" a
          where
         lensOf' _
           = (Prelude..)
               (Lens.Family2.Unchecked.lens _EnumDescriptorProto'name
                  (\ x__ y__ -> x__{_EnumDescriptorProto'name = y__}))
               (Data.ProtoLens.maybeLens Data.ProtoLens.fieldDefault)
-instance Lens.Labels.HasLens' EnumDescriptorProto "maybe'name"
-           (Prelude.Maybe Data.Text.Text)
+instance a ~ (Prelude.Maybe Data.Text.Text) =>
+         Lens.Labels.HasLens' EnumDescriptorProto "maybe'name" a
          where
         lensOf' _
           = (Prelude..)
               (Lens.Family2.Unchecked.lens _EnumDescriptorProto'name
                  (\ x__ y__ -> x__{_EnumDescriptorProto'name = y__}))
               Prelude.id
-instance Lens.Labels.HasLens' EnumDescriptorProto "value"
-           ([EnumValueDescriptorProto])
+instance a ~ ([EnumValueDescriptorProto]) =>
+         Lens.Labels.HasLens' EnumDescriptorProto "value" a
          where
         lensOf' _
           = (Prelude..)
               (Lens.Family2.Unchecked.lens _EnumDescriptorProto'value
                  (\ x__ y__ -> x__{_EnumDescriptorProto'value = y__}))
               Prelude.id
-instance Lens.Labels.HasLens' EnumDescriptorProto "options"
-           (EnumOptions)
+instance a ~ (EnumOptions) =>
+         Lens.Labels.HasLens' EnumDescriptorProto "options" a
          where
         lensOf' _
           = (Prelude..)
               (Lens.Family2.Unchecked.lens _EnumDescriptorProto'options
                  (\ x__ y__ -> x__{_EnumDescriptorProto'options = y__}))
               (Data.ProtoLens.maybeLens Data.ProtoLens.defMessage)
-instance Lens.Labels.HasLens' EnumDescriptorProto "maybe'options"
-           (Prelude.Maybe EnumOptions)
+instance a ~ (Prelude.Maybe EnumOptions) =>
+         Lens.Labels.HasLens' EnumDescriptorProto "maybe'options" a
          where
         lensOf' _
           = (Prelude..)
               (Lens.Family2.Unchecked.lens _EnumDescriptorProto'options
                  (\ x__ y__ -> x__{_EnumDescriptorProto'options = y__}))
               Prelude.id
-instance Lens.Labels.HasLens' EnumDescriptorProto "reservedRange"
-           ([EnumDescriptorProto'EnumReservedRange])
+instance a ~ ([EnumDescriptorProto'EnumReservedRange]) =>
+         Lens.Labels.HasLens' EnumDescriptorProto "reservedRange" a
          where
         lensOf' _
           = (Prelude..)
               (Lens.Family2.Unchecked.lens _EnumDescriptorProto'reservedRange
                  (\ x__ y__ -> x__{_EnumDescriptorProto'reservedRange = y__}))
               Prelude.id
-instance Lens.Labels.HasLens' EnumDescriptorProto "reservedName"
-           ([Data.Text.Text])
+instance a ~ ([Data.Text.Text]) =>
+         Lens.Labels.HasLens' EnumDescriptorProto "reservedName" a
          where
         lensOf' _
           = (Prelude..)
@@ -720,9 +714,9 @@ instance Prelude.Show EnumDescriptorProto'EnumReservedRange where
           = Prelude.showChar '{'
               (Prelude.showString (Data.ProtoLens.showMessageShort __x)
                  (Prelude.showChar '}' __s))
-instance Lens.Labels.HasLens' EnumDescriptorProto'EnumReservedRange
-           "start"
-           (Data.Int.Int32)
+instance a ~ (Data.Int.Int32) =>
+         Lens.Labels.HasLens' EnumDescriptorProto'EnumReservedRange "start"
+           a
          where
         lensOf' _
           = (Prelude..)
@@ -731,9 +725,10 @@ instance Lens.Labels.HasLens' EnumDescriptorProto'EnumReservedRange
                  (\ x__ y__ ->
                     x__{_EnumDescriptorProto'EnumReservedRange'start = y__}))
               (Data.ProtoLens.maybeLens Data.ProtoLens.fieldDefault)
-instance Lens.Labels.HasLens' EnumDescriptorProto'EnumReservedRange
+instance a ~ (Prelude.Maybe Data.Int.Int32) =>
+         Lens.Labels.HasLens' EnumDescriptorProto'EnumReservedRange
            "maybe'start"
-           (Prelude.Maybe Data.Int.Int32)
+           a
          where
         lensOf' _
           = (Prelude..)
@@ -742,9 +737,8 @@ instance Lens.Labels.HasLens' EnumDescriptorProto'EnumReservedRange
                  (\ x__ y__ ->
                     x__{_EnumDescriptorProto'EnumReservedRange'start = y__}))
               Prelude.id
-instance Lens.Labels.HasLens' EnumDescriptorProto'EnumReservedRange
-           "end"
-           (Data.Int.Int32)
+instance a ~ (Data.Int.Int32) =>
+         Lens.Labels.HasLens' EnumDescriptorProto'EnumReservedRange "end" a
          where
         lensOf' _
           = (Prelude..)
@@ -753,9 +747,10 @@ instance Lens.Labels.HasLens' EnumDescriptorProto'EnumReservedRange
                  (\ x__ y__ ->
                     x__{_EnumDescriptorProto'EnumReservedRange'end = y__}))
               (Data.ProtoLens.maybeLens Data.ProtoLens.fieldDefault)
-instance Lens.Labels.HasLens' EnumDescriptorProto'EnumReservedRange
+instance a ~ (Prelude.Maybe Data.Int.Int32) =>
+         Lens.Labels.HasLens' EnumDescriptorProto'EnumReservedRange
            "maybe'end"
-           (Prelude.Maybe Data.Int.Int32)
+           a
          where
         lensOf' _
           = (Prelude..)
@@ -838,40 +833,40 @@ instance Prelude.Show EnumOptions where
           = Prelude.showChar '{'
               (Prelude.showString (Data.ProtoLens.showMessageShort __x)
                  (Prelude.showChar '}' __s))
-instance Lens.Labels.HasLens' EnumOptions "allowAlias"
-           (Prelude.Bool)
+instance a ~ (Prelude.Bool) =>
+         Lens.Labels.HasLens' EnumOptions "allowAlias" a
          where
         lensOf' _
           = (Prelude..)
               (Lens.Family2.Unchecked.lens _EnumOptions'allowAlias
                  (\ x__ y__ -> x__{_EnumOptions'allowAlias = y__}))
               (Data.ProtoLens.maybeLens Data.ProtoLens.fieldDefault)
-instance Lens.Labels.HasLens' EnumOptions "maybe'allowAlias"
-           (Prelude.Maybe Prelude.Bool)
+instance a ~ (Prelude.Maybe Prelude.Bool) =>
+         Lens.Labels.HasLens' EnumOptions "maybe'allowAlias" a
          where
         lensOf' _
           = (Prelude..)
               (Lens.Family2.Unchecked.lens _EnumOptions'allowAlias
                  (\ x__ y__ -> x__{_EnumOptions'allowAlias = y__}))
               Prelude.id
-instance Lens.Labels.HasLens' EnumOptions "deprecated"
-           (Prelude.Bool)
+instance a ~ (Prelude.Bool) =>
+         Lens.Labels.HasLens' EnumOptions "deprecated" a
          where
         lensOf' _
           = (Prelude..)
               (Lens.Family2.Unchecked.lens _EnumOptions'deprecated
                  (\ x__ y__ -> x__{_EnumOptions'deprecated = y__}))
               (Data.ProtoLens.maybeLens Prelude.False)
-instance Lens.Labels.HasLens' EnumOptions "maybe'deprecated"
-           (Prelude.Maybe Prelude.Bool)
+instance a ~ (Prelude.Maybe Prelude.Bool) =>
+         Lens.Labels.HasLens' EnumOptions "maybe'deprecated" a
          where
         lensOf' _
           = (Prelude..)
               (Lens.Family2.Unchecked.lens _EnumOptions'deprecated
                  (\ x__ y__ -> x__{_EnumOptions'deprecated = y__}))
               Prelude.id
-instance Lens.Labels.HasLens' EnumOptions "uninterpretedOption"
-           ([UninterpretedOption])
+instance a ~ ([UninterpretedOption]) =>
+         Lens.Labels.HasLens' EnumOptions "uninterpretedOption" a
          where
         lensOf' _
           = (Prelude..)
@@ -950,50 +945,48 @@ instance Prelude.Show EnumValueDescriptorProto where
           = Prelude.showChar '{'
               (Prelude.showString (Data.ProtoLens.showMessageShort __x)
                  (Prelude.showChar '}' __s))
-instance Lens.Labels.HasLens' EnumValueDescriptorProto "name"
-           (Data.Text.Text)
+instance a ~ (Data.Text.Text) =>
+         Lens.Labels.HasLens' EnumValueDescriptorProto "name" a
          where
         lensOf' _
           = (Prelude..)
               (Lens.Family2.Unchecked.lens _EnumValueDescriptorProto'name
                  (\ x__ y__ -> x__{_EnumValueDescriptorProto'name = y__}))
               (Data.ProtoLens.maybeLens Data.ProtoLens.fieldDefault)
-instance Lens.Labels.HasLens' EnumValueDescriptorProto "maybe'name"
-           (Prelude.Maybe Data.Text.Text)
+instance a ~ (Prelude.Maybe Data.Text.Text) =>
+         Lens.Labels.HasLens' EnumValueDescriptorProto "maybe'name" a
          where
         lensOf' _
           = (Prelude..)
               (Lens.Family2.Unchecked.lens _EnumValueDescriptorProto'name
                  (\ x__ y__ -> x__{_EnumValueDescriptorProto'name = y__}))
               Prelude.id
-instance Lens.Labels.HasLens' EnumValueDescriptorProto "number"
-           (Data.Int.Int32)
+instance a ~ (Data.Int.Int32) =>
+         Lens.Labels.HasLens' EnumValueDescriptorProto "number" a
          where
         lensOf' _
           = (Prelude..)
               (Lens.Family2.Unchecked.lens _EnumValueDescriptorProto'number
                  (\ x__ y__ -> x__{_EnumValueDescriptorProto'number = y__}))
               (Data.ProtoLens.maybeLens Data.ProtoLens.fieldDefault)
-instance Lens.Labels.HasLens' EnumValueDescriptorProto
-           "maybe'number"
-           (Prelude.Maybe Data.Int.Int32)
+instance a ~ (Prelude.Maybe Data.Int.Int32) =>
+         Lens.Labels.HasLens' EnumValueDescriptorProto "maybe'number" a
          where
         lensOf' _
           = (Prelude..)
               (Lens.Family2.Unchecked.lens _EnumValueDescriptorProto'number
                  (\ x__ y__ -> x__{_EnumValueDescriptorProto'number = y__}))
               Prelude.id
-instance Lens.Labels.HasLens' EnumValueDescriptorProto "options"
-           (EnumValueOptions)
+instance a ~ (EnumValueOptions) =>
+         Lens.Labels.HasLens' EnumValueDescriptorProto "options" a
          where
         lensOf' _
           = (Prelude..)
               (Lens.Family2.Unchecked.lens _EnumValueDescriptorProto'options
                  (\ x__ y__ -> x__{_EnumValueDescriptorProto'options = y__}))
               (Data.ProtoLens.maybeLens Data.ProtoLens.defMessage)
-instance Lens.Labels.HasLens' EnumValueDescriptorProto
-           "maybe'options"
-           (Prelude.Maybe EnumValueOptions)
+instance a ~ (Prelude.Maybe EnumValueOptions) =>
+         Lens.Labels.HasLens' EnumValueDescriptorProto "maybe'options" a
          where
         lensOf' _
           = (Prelude..)
@@ -1070,25 +1063,24 @@ instance Prelude.Show EnumValueOptions where
           = Prelude.showChar '{'
               (Prelude.showString (Data.ProtoLens.showMessageShort __x)
                  (Prelude.showChar '}' __s))
-instance Lens.Labels.HasLens' EnumValueOptions "deprecated"
-           (Prelude.Bool)
+instance a ~ (Prelude.Bool) =>
+         Lens.Labels.HasLens' EnumValueOptions "deprecated" a
          where
         lensOf' _
           = (Prelude..)
               (Lens.Family2.Unchecked.lens _EnumValueOptions'deprecated
                  (\ x__ y__ -> x__{_EnumValueOptions'deprecated = y__}))
               (Data.ProtoLens.maybeLens Prelude.False)
-instance Lens.Labels.HasLens' EnumValueOptions "maybe'deprecated"
-           (Prelude.Maybe Prelude.Bool)
+instance a ~ (Prelude.Maybe Prelude.Bool) =>
+         Lens.Labels.HasLens' EnumValueOptions "maybe'deprecated" a
          where
         lensOf' _
           = (Prelude..)
               (Lens.Family2.Unchecked.lens _EnumValueOptions'deprecated
                  (\ x__ y__ -> x__{_EnumValueOptions'deprecated = y__}))
               Prelude.id
-instance Lens.Labels.HasLens' EnumValueOptions
-           "uninterpretedOption"
-           ([UninterpretedOption])
+instance a ~ ([UninterpretedOption]) =>
+         Lens.Labels.HasLens' EnumValueOptions "uninterpretedOption" a
          where
         lensOf' _
           = (Prelude..)
@@ -1148,9 +1140,8 @@ instance Prelude.Show ExtensionRangeOptions where
           = Prelude.showChar '{'
               (Prelude.showString (Data.ProtoLens.showMessageShort __x)
                  (Prelude.showChar '}' __s))
-instance Lens.Labels.HasLens' ExtensionRangeOptions
-           "uninterpretedOption"
-           ([UninterpretedOption])
+instance a ~ ([UninterpretedOption]) =>
+         Lens.Labels.HasLens' ExtensionRangeOptions "uninterpretedOption" a
          where
         lensOf' _
           = (Prelude..)
@@ -1242,162 +1233,160 @@ instance Prelude.Show FieldDescriptorProto where
           = Prelude.showChar '{'
               (Prelude.showString (Data.ProtoLens.showMessageShort __x)
                  (Prelude.showChar '}' __s))
-instance Lens.Labels.HasLens' FieldDescriptorProto "name"
-           (Data.Text.Text)
+instance a ~ (Data.Text.Text) =>
+         Lens.Labels.HasLens' FieldDescriptorProto "name" a
          where
         lensOf' _
           = (Prelude..)
               (Lens.Family2.Unchecked.lens _FieldDescriptorProto'name
                  (\ x__ y__ -> x__{_FieldDescriptorProto'name = y__}))
               (Data.ProtoLens.maybeLens Data.ProtoLens.fieldDefault)
-instance Lens.Labels.HasLens' FieldDescriptorProto "maybe'name"
-           (Prelude.Maybe Data.Text.Text)
+instance a ~ (Prelude.Maybe Data.Text.Text) =>
+         Lens.Labels.HasLens' FieldDescriptorProto "maybe'name" a
          where
         lensOf' _
           = (Prelude..)
               (Lens.Family2.Unchecked.lens _FieldDescriptorProto'name
                  (\ x__ y__ -> x__{_FieldDescriptorProto'name = y__}))
               Prelude.id
-instance Lens.Labels.HasLens' FieldDescriptorProto "number"
-           (Data.Int.Int32)
+instance a ~ (Data.Int.Int32) =>
+         Lens.Labels.HasLens' FieldDescriptorProto "number" a
          where
         lensOf' _
           = (Prelude..)
               (Lens.Family2.Unchecked.lens _FieldDescriptorProto'number
                  (\ x__ y__ -> x__{_FieldDescriptorProto'number = y__}))
               (Data.ProtoLens.maybeLens Data.ProtoLens.fieldDefault)
-instance Lens.Labels.HasLens' FieldDescriptorProto "maybe'number"
-           (Prelude.Maybe Data.Int.Int32)
+instance a ~ (Prelude.Maybe Data.Int.Int32) =>
+         Lens.Labels.HasLens' FieldDescriptorProto "maybe'number" a
          where
         lensOf' _
           = (Prelude..)
               (Lens.Family2.Unchecked.lens _FieldDescriptorProto'number
                  (\ x__ y__ -> x__{_FieldDescriptorProto'number = y__}))
               Prelude.id
-instance Lens.Labels.HasLens' FieldDescriptorProto "label"
-           (FieldDescriptorProto'Label)
+instance a ~ (FieldDescriptorProto'Label) =>
+         Lens.Labels.HasLens' FieldDescriptorProto "label" a
          where
         lensOf' _
           = (Prelude..)
               (Lens.Family2.Unchecked.lens _FieldDescriptorProto'label
                  (\ x__ y__ -> x__{_FieldDescriptorProto'label = y__}))
               (Data.ProtoLens.maybeLens Data.ProtoLens.fieldDefault)
-instance Lens.Labels.HasLens' FieldDescriptorProto "maybe'label"
-           (Prelude.Maybe FieldDescriptorProto'Label)
+instance a ~ (Prelude.Maybe FieldDescriptorProto'Label) =>
+         Lens.Labels.HasLens' FieldDescriptorProto "maybe'label" a
          where
         lensOf' _
           = (Prelude..)
               (Lens.Family2.Unchecked.lens _FieldDescriptorProto'label
                  (\ x__ y__ -> x__{_FieldDescriptorProto'label = y__}))
               Prelude.id
-instance Lens.Labels.HasLens' FieldDescriptorProto "type'"
-           (FieldDescriptorProto'Type)
+instance a ~ (FieldDescriptorProto'Type) =>
+         Lens.Labels.HasLens' FieldDescriptorProto "type'" a
          where
         lensOf' _
           = (Prelude..)
               (Lens.Family2.Unchecked.lens _FieldDescriptorProto'type'
                  (\ x__ y__ -> x__{_FieldDescriptorProto'type' = y__}))
               (Data.ProtoLens.maybeLens Data.ProtoLens.fieldDefault)
-instance Lens.Labels.HasLens' FieldDescriptorProto "maybe'type'"
-           (Prelude.Maybe FieldDescriptorProto'Type)
+instance a ~ (Prelude.Maybe FieldDescriptorProto'Type) =>
+         Lens.Labels.HasLens' FieldDescriptorProto "maybe'type'" a
          where
         lensOf' _
           = (Prelude..)
               (Lens.Family2.Unchecked.lens _FieldDescriptorProto'type'
                  (\ x__ y__ -> x__{_FieldDescriptorProto'type' = y__}))
               Prelude.id
-instance Lens.Labels.HasLens' FieldDescriptorProto "typeName"
-           (Data.Text.Text)
+instance a ~ (Data.Text.Text) =>
+         Lens.Labels.HasLens' FieldDescriptorProto "typeName" a
          where
         lensOf' _
           = (Prelude..)
               (Lens.Family2.Unchecked.lens _FieldDescriptorProto'typeName
                  (\ x__ y__ -> x__{_FieldDescriptorProto'typeName = y__}))
               (Data.ProtoLens.maybeLens Data.ProtoLens.fieldDefault)
-instance Lens.Labels.HasLens' FieldDescriptorProto "maybe'typeName"
-           (Prelude.Maybe Data.Text.Text)
+instance a ~ (Prelude.Maybe Data.Text.Text) =>
+         Lens.Labels.HasLens' FieldDescriptorProto "maybe'typeName" a
          where
         lensOf' _
           = (Prelude..)
               (Lens.Family2.Unchecked.lens _FieldDescriptorProto'typeName
                  (\ x__ y__ -> x__{_FieldDescriptorProto'typeName = y__}))
               Prelude.id
-instance Lens.Labels.HasLens' FieldDescriptorProto "extendee"
-           (Data.Text.Text)
+instance a ~ (Data.Text.Text) =>
+         Lens.Labels.HasLens' FieldDescriptorProto "extendee" a
          where
         lensOf' _
           = (Prelude..)
               (Lens.Family2.Unchecked.lens _FieldDescriptorProto'extendee
                  (\ x__ y__ -> x__{_FieldDescriptorProto'extendee = y__}))
               (Data.ProtoLens.maybeLens Data.ProtoLens.fieldDefault)
-instance Lens.Labels.HasLens' FieldDescriptorProto "maybe'extendee"
-           (Prelude.Maybe Data.Text.Text)
+instance a ~ (Prelude.Maybe Data.Text.Text) =>
+         Lens.Labels.HasLens' FieldDescriptorProto "maybe'extendee" a
          where
         lensOf' _
           = (Prelude..)
               (Lens.Family2.Unchecked.lens _FieldDescriptorProto'extendee
                  (\ x__ y__ -> x__{_FieldDescriptorProto'extendee = y__}))
               Prelude.id
-instance Lens.Labels.HasLens' FieldDescriptorProto "defaultValue"
-           (Data.Text.Text)
+instance a ~ (Data.Text.Text) =>
+         Lens.Labels.HasLens' FieldDescriptorProto "defaultValue" a
          where
         lensOf' _
           = (Prelude..)
               (Lens.Family2.Unchecked.lens _FieldDescriptorProto'defaultValue
                  (\ x__ y__ -> x__{_FieldDescriptorProto'defaultValue = y__}))
               (Data.ProtoLens.maybeLens Data.ProtoLens.fieldDefault)
-instance Lens.Labels.HasLens' FieldDescriptorProto
-           "maybe'defaultValue"
-           (Prelude.Maybe Data.Text.Text)
+instance a ~ (Prelude.Maybe Data.Text.Text) =>
+         Lens.Labels.HasLens' FieldDescriptorProto "maybe'defaultValue" a
          where
         lensOf' _
           = (Prelude..)
               (Lens.Family2.Unchecked.lens _FieldDescriptorProto'defaultValue
                  (\ x__ y__ -> x__{_FieldDescriptorProto'defaultValue = y__}))
               Prelude.id
-instance Lens.Labels.HasLens' FieldDescriptorProto "oneofIndex"
-           (Data.Int.Int32)
+instance a ~ (Data.Int.Int32) =>
+         Lens.Labels.HasLens' FieldDescriptorProto "oneofIndex" a
          where
         lensOf' _
           = (Prelude..)
               (Lens.Family2.Unchecked.lens _FieldDescriptorProto'oneofIndex
                  (\ x__ y__ -> x__{_FieldDescriptorProto'oneofIndex = y__}))
               (Data.ProtoLens.maybeLens Data.ProtoLens.fieldDefault)
-instance Lens.Labels.HasLens' FieldDescriptorProto
-           "maybe'oneofIndex"
-           (Prelude.Maybe Data.Int.Int32)
+instance a ~ (Prelude.Maybe Data.Int.Int32) =>
+         Lens.Labels.HasLens' FieldDescriptorProto "maybe'oneofIndex" a
          where
         lensOf' _
           = (Prelude..)
               (Lens.Family2.Unchecked.lens _FieldDescriptorProto'oneofIndex
                  (\ x__ y__ -> x__{_FieldDescriptorProto'oneofIndex = y__}))
               Prelude.id
-instance Lens.Labels.HasLens' FieldDescriptorProto "jsonName"
-           (Data.Text.Text)
+instance a ~ (Data.Text.Text) =>
+         Lens.Labels.HasLens' FieldDescriptorProto "jsonName" a
          where
         lensOf' _
           = (Prelude..)
               (Lens.Family2.Unchecked.lens _FieldDescriptorProto'jsonName
                  (\ x__ y__ -> x__{_FieldDescriptorProto'jsonName = y__}))
               (Data.ProtoLens.maybeLens Data.ProtoLens.fieldDefault)
-instance Lens.Labels.HasLens' FieldDescriptorProto "maybe'jsonName"
-           (Prelude.Maybe Data.Text.Text)
+instance a ~ (Prelude.Maybe Data.Text.Text) =>
+         Lens.Labels.HasLens' FieldDescriptorProto "maybe'jsonName" a
          where
         lensOf' _
           = (Prelude..)
               (Lens.Family2.Unchecked.lens _FieldDescriptorProto'jsonName
                  (\ x__ y__ -> x__{_FieldDescriptorProto'jsonName = y__}))
               Prelude.id
-instance Lens.Labels.HasLens' FieldDescriptorProto "options"
-           (FieldOptions)
+instance a ~ (FieldOptions) =>
+         Lens.Labels.HasLens' FieldDescriptorProto "options" a
          where
         lensOf' _
           = (Prelude..)
               (Lens.Family2.Unchecked.lens _FieldDescriptorProto'options
                  (\ x__ y__ -> x__{_FieldDescriptorProto'options = y__}))
               (Data.ProtoLens.maybeLens Data.ProtoLens.defMessage)
-instance Lens.Labels.HasLens' FieldDescriptorProto "maybe'options"
-           (Prelude.Maybe FieldOptions)
+instance a ~ (Prelude.Maybe FieldOptions) =>
+         Lens.Labels.HasLens' FieldDescriptorProto "maybe'options" a
          where
         lensOf' _
           = (Prelude..)
@@ -1538,9 +1527,6 @@ data FieldDescriptorProto'Label = FieldDescriptorProto'LABEL_OPTIONAL
                                 | FieldDescriptorProto'LABEL_REQUIRED
                                 | FieldDescriptorProto'LABEL_REPEATED
                                     deriving (Prelude.Show, Prelude.Eq, Prelude.Ord)
-instance Data.ProtoLens.FieldDefault FieldDescriptorProto'Label
-         where
-        fieldDefault = FieldDescriptorProto'LABEL_OPTIONAL
 instance Data.ProtoLens.MessageEnum FieldDescriptorProto'Label
          where
         maybeToEnum 1 = Prelude.Just FieldDescriptorProto'LABEL_OPTIONAL
@@ -1550,13 +1536,18 @@ instance Data.ProtoLens.MessageEnum FieldDescriptorProto'Label
         showEnum FieldDescriptorProto'LABEL_OPTIONAL = "LABEL_OPTIONAL"
         showEnum FieldDescriptorProto'LABEL_REQUIRED = "LABEL_REQUIRED"
         showEnum FieldDescriptorProto'LABEL_REPEATED = "LABEL_REPEATED"
-        readEnum "LABEL_OPTIONAL"
-          = Prelude.Just FieldDescriptorProto'LABEL_OPTIONAL
-        readEnum "LABEL_REQUIRED"
-          = Prelude.Just FieldDescriptorProto'LABEL_REQUIRED
-        readEnum "LABEL_REPEATED"
-          = Prelude.Just FieldDescriptorProto'LABEL_REPEATED
-        readEnum _ = Prelude.Nothing
+        readEnum k
+          | (Prelude.==) k "LABEL_OPTIONAL" =
+            Prelude.Just FieldDescriptorProto'LABEL_OPTIONAL
+          | (Prelude.==) k "LABEL_REQUIRED" =
+            Prelude.Just FieldDescriptorProto'LABEL_REQUIRED
+          | (Prelude.==) k "LABEL_REPEATED" =
+            Prelude.Just FieldDescriptorProto'LABEL_REPEATED
+        readEnum k
+          = (Prelude.>>=) (Text.Read.readMaybe k) Data.ProtoLens.maybeToEnum
+instance Prelude.Bounded FieldDescriptorProto'Label where
+        minBound = FieldDescriptorProto'LABEL_OPTIONAL
+        maxBound = FieldDescriptorProto'LABEL_REPEATED
 instance Prelude.Enum FieldDescriptorProto'Label where
         toEnum k__
           = Prelude.maybe
@@ -1586,9 +1577,9 @@ instance Prelude.Enum FieldDescriptorProto'Label where
         enumFromTo = Data.ProtoLens.Message.Enum.messageEnumFromTo
         enumFromThen = Data.ProtoLens.Message.Enum.messageEnumFromThen
         enumFromThenTo = Data.ProtoLens.Message.Enum.messageEnumFromThenTo
-instance Prelude.Bounded FieldDescriptorProto'Label where
-        minBound = FieldDescriptorProto'LABEL_OPTIONAL
-        maxBound = FieldDescriptorProto'LABEL_REPEATED
+instance Data.ProtoLens.FieldDefault FieldDescriptorProto'Label
+         where
+        fieldDefault = FieldDescriptorProto'LABEL_OPTIONAL
 instance Control.DeepSeq.NFData FieldDescriptorProto'Label where
         rnf x__ = Prelude.seq x__ (())
 data FieldDescriptorProto'Type = FieldDescriptorProto'TYPE_DOUBLE
@@ -1610,9 +1601,6 @@ data FieldDescriptorProto'Type = FieldDescriptorProto'TYPE_DOUBLE
                                | FieldDescriptorProto'TYPE_SINT32
                                | FieldDescriptorProto'TYPE_SINT64
                                    deriving (Prelude.Show, Prelude.Eq, Prelude.Ord)
-instance Data.ProtoLens.FieldDefault FieldDescriptorProto'Type
-         where
-        fieldDefault = FieldDescriptorProto'TYPE_DOUBLE
 instance Data.ProtoLens.MessageEnum FieldDescriptorProto'Type where
         maybeToEnum 1 = Prelude.Just FieldDescriptorProto'TYPE_DOUBLE
         maybeToEnum 2 = Prelude.Just FieldDescriptorProto'TYPE_FLOAT
@@ -1651,41 +1639,48 @@ instance Data.ProtoLens.MessageEnum FieldDescriptorProto'Type where
         showEnum FieldDescriptorProto'TYPE_SFIXED64 = "TYPE_SFIXED64"
         showEnum FieldDescriptorProto'TYPE_SINT32 = "TYPE_SINT32"
         showEnum FieldDescriptorProto'TYPE_SINT64 = "TYPE_SINT64"
-        readEnum "TYPE_DOUBLE"
-          = Prelude.Just FieldDescriptorProto'TYPE_DOUBLE
-        readEnum "TYPE_FLOAT"
-          = Prelude.Just FieldDescriptorProto'TYPE_FLOAT
-        readEnum "TYPE_INT64"
-          = Prelude.Just FieldDescriptorProto'TYPE_INT64
-        readEnum "TYPE_UINT64"
-          = Prelude.Just FieldDescriptorProto'TYPE_UINT64
-        readEnum "TYPE_INT32"
-          = Prelude.Just FieldDescriptorProto'TYPE_INT32
-        readEnum "TYPE_FIXED64"
-          = Prelude.Just FieldDescriptorProto'TYPE_FIXED64
-        readEnum "TYPE_FIXED32"
-          = Prelude.Just FieldDescriptorProto'TYPE_FIXED32
-        readEnum "TYPE_BOOL" = Prelude.Just FieldDescriptorProto'TYPE_BOOL
-        readEnum "TYPE_STRING"
-          = Prelude.Just FieldDescriptorProto'TYPE_STRING
-        readEnum "TYPE_GROUP"
-          = Prelude.Just FieldDescriptorProto'TYPE_GROUP
-        readEnum "TYPE_MESSAGE"
-          = Prelude.Just FieldDescriptorProto'TYPE_MESSAGE
-        readEnum "TYPE_BYTES"
-          = Prelude.Just FieldDescriptorProto'TYPE_BYTES
-        readEnum "TYPE_UINT32"
-          = Prelude.Just FieldDescriptorProto'TYPE_UINT32
-        readEnum "TYPE_ENUM" = Prelude.Just FieldDescriptorProto'TYPE_ENUM
-        readEnum "TYPE_SFIXED32"
-          = Prelude.Just FieldDescriptorProto'TYPE_SFIXED32
-        readEnum "TYPE_SFIXED64"
-          = Prelude.Just FieldDescriptorProto'TYPE_SFIXED64
-        readEnum "TYPE_SINT32"
-          = Prelude.Just FieldDescriptorProto'TYPE_SINT32
-        readEnum "TYPE_SINT64"
-          = Prelude.Just FieldDescriptorProto'TYPE_SINT64
-        readEnum _ = Prelude.Nothing
+        readEnum k
+          | (Prelude.==) k "TYPE_DOUBLE" =
+            Prelude.Just FieldDescriptorProto'TYPE_DOUBLE
+          | (Prelude.==) k "TYPE_FLOAT" =
+            Prelude.Just FieldDescriptorProto'TYPE_FLOAT
+          | (Prelude.==) k "TYPE_INT64" =
+            Prelude.Just FieldDescriptorProto'TYPE_INT64
+          | (Prelude.==) k "TYPE_UINT64" =
+            Prelude.Just FieldDescriptorProto'TYPE_UINT64
+          | (Prelude.==) k "TYPE_INT32" =
+            Prelude.Just FieldDescriptorProto'TYPE_INT32
+          | (Prelude.==) k "TYPE_FIXED64" =
+            Prelude.Just FieldDescriptorProto'TYPE_FIXED64
+          | (Prelude.==) k "TYPE_FIXED32" =
+            Prelude.Just FieldDescriptorProto'TYPE_FIXED32
+          | (Prelude.==) k "TYPE_BOOL" =
+            Prelude.Just FieldDescriptorProto'TYPE_BOOL
+          | (Prelude.==) k "TYPE_STRING" =
+            Prelude.Just FieldDescriptorProto'TYPE_STRING
+          | (Prelude.==) k "TYPE_GROUP" =
+            Prelude.Just FieldDescriptorProto'TYPE_GROUP
+          | (Prelude.==) k "TYPE_MESSAGE" =
+            Prelude.Just FieldDescriptorProto'TYPE_MESSAGE
+          | (Prelude.==) k "TYPE_BYTES" =
+            Prelude.Just FieldDescriptorProto'TYPE_BYTES
+          | (Prelude.==) k "TYPE_UINT32" =
+            Prelude.Just FieldDescriptorProto'TYPE_UINT32
+          | (Prelude.==) k "TYPE_ENUM" =
+            Prelude.Just FieldDescriptorProto'TYPE_ENUM
+          | (Prelude.==) k "TYPE_SFIXED32" =
+            Prelude.Just FieldDescriptorProto'TYPE_SFIXED32
+          | (Prelude.==) k "TYPE_SFIXED64" =
+            Prelude.Just FieldDescriptorProto'TYPE_SFIXED64
+          | (Prelude.==) k "TYPE_SINT32" =
+            Prelude.Just FieldDescriptorProto'TYPE_SINT32
+          | (Prelude.==) k "TYPE_SINT64" =
+            Prelude.Just FieldDescriptorProto'TYPE_SINT64
+        readEnum k
+          = (Prelude.>>=) (Text.Read.readMaybe k) Data.ProtoLens.maybeToEnum
+instance Prelude.Bounded FieldDescriptorProto'Type where
+        minBound = FieldDescriptorProto'TYPE_DOUBLE
+        maxBound = FieldDescriptorProto'TYPE_SINT64
 instance Prelude.Enum FieldDescriptorProto'Type where
         toEnum k__
           = Prelude.maybe
@@ -1790,9 +1785,9 @@ instance Prelude.Enum FieldDescriptorProto'Type where
         enumFromTo = Data.ProtoLens.Message.Enum.messageEnumFromTo
         enumFromThen = Data.ProtoLens.Message.Enum.messageEnumFromThen
         enumFromThenTo = Data.ProtoLens.Message.Enum.messageEnumFromThenTo
-instance Prelude.Bounded FieldDescriptorProto'Type where
-        minBound = FieldDescriptorProto'TYPE_DOUBLE
-        maxBound = FieldDescriptorProto'TYPE_SINT64
+instance Data.ProtoLens.FieldDefault FieldDescriptorProto'Type
+         where
+        fieldDefault = FieldDescriptorProto'TYPE_DOUBLE
 instance Control.DeepSeq.NFData FieldDescriptorProto'Type where
         rnf x__ = Prelude.seq x__ (())
 {- | Fields :
@@ -1826,101 +1821,104 @@ instance Prelude.Show FieldOptions where
           = Prelude.showChar '{'
               (Prelude.showString (Data.ProtoLens.showMessageShort __x)
                  (Prelude.showChar '}' __s))
-instance Lens.Labels.HasLens' FieldOptions "ctype"
-           (FieldOptions'CType)
+instance a ~ (FieldOptions'CType) =>
+         Lens.Labels.HasLens' FieldOptions "ctype" a
          where
         lensOf' _
           = (Prelude..)
               (Lens.Family2.Unchecked.lens _FieldOptions'ctype
                  (\ x__ y__ -> x__{_FieldOptions'ctype = y__}))
               (Data.ProtoLens.maybeLens FieldOptions'STRING)
-instance Lens.Labels.HasLens' FieldOptions "maybe'ctype"
-           (Prelude.Maybe FieldOptions'CType)
+instance a ~ (Prelude.Maybe FieldOptions'CType) =>
+         Lens.Labels.HasLens' FieldOptions "maybe'ctype" a
          where
         lensOf' _
           = (Prelude..)
               (Lens.Family2.Unchecked.lens _FieldOptions'ctype
                  (\ x__ y__ -> x__{_FieldOptions'ctype = y__}))
               Prelude.id
-instance Lens.Labels.HasLens' FieldOptions "packed" (Prelude.Bool)
+instance a ~ (Prelude.Bool) =>
+         Lens.Labels.HasLens' FieldOptions "packed" a
          where
         lensOf' _
           = (Prelude..)
               (Lens.Family2.Unchecked.lens _FieldOptions'packed
                  (\ x__ y__ -> x__{_FieldOptions'packed = y__}))
               (Data.ProtoLens.maybeLens Data.ProtoLens.fieldDefault)
-instance Lens.Labels.HasLens' FieldOptions "maybe'packed"
-           (Prelude.Maybe Prelude.Bool)
+instance a ~ (Prelude.Maybe Prelude.Bool) =>
+         Lens.Labels.HasLens' FieldOptions "maybe'packed" a
          where
         lensOf' _
           = (Prelude..)
               (Lens.Family2.Unchecked.lens _FieldOptions'packed
                  (\ x__ y__ -> x__{_FieldOptions'packed = y__}))
               Prelude.id
-instance Lens.Labels.HasLens' FieldOptions "jstype"
-           (FieldOptions'JSType)
+instance a ~ (FieldOptions'JSType) =>
+         Lens.Labels.HasLens' FieldOptions "jstype" a
          where
         lensOf' _
           = (Prelude..)
               (Lens.Family2.Unchecked.lens _FieldOptions'jstype
                  (\ x__ y__ -> x__{_FieldOptions'jstype = y__}))
               (Data.ProtoLens.maybeLens FieldOptions'JS_NORMAL)
-instance Lens.Labels.HasLens' FieldOptions "maybe'jstype"
-           (Prelude.Maybe FieldOptions'JSType)
+instance a ~ (Prelude.Maybe FieldOptions'JSType) =>
+         Lens.Labels.HasLens' FieldOptions "maybe'jstype" a
          where
         lensOf' _
           = (Prelude..)
               (Lens.Family2.Unchecked.lens _FieldOptions'jstype
                  (\ x__ y__ -> x__{_FieldOptions'jstype = y__}))
               Prelude.id
-instance Lens.Labels.HasLens' FieldOptions "lazy" (Prelude.Bool)
+instance a ~ (Prelude.Bool) =>
+         Lens.Labels.HasLens' FieldOptions "lazy" a
          where
         lensOf' _
           = (Prelude..)
               (Lens.Family2.Unchecked.lens _FieldOptions'lazy
                  (\ x__ y__ -> x__{_FieldOptions'lazy = y__}))
               (Data.ProtoLens.maybeLens Prelude.False)
-instance Lens.Labels.HasLens' FieldOptions "maybe'lazy"
-           (Prelude.Maybe Prelude.Bool)
+instance a ~ (Prelude.Maybe Prelude.Bool) =>
+         Lens.Labels.HasLens' FieldOptions "maybe'lazy" a
          where
         lensOf' _
           = (Prelude..)
               (Lens.Family2.Unchecked.lens _FieldOptions'lazy
                  (\ x__ y__ -> x__{_FieldOptions'lazy = y__}))
               Prelude.id
-instance Lens.Labels.HasLens' FieldOptions "deprecated"
-           (Prelude.Bool)
+instance a ~ (Prelude.Bool) =>
+         Lens.Labels.HasLens' FieldOptions "deprecated" a
          where
         lensOf' _
           = (Prelude..)
               (Lens.Family2.Unchecked.lens _FieldOptions'deprecated
                  (\ x__ y__ -> x__{_FieldOptions'deprecated = y__}))
               (Data.ProtoLens.maybeLens Prelude.False)
-instance Lens.Labels.HasLens' FieldOptions "maybe'deprecated"
-           (Prelude.Maybe Prelude.Bool)
+instance a ~ (Prelude.Maybe Prelude.Bool) =>
+         Lens.Labels.HasLens' FieldOptions "maybe'deprecated" a
          where
         lensOf' _
           = (Prelude..)
               (Lens.Family2.Unchecked.lens _FieldOptions'deprecated
                  (\ x__ y__ -> x__{_FieldOptions'deprecated = y__}))
               Prelude.id
-instance Lens.Labels.HasLens' FieldOptions "weak" (Prelude.Bool)
+instance a ~ (Prelude.Bool) =>
+         Lens.Labels.HasLens' FieldOptions "weak" a
          where
         lensOf' _
           = (Prelude..)
               (Lens.Family2.Unchecked.lens _FieldOptions'weak
                  (\ x__ y__ -> x__{_FieldOptions'weak = y__}))
               (Data.ProtoLens.maybeLens Prelude.False)
-instance Lens.Labels.HasLens' FieldOptions "maybe'weak"
-           (Prelude.Maybe Prelude.Bool)
+instance a ~ (Prelude.Maybe Prelude.Bool) =>
+         Lens.Labels.HasLens' FieldOptions "maybe'weak" a
          where
         lensOf' _
           = (Prelude..)
               (Lens.Family2.Unchecked.lens _FieldOptions'weak
                  (\ x__ y__ -> x__{_FieldOptions'weak = y__}))
               Prelude.id
-instance Lens.Labels.HasLens' FieldOptions "uninterpretedOption"
-           ([UninterpretedOption])
+instance a ~ ([UninterpretedOption]) =>
+         Lens.Labels.HasLens' FieldOptions "uninterpretedOption" a
          where
         lensOf' _
           = (Prelude..)
@@ -2024,8 +2022,6 @@ data FieldOptions'CType = FieldOptions'STRING
                         | FieldOptions'CORD
                         | FieldOptions'STRING_PIECE
                             deriving (Prelude.Show, Prelude.Eq, Prelude.Ord)
-instance Data.ProtoLens.FieldDefault FieldOptions'CType where
-        fieldDefault = FieldOptions'STRING
 instance Data.ProtoLens.MessageEnum FieldOptions'CType where
         maybeToEnum 0 = Prelude.Just FieldOptions'STRING
         maybeToEnum 1 = Prelude.Just FieldOptions'CORD
@@ -2034,10 +2030,16 @@ instance Data.ProtoLens.MessageEnum FieldOptions'CType where
         showEnum FieldOptions'STRING = "STRING"
         showEnum FieldOptions'CORD = "CORD"
         showEnum FieldOptions'STRING_PIECE = "STRING_PIECE"
-        readEnum "STRING" = Prelude.Just FieldOptions'STRING
-        readEnum "CORD" = Prelude.Just FieldOptions'CORD
-        readEnum "STRING_PIECE" = Prelude.Just FieldOptions'STRING_PIECE
-        readEnum _ = Prelude.Nothing
+        readEnum k
+          | (Prelude.==) k "STRING" = Prelude.Just FieldOptions'STRING
+          | (Prelude.==) k "CORD" = Prelude.Just FieldOptions'CORD
+          | (Prelude.==) k "STRING_PIECE" =
+            Prelude.Just FieldOptions'STRING_PIECE
+        readEnum k
+          = (Prelude.>>=) (Text.Read.readMaybe k) Data.ProtoLens.maybeToEnum
+instance Prelude.Bounded FieldOptions'CType where
+        minBound = FieldOptions'STRING
+        maxBound = FieldOptions'STRING_PIECE
 instance Prelude.Enum FieldOptions'CType where
         toEnum k__
           = Prelude.maybe
@@ -2063,17 +2065,14 @@ instance Prelude.Enum FieldOptions'CType where
         enumFromTo = Data.ProtoLens.Message.Enum.messageEnumFromTo
         enumFromThen = Data.ProtoLens.Message.Enum.messageEnumFromThen
         enumFromThenTo = Data.ProtoLens.Message.Enum.messageEnumFromThenTo
-instance Prelude.Bounded FieldOptions'CType where
-        minBound = FieldOptions'STRING
-        maxBound = FieldOptions'STRING_PIECE
+instance Data.ProtoLens.FieldDefault FieldOptions'CType where
+        fieldDefault = FieldOptions'STRING
 instance Control.DeepSeq.NFData FieldOptions'CType where
         rnf x__ = Prelude.seq x__ (())
 data FieldOptions'JSType = FieldOptions'JS_NORMAL
                          | FieldOptions'JS_STRING
                          | FieldOptions'JS_NUMBER
                              deriving (Prelude.Show, Prelude.Eq, Prelude.Ord)
-instance Data.ProtoLens.FieldDefault FieldOptions'JSType where
-        fieldDefault = FieldOptions'JS_NORMAL
 instance Data.ProtoLens.MessageEnum FieldOptions'JSType where
         maybeToEnum 0 = Prelude.Just FieldOptions'JS_NORMAL
         maybeToEnum 1 = Prelude.Just FieldOptions'JS_STRING
@@ -2082,10 +2081,15 @@ instance Data.ProtoLens.MessageEnum FieldOptions'JSType where
         showEnum FieldOptions'JS_NORMAL = "JS_NORMAL"
         showEnum FieldOptions'JS_STRING = "JS_STRING"
         showEnum FieldOptions'JS_NUMBER = "JS_NUMBER"
-        readEnum "JS_NORMAL" = Prelude.Just FieldOptions'JS_NORMAL
-        readEnum "JS_STRING" = Prelude.Just FieldOptions'JS_STRING
-        readEnum "JS_NUMBER" = Prelude.Just FieldOptions'JS_NUMBER
-        readEnum _ = Prelude.Nothing
+        readEnum k
+          | (Prelude.==) k "JS_NORMAL" = Prelude.Just FieldOptions'JS_NORMAL
+          | (Prelude.==) k "JS_STRING" = Prelude.Just FieldOptions'JS_STRING
+          | (Prelude.==) k "JS_NUMBER" = Prelude.Just FieldOptions'JS_NUMBER
+        readEnum k
+          = (Prelude.>>=) (Text.Read.readMaybe k) Data.ProtoLens.maybeToEnum
+instance Prelude.Bounded FieldOptions'JSType where
+        minBound = FieldOptions'JS_NORMAL
+        maxBound = FieldOptions'JS_NUMBER
 instance Prelude.Enum FieldOptions'JSType where
         toEnum k__
           = Prelude.maybe
@@ -2111,9 +2115,8 @@ instance Prelude.Enum FieldOptions'JSType where
         enumFromTo = Data.ProtoLens.Message.Enum.messageEnumFromTo
         enumFromThen = Data.ProtoLens.Message.Enum.messageEnumFromThen
         enumFromThenTo = Data.ProtoLens.Message.Enum.messageEnumFromThenTo
-instance Prelude.Bounded FieldOptions'JSType where
-        minBound = FieldOptions'JS_NORMAL
-        maxBound = FieldOptions'JS_NUMBER
+instance Data.ProtoLens.FieldDefault FieldOptions'JSType where
+        fieldDefault = FieldOptions'JS_NORMAL
 instance Control.DeepSeq.NFData FieldOptions'JSType where
         rnf x__ = Prelude.seq x__ (())
 {- | Fields :
@@ -2167,138 +2170,136 @@ instance Prelude.Show FileDescriptorProto where
           = Prelude.showChar '{'
               (Prelude.showString (Data.ProtoLens.showMessageShort __x)
                  (Prelude.showChar '}' __s))
-instance Lens.Labels.HasLens' FileDescriptorProto "name"
-           (Data.Text.Text)
+instance a ~ (Data.Text.Text) =>
+         Lens.Labels.HasLens' FileDescriptorProto "name" a
          where
         lensOf' _
           = (Prelude..)
               (Lens.Family2.Unchecked.lens _FileDescriptorProto'name
                  (\ x__ y__ -> x__{_FileDescriptorProto'name = y__}))
               (Data.ProtoLens.maybeLens Data.ProtoLens.fieldDefault)
-instance Lens.Labels.HasLens' FileDescriptorProto "maybe'name"
-           (Prelude.Maybe Data.Text.Text)
+instance a ~ (Prelude.Maybe Data.Text.Text) =>
+         Lens.Labels.HasLens' FileDescriptorProto "maybe'name" a
          where
         lensOf' _
           = (Prelude..)
               (Lens.Family2.Unchecked.lens _FileDescriptorProto'name
                  (\ x__ y__ -> x__{_FileDescriptorProto'name = y__}))
               Prelude.id
-instance Lens.Labels.HasLens' FileDescriptorProto "package"
-           (Data.Text.Text)
+instance a ~ (Data.Text.Text) =>
+         Lens.Labels.HasLens' FileDescriptorProto "package" a
          where
         lensOf' _
           = (Prelude..)
               (Lens.Family2.Unchecked.lens _FileDescriptorProto'package
                  (\ x__ y__ -> x__{_FileDescriptorProto'package = y__}))
               (Data.ProtoLens.maybeLens Data.ProtoLens.fieldDefault)
-instance Lens.Labels.HasLens' FileDescriptorProto "maybe'package"
-           (Prelude.Maybe Data.Text.Text)
+instance a ~ (Prelude.Maybe Data.Text.Text) =>
+         Lens.Labels.HasLens' FileDescriptorProto "maybe'package" a
          where
         lensOf' _
           = (Prelude..)
               (Lens.Family2.Unchecked.lens _FileDescriptorProto'package
                  (\ x__ y__ -> x__{_FileDescriptorProto'package = y__}))
               Prelude.id
-instance Lens.Labels.HasLens' FileDescriptorProto "dependency"
-           ([Data.Text.Text])
+instance a ~ ([Data.Text.Text]) =>
+         Lens.Labels.HasLens' FileDescriptorProto "dependency" a
          where
         lensOf' _
           = (Prelude..)
               (Lens.Family2.Unchecked.lens _FileDescriptorProto'dependency
                  (\ x__ y__ -> x__{_FileDescriptorProto'dependency = y__}))
               Prelude.id
-instance Lens.Labels.HasLens' FileDescriptorProto
-           "publicDependency"
-           ([Data.Int.Int32])
+instance a ~ ([Data.Int.Int32]) =>
+         Lens.Labels.HasLens' FileDescriptorProto "publicDependency" a
          where
         lensOf' _
           = (Prelude..)
               (Lens.Family2.Unchecked.lens _FileDescriptorProto'publicDependency
                  (\ x__ y__ -> x__{_FileDescriptorProto'publicDependency = y__}))
               Prelude.id
-instance Lens.Labels.HasLens' FileDescriptorProto "weakDependency"
-           ([Data.Int.Int32])
+instance a ~ ([Data.Int.Int32]) =>
+         Lens.Labels.HasLens' FileDescriptorProto "weakDependency" a
          where
         lensOf' _
           = (Prelude..)
               (Lens.Family2.Unchecked.lens _FileDescriptorProto'weakDependency
                  (\ x__ y__ -> x__{_FileDescriptorProto'weakDependency = y__}))
               Prelude.id
-instance Lens.Labels.HasLens' FileDescriptorProto "messageType"
-           ([DescriptorProto])
+instance a ~ ([DescriptorProto]) =>
+         Lens.Labels.HasLens' FileDescriptorProto "messageType" a
          where
         lensOf' _
           = (Prelude..)
               (Lens.Family2.Unchecked.lens _FileDescriptorProto'messageType
                  (\ x__ y__ -> x__{_FileDescriptorProto'messageType = y__}))
               Prelude.id
-instance Lens.Labels.HasLens' FileDescriptorProto "enumType"
-           ([EnumDescriptorProto])
+instance a ~ ([EnumDescriptorProto]) =>
+         Lens.Labels.HasLens' FileDescriptorProto "enumType" a
          where
         lensOf' _
           = (Prelude..)
               (Lens.Family2.Unchecked.lens _FileDescriptorProto'enumType
                  (\ x__ y__ -> x__{_FileDescriptorProto'enumType = y__}))
               Prelude.id
-instance Lens.Labels.HasLens' FileDescriptorProto "service"
-           ([ServiceDescriptorProto])
+instance a ~ ([ServiceDescriptorProto]) =>
+         Lens.Labels.HasLens' FileDescriptorProto "service" a
          where
         lensOf' _
           = (Prelude..)
               (Lens.Family2.Unchecked.lens _FileDescriptorProto'service
                  (\ x__ y__ -> x__{_FileDescriptorProto'service = y__}))
               Prelude.id
-instance Lens.Labels.HasLens' FileDescriptorProto "extension"
-           ([FieldDescriptorProto])
+instance a ~ ([FieldDescriptorProto]) =>
+         Lens.Labels.HasLens' FileDescriptorProto "extension" a
          where
         lensOf' _
           = (Prelude..)
               (Lens.Family2.Unchecked.lens _FileDescriptorProto'extension
                  (\ x__ y__ -> x__{_FileDescriptorProto'extension = y__}))
               Prelude.id
-instance Lens.Labels.HasLens' FileDescriptorProto "options"
-           (FileOptions)
+instance a ~ (FileOptions) =>
+         Lens.Labels.HasLens' FileDescriptorProto "options" a
          where
         lensOf' _
           = (Prelude..)
               (Lens.Family2.Unchecked.lens _FileDescriptorProto'options
                  (\ x__ y__ -> x__{_FileDescriptorProto'options = y__}))
               (Data.ProtoLens.maybeLens Data.ProtoLens.defMessage)
-instance Lens.Labels.HasLens' FileDescriptorProto "maybe'options"
-           (Prelude.Maybe FileOptions)
+instance a ~ (Prelude.Maybe FileOptions) =>
+         Lens.Labels.HasLens' FileDescriptorProto "maybe'options" a
          where
         lensOf' _
           = (Prelude..)
               (Lens.Family2.Unchecked.lens _FileDescriptorProto'options
                  (\ x__ y__ -> x__{_FileDescriptorProto'options = y__}))
               Prelude.id
-instance Lens.Labels.HasLens' FileDescriptorProto "sourceCodeInfo"
-           (SourceCodeInfo)
+instance a ~ (SourceCodeInfo) =>
+         Lens.Labels.HasLens' FileDescriptorProto "sourceCodeInfo" a
          where
         lensOf' _
           = (Prelude..)
               (Lens.Family2.Unchecked.lens _FileDescriptorProto'sourceCodeInfo
                  (\ x__ y__ -> x__{_FileDescriptorProto'sourceCodeInfo = y__}))
               (Data.ProtoLens.maybeLens Data.ProtoLens.defMessage)
-instance Lens.Labels.HasLens' FileDescriptorProto
-           "maybe'sourceCodeInfo"
-           (Prelude.Maybe SourceCodeInfo)
+instance a ~ (Prelude.Maybe SourceCodeInfo) =>
+         Lens.Labels.HasLens' FileDescriptorProto "maybe'sourceCodeInfo" a
          where
         lensOf' _
           = (Prelude..)
               (Lens.Family2.Unchecked.lens _FileDescriptorProto'sourceCodeInfo
                  (\ x__ y__ -> x__{_FileDescriptorProto'sourceCodeInfo = y__}))
               Prelude.id
-instance Lens.Labels.HasLens' FileDescriptorProto "syntax"
-           (Data.Text.Text)
+instance a ~ (Data.Text.Text) =>
+         Lens.Labels.HasLens' FileDescriptorProto "syntax" a
          where
         lensOf' _
           = (Prelude..)
               (Lens.Family2.Unchecked.lens _FileDescriptorProto'syntax
                  (\ x__ y__ -> x__{_FileDescriptorProto'syntax = y__}))
               (Data.ProtoLens.maybeLens Data.ProtoLens.fieldDefault)
-instance Lens.Labels.HasLens' FileDescriptorProto "maybe'syntax"
-           (Prelude.Maybe Data.Text.Text)
+instance a ~ (Prelude.Maybe Data.Text.Text) =>
+         Lens.Labels.HasLens' FileDescriptorProto "maybe'syntax" a
          where
         lensOf' _
           = (Prelude..)
@@ -2473,8 +2474,8 @@ instance Prelude.Show FileDescriptorSet where
           = Prelude.showChar '{'
               (Prelude.showString (Data.ProtoLens.showMessageShort __x)
                  (Prelude.showChar '}' __s))
-instance Lens.Labels.HasLens' FileDescriptorSet "file"
-           ([FileDescriptorProto])
+instance a ~ ([FileDescriptorProto]) =>
+         Lens.Labels.HasLens' FileDescriptorSet "file" a
          where
         lensOf' _
           = (Prelude..)
@@ -2581,335 +2582,329 @@ instance Prelude.Show FileOptions where
           = Prelude.showChar '{'
               (Prelude.showString (Data.ProtoLens.showMessageShort __x)
                  (Prelude.showChar '}' __s))
-instance Lens.Labels.HasLens' FileOptions "javaPackage"
-           (Data.Text.Text)
+instance a ~ (Data.Text.Text) =>
+         Lens.Labels.HasLens' FileOptions "javaPackage" a
          where
         lensOf' _
           = (Prelude..)
               (Lens.Family2.Unchecked.lens _FileOptions'javaPackage
                  (\ x__ y__ -> x__{_FileOptions'javaPackage = y__}))
               (Data.ProtoLens.maybeLens Data.ProtoLens.fieldDefault)
-instance Lens.Labels.HasLens' FileOptions "maybe'javaPackage"
-           (Prelude.Maybe Data.Text.Text)
+instance a ~ (Prelude.Maybe Data.Text.Text) =>
+         Lens.Labels.HasLens' FileOptions "maybe'javaPackage" a
          where
         lensOf' _
           = (Prelude..)
               (Lens.Family2.Unchecked.lens _FileOptions'javaPackage
                  (\ x__ y__ -> x__{_FileOptions'javaPackage = y__}))
               Prelude.id
-instance Lens.Labels.HasLens' FileOptions "javaOuterClassname"
-           (Data.Text.Text)
+instance a ~ (Data.Text.Text) =>
+         Lens.Labels.HasLens' FileOptions "javaOuterClassname" a
          where
         lensOf' _
           = (Prelude..)
               (Lens.Family2.Unchecked.lens _FileOptions'javaOuterClassname
                  (\ x__ y__ -> x__{_FileOptions'javaOuterClassname = y__}))
               (Data.ProtoLens.maybeLens Data.ProtoLens.fieldDefault)
-instance Lens.Labels.HasLens' FileOptions
-           "maybe'javaOuterClassname"
-           (Prelude.Maybe Data.Text.Text)
+instance a ~ (Prelude.Maybe Data.Text.Text) =>
+         Lens.Labels.HasLens' FileOptions "maybe'javaOuterClassname" a
          where
         lensOf' _
           = (Prelude..)
               (Lens.Family2.Unchecked.lens _FileOptions'javaOuterClassname
                  (\ x__ y__ -> x__{_FileOptions'javaOuterClassname = y__}))
               Prelude.id
-instance Lens.Labels.HasLens' FileOptions "javaMultipleFiles"
-           (Prelude.Bool)
+instance a ~ (Prelude.Bool) =>
+         Lens.Labels.HasLens' FileOptions "javaMultipleFiles" a
          where
         lensOf' _
           = (Prelude..)
               (Lens.Family2.Unchecked.lens _FileOptions'javaMultipleFiles
                  (\ x__ y__ -> x__{_FileOptions'javaMultipleFiles = y__}))
               (Data.ProtoLens.maybeLens Prelude.False)
-instance Lens.Labels.HasLens' FileOptions "maybe'javaMultipleFiles"
-           (Prelude.Maybe Prelude.Bool)
+instance a ~ (Prelude.Maybe Prelude.Bool) =>
+         Lens.Labels.HasLens' FileOptions "maybe'javaMultipleFiles" a
          where
         lensOf' _
           = (Prelude..)
               (Lens.Family2.Unchecked.lens _FileOptions'javaMultipleFiles
                  (\ x__ y__ -> x__{_FileOptions'javaMultipleFiles = y__}))
               Prelude.id
-instance Lens.Labels.HasLens' FileOptions
-           "javaGenerateEqualsAndHash"
-           (Prelude.Bool)
+instance a ~ (Prelude.Bool) =>
+         Lens.Labels.HasLens' FileOptions "javaGenerateEqualsAndHash" a
          where
         lensOf' _
           = (Prelude..)
               (Lens.Family2.Unchecked.lens _FileOptions'javaGenerateEqualsAndHash
                  (\ x__ y__ -> x__{_FileOptions'javaGenerateEqualsAndHash = y__}))
               (Data.ProtoLens.maybeLens Data.ProtoLens.fieldDefault)
-instance Lens.Labels.HasLens' FileOptions
-           "maybe'javaGenerateEqualsAndHash"
-           (Prelude.Maybe Prelude.Bool)
+instance a ~ (Prelude.Maybe Prelude.Bool) =>
+         Lens.Labels.HasLens' FileOptions "maybe'javaGenerateEqualsAndHash"
+           a
          where
         lensOf' _
           = (Prelude..)
               (Lens.Family2.Unchecked.lens _FileOptions'javaGenerateEqualsAndHash
                  (\ x__ y__ -> x__{_FileOptions'javaGenerateEqualsAndHash = y__}))
               Prelude.id
-instance Lens.Labels.HasLens' FileOptions "javaStringCheckUtf8"
-           (Prelude.Bool)
+instance a ~ (Prelude.Bool) =>
+         Lens.Labels.HasLens' FileOptions "javaStringCheckUtf8" a
          where
         lensOf' _
           = (Prelude..)
               (Lens.Family2.Unchecked.lens _FileOptions'javaStringCheckUtf8
                  (\ x__ y__ -> x__{_FileOptions'javaStringCheckUtf8 = y__}))
               (Data.ProtoLens.maybeLens Prelude.False)
-instance Lens.Labels.HasLens' FileOptions
-           "maybe'javaStringCheckUtf8"
-           (Prelude.Maybe Prelude.Bool)
+instance a ~ (Prelude.Maybe Prelude.Bool) =>
+         Lens.Labels.HasLens' FileOptions "maybe'javaStringCheckUtf8" a
          where
         lensOf' _
           = (Prelude..)
               (Lens.Family2.Unchecked.lens _FileOptions'javaStringCheckUtf8
                  (\ x__ y__ -> x__{_FileOptions'javaStringCheckUtf8 = y__}))
               Prelude.id
-instance Lens.Labels.HasLens' FileOptions "optimizeFor"
-           (FileOptions'OptimizeMode)
+instance a ~ (FileOptions'OptimizeMode) =>
+         Lens.Labels.HasLens' FileOptions "optimizeFor" a
          where
         lensOf' _
           = (Prelude..)
               (Lens.Family2.Unchecked.lens _FileOptions'optimizeFor
                  (\ x__ y__ -> x__{_FileOptions'optimizeFor = y__}))
               (Data.ProtoLens.maybeLens FileOptions'SPEED)
-instance Lens.Labels.HasLens' FileOptions "maybe'optimizeFor"
-           (Prelude.Maybe FileOptions'OptimizeMode)
+instance a ~ (Prelude.Maybe FileOptions'OptimizeMode) =>
+         Lens.Labels.HasLens' FileOptions "maybe'optimizeFor" a
          where
         lensOf' _
           = (Prelude..)
               (Lens.Family2.Unchecked.lens _FileOptions'optimizeFor
                  (\ x__ y__ -> x__{_FileOptions'optimizeFor = y__}))
               Prelude.id
-instance Lens.Labels.HasLens' FileOptions "goPackage"
-           (Data.Text.Text)
+instance a ~ (Data.Text.Text) =>
+         Lens.Labels.HasLens' FileOptions "goPackage" a
          where
         lensOf' _
           = (Prelude..)
               (Lens.Family2.Unchecked.lens _FileOptions'goPackage
                  (\ x__ y__ -> x__{_FileOptions'goPackage = y__}))
               (Data.ProtoLens.maybeLens Data.ProtoLens.fieldDefault)
-instance Lens.Labels.HasLens' FileOptions "maybe'goPackage"
-           (Prelude.Maybe Data.Text.Text)
+instance a ~ (Prelude.Maybe Data.Text.Text) =>
+         Lens.Labels.HasLens' FileOptions "maybe'goPackage" a
          where
         lensOf' _
           = (Prelude..)
               (Lens.Family2.Unchecked.lens _FileOptions'goPackage
                  (\ x__ y__ -> x__{_FileOptions'goPackage = y__}))
               Prelude.id
-instance Lens.Labels.HasLens' FileOptions "ccGenericServices"
-           (Prelude.Bool)
+instance a ~ (Prelude.Bool) =>
+         Lens.Labels.HasLens' FileOptions "ccGenericServices" a
          where
         lensOf' _
           = (Prelude..)
               (Lens.Family2.Unchecked.lens _FileOptions'ccGenericServices
                  (\ x__ y__ -> x__{_FileOptions'ccGenericServices = y__}))
               (Data.ProtoLens.maybeLens Prelude.False)
-instance Lens.Labels.HasLens' FileOptions "maybe'ccGenericServices"
-           (Prelude.Maybe Prelude.Bool)
+instance a ~ (Prelude.Maybe Prelude.Bool) =>
+         Lens.Labels.HasLens' FileOptions "maybe'ccGenericServices" a
          where
         lensOf' _
           = (Prelude..)
               (Lens.Family2.Unchecked.lens _FileOptions'ccGenericServices
                  (\ x__ y__ -> x__{_FileOptions'ccGenericServices = y__}))
               Prelude.id
-instance Lens.Labels.HasLens' FileOptions "javaGenericServices"
-           (Prelude.Bool)
+instance a ~ (Prelude.Bool) =>
+         Lens.Labels.HasLens' FileOptions "javaGenericServices" a
          where
         lensOf' _
           = (Prelude..)
               (Lens.Family2.Unchecked.lens _FileOptions'javaGenericServices
                  (\ x__ y__ -> x__{_FileOptions'javaGenericServices = y__}))
               (Data.ProtoLens.maybeLens Prelude.False)
-instance Lens.Labels.HasLens' FileOptions
-           "maybe'javaGenericServices"
-           (Prelude.Maybe Prelude.Bool)
+instance a ~ (Prelude.Maybe Prelude.Bool) =>
+         Lens.Labels.HasLens' FileOptions "maybe'javaGenericServices" a
          where
         lensOf' _
           = (Prelude..)
               (Lens.Family2.Unchecked.lens _FileOptions'javaGenericServices
                  (\ x__ y__ -> x__{_FileOptions'javaGenericServices = y__}))
               Prelude.id
-instance Lens.Labels.HasLens' FileOptions "pyGenericServices"
-           (Prelude.Bool)
+instance a ~ (Prelude.Bool) =>
+         Lens.Labels.HasLens' FileOptions "pyGenericServices" a
          where
         lensOf' _
           = (Prelude..)
               (Lens.Family2.Unchecked.lens _FileOptions'pyGenericServices
                  (\ x__ y__ -> x__{_FileOptions'pyGenericServices = y__}))
               (Data.ProtoLens.maybeLens Prelude.False)
-instance Lens.Labels.HasLens' FileOptions "maybe'pyGenericServices"
-           (Prelude.Maybe Prelude.Bool)
+instance a ~ (Prelude.Maybe Prelude.Bool) =>
+         Lens.Labels.HasLens' FileOptions "maybe'pyGenericServices" a
          where
         lensOf' _
           = (Prelude..)
               (Lens.Family2.Unchecked.lens _FileOptions'pyGenericServices
                  (\ x__ y__ -> x__{_FileOptions'pyGenericServices = y__}))
               Prelude.id
-instance Lens.Labels.HasLens' FileOptions "phpGenericServices"
-           (Prelude.Bool)
+instance a ~ (Prelude.Bool) =>
+         Lens.Labels.HasLens' FileOptions "phpGenericServices" a
          where
         lensOf' _
           = (Prelude..)
               (Lens.Family2.Unchecked.lens _FileOptions'phpGenericServices
                  (\ x__ y__ -> x__{_FileOptions'phpGenericServices = y__}))
               (Data.ProtoLens.maybeLens Prelude.False)
-instance Lens.Labels.HasLens' FileOptions
-           "maybe'phpGenericServices"
-           (Prelude.Maybe Prelude.Bool)
+instance a ~ (Prelude.Maybe Prelude.Bool) =>
+         Lens.Labels.HasLens' FileOptions "maybe'phpGenericServices" a
          where
         lensOf' _
           = (Prelude..)
               (Lens.Family2.Unchecked.lens _FileOptions'phpGenericServices
                  (\ x__ y__ -> x__{_FileOptions'phpGenericServices = y__}))
               Prelude.id
-instance Lens.Labels.HasLens' FileOptions "deprecated"
-           (Prelude.Bool)
+instance a ~ (Prelude.Bool) =>
+         Lens.Labels.HasLens' FileOptions "deprecated" a
          where
         lensOf' _
           = (Prelude..)
               (Lens.Family2.Unchecked.lens _FileOptions'deprecated
                  (\ x__ y__ -> x__{_FileOptions'deprecated = y__}))
               (Data.ProtoLens.maybeLens Prelude.False)
-instance Lens.Labels.HasLens' FileOptions "maybe'deprecated"
-           (Prelude.Maybe Prelude.Bool)
+instance a ~ (Prelude.Maybe Prelude.Bool) =>
+         Lens.Labels.HasLens' FileOptions "maybe'deprecated" a
          where
         lensOf' _
           = (Prelude..)
               (Lens.Family2.Unchecked.lens _FileOptions'deprecated
                  (\ x__ y__ -> x__{_FileOptions'deprecated = y__}))
               Prelude.id
-instance Lens.Labels.HasLens' FileOptions "ccEnableArenas"
-           (Prelude.Bool)
+instance a ~ (Prelude.Bool) =>
+         Lens.Labels.HasLens' FileOptions "ccEnableArenas" a
          where
         lensOf' _
           = (Prelude..)
               (Lens.Family2.Unchecked.lens _FileOptions'ccEnableArenas
                  (\ x__ y__ -> x__{_FileOptions'ccEnableArenas = y__}))
               (Data.ProtoLens.maybeLens Prelude.False)
-instance Lens.Labels.HasLens' FileOptions "maybe'ccEnableArenas"
-           (Prelude.Maybe Prelude.Bool)
+instance a ~ (Prelude.Maybe Prelude.Bool) =>
+         Lens.Labels.HasLens' FileOptions "maybe'ccEnableArenas" a
          where
         lensOf' _
           = (Prelude..)
               (Lens.Family2.Unchecked.lens _FileOptions'ccEnableArenas
                  (\ x__ y__ -> x__{_FileOptions'ccEnableArenas = y__}))
               Prelude.id
-instance Lens.Labels.HasLens' FileOptions "objcClassPrefix"
-           (Data.Text.Text)
+instance a ~ (Data.Text.Text) =>
+         Lens.Labels.HasLens' FileOptions "objcClassPrefix" a
          where
         lensOf' _
           = (Prelude..)
               (Lens.Family2.Unchecked.lens _FileOptions'objcClassPrefix
                  (\ x__ y__ -> x__{_FileOptions'objcClassPrefix = y__}))
               (Data.ProtoLens.maybeLens Data.ProtoLens.fieldDefault)
-instance Lens.Labels.HasLens' FileOptions "maybe'objcClassPrefix"
-           (Prelude.Maybe Data.Text.Text)
+instance a ~ (Prelude.Maybe Data.Text.Text) =>
+         Lens.Labels.HasLens' FileOptions "maybe'objcClassPrefix" a
          where
         lensOf' _
           = (Prelude..)
               (Lens.Family2.Unchecked.lens _FileOptions'objcClassPrefix
                  (\ x__ y__ -> x__{_FileOptions'objcClassPrefix = y__}))
               Prelude.id
-instance Lens.Labels.HasLens' FileOptions "csharpNamespace"
-           (Data.Text.Text)
+instance a ~ (Data.Text.Text) =>
+         Lens.Labels.HasLens' FileOptions "csharpNamespace" a
          where
         lensOf' _
           = (Prelude..)
               (Lens.Family2.Unchecked.lens _FileOptions'csharpNamespace
                  (\ x__ y__ -> x__{_FileOptions'csharpNamespace = y__}))
               (Data.ProtoLens.maybeLens Data.ProtoLens.fieldDefault)
-instance Lens.Labels.HasLens' FileOptions "maybe'csharpNamespace"
-           (Prelude.Maybe Data.Text.Text)
+instance a ~ (Prelude.Maybe Data.Text.Text) =>
+         Lens.Labels.HasLens' FileOptions "maybe'csharpNamespace" a
          where
         lensOf' _
           = (Prelude..)
               (Lens.Family2.Unchecked.lens _FileOptions'csharpNamespace
                  (\ x__ y__ -> x__{_FileOptions'csharpNamespace = y__}))
               Prelude.id
-instance Lens.Labels.HasLens' FileOptions "swiftPrefix"
-           (Data.Text.Text)
+instance a ~ (Data.Text.Text) =>
+         Lens.Labels.HasLens' FileOptions "swiftPrefix" a
          where
         lensOf' _
           = (Prelude..)
               (Lens.Family2.Unchecked.lens _FileOptions'swiftPrefix
                  (\ x__ y__ -> x__{_FileOptions'swiftPrefix = y__}))
               (Data.ProtoLens.maybeLens Data.ProtoLens.fieldDefault)
-instance Lens.Labels.HasLens' FileOptions "maybe'swiftPrefix"
-           (Prelude.Maybe Data.Text.Text)
+instance a ~ (Prelude.Maybe Data.Text.Text) =>
+         Lens.Labels.HasLens' FileOptions "maybe'swiftPrefix" a
          where
         lensOf' _
           = (Prelude..)
               (Lens.Family2.Unchecked.lens _FileOptions'swiftPrefix
                  (\ x__ y__ -> x__{_FileOptions'swiftPrefix = y__}))
               Prelude.id
-instance Lens.Labels.HasLens' FileOptions "phpClassPrefix"
-           (Data.Text.Text)
+instance a ~ (Data.Text.Text) =>
+         Lens.Labels.HasLens' FileOptions "phpClassPrefix" a
          where
         lensOf' _
           = (Prelude..)
               (Lens.Family2.Unchecked.lens _FileOptions'phpClassPrefix
                  (\ x__ y__ -> x__{_FileOptions'phpClassPrefix = y__}))
               (Data.ProtoLens.maybeLens Data.ProtoLens.fieldDefault)
-instance Lens.Labels.HasLens' FileOptions "maybe'phpClassPrefix"
-           (Prelude.Maybe Data.Text.Text)
+instance a ~ (Prelude.Maybe Data.Text.Text) =>
+         Lens.Labels.HasLens' FileOptions "maybe'phpClassPrefix" a
          where
         lensOf' _
           = (Prelude..)
               (Lens.Family2.Unchecked.lens _FileOptions'phpClassPrefix
                  (\ x__ y__ -> x__{_FileOptions'phpClassPrefix = y__}))
               Prelude.id
-instance Lens.Labels.HasLens' FileOptions "phpNamespace"
-           (Data.Text.Text)
+instance a ~ (Data.Text.Text) =>
+         Lens.Labels.HasLens' FileOptions "phpNamespace" a
          where
         lensOf' _
           = (Prelude..)
               (Lens.Family2.Unchecked.lens _FileOptions'phpNamespace
                  (\ x__ y__ -> x__{_FileOptions'phpNamespace = y__}))
               (Data.ProtoLens.maybeLens Data.ProtoLens.fieldDefault)
-instance Lens.Labels.HasLens' FileOptions "maybe'phpNamespace"
-           (Prelude.Maybe Data.Text.Text)
+instance a ~ (Prelude.Maybe Data.Text.Text) =>
+         Lens.Labels.HasLens' FileOptions "maybe'phpNamespace" a
          where
         lensOf' _
           = (Prelude..)
               (Lens.Family2.Unchecked.lens _FileOptions'phpNamespace
                  (\ x__ y__ -> x__{_FileOptions'phpNamespace = y__}))
               Prelude.id
-instance Lens.Labels.HasLens' FileOptions "phpMetadataNamespace"
-           (Data.Text.Text)
+instance a ~ (Data.Text.Text) =>
+         Lens.Labels.HasLens' FileOptions "phpMetadataNamespace" a
          where
         lensOf' _
           = (Prelude..)
               (Lens.Family2.Unchecked.lens _FileOptions'phpMetadataNamespace
                  (\ x__ y__ -> x__{_FileOptions'phpMetadataNamespace = y__}))
               (Data.ProtoLens.maybeLens Data.ProtoLens.fieldDefault)
-instance Lens.Labels.HasLens' FileOptions
-           "maybe'phpMetadataNamespace"
-           (Prelude.Maybe Data.Text.Text)
+instance a ~ (Prelude.Maybe Data.Text.Text) =>
+         Lens.Labels.HasLens' FileOptions "maybe'phpMetadataNamespace" a
          where
         lensOf' _
           = (Prelude..)
               (Lens.Family2.Unchecked.lens _FileOptions'phpMetadataNamespace
                  (\ x__ y__ -> x__{_FileOptions'phpMetadataNamespace = y__}))
               Prelude.id
-instance Lens.Labels.HasLens' FileOptions "rubyPackage"
-           (Data.Text.Text)
+instance a ~ (Data.Text.Text) =>
+         Lens.Labels.HasLens' FileOptions "rubyPackage" a
          where
         lensOf' _
           = (Prelude..)
               (Lens.Family2.Unchecked.lens _FileOptions'rubyPackage
                  (\ x__ y__ -> x__{_FileOptions'rubyPackage = y__}))
               (Data.ProtoLens.maybeLens Data.ProtoLens.fieldDefault)
-instance Lens.Labels.HasLens' FileOptions "maybe'rubyPackage"
-           (Prelude.Maybe Data.Text.Text)
+instance a ~ (Prelude.Maybe Data.Text.Text) =>
+         Lens.Labels.HasLens' FileOptions "maybe'rubyPackage" a
          where
         lensOf' _
           = (Prelude..)
               (Lens.Family2.Unchecked.lens _FileOptions'rubyPackage
                  (\ x__ y__ -> x__{_FileOptions'rubyPackage = y__}))
               Prelude.id
-instance Lens.Labels.HasLens' FileOptions "uninterpretedOption"
-           ([UninterpretedOption])
+instance a ~ ([UninterpretedOption]) =>
+         Lens.Labels.HasLens' FileOptions "uninterpretedOption" a
          where
         lensOf' _
           = (Prelude..)
@@ -3204,8 +3199,6 @@ data FileOptions'OptimizeMode = FileOptions'SPEED
                               | FileOptions'CODE_SIZE
                               | FileOptions'LITE_RUNTIME
                                   deriving (Prelude.Show, Prelude.Eq, Prelude.Ord)
-instance Data.ProtoLens.FieldDefault FileOptions'OptimizeMode where
-        fieldDefault = FileOptions'SPEED
 instance Data.ProtoLens.MessageEnum FileOptions'OptimizeMode where
         maybeToEnum 1 = Prelude.Just FileOptions'SPEED
         maybeToEnum 2 = Prelude.Just FileOptions'CODE_SIZE
@@ -3214,10 +3207,16 @@ instance Data.ProtoLens.MessageEnum FileOptions'OptimizeMode where
         showEnum FileOptions'SPEED = "SPEED"
         showEnum FileOptions'CODE_SIZE = "CODE_SIZE"
         showEnum FileOptions'LITE_RUNTIME = "LITE_RUNTIME"
-        readEnum "SPEED" = Prelude.Just FileOptions'SPEED
-        readEnum "CODE_SIZE" = Prelude.Just FileOptions'CODE_SIZE
-        readEnum "LITE_RUNTIME" = Prelude.Just FileOptions'LITE_RUNTIME
-        readEnum _ = Prelude.Nothing
+        readEnum k
+          | (Prelude.==) k "SPEED" = Prelude.Just FileOptions'SPEED
+          | (Prelude.==) k "CODE_SIZE" = Prelude.Just FileOptions'CODE_SIZE
+          | (Prelude.==) k "LITE_RUNTIME" =
+            Prelude.Just FileOptions'LITE_RUNTIME
+        readEnum k
+          = (Prelude.>>=) (Text.Read.readMaybe k) Data.ProtoLens.maybeToEnum
+instance Prelude.Bounded FileOptions'OptimizeMode where
+        minBound = FileOptions'SPEED
+        maxBound = FileOptions'LITE_RUNTIME
 instance Prelude.Enum FileOptions'OptimizeMode where
         toEnum k__
           = Prelude.maybe
@@ -3243,9 +3242,8 @@ instance Prelude.Enum FileOptions'OptimizeMode where
         enumFromTo = Data.ProtoLens.Message.Enum.messageEnumFromTo
         enumFromThen = Data.ProtoLens.Message.Enum.messageEnumFromThen
         enumFromThenTo = Data.ProtoLens.Message.Enum.messageEnumFromThenTo
-instance Prelude.Bounded FileOptions'OptimizeMode where
-        minBound = FileOptions'SPEED
-        maxBound = FileOptions'LITE_RUNTIME
+instance Data.ProtoLens.FieldDefault FileOptions'OptimizeMode where
+        fieldDefault = FileOptions'SPEED
 instance Control.DeepSeq.NFData FileOptions'OptimizeMode where
         rnf x__ = Prelude.seq x__ (())
 {- | Fields :
@@ -3262,8 +3260,8 @@ instance Prelude.Show GeneratedCodeInfo where
           = Prelude.showChar '{'
               (Prelude.showString (Data.ProtoLens.showMessageShort __x)
                  (Prelude.showChar '}' __s))
-instance Lens.Labels.HasLens' GeneratedCodeInfo "annotation"
-           ([GeneratedCodeInfo'Annotation])
+instance a ~ ([GeneratedCodeInfo'Annotation]) =>
+         Lens.Labels.HasLens' GeneratedCodeInfo "annotation" a
          where
         lensOf' _
           = (Prelude..)
@@ -3321,17 +3319,16 @@ instance Prelude.Show GeneratedCodeInfo'Annotation where
           = Prelude.showChar '{'
               (Prelude.showString (Data.ProtoLens.showMessageShort __x)
                  (Prelude.showChar '}' __s))
-instance Lens.Labels.HasLens' GeneratedCodeInfo'Annotation "path"
-           ([Data.Int.Int32])
+instance a ~ ([Data.Int.Int32]) =>
+         Lens.Labels.HasLens' GeneratedCodeInfo'Annotation "path" a
          where
         lensOf' _
           = (Prelude..)
               (Lens.Family2.Unchecked.lens _GeneratedCodeInfo'Annotation'path
                  (\ x__ y__ -> x__{_GeneratedCodeInfo'Annotation'path = y__}))
               Prelude.id
-instance Lens.Labels.HasLens' GeneratedCodeInfo'Annotation
-           "sourceFile"
-           (Data.Text.Text)
+instance a ~ (Data.Text.Text) =>
+         Lens.Labels.HasLens' GeneratedCodeInfo'Annotation "sourceFile" a
          where
         lensOf' _
           = (Prelude..)
@@ -3339,9 +3336,10 @@ instance Lens.Labels.HasLens' GeneratedCodeInfo'Annotation
                  _GeneratedCodeInfo'Annotation'sourceFile
                  (\ x__ y__ -> x__{_GeneratedCodeInfo'Annotation'sourceFile = y__}))
               (Data.ProtoLens.maybeLens Data.ProtoLens.fieldDefault)
-instance Lens.Labels.HasLens' GeneratedCodeInfo'Annotation
+instance a ~ (Prelude.Maybe Data.Text.Text) =>
+         Lens.Labels.HasLens' GeneratedCodeInfo'Annotation
            "maybe'sourceFile"
-           (Prelude.Maybe Data.Text.Text)
+           a
          where
         lensOf' _
           = (Prelude..)
@@ -3349,34 +3347,32 @@ instance Lens.Labels.HasLens' GeneratedCodeInfo'Annotation
                  _GeneratedCodeInfo'Annotation'sourceFile
                  (\ x__ y__ -> x__{_GeneratedCodeInfo'Annotation'sourceFile = y__}))
               Prelude.id
-instance Lens.Labels.HasLens' GeneratedCodeInfo'Annotation "begin"
-           (Data.Int.Int32)
+instance a ~ (Data.Int.Int32) =>
+         Lens.Labels.HasLens' GeneratedCodeInfo'Annotation "begin" a
          where
         lensOf' _
           = (Prelude..)
               (Lens.Family2.Unchecked.lens _GeneratedCodeInfo'Annotation'begin
                  (\ x__ y__ -> x__{_GeneratedCodeInfo'Annotation'begin = y__}))
               (Data.ProtoLens.maybeLens Data.ProtoLens.fieldDefault)
-instance Lens.Labels.HasLens' GeneratedCodeInfo'Annotation
-           "maybe'begin"
-           (Prelude.Maybe Data.Int.Int32)
+instance a ~ (Prelude.Maybe Data.Int.Int32) =>
+         Lens.Labels.HasLens' GeneratedCodeInfo'Annotation "maybe'begin" a
          where
         lensOf' _
           = (Prelude..)
               (Lens.Family2.Unchecked.lens _GeneratedCodeInfo'Annotation'begin
                  (\ x__ y__ -> x__{_GeneratedCodeInfo'Annotation'begin = y__}))
               Prelude.id
-instance Lens.Labels.HasLens' GeneratedCodeInfo'Annotation "end"
-           (Data.Int.Int32)
+instance a ~ (Data.Int.Int32) =>
+         Lens.Labels.HasLens' GeneratedCodeInfo'Annotation "end" a
          where
         lensOf' _
           = (Prelude..)
               (Lens.Family2.Unchecked.lens _GeneratedCodeInfo'Annotation'end
                  (\ x__ y__ -> x__{_GeneratedCodeInfo'Annotation'end = y__}))
               (Data.ProtoLens.maybeLens Data.ProtoLens.fieldDefault)
-instance Lens.Labels.HasLens' GeneratedCodeInfo'Annotation
-           "maybe'end"
-           (Prelude.Maybe Data.Int.Int32)
+instance a ~ (Prelude.Maybe Data.Int.Int32) =>
+         Lens.Labels.HasLens' GeneratedCodeInfo'Annotation "maybe'end" a
          where
         lensOf' _
           = (Prelude..)
@@ -3474,26 +3470,25 @@ instance Prelude.Show MessageOptions where
           = Prelude.showChar '{'
               (Prelude.showString (Data.ProtoLens.showMessageShort __x)
                  (Prelude.showChar '}' __s))
-instance Lens.Labels.HasLens' MessageOptions "messageSetWireFormat"
-           (Prelude.Bool)
+instance a ~ (Prelude.Bool) =>
+         Lens.Labels.HasLens' MessageOptions "messageSetWireFormat" a
          where
         lensOf' _
           = (Prelude..)
               (Lens.Family2.Unchecked.lens _MessageOptions'messageSetWireFormat
                  (\ x__ y__ -> x__{_MessageOptions'messageSetWireFormat = y__}))
               (Data.ProtoLens.maybeLens Prelude.False)
-instance Lens.Labels.HasLens' MessageOptions
-           "maybe'messageSetWireFormat"
-           (Prelude.Maybe Prelude.Bool)
+instance a ~ (Prelude.Maybe Prelude.Bool) =>
+         Lens.Labels.HasLens' MessageOptions "maybe'messageSetWireFormat" a
          where
         lensOf' _
           = (Prelude..)
               (Lens.Family2.Unchecked.lens _MessageOptions'messageSetWireFormat
                  (\ x__ y__ -> x__{_MessageOptions'messageSetWireFormat = y__}))
               Prelude.id
-instance Lens.Labels.HasLens' MessageOptions
-           "noStandardDescriptorAccessor"
-           (Prelude.Bool)
+instance a ~ (Prelude.Bool) =>
+         Lens.Labels.HasLens' MessageOptions "noStandardDescriptorAccessor"
+           a
          where
         lensOf' _
           = (Prelude..)
@@ -3502,9 +3497,10 @@ instance Lens.Labels.HasLens' MessageOptions
                  (\ x__ y__ ->
                     x__{_MessageOptions'noStandardDescriptorAccessor = y__}))
               (Data.ProtoLens.maybeLens Prelude.False)
-instance Lens.Labels.HasLens' MessageOptions
+instance a ~ (Prelude.Maybe Prelude.Bool) =>
+         Lens.Labels.HasLens' MessageOptions
            "maybe'noStandardDescriptorAccessor"
-           (Prelude.Maybe Prelude.Bool)
+           a
          where
         lensOf' _
           = (Prelude..)
@@ -3513,40 +3509,40 @@ instance Lens.Labels.HasLens' MessageOptions
                  (\ x__ y__ ->
                     x__{_MessageOptions'noStandardDescriptorAccessor = y__}))
               Prelude.id
-instance Lens.Labels.HasLens' MessageOptions "deprecated"
-           (Prelude.Bool)
+instance a ~ (Prelude.Bool) =>
+         Lens.Labels.HasLens' MessageOptions "deprecated" a
          where
         lensOf' _
           = (Prelude..)
               (Lens.Family2.Unchecked.lens _MessageOptions'deprecated
                  (\ x__ y__ -> x__{_MessageOptions'deprecated = y__}))
               (Data.ProtoLens.maybeLens Prelude.False)
-instance Lens.Labels.HasLens' MessageOptions "maybe'deprecated"
-           (Prelude.Maybe Prelude.Bool)
+instance a ~ (Prelude.Maybe Prelude.Bool) =>
+         Lens.Labels.HasLens' MessageOptions "maybe'deprecated" a
          where
         lensOf' _
           = (Prelude..)
               (Lens.Family2.Unchecked.lens _MessageOptions'deprecated
                  (\ x__ y__ -> x__{_MessageOptions'deprecated = y__}))
               Prelude.id
-instance Lens.Labels.HasLens' MessageOptions "mapEntry"
-           (Prelude.Bool)
+instance a ~ (Prelude.Bool) =>
+         Lens.Labels.HasLens' MessageOptions "mapEntry" a
          where
         lensOf' _
           = (Prelude..)
               (Lens.Family2.Unchecked.lens _MessageOptions'mapEntry
                  (\ x__ y__ -> x__{_MessageOptions'mapEntry = y__}))
               (Data.ProtoLens.maybeLens Data.ProtoLens.fieldDefault)
-instance Lens.Labels.HasLens' MessageOptions "maybe'mapEntry"
-           (Prelude.Maybe Prelude.Bool)
+instance a ~ (Prelude.Maybe Prelude.Bool) =>
+         Lens.Labels.HasLens' MessageOptions "maybe'mapEntry" a
          where
         lensOf' _
           = (Prelude..)
               (Lens.Family2.Unchecked.lens _MessageOptions'mapEntry
                  (\ x__ y__ -> x__{_MessageOptions'mapEntry = y__}))
               Prelude.id
-instance Lens.Labels.HasLens' MessageOptions "uninterpretedOption"
-           ([UninterpretedOption])
+instance a ~ ([UninterpretedOption]) =>
+         Lens.Labels.HasLens' MessageOptions "uninterpretedOption" a
          where
         lensOf' _
           = (Prelude..)
@@ -3664,102 +3660,98 @@ instance Prelude.Show MethodDescriptorProto where
           = Prelude.showChar '{'
               (Prelude.showString (Data.ProtoLens.showMessageShort __x)
                  (Prelude.showChar '}' __s))
-instance Lens.Labels.HasLens' MethodDescriptorProto "name"
-           (Data.Text.Text)
+instance a ~ (Data.Text.Text) =>
+         Lens.Labels.HasLens' MethodDescriptorProto "name" a
          where
         lensOf' _
           = (Prelude..)
               (Lens.Family2.Unchecked.lens _MethodDescriptorProto'name
                  (\ x__ y__ -> x__{_MethodDescriptorProto'name = y__}))
               (Data.ProtoLens.maybeLens Data.ProtoLens.fieldDefault)
-instance Lens.Labels.HasLens' MethodDescriptorProto "maybe'name"
-           (Prelude.Maybe Data.Text.Text)
+instance a ~ (Prelude.Maybe Data.Text.Text) =>
+         Lens.Labels.HasLens' MethodDescriptorProto "maybe'name" a
          where
         lensOf' _
           = (Prelude..)
               (Lens.Family2.Unchecked.lens _MethodDescriptorProto'name
                  (\ x__ y__ -> x__{_MethodDescriptorProto'name = y__}))
               Prelude.id
-instance Lens.Labels.HasLens' MethodDescriptorProto "inputType"
-           (Data.Text.Text)
+instance a ~ (Data.Text.Text) =>
+         Lens.Labels.HasLens' MethodDescriptorProto "inputType" a
          where
         lensOf' _
           = (Prelude..)
               (Lens.Family2.Unchecked.lens _MethodDescriptorProto'inputType
                  (\ x__ y__ -> x__{_MethodDescriptorProto'inputType = y__}))
               (Data.ProtoLens.maybeLens Data.ProtoLens.fieldDefault)
-instance Lens.Labels.HasLens' MethodDescriptorProto
-           "maybe'inputType"
-           (Prelude.Maybe Data.Text.Text)
+instance a ~ (Prelude.Maybe Data.Text.Text) =>
+         Lens.Labels.HasLens' MethodDescriptorProto "maybe'inputType" a
          where
         lensOf' _
           = (Prelude..)
               (Lens.Family2.Unchecked.lens _MethodDescriptorProto'inputType
                  (\ x__ y__ -> x__{_MethodDescriptorProto'inputType = y__}))
               Prelude.id
-instance Lens.Labels.HasLens' MethodDescriptorProto "outputType"
-           (Data.Text.Text)
+instance a ~ (Data.Text.Text) =>
+         Lens.Labels.HasLens' MethodDescriptorProto "outputType" a
          where
         lensOf' _
           = (Prelude..)
               (Lens.Family2.Unchecked.lens _MethodDescriptorProto'outputType
                  (\ x__ y__ -> x__{_MethodDescriptorProto'outputType = y__}))
               (Data.ProtoLens.maybeLens Data.ProtoLens.fieldDefault)
-instance Lens.Labels.HasLens' MethodDescriptorProto
-           "maybe'outputType"
-           (Prelude.Maybe Data.Text.Text)
+instance a ~ (Prelude.Maybe Data.Text.Text) =>
+         Lens.Labels.HasLens' MethodDescriptorProto "maybe'outputType" a
          where
         lensOf' _
           = (Prelude..)
               (Lens.Family2.Unchecked.lens _MethodDescriptorProto'outputType
                  (\ x__ y__ -> x__{_MethodDescriptorProto'outputType = y__}))
               Prelude.id
-instance Lens.Labels.HasLens' MethodDescriptorProto "options"
-           (MethodOptions)
+instance a ~ (MethodOptions) =>
+         Lens.Labels.HasLens' MethodDescriptorProto "options" a
          where
         lensOf' _
           = (Prelude..)
               (Lens.Family2.Unchecked.lens _MethodDescriptorProto'options
                  (\ x__ y__ -> x__{_MethodDescriptorProto'options = y__}))
               (Data.ProtoLens.maybeLens Data.ProtoLens.defMessage)
-instance Lens.Labels.HasLens' MethodDescriptorProto "maybe'options"
-           (Prelude.Maybe MethodOptions)
+instance a ~ (Prelude.Maybe MethodOptions) =>
+         Lens.Labels.HasLens' MethodDescriptorProto "maybe'options" a
          where
         lensOf' _
           = (Prelude..)
               (Lens.Family2.Unchecked.lens _MethodDescriptorProto'options
                  (\ x__ y__ -> x__{_MethodDescriptorProto'options = y__}))
               Prelude.id
-instance Lens.Labels.HasLens' MethodDescriptorProto
-           "clientStreaming"
-           (Prelude.Bool)
+instance a ~ (Prelude.Bool) =>
+         Lens.Labels.HasLens' MethodDescriptorProto "clientStreaming" a
          where
         lensOf' _
           = (Prelude..)
               (Lens.Family2.Unchecked.lens _MethodDescriptorProto'clientStreaming
                  (\ x__ y__ -> x__{_MethodDescriptorProto'clientStreaming = y__}))
               (Data.ProtoLens.maybeLens Prelude.False)
-instance Lens.Labels.HasLens' MethodDescriptorProto
-           "maybe'clientStreaming"
-           (Prelude.Maybe Prelude.Bool)
+instance a ~ (Prelude.Maybe Prelude.Bool) =>
+         Lens.Labels.HasLens' MethodDescriptorProto "maybe'clientStreaming"
+           a
          where
         lensOf' _
           = (Prelude..)
               (Lens.Family2.Unchecked.lens _MethodDescriptorProto'clientStreaming
                  (\ x__ y__ -> x__{_MethodDescriptorProto'clientStreaming = y__}))
               Prelude.id
-instance Lens.Labels.HasLens' MethodDescriptorProto
-           "serverStreaming"
-           (Prelude.Bool)
+instance a ~ (Prelude.Bool) =>
+         Lens.Labels.HasLens' MethodDescriptorProto "serverStreaming" a
          where
         lensOf' _
           = (Prelude..)
               (Lens.Family2.Unchecked.lens _MethodDescriptorProto'serverStreaming
                  (\ x__ y__ -> x__{_MethodDescriptorProto'serverStreaming = y__}))
               (Data.ProtoLens.maybeLens Prelude.False)
-instance Lens.Labels.HasLens' MethodDescriptorProto
-           "maybe'serverStreaming"
-           (Prelude.Maybe Prelude.Bool)
+instance a ~ (Prelude.Maybe Prelude.Bool) =>
+         Lens.Labels.HasLens' MethodDescriptorProto "maybe'serverStreaming"
+           a
          where
         lensOf' _
           = (Prelude..)
@@ -3873,41 +3865,40 @@ instance Prelude.Show MethodOptions where
           = Prelude.showChar '{'
               (Prelude.showString (Data.ProtoLens.showMessageShort __x)
                  (Prelude.showChar '}' __s))
-instance Lens.Labels.HasLens' MethodOptions "deprecated"
-           (Prelude.Bool)
+instance a ~ (Prelude.Bool) =>
+         Lens.Labels.HasLens' MethodOptions "deprecated" a
          where
         lensOf' _
           = (Prelude..)
               (Lens.Family2.Unchecked.lens _MethodOptions'deprecated
                  (\ x__ y__ -> x__{_MethodOptions'deprecated = y__}))
               (Data.ProtoLens.maybeLens Prelude.False)
-instance Lens.Labels.HasLens' MethodOptions "maybe'deprecated"
-           (Prelude.Maybe Prelude.Bool)
+instance a ~ (Prelude.Maybe Prelude.Bool) =>
+         Lens.Labels.HasLens' MethodOptions "maybe'deprecated" a
          where
         lensOf' _
           = (Prelude..)
               (Lens.Family2.Unchecked.lens _MethodOptions'deprecated
                  (\ x__ y__ -> x__{_MethodOptions'deprecated = y__}))
               Prelude.id
-instance Lens.Labels.HasLens' MethodOptions "idempotencyLevel"
-           (MethodOptions'IdempotencyLevel)
+instance a ~ (MethodOptions'IdempotencyLevel) =>
+         Lens.Labels.HasLens' MethodOptions "idempotencyLevel" a
          where
         lensOf' _
           = (Prelude..)
               (Lens.Family2.Unchecked.lens _MethodOptions'idempotencyLevel
                  (\ x__ y__ -> x__{_MethodOptions'idempotencyLevel = y__}))
               (Data.ProtoLens.maybeLens MethodOptions'IDEMPOTENCY_UNKNOWN)
-instance Lens.Labels.HasLens' MethodOptions
-           "maybe'idempotencyLevel"
-           (Prelude.Maybe MethodOptions'IdempotencyLevel)
+instance a ~ (Prelude.Maybe MethodOptions'IdempotencyLevel) =>
+         Lens.Labels.HasLens' MethodOptions "maybe'idempotencyLevel" a
          where
         lensOf' _
           = (Prelude..)
               (Lens.Family2.Unchecked.lens _MethodOptions'idempotencyLevel
                  (\ x__ y__ -> x__{_MethodOptions'idempotencyLevel = y__}))
               Prelude.id
-instance Lens.Labels.HasLens' MethodOptions "uninterpretedOption"
-           ([UninterpretedOption])
+instance a ~ ([UninterpretedOption]) =>
+         Lens.Labels.HasLens' MethodOptions "uninterpretedOption" a
          where
         lensOf' _
           = (Prelude..)
@@ -3968,9 +3959,6 @@ data MethodOptions'IdempotencyLevel = MethodOptions'IDEMPOTENCY_UNKNOWN
                                     | MethodOptions'NO_SIDE_EFFECTS
                                     | MethodOptions'IDEMPOTENT
                                         deriving (Prelude.Show, Prelude.Eq, Prelude.Ord)
-instance Data.ProtoLens.FieldDefault MethodOptions'IdempotencyLevel
-         where
-        fieldDefault = MethodOptions'IDEMPOTENCY_UNKNOWN
 instance Data.ProtoLens.MessageEnum MethodOptions'IdempotencyLevel
          where
         maybeToEnum 0 = Prelude.Just MethodOptions'IDEMPOTENCY_UNKNOWN
@@ -3980,12 +3968,18 @@ instance Data.ProtoLens.MessageEnum MethodOptions'IdempotencyLevel
         showEnum MethodOptions'IDEMPOTENCY_UNKNOWN = "IDEMPOTENCY_UNKNOWN"
         showEnum MethodOptions'NO_SIDE_EFFECTS = "NO_SIDE_EFFECTS"
         showEnum MethodOptions'IDEMPOTENT = "IDEMPOTENT"
-        readEnum "IDEMPOTENCY_UNKNOWN"
-          = Prelude.Just MethodOptions'IDEMPOTENCY_UNKNOWN
-        readEnum "NO_SIDE_EFFECTS"
-          = Prelude.Just MethodOptions'NO_SIDE_EFFECTS
-        readEnum "IDEMPOTENT" = Prelude.Just MethodOptions'IDEMPOTENT
-        readEnum _ = Prelude.Nothing
+        readEnum k
+          | (Prelude.==) k "IDEMPOTENCY_UNKNOWN" =
+            Prelude.Just MethodOptions'IDEMPOTENCY_UNKNOWN
+          | (Prelude.==) k "NO_SIDE_EFFECTS" =
+            Prelude.Just MethodOptions'NO_SIDE_EFFECTS
+          | (Prelude.==) k "IDEMPOTENT" =
+            Prelude.Just MethodOptions'IDEMPOTENT
+        readEnum k
+          = (Prelude.>>=) (Text.Read.readMaybe k) Data.ProtoLens.maybeToEnum
+instance Prelude.Bounded MethodOptions'IdempotencyLevel where
+        minBound = MethodOptions'IDEMPOTENCY_UNKNOWN
+        maxBound = MethodOptions'IDEMPOTENT
 instance Prelude.Enum MethodOptions'IdempotencyLevel where
         toEnum k__
           = Prelude.maybe
@@ -4013,9 +4007,9 @@ instance Prelude.Enum MethodOptions'IdempotencyLevel where
         enumFromTo = Data.ProtoLens.Message.Enum.messageEnumFromTo
         enumFromThen = Data.ProtoLens.Message.Enum.messageEnumFromThen
         enumFromThenTo = Data.ProtoLens.Message.Enum.messageEnumFromThenTo
-instance Prelude.Bounded MethodOptions'IdempotencyLevel where
-        minBound = MethodOptions'IDEMPOTENCY_UNKNOWN
-        maxBound = MethodOptions'IDEMPOTENT
+instance Data.ProtoLens.FieldDefault MethodOptions'IdempotencyLevel
+         where
+        fieldDefault = MethodOptions'IDEMPOTENCY_UNKNOWN
 instance Control.DeepSeq.NFData MethodOptions'IdempotencyLevel
          where
         rnf x__ = Prelude.seq x__ (())
@@ -4038,32 +4032,32 @@ instance Prelude.Show OneofDescriptorProto where
           = Prelude.showChar '{'
               (Prelude.showString (Data.ProtoLens.showMessageShort __x)
                  (Prelude.showChar '}' __s))
-instance Lens.Labels.HasLens' OneofDescriptorProto "name"
-           (Data.Text.Text)
+instance a ~ (Data.Text.Text) =>
+         Lens.Labels.HasLens' OneofDescriptorProto "name" a
          where
         lensOf' _
           = (Prelude..)
               (Lens.Family2.Unchecked.lens _OneofDescriptorProto'name
                  (\ x__ y__ -> x__{_OneofDescriptorProto'name = y__}))
               (Data.ProtoLens.maybeLens Data.ProtoLens.fieldDefault)
-instance Lens.Labels.HasLens' OneofDescriptorProto "maybe'name"
-           (Prelude.Maybe Data.Text.Text)
+instance a ~ (Prelude.Maybe Data.Text.Text) =>
+         Lens.Labels.HasLens' OneofDescriptorProto "maybe'name" a
          where
         lensOf' _
           = (Prelude..)
               (Lens.Family2.Unchecked.lens _OneofDescriptorProto'name
                  (\ x__ y__ -> x__{_OneofDescriptorProto'name = y__}))
               Prelude.id
-instance Lens.Labels.HasLens' OneofDescriptorProto "options"
-           (OneofOptions)
+instance a ~ (OneofOptions) =>
+         Lens.Labels.HasLens' OneofDescriptorProto "options" a
          where
         lensOf' _
           = (Prelude..)
               (Lens.Family2.Unchecked.lens _OneofDescriptorProto'options
                  (\ x__ y__ -> x__{_OneofDescriptorProto'options = y__}))
               (Data.ProtoLens.maybeLens Data.ProtoLens.defMessage)
-instance Lens.Labels.HasLens' OneofDescriptorProto "maybe'options"
-           (Prelude.Maybe OneofOptions)
+instance a ~ (Prelude.Maybe OneofOptions) =>
+         Lens.Labels.HasLens' OneofDescriptorProto "maybe'options" a
          where
         lensOf' _
           = (Prelude..)
@@ -4121,8 +4115,8 @@ instance Prelude.Show OneofOptions where
           = Prelude.showChar '{'
               (Prelude.showString (Data.ProtoLens.showMessageShort __x)
                  (Prelude.showChar '}' __s))
-instance Lens.Labels.HasLens' OneofOptions "uninterpretedOption"
-           ([UninterpretedOption])
+instance a ~ ([UninterpretedOption]) =>
+         Lens.Labels.HasLens' OneofOptions "uninterpretedOption" a
          where
         lensOf' _
           = (Prelude..)
@@ -4178,41 +4172,40 @@ instance Prelude.Show ServiceDescriptorProto where
           = Prelude.showChar '{'
               (Prelude.showString (Data.ProtoLens.showMessageShort __x)
                  (Prelude.showChar '}' __s))
-instance Lens.Labels.HasLens' ServiceDescriptorProto "name"
-           (Data.Text.Text)
+instance a ~ (Data.Text.Text) =>
+         Lens.Labels.HasLens' ServiceDescriptorProto "name" a
          where
         lensOf' _
           = (Prelude..)
               (Lens.Family2.Unchecked.lens _ServiceDescriptorProto'name
                  (\ x__ y__ -> x__{_ServiceDescriptorProto'name = y__}))
               (Data.ProtoLens.maybeLens Data.ProtoLens.fieldDefault)
-instance Lens.Labels.HasLens' ServiceDescriptorProto "maybe'name"
-           (Prelude.Maybe Data.Text.Text)
+instance a ~ (Prelude.Maybe Data.Text.Text) =>
+         Lens.Labels.HasLens' ServiceDescriptorProto "maybe'name" a
          where
         lensOf' _
           = (Prelude..)
               (Lens.Family2.Unchecked.lens _ServiceDescriptorProto'name
                  (\ x__ y__ -> x__{_ServiceDescriptorProto'name = y__}))
               Prelude.id
-instance Lens.Labels.HasLens' ServiceDescriptorProto "method"
-           ([MethodDescriptorProto])
+instance a ~ ([MethodDescriptorProto]) =>
+         Lens.Labels.HasLens' ServiceDescriptorProto "method" a
          where
         lensOf' _
           = (Prelude..)
               (Lens.Family2.Unchecked.lens _ServiceDescriptorProto'method
                  (\ x__ y__ -> x__{_ServiceDescriptorProto'method = y__}))
               Prelude.id
-instance Lens.Labels.HasLens' ServiceDescriptorProto "options"
-           (ServiceOptions)
+instance a ~ (ServiceOptions) =>
+         Lens.Labels.HasLens' ServiceDescriptorProto "options" a
          where
         lensOf' _
           = (Prelude..)
               (Lens.Family2.Unchecked.lens _ServiceDescriptorProto'options
                  (\ x__ y__ -> x__{_ServiceDescriptorProto'options = y__}))
               (Data.ProtoLens.maybeLens Data.ProtoLens.defMessage)
-instance Lens.Labels.HasLens' ServiceDescriptorProto
-           "maybe'options"
-           (Prelude.Maybe ServiceOptions)
+instance a ~ (Prelude.Maybe ServiceOptions) =>
+         Lens.Labels.HasLens' ServiceDescriptorProto "maybe'options" a
          where
         lensOf' _
           = (Prelude..)
@@ -4287,24 +4280,24 @@ instance Prelude.Show ServiceOptions where
           = Prelude.showChar '{'
               (Prelude.showString (Data.ProtoLens.showMessageShort __x)
                  (Prelude.showChar '}' __s))
-instance Lens.Labels.HasLens' ServiceOptions "deprecated"
-           (Prelude.Bool)
+instance a ~ (Prelude.Bool) =>
+         Lens.Labels.HasLens' ServiceOptions "deprecated" a
          where
         lensOf' _
           = (Prelude..)
               (Lens.Family2.Unchecked.lens _ServiceOptions'deprecated
                  (\ x__ y__ -> x__{_ServiceOptions'deprecated = y__}))
               (Data.ProtoLens.maybeLens Prelude.False)
-instance Lens.Labels.HasLens' ServiceOptions "maybe'deprecated"
-           (Prelude.Maybe Prelude.Bool)
+instance a ~ (Prelude.Maybe Prelude.Bool) =>
+         Lens.Labels.HasLens' ServiceOptions "maybe'deprecated" a
          where
         lensOf' _
           = (Prelude..)
               (Lens.Family2.Unchecked.lens _ServiceOptions'deprecated
                  (\ x__ y__ -> x__{_ServiceOptions'deprecated = y__}))
               Prelude.id
-instance Lens.Labels.HasLens' ServiceOptions "uninterpretedOption"
-           ([UninterpretedOption])
+instance a ~ ([UninterpretedOption]) =>
+         Lens.Labels.HasLens' ServiceOptions "uninterpretedOption" a
          where
         lensOf' _
           = (Prelude..)
@@ -4362,8 +4355,8 @@ instance Prelude.Show SourceCodeInfo where
           = Prelude.showChar '{'
               (Prelude.showString (Data.ProtoLens.showMessageShort __x)
                  (Prelude.showChar '}' __s))
-instance Lens.Labels.HasLens' SourceCodeInfo "location"
-           ([SourceCodeInfo'Location])
+instance a ~ ([SourceCodeInfo'Location]) =>
+         Lens.Labels.HasLens' SourceCodeInfo "location" a
          where
         lensOf' _
           = (Prelude..)
@@ -4423,25 +4416,24 @@ instance Prelude.Show SourceCodeInfo'Location where
           = Prelude.showChar '{'
               (Prelude.showString (Data.ProtoLens.showMessageShort __x)
                  (Prelude.showChar '}' __s))
-instance Lens.Labels.HasLens' SourceCodeInfo'Location "path"
-           ([Data.Int.Int32])
+instance a ~ ([Data.Int.Int32]) =>
+         Lens.Labels.HasLens' SourceCodeInfo'Location "path" a
          where
         lensOf' _
           = (Prelude..)
               (Lens.Family2.Unchecked.lens _SourceCodeInfo'Location'path
                  (\ x__ y__ -> x__{_SourceCodeInfo'Location'path = y__}))
               Prelude.id
-instance Lens.Labels.HasLens' SourceCodeInfo'Location "span"
-           ([Data.Int.Int32])
+instance a ~ ([Data.Int.Int32]) =>
+         Lens.Labels.HasLens' SourceCodeInfo'Location "span" a
          where
         lensOf' _
           = (Prelude..)
               (Lens.Family2.Unchecked.lens _SourceCodeInfo'Location'span
                  (\ x__ y__ -> x__{_SourceCodeInfo'Location'span = y__}))
               Prelude.id
-instance Lens.Labels.HasLens' SourceCodeInfo'Location
-           "leadingComments"
-           (Data.Text.Text)
+instance a ~ (Data.Text.Text) =>
+         Lens.Labels.HasLens' SourceCodeInfo'Location "leadingComments" a
          where
         lensOf' _
           = (Prelude..)
@@ -4449,9 +4441,10 @@ instance Lens.Labels.HasLens' SourceCodeInfo'Location
                  _SourceCodeInfo'Location'leadingComments
                  (\ x__ y__ -> x__{_SourceCodeInfo'Location'leadingComments = y__}))
               (Data.ProtoLens.maybeLens Data.ProtoLens.fieldDefault)
-instance Lens.Labels.HasLens' SourceCodeInfo'Location
+instance a ~ (Prelude.Maybe Data.Text.Text) =>
+         Lens.Labels.HasLens' SourceCodeInfo'Location
            "maybe'leadingComments"
-           (Prelude.Maybe Data.Text.Text)
+           a
          where
         lensOf' _
           = (Prelude..)
@@ -4459,9 +4452,8 @@ instance Lens.Labels.HasLens' SourceCodeInfo'Location
                  _SourceCodeInfo'Location'leadingComments
                  (\ x__ y__ -> x__{_SourceCodeInfo'Location'leadingComments = y__}))
               Prelude.id
-instance Lens.Labels.HasLens' SourceCodeInfo'Location
-           "trailingComments"
-           (Data.Text.Text)
+instance a ~ (Data.Text.Text) =>
+         Lens.Labels.HasLens' SourceCodeInfo'Location "trailingComments" a
          where
         lensOf' _
           = (Prelude..)
@@ -4470,9 +4462,10 @@ instance Lens.Labels.HasLens' SourceCodeInfo'Location
                  (\ x__ y__ ->
                     x__{_SourceCodeInfo'Location'trailingComments = y__}))
               (Data.ProtoLens.maybeLens Data.ProtoLens.fieldDefault)
-instance Lens.Labels.HasLens' SourceCodeInfo'Location
+instance a ~ (Prelude.Maybe Data.Text.Text) =>
+         Lens.Labels.HasLens' SourceCodeInfo'Location
            "maybe'trailingComments"
-           (Prelude.Maybe Data.Text.Text)
+           a
          where
         lensOf' _
           = (Prelude..)
@@ -4481,9 +4474,10 @@ instance Lens.Labels.HasLens' SourceCodeInfo'Location
                  (\ x__ y__ ->
                     x__{_SourceCodeInfo'Location'trailingComments = y__}))
               Prelude.id
-instance Lens.Labels.HasLens' SourceCodeInfo'Location
+instance a ~ ([Data.Text.Text]) =>
+         Lens.Labels.HasLens' SourceCodeInfo'Location
            "leadingDetachedComments"
-           ([Data.Text.Text])
+           a
          where
         lensOf' _
           = (Prelude..)
@@ -4610,112 +4604,104 @@ instance Prelude.Show UninterpretedOption where
           = Prelude.showChar '{'
               (Prelude.showString (Data.ProtoLens.showMessageShort __x)
                  (Prelude.showChar '}' __s))
-instance Lens.Labels.HasLens' UninterpretedOption "name"
-           ([UninterpretedOption'NamePart])
+instance a ~ ([UninterpretedOption'NamePart]) =>
+         Lens.Labels.HasLens' UninterpretedOption "name" a
          where
         lensOf' _
           = (Prelude..)
               (Lens.Family2.Unchecked.lens _UninterpretedOption'name
                  (\ x__ y__ -> x__{_UninterpretedOption'name = y__}))
               Prelude.id
-instance Lens.Labels.HasLens' UninterpretedOption "identifierValue"
-           (Data.Text.Text)
+instance a ~ (Data.Text.Text) =>
+         Lens.Labels.HasLens' UninterpretedOption "identifierValue" a
          where
         lensOf' _
           = (Prelude..)
               (Lens.Family2.Unchecked.lens _UninterpretedOption'identifierValue
                  (\ x__ y__ -> x__{_UninterpretedOption'identifierValue = y__}))
               (Data.ProtoLens.maybeLens Data.ProtoLens.fieldDefault)
-instance Lens.Labels.HasLens' UninterpretedOption
-           "maybe'identifierValue"
-           (Prelude.Maybe Data.Text.Text)
+instance a ~ (Prelude.Maybe Data.Text.Text) =>
+         Lens.Labels.HasLens' UninterpretedOption "maybe'identifierValue" a
          where
         lensOf' _
           = (Prelude..)
               (Lens.Family2.Unchecked.lens _UninterpretedOption'identifierValue
                  (\ x__ y__ -> x__{_UninterpretedOption'identifierValue = y__}))
               Prelude.id
-instance Lens.Labels.HasLens' UninterpretedOption
-           "positiveIntValue"
-           (Data.Word.Word64)
+instance a ~ (Data.Word.Word64) =>
+         Lens.Labels.HasLens' UninterpretedOption "positiveIntValue" a
          where
         lensOf' _
           = (Prelude..)
               (Lens.Family2.Unchecked.lens _UninterpretedOption'positiveIntValue
                  (\ x__ y__ -> x__{_UninterpretedOption'positiveIntValue = y__}))
               (Data.ProtoLens.maybeLens Data.ProtoLens.fieldDefault)
-instance Lens.Labels.HasLens' UninterpretedOption
-           "maybe'positiveIntValue"
-           (Prelude.Maybe Data.Word.Word64)
+instance a ~ (Prelude.Maybe Data.Word.Word64) =>
+         Lens.Labels.HasLens' UninterpretedOption "maybe'positiveIntValue" a
          where
         lensOf' _
           = (Prelude..)
               (Lens.Family2.Unchecked.lens _UninterpretedOption'positiveIntValue
                  (\ x__ y__ -> x__{_UninterpretedOption'positiveIntValue = y__}))
               Prelude.id
-instance Lens.Labels.HasLens' UninterpretedOption
-           "negativeIntValue"
-           (Data.Int.Int64)
+instance a ~ (Data.Int.Int64) =>
+         Lens.Labels.HasLens' UninterpretedOption "negativeIntValue" a
          where
         lensOf' _
           = (Prelude..)
               (Lens.Family2.Unchecked.lens _UninterpretedOption'negativeIntValue
                  (\ x__ y__ -> x__{_UninterpretedOption'negativeIntValue = y__}))
               (Data.ProtoLens.maybeLens Data.ProtoLens.fieldDefault)
-instance Lens.Labels.HasLens' UninterpretedOption
-           "maybe'negativeIntValue"
-           (Prelude.Maybe Data.Int.Int64)
+instance a ~ (Prelude.Maybe Data.Int.Int64) =>
+         Lens.Labels.HasLens' UninterpretedOption "maybe'negativeIntValue" a
          where
         lensOf' _
           = (Prelude..)
               (Lens.Family2.Unchecked.lens _UninterpretedOption'negativeIntValue
                  (\ x__ y__ -> x__{_UninterpretedOption'negativeIntValue = y__}))
               Prelude.id
-instance Lens.Labels.HasLens' UninterpretedOption "doubleValue"
-           (Prelude.Double)
+instance a ~ (Prelude.Double) =>
+         Lens.Labels.HasLens' UninterpretedOption "doubleValue" a
          where
         lensOf' _
           = (Prelude..)
               (Lens.Family2.Unchecked.lens _UninterpretedOption'doubleValue
                  (\ x__ y__ -> x__{_UninterpretedOption'doubleValue = y__}))
               (Data.ProtoLens.maybeLens Data.ProtoLens.fieldDefault)
-instance Lens.Labels.HasLens' UninterpretedOption
-           "maybe'doubleValue"
-           (Prelude.Maybe Prelude.Double)
+instance a ~ (Prelude.Maybe Prelude.Double) =>
+         Lens.Labels.HasLens' UninterpretedOption "maybe'doubleValue" a
          where
         lensOf' _
           = (Prelude..)
               (Lens.Family2.Unchecked.lens _UninterpretedOption'doubleValue
                  (\ x__ y__ -> x__{_UninterpretedOption'doubleValue = y__}))
               Prelude.id
-instance Lens.Labels.HasLens' UninterpretedOption "stringValue"
-           (Data.ByteString.ByteString)
+instance a ~ (Data.ByteString.ByteString) =>
+         Lens.Labels.HasLens' UninterpretedOption "stringValue" a
          where
         lensOf' _
           = (Prelude..)
               (Lens.Family2.Unchecked.lens _UninterpretedOption'stringValue
                  (\ x__ y__ -> x__{_UninterpretedOption'stringValue = y__}))
               (Data.ProtoLens.maybeLens Data.ProtoLens.fieldDefault)
-instance Lens.Labels.HasLens' UninterpretedOption
-           "maybe'stringValue"
-           (Prelude.Maybe Data.ByteString.ByteString)
+instance a ~ (Prelude.Maybe Data.ByteString.ByteString) =>
+         Lens.Labels.HasLens' UninterpretedOption "maybe'stringValue" a
          where
         lensOf' _
           = (Prelude..)
               (Lens.Family2.Unchecked.lens _UninterpretedOption'stringValue
                  (\ x__ y__ -> x__{_UninterpretedOption'stringValue = y__}))
               Prelude.id
-instance Lens.Labels.HasLens' UninterpretedOption "aggregateValue"
-           (Data.Text.Text)
+instance a ~ (Data.Text.Text) =>
+         Lens.Labels.HasLens' UninterpretedOption "aggregateValue" a
          where
         lensOf' _
           = (Prelude..)
               (Lens.Family2.Unchecked.lens _UninterpretedOption'aggregateValue
                  (\ x__ y__ -> x__{_UninterpretedOption'aggregateValue = y__}))
               (Data.ProtoLens.maybeLens Data.ProtoLens.fieldDefault)
-instance Lens.Labels.HasLens' UninterpretedOption
-           "maybe'aggregateValue"
-           (Prelude.Maybe Data.Text.Text)
+instance a ~ (Prelude.Maybe Data.Text.Text) =>
+         Lens.Labels.HasLens' UninterpretedOption "maybe'aggregateValue" a
          where
         lensOf' _
           = (Prelude..)
@@ -4840,18 +4826,16 @@ instance Prelude.Show UninterpretedOption'NamePart where
           = Prelude.showChar '{'
               (Prelude.showString (Data.ProtoLens.showMessageShort __x)
                  (Prelude.showChar '}' __s))
-instance Lens.Labels.HasLens' UninterpretedOption'NamePart
-           "namePart"
-           (Data.Text.Text)
+instance a ~ (Data.Text.Text) =>
+         Lens.Labels.HasLens' UninterpretedOption'NamePart "namePart" a
          where
         lensOf' _
           = (Prelude..)
               (Lens.Family2.Unchecked.lens _UninterpretedOption'NamePart'namePart
                  (\ x__ y__ -> x__{_UninterpretedOption'NamePart'namePart = y__}))
               Prelude.id
-instance Lens.Labels.HasLens' UninterpretedOption'NamePart
-           "isExtension"
-           (Prelude.Bool)
+instance a ~ (Prelude.Bool) =>
+         Lens.Labels.HasLens' UninterpretedOption'NamePart "isExtension" a
          where
         lensOf' _
           = (Prelude..)
