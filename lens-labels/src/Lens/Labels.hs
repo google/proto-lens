@@ -14,13 +14,13 @@ TODO: support more general optic types (e.g., prisms).
 {-# LANGUAGE DataKinds #-}
 {-# LANGUAGE ExplicitNamespaces #-}
 {-# LANGUAGE FlexibleInstances #-}
-{-# LANGUAGE FunctionalDependencies #-}
 {-# LANGUAGE GeneralizedNewtypeDeriving #-}
 {-# LANGUAGE KindSignatures #-}
 {-# LANGUAGE MagicHash #-}
 {-# LANGUAGE MultiParamTypeClasses #-}
 {-# LANGUAGE RankNTypes #-}
 {-# LANGUAGE TypeFamilies #-}
+{-# LANGUAGE TypeOperators #-}
 {-# LANGUAGE UndecidableInstances #-}
 #if __GLASGOW_HASKELL__ >= 802
 {-# LANGUAGE ScopedTypeVariables #-}
@@ -55,7 +55,7 @@ module Lens.Labels (
 import qualified Control.Category as Category
 import GHC.Prim (Proxy#, proxy#)
 import GHC.OverloadedLabels (IsLabel(..))
-import GHC.TypeLits (Symbol)
+import GHC.TypeLits (Symbol, TypeError, ErrorMessage(..))
 
 import Data.Function ((&))
 import Data.Functor.Const (Const(..))
@@ -82,9 +82,25 @@ instance
 #endif
 
 -- | A type class for lens fields.
-class HasLens' s (x :: Symbol) a | s x -> a where
+--
+-- Note: in order to support better type error messages, this class does not have
+-- a fundep relationship to the parameter @a@.  Instead, instances are expected to
+-- be defined such that @a@ is derivable from @s@ and @x@.  For example, to define a
+-- field named @"r"@ of type @Int32@ for the containing type @Foo@, use:
+--
+-- > instance a ~ Int32 => HasLens' Foo "r" a where ...
+--
+-- The type checker can use such an instance as long as it knows the types of the
+-- `s` and `x` parameters.  In contrast, an @instance HasLens' Foo "r" Int32@ would
+-- not be used unless the type of `a` is also already known to be `Int32`.
+class HasLens' s (x :: Symbol) a where
     lensOf' :: Functor f => Proxy# x -> (a -> f a) -> s -> f s
 
+instance {-# OVERLAPPABLE #-} TypeError (MissingInstanceError s x) => HasLens' s x a where
+    lensOf' = error "Missing HasLens' instance"
+
+type MissingInstanceError s (x :: Symbol) =
+    'Text "Type " ':<>: 'ShowType s ':<>: 'Text " has no field named " ':<>: 'ShowType x
 type ASetter s t a b = LensLike Identity s t a b
 
 (.~), set :: ASetter s t a b -> b -> s -> t

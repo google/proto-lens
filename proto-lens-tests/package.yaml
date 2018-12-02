@@ -274,3 +274,10 @@ tests:
       - proto-lens-tests
     other-modules:
       - Proto.Dependent
+
+  combinators_test:
+    main: combinators_test.hs
+    source-dirs: tests
+    other-modules:
+      Proto.Combinators
+      Proto.Combinators_Fields

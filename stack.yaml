@@ -4,14 +4,14 @@ packages:
 - lens-labels
 - proto-lens
 - proto-lens-arbitrary
-- proto-lens-benchmarks
-- proto-lens-combinators
 - proto-lens-discrimination
 - proto-lens-optparse
 - proto-lens-protobuf-types
 - proto-lens-protoc
 - proto-lens-runtime
 - proto-lens-setup
+# Internal packages, not to be released:
+- proto-lens-benchmarks
 - proto-lens-tests
 - proto-lens-tests-dep
 extra-deps:

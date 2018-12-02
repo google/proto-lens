@@ -5,7 +5,6 @@ packages:
 - proto-lens
 - proto-lens-arbitrary
 - proto-lens-benchmarks
-- proto-lens-combinators
 - proto-lens-discrimination
 - proto-lens-optparse
 - proto-lens-protobuf-types
