@@ -284,7 +284,7 @@ generateMessageDecls fieldModName syntaxType env protoName info =
       $ deriving' ["Prelude.Show", "Prelude.Eq", "Prelude.Ord"]
     | oneofInfo <- messageOneofFields info
     ] ++
-    -- instance Bar ~ a => HasLens' Foo "foo" a where
+    -- instance a ~ Bar => HasLens' Foo "foo" a where
     --   lensOf _ = ...
     -- Note: for optional fields, this generates an instance both for "foo" and
     -- for "maybe'foo" (see plainRecordField below).

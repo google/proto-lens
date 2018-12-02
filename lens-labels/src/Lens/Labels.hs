@@ -86,10 +86,13 @@ instance
 -- Note: in order to support better type error messages, this class does not have
 -- a fundep relationship to the parameter @a@.  Instead, instances are expected to
 -- be defined such that @a@ is derivable from @s@ and @x@.  For example, to define a
--- field named @"x"@ of type @Int32@ for the containing type @Foo@:
+-- field named @"r"@ of type @Int32@ for the containing type @Foo@, use:
 --
--- > instance a ~ Int32 => HasLens' Foo "x" a where ...
+-- > instance a ~ Int32 => HasLens' Foo "r" a where ...
 --
+-- The type checker can use such an instance as long as it knows the types of the
+-- `s` and `x` parameters.  In contrast, an @instance HasLens' Foo "r" Int32@ would
+-- not be used unless the type of `a` is also already known to be `Int32`.
 class HasLens' s (x :: Symbol) a where
     lensOf' :: Functor f => Proxy# x -> (a -> f a) -> s -> f s
 
@@ -101,7 +104,7 @@ type MissingInstanceError s (x :: Symbol) =
 type ASetter s t a b = LensLike Identity s t a b
 
 (.~), set :: ASetter s t a b -> b -> s -> t
-f .~ x' = f %~ const x'
+f .~ x = f %~ const x
 set = (.~)
 
 infixr 4 .~
