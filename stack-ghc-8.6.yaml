@@ -6,7 +6,6 @@ packages:
 - proto-lens-arbitrary
 # Criterion doesn't build with nightly yet:
 # - proto-lens-benchmarks
-- proto-lens-combinators
 # - proto-lens-discrimination
 - proto-lens-optparse
 - proto-lens-protobuf-types
