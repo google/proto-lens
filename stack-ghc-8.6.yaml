@@ -1,12 +1,11 @@
-resolver: nightly-2018-09-29
+resolver: nightly-2018-12-01
 packages:
-# - discrimination-ieee754
+- discrimination-ieee754
 - lens-labels
 - proto-lens
 - proto-lens-arbitrary
-# Criterion doesn't build with nightly yet:
-# - proto-lens-benchmarks
-# - proto-lens-discrimination
+- proto-lens-benchmarks
+- proto-lens-discrimination
 - proto-lens-optparse
 - proto-lens-protobuf-types
 - proto-lens-protoc
@@ -15,6 +14,6 @@ packages:
 - proto-lens-tests
 - proto-lens-tests-dep
 extra-deps:
-# These don't build with nightly yet:
-# - discrimination-0.3
-# - promises-0.3
+- git: https://github.com/ekmett/discrimination
+  commit: 866f92068cb2e2fe1a0753ad2983641951796b8a
+- promises-0.3
