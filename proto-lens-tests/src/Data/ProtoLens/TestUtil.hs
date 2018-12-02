@@ -3,7 +3,7 @@
 -- Use of this source code is governed by a BSD-style
 -- license that can be found in the LICENSE file or at
 -- https://developers.google.com/open-source/licenses/bsd
-
+{-# LANGUAGE CPP #-}
 {-# LANGUAGE ScopedTypeVariables #-}
 module Data.ProtoLens.TestUtil(
     testMain,
@@ -41,6 +41,10 @@ import qualified Data.ByteString as B
 import qualified Data.ByteString.Builder as Builder
 import qualified Data.ByteString.Lazy as L
 import qualified Data.Text.Lazy as LT
+import Test.QuickCheck (noShrinking)
+#if MIN_VERSION_QuickCheck(2,10,0)
+import Test.QuickCheck (withMaxSuccess)
+#endif
 import Test.Framework (defaultMain, testGroup)
 import Test.Framework.Providers.HUnit (testCase)
 import Test.Framework.Providers.API (Test)
@@ -105,11 +109,26 @@ textRoundTripProperty (ArbitraryMessage msg) =
     let msg' = (readMessage . TL.pack . showMessage) msg
     in msg' == Right msg
 
+-- | A basic santity check that shrinking a message doesn't return the
+-- original message as one of the "shrunken" values.  If it did, QuickCheck
+-- could go into an infinite loop.
+shrinkSanityProperty :: (Message a, Eq a) => MessageProperty a
+shrinkSanityProperty (ArbitraryMessage msg) = msg `notElem` shrinkMessage msg
+
 newtype TypedTest a = TypedTest { runTypedTest :: Test }
 
 roundTripTest :: forall a . (Show a, Message a, Eq a) => String -> TypedTest a
 roundTripTest name = TypedTest $ testGroup name
-    [ testProperty "wire" (wireRoundTripProperty :: MessageProperty a)
+    [ testProperty "shrink sanity" $
+            -- Disable automatic shrinking so the test behaves
+            -- sensibly if there's a bug in shrinkMessage.
+            noShrinking $
+#if MIN_VERSION_QuickCheck(2,10,0)
+            -- Limit the number of tests since shrinking is slow for large messages.
+            withMaxSuccess 20
+#endif
+                (shrinkSanityProperty :: MessageProperty a)
+    , testProperty "wire" (wireRoundTripProperty :: MessageProperty a)
     , testProperty "text" (textRoundTripProperty :: MessageProperty a)
     ]
 
