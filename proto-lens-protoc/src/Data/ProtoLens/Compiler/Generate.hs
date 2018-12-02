@@ -284,13 +284,13 @@ generateMessageDecls fieldModName syntaxType env protoName info =
       $ deriving' ["Prelude.Show", "Prelude.Eq", "Prelude.Ord"]
     | oneofInfo <- messageOneofFields info
     ] ++
-    -- instance HasLens' Foo "foo" Bar
+    -- instance a ~ Bar => HasLens' Foo "foo" a where
     --   lensOf _ = ...
     -- Note: for optional fields, this generates an instance both for "foo" and
     -- for "maybe'foo" (see plainRecordField below).
-    [ uncommented $ instDecl []
+    [ uncommented $ instDecl [equalP "a" (tyParen t)]
         ("Lens.Labels.HasLens'" `ihApp`
-            [dataType, sym, tyParen t])
+            [dataType, sym, "a"])
             [[match "lensOf'" [pWildCard] $
                 "Prelude.."
                     @@ rawFieldAccessor (unQual $ recordFieldName li)
