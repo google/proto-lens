@@ -10,7 +10,6 @@
 {-# LANGUAGE OverloadedStrings #-}
 module Data.ProtoLens.Compiler.Generate(
     generateModule,
-    fileSyntaxType,
     ModifyImports,
     reexported,
     ) where
@@ -20,7 +19,7 @@ import Control.Arrow (second)
 import qualified Data.Foldable as F
 import qualified Data.List as List
 import qualified Data.Map as Map
-import Data.Maybe (isNothing, isJust)
+import Data.Maybe (isJust)
 import Data.Monoid ((<>))
 import Data.Ord (comparing)
 import qualified Data.Set as Set
@@ -34,36 +33,20 @@ import Text.Printf (printf)
 import Proto.Google.Protobuf.Descriptor
     ( EnumValueDescriptorProto
     , FieldDescriptorProto
-    , FieldDescriptorProto'Label(..)
     , FieldDescriptorProto'Type(..)
-    , FileDescriptorProto
     )
 import Proto.Google.Protobuf.Descriptor_Fields
     ( defaultValue
-    , label
     , mapEntry
-    , maybe'oneofIndex
-    , maybe'packed
     , name
     , number
     , options
-    , syntax
     , type'
     , typeName
     )
 
 import Data.ProtoLens.Compiler.Combinators
 import Data.ProtoLens.Compiler.Definitions
-
-data SyntaxType = Proto2 | Proto3
-    deriving (Show, Eq)
-
-fileSyntaxType :: FileDescriptorProto -> SyntaxType
-fileSyntaxType f = case f ^. syntax of
-    "proto2" -> Proto2
-    "proto3" -> Proto3
-    "" -> Proto2  -- The proto compiler doesn't set syntax for proto2 files.
-    s -> error $ "Unknown syntax type " ++ show s
 
 -- Whether to import the "Runtime" modules or the originals;
 -- e.g., Data.ProtoLens.Runtime.Data.Map vs Data.Map.
@@ -74,13 +57,12 @@ data UseRuntime = UseRuntime | UseOriginal
 -- input contains all defined names, incl. those in this module
 generateModule :: ModuleName
                -> [ModuleName]  -- ^ The imported modules
-               -> SyntaxType
                -> ModifyImports
                -> Env Name      -- ^ Definitions in this file
                -> Env QName     -- ^ Definitions in the imported modules
                -> [ServiceInfo]
                -> [Module]
-generateModule modName imports syntaxType modifyImport definitions importedEnv services
+generateModule modName imports modifyImport definitions importedEnv services
     = [ Module modName
                 (Just $ (serviceExports ++) $ concatMap generateExports $ Map.elems definitions)
                 pragmas
@@ -122,17 +104,17 @@ generateModule modName imports syntaxType modifyImport definitions importedEnv s
             ++ map importSimple imports
     env = Map.union (unqualifyEnv definitions) importedEnv
     generateDecls (protoName, Message m)
-        = generateMessageDecls fieldModName syntaxType env (stripDotPrefix protoName) m
+        = generateMessageDecls fieldModName env (stripDotPrefix protoName) m
        ++ map uncommented (concatMap (generatePrisms env) (messageOneofFields m))
-    generateDecls (_, Enum e) = map uncommented $ generateEnumDecls syntaxType e
+    generateDecls (_, Enum e) = map uncommented $ generateEnumDecls e
     generateExports (Message m) = generateMessageExports m
                                ++ concatMap generatePrismExports (messageOneofFields m)
-    generateExports (Enum e) = generateEnumExports syntaxType e
+    generateExports (Enum e) = generateEnumExports e
     serviceExports = fmap generateServiceExports services
     allLensNames = F.toList $ Set.fromList
         [ lensSymbol inst
         | Message m <- Map.elems definitions
-        , info <- allMessageFields syntaxType env m
+        , info <- allMessageFields env m
         , inst <- recordFieldLenses info
         ]
     -- The Env uses the convention that Message names are prefixed with '.'
@@ -142,9 +124,9 @@ generateModule modName imports syntaxType modifyImport definitions importedEnv s
         | Just ('.', s') <- T.uncons s = s'
         | otherwise = s
 
-allMessageFields :: SyntaxType -> Env QName -> MessageInfo Name -> [RecordField]
-allMessageFields syntaxType env info =
-    map (plainRecordField syntaxType env) (messageFields info)
+allMessageFields :: Env QName -> MessageInfo Name -> [RecordField]
+allMessageFields env info =
+    map (plainRecordField env) (messageFields info)
         ++ map (oneofRecordField env) (messageOneofFields info)
 
 importSimple :: ModuleName -> ImportDecl ()
@@ -243,8 +225,8 @@ generateServiceDecls env si =
                        Enum _ -> error "Service must have a message type"
 
 
-generateMessageDecls :: ModuleName -> SyntaxType -> Env QName -> T.Text -> MessageInfo Name -> [CommentedDecl]
-generateMessageDecls fieldModName syntaxType env protoName info =
+generateMessageDecls :: ModuleName -> Env QName -> T.Text -> MessageInfo Name -> [CommentedDecl]
+generateMessageDecls fieldModName env protoName info =
     -- data Bar = Bar {
     --    foo :: Baz
     -- }
@@ -303,7 +285,7 @@ generateMessageDecls fieldModName syntaxType env protoName info =
     ++
     -- instance Message.Message Bar where
     [ uncommented $ instDecl [] ("Data.ProtoLens.Message" `ihApp` [dataType])
-        $ messageInstance syntaxType env protoName info
+        $ messageInstance env protoName info
     -- instance NFData Bar where
     , uncommented $ instDecl [] ("Control.DeepSeq.NFData" `ihApp` [dataType])
         [[match "rnf" [] $ messageRnfExpr info]]
@@ -318,7 +300,7 @@ generateMessageDecls fieldModName syntaxType env protoName info =
   where
     dataType = tyCon $ unQual dataName
     dataName = messageName info
-    allFields = allMessageFields syntaxType env info
+    allFields = allMessageFields env info
 
 -- oneof Prism declarations
 -- proto: message Foo {
@@ -383,28 +365,28 @@ generatePrisms env oneofInfo =
 generatePrismExports :: OneofInfo -> [ExportSpec]
 generatePrismExports = map (exportVar . unQual . casePrismName) . oneofCases
 
-generateEnumExports :: SyntaxType -> EnumInfo Name -> [ExportSpec]
-generateEnumExports syntaxType e = [exportAll n, exportWith n aliases] ++ proto3NewType
+generateEnumExports :: EnumInfo Name -> [ExportSpec]
+generateEnumExports e = [exportAll n, exportWith n aliases] ++ proto3NewType
   where
     n = unQual $ enumName e
     aliases = [enumValueName v | v <- enumValues e, needsManualExport v]
     needsManualExport v = isJust (enumAliasOf v)
-    proto3NewType = if syntaxType == Proto3
-      then [exportVar . unQual $ enumUnrecognizedValueName e]
-      else []
+    proto3NewType = case enumUnrecognized e of
+        Just u -> [exportVar . unQual $ unrecognizedValueName u]
+        Nothing -> []
 
 generateServiceExports :: ServiceInfo -> ExportSpec
 generateServiceExports si = exportAll $ unQual $ fromString $ T.unpack $ serviceName si
 
-generateEnumDecls :: SyntaxType -> EnumInfo Name -> [Decl]
-generateEnumDecls syntaxType info =
+generateEnumDecls :: EnumInfo Name -> [Decl]
+generateEnumDecls info =
     -- Proto3-only:
     -- newtype FooEnum'UnrecognizedValue = FooEnum'UnrecognizedValue Data.Int.Int32
     --   deriving (Prelude.Eq, Prelude.Ord, Prelude.Show, Prelude.Read)
-    [ newtypeDecl unrecognizedValueName
+    [ newtypeDecl (unrecognizedValueName u)
        "Data.Int.Int32"
         $ deriving' ["Prelude.Eq", "Prelude.Ord", "Prelude.Show"]
-    | syntaxType == Proto3
+    | Just u <- [unrecognized]
     ]
     ++
 
@@ -415,8 +397,8 @@ generateEnumDecls syntaxType info =
     --   deriving (Prelude.Show, Prelude.Eq, Prelude.Ord, Prelude.Read)
     [ dataDecl dataName
         (  (flip conDecl [] <$> constructorNames)
-        ++ [ conDecl unrecognizedName [tyCon $ unQual unrecognizedValueName]
-           | syntaxType == Proto3
+        ++ [ conDecl (unrecognizedName u) [tyCon $ unQual (unrecognizedValueName u)]
+           | Just u <- [unrecognized]
            ]
         )
         $ deriving' ["Prelude.Show", "Prelude.Eq", "Prelude.Ord"]
@@ -447,12 +429,12 @@ generateEnumDecls syntaxType info =
           | (c, k) <- constructorNumbers
           ]
           ++
-          [ case syntaxType of
-              Proto2 -> match "maybeToEnum" [pWildCard] "Prelude.Nothing"
-              Proto3 -> match "maybeToEnum" ["k"]
+          [ case enumUnrecognized info of
+              Nothing -> match "maybeToEnum" [pWildCard] "Prelude.Nothing"
+              Just u -> match "maybeToEnum" ["k"]
                           $ "Prelude.Just" @@
-                            (con (unQual unrecognizedName)
-                              @@ (con (unQual unrecognizedValueName)
+                            (con (unQual $ unrecognizedName u)
+                              @@ (con (unQual $ unrecognizedValueName u)
                                   @@ ("Prelude.fromIntegral" @@ "k")
                                  )
                             )
@@ -463,11 +445,11 @@ generateEnumDecls syntaxType info =
           , let n = enumValueName v
           , let pn = T.unpack $ enumValueDescriptor v ^. name
           ] ++
-          [ match "showEnum" [pApp (unQual unrecognizedName)
-                              [pApp (unQual unrecognizedValueName) [pVar "k"]]
+          [ match "showEnum" [pApp (unQual $ unrecognizedName u)
+                              [pApp (unQual $ unrecognizedValueName u) [pVar "k"]]
                             ]
                   $ "Prelude.show" @@ "k"
-          | syntaxType == Proto3
+          | Just u <- [unrecognized]
           ]
         , [ guardedMatch "readEnum" [pVar "k"]
               [ ("Prelude.==" @@ "k" @@ stringExp pn, "Prelude.Just" @@ con (unQual n))
@@ -515,11 +497,11 @@ generateEnumDecls syntaxType info =
           | (c, k) <- constructorNumbers
           ]
           ++
-          [ match "fromEnum" [pApp (unQual unrecognizedName)
-                              [pApp (unQual unrecognizedValueName) [pVar "k"]]
+          [ match "fromEnum" [pApp (unQual $ unrecognizedName u)
+                              [pApp (unQual $ unrecognizedValueName u) [pVar "k"]]
                             ]
                   $ "Prelude.fromIntegral" @@ "k"
-          | syntaxType == Proto3
+          | Just u <- [unrecognized]
           ]
         , succDecl "succ" maxBoundName succPairs
         , succDecl "pred" minBoundName $ map swap succPairs
@@ -556,8 +538,7 @@ generateEnumDecls syntaxType info =
 
   where
     EnumInfo { enumName = dataName
-             , enumUnrecognizedName = unrecognizedName
-             , enumUnrecognizedValueName = unrecognizedValueName
+             , enumUnrecognized = unrecognized
              , enumDescriptor = ed
              } = info
     errorMessage = "toEnum: unknown value for enum " ++ unpack (ed ^. name)
@@ -599,11 +580,11 @@ generateEnumDecls syntaxType info =
         | (from, to) <- thePairs
         ]
         ++
-        [ match funName [pApp (unQual unrecognizedName) [pWildCard]]
+        [ match funName [pApp (unQual $ unrecognizedName u) [pWildCard]]
             ("Prelude.error" @@ stringExp (concat
                 [ prettyPrint dataName, ".", prettyPrint funName, ": bad argument: unrecognized value"
                 ]))
-        | syntaxType == Proto3
+        | Just u <- [unrecognized]
         ]
 
 generateFieldDecls :: Symbol -> [Decl]
@@ -649,19 +630,18 @@ data LensInstance = LensInstance
 -- for this particular field.
 --
 -- Used for "plain" record fields that are not part of a oneof.
-plainRecordField :: SyntaxType -> Env QName -> FieldInfo -> RecordField
-plainRecordField syntaxType env f = case fd ^. label of
+plainRecordField :: Env QName -> PlainFieldInfo -> RecordField
+plainRecordField env (PlainFieldInfo kind f) = case kind of
     -- data Foo = Foo { _Foo_bar :: Bar }
     -- type instance Field "bar" Foo = Bar
-    FieldDescriptorProto'LABEL_REQUIRED
+    RequiredField
         -> recordField baseType
                   [LensInstance
                       { lensSymbol = baseName
                       , lensFieldType = baseType
                       , lensExp = rawAccessor
                       }]
-    FieldDescriptorProto'LABEL_OPTIONAL
-        | isDefaultingOptional syntaxType fd
+    OptionalValueField
               -> recordField baseType
                     [LensInstance
                       { lensSymbol = baseName
@@ -671,7 +651,7 @@ plainRecordField syntaxType env f = case fd ^. label of
     -- data Foo = Foo { _Foo_bar :: Maybe Bar }
     -- type instance Field "bar" Foo = Bar
     -- type instance Field "maybe'bar" Foo = Maybe Bar
-        | otherwise ->
+    OptionalMaybeField ->
               recordField maybeType
                   [LensInstance
                       { lensSymbol = baseName
@@ -684,7 +664,7 @@ plainRecordField syntaxType env f = case fd ^. label of
                       , lensExp = rawAccessor
                       }
                   ]
-    FieldDescriptorProto'LABEL_REPEATED
+    RepeatedField {}
         -- data Foo = Foo { _Foo_bar :: Map Bar Baz }
         -- type instance Field "foo" Foo = Map Bar Baz
         | Just (k,v) <- getMapFields env fd -> let
@@ -705,8 +685,8 @@ plainRecordField syntaxType env f = case fd ^. label of
                       , lensExp = rawAccessor
                       }]
   where
-    recordField = RecordField (haskellRecordFieldName $ plainFieldName f)
-    baseName = overloadedName $ plainFieldName f
+    recordField = RecordField (haskellRecordFieldName $ fieldName f)
+    baseName = overloadedName $ fieldName f
     fd = fieldDescriptor f
     baseType = hsFieldType env fd
     maybeType = "Prelude.Maybe" @@ baseType
@@ -760,7 +740,7 @@ oneofRecordField env oneofInfo
               ]
             | c <- oneofCases oneofInfo
             , let f = caseField c
-            , let baseName = overloadedName $ plainFieldName f
+            , let baseName = overloadedName $ fieldName f
             , let baseType = hsFieldType env $ fieldDescriptor f
             , let maybeName = "maybe'" <> baseName
             ]
@@ -772,7 +752,7 @@ getMapFields env f
     | f ^. type' == FieldDescriptorProto'TYPE_MESSAGE
     , Message m@MessageInfo { messageDescriptor = d } <- definedFieldType f env
     , d ^. options.mapEntry
-    , [f1, f2] <- messageFields m = Just (f1, f2)
+    , [f1, f2] <- map plainFieldInfo $ messageFields m = Just (f1, f2)
     | otherwise = Nothing
 
 hsFieldType :: Env QName -> FieldDescriptorProto -> Type
@@ -805,17 +785,16 @@ hsFieldType env fd = case fd ^. type' of
     FieldDescriptorProto'TYPE_SINT32 -> "Data.Int.Int32"
     FieldDescriptorProto'TYPE_SINT64 -> "Data.Int.Int64"
 
-hsFieldDefault :: SyntaxType -> Env QName -> FieldDescriptorProto -> Exp
-hsFieldDefault syntaxType env fd
-    = case fd ^. label of
-          FieldDescriptorProto'LABEL_OPTIONAL
-              | isDefaultingOptional syntaxType fd -> hsFieldValueDefault env fd
-              | otherwise -> "Prelude.Nothing"
-          FieldDescriptorProto'LABEL_REPEATED
-              | Just _ <- getMapFields env fd -> "Data.Map.empty"
-              | otherwise -> list []
-          -- TODO: More sensible initialization of required fields.
-          FieldDescriptorProto'LABEL_REQUIRED -> hsFieldValueDefault env fd
+hsFieldDefault :: Env QName -> PlainFieldInfo -> Exp
+hsFieldDefault env f = case plainFieldKind f of
+    RequiredField -> hsFieldValueDefault env fd
+    OptionalValueField -> hsFieldValueDefault env fd
+    OptionalMaybeField -> "Prelude.Nothing"
+    RepeatedField {}
+        | Just _ <- getMapFields env fd -> "Data.Map.empty"
+        | otherwise -> list []
+  where
+    fd = fieldDescriptor (plainFieldInfo f)
 
 hsFieldValueDefault :: Env QName -> FieldDescriptorProto -> Exp
 hsFieldValueDefault env fd = case fd ^. type' of
@@ -909,8 +888,8 @@ oneofFieldAccessor o
     setter = lambda ["_", "y__"]
                 $ "Prelude.fmap" @@ con (unQual consName) @@ "y__"
 
-messageInstance :: SyntaxType -> Env QName -> T.Text -> MessageInfo Name -> [[Match]]
-messageInstance syntaxType env protoName m =
+messageInstance :: Env QName -> T.Text -> MessageInfo Name -> [[Match]]
+messageInstance env protoName m =
     [ [ match "messageName" [pWildCard] $
           "Data.Text.pack" @@ stringExp (T.unpack protoName)]
     , [ match "fieldsByTag" [] $
@@ -919,8 +898,9 @@ messageInstance syntaxType env protoName m =
     , [ match "unknownFields" [] $ rawFieldAccessor (unQual $ messageUnknownFields m) ]
     , [ match "defMessage" []
            $ recConstr (unQual $ messageName m) $
-                  [ fieldUpdate (unQual $ haskellRecordFieldName $ plainFieldName f)
-                        (hsFieldDefault syntaxType env (fieldDescriptor f))
+                  [ fieldUpdate (unQual $ haskellRecordFieldName
+                                    $ fieldName $ plainFieldInfo f)
+                        (hsFieldDefault env f)
                   | f <- messageFields m
                   ] ++
                   [ fieldUpdate (unQual $ haskellRecordFieldName $ oneofFieldName o)
@@ -940,18 +920,21 @@ messageInstance syntaxType env protoName m =
               | f <- fields
               , let t = "Data.ProtoLens.Tag"
                           @@ litInt (fromIntegral
-                                      $ fieldDescriptor f ^. number)
+                                      $ fieldDescriptor (plainFieldInfo f) ^. number)
               ]
     fieldDescriptorVar = var . unQual . fieldDescriptorName
     fieldDescriptorName f
-        = nameFromSymbol $ overloadedName (plainFieldName f) <> "__field_descriptor"
+        = nameFromSymbol $ overloadedName (fieldName . plainFieldInfo $ f)
+                                <> "__field_descriptor"
     fieldDescriptorVarBind n f
         = funBind
               [match (fieldDescriptorName f) []
-                  $ fieldDescriptorExpr syntaxType env n f
+                  $ fieldDescriptorExpr env n f
               ]
     fields = messageFields m
-                ++ (messageOneofFields m >>= fmap caseField . oneofCases)
+                ++ (messageOneofFields m >>= fmap casePlainField . oneofCases)
+    -- The cases of an optional are always treated like proto2 "maybe" fields.
+    casePlainField = PlainFieldInfo OptionalMaybeField . caseField
 
 -- | Get the name of the field when used in a text format proto. Groups are
 -- special because their text format field name is the name of their type,
@@ -965,9 +948,9 @@ textFormatFieldName env descr = case descr ^. type' of
                            ++ T.unpack (descr ^. typeName)
     _ -> descr ^. name
 
-fieldDescriptorExpr :: SyntaxType -> Env QName -> Name -> FieldInfo
+fieldDescriptorExpr :: Env QName -> Name -> PlainFieldInfo
                     -> Exp
-fieldDescriptorExpr syntaxType env n f =
+fieldDescriptorExpr env n f =
     ("Data.ProtoLens.FieldDescriptor"
         -- Record the original .proto name for text format
         @@ stringExp (T.unpack $ textFormatFieldName env fd)
@@ -977,41 +960,39 @@ fieldDescriptorExpr syntaxType env n f =
                 @::@
                     ("Data.ProtoLens.FieldTypeDescriptor"
                         @@ hsFieldType env fd))
-        @@ fieldAccessorExpr syntaxType env f)
+        @@ fieldAccessorExpr env f)
     -- TODO: why is this type sig needed?
     @::@
     ("Data.ProtoLens.FieldDescriptor" @@ tyCon (unQual n))
   where
-    fd = fieldDescriptor f
+    fd = fieldDescriptor $ plainFieldInfo f
 
-fieldAccessorExpr :: SyntaxType -> Env QName -> FieldInfo -> Exp
+fieldAccessorExpr :: Env QName -> PlainFieldInfo -> Exp
 -- (PlainField Required foo), (OptionalField foo), etc...
-fieldAccessorExpr syntaxType env f = accessorCon @@ lensOfExp hsFieldName
+fieldAccessorExpr env (PlainFieldInfo kind f) = accessorCon @@ lensOfExp hsFieldName
 
   where
     fd = fieldDescriptor f
-    accessorCon = case fd ^. label of
-          FieldDescriptorProto'LABEL_REQUIRED
-              -> "Data.ProtoLens.PlainField" @@ "Data.ProtoLens.Required"
-          FieldDescriptorProto'LABEL_OPTIONAL
-              | isDefaultingOptional syntaxType fd
-                  -> "Data.ProtoLens.PlainField" @@ "Data.ProtoLens.Optional"
-              | otherwise -> "Data.ProtoLens.OptionalField"
-          FieldDescriptorProto'LABEL_REPEATED
+    accessorCon = case kind of
+          RequiredField
+                -> "Data.ProtoLens.PlainField" @@ "Data.ProtoLens.Required"
+          OptionalValueField
+                -> "Data.ProtoLens.PlainField" @@ "Data.ProtoLens.Optional"
+          OptionalMaybeField
+                -> "Data.ProtoLens.OptionalField"
+          RepeatedField packed
               | Just (k, v) <- getMapFields env fd
                   -> "Data.ProtoLens.MapField"
                          @@ lensOfExp (overloadedField k)
                          @@ lensOfExp (overloadedField v)
               | otherwise -> "Data.ProtoLens.RepeatedField"
-                  @@ if isPackedField syntaxType fd
+                  @@ if packed
                         then "Data.ProtoLens.Packed"
                         else "Data.ProtoLens.Unpacked"
     hsFieldName
-        = case fd ^. label of
-              FieldDescriptorProto'LABEL_OPTIONAL
-                  | not (isDefaultingOptional syntaxType fd)
-                      -> "maybe'" <> overloadedField f
-              _ -> overloadedField f
+        = case kind of
+            OptionalMaybeField -> "maybe'" <> overloadedField f
+            _ -> overloadedField f
 
 lensOfExp :: Symbol -> Exp
 lensOfExp sym = ("Lens.Labels.lensOf'"
@@ -1019,29 +1000,7 @@ lensOfExp sym = ("Lens.Labels.lensOf'"
                       ("Lens.Labels.Proxy#" @@ promoteSymbol sym)))
 
 overloadedField :: FieldInfo -> Symbol
-overloadedField = overloadedName . plainFieldName
-
-isDefaultingOptional :: SyntaxType -> FieldDescriptorProto -> Bool
-isDefaultingOptional syntaxType f
-    = f ^. label == FieldDescriptorProto'LABEL_OPTIONAL
-          && syntaxType == Proto3
-          && f ^. type' /= FieldDescriptorProto'TYPE_MESSAGE
-          -- oneof fields have the same API as proto2 optional fields,
-          -- but setting one field will automatically clear the others.
-          && isNothing (f ^. maybe'oneofIndex)
-
-isPackedField :: SyntaxType -> FieldDescriptorProto -> Bool
-isPackedField s f = case f ^. options . maybe'packed of
-    Just t -> t
-    -- proto3 fields are packed by default.  Annoyingly, we need to
-    -- implement this logic manually rather than relying on protoc.
-    Nothing -> s == Proto3
-                && f ^. type' `notElem`
-                      [ FieldDescriptorProto'TYPE_MESSAGE
-                      , FieldDescriptorProto'TYPE_GROUP
-                      , FieldDescriptorProto'TYPE_STRING
-                      , FieldDescriptorProto'TYPE_BYTES
-                      ]
+overloadedField = overloadedName . fieldName
 
 fieldTypeDescriptorExpr :: FieldDescriptorProto'Type -> Exp
 fieldTypeDescriptorExpr = \case
@@ -1075,7 +1034,7 @@ messageRnfExpr :: MessageInfo Name -> Exp
 messageRnfExpr msg = lambda ["x__"] $ foldr (@@) "()" (map seqField fieldNames)
   where
     fieldNames = messageUnknownFields msg
-                : map (haskellRecordFieldName . plainFieldName)
+                : map (haskellRecordFieldName . fieldName . plainFieldInfo)
                        (messageFields msg)
                 ++ map (haskellRecordFieldName . oneofFieldName)
                        (messageOneofFields msg)
