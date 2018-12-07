@@ -79,9 +79,6 @@ parseMessageToEnd end = (Parse.<?> T.unpack (messageName (Proxy @msg))) $ do
                                       <?> fieldDescriptorName field
                             loop msg' $! Map.delete tag unsetFields
 
-runEither :: Either String a -> Parser a
-runEither = either fail return
-
 parseAndAddField :: msg
                  -> FieldDescriptor msg
                  -> TaggedValue

@@ -13,6 +13,10 @@ module Data.ProtoLens.Encoding.Bytes(
     getVarInt,
     putVarInt,
     anyBits,
+    getFixed32,
+    getFixed64,
+    putFixed32,
+    putFixed64,
     wordToFloat,
     wordToDouble,
     floatToWord,
@@ -21,11 +25,17 @@ module Data.ProtoLens.Encoding.Bytes(
     wordToSignedInt32,
     signedInt64ToWord,
     wordToSignedInt64,
+    atEnd,
+    getBytes,
+    putBytes,
+    runEither,
+    Parser,
     ) where
 
 import Data.Attoparsec.ByteString as Parse
 import Data.Bits
 import Data.ByteString.Lazy.Builder as Builder
+import qualified Data.ByteString as B
 import Data.Int (Int32, Int64)
 import Data.Monoid ((<>))
 import Data.Word (Word32, Word64)
@@ -62,6 +72,27 @@ putVarInt n
     | n < 128 = Builder.word8 (fromIntegral n)
     | otherwise = Builder.word8 (fromIntegral $ n .&. 127 .|. 128)
                       <> putVarInt (n `shiftR` 7)
+
+getFixed32 :: Parser Word32
+getFixed32 = do
+    b1 <- anyWord8
+    b2 <- anyWord8
+    b3 <- anyWord8
+    b4 <- anyWord8
+    return $ ((fromIntegral b4 `shiftL` 8 + fromIntegral b3)
+                `shiftL` 8 + fromIntegral b2) `shiftL` 8 + fromIntegral b1
+
+getFixed64 :: Parser Word64
+getFixed64 = do
+    x <- getFixed32
+    y <- getFixed32
+    return $ fromIntegral y `shiftL` 32 + fromIntegral x
+
+putFixed32 :: Word32 -> Builder
+putFixed32 = word32LE
+
+putFixed64 :: Word64 -> Builder
+putFixed64 = word64LE
 
 -- WARNING: SUPER UNSAFE!
 -- Helper function purely for converting between Word32/Word64 and
@@ -102,3 +133,12 @@ signedInt64ToWord n = fromIntegral $ shiftL n 1 `xor` shiftR n 63
 wordToSignedInt64 :: Word64 -> Int64
 wordToSignedInt64 n
     = fromIntegral (shiftR n 1) `xor` negate (fromIntegral $ n .&. 1)
+
+getBytes :: Int -> Parser B.ByteString
+getBytes = Parse.take
+
+putBytes :: B.ByteString -> Builder
+putBytes = Builder.byteString
+
+runEither :: Either String a -> Parser a
+runEither = either fail return
