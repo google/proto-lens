@@ -47,6 +47,7 @@ import Proto.Google.Protobuf.Descriptor_Fields
 
 import Data.ProtoLens.Compiler.Combinators
 import Data.ProtoLens.Compiler.Definitions
+import Data.ProtoLens.Compiler.Generate.Encoding
 
 -- Whether to import the "Runtime" modules or the originals;
 -- e.g., Data.ProtoLens.Runtime.Data.Map vs Data.Map.
@@ -97,8 +98,10 @@ generateModule modName imports modifyImport definitions importedEnv services
     sharedImports = map (modifyImport . importSimple)
               [ "Prelude", "Data.Int", "Data.Monoid", "Data.Word"
               , "Data.ProtoLens", "Data.ProtoLens.Message.Enum", "Data.ProtoLens.Service.Types"
+              , "Data.ProtoLens.Encoding.Bytes"
               , "Lens.Family2", "Lens.Family2.Unchecked"
               , "Data.Text",  "Data.Map", "Data.ByteString", "Data.ByteString.Char8"
+              , "Data.Text.Encoding"
               , "Lens.Labels", "Text.Read"
               ]
             ++ map importSimple imports
@@ -327,7 +330,7 @@ generatePrisms env oneofInfo =
        else concatMap (generatePrism mempty) cases
     where
         cases = oneofCases oneofInfo
-        altOtherwise = [ alt "_otherwise" "Prelude.Nothing" ]
+        altOtherwise = [ "_otherwise" --> "Prelude.Nothing" ]
 
         -- Generate type signature
         -- e.g. Prism' Bar'C Float
@@ -347,8 +350,8 @@ generatePrisms env oneofInfo =
                -- Case deconstruction
             @@ (lambda ["p__"] $
                     case' "p__" $
-                        [ alt (pApp (unQual consName) ["p__val"])
-                              ("Prelude.Just" @@ "p__val")
+                        [ pApp (unQual consName) ["p__val"]
+                              --> "Prelude.Just" @@ "p__val"
                         ]
                        -- We want to generate the otherwise case
                        -- depending on the amount of sum type cases there are
@@ -878,12 +881,9 @@ oneofFieldAccessor o
     consName = caseConstructorName o
     getter = lambda ["x__"] $
         case' "x__"
-            [ alt
-                (pApp "Prelude.Just" [pApp (unQual consName) ["x__val"]])
-                ("Prelude.Just" @@ "x__val")
-            , alt
-                "_otherwise"
-                "Prelude.Nothing"
+            [ pApp "Prelude.Just" [pApp (unQual consName) ["x__val"]]
+                --> "Prelude.Just" @@ "x__val"
+            , "_otherwise" --> "Prelude.Nothing"
             ]
     setter = lambda ["_", "y__"]
                 $ "Prelude.fmap" @@ con (unQual consName) @@ "y__"
@@ -910,8 +910,8 @@ messageInstance env protoName m =
                   [ fieldUpdate (unQual $ messageUnknownFields m)
                         "[]"]
       ]
-    , [ match "unfinishedParseMessage" [] $ "Prelude.return" @@ "Data.ProtoLens.defMessage" ]
-    , [ match "unfinishedBuildMessage" [] $ "Prelude.const" @@ "Data.Monoid.mempty" ]
+    , [ match "unfinishedParseMessage" [] $ generatedParser m ]
+    , [ match "unfinishedBuildMessage" [] $ generatedBuilder m ]
     ]
   where
     fieldsByTag =

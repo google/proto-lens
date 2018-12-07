@@ -139,8 +139,9 @@ type Alt = Syntax.Alt ()
 case' :: Exp -> [Alt] -> Exp
 case' = Syntax.Case ()
 
-alt :: Pat -> Exp -> Alt
-alt p e = Syntax.Alt () p (Syntax.UnGuardedRhs () e) Nothing
+(-->) :: Pat -> Exp -> Alt
+p --> e = Syntax.Alt () p (Syntax.UnGuardedRhs () e) Nothing
+infixl 1 -->
 
 stringExp :: String -> Exp
 stringExp = Syntax.Lit () . string
@@ -152,7 +153,7 @@ tuple :: [Exp] -> Exp
 tuple = Syntax.Tuple () Syntax.Boxed
 
 lambda :: [Pat] -> Exp -> Exp
-lambda = Syntax.Lambda ()
+lambda ps e = Syntax.Paren () $ Syntax.Lambda () ps e
 
 (@::@) :: Exp -> Type -> Exp
 (@::@) = Syntax.ExpTypeSig ()
@@ -171,6 +172,22 @@ con = Syntax.Con ()
 list :: [Exp] -> Exp
 list = Syntax.List ()
 
+letE :: [Decl] -> Exp -> Exp
+letE ds = Syntax.Let () (Syntax.BDecls () ds)
+
+if' :: Exp -> Exp -> Exp -> Exp
+if' = Syntax.If ()
+
+type Stmt = Syntax.Stmt ()
+
+do' :: [Stmt] -> Exp
+do' = Syntax.Do ()
+
+(<--) :: Pat -> Exp -> Stmt
+(<--) = Syntax.Generator ()
+
+stmt :: Exp -> Stmt
+stmt = Syntax.Qualifier ()
 
 type FieldUpdate = Syntax.FieldUpdate ()
 
@@ -184,6 +201,9 @@ ihApp = foldl (Syntax.IHApp ())
 
 tyParen :: Type -> Type
 tyParen = Syntax.TyParen ()
+
+tyFun :: Type -> Type -> Type
+tyFun = Syntax.TyFun ()
 
 type Match = Syntax.Match ()
 
@@ -325,7 +345,14 @@ instance App Type where
     (@@) = Syntax.TyApp ()
 
 instance App Exp where
-    (@@) = Syntax.App ()
+    Syntax.App () (Syntax.Con () v) x @@ y
+        | isSymbol v
+        = Syntax.InfixApp () (Syntax.Paren () x) (Syntax.QVarOp () v) y
+      where
+        isSymbol (Syntax.Qual () _ (Syntax.Symbol () _)) = True
+        isSymbol (Syntax.UnQual () (Syntax.Symbol () _)) = True
+        isSymbol _ = False
+    x @@ y = Syntax.App () x y
 
 instance IsString Name where
     fromString s
@@ -359,6 +386,7 @@ instance IsString Type where
 
 instance IsString Exp where
     fromString fs@(f:_)
+        -- TODO: this doesn't work with qualified
         | isUpper f = Syntax.Con () $ fromString fs
     fromString fs = Syntax.Var () $ fromString fs
 
