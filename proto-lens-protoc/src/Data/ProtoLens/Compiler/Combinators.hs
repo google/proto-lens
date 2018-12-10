@@ -105,6 +105,9 @@ deriving' classes = Syntax.Deriving ()
 funBind :: [Match] -> Decl
 funBind = Syntax.FunBind ()
 
+patBind :: Pat -> Exp -> Decl
+patBind p e = Syntax.PatBind () p (Syntax.UnGuardedRhs () e) Nothing
+
 instType :: Type -> Type -> Syntax.InstDecl ()
 instType = Syntax.InsType ()
 
@@ -178,6 +181,14 @@ letE ds = Syntax.Let () (Syntax.BDecls () ds)
 if' :: Exp -> Exp -> Exp -> Exp
 if' = Syntax.If ()
 
+-- | The ":" constructor.
+cons :: Exp
+cons = var $ Syntax.Special () $ Syntax.Cons ()
+
+-- | The "[]" constructor.
+emptyList :: Exp
+emptyList = var $ Syntax.Special () $ Syntax.ListCon ()
+
 type Stmt = Syntax.Stmt ()
 
 do' :: [Stmt] -> Exp
@@ -185,6 +196,7 @@ do' = Syntax.Do ()
 
 (<--) :: Pat -> Exp -> Stmt
 (<--) = Syntax.Generator ()
+infixl 1 <--
 
 stmt :: Exp -> Stmt
 stmt = Syntax.Qualifier ()
@@ -292,6 +304,11 @@ pWildCard = Syntax.PWildCard ()
 stringPat :: String -> Pat
 stringPat = Syntax.PLit () (Syntax.Signless ()) . string
 
+bangPat :: Pat -> Pat
+bangPat = Syntax.PBangPat ()
+
+patTypeSig :: Pat -> Type -> Pat
+patTypeSig = Syntax.PatTypeSig ()
 
 type QName = Syntax.QName ()
 

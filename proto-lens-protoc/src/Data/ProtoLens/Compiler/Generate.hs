@@ -37,10 +37,8 @@ import Proto.Google.Protobuf.Descriptor
     )
 import Proto.Google.Protobuf.Descriptor_Fields
     ( defaultValue
-    , mapEntry
     , name
     , number
-    , options
     , type'
     , typeName
     )
@@ -85,7 +83,7 @@ generateModule modName imports modifyImport definitions importedEnv services
                "UndecidableInstances", "GeneralizedNewtypeDeriving",
                "MultiParamTypeClasses", "FlexibleContexts", "FlexibleInstances",
                "PatternSynonyms", "MagicHash", "NoImplicitPrelude",
-               "DataKinds"]
+               "DataKinds", "BangPatterns"]
               -- Allow unused imports in case we don't import anything from
               -- Data.Text, Data.Int, etc.
           , optionsGhcPragma "-fno-warn-unused-imports"
@@ -670,7 +668,7 @@ plainRecordField env (PlainFieldInfo kind f) = case kind of
     RepeatedField {}
         -- data Foo = Foo { _Foo_bar :: Map Bar Baz }
         -- type instance Field "foo" Foo = Map Bar Baz
-        | Just (k,v) <- getMapFields env fd -> let
+        | Just (_, k,v) <- getMapFields env fd -> let
             mapType = "Data.Map.Map" @@ hsFieldType env (fieldDescriptor k)
                                      @@ hsFieldType env (fieldDescriptor v)
             in recordField mapType
@@ -747,16 +745,6 @@ oneofRecordField env oneofInfo
             , let baseType = hsFieldType env $ fieldDescriptor f
             , let maybeName = "maybe'" <> baseName
             ]
-
--- Get the key/value types of this type, if it is really a map.
-getMapFields :: Env QName -> FieldDescriptorProto
-             -> Maybe (FieldInfo, FieldInfo)
-getMapFields env f
-    | f ^. type' == FieldDescriptorProto'TYPE_MESSAGE
-    , Message m@MessageInfo { messageDescriptor = d } <- definedFieldType f env
-    , d ^. options.mapEntry
-    , [f1, f2] <- map plainFieldInfo $ messageFields m = Just (f1, f2)
-    | otherwise = Nothing
 
 hsFieldType :: Env QName -> FieldDescriptorProto -> Type
 hsFieldType env fd = case fd ^. type' of
@@ -910,8 +898,8 @@ messageInstance env protoName m =
                   [ fieldUpdate (unQual $ messageUnknownFields m)
                         "[]"]
       ]
-    , [ match "unfinishedParseMessage" [] $ generatedParser m ]
-    , [ match "unfinishedBuildMessage" [] $ generatedBuilder m ]
+    , [ match "unfinishedParseMessage" [] $ generatedParser env m ]
+    , [ match "unfinishedBuildMessage" [] $ generatedBuilder env m ]
     ]
   where
     fieldsByTag =
@@ -981,12 +969,12 @@ fieldAccessorExpr env (PlainFieldInfo kind f) = accessorCon @@ lensOfExp hsField
           OptionalMaybeField
                 -> "Data.ProtoLens.OptionalField"
           RepeatedField packed
-              | Just (k, v) <- getMapFields env fd
+              | Just (_, k, v) <- getMapFields env fd
                   -> "Data.ProtoLens.MapField"
                          @@ lensOfExp (overloadedField k)
                          @@ lensOfExp (overloadedField v)
               | otherwise -> "Data.ProtoLens.RepeatedField"
-                  @@ if packed
+                  @@ if packed == Packed
                         then "Data.ProtoLens.Packed"
                         else "Data.ProtoLens.Unpacked"
     hsFieldName

@@ -20,6 +20,7 @@ module Data.ProtoLens.Compiler.Definitions
     , PlainFieldInfo(..)
     , FieldInfo(..)
     , FieldKind(..)
+    , FieldPacking(..)
     , OneofInfo(..)
     , OneofCase(..)
     , FieldName(..)
@@ -36,6 +37,7 @@ module Data.ProtoLens.Compiler.Definitions
     , definedFieldType
     , definedType
     , camelCase
+    , getMapFields
     ) where
 
 import Control.Applicative (liftA2)
@@ -70,6 +72,7 @@ import Proto.Google.Protobuf.Descriptor_Fields
     , field
     , inputType
     , label
+    , mapEntry
     , maybe'oneofIndex
     , maybe'packed
     , messageType
@@ -175,11 +178,19 @@ data FieldKind
         -- are distinguishable.  Stored internally as a Maybe.
         -- In particular: proto2 optional fields, proto3 messages,
         -- and "oneof" fields.
-    | RepeatedField { packedField :: Bool }
+    | RepeatedField FieldPacking
         -- ^ A field containing a sequence of values.
         -- Stored internally as either a list or a map, depending on
         -- whether the field's FieldDescriptorProto of the field has
         -- options.map_entry set.
+
+data FieldPacking
+    = NotPackable  -- ^ Cannot be packed (e.g., strings or messages).
+    | Packable     -- ^ Can be decoded as packed, but should not be not be
+                   --   encoded as packed by default.
+    | Packed       -- ^ Can be decoded as packed, and should be encoded
+                   --   as packed by default.
+  deriving Eq
 
 data OneofInfo = OneofInfo
     { oneofFieldName :: FieldName
@@ -367,9 +378,14 @@ fieldKind syntaxType f = case f ^. label of
             FieldDescriptorProto'LABEL_REQUIRED -> RequiredField
             FieldDescriptorProto'LABEL_REPEATED -> RepeatedField packed
   where
-    packed = case f ^. options . maybe'packed of
-        Just t -> t
-        Nothing -> syntaxType == Proto3 && f ^. type' `notElem` unpackableTypes
+    packed
+        | f ^. type' `elem` unpackableTypes = NotPackable
+        | packedByDefault = Packed
+        | otherwise = Packable
+    -- If the "packed" attribute isn't set, then default to packed if proto3.
+    -- Unfortunately, protoc doesn't implement this logic for us automatically.
+    packedByDefault = fromMaybe (syntaxType == Proto3)
+                        $ f ^. options . maybe'packed
     unpackableTypes =
         [ FieldDescriptorProto'TYPE_MESSAGE
         , FieldDescriptorProto'TYPE_GROUP
@@ -553,3 +569,14 @@ capitalize :: Text -> Text
 capitalize s
     | Just (c, s') <- uncons s = cons (toUpper c) s'
     | otherwise = s
+
+-- Get the key/value types of this type, if it is really a map.
+getMapFields :: Env QName -> FieldDescriptorProto
+             -> Maybe (QName, FieldInfo, FieldInfo)
+getMapFields env f
+    | f ^. type' == FieldDescriptorProto'TYPE_MESSAGE
+    , Message m@MessageInfo { messageDescriptor = d } <- definedFieldType f env
+    , d ^. options.mapEntry
+    , [f1, f2] <- map plainFieldInfo $ messageFields m
+        = Just (messageName m, f1, f2)
+    | otherwise = Nothing

@@ -7,6 +7,8 @@ module Data.ProtoLens.Compiler.Generate.Encoding
     ) where
 
 import Data.Bits (shiftL, (.|.))
+import Data.Int (Int32)
+import Data.Maybe (isNothing)
 
 import Data.ProtoLens.Compiler.Combinators
 import Data.ProtoLens.Compiler.Definitions
@@ -20,8 +22,8 @@ import Proto.Google.Protobuf.Descriptor_Fields
     , type'
     )
 
-generatedParser :: MessageInfo Name -> Exp
-generatedParser m =
+generatedParser :: Env QName -> MessageInfo Name -> Exp
+generatedParser env m =
     {- let loop :: T -> Parser T
            loop x = do
                     end <- atEnd
@@ -45,20 +47,30 @@ generatedParser m =
         [ end <-- "Data.ProtoLens.Encoding.Bytes.atEnd"
         , stmt $
             if' end
-                ("Prelude.return" @@ x)
+                ("Prelude.return" @@
+                    (reverseRepeatedFields env m x))
                 $ do'
                     [ tag <-- getVarInt'
-                    , stmt $ case' tag $ parseTagCases (loop @@) x m
+                    , stmt $ case' tag $ parseTagCases env (loop @@) x m
                     ]
         ]
 
+reverseRepeatedFields :: Env QName -> MessageInfo Name -> Exp -> Exp
+reverseRepeatedFields env m = foldr (.) id
+    [ (overField (plainFieldInfo f) "Prelude.reverse" @@)
+    | f <- messageFields m
+    , RepeatedField{} <- [plainFieldKind f]
+    , isNothing (getMapFields env $ fieldDescriptor $ plainFieldInfo f)
+    ]
+
 parseTagCases ::
-       (Exp -> Exp) -- ^ loop continuation
+       Env QName
+    -> (Exp -> Exp) -- ^ loop continuation
     -> Exp -- ^ Old message
     -> MessageInfo Name
     -> [Alt]
-parseTagCases loop x info =
-    concatMap (parseFieldCase loop x) allFields
+parseTagCases env loop x info =
+    concatMap (parseFieldCase env loop x) allFields
     -- TODO: currently we ignore unknown fields.
     ++ [ pWildCard --> loop x]
   where
@@ -70,29 +82,87 @@ parseTagCases loop x info =
                    ]
 
 
-parseFieldCase :: (Exp -> Exp) -> Exp -> PlainFieldInfo -> [Alt]
+parseFieldCase ::
+    Env QName -> (Exp -> Exp) -> Exp -> PlainFieldInfo -> [Alt]
 -- TODO: implement repeated fields
-parseFieldCase loop x f = case plainFieldKind f of
-    RepeatedField {} -> []
-    _ -> [pLitInt (fieldTag $ plainFieldInfo f)
+parseFieldCase env loop x f = case plainFieldKind f of
+    RepeatedField _
+        | Just mapInfo <- getMapFields env (fieldDescriptor info)
+            -> [mapCase mapInfo]
+    RepeatedField NotPackable -> [unpackedCase]
+    RepeatedField _ -> [unpackedCase, packedCase]
+    _ -> [pLitInt (fieldTag info)
             --> do'
-                [ y <-- parseField (fieldEncoding $ plainFieldInfo f)
-                , stmt $ loop $ setField (plainFieldInfo f) y x
+                [ y <-- parseField (fieldEncoding info)
+                , stmt $ loop $ setField info @@ y @@ x
                 ]
          ]
   where
     y = "y"
+    bytes = "bytes"
+    entry = "entry"
+    info = plainFieldInfo f
+    unpackedCase = pLitInt (fieldTag info) --> do'
+        [ bangPat y <-- parseField (fieldEncoding info)
+        , stmt $ loop $ overField info (cons @@ y) @@ x
+        ]
+    packedCase = pLitInt (packedFieldTag info) --> do'
+        [ bytes <-- parseField lengthy
+        , y <-- "Data.ProtoLens.Encoding.Bytes.runEither"
+                    @@ ("Data.ProtoLens.Encoding.Bytes.runParser"
+                        @@ parsePackedField (fieldEncoding info)
+                        @@ bytes)
+        , stmt $ loop $ overField info ("Prelude.++" @@ y) @@ x
+        ]
+    mapCase (entryName, kField, vField) = pLitInt (fieldTag info) --> do'
+        [ bangPat (entry `patTypeSig` tyCon entryName)
+                <-- parseField (fieldEncoding info)
+        , stmt $ letE [ patBind "key" $ view' @@ lensOfField kField
+                                            @@ entry
+                      , patBind "value" $ view' @@ lensOfField vField
+                                            @@ entry
+                      ]
+                $ loop $ overField info
+                            ("Data.Map.insert" @@ "key" @@ "value")
+                            @@ x
+        ]
 
-setField :: FieldInfo -> Exp -> Exp -> Exp
-setField f y x =
-    "Lens.Family2.set"
-        @@ lensOfExp (overloadedName $ fieldName f)
-        @@ y
-        @@ x
+setField :: FieldInfo -> Exp
+setField f = "Lens.Family2.set" @@ lensOfExp (fieldLens f)
 
-generatedBuilder :: MessageInfo Name -> Exp
-generatedBuilder m =
-    lambda [x] $ foldMapExp $ map (buildPlainField x) (messageFields m)
+-- over f (\!z -> g z) x
+-- The extra strictness prevents a space leak due to lists being lazy.
+overField :: FieldInfo -> Exp -> Exp
+overField f g =
+    "Lens.Family2.over"
+        @@ lensOfExp (fieldLens f)
+        @@ lambda [bangPat t] (g @@ t)
+  where
+    t = "t"
+
+-- | Parser [a] for a field that can be packed.
+parsePackedField :: FieldEncoding -> Exp
+parsePackedField enc = letE [funBind [match ploop [qs] ploopExp]]
+                       (ploop @@ emptyList)
+  where
+    ploop = "ploop"
+    q = "q"
+    qs = "qs"
+    packedEnd = "packedEnd"
+    ploopExp = do'
+        [ packedEnd <-- "Data.ProtoLens.Encoding.Bytes.atEnd"
+        , stmt $
+            if' packedEnd
+                ("Prelude.return" @@ qs)
+                $ do'
+                    [ bangPat q <-- parseField enc
+                    , stmt $ ploop @@ (cons @@ q @@ qs)
+                    ]
+        ]
+
+generatedBuilder :: Env QName -> MessageInfo Name -> Exp
+generatedBuilder env m =
+    lambda [x] $ foldMapExp $ map (buildPlainField env x) (messageFields m)
                                 ++ map (buildOneofField x) (messageOneofFields m)
   where
     x = "_x" -- TODO: rename to "x" once it's always used
@@ -105,27 +175,54 @@ foldMapExp [] = mempty'
 foldMapExp [x] = x
 foldMapExp (x:xs) = "Data.Monoid.<>" @@ x @@ foldMapExp xs
 
-buildPlainField :: Exp -> PlainFieldInfo -> Exp
-buildPlainField x f = case plainFieldKind f of
-    RequiredField -> buildTaggedField (plainFieldInfo f) fieldValue
+buildPlainField :: Env QName -> Exp -> PlainFieldInfo -> Exp
+buildPlainField env x f = case plainFieldKind f of
+    RequiredField -> buildTaggedField info fieldValue
     OptionalMaybeField -> case' maybeFieldValue
                             ["Prelude.Nothing" --> mempty'
                             , "Prelude.Just" `pApp` [v]
-                                --> buildTaggedField (plainFieldInfo f) v
+                                --> buildTaggedField info v
                             ]
-    OptionalValueField -> letE [funBind [match v [] $ fieldValue]]
+    OptionalValueField -> letE [patBind v $ fieldValue]
                           $ if' ("Prelude.==" @@ v @@ "Data.ProtoLens.fieldDefault")
                                 mempty'
-                                (buildTaggedField (plainFieldInfo f) v)
-    RepeatedField {} -> mempty'
+                                (buildTaggedField info v)
+    RepeatedField _
+        | Just mapInfo
+                <- getMapFields env (fieldDescriptor info)
+        -> "Data.Monoid.mconcat"
+            @@ ("Prelude.map"
+                    @@ lambda [v] (buildEntry mapInfo v)
+                    @@ ("Data.Map.toList" @@ fieldValue))
+    RepeatedField Packed -> buildPackedField info fieldValue
+    RepeatedField _ -> "Data.Monoid.mconcat"
+                        @@ ("Prelude.map"
+                            @@ lambda [v] (buildTaggedField info v)
+                            @@ fieldValue)
   where
+    info = plainFieldInfo f
     v = "_v"
-    fieldValue = "Lens.Family2.view"
-                        @@ lensOfExp (overloadedName $ fieldName $ plainFieldInfo f)
+    fieldValue = view'
+                    @@ lensOfExp (fieldLens info)
+                    @@ x
+    maybeFieldValue = view'
+                        @@ lensOfExp ("maybe'" <> fieldLens info)
                         @@ x
-    maybeFieldValue = "Lens.Family2.view"
-                        @@ lensOfExp ("maybe'" <> overloadedName (fieldName $ plainFieldInfo f))
-                        @@ x
+    buildEntry (entry, keyField, valueField) kv
+        = buildTaggedField info
+            $ set'
+                @@ lensOfField keyField
+                @@ ("Prelude.fst" @@ kv)
+                @@ (set' @@ lensOfField valueField
+                         @@ ("Prelude.snd" @@ kv)
+                         @@ ("Data.ProtoLens.defMessage"
+                                @::@ tyCon entry))
+
+fieldLens :: FieldInfo -> Symbol
+fieldLens = overloadedName . fieldName
+
+lensOfField :: FieldInfo -> Exp
+lensOfField = lensOfExp . fieldLens
 
 -- | Build a field along with its tag.
 buildTaggedField :: FieldInfo -> Exp -> Exp
@@ -134,6 +231,19 @@ buildTaggedField f x = foldMapExp
     , buildField (fieldEncoding f) x
     ]
 
+buildPackedField :: FieldInfo -> Exp -> Exp
+buildPackedField f x = foldMapExp
+    [ putVarInt' @@ litInt (packedFieldTag f)
+    , buildField lengthy
+        $ "Data.ProtoLens.Encoding.Bytes.runBuilder"
+            @@ ("Data.Monoid.mconcat"
+                @@ ("Prelude.map" @@ buildElt @@ x))
+    ]
+  where
+    buildElt = lambda [y] (buildField enc y)
+    enc = fieldEncoding f
+    y = "y"
+
 -- TODO: build oneof fields.
 buildOneofField :: Exp -> OneofInfo -> Exp
 buildOneofField _ _ = mempty'
@@ -141,7 +251,7 @@ buildOneofField _ _ = mempty'
 -- | A representation for how to encode and decode a particular field type.
 data FieldEncoding = FieldEncoding
     { buildField :: Exp -> Exp -- ^ :: a -> Builder
-    , parseField :: Exp        -- ^ :: Parser a 
+    , parseField :: Exp        -- ^ :: Parser a
     , wireType :: Integer
     }
 
@@ -151,12 +261,12 @@ varint = FieldEncoding
             , buildField = (putVarInt' @@)
             , parseField = getVarInt'
             }
-fixed64 = FieldEncoding 
+fixed64 = FieldEncoding
             { wireType = 1
             , buildField = ("Data.ProtoLens.Encoding.Bytes.putFixed64" @@)
             , parseField = "Data.ProtoLens.Encoding.Bytes.getFixed64"
             }
-fixed32 = FieldEncoding 
+fixed32 = FieldEncoding
             { wireType = 5
             , buildField = ("Data.ProtoLens.Encoding.Bytes.putFixed32" @@)
             , parseField = "Data.ProtoLens.Encoding.Bytes.getFixed32"
@@ -167,10 +277,11 @@ lengthy = FieldEncoding
             , parseField = parseLengthy
             }
   where
-    buildLengthy x =
-        "Data.Monoid.<>"
-        @@ (putVarInt' @@ (fromIntegral' @@ ("Data.ByteString.length" @@ x)))
-        @@ ("Data.ProtoLens.Encoding.Bytes.putBytes" @@ x)
+    buildLengthy x = letE [patBind bs x]
+        $ "Data.Monoid.<>"
+        @@ (putVarInt' @@ (fromIntegral' @@ ("Data.ByteString.length" @@ bs)))
+        @@ ("Data.ProtoLens.Encoding.Bytes.putBytes" @@ bs)
+    bs = "bs"
     parseLengthy = do'
         [ len <-- getVarInt'
         , stmt $ "Data.ProtoLens.Encoding.Bytes.getBytes"
@@ -200,7 +311,7 @@ partialField buildF parseF f = FieldEncoding
     { buildField = buildField f . (buildF @@)
     -- do
     --  value <- ...
-    --  runEither $ {parseF} value    
+    --  runEither $ {parseF} value
     , parseField = do' [value <-- parseField f, stmt $ runEither @@ parseF value]
     , wireType = wireType f
     }
@@ -280,9 +391,14 @@ decodeUtf8P bytes = case' ("Data.Text.Encoding.decodeUtf8'" @@ bytes )
     ]
 
 fieldTag :: FieldInfo -> Integer
-fieldTag f =
-    fromIntegral (fieldDescriptor f ^. number) `shiftL` 3
-        .|. wireType (fieldEncoding f)
+fieldTag f = makeTag (fieldDescriptor f ^. number) (fieldEncoding f)
+
+packedFieldTag :: FieldInfo -> Integer
+packedFieldTag f = makeTag (fieldDescriptor f ^. number) lengthy
+
+makeTag :: Int32 -> FieldEncoding -> Integer
+makeTag num enc =
+    fromIntegral num `shiftL` 3 .|. wireType enc
 
 lensOfExp :: Symbol -> Exp
 lensOfExp sym = ("Lens.Labels.lensOf'"
@@ -290,8 +406,10 @@ lensOfExp sym = ("Lens.Labels.lensOf'"
                       ("Lens.Labels.Proxy#" @@ promoteSymbol sym)))
 
 -- | Some functions that are used in multiple places in the generated code.
-getVarInt', putVarInt', mempty', fromIntegral' :: Exp
+getVarInt', putVarInt', mempty', fromIntegral', view', set' :: Exp
 getVarInt' = "Data.ProtoLens.Encoding.Bytes.getVarInt"
 putVarInt' = "Data.ProtoLens.Encoding.Bytes.putVarInt"
 mempty' = "Data.Monoid.mempty"
 fromIntegral' = "Prelude.fromIntegral"
+view' = "Lens.Family2.view"
+set' = "Lens.Family2.set"
