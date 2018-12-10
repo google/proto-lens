@@ -81,7 +81,14 @@ message odd_CAsed_message {
   enum odd_CAsed_enum {
     // TODO: deFA_ult = 0;
     DeFA_ult = 0;
+    // For consistency, we munge the names of these cases, even
+    // though it's not necessary since they're nested types and thus
+    // values are prefixed like "Odd_CAsed_message'...".
+    _under_scored = 1;
+    lower_case = 2;
   }
+
+  message sub_message {}
 }
 
 message ABBREVName {}
@@ -91,6 +98,7 @@ enum Odd_CAsed_enum {
   // TODO: deFA_ult = 0;
   DeFA_ult = 0;
   _under_scored = 1;
+  lower_case = 2;
 }
 
 // Messages whose name conflicts with a proto keyword.
