@@ -203,10 +203,10 @@ buildPlainField env x f = case plainFieldKind f of
     info = plainFieldInfo f
     v = "_v"
     fieldValue = view'
-                    @@ lensOfExp (fieldLens info)
+                    @@ lensOfField info
                     @@ x
     maybeFieldValue = view'
-                        @@ lensOfExp ("maybe'" <> fieldLens info)
+                        @@ lensOfMaybeField info
                         @@ x
     buildEntry (entry, keyField, valueField) kv
         = buildTaggedField info
@@ -224,6 +224,13 @@ fieldLens = overloadedName . fieldName
 lensOfField :: FieldInfo -> Exp
 lensOfField = lensOfExp . fieldLens
 
+lensOfMaybeField :: FieldInfo -> Exp
+lensOfMaybeField = lensOfExp . ("maybe'" <>) . fieldLens
+
+lensOfOneofField :: OneofInfo -> Exp
+lensOfOneofField =
+    lensOfExp . ("maybe'" <>) . overloadedName . oneofFieldName
+
 -- | Build a field along with its tag.
 buildTaggedField :: FieldInfo -> Exp -> Exp
 buildTaggedField f x = foldMapExp
@@ -232,13 +239,15 @@ buildTaggedField f x = foldMapExp
     ]
 
 buildPackedField :: FieldInfo -> Exp -> Exp
-buildPackedField f x = foldMapExp
-    [ putVarInt' @@ litInt (packedFieldTag f)
-    , buildField lengthy
-        $ "Data.ProtoLens.Encoding.Bytes.runBuilder"
-            @@ ("Data.Monoid.mconcat"
-                @@ ("Prelude.map" @@ buildElt @@ x))
-    ]
+buildPackedField f x =
+    if' ("Prelude.null" @@ x) mempty'
+    $ foldMapExp
+        [ putVarInt' @@ litInt (packedFieldTag f)
+        , buildField lengthy
+            $ "Data.ProtoLens.Encoding.Bytes.runBuilder"
+                @@ ("Data.Monoid.mconcat"
+                    @@ ("Prelude.map" @@ buildElt @@ x))
+        ]
   where
     buildElt = lambda [y] (buildField enc y)
     enc = fieldEncoding f
@@ -246,7 +255,15 @@ buildPackedField f x = foldMapExp
 
 -- TODO: build oneof fields.
 buildOneofField :: Exp -> OneofInfo -> Exp
-buildOneofField _ _ = mempty'
+buildOneofField x info = case' (view' @@ lensOfOneofField info @@ x) $
+    ("Prelude.Nothing" --> mempty')
+    : [ pApp "Prelude.Just" [pApp (unQual $ caseConstructorName c)
+                                 [v]]
+            --> buildTaggedField (caseField c) v
+      | c <- oneofCases info
+      ]
+  where
+    v = "v"
 
 -- | A representation for how to encode and decode a particular field type.
 data FieldEncoding = FieldEncoding
