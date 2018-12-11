@@ -26,29 +26,15 @@ module Data.ProtoLens.Compiler.Combinators
 
 import Data.Char (isAlphaNum, isUpper)
 import Data.String (IsString(..))
-#if MIN_VERSION_haskell_src_exts(1,18,0)
 import qualified Language.Haskell.Exts.Syntax as Syntax
 import qualified Language.Haskell.Exts.Pretty as Pretty
-#else
-import qualified Language.Haskell.Exts.Annotated.Syntax as Syntax
-import qualified Language.Haskell.Exts.Pretty as Pretty
-import Language.Haskell.Exts.SrcLoc (SrcLoc, noLoc)
-#endif
 import Text.PrettyPrint (($+$), (<+>), render, text, vcat, Doc)
 
-#if MIN_VERSION_haskell_src_exts(1,18,0)
 prettyPrint :: Pretty.Pretty a => a -> String
 prettyPrint = Pretty.prettyPrint
 
 prettyPrim :: Pretty.Pretty a => a -> Doc
 prettyPrim = Pretty.prettyPrim
-#else
-prettyPrint :: (Functor m, Pretty.Pretty (m SrcLoc)) => m () -> String
-prettyPrint = Pretty.prettyPrint . fmap (const noLoc)
-
-prettyPrim :: (Functor m, Pretty.Pretty (m SrcLoc)) => m () -> Doc
-prettyPrim = Pretty.prettyPrim . fmap (const noLoc)
-#endif
 
 type Asst = Syntax.Asst ()
 
@@ -260,21 +246,13 @@ exportVar :: QName -> ExportSpec
 exportVar = Syntax.EVar ()
 
 exportAll :: QName -> ExportSpec
-#if MIN_VERSION_haskell_src_exts(1,18,0)
 exportAll q = Syntax.EThingWith () (Syntax.EWildcard () 0) q []
-#else
-exportAll = Syntax.EThingAll ()
-#endif
 
 exportWith :: QName -> [Name] -> ExportSpec
-#if MIN_VERSION_haskell_src_exts(1,18,0)
 exportWith q = Syntax.EThingWith ()
                     (Syntax.NoWildcard ())
                     q
                     . map (Syntax.ConName ())
-#else
-exportWith q = Syntax.EThingWith () q . map (Syntax.ConName ())
-#endif
 
 type Name = Syntax.Name ()
 
@@ -331,11 +309,7 @@ tyForAll vars ctx t = Syntax.TyForall () (Just vars)
                             t
 
 tyBang :: Type -> Type
-#if MIN_VERSION_haskell_src_exts(1,18,0)
 tyBang = Syntax.TyBang () (Syntax.BangedTy ()) (Syntax.NoUnpackPragma ())
-#else
-tyBang = Syntax.TyBang () (Syntax.BangedTy ())
-#endif
 
 -- | Application of a Haskell type or expression to an argument.
 -- For example, to represent @f x y@, you can write
