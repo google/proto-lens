@@ -17,9 +17,7 @@ import qualified Data.ByteString as BS (length)
 import Data.Maybe (fromMaybe)
 import Data.ProtoLens
 import Options.Applicative
-#if MIN_VERSION_optparse_applicative(0,13,0)
-import Data.Monoid ((<>))
-#endif
+import Data.Semigroup ((<>))
 
 -- | Generate a group of benchmarks for encoding and decoding the given proto
 -- message. Includes benchmarks for decoding to both weak head normal form and
