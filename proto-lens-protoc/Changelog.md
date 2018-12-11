@@ -1,5 +1,8 @@
 # Changelog for `proto-lens-protoc`
 
+## Unreleased
+- Capitalize enum values, and capitalize names of enum sub-messages (#270).
+
 ## v0.4.0.1
 - Bump the dependency on `base` and `containers` to support `ghc-8.6.1`.
 - Fix a GHC error on enums with a very large number of cases (#241).
