@@ -61,7 +61,9 @@ recDecl dataName fields
 type Decl = Syntax.Decl ()
 
 patSynSig :: Name -> Type -> Decl
-#if MIN_VERSION_haskell_src_exts(1,20,0)
+#if MIN_VERSION_haskell_src_exts(1,21,0)
+patSynSig n t = Syntax.PatSynSig () [n] Nothing Nothing Nothing Nothing t
+#elif MIN_VERSION_haskell_src_exts(1,20,0)
 patSynSig n t = Syntax.PatSynSig () [n] Nothing Nothing Nothing t
 #else
 patSynSig n t = Syntax.PatSynSig () n Nothing Nothing Nothing t

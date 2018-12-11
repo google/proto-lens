@@ -28,7 +28,7 @@ library:
   source-dirs: src
   dependencies:
     - filepath >= 1.4 && < 1.6
-    - haskell-src-exts >= 1.18 && < 1.21
+    - haskell-src-exts >= 1.18 && < 1.22
     - pretty == 1.1.*
   exposed-modules:
     - Data.ProtoLens.Compiler.Combinators
