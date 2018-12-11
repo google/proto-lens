@@ -119,9 +119,13 @@ testOddCasedMessage = testGroup "oddCasedMessage"
           verifyLens defMsg oneofCase 42
           verifyLens defMsg maybe'oneofCase (Just 42)
     , testCase "enums" $ do
-          trivial (Odd_CAsed_message'DeFA_ult :: Odd_CAsed_message'odd_CAsed_enum)
+          trivial (Odd_CAsed_message'DeFA_ult :: Odd_CAsed_message'Odd_CAsed_enum)
           trivial (DeFA_ult :: Odd_CAsed_enum)
+          trivial (Odd_CAsed_message'Xunder_scored :: Odd_CAsed_message'Odd_CAsed_enum)
           trivial (Xunder_scored :: Odd_CAsed_enum)
+          trivial (Odd_CAsed_message'Lower_case :: Odd_CAsed_message'Odd_CAsed_enum)
+          trivial (Lower_case :: Odd_CAsed_enum)
+    , testCase "submessage" $ trivial (defMessage :: Odd_CAsed_message'Sub_message)
     ]
   where
     defMsg = defMessage :: Odd_CAsed_message
