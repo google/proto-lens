@@ -13,9 +13,15 @@ module Data.ProtoLens.BenchmarkUtil (protoBenchmark, benchmarkMain) where
 import Control.DeepSeq (NFData)
 import Criterion.Main
 import qualified Criterion.Main.Options as Criterion
-import qualified Data.ByteString as BS (length)
+import qualified Data.ByteString as BS
 import Data.Maybe (fromMaybe)
-import Data.ProtoLens
+import qualified Data.ProtoLens.Encoding.Reflected as Reflected
+import Data.ProtoLens.Message
+    ( Message
+    , unfinishedBuildMessage
+    , unfinishedParseMessage
+    )
+import Data.ProtoLens.Encoding.Bytes (runBuilder, runParser)
 import Options.Applicative
 import Data.Semigroup ((<>))
 
@@ -33,24 +39,35 @@ protoBenchmark
     -- ^ Protocol buffer message to encode/decode.
     -> Benchmark
 protoBenchmark groupName proto =
-    bgroup
-        fullGroupName
-        [ bench "encode" $ nf encodeMessage proto
-        , bgroup
-              "decode"
-              [ bench "whnf" $ whnf decodeMessageOrDie' encodedProto
-              , bench "nf" $ nf decodeMessageOrDie' encodedProto
-              ]
+    bgroup fullGroupName
+        [ bgroup "encode"
+            [ bench "reflected" $ whnf (runBuilder . Reflected.buildMessage) proto
+            , bench "generated" $ whnf (runBuilder . unfinishedBuildMessage) proto
+            ]
+        , bgroup "decode"
+            [ bgroup "whnf"
+                [ bench "reflected" $ whnf reflectedDecodeMessageOrDie encodedProto
+                , bench "generated" $ whnf generatedDecodeMessageOrDie encodedProto
+                ]
+            , bgroup "nf"
+                [ bench "reflected" $ nf reflectedDecodeMessageOrDie encodedProto
+                , bench "generated" $ nf generatedDecodeMessageOrDie encodedProto
+                ]
+            ]
         ]
   where
     -- We must indicate to the compiler that we want to decode to the same
     -- message type as the input proto.
-    -- We use decodeMessageOrDie here (instead of decodeMessage) so that if
-    -- a bug is introduced that causes decoding to fail, the benchmark will
-    -- fail with an error, instead of silently reporting a misleading value
-    -- (the amount of time required to determine that proto decoding failed).
-    decodeMessageOrDie' bytes = (decodeMessageOrDie bytes :: a)
-    encodedProto = encodeMessage proto
+    -- We use `either error id` here so that if a bug is introduced that
+    -- causes decoding to fail, the benchmark will fail with an error, instead of
+    -- silently reporting a misleading value (the amount of time required to
+    -- determine that proto decoding failed).
+    reflectedDecodeMessageOrDie, generatedDecodeMessageOrDie :: BS.ByteString -> a
+    reflectedDecodeMessageOrDie =
+        either error id . runParser Reflected.parseMessage
+    generatedDecodeMessageOrDie =
+        either error id . runParser unfinishedParseMessage
+    encodedProto = runBuilder $ Reflected.buildMessage proto
     fullGroupName =
         groupName ++ "(" ++ prettySize (BS.length encodedProto) ++ ")"
 

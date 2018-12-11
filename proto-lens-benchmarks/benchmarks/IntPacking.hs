@@ -27,8 +27,11 @@ populatePacked n k = defMessage & num .~ replicate n k
 
 benchmaker :: Int -> [Benchmark]
 benchmaker size =
-    [ protoBenchmark "int32-unpacked" (populateUnpacked size 5 :: FooUnpacked)
-    , protoBenchmark "int32-packed" (populatePacked size 5 :: FooPacked)
+    -- Run the packing benchmark first; criterion graphs look better
+    -- (less likely for the legend to overlap results) if smaller results
+    -- are first.
+    [ protoBenchmark "int32-packed" (populatePacked size 5 :: FooPacked)
+    , protoBenchmark "int32-unpacked" (populateUnpacked size 5 :: FooUnpacked)
     ]
 
 main :: IO ()
