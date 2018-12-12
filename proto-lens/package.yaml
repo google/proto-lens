@@ -42,6 +42,7 @@ library:
     - Data.ProtoLens.Combinators
     - Data.ProtoLens.Default
     - Data.ProtoLens.Encoding
+    - Data.ProtoLens.Encoding.Bytes
     - Data.ProtoLens.Encoding.Wire
     - Data.ProtoLens.Message
     - Data.ProtoLens.Message.Enum
@@ -63,7 +64,6 @@ library:
         cpp-options: -DGENERATED_ENCODING=0
 
   other-modules:
-    - Data.ProtoLens.Encoding.Bytes
     - Data.ProtoLens.TextFormat.Parser
     - Data.ProtoLens.Encoding.Reflected.Wire
   dependencies:

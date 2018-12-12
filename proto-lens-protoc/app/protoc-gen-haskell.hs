@@ -19,7 +19,8 @@ import Data.ProtoLens (defMessage)
 -- so that we can run the test suite against the Generated API.
 -- TODO: switch back to Data.ProtoLens.Encoding once the Generated encoding is
 -- good enough.
-import Data.ProtoLens.Encoding.Reflected (decodeMessage, encodeMessage)
+import Data.ProtoLens.Encoding.Bytes (runParser, runBuilder)
+import Data.ProtoLens.Encoding.Reflected (parseMessage, buildMessage)
 import Lens.Family2
 import Proto.Google.Protobuf.Compiler.Plugin
     ( CodeGeneratorRequest
@@ -50,9 +51,9 @@ main :: IO ()
 main = do
     contents <- B.getContents
     progName <- getProgName
-    case decodeMessage contents of
+    case runParser parseMessage contents of
         Left e -> IO.hPutStrLn stderr e >> exitWith (ExitFailure 1)
-        Right x -> B.putStr $ encodeMessage $ makeResponse progName x
+        Right x -> B.putStr $ runBuilder $ buildMessage $ makeResponse progName x
 
 makeResponse :: String -> CodeGeneratorRequest -> CodeGeneratorResponse
 makeResponse prog request = let

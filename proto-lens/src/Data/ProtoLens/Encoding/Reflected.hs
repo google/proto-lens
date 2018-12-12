@@ -19,9 +19,7 @@
 {-# LANGUAGE ScopedTypeVariables #-}
 {-# LANGUAGE TypeApplications #-}
 module Data.ProtoLens.Encoding.Reflected(
-    encodeMessage,
     parseMessage,
-    decodeMessage,
     buildMessage,
     ) where
 
@@ -37,16 +35,10 @@ import Data.Proxy (Proxy(Proxy))
 import Data.Text.Encoding (encodeUtf8, decodeUtf8')
 import Data.Text.Encoding.Error (UnicodeException(..))
 import qualified Data.Text as T
-import qualified Data.ByteString as B
 import qualified Data.Map.Strict as Map
 import Data.ByteString.Lazy.Builder as Builder
 import qualified Data.ByteString.Lazy as L
 import Lens.Family2 (Lens', set, over, (^.), (&))
-
--- | Decode a message from its wire format.  Returns 'Left' if the decoding
--- fails.
-decodeMessage :: Message msg => B.ByteString -> Either String msg
-decodeMessage = Parse.parseOnly parseMessage
 
 parseMessage :: Message msg => Parser msg
 parseMessage = parseMessageToEnd endOfInput
@@ -96,7 +88,7 @@ parseAndAddField
                                 parseMessageToEnd (endOfGroup tag)
                             MessageField MessageType -> do
                                 Equal <- equalWireTypes Lengthy wt
-                                runEither $ decodeMessage val
+                                runEither $ runParser parseMessage val
                             ScalarField f -> case fieldWireType f of
                                 FieldWireType fieldWt _ get -> do
                                     Equal <- equalWireTypes fieldWt wt
@@ -157,10 +149,6 @@ manyReversedTill p end = loop []
   where
     loop xs = (end >> return xs) <|> (p >>= \x -> loop (x:xs))
 
--- | Encode a message to the wire format as a strict 'ByteString'.
-encodeMessage :: Message msg => msg -> B.ByteString
-encodeMessage = L.toStrict . toLazyByteString . buildMessage
-
 -- | Encode a message to the wire format, as part of a 'Builder'.
 buildMessage :: Message msg => msg -> Builder
 buildMessage = foldMap putTaggedValue . messageToTaggedValues
@@ -180,7 +168,7 @@ messageFieldToVals tag (FieldDescriptor _ typeDescriptor accessor) msg =
         embed src
             = case typeDescriptor of
                 MessageField MessageType -> [TaggedValue tag $ WireValue Lengthy
-                                                  $ encodeMessage src]
+                                                  $ runBuilder $ buildMessage src]
                 MessageField GroupType ->
                     TaggedValue tag (WireValue StartGroup ())
                             : messageToTaggedValues src

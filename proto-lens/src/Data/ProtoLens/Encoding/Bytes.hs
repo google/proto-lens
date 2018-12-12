@@ -10,13 +10,21 @@
 
 -- | Utility functions for parsing and encoding individual types.
 module Data.ProtoLens.Encoding.Bytes(
+    -- * Running encodings
+    Parser,
+    Builder,
+    runParser,
+    runBuilder,
+    -- * Integral types
     getVarInt,
     putVarInt,
     anyBits,
+    -- * Floating-point types
     wordToFloat,
     wordToDouble,
     floatToWord,
     doubleToWord,
+    -- * Signed types
     signedInt32ToWord,
     wordToSignedInt32,
     signedInt64ToWord,
@@ -25,7 +33,9 @@ module Data.ProtoLens.Encoding.Bytes(
 
 import Data.Attoparsec.ByteString as Parse
 import Data.Bits
+import Data.ByteString (ByteString)
 import Data.ByteString.Lazy.Builder as Builder
+import qualified Data.ByteString.Lazy as L
 import Data.Int (Int32, Int64)
 import Data.Monoid ((<>))
 import Data.Word (Word32, Word64)
@@ -33,6 +43,17 @@ import Foreign.Ptr (castPtr)
 import Foreign.Marshal.Alloc (alloca)
 import Foreign.Storable (Storable, peek, poke)
 import System.IO.Unsafe (unsafePerformIO)
+
+-- | Evaluates a parser on the given input.
+--
+-- If the parser does not consume all of the input, the rest of the
+-- input is discarded and the parser still succeeds.
+runParser :: Parser a -> ByteString -> Either String a
+runParser = Parse.parseOnly
+
+-- | Constructs a strict 'ByteString' from the given 'Builder'.
+runBuilder :: Builder -> ByteString
+runBuilder = L.toStrict . Builder.toLazyByteString
 
 -- VarInts are inherently unsigned; there are different ways of encoding
 -- negative numbers for int32/64 and sint32/64.
