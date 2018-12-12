@@ -22,7 +22,7 @@ import Data.ProtoLens.Message
     , unfinishedParseMessage
     )
 import Data.ProtoLens.Encoding.Bytes (runBuilder, runParser)
-import Options.Applicative
+import qualified Options.Applicative as Options
 import Data.Semigroup ((<>))
 
 -- | Generate a group of benchmarks for encoding and decoding the given proto
@@ -88,15 +88,18 @@ benchmarkMain
     -- ^ Function to generate a set of benchmarks from a provided 'size'.
     -> IO ()
 benchmarkMain defaultSize benchmaker = do
-    (maybeSize, criterionMode) <- execParser $ info (helper <*> options) mempty
+    (maybeSize, criterionMode)
+        <- Options.execParser $ Options.info (Options.helper <*> options) mempty
     runMode criterionMode $ benchmaker (fromMaybe defaultSize maybeSize)
 
-options :: Parser (Maybe Int, Criterion.Mode)
+options :: Options.Parser (Maybe Int, Criterion.Mode)
 options =
     (,) <$>
-    optional
-        (option
-             auto
-             (help "Benchmark data size" <> metavar "N" <> short 's' <>
-              long "size")) <*>
+    Options.optional
+        (Options.option
+             Options.auto
+             (Options.help "Benchmark data size" <>
+                Options.metavar "N" <>
+                Options.short 's' <>
+                Options.long "size")) <*>
     Criterion.parseWith Criterion.defaultConfig
