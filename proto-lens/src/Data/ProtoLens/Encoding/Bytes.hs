@@ -44,9 +44,14 @@ import Foreign.Marshal.Alloc (alloca)
 import Foreign.Storable (Storable, peek, poke)
 import System.IO.Unsafe (unsafePerformIO)
 
+-- | Evaluates a parser on the given input.
+--
+-- If the parser does not consume all of the input, the rest of the
+-- input is discarded and the parser still succeeds.
 runParser :: Parser a -> ByteString -> Either String a
 runParser = Parse.parseOnly
 
+-- | Constructs a strict 'ByteString' from the given 'Builder'.
 runBuilder :: Builder -> ByteString
 runBuilder = L.toStrict . Builder.toLazyByteString
 
