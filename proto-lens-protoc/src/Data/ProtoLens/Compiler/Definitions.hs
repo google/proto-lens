@@ -17,7 +17,9 @@ module Data.ProtoLens.Compiler.Definitions
     , MessageInfo(..)
     , ServiceInfo(..)
     , MethodInfo(..)
+    , PlainFieldInfo(..)
     , FieldInfo(..)
+    , FieldKind(..)
     , OneofInfo(..)
     , OneofCase(..)
     , FieldName(..)
@@ -26,6 +28,7 @@ module Data.ProtoLens.Compiler.Definitions
     , promoteSymbol
     , EnumInfo(..)
     , EnumValueInfo(..)
+    , EnumUnrecognizedInfo(..)
     , qualifyEnv
     , unqualifyEnv
     , collectDefinitions
@@ -35,6 +38,7 @@ module Data.ProtoLens.Compiler.Definitions
     , camelCase
     ) where
 
+import Control.Applicative (liftA2)
 import Data.Char (isUpper, toUpper)
 import Data.Int (Int32)
 import Data.List (mapAccumL)
@@ -54,6 +58,8 @@ import Proto.Google.Protobuf.Descriptor
     , EnumDescriptorProto
     , EnumValueDescriptorProto
     , FieldDescriptorProto
+    , FieldDescriptorProto'Label(..)
+    , FieldDescriptorProto'Type(..)
     , FileDescriptorProto
     , MethodDescriptorProto
     , ServiceDescriptorProto
@@ -63,17 +69,22 @@ import Proto.Google.Protobuf.Descriptor_Fields
     , enumType
     , field
     , inputType
+    , label
     , maybe'oneofIndex
+    , maybe'packed
     , messageType
     , method
     , name
     , nestedType
     , number
     , oneofDecl
+    , options
     , outputType
     , package
     , serverStreaming
     , service
+    , syntax
+    , type'
     , typeName
     , value
     )
@@ -98,6 +109,16 @@ import Data.ProtoLens.Compiler.Combinators
 -- either from this or another file).
 type Env n = Map.Map Text (Definition n)
 
+data SyntaxType = Proto2 | Proto3
+    deriving (Show, Eq)
+
+fileSyntaxType :: FileDescriptorProto -> SyntaxType
+fileSyntaxType f = case f ^. syntax of
+    "proto2" -> Proto2
+    "proto3" -> Proto3
+    "" -> Proto2  -- The proto compiler doesn't set syntax for proto2 files.
+    s -> error $ "Unknown syntax type " ++ show s
+
 data Definition n = Message (MessageInfo n) | Enum (EnumInfo n)
     deriving Functor
 
@@ -105,7 +126,7 @@ data Definition n = Message (MessageInfo n) | Enum (EnumInfo n)
 data MessageInfo n = MessageInfo
     { messageName :: n  -- ^ Haskell type name
     , messageDescriptor :: DescriptorProto
-    , messageFields :: [FieldInfo] -- ^ Fields not belonging to a oneof.
+    , messageFields :: [PlainFieldInfo] -- ^ Fields not belonging to a oneof.
     , messageOneofFields :: [OneofInfo]
       -- ^ The oneofs in this message, associated with the fields that
       --   belong to them.
@@ -129,11 +150,36 @@ data MethodInfo = MethodInfo
     , methodServerStreaming :: Bool
     }
 
+-- | Information about a single field of a proto message,
+-- associated with how it is stored.
+data PlainFieldInfo = PlainFieldInfo
+    { plainFieldKind :: FieldKind
+    , plainFieldInfo :: FieldInfo
+    }
+
 -- | Information about a single field of a proto message.
 data FieldInfo = FieldInfo
     { fieldDescriptor  :: FieldDescriptorProto
-    , plainFieldName :: FieldName
+    , fieldName :: FieldName
     }
+
+-- | How a field is stored inside of the proto message.
+data FieldKind
+    = RequiredField
+        -- ^ A proto2 required field.  Stored internally as a value.
+    | OptionalValueField
+        -- ^ A proto3 optional scalar field.  Stored internally as a
+        -- value, and defaults to corresponding instance of fieldDefault.
+    | OptionalMaybeField
+        -- ^ An optional field where the "unset" and "defaulT" values
+        -- are distinguishable.  Stored internally as a Maybe.
+        -- In particular: proto2 optional fields, proto3 messages,
+        -- and "oneof" fields.
+    | RepeatedField { packedField :: Bool }
+        -- ^ A field containing a sequence of values.
+        -- Stored internally as either a list or a map, depending on
+        -- whether the field's FieldDescriptorProto of the field has
+        -- options.map_entry set.
 
 data OneofInfo = OneofInfo
     { oneofFieldName :: FieldName
@@ -190,11 +236,16 @@ promoteSymbol (Symbol s) = tyPromotedString s
 -- | All the information needed to define or use a proto enum type.
 data EnumInfo n = EnumInfo
     { enumName :: n
-    , enumUnrecognizedName :: n
-    , enumUnrecognizedValueName :: n
+    , enumUnrecognized :: Maybe EnumUnrecognizedInfo
     , enumDescriptor :: EnumDescriptorProto
     , enumValues :: [EnumValueInfo n]
     } deriving Functor
+
+-- | Information about the "unrecognized" case of an enum.
+data EnumUnrecognizedInfo = EnumUnrecognizedInfo
+    { unrecognizedName :: Name
+    , unrecognizedValueName :: Name
+    }
 
 -- | Information about a single value case of a proto enum.
 data EnumValueInfo n = EnumValueInfo
@@ -240,7 +291,8 @@ collectDefinitions fd = let
         "" -> "."
         p -> "." <> p <> "."
     hsPrefix = ""
-    in Map.fromList $ messageAndEnumDefs protoPrefix hsPrefix
+    in Map.fromList $ messageAndEnumDefs (fileSyntaxType fd)
+                          protoPrefix hsPrefix
                           (fd ^. messageType) (fd ^. enumType)
 
 collectServices :: FileDescriptorProto -> [ServiceInfo]
@@ -265,18 +317,19 @@ collectServices fd = fmap (toServiceInfo $ fd ^. package) $ fd ^. service
             , methodServerStreaming = md ^. serverStreaming
             }
 
-messageAndEnumDefs :: Text -> String -> [DescriptorProto]
+messageAndEnumDefs :: SyntaxType -> Text -> String -> [DescriptorProto]
                    -> [EnumDescriptorProto] -> [(Text, Definition Name)]
-messageAndEnumDefs protoPrefix hsPrefix messages enums
-    = concatMap (messageDefs protoPrefix hsPrefix) messages
-        ++ map (enumDef protoPrefix hsPrefix) enums
+messageAndEnumDefs syntaxType protoPrefix hsPrefix messages enums
+    = concatMap (messageDefs syntaxType protoPrefix hsPrefix) messages
+        ++ map (enumDef syntaxType protoPrefix hsPrefix) enums
 
 -- | Generate the definitions for a message and its nested types (if any).
-messageDefs :: Text -> String -> DescriptorProto
+messageDefs :: SyntaxType -> Text -> String -> DescriptorProto
             -> [(Text, Definition Name)]
-messageDefs protoPrefix hsPrefix d
+messageDefs syntaxType protoPrefix hsPrefix d
     = (protoName, thisDef)
           : messageAndEnumDefs
+                syntaxType
                 (protoName <> ".")
                 hsPrefix'
                 (d ^. nestedType)
@@ -290,7 +343,8 @@ messageDefs protoPrefix hsPrefix d
             { messageName = fromString $ hsPrefix ++ hsName (d ^. name)
             , messageDescriptor = d
             , messageFields =
-                  map (fieldInfo hsPrefix')
+                  map (liftA2 PlainFieldInfo
+                              (fieldKind syntaxType) (fieldInfo hsPrefix'))
                       $ Map.findWithDefault [] Nothing allFields
             , messageOneofFields = collectOneofFields hsPrefix' d allFields
             , messageUnknownFields =
@@ -298,7 +352,30 @@ messageDefs protoPrefix hsPrefix d
             }
 
 fieldInfo :: String -> FieldDescriptorProto -> FieldInfo
-fieldInfo hsPrefix f = FieldInfo f $ mkFieldName hsPrefix $ f ^. name
+fieldInfo hsPrefix f = FieldInfo
+                            { fieldDescriptor = f
+                            , fieldName = mkFieldName hsPrefix $ f ^. name
+                            }
+
+fieldKind :: SyntaxType -> FieldDescriptorProto -> FieldKind
+fieldKind syntaxType f = case f ^. label of
+            FieldDescriptorProto'LABEL_OPTIONAL
+                | syntaxType == Proto3
+                    && f ^. type' /= FieldDescriptorProto'TYPE_MESSAGE
+                    -> OptionalValueField
+                | otherwise -> OptionalMaybeField
+            FieldDescriptorProto'LABEL_REQUIRED -> RequiredField
+            FieldDescriptorProto'LABEL_REPEATED -> RepeatedField packed
+  where
+    packed = case f ^. options . maybe'packed of
+        Just t -> t
+        Nothing -> syntaxType == Proto3 && f ^. type' `notElem` unpackableTypes
+    unpackableTypes =
+        [ FieldDescriptorProto'TYPE_MESSAGE
+        , FieldDescriptorProto'TYPE_GROUP
+        , FieldDescriptorProto'TYPE_STRING
+        , FieldDescriptorProto'TYPE_BYTES
+        ]
 
 collectOneofFields
     :: String -> DescriptorProto -> Map.Map (Maybe Int32) [FieldDescriptorProto]
@@ -359,12 +436,13 @@ mkFieldName hsPrefix n = FieldName
                     , haskellRecordFieldName = fromString $ "_" ++ hsPrefix ++ n'
                     }
       where
-        n' = fieldName n
+        n' = fieldBaseName n
 
 -- | Get the name in Haskell of a proto field, taking care of camel casing and
--- clashes with language keywords.
-fieldName :: Text -> String
-fieldName = unpack . disambiguate . camelCase
+-- clashes with language keywords.  Doesn't handle the name prefix of the
+-- containing type.
+fieldBaseName :: Text -> String
+fieldBaseName = unpack . disambiguate . camelCase
   where
     disambiguate s
         | s `Set.member` reservedKeywords = s <> "'"
@@ -426,9 +504,9 @@ reservedKeywords = Set.fromList $
     ]
 
 -- | Generate the definition for an enum type.
-enumDef :: Text -> String -> EnumDescriptorProto
+enumDef :: SyntaxType -> Text -> String -> EnumDescriptorProto
           -> (Text, Definition Name)
-enumDef protoPrefix hsPrefix d = let
+enumDef syntaxType protoPrefix hsPrefix d = let
     mkText n = protoPrefix <> n
     mkHsName n = fromString $ hsPrefix ++ case hsName n of
       ('_':xs) -> 'X':xs
@@ -436,8 +514,14 @@ enumDef protoPrefix hsPrefix d = let
     in (mkText (d ^. name)
        , Enum EnumInfo
             { enumName = mkHsName (d ^. name)
-            , enumUnrecognizedName = mkHsName (d ^. name <> "'Unrecognized")
-            , enumUnrecognizedValueName = mkHsName (d ^. name <> "'UnrecognizedValue")
+            , enumUnrecognized = if syntaxType == Proto2
+                    then Nothing
+                    else Just EnumUnrecognizedInfo
+                            { unrecognizedName
+                                = mkHsName (d ^. name <> "'Unrecognized")
+                            , unrecognizedValueName
+                                = mkHsName (d ^. name <> "'UnrecognizedValue")
+                            }
             , enumDescriptor = d
             , enumValues = collectEnumValues mkHsName $ d ^. value
             })

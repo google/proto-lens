@@ -89,7 +89,6 @@ generateFiles modifyImports header files toGenerate = let
                   , exportName <- exports (filesByName ! dep)
                   ]
       in generateModule (haskellModule f) imports
-             (fileSyntaxType (descriptor f))
              modifyImports
              (definitions f)
              (collectEnvFromDeps deps filesByName)
