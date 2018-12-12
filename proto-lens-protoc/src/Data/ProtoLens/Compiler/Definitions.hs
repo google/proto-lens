@@ -166,9 +166,20 @@ data FieldInfo = FieldInfo
 -- | How a field is stored inside of the proto message.
 data FieldKind
     = RequiredField
+        -- ^ A proto2 required field.  Stored internally as a value.
     | OptionalValueField
+        -- ^ A proto3 optional scalar field.  Stored internally as a
+        -- value, and defaults to corresponding instance of fieldDefault.
     | OptionalMaybeField
+        -- ^ An optional field where the "unset" and "defaulT" values
+        -- are distinguishable.  Stored internally as a Maybe.
+        -- In particular: proto2 optional fields, proto3 messages,
+        -- and "oneof" fields.
     | RepeatedField { packedField :: Bool }
+        -- ^ A field containing a sequence of values.
+        -- Stored internally as either a list or a map, depending on
+        -- whether the field's FieldDescriptorProto of the field has
+        -- options.map_entry set.
 
 data OneofInfo = OneofInfo
     { oneofFieldName :: FieldName
