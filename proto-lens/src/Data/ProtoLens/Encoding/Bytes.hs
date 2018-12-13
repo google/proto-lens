@@ -22,7 +22,8 @@ module Data.ProtoLens.Encoding.Bytes(
     -- * Integral types
     getVarInt,
     putVarInt,
-    anyBits,
+    getFixed32,
+    getFixed64,
     putFixed32,
     putFixed64,
     -- * Floating-point types
@@ -88,15 +89,20 @@ putVarInt n
                       <> putVarInt (n `shiftR` 7)
 
 -- | Little-endian decoding function.
-anyBits :: forall a . (Num a, FiniteBits a) => Parser a
-anyBits = loop 0 0
-  where
-    size = finiteBitSize (undefined :: a)
-    loop !w !n
-        | n >= size = return w
-        | otherwise = do
-            b <- anyWord8
-            loop (w .|. shiftL (fromIntegral b) n) (n+8)
+getFixed32 :: Parser Word32
+getFixed32 = do
+    b1 <- anyWord8
+    b2 <- anyWord8
+    b3 <- anyWord8
+    b4 <- anyWord8
+    return $ ((fromIntegral b4 `shiftL` 8 + fromIntegral b3)
+                `shiftL` 8 + fromIntegral b2) `shiftL` 8 + fromIntegral b1
+
+getFixed64 :: Parser Word64
+getFixed64 = do
+    x <- getFixed32
+    y <- getFixed32
+    return $ fromIntegral y `shiftL` 32 + fromIntegral x
 
 putFixed32 :: Word32 -> Builder
 putFixed32 = word32LE
