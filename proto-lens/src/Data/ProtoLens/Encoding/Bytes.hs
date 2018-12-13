@@ -36,6 +36,8 @@ module Data.ProtoLens.Encoding.Bytes(
     wordToSignedInt32,
     signedInt64ToWord,
     wordToSignedInt64,
+    atEnd,
+    runEither,
     ) where
 
 import Data.Attoparsec.ByteString as Parse
@@ -149,3 +151,6 @@ signedInt64ToWord n = fromIntegral $ shiftL n 1 `xor` shiftR n 63
 wordToSignedInt64 :: Word64 -> Int64
 wordToSignedInt64 n
     = fromIntegral (shiftR n 1) `xor` negate (fromIntegral $ n .&. 1)
+
+runEither :: Either String a -> Parser a
+runEither = either fail return

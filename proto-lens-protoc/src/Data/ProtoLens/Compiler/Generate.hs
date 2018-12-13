@@ -37,16 +37,15 @@ import Proto.Google.Protobuf.Descriptor
     )
 import Proto.Google.Protobuf.Descriptor_Fields
     ( defaultValue
-    , mapEntry
     , name
     , number
-    , options
     , type'
     , typeName
     )
 
 import Data.ProtoLens.Compiler.Combinators
 import Data.ProtoLens.Compiler.Definitions
+import Data.ProtoLens.Compiler.Generate.Encoding
 
 -- Whether to import the "Runtime" modules or the originals;
 -- e.g., Data.ProtoLens.Runtime.Data.Map vs Data.Map.
@@ -84,7 +83,7 @@ generateModule modName imports modifyImport definitions importedEnv services
                "UndecidableInstances", "GeneralizedNewtypeDeriving",
                "MultiParamTypeClasses", "FlexibleContexts", "FlexibleInstances",
                "PatternSynonyms", "MagicHash", "NoImplicitPrelude",
-               "DataKinds"]
+               "DataKinds", "BangPatterns"]
               -- Allow unused imports in case we don't import anything from
               -- Data.Text, Data.Int, etc.
           , optionsGhcPragma "-fno-warn-unused-imports"
@@ -97,8 +96,10 @@ generateModule modName imports modifyImport definitions importedEnv services
     sharedImports = map (modifyImport . importSimple)
               [ "Prelude", "Data.Int", "Data.Monoid", "Data.Word"
               , "Data.ProtoLens", "Data.ProtoLens.Message.Enum", "Data.ProtoLens.Service.Types"
+              , "Data.ProtoLens.Encoding.Bytes"
               , "Lens.Family2", "Lens.Family2.Unchecked"
               , "Data.Text",  "Data.Map", "Data.ByteString", "Data.ByteString.Char8"
+              , "Data.Text.Encoding"
               , "Lens.Labels", "Text.Read"
               ]
             ++ map importSimple imports
@@ -327,7 +328,7 @@ generatePrisms env oneofInfo =
        else concatMap (generatePrism mempty) cases
     where
         cases = oneofCases oneofInfo
-        altOtherwise = [ alt "_otherwise" "Prelude.Nothing" ]
+        altOtherwise = [ "_otherwise" --> "Prelude.Nothing" ]
 
         -- Generate type signature
         -- e.g. Prism' Bar'C Float
@@ -347,8 +348,8 @@ generatePrisms env oneofInfo =
                -- Case deconstruction
             @@ (lambda ["p__"] $
                     case' "p__" $
-                        [ alt (pApp (unQual consName) ["p__val"])
-                              ("Prelude.Just" @@ "p__val")
+                        [ pApp (unQual consName) ["p__val"]
+                              --> "Prelude.Just" @@ "p__val"
                         ]
                        -- We want to generate the otherwise case
                        -- depending on the amount of sum type cases there are
@@ -667,7 +668,7 @@ plainRecordField env (PlainFieldInfo kind f) = case kind of
     RepeatedField {}
         -- data Foo = Foo { _Foo_bar :: Map Bar Baz }
         -- type instance Field "foo" Foo = Map Bar Baz
-        | Just (k,v) <- getMapFields env fd -> let
+        | Just (_, k,v) <- getMapFields env fd -> let
             mapType = "Data.Map.Map" @@ hsFieldType env (fieldDescriptor k)
                                      @@ hsFieldType env (fieldDescriptor v)
             in recordField mapType
@@ -744,16 +745,6 @@ oneofRecordField env oneofInfo
             , let baseType = hsFieldType env $ fieldDescriptor f
             , let maybeName = "maybe'" <> baseName
             ]
-
--- Get the key/value types of this type, if it is really a map.
-getMapFields :: Env QName -> FieldDescriptorProto
-             -> Maybe (FieldInfo, FieldInfo)
-getMapFields env f
-    | f ^. type' == FieldDescriptorProto'TYPE_MESSAGE
-    , Message m@MessageInfo { messageDescriptor = d } <- definedFieldType f env
-    , d ^. options.mapEntry
-    , [f1, f2] <- map plainFieldInfo $ messageFields m = Just (f1, f2)
-    | otherwise = Nothing
 
 hsFieldType :: Env QName -> FieldDescriptorProto -> Type
 hsFieldType env fd = case fd ^. type' of
@@ -878,12 +869,9 @@ oneofFieldAccessor o
     consName = caseConstructorName o
     getter = lambda ["x__"] $
         case' "x__"
-            [ alt
-                (pApp "Prelude.Just" [pApp (unQual consName) ["x__val"]])
-                ("Prelude.Just" @@ "x__val")
-            , alt
-                "_otherwise"
-                "Prelude.Nothing"
+            [ pApp "Prelude.Just" [pApp (unQual consName) ["x__val"]]
+                --> "Prelude.Just" @@ "x__val"
+            , "_otherwise" --> "Prelude.Nothing"
             ]
     setter = lambda ["_", "y__"]
                 $ "Prelude.fmap" @@ con (unQual consName) @@ "y__"
@@ -910,8 +898,8 @@ messageInstance env protoName m =
                   [ fieldUpdate (unQual $ messageUnknownFields m)
                         "[]"]
       ]
-    , [ match "unfinishedParseMessage" [] $ "Prelude.return" @@ "Data.ProtoLens.defMessage" ]
-    , [ match "unfinishedBuildMessage" [] $ "Prelude.const" @@ "Data.Monoid.mempty" ]
+    , [ match "unfinishedParseMessage" [] $ generatedParser env m ]
+    , [ match "unfinishedBuildMessage" [] $ generatedBuilder env m ]
     ]
   where
     fieldsByTag =
@@ -981,12 +969,12 @@ fieldAccessorExpr env (PlainFieldInfo kind f) = accessorCon @@ lensOfExp hsField
           OptionalMaybeField
                 -> "Data.ProtoLens.OptionalField"
           RepeatedField packed
-              | Just (k, v) <- getMapFields env fd
+              | Just (_, k, v) <- getMapFields env fd
                   -> "Data.ProtoLens.MapField"
                          @@ lensOfExp (overloadedField k)
                          @@ lensOfExp (overloadedField v)
               | otherwise -> "Data.ProtoLens.RepeatedField"
-                  @@ if packed
+                  @@ if packed == Packed
                         then "Data.ProtoLens.Packed"
                         else "Data.ProtoLens.Unpacked"
     hsFieldName

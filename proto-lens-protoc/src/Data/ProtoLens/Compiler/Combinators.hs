@@ -105,6 +105,9 @@ deriving' classes = Syntax.Deriving ()
 funBind :: [Match] -> Decl
 funBind = Syntax.FunBind ()
 
+patBind :: Pat -> Exp -> Decl
+patBind p e = Syntax.PatBind () p (Syntax.UnGuardedRhs () e) Nothing
+
 instType :: Type -> Type -> Syntax.InstDecl ()
 instType = Syntax.InsType ()
 
@@ -139,8 +142,9 @@ type Alt = Syntax.Alt ()
 case' :: Exp -> [Alt] -> Exp
 case' = Syntax.Case ()
 
-alt :: Pat -> Exp -> Alt
-alt p e = Syntax.Alt () p (Syntax.UnGuardedRhs () e) Nothing
+(-->) :: Pat -> Exp -> Alt
+p --> e = Syntax.Alt () p (Syntax.UnGuardedRhs () e) Nothing
+infixl 1 -->
 
 stringExp :: String -> Exp
 stringExp = Syntax.Lit () . string
@@ -152,7 +156,7 @@ tuple :: [Exp] -> Exp
 tuple = Syntax.Tuple () Syntax.Boxed
 
 lambda :: [Pat] -> Exp -> Exp
-lambda = Syntax.Lambda ()
+lambda ps e = Syntax.Paren () $ Syntax.Lambda () ps e
 
 (@::@) :: Exp -> Type -> Exp
 (@::@) = Syntax.ExpTypeSig ()
@@ -171,6 +175,31 @@ con = Syntax.Con ()
 list :: [Exp] -> Exp
 list = Syntax.List ()
 
+letE :: [Decl] -> Exp -> Exp
+letE ds = Syntax.Let () (Syntax.BDecls () ds)
+
+if' :: Exp -> Exp -> Exp -> Exp
+if' = Syntax.If ()
+
+-- | The ":" constructor.
+cons :: Exp
+cons = var $ Syntax.Special () $ Syntax.Cons ()
+
+-- | The "[]" constructor.
+emptyList :: Exp
+emptyList = var $ Syntax.Special () $ Syntax.ListCon ()
+
+type Stmt = Syntax.Stmt ()
+
+do' :: [Stmt] -> Exp
+do' = Syntax.Do ()
+
+(<--) :: Pat -> Exp -> Stmt
+(<--) = Syntax.Generator ()
+infixl 1 <--
+
+stmt :: Exp -> Stmt
+stmt = Syntax.Qualifier ()
 
 type FieldUpdate = Syntax.FieldUpdate ()
 
@@ -184,6 +213,9 @@ ihApp = foldl (Syntax.IHApp ())
 
 tyParen :: Type -> Type
 tyParen = Syntax.TyParen ()
+
+tyFun :: Type -> Type -> Type
+tyFun = Syntax.TyFun ()
 
 type Match = Syntax.Match ()
 
@@ -272,6 +304,11 @@ pWildCard = Syntax.PWildCard ()
 stringPat :: String -> Pat
 stringPat = Syntax.PLit () (Syntax.Signless ()) . string
 
+bangPat :: Pat -> Pat
+bangPat = Syntax.PBangPat ()
+
+patTypeSig :: Pat -> Type -> Pat
+patTypeSig = Syntax.PatTypeSig ()
 
 type QName = Syntax.QName ()
 
@@ -325,7 +362,16 @@ instance App Type where
     (@@) = Syntax.TyApp ()
 
 instance App Exp where
-    (@@) = Syntax.App ()
+    Syntax.App () (Syntax.Con () v) x @@ y
+        -- For readability, print fully-applied operators infix, i.e., "x OP y"
+        -- rather than "(OP) x y".
+        | isSymbol v
+        = Syntax.InfixApp () (Syntax.Paren () x) (Syntax.QVarOp () v) y
+      where
+        isSymbol (Syntax.Qual () _ (Syntax.Symbol () _)) = True
+        isSymbol (Syntax.UnQual () (Syntax.Symbol () _)) = True
+        isSymbol _ = False
+    x @@ y = Syntax.App () x y
 
 instance IsString Name where
     fromString s
@@ -359,6 +405,9 @@ instance IsString Type where
 
 instance IsString Exp where
     fromString fs@(f:_)
+        -- TODO: this logic isn't correct for qualified names (since the module is
+        -- capitalized).  However, it doesn't matter in practice if we're just
+        -- generating code.
         | isUpper f = Syntax.Con () $ fromString fs
     fromString fs = Syntax.Var () $ fromString fs
 
