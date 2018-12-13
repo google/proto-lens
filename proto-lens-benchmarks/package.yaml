@@ -58,11 +58,11 @@ benchmarks:
       - Proto.UnusedFields
       - Proto.UnusedFields_Fields
 
-  int-packing:
-    main: IntPacking.hs
+  packing:
+    main: Packing.hs
     source-dirs: benchmarks
     dependencies:
       - proto-lens-benchmarks
     other-modules:
-      - Proto.IntPacking
-      - Proto.IntPacking_Fields
+      - Proto.Packing
+      - Proto.Packing_Fields
