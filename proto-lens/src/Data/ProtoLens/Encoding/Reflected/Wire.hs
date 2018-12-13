@@ -113,8 +113,8 @@ instance Ord WireValue where
 
 getWireValue :: WireType a -> Parser a
 getWireValue VarInt = getVarInt
-getWireValue Fixed64 = anyBits
-getWireValue Fixed32 = anyBits
+getWireValue Fixed64 = getFixed64
+getWireValue Fixed32 = getFixed32
 getWireValue Lengthy = getVarInt >>= getBytes . fromIntegral
 getWireValue StartGroup = return ()
 getWireValue EndGroup = return ()
