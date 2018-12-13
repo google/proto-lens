@@ -14,8 +14,8 @@ import Proto.Google.Protobuf.Descriptor (FieldDescriptorProto'Type(..))
 
 -- | A representation for how to encode and decode a particular field type.
 data FieldEncoding = FieldEncoding
-    { buildFieldType :: Exp -> Exp -- ^ :: a -> Builder
-    , parseFieldType :: Exp        -- ^ :: Parser a
+    { buildFieldType :: Exp -- ^ :: a -> Builder
+    , parseFieldType :: Exp -- ^ :: Parser a
     , wireType :: Integer
     }
 
@@ -23,7 +23,7 @@ data FieldEncoding = FieldEncoding
 varint :: FieldEncoding
 varint = FieldEncoding
             { wireType = 0
-            , buildFieldType = (putVarInt' @@)
+            , buildFieldType = putVarInt'
             , parseFieldType = getVarInt'
             }
 
@@ -31,7 +31,7 @@ varint = FieldEncoding
 fixed64 :: FieldEncoding
 fixed64 = FieldEncoding
             { wireType = 1
-            , buildFieldType = ("Data.ProtoLens.Encoding.Bytes.putFixed64" @@)
+            , buildFieldType = "Data.ProtoLens.Encoding.Bytes.putFixed64"
             , parseFieldType = "Data.ProtoLens.Encoding.Bytes.getFixed64"
             }
 
@@ -39,7 +39,7 @@ fixed64 = FieldEncoding
 fixed32 :: FieldEncoding
 fixed32 = FieldEncoding
             { wireType = 5
-            , buildFieldType = ("Data.ProtoLens.Encoding.Bytes.putFixed32" @@)
+            , buildFieldType = "Data.ProtoLens.Encoding.Bytes.putFixed32"
             , parseFieldType = "Data.ProtoLens.Encoding.Bytes.getFixed32"
             }
 
@@ -53,9 +53,9 @@ lengthy = FieldEncoding
   where
     bs = "bs"
     len = "len"
-    buildLengthy x =
+    buildLengthy =
         -- Bind x since it may be a nontrivial expression:
-        letE [patBind bs x]
+        lambda [bs]
             $ "Data.Monoid.<>"
                 @@ (putVarInt'
                         @@ (fromIntegral'
@@ -72,14 +72,14 @@ lengthy = FieldEncoding
 group :: FieldEncoding
 group = FieldEncoding
             { wireType = 3
-            , buildFieldType = const "Data.Monoid.mempty"
+            , buildFieldType = "Prelude.const" @@ "Data.Monoid.mempty"
             , parseFieldType = "Prelude.return" @@ "Data.ProtoLens.defMessage"
             }
 
 -- Wrap a field encoding  with Haskell functions that should always succeed.
 bijectField :: Exp -> Exp -> FieldEncoding -> FieldEncoding
 bijectField buildF parseF f = FieldEncoding
-    { buildFieldType = buildFieldType f . (buildF @@)
+    { buildFieldType = "Prelude.." @@ buildFieldType f @@ buildF
     , parseFieldType = "Prelude.fmap" @@ parseF @@ parseFieldType f
     , wireType = wireType f
     }
@@ -87,7 +87,7 @@ bijectField buildF parseF f = FieldEncoding
 -- | Wrap a field encoding with Haskell functions that may fail during parsing.
 partialField :: Exp -> (Exp -> Exp) -> FieldEncoding -> FieldEncoding
 partialField buildF parseF f = FieldEncoding
-    { buildFieldType = buildFieldType f . (buildF @@)
+    { buildFieldType = "Prelude.." @@ buildFieldType f @@ buildF
     -- do
     --  value <- ...
     --  runEither $ {parseF} value

@@ -264,7 +264,7 @@ lensOfField = lensOfExp . fieldLens
 buildTaggedField :: FieldInfo -> Exp -> Exp
 buildTaggedField f x = foldMapExp
     [ putVarInt' @@ litInt (fieldTag f)
-    , buildField f x
+    , buildField f @@ x
     ]
 
 -- | Encodes a packed field as a byte string, along with
@@ -280,13 +280,11 @@ buildPackedField f x = letE [patBind p x]
     $ if' ("Prelude.null" @@ p) mempty'
     $ "Prelude.<>"
         @@ (putVarInt' @@ litInt (packedFieldTag f))
-         @@ buildFieldType lengthy
-                ("Data.ProtoLens.Encoding.Bytes.runBuilder"
-                @@ ("Data.Monoid.mconcat"
-                    @@ ("Prelude.map" @@ buildElt @@ p)))
+         @@ (buildFieldType lengthy
+                @@ ("Data.ProtoLens.Encoding.Bytes.runBuilder"
+                    @@ ("Data.Monoid.mconcat"
+                        @@ ("Prelude.map" @@ buildField f @@ p))))
   where
-    buildElt = lambda [y] (buildField f y)
-    y = "y"
     p = "p"
 
 -- TODO: build oneof fields.
@@ -326,7 +324,7 @@ parseField :: FieldInfo -> Exp
 parseField = parseFieldType . fieldInfoEncoding
 
 -- | Returns a function corresponding to `a -> Builder`:
-buildField :: FieldInfo -> Exp -> Exp
+buildField :: FieldInfo -> Exp
 buildField = buildFieldType . fieldInfoEncoding
 
 fieldInfoEncoding :: FieldInfo -> FieldEncoding
