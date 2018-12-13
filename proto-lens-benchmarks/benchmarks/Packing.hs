@@ -11,28 +11,27 @@ module Main (main) where
 import Data.ProtoLens.BenchmarkUtil (protoBenchmark, benchmarkMain)
 import Criterion.Main (Benchmark)
 import Lens.Family ((&), (.~))
-import Data.Int (Int32)
 import Data.ProtoLens (defMessage)
-import Proto.IntPacking
-import Proto.IntPacking_Fields
+import Proto.Packing
+import Proto.Packing_Fields
 
-defaultNumInt32s :: Int
-defaultNumInt32s = 10000
-
-populateUnpacked :: Int -> Int32 -> FooUnpacked
-populateUnpacked n k = defMessage & num .~ replicate n k
-
-populatePacked :: Int -> Int32 -> FooPacked
-populatePacked n k = defMessage & num .~ replicate n k
+defaultNumValues :: Int
+defaultNumValues = 1000
 
 benchmaker :: Int -> [Benchmark]
 benchmaker size =
     -- Run the packing benchmark first; criterion graphs look better
     -- (less likely for the legend to overlap results) if smaller results
     -- are first.
-    [ protoBenchmark "int32-packed" (populatePacked size 5 :: FooPacked)
-    , protoBenchmark "int32-unpacked" (populateUnpacked size 5 :: FooUnpacked)
+    [ protoBenchmark "int32-packed"
+        (defMessage & num .~ replicate size 5 ::Int32Unpacked)
+    , protoBenchmark "int32-unpacked"
+        (defMessage & num .~ replicate size 5 ::Int32Packed)
+    , protoBenchmark "float-packed"
+        (defMessage & num .~ replicate size 5 :: FloatPacked)
+    , protoBenchmark "float-unpacked"
+        (defMessage & num .~ replicate size 5 :: FloatPacked)
     ]
 
 main :: IO ()
-main = benchmarkMain defaultNumInt32s benchmaker
+main = benchmarkMain defaultNumValues benchmaker

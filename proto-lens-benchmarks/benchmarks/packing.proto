@@ -1,0 +1,19 @@
+syntax = "proto3";
+
+package int_packing;
+
+message Int32Unpacked {
+  repeated int32 num = 1 [packed=false];
+}
+
+message Int32Packed {
+  repeated int32 num = 1 [packed=true];
+}
+
+message FloatUnpacked {
+  repeated float num = 1 [packed=false];
+}
+
+message FloatPacked {
+  repeated float num = 1 [packed=true];
+}
