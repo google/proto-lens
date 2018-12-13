@@ -363,6 +363,8 @@ instance App Type where
 
 instance App Exp where
     Syntax.App () (Syntax.Con () v) x @@ y
+        -- For readability, print fully-applied operators infix, i.e., "x OP y"
+        -- rather than "(OP) x y".
         | isSymbol v
         = Syntax.InfixApp () (Syntax.Paren () x) (Syntax.QVarOp () v) y
       where
@@ -403,7 +405,9 @@ instance IsString Type where
 
 instance IsString Exp where
     fromString fs@(f:_)
-        -- TODO: this doesn't work with qualified
+        -- TODO: this logic isn't correct for qualified names (since the module is
+        -- capitalized).  However, it doesn't matter in practice if we're just
+        -- generating code.
         | isUpper f = Syntax.Con () $ fromString fs
     fromString fs = Syntax.Var () $ fromString fs
 

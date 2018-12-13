@@ -12,11 +12,9 @@ import Data.Maybe (isNothing)
 
 import Data.ProtoLens.Compiler.Combinators
 import Data.ProtoLens.Compiler.Definitions
-import Lens.Family2 ((^.))
+import Data.ProtoLens.Compiler.Generate.FieldEncoding
+import Lens.Family2 (view, (^.))
 
-import Proto.Google.Protobuf.Descriptor
-    ( FieldDescriptorProto'Type(..)
-    )
 import Proto.Google.Protobuf.Descriptor_Fields
     ( number
     , type'
@@ -63,10 +61,25 @@ reverseRepeatedFields env m = foldr (.) id
     , isNothing (getMapFields env $ fieldDescriptor $ plainFieldInfo f)
     ]
 
+-- | A list case alternatives for the fields of a message.
+--
+-- The exact structure of each case differs based on the field type.  However, it
+-- generally looks like:
+--
+--   {N} -> do
+--           {VALUE} <- {PARSE}
+--           loop (set {FIELD} {VALUE} x
+--
+-- where:
+--  - {N} is an integer representing the wire type + field number,
+--  - {VALUE} is an expression of type "V", which is the type of the field,
+--  - {PARSE} is an expression of the form "Parser V",
+--  - and "loop" and "x" are as in @generatedParser@.
 parseTagCases ::
        Env QName
-    -> (Exp -> Exp) -- ^ loop continuation
-    -> Exp -- ^ Old message
+    -> (Exp -> Exp) -- ^ loop continuation, equivalent to "msg -> Parser msg".
+                    -- It continues the loop with the given new value of the message.
+    -> Exp          -- ^ Previous value of the message, of type "msg"
     -> MessageInfo Name
     -> [Alt]
 parseTagCases env loop x info =
@@ -81,42 +94,41 @@ parseTagCases env loop x info =
                    , c <- oneofCases o
                    ]
 
-
+-- | A particular parsing case.  See @parseTagCases@ for details.
 parseFieldCase ::
     Env QName -> (Exp -> Exp) -> Exp -> PlainFieldInfo -> [Alt]
--- TODO: implement repeated fields
 parseFieldCase env loop x f = case plainFieldKind f of
-    RepeatedField _
+    RepeatedField p
         | Just mapInfo <- getMapFields env (fieldDescriptor info)
             -> [mapCase mapInfo]
-    RepeatedField NotPackable -> [unpackedCase]
-    RepeatedField _ -> [unpackedCase, packedCase]
-    _ -> [pLitInt (fieldTag info)
-            --> do'
-                [ y <-- parseField (fieldEncoding info)
-                , stmt $ loop $ setField info @@ y @@ x
-                ]
-         ]
+        | p == NotPackable -> [unpackedCase]
+        | otherwise -> [unpackedCase, packedCase]
+    _ -> [valueCase]
   where
     y = "y"
     bytes = "bytes"
     entry = "entry"
     info = plainFieldInfo f
+    valueCase = pLitInt (fieldTag info) --> do'
+        [ y <-- parseField info
+        , stmt $ loop $ setField info @@ y @@ x
+        ]
+
     unpackedCase = pLitInt (fieldTag info) --> do'
-        [ bangPat y <-- parseField (fieldEncoding info)
+        [ bangPat y <-- parseField info
         , stmt $ loop $ overField info (cons @@ y) @@ x
         ]
     packedCase = pLitInt (packedFieldTag info) --> do'
-        [ bytes <-- parseField lengthy
+        [ bytes <-- parseFieldType lengthy
         , y <-- "Data.ProtoLens.Encoding.Bytes.runEither"
                     @@ ("Data.ProtoLens.Encoding.Bytes.runParser"
-                        @@ parsePackedField (fieldEncoding info)
+                        @@ parsePackedField info
                         @@ bytes)
         , stmt $ loop $ overField info ("Prelude.++" @@ y) @@ x
         ]
     mapCase (entryName, kField, vField) = pLitInt (fieldTag info) --> do'
         [ bangPat (entry `patTypeSig` tyCon entryName)
-                <-- parseField (fieldEncoding info)
+                <-- parseField info
         , stmt $ letE [ patBind "key" $ view' @@ lensOfField kField
                                             @@ entry
                       , patBind "value" $ view' @@ lensOfField vField
@@ -127,10 +139,16 @@ parseFieldCase env loop x f = case plainFieldKind f of
                             @@ x
         ]
 
+-- | An expression of type "b -> a -> a", corresponding to a Lens a b
+-- for this field.
 setField :: FieldInfo -> Exp
 setField f = "Lens.Family2.set" @@ lensOfExp (fieldLens f)
 
--- over f (\!z -> g z) x
+-- | An expression of type "(b -> b) -> a -> a", corresponding to a
+-- Lens a b for this field.
+--
+-- Specifically:
+--   over f (\!z -> g z) x
 -- The extra strictness prevents a space leak due to lists being lazy.
 overField :: FieldInfo -> Exp -> Exp
 overField f g =
@@ -140,9 +158,18 @@ overField f g =
   where
     t = "t"
 
--- | Parser [a] for a field that can be packed.
-parsePackedField :: FieldEncoding -> Exp
-parsePackedField enc = letE [funBind [match ploop [qs] ploopExp]]
+-- | A "Parser [a]" for a field that can be packed.
+parsePackedField :: FieldInfo -> Exp
+{- let ploop qs = do
+                    packedEnd <- atEnd
+                    if packedEnd
+                        then return qs
+                        else do
+                            !q <- {PARSE FIELD}
+                            ploop (q:qs)
+   in ploop []
+-}
+parsePackedField info = letE [funBind [match ploop [qs] ploopExp]]
                        (ploop @@ emptyList)
   where
     ploop = "ploop"
@@ -155,7 +182,7 @@ parsePackedField enc = letE [funBind [match ploop [qs] ploopExp]]
             if' packedEnd
                 ("Prelude.return" @@ qs)
                 $ do'
-                    [ bangPat q <-- parseField enc
+                    [ bangPat q <-- parseField info
                     , stmt $ ploop @@ (cons @@ q @@ qs)
                     ]
         ]
@@ -175,6 +202,8 @@ foldMapExp [] = mempty'
 foldMapExp [x] = x
 foldMapExp (x:xs) = "Data.Monoid.<>" @@ x @@ foldMapExp xs
 
+-- | An expression of type @Builder@ which encodes the field value
+-- @x@ based on the kind and type of the field @f@.
 buildPlainField :: Env QName -> Exp -> PlainFieldInfo -> Exp
 buildPlainField env x f = case plainFieldKind f of
     RequiredField -> buildTaggedField info fieldValue
@@ -208,6 +237,13 @@ buildPlainField env x f = case plainFieldKind f of
     maybeFieldValue = view'
                         @@ lensOfExp ("maybe'" <> fieldLens info)
                         @@ x
+    {- Builds a value of the given map entry type
+       from the given key/value pair kv.
+
+       ... set (lensOf {KEY}) (fst kv)
+            (set (lensOf {VALUE}) (snd kv)
+                (defMessage :: Foo'Entry)
+    -}
     buildEntry (entry, keyField, valueField) kv
         = buildTaggedField info
             $ set'
@@ -228,188 +264,70 @@ lensOfField = lensOfExp . fieldLens
 buildTaggedField :: FieldInfo -> Exp -> Exp
 buildTaggedField f x = foldMapExp
     [ putVarInt' @@ litInt (fieldTag f)
-    , buildField (fieldEncoding f) x
+    , buildField f x
     ]
 
+-- | Encodes a packed field as a byte string, along with
+-- its wire type+number.
 buildPackedField :: FieldInfo -> Exp -> Exp
-buildPackedField f x = foldMapExp
-    [ putVarInt' @@ litInt (packedFieldTag f)
-    , buildField lengthy
-        $ "Data.ProtoLens.Encoding.Bytes.runBuilder"
-            @@ ("Data.Monoid.mconcat"
-                @@ ("Prelude.map" @@ buildElt @@ x))
-    ]
+{-
+    let p = x -- where x might be a complicated expression
+    in if null p then mempty
+    else putVarInt {TAG}
+            <> ... (runBuilder (mconcat (map {BUILD_ELT} p)))
+-}
+buildPackedField f x = letE [patBind p x]
+    $ if' ("Prelude.null" @@ p) mempty'
+    $ "Prelude.<>"
+        @@ (putVarInt' @@ litInt (packedFieldTag f))
+         @@ buildFieldType lengthy
+                ("Data.ProtoLens.Encoding.Bytes.runBuilder"
+                @@ ("Data.Monoid.mconcat"
+                    @@ ("Prelude.map" @@ buildElt @@ p)))
   where
-    buildElt = lambda [y] (buildField enc y)
-    enc = fieldEncoding f
+    buildElt = lambda [y] (buildField f y)
     y = "y"
+    p = "p"
 
 -- TODO: build oneof fields.
 buildOneofField :: Exp -> OneofInfo -> Exp
 buildOneofField _ _ = mempty'
 
--- | A representation for how to encode and decode a particular field type.
-data FieldEncoding = FieldEncoding
-    { buildField :: Exp -> Exp -- ^ :: a -> Builder
-    , parseField :: Exp        -- ^ :: Parser a
-    , wireType :: Integer
-    }
-
-varint, fixed64, fixed32, lengthy, group :: FieldEncoding
-varint = FieldEncoding
-            { wireType = 0
-            , buildField = (putVarInt' @@)
-            , parseField = getVarInt'
-            }
-fixed64 = FieldEncoding
-            { wireType = 1
-            , buildField = ("Data.ProtoLens.Encoding.Bytes.putFixed64" @@)
-            , parseField = "Data.ProtoLens.Encoding.Bytes.getFixed64"
-            }
-fixed32 = FieldEncoding
-            { wireType = 5
-            , buildField = ("Data.ProtoLens.Encoding.Bytes.putFixed32" @@)
-            , parseField = "Data.ProtoLens.Encoding.Bytes.getFixed32"
-            }
-lengthy = FieldEncoding
-            { wireType = 2
-            , buildField = buildLengthy
-            , parseField = parseLengthy
-            }
-  where
-    buildLengthy x = letE [patBind bs x]
-        $ "Data.Monoid.<>"
-        @@ (putVarInt' @@ (fromIntegral' @@ ("Data.ByteString.length" @@ bs)))
-        @@ ("Data.ProtoLens.Encoding.Bytes.putBytes" @@ bs)
-    bs = "bs"
-    parseLengthy = do'
-        [ len <-- getVarInt'
-        , stmt $ "Data.ProtoLens.Encoding.Bytes.getBytes"
-                    @@ (fromIntegral' @@ len)
-        ]
-    len = "len"
-
--- TODO: implement groups.  For now, use incorrect placeholders that match
--- the expected types.
-group = FieldEncoding
-            { wireType = 3
-            , buildField = const mempty'
-            , parseField = "Prelude.return" @@ "Data.ProtoLens.defMessage"
-            }
-
--- | Wrap a field encoding with Haskell functions that should always succeed.
-bijectField :: Exp -> Exp -> FieldEncoding -> FieldEncoding
-bijectField buildF parseF f = FieldEncoding
-    { buildField = buildField f . (buildF @@)
-    , parseField = "Prelude.fmap" @@ parseF @@ parseField f
-    , wireType = wireType f
-    }
-
--- | Wrap a field encoding with Haskell functions that may fail during parsing.
-partialField :: Exp -> (Exp -> Exp) -> FieldEncoding -> FieldEncoding
-partialField buildF parseF f = FieldEncoding
-    { buildField = buildField f . (buildF @@)
-    -- do
-    --  value <- ...
-    --  runEither $ {parseF} value
-    , parseField = do' [value <-- parseField f, stmt $ runEither @@ parseF value]
-    , wireType = wireType f
-    }
-  where
-    value = "value"
-    runEither = "Data.ProtoLens.Encoding.Bytes.runEither"
-
-integralField :: FieldEncoding -> FieldEncoding
-integralField = bijectField fromIntegral' fromIntegral'
-
-fieldEncoding :: FieldInfo -> FieldEncoding
-fieldEncoding f = case fieldDescriptor f ^. type' of
-    FieldDescriptorProto'TYPE_INT64 -> integralField varint
-    FieldDescriptorProto'TYPE_UINT64 -> varint
-    FieldDescriptorProto'TYPE_INT32 -> integralField varint
-    FieldDescriptorProto'TYPE_UINT32 -> integralField varint
-    FieldDescriptorProto'TYPE_FIXED64 -> fixed64
-    FieldDescriptorProto'TYPE_FIXED32 -> fixed32
-    FieldDescriptorProto'TYPE_SFIXED64 -> integralField fixed64
-    FieldDescriptorProto'TYPE_SFIXED32 -> integralField fixed32
-    FieldDescriptorProto'TYPE_DOUBLE ->
-        bijectField
-            "Data.ProtoLens.Encoding.Bytes.doubleToWord"
-            "Data.ProtoLens.Encoding.Bytes.wordToDouble"
-            fixed64
-    FieldDescriptorProto'TYPE_FLOAT ->
-        bijectField
-            "Data.ProtoLens.Encoding.Bytes.floatToWord"
-            "Data.ProtoLens.Encoding.Bytes.wordToFloat"
-            fixed32
-    FieldDescriptorProto'TYPE_BOOL ->
-        bijectField
-            (lambda ["b"] $ if' "b" (litInt 1) (litInt 0))
-            ("Prelude./=" @@ litInt 0)
-            varint
-    FieldDescriptorProto'TYPE_ENUM ->
-        -- TODO: don't throw an exception on unknown proto2 enums.
-        bijectField "Prelude.fromEnum" "Prelude.toEnum"
-            $ integralField varint
-    FieldDescriptorProto'TYPE_SINT64 ->
-        bijectField
-            "Data.ProtoLens.Encoding.Bytes.signedInt64ToWord"
-            "Data.ProtoLens.Encoding.Bytes.wordToSignedInt64"
-            $ integralField varint
-    FieldDescriptorProto'TYPE_SINT32 ->
-        bijectField
-            "Data.ProtoLens.Encoding.Bytes.signedInt32ToWord"
-            "Data.ProtoLens.Encoding.Bytes.wordToSignedInt32"
-            $ integralField varint
-    FieldDescriptorProto'TYPE_BYTES -> lengthy
-    FieldDescriptorProto'TYPE_STRING ->
-        partialField "Data.Text.Encoding.encodeUtf8" decodeUtf8P lengthy
-    FieldDescriptorProto'TYPE_MESSAGE ->
-        partialField ("Prelude.."
-                        @@ "Data.ProtoLens.Encoding.Bytes.runBuilder"
-                        @@ "Data.ProtoLens.unfinishedBuildMessage")
-            (\m -> "Data.ProtoLens.Encoding.Bytes.runParser"
-                    @@ "Data.ProtoLens.unfinishedParseMessage" @@ m)
-            lengthy
-    FieldDescriptorProto'TYPE_GROUP -> group
-
-
-{- Translates to:
-     case decodeUtf8' bytes of
-        Left err -> Left (show err)
-        Right r -> r
-   Equivalently:
-      first show $ decodeUtf8' bytes
-   but avoids dragging in Data.Bifunctors.
--}
-decodeUtf8P :: Exp -> Exp
-decodeUtf8P bytes = case' ("Data.Text.Encoding.decodeUtf8'" @@ bytes )
-    [ "Prelude.Left" `pApp` ["err"]
-        --> "Prelude.Left" @@ ("Prelude.show" @@ "err")
-    , "Prelude.Right" `pApp` ["r"]
-        --> "Prelude.Right" @@ "r"
-    ]
-
-fieldTag :: FieldInfo -> Integer
-fieldTag f = makeTag (fieldDescriptor f ^. number) (fieldEncoding f)
-
-packedFieldTag :: FieldInfo -> Integer
-packedFieldTag f = makeTag (fieldDescriptor f ^. number) lengthy
-
+-- | Compute the proto encoding's representation of the wire type
+-- and field number.
 makeTag :: Int32 -> FieldEncoding -> Integer
 makeTag num enc =
     fromIntegral num `shiftL` 3 .|. wireType enc
 
+fieldTag :: FieldInfo -> Integer
+fieldTag f = makeTag (fieldDescriptor f ^. number) $ fieldInfoEncoding f
+
+packedFieldTag :: FieldInfo -> Integer
+packedFieldTag f = makeTag (fieldDescriptor f ^. number) lengthy
+
+-- | An expression that selects the overloaded field lens of this name.
+--
+-- lensOf' (proxy# :: Proxy# "fieldName")
 lensOfExp :: Symbol -> Exp
 lensOfExp sym = ("Lens.Labels.lensOf'"
                   @@ ("Lens.Labels.proxy#" @::@
                       ("Lens.Labels.Proxy#" @@ promoteSymbol sym)))
 
 -- | Some functions that are used in multiple places in the generated code.
-getVarInt', putVarInt', mempty', fromIntegral', view', set' :: Exp
+getVarInt', putVarInt', mempty', view', set' :: Exp
 getVarInt' = "Data.ProtoLens.Encoding.Bytes.getVarInt"
 putVarInt' = "Data.ProtoLens.Encoding.Bytes.putVarInt"
 mempty' = "Data.Monoid.mempty"
-fromIntegral' = "Prelude.fromIntegral"
 view' = "Lens.Family2.view"
 set' = "Lens.Family2.set"
+
+-- | Returns an expression of type @Parser a@ for the given field.
+parseField :: FieldInfo -> Exp
+parseField = parseFieldType . fieldInfoEncoding
+
+-- | Returns a function corresponding to `a -> Builder`:
+buildField :: FieldInfo -> Exp -> Exp
+buildField = buildFieldType . fieldInfoEncoding
+
+fieldInfoEncoding :: FieldInfo -> FieldEncoding
+fieldInfoEncoding = fieldEncoding . view type' . fieldDescriptor
