@@ -12,11 +12,12 @@ module Data.ProtoLens.Compiler.Generate.Encoding
 import Data.Bits (shiftL, (.|.))
 import Data.Int (Int32)
 import Data.Maybe (isNothing)
+import Data.Semigroup ((<>))
+import Lens.Family2 (view, (^.))
 
 import Data.ProtoLens.Compiler.Combinators
 import Data.ProtoLens.Compiler.Definitions
 import Data.ProtoLens.Compiler.Generate.FieldEncoding
-import Lens.Family2 (view, (^.))
 
 import Proto.Google.Protobuf.Descriptor_Fields
     ( number
