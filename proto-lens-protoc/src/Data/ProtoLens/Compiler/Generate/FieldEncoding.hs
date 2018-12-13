@@ -10,6 +10,7 @@ module Data.ProtoLens.Compiler.Generate.FieldEncoding
     ( FieldEncoding(..)
     , fieldEncoding
     , lengthy
+    , groupEnd
     ) where
 
 import Data.ProtoLens.Compiler.Combinators
@@ -70,13 +71,18 @@ lengthy = FieldEncoding
                     @@ (fromIntegral' @@ len)
         ]
 
--- TODO: implement groups.  For now, use incorrect placeholders that match
--- the expected types.
 group :: FieldEncoding
 group = FieldEncoding
             { wireType = 3
+            , buildFieldType = "Data.ProtoLens.unfinishedBuildMessage"
+            , parseFieldType = "Data.ProtoLens.unfinishedParseMessage"
+            }
+
+groupEnd :: FieldEncoding
+groupEnd = FieldEncoding
+            { wireType = 4
             , buildFieldType = "Prelude.const" @@ "Data.Monoid.mempty"
-            , parseFieldType = "Prelude.return" @@ "Data.ProtoLens.defMessage"
+            , parseFieldType = "Prelude.return" @@ unit
             }
 
 -- Wrap a field encoding  with Haskell functions that should always succeed.

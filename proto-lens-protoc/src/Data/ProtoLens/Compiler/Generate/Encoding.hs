@@ -26,35 +26,56 @@ import Proto.Google.Protobuf.Descriptor_Fields
 generatedParser :: MessageInfo Name -> Exp
 generatedParser m =
     {- let loop :: T -> Parser T
-           loop x = do
-                    end <- atEnd
-                    if end
-                        then return x
-                        else do
-                            tag <- getVarInt
-                            case tag of ...
-      in loop defMessage
+           loop x = ...
+       in loop defMessage
     -}
     letE [typeSig [loop] $ tyFun ty $ "Data.ProtoLens.Encoding.Bytes.Parser" @@ ty
-         , funBind [match loop [x] loopExpr]]
-         (loop @@ "Data.ProtoLens.defMessage")
+         , funBind [match loop [x] loopExpr]
+         ]
+        $ loop @@ "Data.ProtoLens.defMessage"
   where
     ty = tyCon (unQual $ messageName m)
     x = "x"
     tag = "tag"
     end = "end"
     loop = "loop"
-    loopExpr = do'
-        [ end <-- "Data.ProtoLens.Encoding.Bytes.atEnd"
-        , stmt $
-            if' end
-                ("Prelude.return" @@
-                    (reverseRepeatedFields m x))
-                $ do'
-                    [ tag <-- getVarInt'
-                    , stmt $ case' tag $ parseTagCases (loop @@) x m
-                    ]
-        ]
+    finish = "Prelude.return" @@ (reverseRepeatedFields m x)
+
+    loopExpr
+        {- Group:
+            do
+              tag <- getVarInt
+              case tag of
+                {groupEndTag} -> return $ {reverseRepeatedFields} x
+                ... -- Regular message fields
+
+          TODO(#282): fail the parse if we find a group-end tag
+          with an incorrect field number.
+        -}
+        | Just g <- groupFieldNumber m = do'
+            [ tag <-- getVarInt'
+            , stmt $ case' tag $
+                (pLitInt (groupEndTag g) --> finish)
+                    : parseTagCases (loop @@) x m
+            ]
+        {- Regular message type:
+              do
+                end <- atEnd
+                if end
+                    then return $ {reverseRepeatedFields} x
+                    else do
+                        tag <- getVarInt
+                        case tag of ...
+        -}
+        | otherwise = do'
+            [ end <-- "Data.ProtoLens.Encoding.Bytes.atEnd"
+            , stmt $
+                if' end finish
+                    $ do'
+                        [ tag <-- getVarInt'
+                        , stmt $ case' tag $ parseTagCases (loop @@) x m
+                        ]
+            ]
 
 reverseRepeatedFields :: MessageInfo Name -> Exp -> Exp
 reverseRepeatedFields m = foldr (.) id
@@ -193,8 +214,14 @@ generatedBuilder :: MessageInfo Name -> Exp
 generatedBuilder m =
     lambda [x] $ foldMapExp $ map (buildPlainField x) (messageFields m)
                                 ++ map (buildOneofField x) (messageOneofFields m)
+                            ++ buildGroupEnd
   where
     x = "_x" -- TODO: rename to "x" once it's always used
+    -- If this is a group, finish by emitting the end-group tag.
+    buildGroupEnd = [ putVarInt' @@ litInt (groupEndTag g)
+               | Just g <- [groupFieldNumber m]
+               ]
+
 
 -- | Concatenate a list of Monoids into a single value.
 -- For example, foldMapExp [a,b,c] will be transformed into
@@ -305,6 +332,9 @@ fieldTag f = makeTag (fieldDescriptor f ^. number) $ fieldInfoEncoding f
 
 packedFieldTag :: FieldInfo -> Integer
 packedFieldTag f = makeTag (fieldDescriptor f ^. number) lengthy
+
+groupEndTag :: Int32 -> Integer
+groupEndTag num = makeTag num groupEnd
 
 -- | An expression that selects the overloaded field lens of this name.
 --

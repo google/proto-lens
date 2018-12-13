@@ -141,6 +141,8 @@ data MessageInfo n = MessageInfo
     , messageUnknownFields :: Name
       -- ^ The name of the Haskell field in this message that holds the
       -- unknown fields.
+    , groupFieldNumber :: Maybe Int32
+      -- ^ The number of the field that holds this message, if it is a group.
     } deriving Functor
 
 data ServiceInfo = ServiceInfo
@@ -322,7 +324,7 @@ collectDefinitions fd = let
     hsPrefix = ""
     in Map.fromList $ concatMap flatten $
             messageAndEnumDefs (fileSyntaxType fd)
-                protoPrefix hsPrefix
+                protoPrefix hsPrefix Map.empty
                 (fd ^. messageType) (fd ^. enumType)
 
 collectServices :: FileDescriptorProto -> [ServiceInfo]
@@ -349,22 +351,24 @@ collectServices fd = fmap (toServiceInfo $ fd ^. package) $ fd ^. service
 
 messageAndEnumDefs ::
     SyntaxType -> Text -> String
+    -> GroupMap
+        -- ^ Group fields of the parent message (if any).
     -> [DescriptorProto]
     -> [EnumDescriptorProto]
     -> Forest (Text, Definition Name)
         -- ^ Organized as a list of trees, to make it possible for callers
         -- to get the immediate child nested types.
-messageAndEnumDefs syntaxType protoPrefix hsPrefix messages enums
-    = map (messageDefs syntaxType protoPrefix hsPrefix) messages
+messageAndEnumDefs syntaxType protoPrefix hsPrefix groups messages enums
+    = map (messageDefs syntaxType protoPrefix hsPrefix groups) messages
         ++ map
             (flip Node [] -- Enums have no sub-definitions
                 . enumDef syntaxType protoPrefix hsPrefix)
             enums
 
 -- | Generate the definitions for a message and its nested types (if any).
-messageDefs :: SyntaxType -> Text -> String -> DescriptorProto
+messageDefs :: SyntaxType -> Text -> String -> GroupMap -> DescriptorProto
             -> Tree (Text, Definition Name)
-messageDefs syntaxType protoPrefix hsPrefix d
+messageDefs syntaxType protoPrefix hsPrefix groups d
     = Node (protoName, thisDef) subDefs
   where
     protoName = protoPrefix <> d ^. name
@@ -381,11 +385,13 @@ messageDefs syntaxType protoPrefix hsPrefix d
             , messageOneofFields = collectOneofFields hsPrefix' d allFields
             , messageUnknownFields =
                   fromString $ "_" ++ hsPrefix' ++ "_unknownFields"
+            , groupFieldNumber = Map.lookup protoName groups
             }
     subDefs = messageAndEnumDefs
                     syntaxType
                     (protoName <> ".")
                     hsPrefix'
+                    (collectGroupFields $ d ^. field)
                     (d ^. nestedType)
                     (d ^. enumType)
     -- For efficiency, only look for map entries within the immediate
@@ -405,10 +411,23 @@ mapEntryInfo (Message m)
                 }
 mapEntryInfo _ = Nothing
 
+-- | Returns a map whose keys are the proto type name of the entry message.
 collectMapEntries :: [(Text, Definition Name)] -> Map.Map Text MapEntryInfo
 collectMapEntries defs =
     Map.fromList
         [(protoName, e) | (protoName, d) <- defs, Just e <- [mapEntryInfo d]]
+
+-- | A map whose keys are the proto type names of the groups in a message,
+-- and values are the field numbers for those groups.
+-- (Every group corresponds to exactly one message field.)
+type GroupMap = Map.Map Text Int32
+
+collectGroupFields :: [FieldDescriptorProto] -> Map.Map Text Int32
+collectGroupFields fs = Map.fromList
+    [ (f ^. typeName, f ^. number)
+    | f <- fs
+    , f ^. type' == FieldDescriptorProto'TYPE_GROUP
+      ]
 
 fieldInfo :: String -> FieldDescriptorProto -> FieldInfo
 fieldInfo hsPrefix f = FieldInfo
