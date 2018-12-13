@@ -282,9 +282,9 @@ buildPackedField :: FieldInfo -> Exp -> Exp
 -}
 buildPackedField f x = letE [patBind p x]
     $ if' ("Prelude.null" @@ p) mempty'
-    $ "Prelude.<>"
-        @@ (putVarInt' @@ litInt (packedFieldTag f))
-         @@ (buildFieldType lengthy
+    $ "Data.Monoid.<>"
+          @@ (putVarInt' @@ litInt (packedFieldTag f))
+          @@ (buildFieldType lengthy
                 @@ ("Data.ProtoLens.Encoding.Bytes.runBuilder"
                     @@ ("Data.Monoid.mconcat"
                         @@ ("Prelude.map" @@ buildField f @@ p))))
