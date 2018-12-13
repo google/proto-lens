@@ -1,8 +1,11 @@
 {-# LANGUAGE LambdaCase #-}
 {-# LANGUAGE NoMonomorphismRestriction #-}
 {-# LANGUAGE OverloadedStrings #-}
--- | This module egenerates the code for decoding and encoding
+-- | This module generates the code for decoding and encoding
 -- individual field types.
+--
+-- Upstream docs:
+-- https://developers.google.com/protocol-buffers/docs/encoding#structure
 module Data.ProtoLens.Compiler.Generate.FieldEncoding
     ( FieldEncoding(..)
     , fieldEncoding

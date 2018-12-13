@@ -1,3 +1,6 @@
+-- | This module generates code for decoding and encoding protocol buffer messages.
+--
+-- Upstream docs: https://developers.google.com/protocol-buffers/docs/encoding
 {-# LANGUAGE LambdaCase #-}
 {-# LANGUAGE NoMonomorphismRestriction #-}
 {-# LANGUAGE OverloadedStrings #-}
@@ -85,7 +88,7 @@ parseTagCases ::
 parseTagCases env loop x info =
     concatMap (parseFieldCase env loop x) allFields
     -- TODO: currently we ignore unknown fields.
-    ++ [ pWildCard --> loop x]
+    ++ [pWildCard --> loop x]
   where
     allFields = messageFields info
                 -- Cases of a oneof are decoded like optional oneof fields.
@@ -293,6 +296,9 @@ buildOneofField _ _ = mempty'
 
 -- | Compute the proto encoding's representation of the wire type
 -- and field number.
+--
+-- The last three bits of the number store the wire type, and the
+-- rest store the field number as a varint.
 makeTag :: Int32 -> FieldEncoding -> Integer
 makeTag num enc =
     fromIntegral num `shiftL` 3 .|. wireType enc
