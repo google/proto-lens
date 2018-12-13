@@ -15,18 +15,16 @@ import qualified Data.ProtoLens.Encoding.Reflected as Reflected
 #endif
 
 import Data.ProtoLens.Message (Message(..))
-import Data.ProtoLens.Encoding.Bytes (getVarInt, putVarInt)
+import Data.ProtoLens.Encoding.Bytes (Parser, Builder)
+import qualified Data.ProtoLens.Encoding.Bytes as Bytes
 
-import qualified Data.Attoparsec.ByteString as Parse
 import qualified Data.ByteString as B
-import Data.ByteString.Lazy.Builder as Builder
-import qualified Data.ByteString.Lazy as L
 import Data.Semigroup ((<>))
 
 -- | Decode a message from its wire format.  Returns 'Left' if the decoding
 -- fails.
 decodeMessage :: Message msg => B.ByteString -> Either String msg
-decodeMessage = Parse.parseOnly parseMessage
+decodeMessage = Bytes.runParser parseMessage
 
 -- | Decode a message from its wire format.  Throws an error if the decoding
 -- fails.
@@ -35,7 +33,7 @@ decodeMessageOrDie bs = case decodeMessage bs of
     Left e -> error $ "decodeMessageOrDie: " ++ e
     Right x -> x
 
-parseMessage :: Message msg => Parse.Parser msg
+parseMessage :: Message msg => Parser msg
 #if GENERATED_ENCODING
 parseMessage = unfinishedParseMessage
 #else
@@ -51,7 +49,7 @@ buildMessage = Reflected.buildMessage
 
 -- | Encode a message to the wire format as a strict 'ByteString'.
 encodeMessage :: Message msg => msg -> B.ByteString
-encodeMessage = L.toStrict . toLazyByteString . buildMessage
+encodeMessage = Bytes.runBuilder . buildMessage
 
 -- | Encode a message to the wire format, prefixed by its size as a VarInt,
 -- as part of a 'Builder'.
@@ -60,11 +58,11 @@ encodeMessage = L.toStrict . toLazyByteString . buildMessage
 -- format expected by some protocols.
 buildMessageDelimited :: Message msg => msg -> Builder
 buildMessageDelimited msg =
-  let b = L.toStrict . toLazyByteString $ buildMessage msg in
-    putVarInt (fromIntegral $ B.length b) <> byteString b
+    let b = encodeMessage msg
+    in Bytes.putVarInt (fromIntegral $ B.length b) <> Bytes.putBytes b
 
-parseMessageDelimited :: Message msg => Parse.Parser msg
+parseMessageDelimited :: Message msg => Parser msg
 parseMessageDelimited = do
-    len <- getVarInt
-    bytes <- Parse.take $ fromIntegral len
+    len <- Bytes.getVarInt
+    bytes <- Bytes.getBytes $ fromIntegral len
     either fail return $ decodeMessage bytes

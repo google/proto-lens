@@ -28,10 +28,9 @@ module Data.ProtoLens.Encoding.Reflected.Wire(
     ) where
 
 import Control.DeepSeq (NFData(..))
-import Data.Attoparsec.ByteString as Parse
+import Data.Attoparsec.ByteString (manyTill)
 import Data.Bits
 import qualified Data.ByteString as B
-import Data.ByteString.Lazy.Builder as Builder
 import Data.Monoid ((<>))
 import Data.Word
 
@@ -116,15 +115,15 @@ getWireValue :: WireType a -> Parser a
 getWireValue VarInt = getVarInt
 getWireValue Fixed64 = anyBits
 getWireValue Fixed32 = anyBits
-getWireValue Lengthy = getVarInt >>= Parse.take . fromIntegral
+getWireValue Lengthy = getVarInt >>= getBytes . fromIntegral
 getWireValue StartGroup = return ()
 getWireValue EndGroup = return ()
 
 putWireValue :: WireType a -> a -> Builder
 putWireValue VarInt n = putVarInt n
-putWireValue Fixed64 n = word64LE n
-putWireValue Fixed32 n = word32LE n
-putWireValue Lengthy b = putVarInt (fromIntegral $ B.length b) <> byteString b
+putWireValue Fixed64 n = putFixed64 n
+putWireValue Fixed32 n = putFixed32 n
+putWireValue Lengthy b = putVarInt (fromIntegral $ B.length b) <> putBytes b
 putWireValue StartGroup _ = mempty
 putWireValue EndGroup _ = mempty
 
@@ -172,4 +171,4 @@ putTaggedValue (TaggedValue tag (WireValue wt val)) =
 type FieldSet = [TaggedValue]
 
 decodeFieldSet :: B.ByteString -> Either String FieldSet
-decodeFieldSet = parseOnly (manyTill getTaggedValue endOfInput)
+decodeFieldSet = runParser (manyTill getTaggedValue endOfInput)

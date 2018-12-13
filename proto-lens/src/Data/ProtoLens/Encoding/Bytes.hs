@@ -15,10 +15,16 @@ module Data.ProtoLens.Encoding.Bytes(
     Builder,
     runParser,
     runBuilder,
+    endOfInput,
+    -- * Bytestrings
+    getBytes,
+    putBytes,
     -- * Integral types
     getVarInt,
     putVarInt,
     anyBits,
+    putFixed32,
+    putFixed64,
     -- * Floating-point types
     wordToFloat,
     wordToDouble,
@@ -55,6 +61,14 @@ runParser = Parse.parseOnly
 runBuilder :: Builder -> ByteString
 runBuilder = L.toStrict . Builder.toLazyByteString
 
+-- | Parse a @ByteString@ of the given length.
+getBytes :: Int -> Parser ByteString
+getBytes = Parse.take
+
+-- | Emit a given @ByteString@.
+putBytes :: ByteString -> Builder
+putBytes = Builder.byteString
+
 -- VarInts are inherently unsigned; there are different ways of encoding
 -- negative numbers for int32/64 and sint32/64.
 getVarInt :: Parser Word64
@@ -67,6 +81,12 @@ getVarInt = loop 1 0
             then return $! n'
             else loop (128*s) n'
 
+putVarInt :: Word64 -> Builder
+putVarInt n
+    | n < 128 = Builder.word8 (fromIntegral n)
+    | otherwise = Builder.word8 (fromIntegral $ n .&. 127 .|. 128)
+                      <> putVarInt (n `shiftR` 7)
+
 -- | Little-endian decoding function.
 anyBits :: forall a . (Num a, FiniteBits a) => Parser a
 anyBits = loop 0 0
@@ -78,11 +98,11 @@ anyBits = loop 0 0
             b <- anyWord8
             loop (w .|. shiftL (fromIntegral b) n) (n+8)
 
-putVarInt :: Word64 -> Builder
-putVarInt n
-    | n < 128 = Builder.word8 (fromIntegral n)
-    | otherwise = Builder.word8 (fromIntegral $ n .&. 127 .|. 128)
-                      <> putVarInt (n `shiftR` 7)
+putFixed32 :: Word32 -> Builder
+putFixed32 = word32LE
+
+putFixed64 :: Word64 -> Builder
+putFixed64 = word64LE
 
 -- WARNING: SUPER UNSAFE!
 -- Helper function purely for converting between Word32/Word64 and
