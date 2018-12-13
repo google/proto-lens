@@ -216,7 +216,7 @@ buildPlainField env x f = case plainFieldKind f of
                             , "Prelude.Just" `pApp` [v]
                                 --> buildTaggedField info v
                             ]
-    OptionalValueField -> letE [patBind v $ fieldValue]
+    OptionalValueField -> letE [patBind v fieldValue]
                           $ if' ("Prelude.==" @@ v @@ "Data.ProtoLens.fieldDefault")
                                 mempty'
                                 (buildTaggedField info v)
