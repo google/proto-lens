@@ -29,7 +29,7 @@ import Data.ProtoLens.Encoding.Reflected.Wire
 
 import Control.Applicative ((<|>))
 import Control.Monad (guard)
-import Data.Attoparsec.ByteString as Parse
+import Data.Attoparsec.ByteString ((<?>))
 import Data.Bool (bool)
 import Data.Proxy (Proxy(Proxy))
 import Data.Text.Encoding (encodeUtf8, decodeUtf8')
@@ -46,7 +46,7 @@ parseMessage = parseMessageToEnd endOfInput
 -- | Parse a message with the given ending delimiter (which will be EndGroup in
 -- the case of a group, and end-of-input otherwise).
 parseMessageToEnd :: forall msg . Message msg => Parser () -> Parser msg
-parseMessageToEnd end = (Parse.<?> T.unpack (messageName (Proxy @msg))) $ do
+parseMessageToEnd end = (<?> T.unpack (messageName (Proxy @msg))) $ do
     (msg, unsetFields) <- loop defMessage requiredFields
     if Map.null unsetFields
         then return $ over unknownFields reverse
@@ -103,7 +103,7 @@ parseAndAddField
                           wv <- getWireValue fieldWt
                           x <- runEither $ get wv
                           return $! x
-                runEither $ parseOnly (manyReversedTill getElt endOfInput) val
+                runEither $ runParser (manyReversedTill getElt endOfInput) val
           in case accessor of
               PlainField _ f -> do
                   !x <- getSimpleVal

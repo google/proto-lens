@@ -61,9 +61,8 @@ import Data.Word
 import Lens.Family2 (Lens', over, set)
 import Lens.Family2.Unchecked (lens)
 import qualified Data.Semigroup as Semigroup
-import Data.Attoparsec.ByteString (Parser)
-import Data.ByteString.Builder (Builder)
 
+import Data.ProtoLens.Encoding.Bytes (Builder, Parser)
 import Data.ProtoLens.Encoding.Wire
     ( Tag(..)
     , TaggedValue(..)
