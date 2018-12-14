@@ -236,10 +236,10 @@ buildPlainField env x f = case plainFieldKind f of
     info = plainFieldInfo f
     v = "_v"
     fieldValue = view'
-                    @@ lensOfExp (fieldLens info)
+                    @@ lensOfField info
                     @@ x
     maybeFieldValue = view'
-                        @@ lensOfExp ("maybe'" <> fieldLens info)
+                        @@ lensOfMaybeField info
                         @@ x
     {- Builds a value of the given map entry type
        from the given key/value pair kv.
@@ -263,6 +263,13 @@ fieldLens = overloadedName . fieldName
 
 lensOfField :: FieldInfo -> Exp
 lensOfField = lensOfExp . fieldLens
+
+lensOfMaybeField :: FieldInfo -> Exp
+lensOfMaybeField = lensOfExp . ("maybe'" <>) . fieldLens
+
+lensOfOneofField :: OneofInfo -> Exp
+lensOfOneofField =
+    lensOfExp . ("maybe'" <>) . overloadedName . oneofFieldName
 
 -- | Build a field along with its tag.
 buildTaggedField :: FieldInfo -> Exp -> Exp
@@ -291,9 +298,16 @@ buildPackedField f x = letE [patBind p x]
   where
     p = "p"
 
--- TODO: build oneof fields.
 buildOneofField :: Exp -> OneofInfo -> Exp
-buildOneofField _ _ = mempty'
+buildOneofField x info = case' (view' @@ lensOfOneofField info @@ x) $
+    ("Prelude.Nothing" --> mempty')
+    : [ pApp "Prelude.Just" [pApp (unQual $ caseConstructorName c)
+                                 [v]]
+            --> buildTaggedField (caseField c) v
+      | c <- oneofCases info
+      ]
+  where
+    v = "v"
 
 -- | Compute the proto encoding's representation of the wire type
 -- and field number.
