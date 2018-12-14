@@ -14,18 +14,18 @@ matrix:
     - env: BUILD=cabal
       ghc: "8.2.1"
       cabal: "2.0"
-  - env: BUILD=stack STACK='stack --resolver=lts-8.24 --system-ghc'
-    ghc: "8.0.2"
-  - env: BUILD=stack STACK='stack --resolver=lts-9.6 --system-ghc'
-    ghc: "8.0.2"
-  - env: BUILD=stack STACK='stack --resolver=11.22 --system-ghc'
-    ghc: "8.2.2"
-  - env: BUILD=stack STACK='stack --system-ghc'  # Use the resolver in stack.yaml
-    ghc: "8.4.4"
-  - env: BUILD=stack STACK='stack --stack-yaml=stack-ghc-8.6.yaml --system-ghc'
-    ghc: "8.6.2"
-  - env: BUILD=stack_generated_encoding
-    ghc: "8.4.4"
+    - env: BUILD=stack STACK='stack --resolver=lts-8.24 --system-ghc'
+      ghc: "8.0.2"
+    - env: BUILD=stack STACK='stack --resolver=lts-9.6 --system-ghc'
+      ghc: "8.0.2"
+    - env: BUILD=stack STACK='stack --resolver=11.22 --system-ghc'
+      ghc: "8.2.2"
+    - env: BUILD=stack STACK='stack --system-ghc'  # Use the resolver in stack.yaml
+      ghc: "8.4.4"
+    - env: BUILD=stack STACK='stack --stack-yaml=stack-ghc-8.6.yaml --system-ghc'
+      ghc: "8.6.2"
+    - env: BUILD=stack_generated_encoding
+      ghc: "8.4.4"
 
 before_install:
   - mkdir -p $HOME/.local/bin
