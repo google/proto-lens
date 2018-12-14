@@ -38,16 +38,12 @@ before_install:
 install:
   - case "$BUILD" in
       stack)
-        travis_retry curl -L https://github.com/commercialhaskell/stack/releases/download/v1.7.1/stack-1.7.1-linux-x86_64.tar.gz | tar xz --wildcards --strip-components=1 -C $HOME/.local/bin '*/stack'
-        $STACK setup --no-terminal;
-        $STACK build --no-terminal happy;
-        $STACK build --only-dependencies --no-terminal
-        ;;
+        travis_retry curl -L https://github.com/commercialhaskell/stack/releases/download/v1.7.1/stack-1.7.1-linux-x86_64.tar.gz | tar xz --wildcards --strip-components=1 -C $HOME/.local/bin '*/stack' &&
+        $STACK build --only-dependencies --no-terminal;;
       cabal)
-        cabal --version
-        ghc --version
-        cabal update
-        ;;
+        cabal --version &&
+        ghc --version &&
+        cabal update;;
     esac
 
 script:
