@@ -78,7 +78,8 @@ generatedParser m =
             ]
 
 reverseRepeatedFields :: MessageInfo Name -> Exp -> Exp
-reverseRepeatedFields m = foldr (.) id
+reverseRepeatedFields m = foldr (.) id $
+    (over' unknownFields' "Prelude.reverse" @@) :
     [ (overField (plainFieldInfo f) "Prelude.reverse" @@)
     | f <- messageFields m
     , RepeatedField{} <- [plainFieldKind f]
@@ -107,7 +108,7 @@ parseTagCases ::
 parseTagCases loop x info =
     concatMap (parseFieldCase loop x) allFields
     -- TODO: currently we ignore unknown fields.
-    ++ [pWildCard --> loop x]
+    ++ [unknownFieldCase loop x]
   where
     allFields = messageFields info
                 -- Cases of a oneof are decoded like optional oneof fields.
@@ -162,6 +163,15 @@ parseFieldCase loop x f = case plainFieldKind f of
                             @@ x
         ]
 
+unknownFieldCase :: (Exp -> Exp) -> Exp -> Alt
+unknownFieldCase loop x = wire --> do'
+    [ bangPat y <-- "Data.ProtoLens.Encoding.Wire.parseTaggedValue" @@ wire
+    , stmt $ loop $ over' unknownFields' (cons @@ y) @@ x
+    ]
+  where
+    wire = "wire"
+    y = "y"
+
 -- | An expression of type "b -> a -> a", corresponding to a Lens a b
 -- for this field.
 setField :: FieldInfo -> Exp
@@ -169,15 +179,18 @@ setField f = "Lens.Family2.set" @@ lensOfExp (fieldLens f)
 
 -- | An expression of type "(b -> b) -> a -> a", corresponding to a
 -- Lens a b for this field.
+overField :: FieldInfo -> Exp -> Exp
+overField f = over' (lensOfExp (fieldLens f))
+
+-- | An expression of type "(b -> b) -> a -> a".
 --
--- Specifically:
+-- Specifically, this renders to:
 --   over f (\!z -> g z) x
 -- The extra strictness prevents a space leak due to lists being lazy.
-overField :: FieldInfo -> Exp -> Exp
-overField f g =
-    "Lens.Family2.over"
-        @@ lensOfExp (fieldLens f)
-        @@ lambda [bangPat t] (g @@ t)
+over' :: Exp -> Exp -> Exp
+over' f g = "Lens.Family2.over"
+                @@ f
+                @@ lambda [bangPat t] (g @@ t)
   where
     t = "t"
 
@@ -214,6 +227,7 @@ generatedBuilder :: MessageInfo Name -> Exp
 generatedBuilder m =
     lambda [x] $ foldMapExp $ map (buildPlainField x) (messageFields m)
                                 ++ map (buildOneofField x) (messageOneofFields m)
+                            ++ [buildUnknown x]
                             ++ buildGroupEnd
   where
     x = "_x" -- TODO: rename to "x" once it's always used
@@ -222,6 +236,12 @@ generatedBuilder m =
                | Just g <- [groupFieldNumber m]
                ]
 
+buildUnknown :: Exp -> Exp
+buildUnknown x
+    = "Data.Monoid.mconcat"
+        @@ ("Prelude.map"
+                @@ "Data.ProtoLens.Encoding.Wire.buildTaggedValue"
+                @@ (view' @@ unknownFields' @@ x))
 
 -- | Concatenate a list of Monoids into a single value.
 -- For example, foldMapExp [a,b,c] will be transformed into
@@ -359,12 +379,13 @@ lensOfExp sym = ("Lens.Labels.lensOf'"
                       ("Lens.Labels.Proxy#" @@ promoteSymbol sym)))
 
 -- | Some functions that are used in multiple places in the generated code.
-getVarInt', putVarInt', mempty', view', set' :: Exp
+getVarInt', putVarInt', mempty', view', set', unknownFields' :: Exp
 getVarInt' = "Data.ProtoLens.Encoding.Bytes.getVarInt"
 putVarInt' = "Data.ProtoLens.Encoding.Bytes.putVarInt"
 mempty' = "Data.Monoid.mempty"
 view' = "Lens.Family2.view"
 set' = "Lens.Family2.set"
+unknownFields' = "Data.ProtoLens.unknownFields"
 
 -- | Returns an expression of type @Parser a@ for the given field.
 parseField :: FieldInfo -> Exp
