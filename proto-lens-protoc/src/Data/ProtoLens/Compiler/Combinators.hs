@@ -189,6 +189,10 @@ cons = var $ Syntax.Special () $ Syntax.Cons ()
 emptyList :: Exp
 emptyList = var $ Syntax.Special () $ Syntax.ListCon ()
 
+-- | The "()" constructor.
+unit :: Exp
+unit = var $ Syntax.Special () $ Syntax.UnitCon ()
+
 type Stmt = Syntax.Stmt ()
 
 do' :: [Stmt] -> Exp

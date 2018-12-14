@@ -665,12 +665,12 @@ plainRecordField env (PlainFieldInfo kind f) = case kind of
                       , lensExp = rawAccessor
                       }
                   ]
-    RepeatedField {}
         -- data Foo = Foo { _Foo_bar :: Map Bar Baz }
         -- type instance Field "foo" Foo = Map Bar Baz
-        | Just (_, k,v) <- getMapFields env fd -> let
-            mapType = "Data.Map.Map" @@ hsFieldType env (fieldDescriptor k)
-                                     @@ hsFieldType env (fieldDescriptor v)
+    MapField entry ->
+            let mapType = "Data.Map.Map"
+                            @@ hsFieldType env (fieldDescriptor $ keyField entry)
+                            @@ hsFieldType env (fieldDescriptor $ valueField entry)
             in recordField mapType
                   [LensInstance
                        { lensSymbol = baseName
@@ -679,7 +679,8 @@ plainRecordField env (PlainFieldInfo kind f) = case kind of
                        }]
         -- data Foo = Foo { _Foo_bar :: [Bar] }
         -- type instance Field "bar" Foo = [Bar]
-        | otherwise -> recordField listType
+    RepeatedField {} ->
+            recordField listType
                   [LensInstance
                       { lensSymbol = baseName
                       , lensFieldType = listType
@@ -781,9 +782,8 @@ hsFieldDefault env f = case plainFieldKind f of
     RequiredField -> hsFieldValueDefault env fd
     OptionalValueField -> hsFieldValueDefault env fd
     OptionalMaybeField -> "Prelude.Nothing"
-    RepeatedField {}
-        | Just _ <- getMapFields env fd -> "Data.Map.empty"
-        | otherwise -> list []
+    MapField {} -> "Data.Map.empty"
+    RepeatedField {} -> list []
   where
     fd = fieldDescriptor (plainFieldInfo f)
 
@@ -898,8 +898,8 @@ messageInstance env protoName m =
                   [ fieldUpdate (unQual $ messageUnknownFields m)
                         "[]"]
       ]
-    , [ match "unfinishedParseMessage" [] $ generatedParser env m ]
-    , [ match "unfinishedBuildMessage" [] $ generatedBuilder env m ]
+    , [ match "unfinishedParseMessage" [] $ generatedParser m ]
+    , [ match "unfinishedBuildMessage" [] $ generatedBuilder m ]
     ]
   where
     fieldsByTag =
@@ -948,19 +948,18 @@ fieldDescriptorExpr env n f =
                 @::@
                     ("Data.ProtoLens.FieldTypeDescriptor"
                         @@ hsFieldType env fd))
-        @@ fieldAccessorExpr env f)
+        @@ fieldAccessorExpr f)
     -- TODO: why is this type sig needed?
     @::@
     ("Data.ProtoLens.FieldDescriptor" @@ tyCon (unQual n))
   where
     fd = fieldDescriptor $ plainFieldInfo f
 
-fieldAccessorExpr :: Env QName -> PlainFieldInfo -> Exp
+fieldAccessorExpr :: PlainFieldInfo -> Exp
 -- (PlainField Required foo), (OptionalField foo), etc...
-fieldAccessorExpr env (PlainFieldInfo kind f) = accessorCon @@ lensOfExp hsFieldName
+fieldAccessorExpr (PlainFieldInfo kind f) = accessorCon @@ lensOfExp hsFieldName
 
   where
-    fd = fieldDescriptor f
     accessorCon = case kind of
           RequiredField
                 -> "Data.ProtoLens.PlainField" @@ "Data.ProtoLens.Required"
@@ -968,12 +967,12 @@ fieldAccessorExpr env (PlainFieldInfo kind f) = accessorCon @@ lensOfExp hsField
                 -> "Data.ProtoLens.PlainField" @@ "Data.ProtoLens.Optional"
           OptionalMaybeField
                 -> "Data.ProtoLens.OptionalField"
-          RepeatedField packed
-              | Just (_, k, v) <- getMapFields env fd
+          MapField entry
                   -> "Data.ProtoLens.MapField"
-                         @@ lensOfExp (overloadedField k)
-                         @@ lensOfExp (overloadedField v)
-              | otherwise -> "Data.ProtoLens.RepeatedField"
+                         @@ lensOfExp (overloadedField $ keyField entry)
+                         @@ lensOfExp (overloadedField $ valueField entry)
+          RepeatedField packed -> 
+                "Data.ProtoLens.RepeatedField"
                   @@ if packed == Packed
                         then "Data.ProtoLens.Packed"
                         else "Data.ProtoLens.Unpacked"

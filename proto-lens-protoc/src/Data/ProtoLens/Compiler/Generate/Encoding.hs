@@ -11,7 +11,6 @@ module Data.ProtoLens.Compiler.Generate.Encoding
 
 import Data.Bits (shiftL, (.|.))
 import Data.Int (Int32)
-import Data.Maybe (isNothing)
 import Data.Semigroup ((<>))
 import Lens.Family2 (view, (^.))
 
@@ -24,45 +23,65 @@ import Proto.Google.Protobuf.Descriptor_Fields
     , type'
     )
 
-generatedParser :: Env QName -> MessageInfo Name -> Exp
-generatedParser env m =
+generatedParser :: MessageInfo Name -> Exp
+generatedParser m =
     {- let loop :: T -> Parser T
-           loop x = do
-                    end <- atEnd
-                    if end
-                        then return x
-                        else do
-                            tag <- getVarInt
-                            case tag of ...
-      in loop defMessage
+           loop x = ...
+       in loop defMessage
     -}
     letE [typeSig [loop] $ tyFun ty $ "Data.ProtoLens.Encoding.Bytes.Parser" @@ ty
-         , funBind [match loop [x] loopExpr]]
-         (loop @@ "Data.ProtoLens.defMessage")
+         , funBind [match loop [x] loopExpr]
+         ]
+        $ loop @@ "Data.ProtoLens.defMessage"
   where
     ty = tyCon (unQual $ messageName m)
     x = "x"
     tag = "tag"
     end = "end"
     loop = "loop"
-    loopExpr = do'
-        [ end <-- "Data.ProtoLens.Encoding.Bytes.atEnd"
-        , stmt $
-            if' end
-                ("Prelude.return" @@
-                    (reverseRepeatedFields env m x))
-                $ do'
-                    [ tag <-- getVarInt'
-                    , stmt $ case' tag $ parseTagCases env (loop @@) x m
-                    ]
-        ]
+    finish = "Prelude.return" @@ (reverseRepeatedFields m x)
 
-reverseRepeatedFields :: Env QName -> MessageInfo Name -> Exp -> Exp
-reverseRepeatedFields env m = foldr (.) id
+    loopExpr
+        {- Group:
+            do
+              tag <- getVarInt
+              case tag of
+                {groupEndTag} -> return $ {reverseRepeatedFields} x
+                ... -- Regular message fields
+
+          TODO(#282): fail the parse if we find a group-end tag
+          with an incorrect field number.
+        -}
+        | Just g <- groupFieldNumber m = do'
+            [ tag <-- getVarInt'
+            , stmt $ case' tag $
+                (pLitInt (groupEndTag g) --> finish)
+                    : parseTagCases (loop @@) x m
+            ]
+        {- Regular message type:
+              do
+                end <- atEnd
+                if end
+                    then return $ {reverseRepeatedFields} x
+                    else do
+                        tag <- getVarInt
+                        case tag of ...
+        -}
+        | otherwise = do'
+            [ end <-- "Data.ProtoLens.Encoding.Bytes.atEnd"
+            , stmt $
+                if' end finish
+                    $ do'
+                        [ tag <-- getVarInt'
+                        , stmt $ case' tag $ parseTagCases (loop @@) x m
+                        ]
+            ]
+
+reverseRepeatedFields :: MessageInfo Name -> Exp -> Exp
+reverseRepeatedFields m = foldr (.) id
     [ (overField (plainFieldInfo f) "Prelude.reverse" @@)
     | f <- messageFields m
     , RepeatedField{} <- [plainFieldKind f]
-    , isNothing (getMapFields env $ fieldDescriptor $ plainFieldInfo f)
     ]
 
 -- | A list case alternatives for the fields of a message.
@@ -80,14 +99,13 @@ reverseRepeatedFields env m = foldr (.) id
 --  - {PARSE} is an expression of the form "Parser V",
 --  - and "loop" and "x" are as in @generatedParser@.
 parseTagCases ::
-       Env QName
-    -> (Exp -> Exp) -- ^ loop continuation, equivalent to "msg -> Parser msg".
+       (Exp -> Exp) -- ^ loop continuation, equivalent to "msg -> Parser msg".
                     -- It continues the loop with the given new value of the message.
     -> Exp          -- ^ Previous value of the message, of type "msg"
     -> MessageInfo Name
     -> [Alt]
-parseTagCases env loop x info =
-    concatMap (parseFieldCase env loop x) allFields
+parseTagCases loop x info =
+    concatMap (parseFieldCase loop x) allFields
     -- TODO: currently we ignore unknown fields.
     ++ [pWildCard --> loop x]
   where
@@ -100,11 +118,10 @@ parseTagCases env loop x info =
 
 -- | A particular parsing case.  See @parseTagCases@ for details.
 parseFieldCase ::
-    Env QName -> (Exp -> Exp) -> Exp -> PlainFieldInfo -> [Alt]
-parseFieldCase env loop x f = case plainFieldKind f of
+    (Exp -> Exp) -> Exp -> PlainFieldInfo -> [Alt]
+parseFieldCase loop x f = case plainFieldKind f of
+    MapField entryInfo -> [mapCase entryInfo]
     RepeatedField p
-        | Just mapInfo <- getMapFields env (fieldDescriptor info)
-            -> [mapCase mapInfo]
         | p == NotPackable -> [unpackedCase]
         | otherwise -> [unpackedCase, packedCase]
     _ -> [valueCase]
@@ -130,13 +147,15 @@ parseFieldCase env loop x f = case plainFieldKind f of
                         @@ bytes)
         , stmt $ loop $ overField info ("Prelude.++" @@ y) @@ x
         ]
-    mapCase (entryName, kField, vField) = pLitInt (fieldTag info) --> do'
-        [ bangPat (entry `patTypeSig` tyCon entryName)
+    mapCase entryInfo = pLitInt (fieldTag info) --> do'
+        [ bangPat (entry `patTypeSig` tyCon (unQual $ mapEntryTypeName entryInfo))
                 <-- parseField info
-        , stmt $ letE [ patBind "key" $ view' @@ lensOfField kField
-                                            @@ entry
-                      , patBind "value" $ view' @@ lensOfField vField
-                                            @@ entry
+        , stmt $ letE [ patBind "key"
+                            $ view' @@ lensOfField (keyField entryInfo)
+                                    @@ entry
+                      , patBind "value"
+                            $ view' @@ lensOfField (valueField entryInfo)
+                                    @@ entry
                       ]
                 $ loop $ overField info
                             ("Data.Map.insert" @@ "key" @@ "value")
@@ -191,12 +210,18 @@ parsePackedField info = letE [funBind [match ploop [qs] ploopExp]]
                     ]
         ]
 
-generatedBuilder :: Env QName -> MessageInfo Name -> Exp
-generatedBuilder env m =
-    lambda [x] $ foldMapExp $ map (buildPlainField env x) (messageFields m)
+generatedBuilder :: MessageInfo Name -> Exp
+generatedBuilder m =
+    lambda [x] $ foldMapExp $ map (buildPlainField x) (messageFields m)
                                 ++ map (buildOneofField x) (messageOneofFields m)
+                            ++ buildGroupEnd
   where
     x = "_x" -- TODO: rename to "x" once it's always used
+    -- If this is a group, finish by emitting the end-group tag.
+    buildGroupEnd = [ putVarInt' @@ litInt (groupEndTag g)
+               | Just g <- [groupFieldNumber m]
+               ]
+
 
 -- | Concatenate a list of Monoids into a single value.
 -- For example, foldMapExp [a,b,c] will be transformed into
@@ -208,8 +233,8 @@ foldMapExp (x:xs) = "Data.Monoid.<>" @@ x @@ foldMapExp xs
 
 -- | An expression of type @Builder@ which encodes the field value
 -- @x@ based on the kind and type of the field @f@.
-buildPlainField :: Env QName -> Exp -> PlainFieldInfo -> Exp
-buildPlainField env x f = case plainFieldKind f of
+buildPlainField :: Exp -> PlainFieldInfo -> Exp
+buildPlainField x f = case plainFieldKind f of
     RequiredField -> buildTaggedField info fieldValue
     OptionalMaybeField -> case' maybeFieldValue
                             ["Prelude.Nothing" --> mempty'
@@ -220,12 +245,10 @@ buildPlainField env x f = case plainFieldKind f of
                           $ if' ("Prelude.==" @@ v @@ "Data.ProtoLens.fieldDefault")
                                 mempty'
                                 (buildTaggedField info v)
-    RepeatedField _
-        | Just mapInfo
-                <- getMapFields env (fieldDescriptor info)
+    MapField entryInfo
         -> "Data.Monoid.mconcat"
             @@ ("Prelude.map"
-                    @@ lambda [v] (buildEntry mapInfo v)
+                    @@ lambda [v] (buildEntry entryInfo v)
                     @@ ("Data.Map.toList" @@ fieldValue))
     RepeatedField Packed -> buildPackedField info fieldValue
     RepeatedField _ -> "Data.Monoid.mconcat"
@@ -248,15 +271,15 @@ buildPlainField env x f = case plainFieldKind f of
             (set (lensOf {VALUE}) (snd kv)
                 (defMessage :: Foo'Entry)
     -}
-    buildEntry (entry, keyField, valueField) kv
+    buildEntry entry kv
         = buildTaggedField info
             $ set'
-                @@ lensOfField keyField
+                @@ lensOfField (keyField entry)
                 @@ ("Prelude.fst" @@ kv)
-                @@ (set' @@ lensOfField valueField
+                @@ (set' @@ lensOfField (valueField entry)
                          @@ ("Prelude.snd" @@ kv)
                          @@ ("Data.ProtoLens.defMessage"
-                                @::@ tyCon entry))
+                                @::@ tyCon (unQual $ mapEntryTypeName entry)))
 
 fieldLens :: FieldInfo -> Symbol
 fieldLens = overloadedName . fieldName
@@ -323,6 +346,9 @@ fieldTag f = makeTag (fieldDescriptor f ^. number) $ fieldInfoEncoding f
 
 packedFieldTag :: FieldInfo -> Integer
 packedFieldTag f = makeTag (fieldDescriptor f ^. number) lengthy
+
+groupEndTag :: Int32 -> Integer
+groupEndTag num = makeTag num groupEnd
 
 -- | An expression that selects the overloaded field lens of this name.
 --
