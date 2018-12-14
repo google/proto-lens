@@ -6,6 +6,7 @@ language: c
 sudo: true
 
 cache:
+  timeout: 600 # 10 minutes
   directories:
   - $HOME/.ghc
   - $HOME/.stack
