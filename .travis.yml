@@ -49,7 +49,7 @@ install:
       stack)
         $STACK setup --no-terminal;
         $STACK build --no-terminal happy;
-        $STACK build --only-dependencies --no-terminal;;
+        $STACK build -j 2 --only-dependencies --no-terminal;;
       cabal)
         cabal update;;
     esac
@@ -63,10 +63,11 @@ script:
   - case "$BUILD" in
       stack)
         STACK_ARGS=(--haddock --no-haddock-deps);
-        $STACK build --bench --no-run-benchmarks "${STACK_ARGS[@]}" && $STACK test "${STACK_ARGS[@]}" &&
-        (cd proto-lens-tutorial && $STACK build "${STACK_ARGS[@]}");;
+        $STACK build -j 2 --bench --no-run-benchmarks "${STACK_ARGS[@]}" &&
+        $STACK test -j 2 "${STACK_ARGS[@]}" &&
+        (cd proto-lens-tutorial && $STACK build -j 2 "${STACK_ARGS[@]}");;
       stack_generated_encoding)
-        $STACK build --flag proto-lens:generated-encoding --bench --no-run-benchmarks --test --no-run-tests;;
+        $STACK build -j 2 --flag proto-lens:generated-encoding --bench --no-run-benchmarks --test --no-run-tests;;
       cabal)
         ./travis-cabal.sh;;
     esac
