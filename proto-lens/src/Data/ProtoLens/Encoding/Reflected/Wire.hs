@@ -21,6 +21,7 @@ module Data.ProtoLens.Encoding.Reflected.Wire(
     putTaggedValue,
     getWireValue,
     putWireValue,
+    splitTypeAndTag,
     Equal(..),
     equalWireTypes,
     decodeFieldSet,
@@ -152,9 +153,10 @@ putTypeAndTag wt (Tag tag)
     = putVarInt $ wireTypeToInt wt .|. fromIntegral tag `shiftL` 3
 
 getTypeAndTag :: Parser (SomeWireType, Tag)
-getTypeAndTag = do
-  n <- getVarInt
-  case intToWireType (n .&. 7) of
+getTypeAndTag = getVarInt >>= runEither . splitTypeAndTag
+
+splitTypeAndTag :: Word64 -> Either String (SomeWireType, Tag)
+splitTypeAndTag n = case intToWireType (n .&. 7) of
     Left err -> fail err
     Right wt -> return (wt, fromIntegral $ n `shiftR` 3)
 

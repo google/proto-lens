@@ -7,6 +7,23 @@ module Data.ProtoLens.Encoding.Wire
     , TaggedValue(..)
     , WireType(..)
     , WireValue(..)
+    , SomeWireType(..)
+    , parseTaggedValue
+    , buildTaggedValue
     ) where
 
+import Data.Word (Word64)
+
+import Data.ProtoLens.Encoding.Bytes
 import Data.ProtoLens.Encoding.Reflected.Wire
+
+-- | Parse an unknown WireValue, given that the type+number has
+-- already been parsed.
+parseTaggedValue :: Word64 -> Parser TaggedValue
+parseTaggedValue w = do
+    (SomeWireType wt, tag) <- runEither $ splitTypeAndTag w
+    value <- getWireValue wt
+    return $ TaggedValue tag (WireValue wt value)
+
+buildTaggedValue :: TaggedValue -> Builder
+buildTaggedValue = putTaggedValue

@@ -38,6 +38,9 @@ library:
     - Data.Map as Data.ProtoLens.Runtime.Data.Map,
     - Data.ProtoLens as Data.ProtoLens.Runtime.Data.ProtoLens,
     - Data.ProtoLens.Encoding.Bytes as Data.ProtoLens.Runtime.Data.ProtoLens.Encoding.Bytes,
+    # TODO: try to avoid exposing the Wire module, or else merge it into the
+    # Bytes module.
+    - Data.ProtoLens.Encoding.Wire as Data.ProtoLens.Runtime.Data.ProtoLens.Encoding.Wire,
     - Data.ProtoLens.Service.Types as Data.ProtoLens.Runtime.Data.ProtoLens.Service.Types,
     - Data.ProtoLens.Message.Enum as Data.ProtoLens.Runtime.Data.ProtoLens.Message.Enum,
     - Data.Text as Data.ProtoLens.Runtime.Data.Text,

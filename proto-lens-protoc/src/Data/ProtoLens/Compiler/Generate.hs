@@ -95,8 +95,11 @@ generateModule modName imports modifyImport definitions importedEnv services
                     [ "Control.DeepSeq", "Lens.Labels.Prism" ]
     sharedImports = map (modifyImport . importSimple)
               [ "Prelude", "Data.Int", "Data.Monoid", "Data.Word"
-              , "Data.ProtoLens", "Data.ProtoLens.Message.Enum", "Data.ProtoLens.Service.Types"
+              , "Data.ProtoLens"
               , "Data.ProtoLens.Encoding.Bytes"
+              , "Data.ProtoLens.Encoding.Wire"
+              , "Data.ProtoLens.Message.Enum"
+              , "Data.ProtoLens.Service.Types"
               , "Lens.Family2", "Lens.Family2.Unchecked"
               , "Data.Text",  "Data.Map", "Data.ByteString", "Data.ByteString.Char8"
               , "Data.Text.Encoding"
