@@ -7,10 +7,11 @@
 {-# LANGUAGE OverloadedStrings #-}
 module Main where
 
-import Data.Monoid ((<>))
+import Data.Monoid ((<>), mempty)
 import Data.ProtoLens (defMessage)
+import Data.Proxy (Proxy(..))
 import Lens.Family ((&), (.~))
-import Proto.Required (Foo)
+import Proto.Required (Foo, Bar)
 import Proto.Required_Fields (a, b)
 import Test.Framework (testGroup)
 
@@ -28,9 +29,11 @@ main = testMain
     , onlyRequired
     , onlyOptional
     , both
+    , multipleRequired
     ]
 
-empty, onlyRequired, onlyOptional, both :: Test
+empty, onlyRequired, onlyOptional, both,
+    multipleRequired :: Test
 
 empty = testGroup "empty"
     [ deserializeFrom "wire" failedFoo mempty
@@ -59,3 +62,18 @@ both = testGroup "both"
     ]
   where
     target = Just $ defFoo & a .~ 42 & b .~ 17
+
+multipleRequired = testGroup "multiple"
+    [ deserializeFromExpectingError "both missing"
+        (Proxy :: Proxy Bar)
+        "\"first_reqd\",\"second_reqd\""
+        mempty
+    , deserializeFromExpectingError "first missing"
+        (Proxy :: Proxy Bar)
+        "first_reqd"
+        $ tagged 2 (VarInt 42)
+    , deserializeFromExpectingError "second missing"
+        (Proxy :: Proxy Bar)
+        "second_reqd"
+        $ tagged 1 (VarInt 42)
+    ]
