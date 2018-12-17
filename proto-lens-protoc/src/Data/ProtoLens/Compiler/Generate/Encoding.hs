@@ -12,6 +12,7 @@ module Data.ProtoLens.Compiler.Generate.Encoding
 import Data.Bits (shiftL, (.|.))
 import Data.Int (Int32)
 import Data.Semigroup ((<>))
+import qualified Data.Text as Text
 import Lens.Family2 (view, (^.))
 
 import Data.ProtoLens.Compiler.Combinators
@@ -19,7 +20,8 @@ import Data.ProtoLens.Compiler.Definitions
 import Data.ProtoLens.Compiler.Generate.FieldEncoding
 
 import Proto.Google.Protobuf.Descriptor_Fields
-    ( number
+    ( name
+    , number
     , type'
     )
 
@@ -32,9 +34,12 @@ generatedParser m =
     letE [typeSig [loop] $ tyFun ty $ "Data.ProtoLens.Encoding.Bytes.Parser" @@ ty
          , funBind [match loop [x] loopExpr]
          ]
-        $ loop @@ "Data.ProtoLens.defMessage"
+        $ "Data.ProtoLens.Encoding.Bytes.<?>"
+           @@ (loop @@ "Data.ProtoLens.defMessage")
+           @@ stringExp msgName
   where
     ty = tyCon (unQual $ messageName m)
+    msgName = Text.unpack (messageDescriptor m ^. name)
     x = "x"
     tag = "tag"
     end = "end"
@@ -389,7 +394,11 @@ unknownFields' = "Data.ProtoLens.unknownFields"
 
 -- | Returns an expression of type @Parser a@ for the given field.
 parseField :: FieldInfo -> Exp
-parseField = parseFieldType . fieldInfoEncoding
+parseField f = "Data.ProtoLens.Encoding.Bytes.<?>"
+                    @@ (parseFieldType $ fieldInfoEncoding f)
+                    @@ stringExp n
+  where
+    n = Text.unpack (fieldDescriptor f ^. name)
 
 -- | Returns a function corresponding to `a -> Builder`:
 buildField :: FieldInfo -> Exp
