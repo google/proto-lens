@@ -130,8 +130,8 @@ parseStateNames m = ParseState
 initialParseState :: ParseState a -> ParseState Exp
 initialParseState s = ParseState
     { partialMessage = "Data.ProtoLens.defMessage"
-    , requiredFieldsUnset = fmap (const "Prelude.True")
-                                $ requiredFieldsUnset s
+    , requiredFieldsUnset = const "Prelude.True"
+                                <$> requiredFieldsUnset s
     }
 
 -- | The types of the loop arguments.
