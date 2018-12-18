@@ -67,7 +67,7 @@ protoBenchmark groupName proto =
         either error id . runParser Reflected.parseMessage
     generatedDecodeMessageOrDie =
         either error id . runParser unfinishedParseMessage
-    encodedProto = runBuilder $ Reflected.buildMessage proto
+    encodedProto = runBuilder $ unfinishedBuildMessage proto
     fullGroupName =
         groupName ++ "(" ++ prettySize (BS.length encodedProto) ++ ")"
 
