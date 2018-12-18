@@ -10,6 +10,7 @@ module Data.ProtoLens.TestUtil(
     Test,
     serializeTo,
     deserializeFrom,
+    deserializeFromExpectingError,
     renderIndenting,
     readFrom,
     readFromWithRegistry,
@@ -36,10 +37,12 @@ module Data.ProtoLens.TestUtil(
 
 import Data.ProtoLens
 import Data.ProtoLens.Arbitrary
+import Data.Proxy
 
 import qualified Data.ByteString as B
 import qualified Data.ByteString.Builder as Builder
 import qualified Data.ByteString.Lazy as L
+import Data.List (isInfixOf)
 import qualified Data.Text.Lazy as LT
 import Test.QuickCheck (noShrinking)
 #if MIN_VERSION_QuickCheck(2,10,0)
@@ -49,7 +52,7 @@ import Test.Framework (defaultMain, testGroup)
 import Test.Framework.Providers.HUnit (testCase)
 import Test.Framework.Providers.API (Test)
 import Test.Framework.Providers.QuickCheck2 (testProperty)
-import Test.HUnit ((@=?), assertBool)
+import Test.HUnit ((@=?), assertBool, assertFailure)
 import Data.Either (isLeft)
 import Data.Bits (shiftL, shiftR, (.|.), (.&.))
 import qualified Data.Text.Lazy as TL
@@ -96,6 +99,19 @@ deserializeFrom name x bs = testCase name $ case x of
     Just x' -> Right x' @=? y
   where
     y = decodeMessage $ toStrictByteString bs
+
+deserializeFromExpectingError
+    :: forall a . (Show a, Eq a, Message a)
+    => String -> Proxy a -> String -> Builder.Builder -> Test
+deserializeFromExpectingError name _ msg bs = testCase name $
+    case decodeMessage $ toStrictByteString bs :: Either String a of
+        Right x -> assertFailure $ "expected failure; got: " ++ show x
+        Left e
+            | msg `isInfixOf` e -> return ()
+            | otherwise -> assertFailure $
+                            "Incorrect error message; expected "
+                            ++ show msg
+                            ++ ", got " ++ show e
 
 type MessageProperty a = ArbitraryMessage a -> Bool
 

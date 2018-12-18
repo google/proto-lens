@@ -1,6 +1,7 @@
 -- | This module generates code for decoding and encoding protocol buffer messages.
 --
 -- Upstream docs: https://developers.google.com/protocol-buffers/docs/encoding
+{-# LANGUAGE DeriveFunctor #-}
 {-# LANGUAGE LambdaCase #-}
 {-# LANGUAGE NoMonomorphismRestriction #-}
 {-# LANGUAGE OverloadedStrings #-}
@@ -11,6 +12,8 @@ module Data.ProtoLens.Compiler.Generate.Encoding
 
 import Data.Bits (shiftL, (.|.))
 import Data.Int (Int32)
+import qualified Data.Map as Map
+import qualified Data.Text as Text
 import Data.Semigroup ((<>))
 import Lens.Family2 (view, (^.))
 
@@ -19,27 +22,40 @@ import Data.ProtoLens.Compiler.Definitions
 import Data.ProtoLens.Compiler.Generate.FieldEncoding
 
 import Proto.Google.Protobuf.Descriptor_Fields
-    ( number
+    ( name
+    , number
     , type'
     )
 
 generatedParser :: MessageInfo Name -> Exp
 generatedParser m =
-    {- let loop :: T -> Parser T
-           loop x = ...
-       in loop defMessage
+    {- let loop :: T -> Bool -> Bool -> ... -> Parser T
+           loop x required'a required'b ... = ...
+       in loop defMessage True True ...
     -}
-    letE [typeSig [loop] $ tyFun ty $ "Data.ProtoLens.Encoding.Bytes.Parser" @@ ty
-         , funBind [match loop [x] loopExpr]
+    letE [typeSig [loop] loopSig
+         , funBind [match loop (fmap pVar $ loopArgs names) loopExpr]
          ]
-        $ loop @@ "Data.ProtoLens.defMessage"
+        $ continue (initialParseState names)
   where
     ty = tyCon (unQual $ messageName m)
-    x = "x"
+    loopSig = foldr tyFun
+        ("Data.ProtoLens.Encoding.Bytes.Parser" @@ ty)
+        (loopArgs $ parseStateTypes m)
+
+    names = parseStateNames m
+    exprs = fmap (var . unQual) names
     tag = "tag"
     end = "end"
     loop = "loop"
-    finish = "Prelude.return" @@ (reverseRepeatedFields m x)
+
+    continue, finish :: ParseState Exp -> Exp
+    continue s = foldl (@@) loop (loopArgs s)
+    finish s = do'
+                [stmt $ checkMissingFields s
+                , stmt $ "Prelude.return" @@ (reverseRepeatedFields m
+                                        $ partialMessage s)
+                ]
 
     loopExpr
         {- Group:
@@ -55,8 +71,8 @@ generatedParser m =
         | Just g <- groupFieldNumber m = do'
             [ tag <-- getVarInt'
             , stmt $ case' tag $
-                (pLitInt (groupEndTag g) --> finish)
-                    : parseTagCases (loop @@) x m
+                (pLitInt (groupEndTag g) --> finish exprs)
+                    : parseTagCases continue exprs m
             ]
         {- Regular message type:
               do
@@ -70,12 +86,77 @@ generatedParser m =
         | otherwise = do'
             [ end <-- "Data.ProtoLens.Encoding.Bytes.atEnd"
             , stmt $
-                if' end finish
+                if' end (finish exprs)
                     $ do'
                         [ tag <-- getVarInt'
-                        , stmt $ case' tag $ parseTagCases (loop @@) x m
+                        , stmt $ case' tag $ parseTagCases continue exprs m
                         ]
             ]
+
+-- | The state of the parsing loop.  Each instance of @v@ corresponds
+-- to an argument of the loop function.
+data ParseState v = ParseState
+    { partialMessage :: v
+        -- ^ The message that we're parsing.
+    , requiredFieldsUnset :: Map.Map FieldId v
+        -- ^ The required fields of the message, each corresponding to
+        -- a @Bool@ argument of the loop.
+    } deriving Functor
+
+-- | Returns a sequence all arguments of the loop function.
+loopArgs :: ParseState v -> [v]
+loopArgs s = partialMessage s : Map.elems (requiredFieldsUnset s)
+
+-- | The proto name of the field.
+newtype FieldId = FieldId Text.Text
+    deriving (Eq, Ord)
+
+fieldId :: PlainFieldInfo -> FieldId
+fieldId f = FieldId $ fieldDescriptor (plainFieldInfo f) ^. name
+
+-- | The names of the loop arguments.
+parseStateNames :: MessageInfo Name -> ParseState Name
+parseStateNames m = ParseState
+    { partialMessage = "x"
+    , requiredFieldsUnset = Map.fromList
+        [ (fieldId f, nameFromSymbol $ "required'" <> n)
+        | f <- messageFields m
+        , let n = overloadedName (fieldName $ plainFieldInfo f)
+        , RequiredField <- [plainFieldKind f]
+        ]
+    }
+
+-- | The intial values of the loop arguments.
+initialParseState :: ParseState a -> ParseState Exp
+initialParseState s = ParseState
+    { partialMessage = "Data.ProtoLens.defMessage"
+    , requiredFieldsUnset = const "Prelude.True"
+                                <$> requiredFieldsUnset s
+    }
+
+-- | The types of the loop arguments.
+parseStateTypes :: MessageInfo Name -> ParseState Type
+parseStateTypes m = ParseState
+    { partialMessage = tyCon (unQual $ messageName m)
+    , requiredFieldsUnset = fmap (const "Prelude.Bool")
+                            $ requiredFieldsUnset
+                            $ parseStateNames m
+    }
+
+-- | Transform the loop arguments by applying a given function
+-- to the intermediate message value.
+updateParseState ::
+       Exp -- ^ An expression of type @msg -> msg@
+    -> ParseState Exp
+    -> ParseState Exp
+updateParseState f s = s { partialMessage = f @@ (partialMessage s) }
+
+-- | Transform the loop arguments by marking a required field
+-- as having been set.
+markRequiredField :: FieldId -> ParseState Exp -> ParseState Exp
+markRequiredField f s =
+    s { requiredFieldsUnset = Map.insert f "Prelude.False"
+                                $ requiredFieldsUnset s }
 
 reverseRepeatedFields :: MessageInfo Name -> Exp -> Exp
 reverseRepeatedFields m = foldr (.) id $
@@ -85,6 +166,28 @@ reverseRepeatedFields m = foldr (.) id $
     , RepeatedField{} <- [plainFieldKind f]
     ]
 
+-- | Returns an Exp of type @Parser ()@
+-- which fails if any of the missing fields aren't set.
+checkMissingFields :: ParseState Exp -> Exp
+checkMissingFields s =
+    {- let missing = (if required'a then ("a":) else id)
+                        ((if required'b then ("b":) else id)
+                        ... [])
+       in if null missing then return ()
+          else fail ("Missing required fields: " ++ show missing)
+    -}
+    letE [patBind missing allMissingFields]
+    $ if' ("Prelude.null" @@ missing) ("Prelude.return" @@ unit)
+    $ "Prelude.fail"
+        @@ ("Prelude.++"
+                @@ stringExp "Missing required fields: "
+                @@ ("Prelude.show" @@ (missing @::@ "[Prelude.String]")))
+  where
+    missing = "missing"
+    allMissingFields = Map.foldrWithKey consIfMissing emptyList (requiredFieldsUnset s)
+    consIfMissing (FieldId f) e rest =
+        (if' e (cons @@ stringExp (Text.unpack f)) "Prelude.id") @@ rest
+
 -- | A list case alternatives for the fields of a message.
 --
 -- The exact structure of each case differs based on the field type.  However, it
@@ -92,7 +195,7 @@ reverseRepeatedFields m = foldr (.) id $
 --
 --   {N} -> do
 --           {VALUE} <- {PARSE}
---           loop (set {FIELD} {VALUE} x
+--           loop (set {FIELD} {VALUE} x) required'a False required'c ...
 --
 -- where:
 --  - {N} is an integer representing the wire type + field number,
@@ -100,9 +203,11 @@ reverseRepeatedFields m = foldr (.) id $
 --  - {PARSE} is an expression of the form "Parser V",
 --  - and "loop" and "x" are as in @generatedParser@.
 parseTagCases ::
-       (Exp -> Exp) -- ^ loop continuation, equivalent to "msg -> Parser msg".
-                    -- It continues the loop with the given new value of the message.
-    -> Exp          -- ^ Previous value of the message, of type "msg"
+       (ParseState Exp -> Exp)
+            -- ^ loop continuation, equivalent to "msg -> Bool -> ... -> Bool -> Parser msg".
+            -- It continues the loop with the given new value of the message, keeping track
+            -- of whether the required fields are still needed.
+    -> ParseState Exp -- ^ Previous value of the message and required field states
     -> MessageInfo Name
     -> [Alt]
 parseTagCases loop x info =
@@ -119,12 +224,13 @@ parseTagCases loop x info =
 
 -- | A particular parsing case.  See @parseTagCases@ for details.
 parseFieldCase ::
-    (Exp -> Exp) -> Exp -> PlainFieldInfo -> [Alt]
+    (ParseState Exp -> Exp) -> ParseState Exp -> PlainFieldInfo -> [Alt]
 parseFieldCase loop x f = case plainFieldKind f of
     MapField entryInfo -> [mapCase entryInfo]
     RepeatedField p
         | p == NotPackable -> [unpackedCase]
         | otherwise -> [unpackedCase, packedCase]
+    RequiredField -> [requiredCase]
     _ -> [valueCase]
   where
     y = "y"
@@ -133,12 +239,20 @@ parseFieldCase loop x f = case plainFieldKind f of
     info = plainFieldInfo f
     valueCase = pLitInt (fieldTag info) --> do'
         [ y <-- parseField info
-        , stmt $ loop $ setField info @@ y @@ x
+        , stmt . loop . updateParseState (setField info @@ y)
+            $ x
         ]
-
+    requiredCase = pLitInt (fieldTag info) --> do'
+        [ y <-- parseField info
+        , stmt . loop
+               . updateParseState (setField info @@ y)
+               . markRequiredField (fieldId f)
+               $ x
+        ]
     unpackedCase = pLitInt (fieldTag info) --> do'
         [ bangPat y <-- parseField info
-        , stmt $ loop $ overField info (cons @@ y) @@ x
+        , stmt . loop . updateParseState (overField info (cons @@ y))
+            $ x
         ]
     packedCase = pLitInt (packedFieldTag info) --> do'
         [ bytes <-- parseFieldType lengthy
@@ -146,27 +260,32 @@ parseFieldCase loop x f = case plainFieldKind f of
                     @@ ("Data.ProtoLens.Encoding.Bytes.runParser"
                         @@ parsePackedField info
                         @@ bytes)
-        , stmt $ loop $ overField info ("Prelude.++" @@ y) @@ x
+        , stmt . loop . updateParseState (overField info ("Prelude.++" @@ y))
+            $ x
         ]
     mapCase entryInfo = pLitInt (fieldTag info) --> do'
         [ bangPat (entry `patTypeSig` tyCon (unQual $ mapEntryTypeName entryInfo))
                 <-- parseField info
-        , stmt $ letE [ patBind "key"
+        , stmt . letE [ patBind "key"
                             $ view' @@ lensOfField (keyField entryInfo)
                                     @@ entry
                       , patBind "value"
                             $ view' @@ lensOfField (valueField entryInfo)
                                     @@ entry
                       ]
-                $ loop $ overField info
-                            ("Data.Map.insert" @@ "key" @@ "value")
-                            @@ x
+               . loop
+               . updateParseState
+                    (overField info
+                                ("Data.Map.insert" @@ "key" @@ "value"))
+               $ x
         ]
 
-unknownFieldCase :: (Exp -> Exp) -> Exp -> Alt
+unknownFieldCase ::
+    (ParseState Exp -> Exp) -> ParseState Exp -> Alt
 unknownFieldCase loop x = wire --> do'
     [ bangPat y <-- "Data.ProtoLens.Encoding.Wire.parseTaggedValue" @@ wire
-    , stmt $ loop $ over' unknownFields' (cons @@ y) @@ x
+    , stmt . loop . updateParseState (over' unknownFields' (cons @@ y))
+        $ x
     ]
   where
     wire = "wire"
