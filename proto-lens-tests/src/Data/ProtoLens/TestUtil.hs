@@ -33,6 +33,7 @@ module Data.ProtoLens.TestUtil(
     Doc,
     PrettyPrint.vcat,
     (PrettyPrint.$+$),
+    satisfies,
     ) where
 
 import Data.ProtoLens
@@ -44,6 +45,7 @@ import qualified Data.ByteString.Builder as Builder
 import qualified Data.ByteString.Lazy as L
 import Data.List (isInfixOf)
 import qualified Data.Text.Lazy as LT
+import GHC.Stack (HasCallStack)
 import Test.QuickCheck (noShrinking)
 #if MIN_VERSION_QuickCheck(2,10,0)
 import Test.QuickCheck (withMaxSuccess)
@@ -95,7 +97,7 @@ deserializeFrom :: (Show a, Eq a, Message a)
 deserializeFrom name x bs = testCase name $ case x of
     -- Check whether or not it failed without worrying about the exact error
     -- message.
-    Nothing -> assertBool ("Expected failure, found " ++ show y) $ isLeft y
+    Nothing -> satisfies isLeft y
     Just x' -> Right x' @=? y
   where
     y = decodeMessage $ toStrictByteString bs
@@ -153,7 +155,7 @@ readFromWithRegistry :: (Show a, Eq a, Message a)
 readFromWithRegistry reg name x text = testCase name $ case x of
     -- Check whether or not it failed without worrying about the exact error
     -- message.
-    Nothing -> assertBool ("Expected failure, found " ++ show y) $ isLeft y
+    Nothing -> satisfies isLeft y
     Just x' -> Right x' @=? y
   where y = readMessageWithRegistry reg text
 
@@ -213,3 +215,8 @@ braced k v = (PrettyPrint.text k <+> char '{')
 
 toStrictByteString :: Builder.Builder -> B.ByteString
 toStrictByteString = L.toStrict . Builder.toLazyByteString
+
+-- | Checks the predicate in HUnit tests, and displays the original
+-- value in case of failure.
+satisfies :: (HasCallStack, Show a) => (a -> Bool) -> a -> IO ()
+satisfies f x = assertBool ("Predicate fails: " ++ show x) (f x)
