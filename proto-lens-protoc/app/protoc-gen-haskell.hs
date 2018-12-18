@@ -14,13 +14,11 @@ import Data.Monoid ((<>))
 import qualified Data.Set as Set
 import qualified Data.Text as T
 import Data.Text (Text, pack)
-import Data.ProtoLens (defMessage)
+import Data.ProtoLens (defMessage, decodeMessage, encodeMessage)
 -- Force the use of the Reflected API when decoding DescriptorProto
 -- so that we can run the test suite against the Generated API.
 -- TODO: switch back to Data.ProtoLens.Encoding once the Generated encoding is
 -- good enough.
-import Data.ProtoLens.Encoding.Bytes (runParser, runBuilder)
-import Data.ProtoLens.Encoding.Reflected (parseMessage, buildMessage)
 import Lens.Family2
 import Proto.Google.Protobuf.Compiler.Plugin
     ( CodeGeneratorRequest
@@ -51,9 +49,9 @@ main :: IO ()
 main = do
     contents <- B.getContents
     progName <- getProgName
-    case runParser parseMessage contents of
+    case decodeMessage contents of
         Left e -> IO.hPutStrLn stderr e >> exitWith (ExitFailure 1)
-        Right x -> B.putStr $ runBuilder $ buildMessage $ makeResponse progName x
+        Right x -> B.putStr $ encodeMessage $ makeResponse progName x
 
 makeResponse :: String -> CodeGeneratorRequest -> CodeGeneratorResponse
 makeResponse prog request = let
