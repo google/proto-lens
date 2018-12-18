@@ -13,6 +13,7 @@ module Data.ProtoLens.Compiler.Generate.FieldEncoding
     , groupEnd
     ) where
 
+import Data.Word (Word8)
 import Data.ProtoLens.Compiler.Combinators
 import Proto.Google.Protobuf.Descriptor (FieldDescriptorProto'Type(..))
 
@@ -20,7 +21,7 @@ import Proto.Google.Protobuf.Descriptor (FieldDescriptorProto'Type(..))
 data FieldEncoding = FieldEncoding
     { buildFieldType :: Exp -- ^ :: a -> Builder
     , parseFieldType :: Exp -- ^ :: Parser a
-    , wireType :: Integer
+    , wireType :: Word8
     }
 
 -- | A variable-length integer, decoded as an unsigned Word64.

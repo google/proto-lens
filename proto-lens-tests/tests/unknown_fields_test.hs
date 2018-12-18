@@ -33,13 +33,13 @@ testPreserveUnknownFields =
             & a .~ 42
               & b .~ 17
               & unknownFields .~
-                  [ TaggedValue 100 $ Wire.WireValue Wire.VarInt 101
-                  , TaggedValue 150 $ Wire.WireValue Wire.Lengthy
+                  [ TaggedValue 100 $ Wire.VarInt 101
+                  , TaggedValue 150 $ Wire.Lengthy
                                     $ toStrictByteString sub
-                  , TaggedValue 200 $ Wire.WireValue Wire.Lengthy "abcde"
+                  , TaggedValue 200 $ Wire.Lengthy "abcde"
                   -- Make sure we allow multiple values for the same tag
                   -- (in particular, to support unknown repeated fields):
-                  , TaggedValue 100 $ Wire.WireValue Wire.VarInt 102
+                  , TaggedValue 100 $ Wire.VarInt 102
                   ])
         (vcat [ keyedInt "a" 42
               , keyedInt "b" 17
@@ -64,8 +64,8 @@ testPreserveMismatchedFields =
         "mismatched fields"
         ((defMessage :: Raw)
               & unknownFields .~
-                  [ TaggedValue 1 $ Wire.WireValue Wire.Fixed32 42
-                  , TaggedValue 2 $ Wire.WireValue Wire.Lengthy "abcde"
+                  [ TaggedValue 1 $ Wire.Fixed32 42
+                  , TaggedValue 2 $ Wire.Lengthy "abcde"
                   ])
         (vcat [ keyedInt "1" 42
               , keyedStr "2" "abcde"
@@ -85,9 +85,9 @@ testUnknownGroup =
               & a .~ 42
               & b .~ 17
               & unknownFields .~
-                  [ TaggedValue 100 $ Wire.WireValue Wire.StartGroup ()
-                  , TaggedValue 150 $ Wire.WireValue Wire.VarInt 5
-                  , TaggedValue 100 $ Wire.WireValue Wire.EndGroup ()
+                  [ TaggedValue 100 $ Wire.StartGroup
+                  , TaggedValue 150 $ Wire.VarInt 5
+                  , TaggedValue 100 $ Wire.EndGroup
                   ])
           (vcat [ keyedInt "a" 42
                 , keyedInt "b" 17
