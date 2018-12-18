@@ -46,7 +46,7 @@ import Prelude hiding ((<>))
 
 import Data.ProtoLens.Encoding (decodeMessage, encodeMessage)
 import Data.ProtoLens.Encoding.Reflected.Wire
-import Data.ProtoLens.Message
+import Data.ProtoLens.Message hiding (buildMessage, parseMessage)
 import qualified Data.ProtoLens.TextFormat.Parser as Parser
 
 -- TODO: This code is newer and missing some edge cases,

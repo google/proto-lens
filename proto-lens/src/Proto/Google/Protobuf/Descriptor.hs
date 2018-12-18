@@ -274,66 +274,73 @@ instance Data.ProtoLens.Message DescriptorProto where
                             _DescriptorProto'reservedRange = [],
                             _DescriptorProto'reservedName = [],
                             _DescriptorProto'_unknownFields = ([])}
-        unfinishedParseMessage
+        parseMessage
           = let loop ::
                      DescriptorProto ->
                        Data.ProtoLens.Encoding.Bytes.Parser DescriptorProto
                 loop x
                   = do end <- Data.ProtoLens.Encoding.Bytes.atEnd
                        if end then
-                         Prelude.return
-                           (Lens.Family2.over Data.ProtoLens.unknownFields
-                              (\ !t -> Prelude.reverse t)
-                              (Lens.Family2.over
-                                 (Lens.Labels.lensOf'
-                                    ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "field"))
+                         do let missing = [] in
+                              if Prelude.null missing then Prelude.return () else
+                                Prelude.fail
+                                  (("Missing required fields: ") Prelude.++
+                                     Prelude.show (missing :: ([Prelude.String])))
+                            Prelude.return
+                              (Lens.Family2.over Data.ProtoLens.unknownFields
                                  (\ !t -> Prelude.reverse t)
                                  (Lens.Family2.over
                                     (Lens.Labels.lensOf'
-                                       ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "extension"))
+                                       ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "field"))
                                     (\ !t -> Prelude.reverse t)
                                     (Lens.Family2.over
                                        (Lens.Labels.lensOf'
                                           ((Lens.Labels.proxy#) ::
-                                             (Lens.Labels.Proxy#) "nestedType"))
+                                             (Lens.Labels.Proxy#) "extension"))
                                        (\ !t -> Prelude.reverse t)
                                        (Lens.Family2.over
                                           (Lens.Labels.lensOf'
                                              ((Lens.Labels.proxy#) ::
-                                                (Lens.Labels.Proxy#) "enumType"))
+                                                (Lens.Labels.Proxy#) "nestedType"))
                                           (\ !t -> Prelude.reverse t)
                                           (Lens.Family2.over
                                              (Lens.Labels.lensOf'
                                                 ((Lens.Labels.proxy#) ::
-                                                   (Lens.Labels.Proxy#) "extensionRange"))
+                                                   (Lens.Labels.Proxy#) "enumType"))
                                              (\ !t -> Prelude.reverse t)
                                              (Lens.Family2.over
                                                 (Lens.Labels.lensOf'
                                                    ((Lens.Labels.proxy#) ::
-                                                      (Lens.Labels.Proxy#) "oneofDecl"))
+                                                      (Lens.Labels.Proxy#) "extensionRange"))
                                                 (\ !t -> Prelude.reverse t)
                                                 (Lens.Family2.over
                                                    (Lens.Labels.lensOf'
                                                       ((Lens.Labels.proxy#) ::
-                                                         (Lens.Labels.Proxy#) "reservedRange"))
+                                                         (Lens.Labels.Proxy#) "oneofDecl"))
                                                    (\ !t -> Prelude.reverse t)
                                                    (Lens.Family2.over
                                                       (Lens.Labels.lensOf'
                                                          ((Lens.Labels.proxy#) ::
-                                                            (Lens.Labels.Proxy#) "reservedName"))
+                                                            (Lens.Labels.Proxy#) "reservedRange"))
                                                       (\ !t -> Prelude.reverse t)
-                                                      x)))))))))
+                                                      (Lens.Family2.over
+                                                         (Lens.Labels.lensOf'
+                                                            ((Lens.Labels.proxy#) ::
+                                                               (Lens.Labels.Proxy#) "reservedName"))
+                                                         (\ !t -> Prelude.reverse t)
+                                                         x)))))))))
                          else
                          do tag <- Data.ProtoLens.Encoding.Bytes.getVarInt
                             case tag of
-                                10 -> do y <- do value <- do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
-                                                             Data.ProtoLens.Encoding.Bytes.getBytes
-                                                               (Prelude.fromIntegral len)
-                                                 Data.ProtoLens.Encoding.Bytes.runEither
-                                                   (case Data.Text.Encoding.decodeUtf8' value of
-                                                        Prelude.Left err -> Prelude.Left
-                                                                              (Prelude.show err)
-                                                        Prelude.Right r -> Prelude.Right r)
+                                10 -> do y <- (do value <- do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
+                                                              Data.ProtoLens.Encoding.Bytes.getBytes
+                                                                (Prelude.fromIntegral len)
+                                                  Data.ProtoLens.Encoding.Bytes.runEither
+                                                    (case Data.Text.Encoding.decodeUtf8' value of
+                                                         Prelude.Left err -> Prelude.Left
+                                                                               (Prelude.show err)
+                                                         Prelude.Right r -> Prelude.Right r))
+                                                Data.ProtoLens.Encoding.Bytes.<?> "name"
                                          loop
                                            (Lens.Family2.set
                                               (Lens.Labels.lensOf'
@@ -341,13 +348,12 @@ instance Data.ProtoLens.Message DescriptorProto where
                                                     (Lens.Labels.Proxy#) "name"))
                                               y
                                               x)
-                                18 -> do !y <- do value <- do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
-                                                              Data.ProtoLens.Encoding.Bytes.getBytes
-                                                                (Prelude.fromIntegral len)
-                                                  Data.ProtoLens.Encoding.Bytes.runEither
-                                                    (Data.ProtoLens.Encoding.Bytes.runParser
-                                                       Data.ProtoLens.unfinishedParseMessage
-                                                       value)
+                                18 -> do !y <- (do value <- do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
+                                                               Data.ProtoLens.Encoding.Bytes.getBytes
+                                                                 (Prelude.fromIntegral len)
+                                                   Data.ProtoLens.Encoding.Bytes.runEither
+                                                     (Data.ProtoLens.decodeMessage value))
+                                                 Data.ProtoLens.Encoding.Bytes.<?> "field"
                                          loop
                                            (Lens.Family2.over
                                               (Lens.Labels.lensOf'
@@ -355,13 +361,12 @@ instance Data.ProtoLens.Message DescriptorProto where
                                                     (Lens.Labels.Proxy#) "field"))
                                               (\ !t -> (:) y t)
                                               x)
-                                50 -> do !y <- do value <- do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
-                                                              Data.ProtoLens.Encoding.Bytes.getBytes
-                                                                (Prelude.fromIntegral len)
-                                                  Data.ProtoLens.Encoding.Bytes.runEither
-                                                    (Data.ProtoLens.Encoding.Bytes.runParser
-                                                       Data.ProtoLens.unfinishedParseMessage
-                                                       value)
+                                50 -> do !y <- (do value <- do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
+                                                               Data.ProtoLens.Encoding.Bytes.getBytes
+                                                                 (Prelude.fromIntegral len)
+                                                   Data.ProtoLens.Encoding.Bytes.runEither
+                                                     (Data.ProtoLens.decodeMessage value))
+                                                 Data.ProtoLens.Encoding.Bytes.<?> "extension"
                                          loop
                                            (Lens.Family2.over
                                               (Lens.Labels.lensOf'
@@ -369,13 +374,12 @@ instance Data.ProtoLens.Message DescriptorProto where
                                                     (Lens.Labels.Proxy#) "extension"))
                                               (\ !t -> (:) y t)
                                               x)
-                                26 -> do !y <- do value <- do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
-                                                              Data.ProtoLens.Encoding.Bytes.getBytes
-                                                                (Prelude.fromIntegral len)
-                                                  Data.ProtoLens.Encoding.Bytes.runEither
-                                                    (Data.ProtoLens.Encoding.Bytes.runParser
-                                                       Data.ProtoLens.unfinishedParseMessage
-                                                       value)
+                                26 -> do !y <- (do value <- do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
+                                                               Data.ProtoLens.Encoding.Bytes.getBytes
+                                                                 (Prelude.fromIntegral len)
+                                                   Data.ProtoLens.Encoding.Bytes.runEither
+                                                     (Data.ProtoLens.decodeMessage value))
+                                                 Data.ProtoLens.Encoding.Bytes.<?> "nested_type"
                                          loop
                                            (Lens.Family2.over
                                               (Lens.Labels.lensOf'
@@ -383,13 +387,12 @@ instance Data.ProtoLens.Message DescriptorProto where
                                                     (Lens.Labels.Proxy#) "nestedType"))
                                               (\ !t -> (:) y t)
                                               x)
-                                34 -> do !y <- do value <- do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
-                                                              Data.ProtoLens.Encoding.Bytes.getBytes
-                                                                (Prelude.fromIntegral len)
-                                                  Data.ProtoLens.Encoding.Bytes.runEither
-                                                    (Data.ProtoLens.Encoding.Bytes.runParser
-                                                       Data.ProtoLens.unfinishedParseMessage
-                                                       value)
+                                34 -> do !y <- (do value <- do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
+                                                               Data.ProtoLens.Encoding.Bytes.getBytes
+                                                                 (Prelude.fromIntegral len)
+                                                   Data.ProtoLens.Encoding.Bytes.runEither
+                                                     (Data.ProtoLens.decodeMessage value))
+                                                 Data.ProtoLens.Encoding.Bytes.<?> "enum_type"
                                          loop
                                            (Lens.Family2.over
                                               (Lens.Labels.lensOf'
@@ -397,13 +400,12 @@ instance Data.ProtoLens.Message DescriptorProto where
                                                     (Lens.Labels.Proxy#) "enumType"))
                                               (\ !t -> (:) y t)
                                               x)
-                                42 -> do !y <- do value <- do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
-                                                              Data.ProtoLens.Encoding.Bytes.getBytes
-                                                                (Prelude.fromIntegral len)
-                                                  Data.ProtoLens.Encoding.Bytes.runEither
-                                                    (Data.ProtoLens.Encoding.Bytes.runParser
-                                                       Data.ProtoLens.unfinishedParseMessage
-                                                       value)
+                                42 -> do !y <- (do value <- do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
+                                                               Data.ProtoLens.Encoding.Bytes.getBytes
+                                                                 (Prelude.fromIntegral len)
+                                                   Data.ProtoLens.Encoding.Bytes.runEither
+                                                     (Data.ProtoLens.decodeMessage value))
+                                                 Data.ProtoLens.Encoding.Bytes.<?> "extension_range"
                                          loop
                                            (Lens.Family2.over
                                               (Lens.Labels.lensOf'
@@ -411,13 +413,12 @@ instance Data.ProtoLens.Message DescriptorProto where
                                                     (Lens.Labels.Proxy#) "extensionRange"))
                                               (\ !t -> (:) y t)
                                               x)
-                                66 -> do !y <- do value <- do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
-                                                              Data.ProtoLens.Encoding.Bytes.getBytes
-                                                                (Prelude.fromIntegral len)
-                                                  Data.ProtoLens.Encoding.Bytes.runEither
-                                                    (Data.ProtoLens.Encoding.Bytes.runParser
-                                                       Data.ProtoLens.unfinishedParseMessage
-                                                       value)
+                                66 -> do !y <- (do value <- do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
+                                                               Data.ProtoLens.Encoding.Bytes.getBytes
+                                                                 (Prelude.fromIntegral len)
+                                                   Data.ProtoLens.Encoding.Bytes.runEither
+                                                     (Data.ProtoLens.decodeMessage value))
+                                                 Data.ProtoLens.Encoding.Bytes.<?> "oneof_decl"
                                          loop
                                            (Lens.Family2.over
                                               (Lens.Labels.lensOf'
@@ -425,13 +426,12 @@ instance Data.ProtoLens.Message DescriptorProto where
                                                     (Lens.Labels.Proxy#) "oneofDecl"))
                                               (\ !t -> (:) y t)
                                               x)
-                                58 -> do y <- do value <- do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
-                                                             Data.ProtoLens.Encoding.Bytes.getBytes
-                                                               (Prelude.fromIntegral len)
-                                                 Data.ProtoLens.Encoding.Bytes.runEither
-                                                   (Data.ProtoLens.Encoding.Bytes.runParser
-                                                      Data.ProtoLens.unfinishedParseMessage
-                                                      value)
+                                58 -> do y <- (do value <- do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
+                                                              Data.ProtoLens.Encoding.Bytes.getBytes
+                                                                (Prelude.fromIntegral len)
+                                                  Data.ProtoLens.Encoding.Bytes.runEither
+                                                    (Data.ProtoLens.decodeMessage value))
+                                                Data.ProtoLens.Encoding.Bytes.<?> "options"
                                          loop
                                            (Lens.Family2.set
                                               (Lens.Labels.lensOf'
@@ -439,13 +439,12 @@ instance Data.ProtoLens.Message DescriptorProto where
                                                     (Lens.Labels.Proxy#) "options"))
                                               y
                                               x)
-                                74 -> do !y <- do value <- do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
-                                                              Data.ProtoLens.Encoding.Bytes.getBytes
-                                                                (Prelude.fromIntegral len)
-                                                  Data.ProtoLens.Encoding.Bytes.runEither
-                                                    (Data.ProtoLens.Encoding.Bytes.runParser
-                                                       Data.ProtoLens.unfinishedParseMessage
-                                                       value)
+                                74 -> do !y <- (do value <- do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
+                                                               Data.ProtoLens.Encoding.Bytes.getBytes
+                                                                 (Prelude.fromIntegral len)
+                                                   Data.ProtoLens.Encoding.Bytes.runEither
+                                                     (Data.ProtoLens.decodeMessage value))
+                                                 Data.ProtoLens.Encoding.Bytes.<?> "reserved_range"
                                          loop
                                            (Lens.Family2.over
                                               (Lens.Labels.lensOf'
@@ -453,14 +452,15 @@ instance Data.ProtoLens.Message DescriptorProto where
                                                     (Lens.Labels.Proxy#) "reservedRange"))
                                               (\ !t -> (:) y t)
                                               x)
-                                82 -> do !y <- do value <- do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
-                                                              Data.ProtoLens.Encoding.Bytes.getBytes
-                                                                (Prelude.fromIntegral len)
-                                                  Data.ProtoLens.Encoding.Bytes.runEither
-                                                    (case Data.Text.Encoding.decodeUtf8' value of
-                                                         Prelude.Left err -> Prelude.Left
-                                                                               (Prelude.show err)
-                                                         Prelude.Right r -> Prelude.Right r)
+                                82 -> do !y <- (do value <- do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
+                                                               Data.ProtoLens.Encoding.Bytes.getBytes
+                                                                 (Prelude.fromIntegral len)
+                                                   Data.ProtoLens.Encoding.Bytes.runEither
+                                                     (case Data.Text.Encoding.decodeUtf8' value of
+                                                          Prelude.Left err -> Prelude.Left
+                                                                                (Prelude.show err)
+                                                          Prelude.Right r -> Prelude.Right r))
+                                                 Data.ProtoLens.Encoding.Bytes.<?> "reserved_name"
                                          loop
                                            (Lens.Family2.over
                                               (Lens.Labels.lensOf'
@@ -473,8 +473,10 @@ instance Data.ProtoLens.Message DescriptorProto where
                                              (Lens.Family2.over Data.ProtoLens.unknownFields
                                                 (\ !t -> (:) y t)
                                                 x)
-              in loop Data.ProtoLens.defMessage
-        unfinishedBuildMessage
+              in
+              (loop Data.ProtoLens.defMessage) Data.ProtoLens.Encoding.Bytes.<?>
+                "DescriptorProto"
+        buildMessage
           = (\ _x ->
                (case
                   Lens.Family2.view
@@ -501,9 +503,7 @@ instance Data.ProtoLens.Message DescriptorProto where
                                  (Data.ProtoLens.Encoding.Bytes.putVarInt
                                     (Prelude.fromIntegral (Data.ByteString.length bs)))
                                    Data.Monoid.<> Data.ProtoLens.Encoding.Bytes.putBytes bs))
-                               Prelude..
-                               (Data.ProtoLens.Encoding.Bytes.runBuilder) Prelude..
-                                 Data.ProtoLens.unfinishedBuildMessage)
+                               Prelude.. Data.ProtoLens.encodeMessage)
                               _v)
                        (Lens.Family2.view
                           (Lens.Labels.lensOf'
@@ -518,9 +518,7 @@ instance Data.ProtoLens.Message DescriptorProto where
                                    (Data.ProtoLens.Encoding.Bytes.putVarInt
                                       (Prelude.fromIntegral (Data.ByteString.length bs)))
                                      Data.Monoid.<> Data.ProtoLens.Encoding.Bytes.putBytes bs))
-                                 Prelude..
-                                 (Data.ProtoLens.Encoding.Bytes.runBuilder) Prelude..
-                                   Data.ProtoLens.unfinishedBuildMessage)
+                                 Prelude.. Data.ProtoLens.encodeMessage)
                                 _v)
                          (Lens.Family2.view
                             (Lens.Labels.lensOf'
@@ -535,9 +533,7 @@ instance Data.ProtoLens.Message DescriptorProto where
                                      (Data.ProtoLens.Encoding.Bytes.putVarInt
                                         (Prelude.fromIntegral (Data.ByteString.length bs)))
                                        Data.Monoid.<> Data.ProtoLens.Encoding.Bytes.putBytes bs))
-                                   Prelude..
-                                   (Data.ProtoLens.Encoding.Bytes.runBuilder) Prelude..
-                                     Data.ProtoLens.unfinishedBuildMessage)
+                                   Prelude.. Data.ProtoLens.encodeMessage)
                                   _v)
                            (Lens.Family2.view
                               (Lens.Labels.lensOf'
@@ -552,9 +548,7 @@ instance Data.ProtoLens.Message DescriptorProto where
                                        (Data.ProtoLens.Encoding.Bytes.putVarInt
                                           (Prelude.fromIntegral (Data.ByteString.length bs)))
                                          Data.Monoid.<> Data.ProtoLens.Encoding.Bytes.putBytes bs))
-                                     Prelude..
-                                     (Data.ProtoLens.Encoding.Bytes.runBuilder) Prelude..
-                                       Data.ProtoLens.unfinishedBuildMessage)
+                                     Prelude.. Data.ProtoLens.encodeMessage)
                                     _v)
                              (Lens.Family2.view
                                 (Lens.Labels.lensOf'
@@ -570,9 +564,7 @@ instance Data.ProtoLens.Message DescriptorProto where
                                             (Prelude.fromIntegral (Data.ByteString.length bs)))
                                            Data.Monoid.<>
                                            Data.ProtoLens.Encoding.Bytes.putBytes bs))
-                                       Prelude..
-                                       (Data.ProtoLens.Encoding.Bytes.runBuilder) Prelude..
-                                         Data.ProtoLens.unfinishedBuildMessage)
+                                       Prelude.. Data.ProtoLens.encodeMessage)
                                       _v)
                                (Lens.Family2.view
                                   (Lens.Labels.lensOf'
@@ -589,9 +581,7 @@ instance Data.ProtoLens.Message DescriptorProto where
                                               (Prelude.fromIntegral (Data.ByteString.length bs)))
                                              Data.Monoid.<>
                                              Data.ProtoLens.Encoding.Bytes.putBytes bs))
-                                         Prelude..
-                                         (Data.ProtoLens.Encoding.Bytes.runBuilder) Prelude..
-                                           Data.ProtoLens.unfinishedBuildMessage)
+                                         Prelude.. Data.ProtoLens.encodeMessage)
                                         _v)
                                  (Lens.Family2.view
                                     (Lens.Labels.lensOf'
@@ -614,10 +604,7 @@ instance Data.ProtoLens.Message DescriptorProto where
                                                               Data.Monoid.<>
                                                               Data.ProtoLens.Encoding.Bytes.putBytes
                                                                 bs))
-                                                          Prelude..
-                                                          (Data.ProtoLens.Encoding.Bytes.runBuilder)
-                                                            Prelude..
-                                                            Data.ProtoLens.unfinishedBuildMessage)
+                                                          Prelude.. Data.ProtoLens.encodeMessage)
                                                          _v)
                                Data.Monoid.<>
                                (Data.Monoid.mconcat
@@ -630,9 +617,7 @@ instance Data.ProtoLens.Message DescriptorProto where
                                                      (Data.ByteString.length bs)))
                                                  Data.Monoid.<>
                                                  Data.ProtoLens.Encoding.Bytes.putBytes bs))
-                                             Prelude..
-                                             (Data.ProtoLens.Encoding.Bytes.runBuilder) Prelude..
-                                               Data.ProtoLens.unfinishedBuildMessage)
+                                             Prelude.. Data.ProtoLens.encodeMessage)
                                             _v)
                                      (Lens.Family2.view
                                         (Lens.Labels.lensOf'
@@ -802,22 +787,28 @@ instance Data.ProtoLens.Message DescriptorProto'ExtensionRange
                                            _DescriptorProto'ExtensionRange'options =
                                              Prelude.Nothing,
                                            _DescriptorProto'ExtensionRange'_unknownFields = ([])}
-        unfinishedParseMessage
+        parseMessage
           = let loop ::
                      DescriptorProto'ExtensionRange ->
                        Data.ProtoLens.Encoding.Bytes.Parser DescriptorProto'ExtensionRange
                 loop x
                   = do end <- Data.ProtoLens.Encoding.Bytes.atEnd
                        if end then
-                         Prelude.return
-                           (Lens.Family2.over Data.ProtoLens.unknownFields
-                              (\ !t -> Prelude.reverse t)
-                              x)
+                         do let missing = [] in
+                              if Prelude.null missing then Prelude.return () else
+                                Prelude.fail
+                                  (("Missing required fields: ") Prelude.++
+                                     Prelude.show (missing :: ([Prelude.String])))
+                            Prelude.return
+                              (Lens.Family2.over Data.ProtoLens.unknownFields
+                                 (\ !t -> Prelude.reverse t)
+                                 x)
                          else
                          do tag <- Data.ProtoLens.Encoding.Bytes.getVarInt
                             case tag of
-                                8 -> do y <- Prelude.fmap Prelude.fromIntegral
-                                               Data.ProtoLens.Encoding.Bytes.getVarInt
+                                8 -> do y <- (Prelude.fmap Prelude.fromIntegral
+                                                Data.ProtoLens.Encoding.Bytes.getVarInt)
+                                               Data.ProtoLens.Encoding.Bytes.<?> "start"
                                         loop
                                           (Lens.Family2.set
                                              (Lens.Labels.lensOf'
@@ -825,8 +816,9 @@ instance Data.ProtoLens.Message DescriptorProto'ExtensionRange
                                                    (Lens.Labels.Proxy#) "start"))
                                              y
                                              x)
-                                16 -> do y <- Prelude.fmap Prelude.fromIntegral
-                                                Data.ProtoLens.Encoding.Bytes.getVarInt
+                                16 -> do y <- (Prelude.fmap Prelude.fromIntegral
+                                                 Data.ProtoLens.Encoding.Bytes.getVarInt)
+                                                Data.ProtoLens.Encoding.Bytes.<?> "end"
                                          loop
                                            (Lens.Family2.set
                                               (Lens.Labels.lensOf'
@@ -834,13 +826,12 @@ instance Data.ProtoLens.Message DescriptorProto'ExtensionRange
                                                     (Lens.Labels.Proxy#) "end"))
                                               y
                                               x)
-                                26 -> do y <- do value <- do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
-                                                             Data.ProtoLens.Encoding.Bytes.getBytes
-                                                               (Prelude.fromIntegral len)
-                                                 Data.ProtoLens.Encoding.Bytes.runEither
-                                                   (Data.ProtoLens.Encoding.Bytes.runParser
-                                                      Data.ProtoLens.unfinishedParseMessage
-                                                      value)
+                                26 -> do y <- (do value <- do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
+                                                              Data.ProtoLens.Encoding.Bytes.getBytes
+                                                                (Prelude.fromIntegral len)
+                                                  Data.ProtoLens.Encoding.Bytes.runEither
+                                                    (Data.ProtoLens.decodeMessage value))
+                                                Data.ProtoLens.Encoding.Bytes.<?> "options"
                                          loop
                                            (Lens.Family2.set
                                               (Lens.Labels.lensOf'
@@ -853,8 +844,10 @@ instance Data.ProtoLens.Message DescriptorProto'ExtensionRange
                                              (Lens.Family2.over Data.ProtoLens.unknownFields
                                                 (\ !t -> (:) y t)
                                                 x)
-              in loop Data.ProtoLens.defMessage
-        unfinishedBuildMessage
+              in
+              (loop Data.ProtoLens.defMessage) Data.ProtoLens.Encoding.Bytes.<?>
+                "ExtensionRange"
+        buildMessage
           = (\ _x ->
                (case
                   Lens.Family2.view
@@ -897,9 +890,7 @@ instance Data.ProtoLens.Message DescriptorProto'ExtensionRange
                                                         (Data.ByteString.length bs)))
                                                     Data.Monoid.<>
                                                     Data.ProtoLens.Encoding.Bytes.putBytes bs))
-                                                Prelude..
-                                                (Data.ProtoLens.Encoding.Bytes.runBuilder) Prelude..
-                                                  Data.ProtoLens.unfinishedBuildMessage)
+                                                Prelude.. Data.ProtoLens.encodeMessage)
                                                _v)
                      Data.Monoid.<>
                      Data.Monoid.mconcat
@@ -1000,22 +991,28 @@ instance Data.ProtoLens.Message DescriptorProto'ReservedRange where
                                             = Prelude.Nothing,
                                           _DescriptorProto'ReservedRange'end = Prelude.Nothing,
                                           _DescriptorProto'ReservedRange'_unknownFields = ([])}
-        unfinishedParseMessage
+        parseMessage
           = let loop ::
                      DescriptorProto'ReservedRange ->
                        Data.ProtoLens.Encoding.Bytes.Parser DescriptorProto'ReservedRange
                 loop x
                   = do end <- Data.ProtoLens.Encoding.Bytes.atEnd
                        if end then
-                         Prelude.return
-                           (Lens.Family2.over Data.ProtoLens.unknownFields
-                              (\ !t -> Prelude.reverse t)
-                              x)
+                         do let missing = [] in
+                              if Prelude.null missing then Prelude.return () else
+                                Prelude.fail
+                                  (("Missing required fields: ") Prelude.++
+                                     Prelude.show (missing :: ([Prelude.String])))
+                            Prelude.return
+                              (Lens.Family2.over Data.ProtoLens.unknownFields
+                                 (\ !t -> Prelude.reverse t)
+                                 x)
                          else
                          do tag <- Data.ProtoLens.Encoding.Bytes.getVarInt
                             case tag of
-                                8 -> do y <- Prelude.fmap Prelude.fromIntegral
-                                               Data.ProtoLens.Encoding.Bytes.getVarInt
+                                8 -> do y <- (Prelude.fmap Prelude.fromIntegral
+                                                Data.ProtoLens.Encoding.Bytes.getVarInt)
+                                               Data.ProtoLens.Encoding.Bytes.<?> "start"
                                         loop
                                           (Lens.Family2.set
                                              (Lens.Labels.lensOf'
@@ -1023,8 +1020,9 @@ instance Data.ProtoLens.Message DescriptorProto'ReservedRange where
                                                    (Lens.Labels.Proxy#) "start"))
                                              y
                                              x)
-                                16 -> do y <- Prelude.fmap Prelude.fromIntegral
-                                                Data.ProtoLens.Encoding.Bytes.getVarInt
+                                16 -> do y <- (Prelude.fmap Prelude.fromIntegral
+                                                 Data.ProtoLens.Encoding.Bytes.getVarInt)
+                                                Data.ProtoLens.Encoding.Bytes.<?> "end"
                                          loop
                                            (Lens.Family2.set
                                               (Lens.Labels.lensOf'
@@ -1037,8 +1035,10 @@ instance Data.ProtoLens.Message DescriptorProto'ReservedRange where
                                              (Lens.Family2.over Data.ProtoLens.unknownFields
                                                 (\ !t -> (:) y t)
                                                 x)
-              in loop Data.ProtoLens.defMessage
-        unfinishedBuildMessage
+              in
+              (loop Data.ProtoLens.defMessage) Data.ProtoLens.Encoding.Bytes.<?>
+                "ReservedRange"
+        buildMessage
           = (\ _x ->
                (case
                   Lens.Family2.view
@@ -1216,42 +1216,48 @@ instance Data.ProtoLens.Message EnumDescriptorProto where
                                 _EnumDescriptorProto'reservedRange = [],
                                 _EnumDescriptorProto'reservedName = [],
                                 _EnumDescriptorProto'_unknownFields = ([])}
-        unfinishedParseMessage
+        parseMessage
           = let loop ::
                      EnumDescriptorProto ->
                        Data.ProtoLens.Encoding.Bytes.Parser EnumDescriptorProto
                 loop x
                   = do end <- Data.ProtoLens.Encoding.Bytes.atEnd
                        if end then
-                         Prelude.return
-                           (Lens.Family2.over Data.ProtoLens.unknownFields
-                              (\ !t -> Prelude.reverse t)
-                              (Lens.Family2.over
-                                 (Lens.Labels.lensOf'
-                                    ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "value"))
+                         do let missing = [] in
+                              if Prelude.null missing then Prelude.return () else
+                                Prelude.fail
+                                  (("Missing required fields: ") Prelude.++
+                                     Prelude.show (missing :: ([Prelude.String])))
+                            Prelude.return
+                              (Lens.Family2.over Data.ProtoLens.unknownFields
                                  (\ !t -> Prelude.reverse t)
                                  (Lens.Family2.over
                                     (Lens.Labels.lensOf'
-                                       ((Lens.Labels.proxy#) ::
-                                          (Lens.Labels.Proxy#) "reservedRange"))
+                                       ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "value"))
                                     (\ !t -> Prelude.reverse t)
                                     (Lens.Family2.over
                                        (Lens.Labels.lensOf'
                                           ((Lens.Labels.proxy#) ::
-                                             (Lens.Labels.Proxy#) "reservedName"))
+                                             (Lens.Labels.Proxy#) "reservedRange"))
                                        (\ !t -> Prelude.reverse t)
-                                       x))))
+                                       (Lens.Family2.over
+                                          (Lens.Labels.lensOf'
+                                             ((Lens.Labels.proxy#) ::
+                                                (Lens.Labels.Proxy#) "reservedName"))
+                                          (\ !t -> Prelude.reverse t)
+                                          x))))
                          else
                          do tag <- Data.ProtoLens.Encoding.Bytes.getVarInt
                             case tag of
-                                10 -> do y <- do value <- do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
-                                                             Data.ProtoLens.Encoding.Bytes.getBytes
-                                                               (Prelude.fromIntegral len)
-                                                 Data.ProtoLens.Encoding.Bytes.runEither
-                                                   (case Data.Text.Encoding.decodeUtf8' value of
-                                                        Prelude.Left err -> Prelude.Left
-                                                                              (Prelude.show err)
-                                                        Prelude.Right r -> Prelude.Right r)
+                                10 -> do y <- (do value <- do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
+                                                              Data.ProtoLens.Encoding.Bytes.getBytes
+                                                                (Prelude.fromIntegral len)
+                                                  Data.ProtoLens.Encoding.Bytes.runEither
+                                                    (case Data.Text.Encoding.decodeUtf8' value of
+                                                         Prelude.Left err -> Prelude.Left
+                                                                               (Prelude.show err)
+                                                         Prelude.Right r -> Prelude.Right r))
+                                                Data.ProtoLens.Encoding.Bytes.<?> "name"
                                          loop
                                            (Lens.Family2.set
                                               (Lens.Labels.lensOf'
@@ -1259,13 +1265,12 @@ instance Data.ProtoLens.Message EnumDescriptorProto where
                                                     (Lens.Labels.Proxy#) "name"))
                                               y
                                               x)
-                                18 -> do !y <- do value <- do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
-                                                              Data.ProtoLens.Encoding.Bytes.getBytes
-                                                                (Prelude.fromIntegral len)
-                                                  Data.ProtoLens.Encoding.Bytes.runEither
-                                                    (Data.ProtoLens.Encoding.Bytes.runParser
-                                                       Data.ProtoLens.unfinishedParseMessage
-                                                       value)
+                                18 -> do !y <- (do value <- do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
+                                                               Data.ProtoLens.Encoding.Bytes.getBytes
+                                                                 (Prelude.fromIntegral len)
+                                                   Data.ProtoLens.Encoding.Bytes.runEither
+                                                     (Data.ProtoLens.decodeMessage value))
+                                                 Data.ProtoLens.Encoding.Bytes.<?> "value"
                                          loop
                                            (Lens.Family2.over
                                               (Lens.Labels.lensOf'
@@ -1273,13 +1278,12 @@ instance Data.ProtoLens.Message EnumDescriptorProto where
                                                     (Lens.Labels.Proxy#) "value"))
                                               (\ !t -> (:) y t)
                                               x)
-                                26 -> do y <- do value <- do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
-                                                             Data.ProtoLens.Encoding.Bytes.getBytes
-                                                               (Prelude.fromIntegral len)
-                                                 Data.ProtoLens.Encoding.Bytes.runEither
-                                                   (Data.ProtoLens.Encoding.Bytes.runParser
-                                                      Data.ProtoLens.unfinishedParseMessage
-                                                      value)
+                                26 -> do y <- (do value <- do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
+                                                              Data.ProtoLens.Encoding.Bytes.getBytes
+                                                                (Prelude.fromIntegral len)
+                                                  Data.ProtoLens.Encoding.Bytes.runEither
+                                                    (Data.ProtoLens.decodeMessage value))
+                                                Data.ProtoLens.Encoding.Bytes.<?> "options"
                                          loop
                                            (Lens.Family2.set
                                               (Lens.Labels.lensOf'
@@ -1287,13 +1291,12 @@ instance Data.ProtoLens.Message EnumDescriptorProto where
                                                     (Lens.Labels.Proxy#) "options"))
                                               y
                                               x)
-                                34 -> do !y <- do value <- do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
-                                                              Data.ProtoLens.Encoding.Bytes.getBytes
-                                                                (Prelude.fromIntegral len)
-                                                  Data.ProtoLens.Encoding.Bytes.runEither
-                                                    (Data.ProtoLens.Encoding.Bytes.runParser
-                                                       Data.ProtoLens.unfinishedParseMessage
-                                                       value)
+                                34 -> do !y <- (do value <- do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
+                                                               Data.ProtoLens.Encoding.Bytes.getBytes
+                                                                 (Prelude.fromIntegral len)
+                                                   Data.ProtoLens.Encoding.Bytes.runEither
+                                                     (Data.ProtoLens.decodeMessage value))
+                                                 Data.ProtoLens.Encoding.Bytes.<?> "reserved_range"
                                          loop
                                            (Lens.Family2.over
                                               (Lens.Labels.lensOf'
@@ -1301,14 +1304,15 @@ instance Data.ProtoLens.Message EnumDescriptorProto where
                                                     (Lens.Labels.Proxy#) "reservedRange"))
                                               (\ !t -> (:) y t)
                                               x)
-                                42 -> do !y <- do value <- do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
-                                                              Data.ProtoLens.Encoding.Bytes.getBytes
-                                                                (Prelude.fromIntegral len)
-                                                  Data.ProtoLens.Encoding.Bytes.runEither
-                                                    (case Data.Text.Encoding.decodeUtf8' value of
-                                                         Prelude.Left err -> Prelude.Left
-                                                                               (Prelude.show err)
-                                                         Prelude.Right r -> Prelude.Right r)
+                                42 -> do !y <- (do value <- do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
+                                                               Data.ProtoLens.Encoding.Bytes.getBytes
+                                                                 (Prelude.fromIntegral len)
+                                                   Data.ProtoLens.Encoding.Bytes.runEither
+                                                     (case Data.Text.Encoding.decodeUtf8' value of
+                                                          Prelude.Left err -> Prelude.Left
+                                                                                (Prelude.show err)
+                                                          Prelude.Right r -> Prelude.Right r))
+                                                 Data.ProtoLens.Encoding.Bytes.<?> "reserved_name"
                                          loop
                                            (Lens.Family2.over
                                               (Lens.Labels.lensOf'
@@ -1321,8 +1325,10 @@ instance Data.ProtoLens.Message EnumDescriptorProto where
                                              (Lens.Family2.over Data.ProtoLens.unknownFields
                                                 (\ !t -> (:) y t)
                                                 x)
-              in loop Data.ProtoLens.defMessage
-        unfinishedBuildMessage
+              in
+              (loop Data.ProtoLens.defMessage) Data.ProtoLens.Encoding.Bytes.<?>
+                "EnumDescriptorProto"
+        buildMessage
           = (\ _x ->
                (case
                   Lens.Family2.view
@@ -1349,9 +1355,7 @@ instance Data.ProtoLens.Message EnumDescriptorProto where
                                  (Data.ProtoLens.Encoding.Bytes.putVarInt
                                     (Prelude.fromIntegral (Data.ByteString.length bs)))
                                    Data.Monoid.<> Data.ProtoLens.Encoding.Bytes.putBytes bs))
-                               Prelude..
-                               (Data.ProtoLens.Encoding.Bytes.runBuilder) Prelude..
-                                 Data.ProtoLens.unfinishedBuildMessage)
+                               Prelude.. Data.ProtoLens.encodeMessage)
                               _v)
                        (Lens.Family2.view
                           (Lens.Labels.lensOf'
@@ -1373,9 +1377,7 @@ instance Data.ProtoLens.Message EnumDescriptorProto where
                                                         (Data.ByteString.length bs)))
                                                     Data.Monoid.<>
                                                     Data.ProtoLens.Encoding.Bytes.putBytes bs))
-                                                Prelude..
-                                                (Data.ProtoLens.Encoding.Bytes.runBuilder) Prelude..
-                                                  Data.ProtoLens.unfinishedBuildMessage)
+                                                Prelude.. Data.ProtoLens.encodeMessage)
                                                _v)
                      Data.Monoid.<>
                      (Data.Monoid.mconcat
@@ -1386,9 +1388,7 @@ instance Data.ProtoLens.Message EnumDescriptorProto where
                                      (Data.ProtoLens.Encoding.Bytes.putVarInt
                                         (Prelude.fromIntegral (Data.ByteString.length bs)))
                                        Data.Monoid.<> Data.ProtoLens.Encoding.Bytes.putBytes bs))
-                                   Prelude..
-                                   (Data.ProtoLens.Encoding.Bytes.runBuilder) Prelude..
-                                     Data.ProtoLens.unfinishedBuildMessage)
+                                   Prelude.. Data.ProtoLens.encodeMessage)
                                   _v)
                            (Lens.Family2.view
                               (Lens.Labels.lensOf'
@@ -1533,7 +1533,7 @@ instance Data.ProtoLens.Message
                                                     Prelude.Nothing,
                                                   _EnumDescriptorProto'EnumReservedRange'_unknownFields
                                                     = ([])}
-        unfinishedParseMessage
+        parseMessage
           = let loop ::
                      EnumDescriptorProto'EnumReservedRange ->
                        Data.ProtoLens.Encoding.Bytes.Parser
@@ -1541,15 +1541,21 @@ instance Data.ProtoLens.Message
                 loop x
                   = do end <- Data.ProtoLens.Encoding.Bytes.atEnd
                        if end then
-                         Prelude.return
-                           (Lens.Family2.over Data.ProtoLens.unknownFields
-                              (\ !t -> Prelude.reverse t)
-                              x)
+                         do let missing = [] in
+                              if Prelude.null missing then Prelude.return () else
+                                Prelude.fail
+                                  (("Missing required fields: ") Prelude.++
+                                     Prelude.show (missing :: ([Prelude.String])))
+                            Prelude.return
+                              (Lens.Family2.over Data.ProtoLens.unknownFields
+                                 (\ !t -> Prelude.reverse t)
+                                 x)
                          else
                          do tag <- Data.ProtoLens.Encoding.Bytes.getVarInt
                             case tag of
-                                8 -> do y <- Prelude.fmap Prelude.fromIntegral
-                                               Data.ProtoLens.Encoding.Bytes.getVarInt
+                                8 -> do y <- (Prelude.fmap Prelude.fromIntegral
+                                                Data.ProtoLens.Encoding.Bytes.getVarInt)
+                                               Data.ProtoLens.Encoding.Bytes.<?> "start"
                                         loop
                                           (Lens.Family2.set
                                              (Lens.Labels.lensOf'
@@ -1557,8 +1563,9 @@ instance Data.ProtoLens.Message
                                                    (Lens.Labels.Proxy#) "start"))
                                              y
                                              x)
-                                16 -> do y <- Prelude.fmap Prelude.fromIntegral
-                                                Data.ProtoLens.Encoding.Bytes.getVarInt
+                                16 -> do y <- (Prelude.fmap Prelude.fromIntegral
+                                                 Data.ProtoLens.Encoding.Bytes.getVarInt)
+                                                Data.ProtoLens.Encoding.Bytes.<?> "end"
                                          loop
                                            (Lens.Family2.set
                                               (Lens.Labels.lensOf'
@@ -1571,8 +1578,10 @@ instance Data.ProtoLens.Message
                                              (Lens.Family2.over Data.ProtoLens.unknownFields
                                                 (\ !t -> (:) y t)
                                                 x)
-              in loop Data.ProtoLens.defMessage
-        unfinishedBuildMessage
+              in
+              (loop Data.ProtoLens.defMessage) Data.ProtoLens.Encoding.Bytes.<?>
+                "EnumReservedRange"
+        buildMessage
           = (\ _x ->
                (case
                   Lens.Family2.view
@@ -1710,26 +1719,32 @@ instance Data.ProtoLens.Message EnumOptions where
                         _EnumOptions'deprecated = Prelude.Nothing,
                         _EnumOptions'uninterpretedOption = [],
                         _EnumOptions'_unknownFields = ([])}
-        unfinishedParseMessage
+        parseMessage
           = let loop ::
                      EnumOptions -> Data.ProtoLens.Encoding.Bytes.Parser EnumOptions
                 loop x
                   = do end <- Data.ProtoLens.Encoding.Bytes.atEnd
                        if end then
-                         Prelude.return
-                           (Lens.Family2.over Data.ProtoLens.unknownFields
-                              (\ !t -> Prelude.reverse t)
-                              (Lens.Family2.over
-                                 (Lens.Labels.lensOf'
-                                    ((Lens.Labels.proxy#) ::
-                                       (Lens.Labels.Proxy#) "uninterpretedOption"))
+                         do let missing = [] in
+                              if Prelude.null missing then Prelude.return () else
+                                Prelude.fail
+                                  (("Missing required fields: ") Prelude.++
+                                     Prelude.show (missing :: ([Prelude.String])))
+                            Prelude.return
+                              (Lens.Family2.over Data.ProtoLens.unknownFields
                                  (\ !t -> Prelude.reverse t)
-                                 x))
+                                 (Lens.Family2.over
+                                    (Lens.Labels.lensOf'
+                                       ((Lens.Labels.proxy#) ::
+                                          (Lens.Labels.Proxy#) "uninterpretedOption"))
+                                    (\ !t -> Prelude.reverse t)
+                                    x))
                          else
                          do tag <- Data.ProtoLens.Encoding.Bytes.getVarInt
                             case tag of
-                                16 -> do y <- Prelude.fmap ((Prelude./=) 0)
-                                                Data.ProtoLens.Encoding.Bytes.getVarInt
+                                16 -> do y <- (Prelude.fmap ((Prelude./=) 0)
+                                                 Data.ProtoLens.Encoding.Bytes.getVarInt)
+                                                Data.ProtoLens.Encoding.Bytes.<?> "allow_alias"
                                          loop
                                            (Lens.Family2.set
                                               (Lens.Labels.lensOf'
@@ -1737,8 +1752,9 @@ instance Data.ProtoLens.Message EnumOptions where
                                                     (Lens.Labels.Proxy#) "allowAlias"))
                                               y
                                               x)
-                                24 -> do y <- Prelude.fmap ((Prelude./=) 0)
-                                                Data.ProtoLens.Encoding.Bytes.getVarInt
+                                24 -> do y <- (Prelude.fmap ((Prelude./=) 0)
+                                                 Data.ProtoLens.Encoding.Bytes.getVarInt)
+                                                Data.ProtoLens.Encoding.Bytes.<?> "deprecated"
                                          loop
                                            (Lens.Family2.set
                                               (Lens.Labels.lensOf'
@@ -1746,13 +1762,13 @@ instance Data.ProtoLens.Message EnumOptions where
                                                     (Lens.Labels.Proxy#) "deprecated"))
                                               y
                                               x)
-                                7994 -> do !y <- do value <- do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
-                                                                Data.ProtoLens.Encoding.Bytes.getBytes
-                                                                  (Prelude.fromIntegral len)
-                                                    Data.ProtoLens.Encoding.Bytes.runEither
-                                                      (Data.ProtoLens.Encoding.Bytes.runParser
-                                                         Data.ProtoLens.unfinishedParseMessage
-                                                         value)
+                                7994 -> do !y <- (do value <- do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
+                                                                 Data.ProtoLens.Encoding.Bytes.getBytes
+                                                                   (Prelude.fromIntegral len)
+                                                     Data.ProtoLens.Encoding.Bytes.runEither
+                                                       (Data.ProtoLens.decodeMessage value))
+                                                   Data.ProtoLens.Encoding.Bytes.<?>
+                                                   "uninterpreted_option"
                                            loop
                                              (Lens.Family2.over
                                                 (Lens.Labels.lensOf'
@@ -1765,8 +1781,10 @@ instance Data.ProtoLens.Message EnumOptions where
                                              (Lens.Family2.over Data.ProtoLens.unknownFields
                                                 (\ !t -> (:) y t)
                                                 x)
-              in loop Data.ProtoLens.defMessage
-        unfinishedBuildMessage
+              in
+              (loop Data.ProtoLens.defMessage) Data.ProtoLens.Encoding.Bytes.<?>
+                "EnumOptions"
+        buildMessage
           = (\ _x ->
                (case
                   Lens.Family2.view
@@ -1802,9 +1820,7 @@ instance Data.ProtoLens.Message EnumOptions where
                                    (Data.ProtoLens.Encoding.Bytes.putVarInt
                                       (Prelude.fromIntegral (Data.ByteString.length bs)))
                                      Data.Monoid.<> Data.ProtoLens.Encoding.Bytes.putBytes bs))
-                                 Prelude..
-                                 (Data.ProtoLens.Encoding.Bytes.runBuilder) Prelude..
-                                   Data.ProtoLens.unfinishedBuildMessage)
+                                 Prelude.. Data.ProtoLens.encodeMessage)
                                 _v)
                          (Lens.Family2.view
                             (Lens.Labels.lensOf'
@@ -1931,28 +1947,34 @@ instance Data.ProtoLens.Message EnumValueDescriptorProto where
                                      _EnumValueDescriptorProto'number = Prelude.Nothing,
                                      _EnumValueDescriptorProto'options = Prelude.Nothing,
                                      _EnumValueDescriptorProto'_unknownFields = ([])}
-        unfinishedParseMessage
+        parseMessage
           = let loop ::
                      EnumValueDescriptorProto ->
                        Data.ProtoLens.Encoding.Bytes.Parser EnumValueDescriptorProto
                 loop x
                   = do end <- Data.ProtoLens.Encoding.Bytes.atEnd
                        if end then
-                         Prelude.return
-                           (Lens.Family2.over Data.ProtoLens.unknownFields
-                              (\ !t -> Prelude.reverse t)
-                              x)
+                         do let missing = [] in
+                              if Prelude.null missing then Prelude.return () else
+                                Prelude.fail
+                                  (("Missing required fields: ") Prelude.++
+                                     Prelude.show (missing :: ([Prelude.String])))
+                            Prelude.return
+                              (Lens.Family2.over Data.ProtoLens.unknownFields
+                                 (\ !t -> Prelude.reverse t)
+                                 x)
                          else
                          do tag <- Data.ProtoLens.Encoding.Bytes.getVarInt
                             case tag of
-                                10 -> do y <- do value <- do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
-                                                             Data.ProtoLens.Encoding.Bytes.getBytes
-                                                               (Prelude.fromIntegral len)
-                                                 Data.ProtoLens.Encoding.Bytes.runEither
-                                                   (case Data.Text.Encoding.decodeUtf8' value of
-                                                        Prelude.Left err -> Prelude.Left
-                                                                              (Prelude.show err)
-                                                        Prelude.Right r -> Prelude.Right r)
+                                10 -> do y <- (do value <- do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
+                                                              Data.ProtoLens.Encoding.Bytes.getBytes
+                                                                (Prelude.fromIntegral len)
+                                                  Data.ProtoLens.Encoding.Bytes.runEither
+                                                    (case Data.Text.Encoding.decodeUtf8' value of
+                                                         Prelude.Left err -> Prelude.Left
+                                                                               (Prelude.show err)
+                                                         Prelude.Right r -> Prelude.Right r))
+                                                Data.ProtoLens.Encoding.Bytes.<?> "name"
                                          loop
                                            (Lens.Family2.set
                                               (Lens.Labels.lensOf'
@@ -1960,8 +1982,9 @@ instance Data.ProtoLens.Message EnumValueDescriptorProto where
                                                     (Lens.Labels.Proxy#) "name"))
                                               y
                                               x)
-                                16 -> do y <- Prelude.fmap Prelude.fromIntegral
-                                                Data.ProtoLens.Encoding.Bytes.getVarInt
+                                16 -> do y <- (Prelude.fmap Prelude.fromIntegral
+                                                 Data.ProtoLens.Encoding.Bytes.getVarInt)
+                                                Data.ProtoLens.Encoding.Bytes.<?> "number"
                                          loop
                                            (Lens.Family2.set
                                               (Lens.Labels.lensOf'
@@ -1969,13 +1992,12 @@ instance Data.ProtoLens.Message EnumValueDescriptorProto where
                                                     (Lens.Labels.Proxy#) "number"))
                                               y
                                               x)
-                                26 -> do y <- do value <- do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
-                                                             Data.ProtoLens.Encoding.Bytes.getBytes
-                                                               (Prelude.fromIntegral len)
-                                                 Data.ProtoLens.Encoding.Bytes.runEither
-                                                   (Data.ProtoLens.Encoding.Bytes.runParser
-                                                      Data.ProtoLens.unfinishedParseMessage
-                                                      value)
+                                26 -> do y <- (do value <- do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
+                                                              Data.ProtoLens.Encoding.Bytes.getBytes
+                                                                (Prelude.fromIntegral len)
+                                                  Data.ProtoLens.Encoding.Bytes.runEither
+                                                    (Data.ProtoLens.decodeMessage value))
+                                                Data.ProtoLens.Encoding.Bytes.<?> "options"
                                          loop
                                            (Lens.Family2.set
                                               (Lens.Labels.lensOf'
@@ -1988,8 +2010,10 @@ instance Data.ProtoLens.Message EnumValueDescriptorProto where
                                              (Lens.Family2.over Data.ProtoLens.unknownFields
                                                 (\ !t -> (:) y t)
                                                 x)
-              in loop Data.ProtoLens.defMessage
-        unfinishedBuildMessage
+              in
+              (loop Data.ProtoLens.defMessage) Data.ProtoLens.Encoding.Bytes.<?>
+                "EnumValueDescriptorProto"
+        buildMessage
           = (\ _x ->
                (case
                   Lens.Family2.view
@@ -2036,9 +2060,7 @@ instance Data.ProtoLens.Message EnumValueDescriptorProto where
                                                         (Data.ByteString.length bs)))
                                                     Data.Monoid.<>
                                                     Data.ProtoLens.Encoding.Bytes.putBytes bs))
-                                                Prelude..
-                                                (Data.ProtoLens.Encoding.Bytes.runBuilder) Prelude..
-                                                  Data.ProtoLens.unfinishedBuildMessage)
+                                                Prelude.. Data.ProtoLens.encodeMessage)
                                                _v)
                      Data.Monoid.<>
                      Data.Monoid.mconcat
@@ -2124,27 +2146,33 @@ instance Data.ProtoLens.Message EnumValueOptions where
           = EnumValueOptions{_EnumValueOptions'deprecated = Prelude.Nothing,
                              _EnumValueOptions'uninterpretedOption = [],
                              _EnumValueOptions'_unknownFields = ([])}
-        unfinishedParseMessage
+        parseMessage
           = let loop ::
                      EnumValueOptions ->
                        Data.ProtoLens.Encoding.Bytes.Parser EnumValueOptions
                 loop x
                   = do end <- Data.ProtoLens.Encoding.Bytes.atEnd
                        if end then
-                         Prelude.return
-                           (Lens.Family2.over Data.ProtoLens.unknownFields
-                              (\ !t -> Prelude.reverse t)
-                              (Lens.Family2.over
-                                 (Lens.Labels.lensOf'
-                                    ((Lens.Labels.proxy#) ::
-                                       (Lens.Labels.Proxy#) "uninterpretedOption"))
+                         do let missing = [] in
+                              if Prelude.null missing then Prelude.return () else
+                                Prelude.fail
+                                  (("Missing required fields: ") Prelude.++
+                                     Prelude.show (missing :: ([Prelude.String])))
+                            Prelude.return
+                              (Lens.Family2.over Data.ProtoLens.unknownFields
                                  (\ !t -> Prelude.reverse t)
-                                 x))
+                                 (Lens.Family2.over
+                                    (Lens.Labels.lensOf'
+                                       ((Lens.Labels.proxy#) ::
+                                          (Lens.Labels.Proxy#) "uninterpretedOption"))
+                                    (\ !t -> Prelude.reverse t)
+                                    x))
                          else
                          do tag <- Data.ProtoLens.Encoding.Bytes.getVarInt
                             case tag of
-                                8 -> do y <- Prelude.fmap ((Prelude./=) 0)
-                                               Data.ProtoLens.Encoding.Bytes.getVarInt
+                                8 -> do y <- (Prelude.fmap ((Prelude./=) 0)
+                                                Data.ProtoLens.Encoding.Bytes.getVarInt)
+                                               Data.ProtoLens.Encoding.Bytes.<?> "deprecated"
                                         loop
                                           (Lens.Family2.set
                                              (Lens.Labels.lensOf'
@@ -2152,13 +2180,13 @@ instance Data.ProtoLens.Message EnumValueOptions where
                                                    (Lens.Labels.Proxy#) "deprecated"))
                                              y
                                              x)
-                                7994 -> do !y <- do value <- do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
-                                                                Data.ProtoLens.Encoding.Bytes.getBytes
-                                                                  (Prelude.fromIntegral len)
-                                                    Data.ProtoLens.Encoding.Bytes.runEither
-                                                      (Data.ProtoLens.Encoding.Bytes.runParser
-                                                         Data.ProtoLens.unfinishedParseMessage
-                                                         value)
+                                7994 -> do !y <- (do value <- do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
+                                                                 Data.ProtoLens.Encoding.Bytes.getBytes
+                                                                   (Prelude.fromIntegral len)
+                                                     Data.ProtoLens.Encoding.Bytes.runEither
+                                                       (Data.ProtoLens.decodeMessage value))
+                                                   Data.ProtoLens.Encoding.Bytes.<?>
+                                                   "uninterpreted_option"
                                            loop
                                              (Lens.Family2.over
                                                 (Lens.Labels.lensOf'
@@ -2171,8 +2199,10 @@ instance Data.ProtoLens.Message EnumValueOptions where
                                              (Lens.Family2.over Data.ProtoLens.unknownFields
                                                 (\ !t -> (:) y t)
                                                 x)
-              in loop Data.ProtoLens.defMessage
-        unfinishedBuildMessage
+              in
+              (loop Data.ProtoLens.defMessage) Data.ProtoLens.Encoding.Bytes.<?>
+                "EnumValueOptions"
+        buildMessage
           = (\ _x ->
                (case
                   Lens.Family2.view
@@ -2195,9 +2225,7 @@ instance Data.ProtoLens.Message EnumValueOptions where
                                  (Data.ProtoLens.Encoding.Bytes.putVarInt
                                     (Prelude.fromIntegral (Data.ByteString.length bs)))
                                    Data.Monoid.<> Data.ProtoLens.Encoding.Bytes.putBytes bs))
-                               Prelude..
-                               (Data.ProtoLens.Encoding.Bytes.runBuilder) Prelude..
-                                 Data.ProtoLens.unfinishedBuildMessage)
+                               Prelude.. Data.ProtoLens.encodeMessage)
                               _v)
                        (Lens.Family2.view
                           (Lens.Labels.lensOf'
@@ -2262,32 +2290,37 @@ instance Data.ProtoLens.Message ExtensionRangeOptions where
           = ExtensionRangeOptions{_ExtensionRangeOptions'uninterpretedOption
                                     = [],
                                   _ExtensionRangeOptions'_unknownFields = ([])}
-        unfinishedParseMessage
+        parseMessage
           = let loop ::
                      ExtensionRangeOptions ->
                        Data.ProtoLens.Encoding.Bytes.Parser ExtensionRangeOptions
                 loop x
                   = do end <- Data.ProtoLens.Encoding.Bytes.atEnd
                        if end then
-                         Prelude.return
-                           (Lens.Family2.over Data.ProtoLens.unknownFields
-                              (\ !t -> Prelude.reverse t)
-                              (Lens.Family2.over
-                                 (Lens.Labels.lensOf'
-                                    ((Lens.Labels.proxy#) ::
-                                       (Lens.Labels.Proxy#) "uninterpretedOption"))
+                         do let missing = [] in
+                              if Prelude.null missing then Prelude.return () else
+                                Prelude.fail
+                                  (("Missing required fields: ") Prelude.++
+                                     Prelude.show (missing :: ([Prelude.String])))
+                            Prelude.return
+                              (Lens.Family2.over Data.ProtoLens.unknownFields
                                  (\ !t -> Prelude.reverse t)
-                                 x))
+                                 (Lens.Family2.over
+                                    (Lens.Labels.lensOf'
+                                       ((Lens.Labels.proxy#) ::
+                                          (Lens.Labels.Proxy#) "uninterpretedOption"))
+                                    (\ !t -> Prelude.reverse t)
+                                    x))
                          else
                          do tag <- Data.ProtoLens.Encoding.Bytes.getVarInt
                             case tag of
-                                7994 -> do !y <- do value <- do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
-                                                                Data.ProtoLens.Encoding.Bytes.getBytes
-                                                                  (Prelude.fromIntegral len)
-                                                    Data.ProtoLens.Encoding.Bytes.runEither
-                                                      (Data.ProtoLens.Encoding.Bytes.runParser
-                                                         Data.ProtoLens.unfinishedParseMessage
-                                                         value)
+                                7994 -> do !y <- (do value <- do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
+                                                                 Data.ProtoLens.Encoding.Bytes.getBytes
+                                                                   (Prelude.fromIntegral len)
+                                                     Data.ProtoLens.Encoding.Bytes.runEither
+                                                       (Data.ProtoLens.decodeMessage value))
+                                                   Data.ProtoLens.Encoding.Bytes.<?>
+                                                   "uninterpreted_option"
                                            loop
                                              (Lens.Family2.over
                                                 (Lens.Labels.lensOf'
@@ -2300,8 +2333,10 @@ instance Data.ProtoLens.Message ExtensionRangeOptions where
                                              (Lens.Family2.over Data.ProtoLens.unknownFields
                                                 (\ !t -> (:) y t)
                                                 x)
-              in loop Data.ProtoLens.defMessage
-        unfinishedBuildMessage
+              in
+              (loop Data.ProtoLens.defMessage) Data.ProtoLens.Encoding.Bytes.<?>
+                "ExtensionRangeOptions"
+        buildMessage
           = (\ _x ->
                (Data.Monoid.mconcat
                   (Prelude.map
@@ -2311,9 +2346,7 @@ instance Data.ProtoLens.Message ExtensionRangeOptions where
                                (Data.ProtoLens.Encoding.Bytes.putVarInt
                                   (Prelude.fromIntegral (Data.ByteString.length bs)))
                                  Data.Monoid.<> Data.ProtoLens.Encoding.Bytes.putBytes bs))
-                             Prelude..
-                             (Data.ProtoLens.Encoding.Bytes.runBuilder) Prelude..
-                               Data.ProtoLens.unfinishedBuildMessage)
+                             Prelude.. Data.ProtoLens.encodeMessage)
                             _v)
                      (Lens.Family2.view
                         (Lens.Labels.lensOf'
@@ -2637,28 +2670,34 @@ instance Data.ProtoLens.Message FieldDescriptorProto where
                                  _FieldDescriptorProto'jsonName = Prelude.Nothing,
                                  _FieldDescriptorProto'options = Prelude.Nothing,
                                  _FieldDescriptorProto'_unknownFields = ([])}
-        unfinishedParseMessage
+        parseMessage
           = let loop ::
                      FieldDescriptorProto ->
                        Data.ProtoLens.Encoding.Bytes.Parser FieldDescriptorProto
                 loop x
                   = do end <- Data.ProtoLens.Encoding.Bytes.atEnd
                        if end then
-                         Prelude.return
-                           (Lens.Family2.over Data.ProtoLens.unknownFields
-                              (\ !t -> Prelude.reverse t)
-                              x)
+                         do let missing = [] in
+                              if Prelude.null missing then Prelude.return () else
+                                Prelude.fail
+                                  (("Missing required fields: ") Prelude.++
+                                     Prelude.show (missing :: ([Prelude.String])))
+                            Prelude.return
+                              (Lens.Family2.over Data.ProtoLens.unknownFields
+                                 (\ !t -> Prelude.reverse t)
+                                 x)
                          else
                          do tag <- Data.ProtoLens.Encoding.Bytes.getVarInt
                             case tag of
-                                10 -> do y <- do value <- do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
-                                                             Data.ProtoLens.Encoding.Bytes.getBytes
-                                                               (Prelude.fromIntegral len)
-                                                 Data.ProtoLens.Encoding.Bytes.runEither
-                                                   (case Data.Text.Encoding.decodeUtf8' value of
-                                                        Prelude.Left err -> Prelude.Left
-                                                                              (Prelude.show err)
-                                                        Prelude.Right r -> Prelude.Right r)
+                                10 -> do y <- (do value <- do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
+                                                              Data.ProtoLens.Encoding.Bytes.getBytes
+                                                                (Prelude.fromIntegral len)
+                                                  Data.ProtoLens.Encoding.Bytes.runEither
+                                                    (case Data.Text.Encoding.decodeUtf8' value of
+                                                         Prelude.Left err -> Prelude.Left
+                                                                               (Prelude.show err)
+                                                         Prelude.Right r -> Prelude.Right r))
+                                                Data.ProtoLens.Encoding.Bytes.<?> "name"
                                          loop
                                            (Lens.Family2.set
                                               (Lens.Labels.lensOf'
@@ -2666,8 +2705,9 @@ instance Data.ProtoLens.Message FieldDescriptorProto where
                                                     (Lens.Labels.Proxy#) "name"))
                                               y
                                               x)
-                                24 -> do y <- Prelude.fmap Prelude.fromIntegral
-                                                Data.ProtoLens.Encoding.Bytes.getVarInt
+                                24 -> do y <- (Prelude.fmap Prelude.fromIntegral
+                                                 Data.ProtoLens.Encoding.Bytes.getVarInt)
+                                                Data.ProtoLens.Encoding.Bytes.<?> "number"
                                          loop
                                            (Lens.Family2.set
                                               (Lens.Labels.lensOf'
@@ -2675,9 +2715,10 @@ instance Data.ProtoLens.Message FieldDescriptorProto where
                                                     (Lens.Labels.Proxy#) "number"))
                                               y
                                               x)
-                                32 -> do y <- Prelude.fmap Prelude.toEnum
-                                                (Prelude.fmap Prelude.fromIntegral
-                                                   Data.ProtoLens.Encoding.Bytes.getVarInt)
+                                32 -> do y <- (Prelude.fmap Prelude.toEnum
+                                                 (Prelude.fmap Prelude.fromIntegral
+                                                    Data.ProtoLens.Encoding.Bytes.getVarInt))
+                                                Data.ProtoLens.Encoding.Bytes.<?> "label"
                                          loop
                                            (Lens.Family2.set
                                               (Lens.Labels.lensOf'
@@ -2685,9 +2726,10 @@ instance Data.ProtoLens.Message FieldDescriptorProto where
                                                     (Lens.Labels.Proxy#) "label"))
                                               y
                                               x)
-                                40 -> do y <- Prelude.fmap Prelude.toEnum
-                                                (Prelude.fmap Prelude.fromIntegral
-                                                   Data.ProtoLens.Encoding.Bytes.getVarInt)
+                                40 -> do y <- (Prelude.fmap Prelude.toEnum
+                                                 (Prelude.fmap Prelude.fromIntegral
+                                                    Data.ProtoLens.Encoding.Bytes.getVarInt))
+                                                Data.ProtoLens.Encoding.Bytes.<?> "type"
                                          loop
                                            (Lens.Family2.set
                                               (Lens.Labels.lensOf'
@@ -2695,14 +2737,15 @@ instance Data.ProtoLens.Message FieldDescriptorProto where
                                                     (Lens.Labels.Proxy#) "type'"))
                                               y
                                               x)
-                                50 -> do y <- do value <- do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
-                                                             Data.ProtoLens.Encoding.Bytes.getBytes
-                                                               (Prelude.fromIntegral len)
-                                                 Data.ProtoLens.Encoding.Bytes.runEither
-                                                   (case Data.Text.Encoding.decodeUtf8' value of
-                                                        Prelude.Left err -> Prelude.Left
-                                                                              (Prelude.show err)
-                                                        Prelude.Right r -> Prelude.Right r)
+                                50 -> do y <- (do value <- do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
+                                                              Data.ProtoLens.Encoding.Bytes.getBytes
+                                                                (Prelude.fromIntegral len)
+                                                  Data.ProtoLens.Encoding.Bytes.runEither
+                                                    (case Data.Text.Encoding.decodeUtf8' value of
+                                                         Prelude.Left err -> Prelude.Left
+                                                                               (Prelude.show err)
+                                                         Prelude.Right r -> Prelude.Right r))
+                                                Data.ProtoLens.Encoding.Bytes.<?> "type_name"
                                          loop
                                            (Lens.Family2.set
                                               (Lens.Labels.lensOf'
@@ -2710,14 +2753,15 @@ instance Data.ProtoLens.Message FieldDescriptorProto where
                                                     (Lens.Labels.Proxy#) "typeName"))
                                               y
                                               x)
-                                18 -> do y <- do value <- do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
-                                                             Data.ProtoLens.Encoding.Bytes.getBytes
-                                                               (Prelude.fromIntegral len)
-                                                 Data.ProtoLens.Encoding.Bytes.runEither
-                                                   (case Data.Text.Encoding.decodeUtf8' value of
-                                                        Prelude.Left err -> Prelude.Left
-                                                                              (Prelude.show err)
-                                                        Prelude.Right r -> Prelude.Right r)
+                                18 -> do y <- (do value <- do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
+                                                              Data.ProtoLens.Encoding.Bytes.getBytes
+                                                                (Prelude.fromIntegral len)
+                                                  Data.ProtoLens.Encoding.Bytes.runEither
+                                                    (case Data.Text.Encoding.decodeUtf8' value of
+                                                         Prelude.Left err -> Prelude.Left
+                                                                               (Prelude.show err)
+                                                         Prelude.Right r -> Prelude.Right r))
+                                                Data.ProtoLens.Encoding.Bytes.<?> "extendee"
                                          loop
                                            (Lens.Family2.set
                                               (Lens.Labels.lensOf'
@@ -2725,14 +2769,15 @@ instance Data.ProtoLens.Message FieldDescriptorProto where
                                                     (Lens.Labels.Proxy#) "extendee"))
                                               y
                                               x)
-                                58 -> do y <- do value <- do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
-                                                             Data.ProtoLens.Encoding.Bytes.getBytes
-                                                               (Prelude.fromIntegral len)
-                                                 Data.ProtoLens.Encoding.Bytes.runEither
-                                                   (case Data.Text.Encoding.decodeUtf8' value of
-                                                        Prelude.Left err -> Prelude.Left
-                                                                              (Prelude.show err)
-                                                        Prelude.Right r -> Prelude.Right r)
+                                58 -> do y <- (do value <- do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
+                                                              Data.ProtoLens.Encoding.Bytes.getBytes
+                                                                (Prelude.fromIntegral len)
+                                                  Data.ProtoLens.Encoding.Bytes.runEither
+                                                    (case Data.Text.Encoding.decodeUtf8' value of
+                                                         Prelude.Left err -> Prelude.Left
+                                                                               (Prelude.show err)
+                                                         Prelude.Right r -> Prelude.Right r))
+                                                Data.ProtoLens.Encoding.Bytes.<?> "default_value"
                                          loop
                                            (Lens.Family2.set
                                               (Lens.Labels.lensOf'
@@ -2740,8 +2785,9 @@ instance Data.ProtoLens.Message FieldDescriptorProto where
                                                     (Lens.Labels.Proxy#) "defaultValue"))
                                               y
                                               x)
-                                72 -> do y <- Prelude.fmap Prelude.fromIntegral
-                                                Data.ProtoLens.Encoding.Bytes.getVarInt
+                                72 -> do y <- (Prelude.fmap Prelude.fromIntegral
+                                                 Data.ProtoLens.Encoding.Bytes.getVarInt)
+                                                Data.ProtoLens.Encoding.Bytes.<?> "oneof_index"
                                          loop
                                            (Lens.Family2.set
                                               (Lens.Labels.lensOf'
@@ -2749,14 +2795,15 @@ instance Data.ProtoLens.Message FieldDescriptorProto where
                                                     (Lens.Labels.Proxy#) "oneofIndex"))
                                               y
                                               x)
-                                82 -> do y <- do value <- do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
-                                                             Data.ProtoLens.Encoding.Bytes.getBytes
-                                                               (Prelude.fromIntegral len)
-                                                 Data.ProtoLens.Encoding.Bytes.runEither
-                                                   (case Data.Text.Encoding.decodeUtf8' value of
-                                                        Prelude.Left err -> Prelude.Left
-                                                                              (Prelude.show err)
-                                                        Prelude.Right r -> Prelude.Right r)
+                                82 -> do y <- (do value <- do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
+                                                              Data.ProtoLens.Encoding.Bytes.getBytes
+                                                                (Prelude.fromIntegral len)
+                                                  Data.ProtoLens.Encoding.Bytes.runEither
+                                                    (case Data.Text.Encoding.decodeUtf8' value of
+                                                         Prelude.Left err -> Prelude.Left
+                                                                               (Prelude.show err)
+                                                         Prelude.Right r -> Prelude.Right r))
+                                                Data.ProtoLens.Encoding.Bytes.<?> "json_name"
                                          loop
                                            (Lens.Family2.set
                                               (Lens.Labels.lensOf'
@@ -2764,13 +2811,12 @@ instance Data.ProtoLens.Message FieldDescriptorProto where
                                                     (Lens.Labels.Proxy#) "jsonName"))
                                               y
                                               x)
-                                66 -> do y <- do value <- do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
-                                                             Data.ProtoLens.Encoding.Bytes.getBytes
-                                                               (Prelude.fromIntegral len)
-                                                 Data.ProtoLens.Encoding.Bytes.runEither
-                                                   (Data.ProtoLens.Encoding.Bytes.runParser
-                                                      Data.ProtoLens.unfinishedParseMessage
-                                                      value)
+                                66 -> do y <- (do value <- do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
+                                                              Data.ProtoLens.Encoding.Bytes.getBytes
+                                                                (Prelude.fromIntegral len)
+                                                  Data.ProtoLens.Encoding.Bytes.runEither
+                                                    (Data.ProtoLens.decodeMessage value))
+                                                Data.ProtoLens.Encoding.Bytes.<?> "options"
                                          loop
                                            (Lens.Family2.set
                                               (Lens.Labels.lensOf'
@@ -2783,8 +2829,10 @@ instance Data.ProtoLens.Message FieldDescriptorProto where
                                              (Lens.Family2.over Data.ProtoLens.unknownFields
                                                 (\ !t -> (:) y t)
                                                 x)
-              in loop Data.ProtoLens.defMessage
-        unfinishedBuildMessage
+              in
+              (loop Data.ProtoLens.defMessage) Data.ProtoLens.Encoding.Bytes.<?>
+                "FieldDescriptorProto"
+        buildMessage
           = (\ _x ->
                (case
                   Lens.Family2.view
@@ -2954,9 +3002,7 @@ instance Data.ProtoLens.Message FieldDescriptorProto where
                                                                   Data.ProtoLens.Encoding.Bytes.putBytes
                                                                     bs))
                                                               Prelude..
-                                                              (Data.ProtoLens.Encoding.Bytes.runBuilder)
-                                                                Prelude..
-                                                                Data.ProtoLens.unfinishedBuildMessage)
+                                                              Data.ProtoLens.encodeMessage)
                                                              _v)
                                    Data.Monoid.<>
                                    Data.Monoid.mconcat
@@ -3450,27 +3496,33 @@ instance Data.ProtoLens.Message FieldOptions where
                          _FieldOptions'weak = Prelude.Nothing,
                          _FieldOptions'uninterpretedOption = [],
                          _FieldOptions'_unknownFields = ([])}
-        unfinishedParseMessage
+        parseMessage
           = let loop ::
                      FieldOptions -> Data.ProtoLens.Encoding.Bytes.Parser FieldOptions
                 loop x
                   = do end <- Data.ProtoLens.Encoding.Bytes.atEnd
                        if end then
-                         Prelude.return
-                           (Lens.Family2.over Data.ProtoLens.unknownFields
-                              (\ !t -> Prelude.reverse t)
-                              (Lens.Family2.over
-                                 (Lens.Labels.lensOf'
-                                    ((Lens.Labels.proxy#) ::
-                                       (Lens.Labels.Proxy#) "uninterpretedOption"))
+                         do let missing = [] in
+                              if Prelude.null missing then Prelude.return () else
+                                Prelude.fail
+                                  (("Missing required fields: ") Prelude.++
+                                     Prelude.show (missing :: ([Prelude.String])))
+                            Prelude.return
+                              (Lens.Family2.over Data.ProtoLens.unknownFields
                                  (\ !t -> Prelude.reverse t)
-                                 x))
+                                 (Lens.Family2.over
+                                    (Lens.Labels.lensOf'
+                                       ((Lens.Labels.proxy#) ::
+                                          (Lens.Labels.Proxy#) "uninterpretedOption"))
+                                    (\ !t -> Prelude.reverse t)
+                                    x))
                          else
                          do tag <- Data.ProtoLens.Encoding.Bytes.getVarInt
                             case tag of
-                                8 -> do y <- Prelude.fmap Prelude.toEnum
-                                               (Prelude.fmap Prelude.fromIntegral
-                                                  Data.ProtoLens.Encoding.Bytes.getVarInt)
+                                8 -> do y <- (Prelude.fmap Prelude.toEnum
+                                                (Prelude.fmap Prelude.fromIntegral
+                                                   Data.ProtoLens.Encoding.Bytes.getVarInt))
+                                               Data.ProtoLens.Encoding.Bytes.<?> "ctype"
                                         loop
                                           (Lens.Family2.set
                                              (Lens.Labels.lensOf'
@@ -3478,8 +3530,9 @@ instance Data.ProtoLens.Message FieldOptions where
                                                    (Lens.Labels.Proxy#) "ctype"))
                                              y
                                              x)
-                                16 -> do y <- Prelude.fmap ((Prelude./=) 0)
-                                                Data.ProtoLens.Encoding.Bytes.getVarInt
+                                16 -> do y <- (Prelude.fmap ((Prelude./=) 0)
+                                                 Data.ProtoLens.Encoding.Bytes.getVarInt)
+                                                Data.ProtoLens.Encoding.Bytes.<?> "packed"
                                          loop
                                            (Lens.Family2.set
                                               (Lens.Labels.lensOf'
@@ -3487,9 +3540,10 @@ instance Data.ProtoLens.Message FieldOptions where
                                                     (Lens.Labels.Proxy#) "packed"))
                                               y
                                               x)
-                                48 -> do y <- Prelude.fmap Prelude.toEnum
-                                                (Prelude.fmap Prelude.fromIntegral
-                                                   Data.ProtoLens.Encoding.Bytes.getVarInt)
+                                48 -> do y <- (Prelude.fmap Prelude.toEnum
+                                                 (Prelude.fmap Prelude.fromIntegral
+                                                    Data.ProtoLens.Encoding.Bytes.getVarInt))
+                                                Data.ProtoLens.Encoding.Bytes.<?> "jstype"
                                          loop
                                            (Lens.Family2.set
                                               (Lens.Labels.lensOf'
@@ -3497,8 +3551,9 @@ instance Data.ProtoLens.Message FieldOptions where
                                                     (Lens.Labels.Proxy#) "jstype"))
                                               y
                                               x)
-                                40 -> do y <- Prelude.fmap ((Prelude./=) 0)
-                                                Data.ProtoLens.Encoding.Bytes.getVarInt
+                                40 -> do y <- (Prelude.fmap ((Prelude./=) 0)
+                                                 Data.ProtoLens.Encoding.Bytes.getVarInt)
+                                                Data.ProtoLens.Encoding.Bytes.<?> "lazy"
                                          loop
                                            (Lens.Family2.set
                                               (Lens.Labels.lensOf'
@@ -3506,8 +3561,9 @@ instance Data.ProtoLens.Message FieldOptions where
                                                     (Lens.Labels.Proxy#) "lazy"))
                                               y
                                               x)
-                                24 -> do y <- Prelude.fmap ((Prelude./=) 0)
-                                                Data.ProtoLens.Encoding.Bytes.getVarInt
+                                24 -> do y <- (Prelude.fmap ((Prelude./=) 0)
+                                                 Data.ProtoLens.Encoding.Bytes.getVarInt)
+                                                Data.ProtoLens.Encoding.Bytes.<?> "deprecated"
                                          loop
                                            (Lens.Family2.set
                                               (Lens.Labels.lensOf'
@@ -3515,8 +3571,9 @@ instance Data.ProtoLens.Message FieldOptions where
                                                     (Lens.Labels.Proxy#) "deprecated"))
                                               y
                                               x)
-                                80 -> do y <- Prelude.fmap ((Prelude./=) 0)
-                                                Data.ProtoLens.Encoding.Bytes.getVarInt
+                                80 -> do y <- (Prelude.fmap ((Prelude./=) 0)
+                                                 Data.ProtoLens.Encoding.Bytes.getVarInt)
+                                                Data.ProtoLens.Encoding.Bytes.<?> "weak"
                                          loop
                                            (Lens.Family2.set
                                               (Lens.Labels.lensOf'
@@ -3524,13 +3581,13 @@ instance Data.ProtoLens.Message FieldOptions where
                                                     (Lens.Labels.Proxy#) "weak"))
                                               y
                                               x)
-                                7994 -> do !y <- do value <- do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
-                                                                Data.ProtoLens.Encoding.Bytes.getBytes
-                                                                  (Prelude.fromIntegral len)
-                                                    Data.ProtoLens.Encoding.Bytes.runEither
-                                                      (Data.ProtoLens.Encoding.Bytes.runParser
-                                                         Data.ProtoLens.unfinishedParseMessage
-                                                         value)
+                                7994 -> do !y <- (do value <- do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
+                                                                 Data.ProtoLens.Encoding.Bytes.getBytes
+                                                                   (Prelude.fromIntegral len)
+                                                     Data.ProtoLens.Encoding.Bytes.runEither
+                                                       (Data.ProtoLens.decodeMessage value))
+                                                   Data.ProtoLens.Encoding.Bytes.<?>
+                                                   "uninterpreted_option"
                                            loop
                                              (Lens.Family2.over
                                                 (Lens.Labels.lensOf'
@@ -3543,8 +3600,10 @@ instance Data.ProtoLens.Message FieldOptions where
                                              (Lens.Family2.over Data.ProtoLens.unknownFields
                                                 (\ !t -> (:) y t)
                                                 x)
-              in loop Data.ProtoLens.defMessage
-        unfinishedBuildMessage
+              in
+              (loop Data.ProtoLens.defMessage) Data.ProtoLens.Encoding.Bytes.<?>
+                "FieldOptions"
+        buildMessage
           = (\ _x ->
                (case
                   Lens.Family2.view
@@ -3635,9 +3694,7 @@ instance Data.ProtoLens.Message FieldOptions where
                                               (Prelude.fromIntegral (Data.ByteString.length bs)))
                                              Data.Monoid.<>
                                              Data.ProtoLens.Encoding.Bytes.putBytes bs))
-                                         Prelude..
-                                         (Data.ProtoLens.Encoding.Bytes.runBuilder) Prelude..
-                                           Data.ProtoLens.unfinishedBuildMessage)
+                                         Prelude.. Data.ProtoLens.encodeMessage)
                                         _v)
                                  (Lens.Family2.view
                                     (Lens.Labels.lensOf'
@@ -4064,62 +4121,68 @@ instance Data.ProtoLens.Message FileDescriptorProto where
                                 _FileDescriptorProto'sourceCodeInfo = Prelude.Nothing,
                                 _FileDescriptorProto'syntax = Prelude.Nothing,
                                 _FileDescriptorProto'_unknownFields = ([])}
-        unfinishedParseMessage
+        parseMessage
           = let loop ::
                      FileDescriptorProto ->
                        Data.ProtoLens.Encoding.Bytes.Parser FileDescriptorProto
                 loop x
                   = do end <- Data.ProtoLens.Encoding.Bytes.atEnd
                        if end then
-                         Prelude.return
-                           (Lens.Family2.over Data.ProtoLens.unknownFields
-                              (\ !t -> Prelude.reverse t)
-                              (Lens.Family2.over
-                                 (Lens.Labels.lensOf'
-                                    ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "dependency"))
+                         do let missing = [] in
+                              if Prelude.null missing then Prelude.return () else
+                                Prelude.fail
+                                  (("Missing required fields: ") Prelude.++
+                                     Prelude.show (missing :: ([Prelude.String])))
+                            Prelude.return
+                              (Lens.Family2.over Data.ProtoLens.unknownFields
                                  (\ !t -> Prelude.reverse t)
                                  (Lens.Family2.over
                                     (Lens.Labels.lensOf'
-                                       ((Lens.Labels.proxy#) ::
-                                          (Lens.Labels.Proxy#) "publicDependency"))
+                                       ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "dependency"))
                                     (\ !t -> Prelude.reverse t)
                                     (Lens.Family2.over
                                        (Lens.Labels.lensOf'
                                           ((Lens.Labels.proxy#) ::
-                                             (Lens.Labels.Proxy#) "weakDependency"))
+                                             (Lens.Labels.Proxy#) "publicDependency"))
                                        (\ !t -> Prelude.reverse t)
                                        (Lens.Family2.over
                                           (Lens.Labels.lensOf'
                                              ((Lens.Labels.proxy#) ::
-                                                (Lens.Labels.Proxy#) "messageType"))
+                                                (Lens.Labels.Proxy#) "weakDependency"))
                                           (\ !t -> Prelude.reverse t)
                                           (Lens.Family2.over
                                              (Lens.Labels.lensOf'
                                                 ((Lens.Labels.proxy#) ::
-                                                   (Lens.Labels.Proxy#) "enumType"))
+                                                   (Lens.Labels.Proxy#) "messageType"))
                                              (\ !t -> Prelude.reverse t)
                                              (Lens.Family2.over
                                                 (Lens.Labels.lensOf'
                                                    ((Lens.Labels.proxy#) ::
-                                                      (Lens.Labels.Proxy#) "service"))
+                                                      (Lens.Labels.Proxy#) "enumType"))
                                                 (\ !t -> Prelude.reverse t)
                                                 (Lens.Family2.over
                                                    (Lens.Labels.lensOf'
                                                       ((Lens.Labels.proxy#) ::
-                                                         (Lens.Labels.Proxy#) "extension"))
+                                                         (Lens.Labels.Proxy#) "service"))
                                                    (\ !t -> Prelude.reverse t)
-                                                   x))))))))
+                                                   (Lens.Family2.over
+                                                      (Lens.Labels.lensOf'
+                                                         ((Lens.Labels.proxy#) ::
+                                                            (Lens.Labels.Proxy#) "extension"))
+                                                      (\ !t -> Prelude.reverse t)
+                                                      x))))))))
                          else
                          do tag <- Data.ProtoLens.Encoding.Bytes.getVarInt
                             case tag of
-                                10 -> do y <- do value <- do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
-                                                             Data.ProtoLens.Encoding.Bytes.getBytes
-                                                               (Prelude.fromIntegral len)
-                                                 Data.ProtoLens.Encoding.Bytes.runEither
-                                                   (case Data.Text.Encoding.decodeUtf8' value of
-                                                        Prelude.Left err -> Prelude.Left
-                                                                              (Prelude.show err)
-                                                        Prelude.Right r -> Prelude.Right r)
+                                10 -> do y <- (do value <- do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
+                                                              Data.ProtoLens.Encoding.Bytes.getBytes
+                                                                (Prelude.fromIntegral len)
+                                                  Data.ProtoLens.Encoding.Bytes.runEither
+                                                    (case Data.Text.Encoding.decodeUtf8' value of
+                                                         Prelude.Left err -> Prelude.Left
+                                                                               (Prelude.show err)
+                                                         Prelude.Right r -> Prelude.Right r))
+                                                Data.ProtoLens.Encoding.Bytes.<?> "name"
                                          loop
                                            (Lens.Family2.set
                                               (Lens.Labels.lensOf'
@@ -4127,14 +4190,15 @@ instance Data.ProtoLens.Message FileDescriptorProto where
                                                     (Lens.Labels.Proxy#) "name"))
                                               y
                                               x)
-                                18 -> do y <- do value <- do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
-                                                             Data.ProtoLens.Encoding.Bytes.getBytes
-                                                               (Prelude.fromIntegral len)
-                                                 Data.ProtoLens.Encoding.Bytes.runEither
-                                                   (case Data.Text.Encoding.decodeUtf8' value of
-                                                        Prelude.Left err -> Prelude.Left
-                                                                              (Prelude.show err)
-                                                        Prelude.Right r -> Prelude.Right r)
+                                18 -> do y <- (do value <- do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
+                                                              Data.ProtoLens.Encoding.Bytes.getBytes
+                                                                (Prelude.fromIntegral len)
+                                                  Data.ProtoLens.Encoding.Bytes.runEither
+                                                    (case Data.Text.Encoding.decodeUtf8' value of
+                                                         Prelude.Left err -> Prelude.Left
+                                                                               (Prelude.show err)
+                                                         Prelude.Right r -> Prelude.Right r))
+                                                Data.ProtoLens.Encoding.Bytes.<?> "package"
                                          loop
                                            (Lens.Family2.set
                                               (Lens.Labels.lensOf'
@@ -4142,14 +4206,15 @@ instance Data.ProtoLens.Message FileDescriptorProto where
                                                     (Lens.Labels.Proxy#) "package"))
                                               y
                                               x)
-                                26 -> do !y <- do value <- do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
-                                                              Data.ProtoLens.Encoding.Bytes.getBytes
-                                                                (Prelude.fromIntegral len)
-                                                  Data.ProtoLens.Encoding.Bytes.runEither
-                                                    (case Data.Text.Encoding.decodeUtf8' value of
-                                                         Prelude.Left err -> Prelude.Left
-                                                                               (Prelude.show err)
-                                                         Prelude.Right r -> Prelude.Right r)
+                                26 -> do !y <- (do value <- do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
+                                                               Data.ProtoLens.Encoding.Bytes.getBytes
+                                                                 (Prelude.fromIntegral len)
+                                                   Data.ProtoLens.Encoding.Bytes.runEither
+                                                     (case Data.Text.Encoding.decodeUtf8' value of
+                                                          Prelude.Left err -> Prelude.Left
+                                                                                (Prelude.show err)
+                                                          Prelude.Right r -> Prelude.Right r))
+                                                 Data.ProtoLens.Encoding.Bytes.<?> "dependency"
                                          loop
                                            (Lens.Family2.over
                                               (Lens.Labels.lensOf'
@@ -4157,8 +4222,10 @@ instance Data.ProtoLens.Message FileDescriptorProto where
                                                     (Lens.Labels.Proxy#) "dependency"))
                                               (\ !t -> (:) y t)
                                               x)
-                                80 -> do !y <- Prelude.fmap Prelude.fromIntegral
-                                                 Data.ProtoLens.Encoding.Bytes.getVarInt
+                                80 -> do !y <- (Prelude.fmap Prelude.fromIntegral
+                                                  Data.ProtoLens.Encoding.Bytes.getVarInt)
+                                                 Data.ProtoLens.Encoding.Bytes.<?>
+                                                 "public_dependency"
                                          loop
                                            (Lens.Family2.over
                                               (Lens.Labels.lensOf'
@@ -4175,9 +4242,11 @@ instance Data.ProtoLens.Message FileDescriptorProto where
                                                           = do packedEnd <- Data.ProtoLens.Encoding.Bytes.atEnd
                                                                if packedEnd then Prelude.return qs
                                                                  else
-                                                                 do !q <- Prelude.fmap
-                                                                            Prelude.fromIntegral
-                                                                            Data.ProtoLens.Encoding.Bytes.getVarInt
+                                                                 do !q <- (Prelude.fmap
+                                                                             Prelude.fromIntegral
+                                                                             Data.ProtoLens.Encoding.Bytes.getVarInt)
+                                                                            Data.ProtoLens.Encoding.Bytes.<?>
+                                                                            "public_dependency"
                                                                     ploop ((:) q qs)
                                                       in ploop [])
                                                    bytes)
@@ -4188,8 +4257,9 @@ instance Data.ProtoLens.Message FileDescriptorProto where
                                                     (Lens.Labels.Proxy#) "publicDependency"))
                                               (\ !t -> (y) Prelude.++ t)
                                               x)
-                                88 -> do !y <- Prelude.fmap Prelude.fromIntegral
-                                                 Data.ProtoLens.Encoding.Bytes.getVarInt
+                                88 -> do !y <- (Prelude.fmap Prelude.fromIntegral
+                                                  Data.ProtoLens.Encoding.Bytes.getVarInt)
+                                                 Data.ProtoLens.Encoding.Bytes.<?> "weak_dependency"
                                          loop
                                            (Lens.Family2.over
                                               (Lens.Labels.lensOf'
@@ -4206,9 +4276,11 @@ instance Data.ProtoLens.Message FileDescriptorProto where
                                                           = do packedEnd <- Data.ProtoLens.Encoding.Bytes.atEnd
                                                                if packedEnd then Prelude.return qs
                                                                  else
-                                                                 do !q <- Prelude.fmap
-                                                                            Prelude.fromIntegral
-                                                                            Data.ProtoLens.Encoding.Bytes.getVarInt
+                                                                 do !q <- (Prelude.fmap
+                                                                             Prelude.fromIntegral
+                                                                             Data.ProtoLens.Encoding.Bytes.getVarInt)
+                                                                            Data.ProtoLens.Encoding.Bytes.<?>
+                                                                            "weak_dependency"
                                                                     ploop ((:) q qs)
                                                       in ploop [])
                                                    bytes)
@@ -4219,13 +4291,12 @@ instance Data.ProtoLens.Message FileDescriptorProto where
                                                     (Lens.Labels.Proxy#) "weakDependency"))
                                               (\ !t -> (y) Prelude.++ t)
                                               x)
-                                34 -> do !y <- do value <- do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
-                                                              Data.ProtoLens.Encoding.Bytes.getBytes
-                                                                (Prelude.fromIntegral len)
-                                                  Data.ProtoLens.Encoding.Bytes.runEither
-                                                    (Data.ProtoLens.Encoding.Bytes.runParser
-                                                       Data.ProtoLens.unfinishedParseMessage
-                                                       value)
+                                34 -> do !y <- (do value <- do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
+                                                               Data.ProtoLens.Encoding.Bytes.getBytes
+                                                                 (Prelude.fromIntegral len)
+                                                   Data.ProtoLens.Encoding.Bytes.runEither
+                                                     (Data.ProtoLens.decodeMessage value))
+                                                 Data.ProtoLens.Encoding.Bytes.<?> "message_type"
                                          loop
                                            (Lens.Family2.over
                                               (Lens.Labels.lensOf'
@@ -4233,13 +4304,12 @@ instance Data.ProtoLens.Message FileDescriptorProto where
                                                     (Lens.Labels.Proxy#) "messageType"))
                                               (\ !t -> (:) y t)
                                               x)
-                                42 -> do !y <- do value <- do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
-                                                              Data.ProtoLens.Encoding.Bytes.getBytes
-                                                                (Prelude.fromIntegral len)
-                                                  Data.ProtoLens.Encoding.Bytes.runEither
-                                                    (Data.ProtoLens.Encoding.Bytes.runParser
-                                                       Data.ProtoLens.unfinishedParseMessage
-                                                       value)
+                                42 -> do !y <- (do value <- do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
+                                                               Data.ProtoLens.Encoding.Bytes.getBytes
+                                                                 (Prelude.fromIntegral len)
+                                                   Data.ProtoLens.Encoding.Bytes.runEither
+                                                     (Data.ProtoLens.decodeMessage value))
+                                                 Data.ProtoLens.Encoding.Bytes.<?> "enum_type"
                                          loop
                                            (Lens.Family2.over
                                               (Lens.Labels.lensOf'
@@ -4247,13 +4317,12 @@ instance Data.ProtoLens.Message FileDescriptorProto where
                                                     (Lens.Labels.Proxy#) "enumType"))
                                               (\ !t -> (:) y t)
                                               x)
-                                50 -> do !y <- do value <- do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
-                                                              Data.ProtoLens.Encoding.Bytes.getBytes
-                                                                (Prelude.fromIntegral len)
-                                                  Data.ProtoLens.Encoding.Bytes.runEither
-                                                    (Data.ProtoLens.Encoding.Bytes.runParser
-                                                       Data.ProtoLens.unfinishedParseMessage
-                                                       value)
+                                50 -> do !y <- (do value <- do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
+                                                               Data.ProtoLens.Encoding.Bytes.getBytes
+                                                                 (Prelude.fromIntegral len)
+                                                   Data.ProtoLens.Encoding.Bytes.runEither
+                                                     (Data.ProtoLens.decodeMessage value))
+                                                 Data.ProtoLens.Encoding.Bytes.<?> "service"
                                          loop
                                            (Lens.Family2.over
                                               (Lens.Labels.lensOf'
@@ -4261,13 +4330,12 @@ instance Data.ProtoLens.Message FileDescriptorProto where
                                                     (Lens.Labels.Proxy#) "service"))
                                               (\ !t -> (:) y t)
                                               x)
-                                58 -> do !y <- do value <- do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
-                                                              Data.ProtoLens.Encoding.Bytes.getBytes
-                                                                (Prelude.fromIntegral len)
-                                                  Data.ProtoLens.Encoding.Bytes.runEither
-                                                    (Data.ProtoLens.Encoding.Bytes.runParser
-                                                       Data.ProtoLens.unfinishedParseMessage
-                                                       value)
+                                58 -> do !y <- (do value <- do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
+                                                               Data.ProtoLens.Encoding.Bytes.getBytes
+                                                                 (Prelude.fromIntegral len)
+                                                   Data.ProtoLens.Encoding.Bytes.runEither
+                                                     (Data.ProtoLens.decodeMessage value))
+                                                 Data.ProtoLens.Encoding.Bytes.<?> "extension"
                                          loop
                                            (Lens.Family2.over
                                               (Lens.Labels.lensOf'
@@ -4275,13 +4343,12 @@ instance Data.ProtoLens.Message FileDescriptorProto where
                                                     (Lens.Labels.Proxy#) "extension"))
                                               (\ !t -> (:) y t)
                                               x)
-                                66 -> do y <- do value <- do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
-                                                             Data.ProtoLens.Encoding.Bytes.getBytes
-                                                               (Prelude.fromIntegral len)
-                                                 Data.ProtoLens.Encoding.Bytes.runEither
-                                                   (Data.ProtoLens.Encoding.Bytes.runParser
-                                                      Data.ProtoLens.unfinishedParseMessage
-                                                      value)
+                                66 -> do y <- (do value <- do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
+                                                              Data.ProtoLens.Encoding.Bytes.getBytes
+                                                                (Prelude.fromIntegral len)
+                                                  Data.ProtoLens.Encoding.Bytes.runEither
+                                                    (Data.ProtoLens.decodeMessage value))
+                                                Data.ProtoLens.Encoding.Bytes.<?> "options"
                                          loop
                                            (Lens.Family2.set
                                               (Lens.Labels.lensOf'
@@ -4289,13 +4356,12 @@ instance Data.ProtoLens.Message FileDescriptorProto where
                                                     (Lens.Labels.Proxy#) "options"))
                                               y
                                               x)
-                                74 -> do y <- do value <- do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
-                                                             Data.ProtoLens.Encoding.Bytes.getBytes
-                                                               (Prelude.fromIntegral len)
-                                                 Data.ProtoLens.Encoding.Bytes.runEither
-                                                   (Data.ProtoLens.Encoding.Bytes.runParser
-                                                      Data.ProtoLens.unfinishedParseMessage
-                                                      value)
+                                74 -> do y <- (do value <- do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
+                                                              Data.ProtoLens.Encoding.Bytes.getBytes
+                                                                (Prelude.fromIntegral len)
+                                                  Data.ProtoLens.Encoding.Bytes.runEither
+                                                    (Data.ProtoLens.decodeMessage value))
+                                                Data.ProtoLens.Encoding.Bytes.<?> "source_code_info"
                                          loop
                                            (Lens.Family2.set
                                               (Lens.Labels.lensOf'
@@ -4303,14 +4369,15 @@ instance Data.ProtoLens.Message FileDescriptorProto where
                                                     (Lens.Labels.Proxy#) "sourceCodeInfo"))
                                               y
                                               x)
-                                98 -> do y <- do value <- do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
-                                                             Data.ProtoLens.Encoding.Bytes.getBytes
-                                                               (Prelude.fromIntegral len)
-                                                 Data.ProtoLens.Encoding.Bytes.runEither
-                                                   (case Data.Text.Encoding.decodeUtf8' value of
-                                                        Prelude.Left err -> Prelude.Left
-                                                                              (Prelude.show err)
-                                                        Prelude.Right r -> Prelude.Right r)
+                                98 -> do y <- (do value <- do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
+                                                              Data.ProtoLens.Encoding.Bytes.getBytes
+                                                                (Prelude.fromIntegral len)
+                                                  Data.ProtoLens.Encoding.Bytes.runEither
+                                                    (case Data.Text.Encoding.decodeUtf8' value of
+                                                         Prelude.Left err -> Prelude.Left
+                                                                               (Prelude.show err)
+                                                         Prelude.Right r -> Prelude.Right r))
+                                                Data.ProtoLens.Encoding.Bytes.<?> "syntax"
                                          loop
                                            (Lens.Family2.set
                                               (Lens.Labels.lensOf'
@@ -4323,8 +4390,10 @@ instance Data.ProtoLens.Message FileDescriptorProto where
                                              (Lens.Family2.over Data.ProtoLens.unknownFields
                                                 (\ !t -> (:) y t)
                                                 x)
-              in loop Data.ProtoLens.defMessage
-        unfinishedBuildMessage
+              in
+              (loop Data.ProtoLens.defMessage) Data.ProtoLens.Encoding.Bytes.<?>
+                "FileDescriptorProto"
+        buildMessage
           = (\ _x ->
                (case
                   Lens.Family2.view
@@ -4409,9 +4478,7 @@ instance Data.ProtoLens.Message FileDescriptorProto where
                                             (Prelude.fromIntegral (Data.ByteString.length bs)))
                                            Data.Monoid.<>
                                            Data.ProtoLens.Encoding.Bytes.putBytes bs))
-                                       Prelude..
-                                       (Data.ProtoLens.Encoding.Bytes.runBuilder) Prelude..
-                                         Data.ProtoLens.unfinishedBuildMessage)
+                                       Prelude.. Data.ProtoLens.encodeMessage)
                                       _v)
                                (Lens.Family2.view
                                   (Lens.Labels.lensOf'
@@ -4427,9 +4494,7 @@ instance Data.ProtoLens.Message FileDescriptorProto where
                                               (Prelude.fromIntegral (Data.ByteString.length bs)))
                                              Data.Monoid.<>
                                              Data.ProtoLens.Encoding.Bytes.putBytes bs))
-                                         Prelude..
-                                         (Data.ProtoLens.Encoding.Bytes.runBuilder) Prelude..
-                                           Data.ProtoLens.unfinishedBuildMessage)
+                                         Prelude.. Data.ProtoLens.encodeMessage)
                                         _v)
                                  (Lens.Family2.view
                                     (Lens.Labels.lensOf'
@@ -4445,9 +4510,7 @@ instance Data.ProtoLens.Message FileDescriptorProto where
                                                 (Prelude.fromIntegral (Data.ByteString.length bs)))
                                                Data.Monoid.<>
                                                Data.ProtoLens.Encoding.Bytes.putBytes bs))
-                                           Prelude..
-                                           (Data.ProtoLens.Encoding.Bytes.runBuilder) Prelude..
-                                             Data.ProtoLens.unfinishedBuildMessage)
+                                           Prelude.. Data.ProtoLens.encodeMessage)
                                           _v)
                                    (Lens.Family2.view
                                       (Lens.Labels.lensOf'
@@ -4464,9 +4527,7 @@ instance Data.ProtoLens.Message FileDescriptorProto where
                                                      (Data.ByteString.length bs)))
                                                  Data.Monoid.<>
                                                  Data.ProtoLens.Encoding.Bytes.putBytes bs))
-                                             Prelude..
-                                             (Data.ProtoLens.Encoding.Bytes.runBuilder) Prelude..
-                                               Data.ProtoLens.unfinishedBuildMessage)
+                                             Prelude.. Data.ProtoLens.encodeMessage)
                                             _v)
                                      (Lens.Family2.view
                                         (Lens.Labels.lensOf'
@@ -4493,9 +4554,7 @@ instance Data.ProtoLens.Message FileDescriptorProto where
                                                                   Data.ProtoLens.Encoding.Bytes.putBytes
                                                                     bs))
                                                               Prelude..
-                                                              (Data.ProtoLens.Encoding.Bytes.runBuilder)
-                                                                Prelude..
-                                                                Data.ProtoLens.unfinishedBuildMessage)
+                                                              Data.ProtoLens.encodeMessage)
                                                              _v)
                                    Data.Monoid.<>
                                    (case
@@ -4518,9 +4577,7 @@ instance Data.ProtoLens.Message FileDescriptorProto where
                                                                     Data.ProtoLens.Encoding.Bytes.putBytes
                                                                       bs))
                                                                 Prelude..
-                                                                (Data.ProtoLens.Encoding.Bytes.runBuilder)
-                                                                  Prelude..
-                                                                  Data.ProtoLens.unfinishedBuildMessage)
+                                                                Data.ProtoLens.encodeMessage)
                                                                _v)
                                      Data.Monoid.<>
                                      (case
@@ -4609,31 +4666,35 @@ instance Data.ProtoLens.Message FileDescriptorSet where
         defMessage
           = FileDescriptorSet{_FileDescriptorSet'file = [],
                               _FileDescriptorSet'_unknownFields = ([])}
-        unfinishedParseMessage
+        parseMessage
           = let loop ::
                      FileDescriptorSet ->
                        Data.ProtoLens.Encoding.Bytes.Parser FileDescriptorSet
                 loop x
                   = do end <- Data.ProtoLens.Encoding.Bytes.atEnd
                        if end then
-                         Prelude.return
-                           (Lens.Family2.over Data.ProtoLens.unknownFields
-                              (\ !t -> Prelude.reverse t)
-                              (Lens.Family2.over
-                                 (Lens.Labels.lensOf'
-                                    ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "file"))
+                         do let missing = [] in
+                              if Prelude.null missing then Prelude.return () else
+                                Prelude.fail
+                                  (("Missing required fields: ") Prelude.++
+                                     Prelude.show (missing :: ([Prelude.String])))
+                            Prelude.return
+                              (Lens.Family2.over Data.ProtoLens.unknownFields
                                  (\ !t -> Prelude.reverse t)
-                                 x))
+                                 (Lens.Family2.over
+                                    (Lens.Labels.lensOf'
+                                       ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "file"))
+                                    (\ !t -> Prelude.reverse t)
+                                    x))
                          else
                          do tag <- Data.ProtoLens.Encoding.Bytes.getVarInt
                             case tag of
-                                10 -> do !y <- do value <- do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
-                                                              Data.ProtoLens.Encoding.Bytes.getBytes
-                                                                (Prelude.fromIntegral len)
-                                                  Data.ProtoLens.Encoding.Bytes.runEither
-                                                    (Data.ProtoLens.Encoding.Bytes.runParser
-                                                       Data.ProtoLens.unfinishedParseMessage
-                                                       value)
+                                10 -> do !y <- (do value <- do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
+                                                               Data.ProtoLens.Encoding.Bytes.getBytes
+                                                                 (Prelude.fromIntegral len)
+                                                   Data.ProtoLens.Encoding.Bytes.runEither
+                                                     (Data.ProtoLens.decodeMessage value))
+                                                 Data.ProtoLens.Encoding.Bytes.<?> "file"
                                          loop
                                            (Lens.Family2.over
                                               (Lens.Labels.lensOf'
@@ -4646,8 +4707,10 @@ instance Data.ProtoLens.Message FileDescriptorSet where
                                              (Lens.Family2.over Data.ProtoLens.unknownFields
                                                 (\ !t -> (:) y t)
                                                 x)
-              in loop Data.ProtoLens.defMessage
-        unfinishedBuildMessage
+              in
+              (loop Data.ProtoLens.defMessage) Data.ProtoLens.Encoding.Bytes.<?>
+                "FileDescriptorSet"
+        buildMessage
           = (\ _x ->
                (Data.Monoid.mconcat
                   (Prelude.map
@@ -4657,9 +4720,7 @@ instance Data.ProtoLens.Message FileDescriptorSet where
                                (Data.ProtoLens.Encoding.Bytes.putVarInt
                                   (Prelude.fromIntegral (Data.ByteString.length bs)))
                                  Data.Monoid.<> Data.ProtoLens.Encoding.Bytes.putBytes bs))
-                             Prelude..
-                             (Data.ProtoLens.Encoding.Bytes.runBuilder) Prelude..
-                               Data.ProtoLens.unfinishedBuildMessage)
+                             Prelude.. Data.ProtoLens.encodeMessage)
                             _v)
                      (Lens.Family2.view
                         (Lens.Labels.lensOf'
@@ -5280,32 +5341,38 @@ instance Data.ProtoLens.Message FileOptions where
                         _FileOptions'rubyPackage = Prelude.Nothing,
                         _FileOptions'uninterpretedOption = [],
                         _FileOptions'_unknownFields = ([])}
-        unfinishedParseMessage
+        parseMessage
           = let loop ::
                      FileOptions -> Data.ProtoLens.Encoding.Bytes.Parser FileOptions
                 loop x
                   = do end <- Data.ProtoLens.Encoding.Bytes.atEnd
                        if end then
-                         Prelude.return
-                           (Lens.Family2.over Data.ProtoLens.unknownFields
-                              (\ !t -> Prelude.reverse t)
-                              (Lens.Family2.over
-                                 (Lens.Labels.lensOf'
-                                    ((Lens.Labels.proxy#) ::
-                                       (Lens.Labels.Proxy#) "uninterpretedOption"))
+                         do let missing = [] in
+                              if Prelude.null missing then Prelude.return () else
+                                Prelude.fail
+                                  (("Missing required fields: ") Prelude.++
+                                     Prelude.show (missing :: ([Prelude.String])))
+                            Prelude.return
+                              (Lens.Family2.over Data.ProtoLens.unknownFields
                                  (\ !t -> Prelude.reverse t)
-                                 x))
+                                 (Lens.Family2.over
+                                    (Lens.Labels.lensOf'
+                                       ((Lens.Labels.proxy#) ::
+                                          (Lens.Labels.Proxy#) "uninterpretedOption"))
+                                    (\ !t -> Prelude.reverse t)
+                                    x))
                          else
                          do tag <- Data.ProtoLens.Encoding.Bytes.getVarInt
                             case tag of
-                                10 -> do y <- do value <- do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
-                                                             Data.ProtoLens.Encoding.Bytes.getBytes
-                                                               (Prelude.fromIntegral len)
-                                                 Data.ProtoLens.Encoding.Bytes.runEither
-                                                   (case Data.Text.Encoding.decodeUtf8' value of
-                                                        Prelude.Left err -> Prelude.Left
-                                                                              (Prelude.show err)
-                                                        Prelude.Right r -> Prelude.Right r)
+                                10 -> do y <- (do value <- do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
+                                                              Data.ProtoLens.Encoding.Bytes.getBytes
+                                                                (Prelude.fromIntegral len)
+                                                  Data.ProtoLens.Encoding.Bytes.runEither
+                                                    (case Data.Text.Encoding.decodeUtf8' value of
+                                                         Prelude.Left err -> Prelude.Left
+                                                                               (Prelude.show err)
+                                                         Prelude.Right r -> Prelude.Right r))
+                                                Data.ProtoLens.Encoding.Bytes.<?> "java_package"
                                          loop
                                            (Lens.Family2.set
                                               (Lens.Labels.lensOf'
@@ -5313,14 +5380,16 @@ instance Data.ProtoLens.Message FileOptions where
                                                     (Lens.Labels.Proxy#) "javaPackage"))
                                               y
                                               x)
-                                66 -> do y <- do value <- do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
-                                                             Data.ProtoLens.Encoding.Bytes.getBytes
-                                                               (Prelude.fromIntegral len)
-                                                 Data.ProtoLens.Encoding.Bytes.runEither
-                                                   (case Data.Text.Encoding.decodeUtf8' value of
-                                                        Prelude.Left err -> Prelude.Left
-                                                                              (Prelude.show err)
-                                                        Prelude.Right r -> Prelude.Right r)
+                                66 -> do y <- (do value <- do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
+                                                              Data.ProtoLens.Encoding.Bytes.getBytes
+                                                                (Prelude.fromIntegral len)
+                                                  Data.ProtoLens.Encoding.Bytes.runEither
+                                                    (case Data.Text.Encoding.decodeUtf8' value of
+                                                         Prelude.Left err -> Prelude.Left
+                                                                               (Prelude.show err)
+                                                         Prelude.Right r -> Prelude.Right r))
+                                                Data.ProtoLens.Encoding.Bytes.<?>
+                                                "java_outer_classname"
                                          loop
                                            (Lens.Family2.set
                                               (Lens.Labels.lensOf'
@@ -5328,8 +5397,10 @@ instance Data.ProtoLens.Message FileOptions where
                                                     (Lens.Labels.Proxy#) "javaOuterClassname"))
                                               y
                                               x)
-                                80 -> do y <- Prelude.fmap ((Prelude./=) 0)
-                                                Data.ProtoLens.Encoding.Bytes.getVarInt
+                                80 -> do y <- (Prelude.fmap ((Prelude./=) 0)
+                                                 Data.ProtoLens.Encoding.Bytes.getVarInt)
+                                                Data.ProtoLens.Encoding.Bytes.<?>
+                                                "java_multiple_files"
                                          loop
                                            (Lens.Family2.set
                                               (Lens.Labels.lensOf'
@@ -5337,8 +5408,10 @@ instance Data.ProtoLens.Message FileOptions where
                                                     (Lens.Labels.Proxy#) "javaMultipleFiles"))
                                               y
                                               x)
-                                160 -> do y <- Prelude.fmap ((Prelude./=) 0)
-                                                 Data.ProtoLens.Encoding.Bytes.getVarInt
+                                160 -> do y <- (Prelude.fmap ((Prelude./=) 0)
+                                                  Data.ProtoLens.Encoding.Bytes.getVarInt)
+                                                 Data.ProtoLens.Encoding.Bytes.<?>
+                                                 "java_generate_equals_and_hash"
                                           loop
                                             (Lens.Family2.set
                                                (Lens.Labels.lensOf'
@@ -5347,8 +5420,10 @@ instance Data.ProtoLens.Message FileOptions where
                                                        "javaGenerateEqualsAndHash"))
                                                y
                                                x)
-                                216 -> do y <- Prelude.fmap ((Prelude./=) 0)
-                                                 Data.ProtoLens.Encoding.Bytes.getVarInt
+                                216 -> do y <- (Prelude.fmap ((Prelude./=) 0)
+                                                  Data.ProtoLens.Encoding.Bytes.getVarInt)
+                                                 Data.ProtoLens.Encoding.Bytes.<?>
+                                                 "java_string_check_utf8"
                                           loop
                                             (Lens.Family2.set
                                                (Lens.Labels.lensOf'
@@ -5356,9 +5431,10 @@ instance Data.ProtoLens.Message FileOptions where
                                                      (Lens.Labels.Proxy#) "javaStringCheckUtf8"))
                                                y
                                                x)
-                                72 -> do y <- Prelude.fmap Prelude.toEnum
-                                                (Prelude.fmap Prelude.fromIntegral
-                                                   Data.ProtoLens.Encoding.Bytes.getVarInt)
+                                72 -> do y <- (Prelude.fmap Prelude.toEnum
+                                                 (Prelude.fmap Prelude.fromIntegral
+                                                    Data.ProtoLens.Encoding.Bytes.getVarInt))
+                                                Data.ProtoLens.Encoding.Bytes.<?> "optimize_for"
                                          loop
                                            (Lens.Family2.set
                                               (Lens.Labels.lensOf'
@@ -5366,14 +5442,15 @@ instance Data.ProtoLens.Message FileOptions where
                                                     (Lens.Labels.Proxy#) "optimizeFor"))
                                               y
                                               x)
-                                90 -> do y <- do value <- do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
-                                                             Data.ProtoLens.Encoding.Bytes.getBytes
-                                                               (Prelude.fromIntegral len)
-                                                 Data.ProtoLens.Encoding.Bytes.runEither
-                                                   (case Data.Text.Encoding.decodeUtf8' value of
-                                                        Prelude.Left err -> Prelude.Left
-                                                                              (Prelude.show err)
-                                                        Prelude.Right r -> Prelude.Right r)
+                                90 -> do y <- (do value <- do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
+                                                              Data.ProtoLens.Encoding.Bytes.getBytes
+                                                                (Prelude.fromIntegral len)
+                                                  Data.ProtoLens.Encoding.Bytes.runEither
+                                                    (case Data.Text.Encoding.decodeUtf8' value of
+                                                         Prelude.Left err -> Prelude.Left
+                                                                               (Prelude.show err)
+                                                         Prelude.Right r -> Prelude.Right r))
+                                                Data.ProtoLens.Encoding.Bytes.<?> "go_package"
                                          loop
                                            (Lens.Family2.set
                                               (Lens.Labels.lensOf'
@@ -5381,8 +5458,10 @@ instance Data.ProtoLens.Message FileOptions where
                                                     (Lens.Labels.Proxy#) "goPackage"))
                                               y
                                               x)
-                                128 -> do y <- Prelude.fmap ((Prelude./=) 0)
-                                                 Data.ProtoLens.Encoding.Bytes.getVarInt
+                                128 -> do y <- (Prelude.fmap ((Prelude./=) 0)
+                                                  Data.ProtoLens.Encoding.Bytes.getVarInt)
+                                                 Data.ProtoLens.Encoding.Bytes.<?>
+                                                 "cc_generic_services"
                                           loop
                                             (Lens.Family2.set
                                                (Lens.Labels.lensOf'
@@ -5390,8 +5469,10 @@ instance Data.ProtoLens.Message FileOptions where
                                                      (Lens.Labels.Proxy#) "ccGenericServices"))
                                                y
                                                x)
-                                136 -> do y <- Prelude.fmap ((Prelude./=) 0)
-                                                 Data.ProtoLens.Encoding.Bytes.getVarInt
+                                136 -> do y <- (Prelude.fmap ((Prelude./=) 0)
+                                                  Data.ProtoLens.Encoding.Bytes.getVarInt)
+                                                 Data.ProtoLens.Encoding.Bytes.<?>
+                                                 "java_generic_services"
                                           loop
                                             (Lens.Family2.set
                                                (Lens.Labels.lensOf'
@@ -5399,8 +5480,10 @@ instance Data.ProtoLens.Message FileOptions where
                                                      (Lens.Labels.Proxy#) "javaGenericServices"))
                                                y
                                                x)
-                                144 -> do y <- Prelude.fmap ((Prelude./=) 0)
-                                                 Data.ProtoLens.Encoding.Bytes.getVarInt
+                                144 -> do y <- (Prelude.fmap ((Prelude./=) 0)
+                                                  Data.ProtoLens.Encoding.Bytes.getVarInt)
+                                                 Data.ProtoLens.Encoding.Bytes.<?>
+                                                 "py_generic_services"
                                           loop
                                             (Lens.Family2.set
                                                (Lens.Labels.lensOf'
@@ -5408,8 +5491,10 @@ instance Data.ProtoLens.Message FileOptions where
                                                      (Lens.Labels.Proxy#) "pyGenericServices"))
                                                y
                                                x)
-                                336 -> do y <- Prelude.fmap ((Prelude./=) 0)
-                                                 Data.ProtoLens.Encoding.Bytes.getVarInt
+                                336 -> do y <- (Prelude.fmap ((Prelude./=) 0)
+                                                  Data.ProtoLens.Encoding.Bytes.getVarInt)
+                                                 Data.ProtoLens.Encoding.Bytes.<?>
+                                                 "php_generic_services"
                                           loop
                                             (Lens.Family2.set
                                                (Lens.Labels.lensOf'
@@ -5417,8 +5502,9 @@ instance Data.ProtoLens.Message FileOptions where
                                                      (Lens.Labels.Proxy#) "phpGenericServices"))
                                                y
                                                x)
-                                184 -> do y <- Prelude.fmap ((Prelude./=) 0)
-                                                 Data.ProtoLens.Encoding.Bytes.getVarInt
+                                184 -> do y <- (Prelude.fmap ((Prelude./=) 0)
+                                                  Data.ProtoLens.Encoding.Bytes.getVarInt)
+                                                 Data.ProtoLens.Encoding.Bytes.<?> "deprecated"
                                           loop
                                             (Lens.Family2.set
                                                (Lens.Labels.lensOf'
@@ -5426,8 +5512,10 @@ instance Data.ProtoLens.Message FileOptions where
                                                      (Lens.Labels.Proxy#) "deprecated"))
                                                y
                                                x)
-                                248 -> do y <- Prelude.fmap ((Prelude./=) 0)
-                                                 Data.ProtoLens.Encoding.Bytes.getVarInt
+                                248 -> do y <- (Prelude.fmap ((Prelude./=) 0)
+                                                  Data.ProtoLens.Encoding.Bytes.getVarInt)
+                                                 Data.ProtoLens.Encoding.Bytes.<?>
+                                                 "cc_enable_arenas"
                                           loop
                                             (Lens.Family2.set
                                                (Lens.Labels.lensOf'
@@ -5435,14 +5523,16 @@ instance Data.ProtoLens.Message FileOptions where
                                                      (Lens.Labels.Proxy#) "ccEnableArenas"))
                                                y
                                                x)
-                                290 -> do y <- do value <- do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
-                                                              Data.ProtoLens.Encoding.Bytes.getBytes
-                                                                (Prelude.fromIntegral len)
-                                                  Data.ProtoLens.Encoding.Bytes.runEither
-                                                    (case Data.Text.Encoding.decodeUtf8' value of
-                                                         Prelude.Left err -> Prelude.Left
-                                                                               (Prelude.show err)
-                                                         Prelude.Right r -> Prelude.Right r)
+                                290 -> do y <- (do value <- do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
+                                                               Data.ProtoLens.Encoding.Bytes.getBytes
+                                                                 (Prelude.fromIntegral len)
+                                                   Data.ProtoLens.Encoding.Bytes.runEither
+                                                     (case Data.Text.Encoding.decodeUtf8' value of
+                                                          Prelude.Left err -> Prelude.Left
+                                                                                (Prelude.show err)
+                                                          Prelude.Right r -> Prelude.Right r))
+                                                 Data.ProtoLens.Encoding.Bytes.<?>
+                                                 "objc_class_prefix"
                                           loop
                                             (Lens.Family2.set
                                                (Lens.Labels.lensOf'
@@ -5450,14 +5540,16 @@ instance Data.ProtoLens.Message FileOptions where
                                                      (Lens.Labels.Proxy#) "objcClassPrefix"))
                                                y
                                                x)
-                                298 -> do y <- do value <- do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
-                                                              Data.ProtoLens.Encoding.Bytes.getBytes
-                                                                (Prelude.fromIntegral len)
-                                                  Data.ProtoLens.Encoding.Bytes.runEither
-                                                    (case Data.Text.Encoding.decodeUtf8' value of
-                                                         Prelude.Left err -> Prelude.Left
-                                                                               (Prelude.show err)
-                                                         Prelude.Right r -> Prelude.Right r)
+                                298 -> do y <- (do value <- do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
+                                                               Data.ProtoLens.Encoding.Bytes.getBytes
+                                                                 (Prelude.fromIntegral len)
+                                                   Data.ProtoLens.Encoding.Bytes.runEither
+                                                     (case Data.Text.Encoding.decodeUtf8' value of
+                                                          Prelude.Left err -> Prelude.Left
+                                                                                (Prelude.show err)
+                                                          Prelude.Right r -> Prelude.Right r))
+                                                 Data.ProtoLens.Encoding.Bytes.<?>
+                                                 "csharp_namespace"
                                           loop
                                             (Lens.Family2.set
                                                (Lens.Labels.lensOf'
@@ -5465,14 +5557,15 @@ instance Data.ProtoLens.Message FileOptions where
                                                      (Lens.Labels.Proxy#) "csharpNamespace"))
                                                y
                                                x)
-                                314 -> do y <- do value <- do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
-                                                              Data.ProtoLens.Encoding.Bytes.getBytes
-                                                                (Prelude.fromIntegral len)
-                                                  Data.ProtoLens.Encoding.Bytes.runEither
-                                                    (case Data.Text.Encoding.decodeUtf8' value of
-                                                         Prelude.Left err -> Prelude.Left
-                                                                               (Prelude.show err)
-                                                         Prelude.Right r -> Prelude.Right r)
+                                314 -> do y <- (do value <- do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
+                                                               Data.ProtoLens.Encoding.Bytes.getBytes
+                                                                 (Prelude.fromIntegral len)
+                                                   Data.ProtoLens.Encoding.Bytes.runEither
+                                                     (case Data.Text.Encoding.decodeUtf8' value of
+                                                          Prelude.Left err -> Prelude.Left
+                                                                                (Prelude.show err)
+                                                          Prelude.Right r -> Prelude.Right r))
+                                                 Data.ProtoLens.Encoding.Bytes.<?> "swift_prefix"
                                           loop
                                             (Lens.Family2.set
                                                (Lens.Labels.lensOf'
@@ -5480,14 +5573,16 @@ instance Data.ProtoLens.Message FileOptions where
                                                      (Lens.Labels.Proxy#) "swiftPrefix"))
                                                y
                                                x)
-                                322 -> do y <- do value <- do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
-                                                              Data.ProtoLens.Encoding.Bytes.getBytes
-                                                                (Prelude.fromIntegral len)
-                                                  Data.ProtoLens.Encoding.Bytes.runEither
-                                                    (case Data.Text.Encoding.decodeUtf8' value of
-                                                         Prelude.Left err -> Prelude.Left
-                                                                               (Prelude.show err)
-                                                         Prelude.Right r -> Prelude.Right r)
+                                322 -> do y <- (do value <- do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
+                                                               Data.ProtoLens.Encoding.Bytes.getBytes
+                                                                 (Prelude.fromIntegral len)
+                                                   Data.ProtoLens.Encoding.Bytes.runEither
+                                                     (case Data.Text.Encoding.decodeUtf8' value of
+                                                          Prelude.Left err -> Prelude.Left
+                                                                                (Prelude.show err)
+                                                          Prelude.Right r -> Prelude.Right r))
+                                                 Data.ProtoLens.Encoding.Bytes.<?>
+                                                 "php_class_prefix"
                                           loop
                                             (Lens.Family2.set
                                                (Lens.Labels.lensOf'
@@ -5495,14 +5590,15 @@ instance Data.ProtoLens.Message FileOptions where
                                                      (Lens.Labels.Proxy#) "phpClassPrefix"))
                                                y
                                                x)
-                                330 -> do y <- do value <- do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
-                                                              Data.ProtoLens.Encoding.Bytes.getBytes
-                                                                (Prelude.fromIntegral len)
-                                                  Data.ProtoLens.Encoding.Bytes.runEither
-                                                    (case Data.Text.Encoding.decodeUtf8' value of
-                                                         Prelude.Left err -> Prelude.Left
-                                                                               (Prelude.show err)
-                                                         Prelude.Right r -> Prelude.Right r)
+                                330 -> do y <- (do value <- do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
+                                                               Data.ProtoLens.Encoding.Bytes.getBytes
+                                                                 (Prelude.fromIntegral len)
+                                                   Data.ProtoLens.Encoding.Bytes.runEither
+                                                     (case Data.Text.Encoding.decodeUtf8' value of
+                                                          Prelude.Left err -> Prelude.Left
+                                                                                (Prelude.show err)
+                                                          Prelude.Right r -> Prelude.Right r))
+                                                 Data.ProtoLens.Encoding.Bytes.<?> "php_namespace"
                                           loop
                                             (Lens.Family2.set
                                                (Lens.Labels.lensOf'
@@ -5510,14 +5606,16 @@ instance Data.ProtoLens.Message FileOptions where
                                                      (Lens.Labels.Proxy#) "phpNamespace"))
                                                y
                                                x)
-                                354 -> do y <- do value <- do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
-                                                              Data.ProtoLens.Encoding.Bytes.getBytes
-                                                                (Prelude.fromIntegral len)
-                                                  Data.ProtoLens.Encoding.Bytes.runEither
-                                                    (case Data.Text.Encoding.decodeUtf8' value of
-                                                         Prelude.Left err -> Prelude.Left
-                                                                               (Prelude.show err)
-                                                         Prelude.Right r -> Prelude.Right r)
+                                354 -> do y <- (do value <- do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
+                                                               Data.ProtoLens.Encoding.Bytes.getBytes
+                                                                 (Prelude.fromIntegral len)
+                                                   Data.ProtoLens.Encoding.Bytes.runEither
+                                                     (case Data.Text.Encoding.decodeUtf8' value of
+                                                          Prelude.Left err -> Prelude.Left
+                                                                                (Prelude.show err)
+                                                          Prelude.Right r -> Prelude.Right r))
+                                                 Data.ProtoLens.Encoding.Bytes.<?>
+                                                 "php_metadata_namespace"
                                           loop
                                             (Lens.Family2.set
                                                (Lens.Labels.lensOf'
@@ -5525,14 +5623,15 @@ instance Data.ProtoLens.Message FileOptions where
                                                      (Lens.Labels.Proxy#) "phpMetadataNamespace"))
                                                y
                                                x)
-                                362 -> do y <- do value <- do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
-                                                              Data.ProtoLens.Encoding.Bytes.getBytes
-                                                                (Prelude.fromIntegral len)
-                                                  Data.ProtoLens.Encoding.Bytes.runEither
-                                                    (case Data.Text.Encoding.decodeUtf8' value of
-                                                         Prelude.Left err -> Prelude.Left
-                                                                               (Prelude.show err)
-                                                         Prelude.Right r -> Prelude.Right r)
+                                362 -> do y <- (do value <- do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
+                                                               Data.ProtoLens.Encoding.Bytes.getBytes
+                                                                 (Prelude.fromIntegral len)
+                                                   Data.ProtoLens.Encoding.Bytes.runEither
+                                                     (case Data.Text.Encoding.decodeUtf8' value of
+                                                          Prelude.Left err -> Prelude.Left
+                                                                                (Prelude.show err)
+                                                          Prelude.Right r -> Prelude.Right r))
+                                                 Data.ProtoLens.Encoding.Bytes.<?> "ruby_package"
                                           loop
                                             (Lens.Family2.set
                                                (Lens.Labels.lensOf'
@@ -5540,13 +5639,13 @@ instance Data.ProtoLens.Message FileOptions where
                                                      (Lens.Labels.Proxy#) "rubyPackage"))
                                                y
                                                x)
-                                7994 -> do !y <- do value <- do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
-                                                                Data.ProtoLens.Encoding.Bytes.getBytes
-                                                                  (Prelude.fromIntegral len)
-                                                    Data.ProtoLens.Encoding.Bytes.runEither
-                                                      (Data.ProtoLens.Encoding.Bytes.runParser
-                                                         Data.ProtoLens.unfinishedParseMessage
-                                                         value)
+                                7994 -> do !y <- (do value <- do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
+                                                                 Data.ProtoLens.Encoding.Bytes.getBytes
+                                                                   (Prelude.fromIntegral len)
+                                                     Data.ProtoLens.Encoding.Bytes.runEither
+                                                       (Data.ProtoLens.decodeMessage value))
+                                                   Data.ProtoLens.Encoding.Bytes.<?>
+                                                   "uninterpreted_option"
                                            loop
                                              (Lens.Family2.over
                                                 (Lens.Labels.lensOf'
@@ -5559,8 +5658,10 @@ instance Data.ProtoLens.Message FileOptions where
                                              (Lens.Family2.over Data.ProtoLens.unknownFields
                                                 (\ !t -> (:) y t)
                                                 x)
-              in loop Data.ProtoLens.defMessage
-        unfinishedBuildMessage
+              in
+              (loop Data.ProtoLens.defMessage) Data.ProtoLens.Encoding.Bytes.<?>
+                "FileOptions"
+        buildMessage
           = (\ _x ->
                (case
                   Lens.Family2.view
@@ -5944,9 +6045,7 @@ instance Data.ProtoLens.Message FileOptions where
                                                                          Data.ProtoLens.Encoding.Bytes.putBytes
                                                                            bs))
                                                                      Prelude..
-                                                                     (Data.ProtoLens.Encoding.Bytes.runBuilder)
-                                                                       Prelude..
-                                                                       Data.ProtoLens.unfinishedBuildMessage)
+                                                                     Data.ProtoLens.encodeMessage)
                                                                     _v)
                                                              (Lens.Family2.view
                                                                 (Lens.Labels.lensOf'
@@ -6098,31 +6197,35 @@ instance Data.ProtoLens.Message GeneratedCodeInfo where
         defMessage
           = GeneratedCodeInfo{_GeneratedCodeInfo'annotation = [],
                               _GeneratedCodeInfo'_unknownFields = ([])}
-        unfinishedParseMessage
+        parseMessage
           = let loop ::
                      GeneratedCodeInfo ->
                        Data.ProtoLens.Encoding.Bytes.Parser GeneratedCodeInfo
                 loop x
                   = do end <- Data.ProtoLens.Encoding.Bytes.atEnd
                        if end then
-                         Prelude.return
-                           (Lens.Family2.over Data.ProtoLens.unknownFields
-                              (\ !t -> Prelude.reverse t)
-                              (Lens.Family2.over
-                                 (Lens.Labels.lensOf'
-                                    ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "annotation"))
+                         do let missing = [] in
+                              if Prelude.null missing then Prelude.return () else
+                                Prelude.fail
+                                  (("Missing required fields: ") Prelude.++
+                                     Prelude.show (missing :: ([Prelude.String])))
+                            Prelude.return
+                              (Lens.Family2.over Data.ProtoLens.unknownFields
                                  (\ !t -> Prelude.reverse t)
-                                 x))
+                                 (Lens.Family2.over
+                                    (Lens.Labels.lensOf'
+                                       ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "annotation"))
+                                    (\ !t -> Prelude.reverse t)
+                                    x))
                          else
                          do tag <- Data.ProtoLens.Encoding.Bytes.getVarInt
                             case tag of
-                                10 -> do !y <- do value <- do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
-                                                              Data.ProtoLens.Encoding.Bytes.getBytes
-                                                                (Prelude.fromIntegral len)
-                                                  Data.ProtoLens.Encoding.Bytes.runEither
-                                                    (Data.ProtoLens.Encoding.Bytes.runParser
-                                                       Data.ProtoLens.unfinishedParseMessage
-                                                       value)
+                                10 -> do !y <- (do value <- do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
+                                                               Data.ProtoLens.Encoding.Bytes.getBytes
+                                                                 (Prelude.fromIntegral len)
+                                                   Data.ProtoLens.Encoding.Bytes.runEither
+                                                     (Data.ProtoLens.decodeMessage value))
+                                                 Data.ProtoLens.Encoding.Bytes.<?> "annotation"
                                          loop
                                            (Lens.Family2.over
                                               (Lens.Labels.lensOf'
@@ -6135,8 +6238,10 @@ instance Data.ProtoLens.Message GeneratedCodeInfo where
                                              (Lens.Family2.over Data.ProtoLens.unknownFields
                                                 (\ !t -> (:) y t)
                                                 x)
-              in loop Data.ProtoLens.defMessage
-        unfinishedBuildMessage
+              in
+              (loop Data.ProtoLens.defMessage) Data.ProtoLens.Encoding.Bytes.<?>
+                "GeneratedCodeInfo"
+        buildMessage
           = (\ _x ->
                (Data.Monoid.mconcat
                   (Prelude.map
@@ -6146,9 +6251,7 @@ instance Data.ProtoLens.Message GeneratedCodeInfo where
                                (Data.ProtoLens.Encoding.Bytes.putVarInt
                                   (Prelude.fromIntegral (Data.ByteString.length bs)))
                                  Data.Monoid.<> Data.ProtoLens.Encoding.Bytes.putBytes bs))
-                             Prelude..
-                             (Data.ProtoLens.Encoding.Bytes.runBuilder) Prelude..
-                               Data.ProtoLens.unfinishedBuildMessage)
+                             Prelude.. Data.ProtoLens.encodeMessage)
                             _v)
                      (Lens.Family2.view
                         (Lens.Labels.lensOf'
@@ -6296,26 +6399,32 @@ instance Data.ProtoLens.Message GeneratedCodeInfo'Annotation where
                                          _GeneratedCodeInfo'Annotation'begin = Prelude.Nothing,
                                          _GeneratedCodeInfo'Annotation'end = Prelude.Nothing,
                                          _GeneratedCodeInfo'Annotation'_unknownFields = ([])}
-        unfinishedParseMessage
+        parseMessage
           = let loop ::
                      GeneratedCodeInfo'Annotation ->
                        Data.ProtoLens.Encoding.Bytes.Parser GeneratedCodeInfo'Annotation
                 loop x
                   = do end <- Data.ProtoLens.Encoding.Bytes.atEnd
                        if end then
-                         Prelude.return
-                           (Lens.Family2.over Data.ProtoLens.unknownFields
-                              (\ !t -> Prelude.reverse t)
-                              (Lens.Family2.over
-                                 (Lens.Labels.lensOf'
-                                    ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "path"))
+                         do let missing = [] in
+                              if Prelude.null missing then Prelude.return () else
+                                Prelude.fail
+                                  (("Missing required fields: ") Prelude.++
+                                     Prelude.show (missing :: ([Prelude.String])))
+                            Prelude.return
+                              (Lens.Family2.over Data.ProtoLens.unknownFields
                                  (\ !t -> Prelude.reverse t)
-                                 x))
+                                 (Lens.Family2.over
+                                    (Lens.Labels.lensOf'
+                                       ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "path"))
+                                    (\ !t -> Prelude.reverse t)
+                                    x))
                          else
                          do tag <- Data.ProtoLens.Encoding.Bytes.getVarInt
                             case tag of
-                                8 -> do !y <- Prelude.fmap Prelude.fromIntegral
-                                                Data.ProtoLens.Encoding.Bytes.getVarInt
+                                8 -> do !y <- (Prelude.fmap Prelude.fromIntegral
+                                                 Data.ProtoLens.Encoding.Bytes.getVarInt)
+                                                Data.ProtoLens.Encoding.Bytes.<?> "path"
                                         loop
                                           (Lens.Family2.over
                                              (Lens.Labels.lensOf'
@@ -6332,9 +6441,11 @@ instance Data.ProtoLens.Message GeneratedCodeInfo'Annotation where
                                                           = do packedEnd <- Data.ProtoLens.Encoding.Bytes.atEnd
                                                                if packedEnd then Prelude.return qs
                                                                  else
-                                                                 do !q <- Prelude.fmap
-                                                                            Prelude.fromIntegral
-                                                                            Data.ProtoLens.Encoding.Bytes.getVarInt
+                                                                 do !q <- (Prelude.fmap
+                                                                             Prelude.fromIntegral
+                                                                             Data.ProtoLens.Encoding.Bytes.getVarInt)
+                                                                            Data.ProtoLens.Encoding.Bytes.<?>
+                                                                            "path"
                                                                     ploop ((:) q qs)
                                                       in ploop [])
                                                    bytes)
@@ -6345,14 +6456,15 @@ instance Data.ProtoLens.Message GeneratedCodeInfo'Annotation where
                                                     (Lens.Labels.Proxy#) "path"))
                                               (\ !t -> (y) Prelude.++ t)
                                               x)
-                                18 -> do y <- do value <- do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
-                                                             Data.ProtoLens.Encoding.Bytes.getBytes
-                                                               (Prelude.fromIntegral len)
-                                                 Data.ProtoLens.Encoding.Bytes.runEither
-                                                   (case Data.Text.Encoding.decodeUtf8' value of
-                                                        Prelude.Left err -> Prelude.Left
-                                                                              (Prelude.show err)
-                                                        Prelude.Right r -> Prelude.Right r)
+                                18 -> do y <- (do value <- do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
+                                                              Data.ProtoLens.Encoding.Bytes.getBytes
+                                                                (Prelude.fromIntegral len)
+                                                  Data.ProtoLens.Encoding.Bytes.runEither
+                                                    (case Data.Text.Encoding.decodeUtf8' value of
+                                                         Prelude.Left err -> Prelude.Left
+                                                                               (Prelude.show err)
+                                                         Prelude.Right r -> Prelude.Right r))
+                                                Data.ProtoLens.Encoding.Bytes.<?> "source_file"
                                          loop
                                            (Lens.Family2.set
                                               (Lens.Labels.lensOf'
@@ -6360,8 +6472,9 @@ instance Data.ProtoLens.Message GeneratedCodeInfo'Annotation where
                                                     (Lens.Labels.Proxy#) "sourceFile"))
                                               y
                                               x)
-                                24 -> do y <- Prelude.fmap Prelude.fromIntegral
-                                                Data.ProtoLens.Encoding.Bytes.getVarInt
+                                24 -> do y <- (Prelude.fmap Prelude.fromIntegral
+                                                 Data.ProtoLens.Encoding.Bytes.getVarInt)
+                                                Data.ProtoLens.Encoding.Bytes.<?> "begin"
                                          loop
                                            (Lens.Family2.set
                                               (Lens.Labels.lensOf'
@@ -6369,8 +6482,9 @@ instance Data.ProtoLens.Message GeneratedCodeInfo'Annotation where
                                                     (Lens.Labels.Proxy#) "begin"))
                                               y
                                               x)
-                                32 -> do y <- Prelude.fmap Prelude.fromIntegral
-                                                Data.ProtoLens.Encoding.Bytes.getVarInt
+                                32 -> do y <- (Prelude.fmap Prelude.fromIntegral
+                                                 Data.ProtoLens.Encoding.Bytes.getVarInt)
+                                                Data.ProtoLens.Encoding.Bytes.<?> "end"
                                          loop
                                            (Lens.Family2.set
                                               (Lens.Labels.lensOf'
@@ -6383,8 +6497,10 @@ instance Data.ProtoLens.Message GeneratedCodeInfo'Annotation where
                                              (Lens.Family2.over Data.ProtoLens.unknownFields
                                                 (\ !t -> (:) y t)
                                                 x)
-              in loop Data.ProtoLens.defMessage
-        unfinishedBuildMessage
+              in
+              (loop Data.ProtoLens.defMessage) Data.ProtoLens.Encoding.Bytes.<?>
+                "Annotation"
+        buildMessage
           = (\ _x ->
                (let p = Lens.Family2.view
                           (Lens.Labels.lensOf'
@@ -6623,27 +6739,34 @@ instance Data.ProtoLens.Message MessageOptions where
                            _MessageOptions'mapEntry = Prelude.Nothing,
                            _MessageOptions'uninterpretedOption = [],
                            _MessageOptions'_unknownFields = ([])}
-        unfinishedParseMessage
+        parseMessage
           = let loop ::
                      MessageOptions ->
                        Data.ProtoLens.Encoding.Bytes.Parser MessageOptions
                 loop x
                   = do end <- Data.ProtoLens.Encoding.Bytes.atEnd
                        if end then
-                         Prelude.return
-                           (Lens.Family2.over Data.ProtoLens.unknownFields
-                              (\ !t -> Prelude.reverse t)
-                              (Lens.Family2.over
-                                 (Lens.Labels.lensOf'
-                                    ((Lens.Labels.proxy#) ::
-                                       (Lens.Labels.Proxy#) "uninterpretedOption"))
+                         do let missing = [] in
+                              if Prelude.null missing then Prelude.return () else
+                                Prelude.fail
+                                  (("Missing required fields: ") Prelude.++
+                                     Prelude.show (missing :: ([Prelude.String])))
+                            Prelude.return
+                              (Lens.Family2.over Data.ProtoLens.unknownFields
                                  (\ !t -> Prelude.reverse t)
-                                 x))
+                                 (Lens.Family2.over
+                                    (Lens.Labels.lensOf'
+                                       ((Lens.Labels.proxy#) ::
+                                          (Lens.Labels.Proxy#) "uninterpretedOption"))
+                                    (\ !t -> Prelude.reverse t)
+                                    x))
                          else
                          do tag <- Data.ProtoLens.Encoding.Bytes.getVarInt
                             case tag of
-                                8 -> do y <- Prelude.fmap ((Prelude./=) 0)
-                                               Data.ProtoLens.Encoding.Bytes.getVarInt
+                                8 -> do y <- (Prelude.fmap ((Prelude./=) 0)
+                                                Data.ProtoLens.Encoding.Bytes.getVarInt)
+                                               Data.ProtoLens.Encoding.Bytes.<?>
+                                               "message_set_wire_format"
                                         loop
                                           (Lens.Family2.set
                                              (Lens.Labels.lensOf'
@@ -6651,8 +6774,10 @@ instance Data.ProtoLens.Message MessageOptions where
                                                    (Lens.Labels.Proxy#) "messageSetWireFormat"))
                                              y
                                              x)
-                                16 -> do y <- Prelude.fmap ((Prelude./=) 0)
-                                                Data.ProtoLens.Encoding.Bytes.getVarInt
+                                16 -> do y <- (Prelude.fmap ((Prelude./=) 0)
+                                                 Data.ProtoLens.Encoding.Bytes.getVarInt)
+                                                Data.ProtoLens.Encoding.Bytes.<?>
+                                                "no_standard_descriptor_accessor"
                                          loop
                                            (Lens.Family2.set
                                               (Lens.Labels.lensOf'
@@ -6661,8 +6786,9 @@ instance Data.ProtoLens.Message MessageOptions where
                                                       "noStandardDescriptorAccessor"))
                                               y
                                               x)
-                                24 -> do y <- Prelude.fmap ((Prelude./=) 0)
-                                                Data.ProtoLens.Encoding.Bytes.getVarInt
+                                24 -> do y <- (Prelude.fmap ((Prelude./=) 0)
+                                                 Data.ProtoLens.Encoding.Bytes.getVarInt)
+                                                Data.ProtoLens.Encoding.Bytes.<?> "deprecated"
                                          loop
                                            (Lens.Family2.set
                                               (Lens.Labels.lensOf'
@@ -6670,8 +6796,9 @@ instance Data.ProtoLens.Message MessageOptions where
                                                     (Lens.Labels.Proxy#) "deprecated"))
                                               y
                                               x)
-                                56 -> do y <- Prelude.fmap ((Prelude./=) 0)
-                                                Data.ProtoLens.Encoding.Bytes.getVarInt
+                                56 -> do y <- (Prelude.fmap ((Prelude./=) 0)
+                                                 Data.ProtoLens.Encoding.Bytes.getVarInt)
+                                                Data.ProtoLens.Encoding.Bytes.<?> "map_entry"
                                          loop
                                            (Lens.Family2.set
                                               (Lens.Labels.lensOf'
@@ -6679,13 +6806,13 @@ instance Data.ProtoLens.Message MessageOptions where
                                                     (Lens.Labels.Proxy#) "mapEntry"))
                                               y
                                               x)
-                                7994 -> do !y <- do value <- do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
-                                                                Data.ProtoLens.Encoding.Bytes.getBytes
-                                                                  (Prelude.fromIntegral len)
-                                                    Data.ProtoLens.Encoding.Bytes.runEither
-                                                      (Data.ProtoLens.Encoding.Bytes.runParser
-                                                         Data.ProtoLens.unfinishedParseMessage
-                                                         value)
+                                7994 -> do !y <- (do value <- do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
+                                                                 Data.ProtoLens.Encoding.Bytes.getBytes
+                                                                   (Prelude.fromIntegral len)
+                                                     Data.ProtoLens.Encoding.Bytes.runEither
+                                                       (Data.ProtoLens.decodeMessage value))
+                                                   Data.ProtoLens.Encoding.Bytes.<?>
+                                                   "uninterpreted_option"
                                            loop
                                              (Lens.Family2.over
                                                 (Lens.Labels.lensOf'
@@ -6698,8 +6825,10 @@ instance Data.ProtoLens.Message MessageOptions where
                                              (Lens.Family2.over Data.ProtoLens.unknownFields
                                                 (\ !t -> (:) y t)
                                                 x)
-              in loop Data.ProtoLens.defMessage
-        unfinishedBuildMessage
+              in
+              (loop Data.ProtoLens.defMessage) Data.ProtoLens.Encoding.Bytes.<?>
+                "MessageOptions"
+        buildMessage
           = (\ _x ->
                (case
                   Lens.Family2.view
@@ -6763,9 +6892,7 @@ instance Data.ProtoLens.Message MessageOptions where
                                        (Data.ProtoLens.Encoding.Bytes.putVarInt
                                           (Prelude.fromIntegral (Data.ByteString.length bs)))
                                          Data.Monoid.<> Data.ProtoLens.Encoding.Bytes.putBytes bs))
-                                     Prelude..
-                                     (Data.ProtoLens.Encoding.Bytes.runBuilder) Prelude..
-                                       Data.ProtoLens.unfinishedBuildMessage)
+                                     Prelude.. Data.ProtoLens.encodeMessage)
                                     _v)
                              (Lens.Family2.view
                                 (Lens.Labels.lensOf'
@@ -6986,28 +7113,34 @@ instance Data.ProtoLens.Message MethodDescriptorProto where
                                   _MethodDescriptorProto'clientStreaming = Prelude.Nothing,
                                   _MethodDescriptorProto'serverStreaming = Prelude.Nothing,
                                   _MethodDescriptorProto'_unknownFields = ([])}
-        unfinishedParseMessage
+        parseMessage
           = let loop ::
                      MethodDescriptorProto ->
                        Data.ProtoLens.Encoding.Bytes.Parser MethodDescriptorProto
                 loop x
                   = do end <- Data.ProtoLens.Encoding.Bytes.atEnd
                        if end then
-                         Prelude.return
-                           (Lens.Family2.over Data.ProtoLens.unknownFields
-                              (\ !t -> Prelude.reverse t)
-                              x)
+                         do let missing = [] in
+                              if Prelude.null missing then Prelude.return () else
+                                Prelude.fail
+                                  (("Missing required fields: ") Prelude.++
+                                     Prelude.show (missing :: ([Prelude.String])))
+                            Prelude.return
+                              (Lens.Family2.over Data.ProtoLens.unknownFields
+                                 (\ !t -> Prelude.reverse t)
+                                 x)
                          else
                          do tag <- Data.ProtoLens.Encoding.Bytes.getVarInt
                             case tag of
-                                10 -> do y <- do value <- do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
-                                                             Data.ProtoLens.Encoding.Bytes.getBytes
-                                                               (Prelude.fromIntegral len)
-                                                 Data.ProtoLens.Encoding.Bytes.runEither
-                                                   (case Data.Text.Encoding.decodeUtf8' value of
-                                                        Prelude.Left err -> Prelude.Left
-                                                                              (Prelude.show err)
-                                                        Prelude.Right r -> Prelude.Right r)
+                                10 -> do y <- (do value <- do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
+                                                              Data.ProtoLens.Encoding.Bytes.getBytes
+                                                                (Prelude.fromIntegral len)
+                                                  Data.ProtoLens.Encoding.Bytes.runEither
+                                                    (case Data.Text.Encoding.decodeUtf8' value of
+                                                         Prelude.Left err -> Prelude.Left
+                                                                               (Prelude.show err)
+                                                         Prelude.Right r -> Prelude.Right r))
+                                                Data.ProtoLens.Encoding.Bytes.<?> "name"
                                          loop
                                            (Lens.Family2.set
                                               (Lens.Labels.lensOf'
@@ -7015,14 +7148,15 @@ instance Data.ProtoLens.Message MethodDescriptorProto where
                                                     (Lens.Labels.Proxy#) "name"))
                                               y
                                               x)
-                                18 -> do y <- do value <- do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
-                                                             Data.ProtoLens.Encoding.Bytes.getBytes
-                                                               (Prelude.fromIntegral len)
-                                                 Data.ProtoLens.Encoding.Bytes.runEither
-                                                   (case Data.Text.Encoding.decodeUtf8' value of
-                                                        Prelude.Left err -> Prelude.Left
-                                                                              (Prelude.show err)
-                                                        Prelude.Right r -> Prelude.Right r)
+                                18 -> do y <- (do value <- do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
+                                                              Data.ProtoLens.Encoding.Bytes.getBytes
+                                                                (Prelude.fromIntegral len)
+                                                  Data.ProtoLens.Encoding.Bytes.runEither
+                                                    (case Data.Text.Encoding.decodeUtf8' value of
+                                                         Prelude.Left err -> Prelude.Left
+                                                                               (Prelude.show err)
+                                                         Prelude.Right r -> Prelude.Right r))
+                                                Data.ProtoLens.Encoding.Bytes.<?> "input_type"
                                          loop
                                            (Lens.Family2.set
                                               (Lens.Labels.lensOf'
@@ -7030,14 +7164,15 @@ instance Data.ProtoLens.Message MethodDescriptorProto where
                                                     (Lens.Labels.Proxy#) "inputType"))
                                               y
                                               x)
-                                26 -> do y <- do value <- do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
-                                                             Data.ProtoLens.Encoding.Bytes.getBytes
-                                                               (Prelude.fromIntegral len)
-                                                 Data.ProtoLens.Encoding.Bytes.runEither
-                                                   (case Data.Text.Encoding.decodeUtf8' value of
-                                                        Prelude.Left err -> Prelude.Left
-                                                                              (Prelude.show err)
-                                                        Prelude.Right r -> Prelude.Right r)
+                                26 -> do y <- (do value <- do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
+                                                              Data.ProtoLens.Encoding.Bytes.getBytes
+                                                                (Prelude.fromIntegral len)
+                                                  Data.ProtoLens.Encoding.Bytes.runEither
+                                                    (case Data.Text.Encoding.decodeUtf8' value of
+                                                         Prelude.Left err -> Prelude.Left
+                                                                               (Prelude.show err)
+                                                         Prelude.Right r -> Prelude.Right r))
+                                                Data.ProtoLens.Encoding.Bytes.<?> "output_type"
                                          loop
                                            (Lens.Family2.set
                                               (Lens.Labels.lensOf'
@@ -7045,13 +7180,12 @@ instance Data.ProtoLens.Message MethodDescriptorProto where
                                                     (Lens.Labels.Proxy#) "outputType"))
                                               y
                                               x)
-                                34 -> do y <- do value <- do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
-                                                             Data.ProtoLens.Encoding.Bytes.getBytes
-                                                               (Prelude.fromIntegral len)
-                                                 Data.ProtoLens.Encoding.Bytes.runEither
-                                                   (Data.ProtoLens.Encoding.Bytes.runParser
-                                                      Data.ProtoLens.unfinishedParseMessage
-                                                      value)
+                                34 -> do y <- (do value <- do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
+                                                              Data.ProtoLens.Encoding.Bytes.getBytes
+                                                                (Prelude.fromIntegral len)
+                                                  Data.ProtoLens.Encoding.Bytes.runEither
+                                                    (Data.ProtoLens.decodeMessage value))
+                                                Data.ProtoLens.Encoding.Bytes.<?> "options"
                                          loop
                                            (Lens.Family2.set
                                               (Lens.Labels.lensOf'
@@ -7059,8 +7193,9 @@ instance Data.ProtoLens.Message MethodDescriptorProto where
                                                     (Lens.Labels.Proxy#) "options"))
                                               y
                                               x)
-                                40 -> do y <- Prelude.fmap ((Prelude./=) 0)
-                                                Data.ProtoLens.Encoding.Bytes.getVarInt
+                                40 -> do y <- (Prelude.fmap ((Prelude./=) 0)
+                                                 Data.ProtoLens.Encoding.Bytes.getVarInt)
+                                                Data.ProtoLens.Encoding.Bytes.<?> "client_streaming"
                                          loop
                                            (Lens.Family2.set
                                               (Lens.Labels.lensOf'
@@ -7068,8 +7203,9 @@ instance Data.ProtoLens.Message MethodDescriptorProto where
                                                     (Lens.Labels.Proxy#) "clientStreaming"))
                                               y
                                               x)
-                                48 -> do y <- Prelude.fmap ((Prelude./=) 0)
-                                                Data.ProtoLens.Encoding.Bytes.getVarInt
+                                48 -> do y <- (Prelude.fmap ((Prelude./=) 0)
+                                                 Data.ProtoLens.Encoding.Bytes.getVarInt)
+                                                Data.ProtoLens.Encoding.Bytes.<?> "server_streaming"
                                          loop
                                            (Lens.Family2.set
                                               (Lens.Labels.lensOf'
@@ -7082,8 +7218,10 @@ instance Data.ProtoLens.Message MethodDescriptorProto where
                                              (Lens.Family2.over Data.ProtoLens.unknownFields
                                                 (\ !t -> (:) y t)
                                                 x)
-              in loop Data.ProtoLens.defMessage
-        unfinishedBuildMessage
+              in
+              (loop Data.ProtoLens.defMessage) Data.ProtoLens.Encoding.Bytes.<?>
+                "MethodDescriptorProto"
+        buildMessage
           = (\ _x ->
                (case
                   Lens.Family2.view
@@ -7153,9 +7291,7 @@ instance Data.ProtoLens.Message MethodDescriptorProto where
                                                           (Data.ByteString.length bs)))
                                                       Data.Monoid.<>
                                                       Data.ProtoLens.Encoding.Bytes.putBytes bs))
-                                                  Prelude..
-                                                  (Data.ProtoLens.Encoding.Bytes.runBuilder)
-                                                    Prelude.. Data.ProtoLens.unfinishedBuildMessage)
+                                                  Prelude.. Data.ProtoLens.encodeMessage)
                                                  _v)
                        Data.Monoid.<>
                        (case
@@ -7300,26 +7436,32 @@ instance Data.ProtoLens.Message MethodOptions where
                           _MethodOptions'idempotencyLevel = Prelude.Nothing,
                           _MethodOptions'uninterpretedOption = [],
                           _MethodOptions'_unknownFields = ([])}
-        unfinishedParseMessage
+        parseMessage
           = let loop ::
                      MethodOptions -> Data.ProtoLens.Encoding.Bytes.Parser MethodOptions
                 loop x
                   = do end <- Data.ProtoLens.Encoding.Bytes.atEnd
                        if end then
-                         Prelude.return
-                           (Lens.Family2.over Data.ProtoLens.unknownFields
-                              (\ !t -> Prelude.reverse t)
-                              (Lens.Family2.over
-                                 (Lens.Labels.lensOf'
-                                    ((Lens.Labels.proxy#) ::
-                                       (Lens.Labels.Proxy#) "uninterpretedOption"))
+                         do let missing = [] in
+                              if Prelude.null missing then Prelude.return () else
+                                Prelude.fail
+                                  (("Missing required fields: ") Prelude.++
+                                     Prelude.show (missing :: ([Prelude.String])))
+                            Prelude.return
+                              (Lens.Family2.over Data.ProtoLens.unknownFields
                                  (\ !t -> Prelude.reverse t)
-                                 x))
+                                 (Lens.Family2.over
+                                    (Lens.Labels.lensOf'
+                                       ((Lens.Labels.proxy#) ::
+                                          (Lens.Labels.Proxy#) "uninterpretedOption"))
+                                    (\ !t -> Prelude.reverse t)
+                                    x))
                          else
                          do tag <- Data.ProtoLens.Encoding.Bytes.getVarInt
                             case tag of
-                                264 -> do y <- Prelude.fmap ((Prelude./=) 0)
-                                                 Data.ProtoLens.Encoding.Bytes.getVarInt
+                                264 -> do y <- (Prelude.fmap ((Prelude./=) 0)
+                                                  Data.ProtoLens.Encoding.Bytes.getVarInt)
+                                                 Data.ProtoLens.Encoding.Bytes.<?> "deprecated"
                                           loop
                                             (Lens.Family2.set
                                                (Lens.Labels.lensOf'
@@ -7327,9 +7469,11 @@ instance Data.ProtoLens.Message MethodOptions where
                                                      (Lens.Labels.Proxy#) "deprecated"))
                                                y
                                                x)
-                                272 -> do y <- Prelude.fmap Prelude.toEnum
-                                                 (Prelude.fmap Prelude.fromIntegral
-                                                    Data.ProtoLens.Encoding.Bytes.getVarInt)
+                                272 -> do y <- (Prelude.fmap Prelude.toEnum
+                                                  (Prelude.fmap Prelude.fromIntegral
+                                                     Data.ProtoLens.Encoding.Bytes.getVarInt))
+                                                 Data.ProtoLens.Encoding.Bytes.<?>
+                                                 "idempotency_level"
                                           loop
                                             (Lens.Family2.set
                                                (Lens.Labels.lensOf'
@@ -7337,13 +7481,13 @@ instance Data.ProtoLens.Message MethodOptions where
                                                      (Lens.Labels.Proxy#) "idempotencyLevel"))
                                                y
                                                x)
-                                7994 -> do !y <- do value <- do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
-                                                                Data.ProtoLens.Encoding.Bytes.getBytes
-                                                                  (Prelude.fromIntegral len)
-                                                    Data.ProtoLens.Encoding.Bytes.runEither
-                                                      (Data.ProtoLens.Encoding.Bytes.runParser
-                                                         Data.ProtoLens.unfinishedParseMessage
-                                                         value)
+                                7994 -> do !y <- (do value <- do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
+                                                                 Data.ProtoLens.Encoding.Bytes.getBytes
+                                                                   (Prelude.fromIntegral len)
+                                                     Data.ProtoLens.Encoding.Bytes.runEither
+                                                       (Data.ProtoLens.decodeMessage value))
+                                                   Data.ProtoLens.Encoding.Bytes.<?>
+                                                   "uninterpreted_option"
                                            loop
                                              (Lens.Family2.over
                                                 (Lens.Labels.lensOf'
@@ -7356,8 +7500,10 @@ instance Data.ProtoLens.Message MethodOptions where
                                              (Lens.Family2.over Data.ProtoLens.unknownFields
                                                 (\ !t -> (:) y t)
                                                 x)
-              in loop Data.ProtoLens.defMessage
-        unfinishedBuildMessage
+              in
+              (loop Data.ProtoLens.defMessage) Data.ProtoLens.Encoding.Bytes.<?>
+                "MethodOptions"
+        buildMessage
           = (\ _x ->
                (case
                   Lens.Family2.view
@@ -7395,9 +7541,7 @@ instance Data.ProtoLens.Message MethodOptions where
                                    (Data.ProtoLens.Encoding.Bytes.putVarInt
                                       (Prelude.fromIntegral (Data.ByteString.length bs)))
                                      Data.Monoid.<> Data.ProtoLens.Encoding.Bytes.putBytes bs))
-                                 Prelude..
-                                 (Data.ProtoLens.Encoding.Bytes.runBuilder) Prelude..
-                                   Data.ProtoLens.unfinishedBuildMessage)
+                                 Prelude.. Data.ProtoLens.encodeMessage)
                                 _v)
                          (Lens.Family2.view
                             (Lens.Labels.lensOf'
@@ -7553,28 +7697,34 @@ instance Data.ProtoLens.Message OneofDescriptorProto where
                                    Prelude.Nothing,
                                  _OneofDescriptorProto'options = Prelude.Nothing,
                                  _OneofDescriptorProto'_unknownFields = ([])}
-        unfinishedParseMessage
+        parseMessage
           = let loop ::
                      OneofDescriptorProto ->
                        Data.ProtoLens.Encoding.Bytes.Parser OneofDescriptorProto
                 loop x
                   = do end <- Data.ProtoLens.Encoding.Bytes.atEnd
                        if end then
-                         Prelude.return
-                           (Lens.Family2.over Data.ProtoLens.unknownFields
-                              (\ !t -> Prelude.reverse t)
-                              x)
+                         do let missing = [] in
+                              if Prelude.null missing then Prelude.return () else
+                                Prelude.fail
+                                  (("Missing required fields: ") Prelude.++
+                                     Prelude.show (missing :: ([Prelude.String])))
+                            Prelude.return
+                              (Lens.Family2.over Data.ProtoLens.unknownFields
+                                 (\ !t -> Prelude.reverse t)
+                                 x)
                          else
                          do tag <- Data.ProtoLens.Encoding.Bytes.getVarInt
                             case tag of
-                                10 -> do y <- do value <- do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
-                                                             Data.ProtoLens.Encoding.Bytes.getBytes
-                                                               (Prelude.fromIntegral len)
-                                                 Data.ProtoLens.Encoding.Bytes.runEither
-                                                   (case Data.Text.Encoding.decodeUtf8' value of
-                                                        Prelude.Left err -> Prelude.Left
-                                                                              (Prelude.show err)
-                                                        Prelude.Right r -> Prelude.Right r)
+                                10 -> do y <- (do value <- do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
+                                                              Data.ProtoLens.Encoding.Bytes.getBytes
+                                                                (Prelude.fromIntegral len)
+                                                  Data.ProtoLens.Encoding.Bytes.runEither
+                                                    (case Data.Text.Encoding.decodeUtf8' value of
+                                                         Prelude.Left err -> Prelude.Left
+                                                                               (Prelude.show err)
+                                                         Prelude.Right r -> Prelude.Right r))
+                                                Data.ProtoLens.Encoding.Bytes.<?> "name"
                                          loop
                                            (Lens.Family2.set
                                               (Lens.Labels.lensOf'
@@ -7582,13 +7732,12 @@ instance Data.ProtoLens.Message OneofDescriptorProto where
                                                     (Lens.Labels.Proxy#) "name"))
                                               y
                                               x)
-                                18 -> do y <- do value <- do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
-                                                             Data.ProtoLens.Encoding.Bytes.getBytes
-                                                               (Prelude.fromIntegral len)
-                                                 Data.ProtoLens.Encoding.Bytes.runEither
-                                                   (Data.ProtoLens.Encoding.Bytes.runParser
-                                                      Data.ProtoLens.unfinishedParseMessage
-                                                      value)
+                                18 -> do y <- (do value <- do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
+                                                              Data.ProtoLens.Encoding.Bytes.getBytes
+                                                                (Prelude.fromIntegral len)
+                                                  Data.ProtoLens.Encoding.Bytes.runEither
+                                                    (Data.ProtoLens.decodeMessage value))
+                                                Data.ProtoLens.Encoding.Bytes.<?> "options"
                                          loop
                                            (Lens.Family2.set
                                               (Lens.Labels.lensOf'
@@ -7601,8 +7750,10 @@ instance Data.ProtoLens.Message OneofDescriptorProto where
                                              (Lens.Family2.over Data.ProtoLens.unknownFields
                                                 (\ !t -> (:) y t)
                                                 x)
-              in loop Data.ProtoLens.defMessage
-        unfinishedBuildMessage
+              in
+              (loop Data.ProtoLens.defMessage) Data.ProtoLens.Encoding.Bytes.<?>
+                "OneofDescriptorProto"
+        buildMessage
           = (\ _x ->
                (case
                   Lens.Family2.view
@@ -7636,9 +7787,7 @@ instance Data.ProtoLens.Message OneofDescriptorProto where
                                                       (Data.ByteString.length bs)))
                                                   Data.Monoid.<>
                                                   Data.ProtoLens.Encoding.Bytes.putBytes bs))
-                                              Prelude..
-                                              (Data.ProtoLens.Encoding.Bytes.runBuilder) Prelude..
-                                                Data.ProtoLens.unfinishedBuildMessage)
+                                              Prelude.. Data.ProtoLens.encodeMessage)
                                              _v)
                    Data.Monoid.<>
                    Data.Monoid.mconcat
@@ -7692,31 +7841,36 @@ instance Data.ProtoLens.Message OneofOptions where
         defMessage
           = OneofOptions{_OneofOptions'uninterpretedOption = [],
                          _OneofOptions'_unknownFields = ([])}
-        unfinishedParseMessage
+        parseMessage
           = let loop ::
                      OneofOptions -> Data.ProtoLens.Encoding.Bytes.Parser OneofOptions
                 loop x
                   = do end <- Data.ProtoLens.Encoding.Bytes.atEnd
                        if end then
-                         Prelude.return
-                           (Lens.Family2.over Data.ProtoLens.unknownFields
-                              (\ !t -> Prelude.reverse t)
-                              (Lens.Family2.over
-                                 (Lens.Labels.lensOf'
-                                    ((Lens.Labels.proxy#) ::
-                                       (Lens.Labels.Proxy#) "uninterpretedOption"))
+                         do let missing = [] in
+                              if Prelude.null missing then Prelude.return () else
+                                Prelude.fail
+                                  (("Missing required fields: ") Prelude.++
+                                     Prelude.show (missing :: ([Prelude.String])))
+                            Prelude.return
+                              (Lens.Family2.over Data.ProtoLens.unknownFields
                                  (\ !t -> Prelude.reverse t)
-                                 x))
+                                 (Lens.Family2.over
+                                    (Lens.Labels.lensOf'
+                                       ((Lens.Labels.proxy#) ::
+                                          (Lens.Labels.Proxy#) "uninterpretedOption"))
+                                    (\ !t -> Prelude.reverse t)
+                                    x))
                          else
                          do tag <- Data.ProtoLens.Encoding.Bytes.getVarInt
                             case tag of
-                                7994 -> do !y <- do value <- do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
-                                                                Data.ProtoLens.Encoding.Bytes.getBytes
-                                                                  (Prelude.fromIntegral len)
-                                                    Data.ProtoLens.Encoding.Bytes.runEither
-                                                      (Data.ProtoLens.Encoding.Bytes.runParser
-                                                         Data.ProtoLens.unfinishedParseMessage
-                                                         value)
+                                7994 -> do !y <- (do value <- do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
+                                                                 Data.ProtoLens.Encoding.Bytes.getBytes
+                                                                   (Prelude.fromIntegral len)
+                                                     Data.ProtoLens.Encoding.Bytes.runEither
+                                                       (Data.ProtoLens.decodeMessage value))
+                                                   Data.ProtoLens.Encoding.Bytes.<?>
+                                                   "uninterpreted_option"
                                            loop
                                              (Lens.Family2.over
                                                 (Lens.Labels.lensOf'
@@ -7729,8 +7883,10 @@ instance Data.ProtoLens.Message OneofOptions where
                                              (Lens.Family2.over Data.ProtoLens.unknownFields
                                                 (\ !t -> (:) y t)
                                                 x)
-              in loop Data.ProtoLens.defMessage
-        unfinishedBuildMessage
+              in
+              (loop Data.ProtoLens.defMessage) Data.ProtoLens.Encoding.Bytes.<?>
+                "OneofOptions"
+        buildMessage
           = (\ _x ->
                (Data.Monoid.mconcat
                   (Prelude.map
@@ -7740,9 +7896,7 @@ instance Data.ProtoLens.Message OneofOptions where
                                (Data.ProtoLens.Encoding.Bytes.putVarInt
                                   (Prelude.fromIntegral (Data.ByteString.length bs)))
                                  Data.Monoid.<> Data.ProtoLens.Encoding.Bytes.putBytes bs))
-                             Prelude..
-                             (Data.ProtoLens.Encoding.Bytes.runBuilder) Prelude..
-                               Data.ProtoLens.unfinishedBuildMessage)
+                             Prelude.. Data.ProtoLens.encodeMessage)
                             _v)
                      (Lens.Family2.view
                         (Lens.Labels.lensOf'
@@ -7859,32 +8013,38 @@ instance Data.ProtoLens.Message ServiceDescriptorProto where
                                    _ServiceDescriptorProto'method = [],
                                    _ServiceDescriptorProto'options = Prelude.Nothing,
                                    _ServiceDescriptorProto'_unknownFields = ([])}
-        unfinishedParseMessage
+        parseMessage
           = let loop ::
                      ServiceDescriptorProto ->
                        Data.ProtoLens.Encoding.Bytes.Parser ServiceDescriptorProto
                 loop x
                   = do end <- Data.ProtoLens.Encoding.Bytes.atEnd
                        if end then
-                         Prelude.return
-                           (Lens.Family2.over Data.ProtoLens.unknownFields
-                              (\ !t -> Prelude.reverse t)
-                              (Lens.Family2.over
-                                 (Lens.Labels.lensOf'
-                                    ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "method"))
+                         do let missing = [] in
+                              if Prelude.null missing then Prelude.return () else
+                                Prelude.fail
+                                  (("Missing required fields: ") Prelude.++
+                                     Prelude.show (missing :: ([Prelude.String])))
+                            Prelude.return
+                              (Lens.Family2.over Data.ProtoLens.unknownFields
                                  (\ !t -> Prelude.reverse t)
-                                 x))
+                                 (Lens.Family2.over
+                                    (Lens.Labels.lensOf'
+                                       ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "method"))
+                                    (\ !t -> Prelude.reverse t)
+                                    x))
                          else
                          do tag <- Data.ProtoLens.Encoding.Bytes.getVarInt
                             case tag of
-                                10 -> do y <- do value <- do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
-                                                             Data.ProtoLens.Encoding.Bytes.getBytes
-                                                               (Prelude.fromIntegral len)
-                                                 Data.ProtoLens.Encoding.Bytes.runEither
-                                                   (case Data.Text.Encoding.decodeUtf8' value of
-                                                        Prelude.Left err -> Prelude.Left
-                                                                              (Prelude.show err)
-                                                        Prelude.Right r -> Prelude.Right r)
+                                10 -> do y <- (do value <- do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
+                                                              Data.ProtoLens.Encoding.Bytes.getBytes
+                                                                (Prelude.fromIntegral len)
+                                                  Data.ProtoLens.Encoding.Bytes.runEither
+                                                    (case Data.Text.Encoding.decodeUtf8' value of
+                                                         Prelude.Left err -> Prelude.Left
+                                                                               (Prelude.show err)
+                                                         Prelude.Right r -> Prelude.Right r))
+                                                Data.ProtoLens.Encoding.Bytes.<?> "name"
                                          loop
                                            (Lens.Family2.set
                                               (Lens.Labels.lensOf'
@@ -7892,13 +8052,12 @@ instance Data.ProtoLens.Message ServiceDescriptorProto where
                                                     (Lens.Labels.Proxy#) "name"))
                                               y
                                               x)
-                                18 -> do !y <- do value <- do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
-                                                              Data.ProtoLens.Encoding.Bytes.getBytes
-                                                                (Prelude.fromIntegral len)
-                                                  Data.ProtoLens.Encoding.Bytes.runEither
-                                                    (Data.ProtoLens.Encoding.Bytes.runParser
-                                                       Data.ProtoLens.unfinishedParseMessage
-                                                       value)
+                                18 -> do !y <- (do value <- do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
+                                                               Data.ProtoLens.Encoding.Bytes.getBytes
+                                                                 (Prelude.fromIntegral len)
+                                                   Data.ProtoLens.Encoding.Bytes.runEither
+                                                     (Data.ProtoLens.decodeMessage value))
+                                                 Data.ProtoLens.Encoding.Bytes.<?> "method"
                                          loop
                                            (Lens.Family2.over
                                               (Lens.Labels.lensOf'
@@ -7906,13 +8065,12 @@ instance Data.ProtoLens.Message ServiceDescriptorProto where
                                                     (Lens.Labels.Proxy#) "method"))
                                               (\ !t -> (:) y t)
                                               x)
-                                26 -> do y <- do value <- do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
-                                                             Data.ProtoLens.Encoding.Bytes.getBytes
-                                                               (Prelude.fromIntegral len)
-                                                 Data.ProtoLens.Encoding.Bytes.runEither
-                                                   (Data.ProtoLens.Encoding.Bytes.runParser
-                                                      Data.ProtoLens.unfinishedParseMessage
-                                                      value)
+                                26 -> do y <- (do value <- do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
+                                                              Data.ProtoLens.Encoding.Bytes.getBytes
+                                                                (Prelude.fromIntegral len)
+                                                  Data.ProtoLens.Encoding.Bytes.runEither
+                                                    (Data.ProtoLens.decodeMessage value))
+                                                Data.ProtoLens.Encoding.Bytes.<?> "options"
                                          loop
                                            (Lens.Family2.set
                                               (Lens.Labels.lensOf'
@@ -7925,8 +8083,10 @@ instance Data.ProtoLens.Message ServiceDescriptorProto where
                                              (Lens.Family2.over Data.ProtoLens.unknownFields
                                                 (\ !t -> (:) y t)
                                                 x)
-              in loop Data.ProtoLens.defMessage
-        unfinishedBuildMessage
+              in
+              (loop Data.ProtoLens.defMessage) Data.ProtoLens.Encoding.Bytes.<?>
+                "ServiceDescriptorProto"
+        buildMessage
           = (\ _x ->
                (case
                   Lens.Family2.view
@@ -7953,9 +8113,7 @@ instance Data.ProtoLens.Message ServiceDescriptorProto where
                                  (Data.ProtoLens.Encoding.Bytes.putVarInt
                                     (Prelude.fromIntegral (Data.ByteString.length bs)))
                                    Data.Monoid.<> Data.ProtoLens.Encoding.Bytes.putBytes bs))
-                               Prelude..
-                               (Data.ProtoLens.Encoding.Bytes.runBuilder) Prelude..
-                                 Data.ProtoLens.unfinishedBuildMessage)
+                               Prelude.. Data.ProtoLens.encodeMessage)
                               _v)
                        (Lens.Family2.view
                           (Lens.Labels.lensOf'
@@ -7977,9 +8135,7 @@ instance Data.ProtoLens.Message ServiceDescriptorProto where
                                                         (Data.ByteString.length bs)))
                                                     Data.Monoid.<>
                                                     Data.ProtoLens.Encoding.Bytes.putBytes bs))
-                                                Prelude..
-                                                (Data.ProtoLens.Encoding.Bytes.runBuilder) Prelude..
-                                                  Data.ProtoLens.unfinishedBuildMessage)
+                                                Prelude.. Data.ProtoLens.encodeMessage)
                                                _v)
                      Data.Monoid.<>
                      Data.Monoid.mconcat
@@ -8062,27 +8218,33 @@ instance Data.ProtoLens.Message ServiceOptions where
           = ServiceOptions{_ServiceOptions'deprecated = Prelude.Nothing,
                            _ServiceOptions'uninterpretedOption = [],
                            _ServiceOptions'_unknownFields = ([])}
-        unfinishedParseMessage
+        parseMessage
           = let loop ::
                      ServiceOptions ->
                        Data.ProtoLens.Encoding.Bytes.Parser ServiceOptions
                 loop x
                   = do end <- Data.ProtoLens.Encoding.Bytes.atEnd
                        if end then
-                         Prelude.return
-                           (Lens.Family2.over Data.ProtoLens.unknownFields
-                              (\ !t -> Prelude.reverse t)
-                              (Lens.Family2.over
-                                 (Lens.Labels.lensOf'
-                                    ((Lens.Labels.proxy#) ::
-                                       (Lens.Labels.Proxy#) "uninterpretedOption"))
+                         do let missing = [] in
+                              if Prelude.null missing then Prelude.return () else
+                                Prelude.fail
+                                  (("Missing required fields: ") Prelude.++
+                                     Prelude.show (missing :: ([Prelude.String])))
+                            Prelude.return
+                              (Lens.Family2.over Data.ProtoLens.unknownFields
                                  (\ !t -> Prelude.reverse t)
-                                 x))
+                                 (Lens.Family2.over
+                                    (Lens.Labels.lensOf'
+                                       ((Lens.Labels.proxy#) ::
+                                          (Lens.Labels.Proxy#) "uninterpretedOption"))
+                                    (\ !t -> Prelude.reverse t)
+                                    x))
                          else
                          do tag <- Data.ProtoLens.Encoding.Bytes.getVarInt
                             case tag of
-                                264 -> do y <- Prelude.fmap ((Prelude./=) 0)
-                                                 Data.ProtoLens.Encoding.Bytes.getVarInt
+                                264 -> do y <- (Prelude.fmap ((Prelude./=) 0)
+                                                  Data.ProtoLens.Encoding.Bytes.getVarInt)
+                                                 Data.ProtoLens.Encoding.Bytes.<?> "deprecated"
                                           loop
                                             (Lens.Family2.set
                                                (Lens.Labels.lensOf'
@@ -8090,13 +8252,13 @@ instance Data.ProtoLens.Message ServiceOptions where
                                                      (Lens.Labels.Proxy#) "deprecated"))
                                                y
                                                x)
-                                7994 -> do !y <- do value <- do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
-                                                                Data.ProtoLens.Encoding.Bytes.getBytes
-                                                                  (Prelude.fromIntegral len)
-                                                    Data.ProtoLens.Encoding.Bytes.runEither
-                                                      (Data.ProtoLens.Encoding.Bytes.runParser
-                                                         Data.ProtoLens.unfinishedParseMessage
-                                                         value)
+                                7994 -> do !y <- (do value <- do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
+                                                                 Data.ProtoLens.Encoding.Bytes.getBytes
+                                                                   (Prelude.fromIntegral len)
+                                                     Data.ProtoLens.Encoding.Bytes.runEither
+                                                       (Data.ProtoLens.decodeMessage value))
+                                                   Data.ProtoLens.Encoding.Bytes.<?>
+                                                   "uninterpreted_option"
                                            loop
                                              (Lens.Family2.over
                                                 (Lens.Labels.lensOf'
@@ -8109,8 +8271,10 @@ instance Data.ProtoLens.Message ServiceOptions where
                                              (Lens.Family2.over Data.ProtoLens.unknownFields
                                                 (\ !t -> (:) y t)
                                                 x)
-              in loop Data.ProtoLens.defMessage
-        unfinishedBuildMessage
+              in
+              (loop Data.ProtoLens.defMessage) Data.ProtoLens.Encoding.Bytes.<?>
+                "ServiceOptions"
+        buildMessage
           = (\ _x ->
                (case
                   Lens.Family2.view
@@ -8133,9 +8297,7 @@ instance Data.ProtoLens.Message ServiceOptions where
                                  (Data.ProtoLens.Encoding.Bytes.putVarInt
                                     (Prelude.fromIntegral (Data.ByteString.length bs)))
                                    Data.Monoid.<> Data.ProtoLens.Encoding.Bytes.putBytes bs))
-                               Prelude..
-                               (Data.ProtoLens.Encoding.Bytes.runBuilder) Prelude..
-                                 Data.ProtoLens.unfinishedBuildMessage)
+                               Prelude.. Data.ProtoLens.encodeMessage)
                               _v)
                        (Lens.Family2.view
                           (Lens.Labels.lensOf'
@@ -8193,31 +8355,35 @@ instance Data.ProtoLens.Message SourceCodeInfo where
         defMessage
           = SourceCodeInfo{_SourceCodeInfo'location = [],
                            _SourceCodeInfo'_unknownFields = ([])}
-        unfinishedParseMessage
+        parseMessage
           = let loop ::
                      SourceCodeInfo ->
                        Data.ProtoLens.Encoding.Bytes.Parser SourceCodeInfo
                 loop x
                   = do end <- Data.ProtoLens.Encoding.Bytes.atEnd
                        if end then
-                         Prelude.return
-                           (Lens.Family2.over Data.ProtoLens.unknownFields
-                              (\ !t -> Prelude.reverse t)
-                              (Lens.Family2.over
-                                 (Lens.Labels.lensOf'
-                                    ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "location"))
+                         do let missing = [] in
+                              if Prelude.null missing then Prelude.return () else
+                                Prelude.fail
+                                  (("Missing required fields: ") Prelude.++
+                                     Prelude.show (missing :: ([Prelude.String])))
+                            Prelude.return
+                              (Lens.Family2.over Data.ProtoLens.unknownFields
                                  (\ !t -> Prelude.reverse t)
-                                 x))
+                                 (Lens.Family2.over
+                                    (Lens.Labels.lensOf'
+                                       ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "location"))
+                                    (\ !t -> Prelude.reverse t)
+                                    x))
                          else
                          do tag <- Data.ProtoLens.Encoding.Bytes.getVarInt
                             case tag of
-                                10 -> do !y <- do value <- do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
-                                                              Data.ProtoLens.Encoding.Bytes.getBytes
-                                                                (Prelude.fromIntegral len)
-                                                  Data.ProtoLens.Encoding.Bytes.runEither
-                                                    (Data.ProtoLens.Encoding.Bytes.runParser
-                                                       Data.ProtoLens.unfinishedParseMessage
-                                                       value)
+                                10 -> do !y <- (do value <- do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
+                                                               Data.ProtoLens.Encoding.Bytes.getBytes
+                                                                 (Prelude.fromIntegral len)
+                                                   Data.ProtoLens.Encoding.Bytes.runEither
+                                                     (Data.ProtoLens.decodeMessage value))
+                                                 Data.ProtoLens.Encoding.Bytes.<?> "location"
                                          loop
                                            (Lens.Family2.over
                                               (Lens.Labels.lensOf'
@@ -8230,8 +8396,10 @@ instance Data.ProtoLens.Message SourceCodeInfo where
                                              (Lens.Family2.over Data.ProtoLens.unknownFields
                                                 (\ !t -> (:) y t)
                                                 x)
-              in loop Data.ProtoLens.defMessage
-        unfinishedBuildMessage
+              in
+              (loop Data.ProtoLens.defMessage) Data.ProtoLens.Encoding.Bytes.<?>
+                "SourceCodeInfo"
+        buildMessage
           = (\ _x ->
                (Data.Monoid.mconcat
                   (Prelude.map
@@ -8241,9 +8409,7 @@ instance Data.ProtoLens.Message SourceCodeInfo where
                                (Data.ProtoLens.Encoding.Bytes.putVarInt
                                   (Prelude.fromIntegral (Data.ByteString.length bs)))
                                  Data.Monoid.<> Data.ProtoLens.Encoding.Bytes.putBytes bs))
-                             Prelude..
-                             (Data.ProtoLens.Encoding.Bytes.runBuilder) Prelude..
-                               Data.ProtoLens.unfinishedBuildMessage)
+                             Prelude.. Data.ProtoLens.encodeMessage)
                             _v)
                      (Lens.Family2.view
                         (Lens.Labels.lensOf'
@@ -8414,35 +8580,41 @@ instance Data.ProtoLens.Message SourceCodeInfo'Location where
                                     _SourceCodeInfo'Location'trailingComments = Prelude.Nothing,
                                     _SourceCodeInfo'Location'leadingDetachedComments = [],
                                     _SourceCodeInfo'Location'_unknownFields = ([])}
-        unfinishedParseMessage
+        parseMessage
           = let loop ::
                      SourceCodeInfo'Location ->
                        Data.ProtoLens.Encoding.Bytes.Parser SourceCodeInfo'Location
                 loop x
                   = do end <- Data.ProtoLens.Encoding.Bytes.atEnd
                        if end then
-                         Prelude.return
-                           (Lens.Family2.over Data.ProtoLens.unknownFields
-                              (\ !t -> Prelude.reverse t)
-                              (Lens.Family2.over
-                                 (Lens.Labels.lensOf'
-                                    ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "path"))
+                         do let missing = [] in
+                              if Prelude.null missing then Prelude.return () else
+                                Prelude.fail
+                                  (("Missing required fields: ") Prelude.++
+                                     Prelude.show (missing :: ([Prelude.String])))
+                            Prelude.return
+                              (Lens.Family2.over Data.ProtoLens.unknownFields
                                  (\ !t -> Prelude.reverse t)
                                  (Lens.Family2.over
                                     (Lens.Labels.lensOf'
-                                       ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "span"))
+                                       ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "path"))
                                     (\ !t -> Prelude.reverse t)
                                     (Lens.Family2.over
                                        (Lens.Labels.lensOf'
-                                          ((Lens.Labels.proxy#) ::
-                                             (Lens.Labels.Proxy#) "leadingDetachedComments"))
+                                          ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "span"))
                                        (\ !t -> Prelude.reverse t)
-                                       x))))
+                                       (Lens.Family2.over
+                                          (Lens.Labels.lensOf'
+                                             ((Lens.Labels.proxy#) ::
+                                                (Lens.Labels.Proxy#) "leadingDetachedComments"))
+                                          (\ !t -> Prelude.reverse t)
+                                          x))))
                          else
                          do tag <- Data.ProtoLens.Encoding.Bytes.getVarInt
                             case tag of
-                                8 -> do !y <- Prelude.fmap Prelude.fromIntegral
-                                                Data.ProtoLens.Encoding.Bytes.getVarInt
+                                8 -> do !y <- (Prelude.fmap Prelude.fromIntegral
+                                                 Data.ProtoLens.Encoding.Bytes.getVarInt)
+                                                Data.ProtoLens.Encoding.Bytes.<?> "path"
                                         loop
                                           (Lens.Family2.over
                                              (Lens.Labels.lensOf'
@@ -8459,9 +8631,11 @@ instance Data.ProtoLens.Message SourceCodeInfo'Location where
                                                           = do packedEnd <- Data.ProtoLens.Encoding.Bytes.atEnd
                                                                if packedEnd then Prelude.return qs
                                                                  else
-                                                                 do !q <- Prelude.fmap
-                                                                            Prelude.fromIntegral
-                                                                            Data.ProtoLens.Encoding.Bytes.getVarInt
+                                                                 do !q <- (Prelude.fmap
+                                                                             Prelude.fromIntegral
+                                                                             Data.ProtoLens.Encoding.Bytes.getVarInt)
+                                                                            Data.ProtoLens.Encoding.Bytes.<?>
+                                                                            "path"
                                                                     ploop ((:) q qs)
                                                       in ploop [])
                                                    bytes)
@@ -8472,8 +8646,9 @@ instance Data.ProtoLens.Message SourceCodeInfo'Location where
                                                     (Lens.Labels.Proxy#) "path"))
                                               (\ !t -> (y) Prelude.++ t)
                                               x)
-                                16 -> do !y <- Prelude.fmap Prelude.fromIntegral
-                                                 Data.ProtoLens.Encoding.Bytes.getVarInt
+                                16 -> do !y <- (Prelude.fmap Prelude.fromIntegral
+                                                  Data.ProtoLens.Encoding.Bytes.getVarInt)
+                                                 Data.ProtoLens.Encoding.Bytes.<?> "span"
                                          loop
                                            (Lens.Family2.over
                                               (Lens.Labels.lensOf'
@@ -8490,9 +8665,11 @@ instance Data.ProtoLens.Message SourceCodeInfo'Location where
                                                           = do packedEnd <- Data.ProtoLens.Encoding.Bytes.atEnd
                                                                if packedEnd then Prelude.return qs
                                                                  else
-                                                                 do !q <- Prelude.fmap
-                                                                            Prelude.fromIntegral
-                                                                            Data.ProtoLens.Encoding.Bytes.getVarInt
+                                                                 do !q <- (Prelude.fmap
+                                                                             Prelude.fromIntegral
+                                                                             Data.ProtoLens.Encoding.Bytes.getVarInt)
+                                                                            Data.ProtoLens.Encoding.Bytes.<?>
+                                                                            "span"
                                                                     ploop ((:) q qs)
                                                       in ploop [])
                                                    bytes)
@@ -8503,14 +8680,15 @@ instance Data.ProtoLens.Message SourceCodeInfo'Location where
                                                     (Lens.Labels.Proxy#) "span"))
                                               (\ !t -> (y) Prelude.++ t)
                                               x)
-                                26 -> do y <- do value <- do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
-                                                             Data.ProtoLens.Encoding.Bytes.getBytes
-                                                               (Prelude.fromIntegral len)
-                                                 Data.ProtoLens.Encoding.Bytes.runEither
-                                                   (case Data.Text.Encoding.decodeUtf8' value of
-                                                        Prelude.Left err -> Prelude.Left
-                                                                              (Prelude.show err)
-                                                        Prelude.Right r -> Prelude.Right r)
+                                26 -> do y <- (do value <- do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
+                                                              Data.ProtoLens.Encoding.Bytes.getBytes
+                                                                (Prelude.fromIntegral len)
+                                                  Data.ProtoLens.Encoding.Bytes.runEither
+                                                    (case Data.Text.Encoding.decodeUtf8' value of
+                                                         Prelude.Left err -> Prelude.Left
+                                                                               (Prelude.show err)
+                                                         Prelude.Right r -> Prelude.Right r))
+                                                Data.ProtoLens.Encoding.Bytes.<?> "leading_comments"
                                          loop
                                            (Lens.Family2.set
                                               (Lens.Labels.lensOf'
@@ -8518,14 +8696,16 @@ instance Data.ProtoLens.Message SourceCodeInfo'Location where
                                                     (Lens.Labels.Proxy#) "leadingComments"))
                                               y
                                               x)
-                                34 -> do y <- do value <- do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
-                                                             Data.ProtoLens.Encoding.Bytes.getBytes
-                                                               (Prelude.fromIntegral len)
-                                                 Data.ProtoLens.Encoding.Bytes.runEither
-                                                   (case Data.Text.Encoding.decodeUtf8' value of
-                                                        Prelude.Left err -> Prelude.Left
-                                                                              (Prelude.show err)
-                                                        Prelude.Right r -> Prelude.Right r)
+                                34 -> do y <- (do value <- do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
+                                                              Data.ProtoLens.Encoding.Bytes.getBytes
+                                                                (Prelude.fromIntegral len)
+                                                  Data.ProtoLens.Encoding.Bytes.runEither
+                                                    (case Data.Text.Encoding.decodeUtf8' value of
+                                                         Prelude.Left err -> Prelude.Left
+                                                                               (Prelude.show err)
+                                                         Prelude.Right r -> Prelude.Right r))
+                                                Data.ProtoLens.Encoding.Bytes.<?>
+                                                "trailing_comments"
                                          loop
                                            (Lens.Family2.set
                                               (Lens.Labels.lensOf'
@@ -8533,14 +8713,16 @@ instance Data.ProtoLens.Message SourceCodeInfo'Location where
                                                     (Lens.Labels.Proxy#) "trailingComments"))
                                               y
                                               x)
-                                50 -> do !y <- do value <- do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
-                                                              Data.ProtoLens.Encoding.Bytes.getBytes
-                                                                (Prelude.fromIntegral len)
-                                                  Data.ProtoLens.Encoding.Bytes.runEither
-                                                    (case Data.Text.Encoding.decodeUtf8' value of
-                                                         Prelude.Left err -> Prelude.Left
-                                                                               (Prelude.show err)
-                                                         Prelude.Right r -> Prelude.Right r)
+                                50 -> do !y <- (do value <- do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
+                                                               Data.ProtoLens.Encoding.Bytes.getBytes
+                                                                 (Prelude.fromIntegral len)
+                                                   Data.ProtoLens.Encoding.Bytes.runEither
+                                                     (case Data.Text.Encoding.decodeUtf8' value of
+                                                          Prelude.Left err -> Prelude.Left
+                                                                                (Prelude.show err)
+                                                          Prelude.Right r -> Prelude.Right r))
+                                                 Data.ProtoLens.Encoding.Bytes.<?>
+                                                 "leading_detached_comments"
                                          loop
                                            (Lens.Family2.over
                                               (Lens.Labels.lensOf'
@@ -8553,8 +8735,10 @@ instance Data.ProtoLens.Message SourceCodeInfo'Location where
                                              (Lens.Family2.over Data.ProtoLens.unknownFields
                                                 (\ !t -> (:) y t)
                                                 x)
-              in loop Data.ProtoLens.defMessage
-        unfinishedBuildMessage
+              in
+              (loop Data.ProtoLens.defMessage) Data.ProtoLens.Encoding.Bytes.<?>
+                "Location"
+        buildMessage
           = (\ _x ->
                (let p = Lens.Family2.view
                           (Lens.Labels.lensOf'
@@ -8884,31 +9068,35 @@ instance Data.ProtoLens.Message UninterpretedOption where
                                 _UninterpretedOption'stringValue = Prelude.Nothing,
                                 _UninterpretedOption'aggregateValue = Prelude.Nothing,
                                 _UninterpretedOption'_unknownFields = ([])}
-        unfinishedParseMessage
+        parseMessage
           = let loop ::
                      UninterpretedOption ->
                        Data.ProtoLens.Encoding.Bytes.Parser UninterpretedOption
                 loop x
                   = do end <- Data.ProtoLens.Encoding.Bytes.atEnd
                        if end then
-                         Prelude.return
-                           (Lens.Family2.over Data.ProtoLens.unknownFields
-                              (\ !t -> Prelude.reverse t)
-                              (Lens.Family2.over
-                                 (Lens.Labels.lensOf'
-                                    ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "name"))
+                         do let missing = [] in
+                              if Prelude.null missing then Prelude.return () else
+                                Prelude.fail
+                                  (("Missing required fields: ") Prelude.++
+                                     Prelude.show (missing :: ([Prelude.String])))
+                            Prelude.return
+                              (Lens.Family2.over Data.ProtoLens.unknownFields
                                  (\ !t -> Prelude.reverse t)
-                                 x))
+                                 (Lens.Family2.over
+                                    (Lens.Labels.lensOf'
+                                       ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "name"))
+                                    (\ !t -> Prelude.reverse t)
+                                    x))
                          else
                          do tag <- Data.ProtoLens.Encoding.Bytes.getVarInt
                             case tag of
-                                18 -> do !y <- do value <- do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
-                                                              Data.ProtoLens.Encoding.Bytes.getBytes
-                                                                (Prelude.fromIntegral len)
-                                                  Data.ProtoLens.Encoding.Bytes.runEither
-                                                    (Data.ProtoLens.Encoding.Bytes.runParser
-                                                       Data.ProtoLens.unfinishedParseMessage
-                                                       value)
+                                18 -> do !y <- (do value <- do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
+                                                               Data.ProtoLens.Encoding.Bytes.getBytes
+                                                                 (Prelude.fromIntegral len)
+                                                   Data.ProtoLens.Encoding.Bytes.runEither
+                                                     (Data.ProtoLens.decodeMessage value))
+                                                 Data.ProtoLens.Encoding.Bytes.<?> "name"
                                          loop
                                            (Lens.Family2.over
                                               (Lens.Labels.lensOf'
@@ -8916,14 +9104,15 @@ instance Data.ProtoLens.Message UninterpretedOption where
                                                     (Lens.Labels.Proxy#) "name"))
                                               (\ !t -> (:) y t)
                                               x)
-                                26 -> do y <- do value <- do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
-                                                             Data.ProtoLens.Encoding.Bytes.getBytes
-                                                               (Prelude.fromIntegral len)
-                                                 Data.ProtoLens.Encoding.Bytes.runEither
-                                                   (case Data.Text.Encoding.decodeUtf8' value of
-                                                        Prelude.Left err -> Prelude.Left
-                                                                              (Prelude.show err)
-                                                        Prelude.Right r -> Prelude.Right r)
+                                26 -> do y <- (do value <- do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
+                                                              Data.ProtoLens.Encoding.Bytes.getBytes
+                                                                (Prelude.fromIntegral len)
+                                                  Data.ProtoLens.Encoding.Bytes.runEither
+                                                    (case Data.Text.Encoding.decodeUtf8' value of
+                                                         Prelude.Left err -> Prelude.Left
+                                                                               (Prelude.show err)
+                                                         Prelude.Right r -> Prelude.Right r))
+                                                Data.ProtoLens.Encoding.Bytes.<?> "identifier_value"
                                          loop
                                            (Lens.Family2.set
                                               (Lens.Labels.lensOf'
@@ -8931,7 +9120,9 @@ instance Data.ProtoLens.Message UninterpretedOption where
                                                     (Lens.Labels.Proxy#) "identifierValue"))
                                               y
                                               x)
-                                32 -> do y <- Data.ProtoLens.Encoding.Bytes.getVarInt
+                                32 -> do y <- (Data.ProtoLens.Encoding.Bytes.getVarInt)
+                                                Data.ProtoLens.Encoding.Bytes.<?>
+                                                "positive_int_value"
                                          loop
                                            (Lens.Family2.set
                                               (Lens.Labels.lensOf'
@@ -8939,8 +9130,10 @@ instance Data.ProtoLens.Message UninterpretedOption where
                                                     (Lens.Labels.Proxy#) "positiveIntValue"))
                                               y
                                               x)
-                                40 -> do y <- Prelude.fmap Prelude.fromIntegral
-                                                Data.ProtoLens.Encoding.Bytes.getVarInt
+                                40 -> do y <- (Prelude.fmap Prelude.fromIntegral
+                                                 Data.ProtoLens.Encoding.Bytes.getVarInt)
+                                                Data.ProtoLens.Encoding.Bytes.<?>
+                                                "negative_int_value"
                                          loop
                                            (Lens.Family2.set
                                               (Lens.Labels.lensOf'
@@ -8948,9 +9141,10 @@ instance Data.ProtoLens.Message UninterpretedOption where
                                                     (Lens.Labels.Proxy#) "negativeIntValue"))
                                               y
                                               x)
-                                49 -> do y <- Prelude.fmap
-                                                Data.ProtoLens.Encoding.Bytes.wordToDouble
-                                                Data.ProtoLens.Encoding.Bytes.getFixed64
+                                49 -> do y <- (Prelude.fmap
+                                                 Data.ProtoLens.Encoding.Bytes.wordToDouble
+                                                 Data.ProtoLens.Encoding.Bytes.getFixed64)
+                                                Data.ProtoLens.Encoding.Bytes.<?> "double_value"
                                          loop
                                            (Lens.Family2.set
                                               (Lens.Labels.lensOf'
@@ -8958,9 +9152,10 @@ instance Data.ProtoLens.Message UninterpretedOption where
                                                     (Lens.Labels.Proxy#) "doubleValue"))
                                               y
                                               x)
-                                58 -> do y <- do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
-                                                 Data.ProtoLens.Encoding.Bytes.getBytes
-                                                   (Prelude.fromIntegral len)
+                                58 -> do y <- (do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
+                                                  Data.ProtoLens.Encoding.Bytes.getBytes
+                                                    (Prelude.fromIntegral len))
+                                                Data.ProtoLens.Encoding.Bytes.<?> "string_value"
                                          loop
                                            (Lens.Family2.set
                                               (Lens.Labels.lensOf'
@@ -8968,14 +9163,15 @@ instance Data.ProtoLens.Message UninterpretedOption where
                                                     (Lens.Labels.Proxy#) "stringValue"))
                                               y
                                               x)
-                                66 -> do y <- do value <- do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
-                                                             Data.ProtoLens.Encoding.Bytes.getBytes
-                                                               (Prelude.fromIntegral len)
-                                                 Data.ProtoLens.Encoding.Bytes.runEither
-                                                   (case Data.Text.Encoding.decodeUtf8' value of
-                                                        Prelude.Left err -> Prelude.Left
-                                                                              (Prelude.show err)
-                                                        Prelude.Right r -> Prelude.Right r)
+                                66 -> do y <- (do value <- do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
+                                                              Data.ProtoLens.Encoding.Bytes.getBytes
+                                                                (Prelude.fromIntegral len)
+                                                  Data.ProtoLens.Encoding.Bytes.runEither
+                                                    (case Data.Text.Encoding.decodeUtf8' value of
+                                                         Prelude.Left err -> Prelude.Left
+                                                                               (Prelude.show err)
+                                                         Prelude.Right r -> Prelude.Right r))
+                                                Data.ProtoLens.Encoding.Bytes.<?> "aggregate_value"
                                          loop
                                            (Lens.Family2.set
                                               (Lens.Labels.lensOf'
@@ -8988,8 +9184,10 @@ instance Data.ProtoLens.Message UninterpretedOption where
                                              (Lens.Family2.over Data.ProtoLens.unknownFields
                                                 (\ !t -> (:) y t)
                                                 x)
-              in loop Data.ProtoLens.defMessage
-        unfinishedBuildMessage
+              in
+              (loop Data.ProtoLens.defMessage) Data.ProtoLens.Encoding.Bytes.<?>
+                "UninterpretedOption"
+        buildMessage
           = (\ _x ->
                (Data.Monoid.mconcat
                   (Prelude.map
@@ -8999,9 +9197,7 @@ instance Data.ProtoLens.Message UninterpretedOption where
                                (Data.ProtoLens.Encoding.Bytes.putVarInt
                                   (Prelude.fromIntegral (Data.ByteString.length bs)))
                                  Data.Monoid.<> Data.ProtoLens.Encoding.Bytes.putBytes bs))
-                             Prelude..
-                             (Data.ProtoLens.Encoding.Bytes.runBuilder) Prelude..
-                               Data.ProtoLens.unfinishedBuildMessage)
+                             Prelude.. Data.ProtoLens.encodeMessage)
                             _v)
                      (Lens.Family2.view
                         (Lens.Labels.lensOf'
@@ -9191,28 +9387,41 @@ instance Data.ProtoLens.Message UninterpretedOption'NamePart where
                                          _UninterpretedOption'NamePart'isExtension =
                                            Data.ProtoLens.fieldDefault,
                                          _UninterpretedOption'NamePart'_unknownFields = ([])}
-        unfinishedParseMessage
+        parseMessage
           = let loop ::
                      UninterpretedOption'NamePart ->
-                       Data.ProtoLens.Encoding.Bytes.Parser UninterpretedOption'NamePart
-                loop x
+                       Prelude.Bool ->
+                         Prelude.Bool ->
+                           Data.ProtoLens.Encoding.Bytes.Parser UninterpretedOption'NamePart
+                loop x required'isExtension required'namePart
                   = do end <- Data.ProtoLens.Encoding.Bytes.atEnd
                        if end then
-                         Prelude.return
-                           (Lens.Family2.over Data.ProtoLens.unknownFields
-                              (\ !t -> Prelude.reverse t)
-                              x)
+                         do let missing
+                                  = (if required'isExtension then (:) "is_extension" else
+                                       Prelude.id)
+                                      ((if required'namePart then (:) "name_part" else Prelude.id)
+                                         [])
+                              in
+                              if Prelude.null missing then Prelude.return () else
+                                Prelude.fail
+                                  (("Missing required fields: ") Prelude.++
+                                     Prelude.show (missing :: ([Prelude.String])))
+                            Prelude.return
+                              (Lens.Family2.over Data.ProtoLens.unknownFields
+                                 (\ !t -> Prelude.reverse t)
+                                 x)
                          else
                          do tag <- Data.ProtoLens.Encoding.Bytes.getVarInt
                             case tag of
-                                10 -> do y <- do value <- do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
-                                                             Data.ProtoLens.Encoding.Bytes.getBytes
-                                                               (Prelude.fromIntegral len)
-                                                 Data.ProtoLens.Encoding.Bytes.runEither
-                                                   (case Data.Text.Encoding.decodeUtf8' value of
-                                                        Prelude.Left err -> Prelude.Left
-                                                                              (Prelude.show err)
-                                                        Prelude.Right r -> Prelude.Right r)
+                                10 -> do y <- (do value <- do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
+                                                              Data.ProtoLens.Encoding.Bytes.getBytes
+                                                                (Prelude.fromIntegral len)
+                                                  Data.ProtoLens.Encoding.Bytes.runEither
+                                                    (case Data.Text.Encoding.decodeUtf8' value of
+                                                         Prelude.Left err -> Prelude.Left
+                                                                               (Prelude.show err)
+                                                         Prelude.Right r -> Prelude.Right r))
+                                                Data.ProtoLens.Encoding.Bytes.<?> "name_part"
                                          loop
                                            (Lens.Family2.set
                                               (Lens.Labels.lensOf'
@@ -9220,8 +9429,11 @@ instance Data.ProtoLens.Message UninterpretedOption'NamePart where
                                                     (Lens.Labels.Proxy#) "namePart"))
                                               y
                                               x)
-                                16 -> do y <- Prelude.fmap ((Prelude./=) 0)
-                                                Data.ProtoLens.Encoding.Bytes.getVarInt
+                                           required'isExtension
+                                           Prelude.False
+                                16 -> do y <- (Prelude.fmap ((Prelude./=) 0)
+                                                 Data.ProtoLens.Encoding.Bytes.getVarInt)
+                                                Data.ProtoLens.Encoding.Bytes.<?> "is_extension"
                                          loop
                                            (Lens.Family2.set
                                               (Lens.Labels.lensOf'
@@ -9229,13 +9441,19 @@ instance Data.ProtoLens.Message UninterpretedOption'NamePart where
                                                     (Lens.Labels.Proxy#) "isExtension"))
                                               y
                                               x)
+                                           Prelude.False
+                                           required'namePart
                                 wire -> do !y <- Data.ProtoLens.Encoding.Wire.parseTaggedValue wire
                                            loop
                                              (Lens.Family2.over Data.ProtoLens.unknownFields
                                                 (\ !t -> (:) y t)
                                                 x)
-              in loop Data.ProtoLens.defMessage
-        unfinishedBuildMessage
+                                             required'isExtension
+                                             required'namePart
+              in
+              (loop Data.ProtoLens.defMessage Prelude.True Prelude.True)
+                Data.ProtoLens.Encoding.Bytes.<?> "NamePart"
+        buildMessage
           = (\ _x ->
                ((Data.ProtoLens.Encoding.Bytes.putVarInt 10) Data.Monoid.<>
                   (((\ bs ->

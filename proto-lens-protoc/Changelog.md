@@ -2,6 +2,8 @@
 
 ## Unreleased
 - Capitalize enum values, and capitalize names of enum sub-messages (#270).
+- Track changes to `proto-lens` using generated Haskell code to
+  encode/decode proto messages more quickly.
 
 ## v0.4.0.1
 - Bump the dependency on `base` and `containers` to support `ghc-8.6.1`.

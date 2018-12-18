@@ -901,8 +901,8 @@ messageInstance env protoName m =
                   [ fieldUpdate (unQual $ messageUnknownFields m)
                         "[]"]
       ]
-    , [ match "unfinishedParseMessage" [] $ generatedParser m ]
-    , [ match "unfinishedBuildMessage" [] $ generatedBuilder m ]
+    , [ match "parseMessage" [] $ generatedParser m ]
+    , [ match "buildMessage" [] $ generatedBuilder m ]
     ]
   where
     fieldsByTag =

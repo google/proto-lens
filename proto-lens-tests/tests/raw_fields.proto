@@ -20,13 +20,6 @@ message Raw {
   optional sfixed64 o = 15;
 }
 
-// A message that's not wire-compatible with Raw; we use it to check that
-// decoding errors are handled properly.
-message Bad {
-  optional string a = 1;  // Different type than Raw::a
-  optional int32 z = 100;  // Tag not present
-}
-
 message Defaults {
   optional int32 int_defaulted = 1 [default=-123];
   optional fixed32 fixed_defaulted = 2 [default=123];
