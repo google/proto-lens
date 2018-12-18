@@ -3,6 +3,9 @@
 ## Unreleased
 - Capitalize enum values, and capitalize names of enum sub-messages (#270).
 
+## v0.4.0.2
+- Support `haskell-src-exts-1.22.*`, and remove support for `haskell-src-exts-1.17.*`.
+
 ## v0.4.0.1
 - Bump the dependency on `base` and `containers` to support `ghc-8.6.1`.
 - Fix a GHC error on enums with a very large number of cases (#241).
