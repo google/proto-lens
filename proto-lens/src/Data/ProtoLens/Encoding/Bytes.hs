@@ -36,8 +36,10 @@ module Data.ProtoLens.Encoding.Bytes(
     wordToSignedInt32,
     signedInt64ToWord,
     wordToSignedInt64,
+    -- * Other utilities
     atEnd,
     runEither,
+    (<?>),
     ) where
 
 import Data.Attoparsec.ByteString as Parse

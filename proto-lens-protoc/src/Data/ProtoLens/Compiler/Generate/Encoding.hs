@@ -13,8 +13,8 @@ module Data.ProtoLens.Compiler.Generate.Encoding
 import Data.Bits (shiftL, (.|.))
 import Data.Int (Int32)
 import qualified Data.Map as Map
-import qualified Data.Text as Text
 import Data.Semigroup ((<>))
+import qualified Data.Text as Text
 import Lens.Family2 (view, (^.))
 
 import Data.ProtoLens.Compiler.Combinators
@@ -36,9 +36,12 @@ generatedParser m =
     letE [typeSig [loop] loopSig
          , funBind [match loop (fmap pVar $ loopArgs names) loopExpr]
          ]
-        $ continue (initialParseState names)
+        $ "Data.ProtoLens.Encoding.Bytes.<?>"
+           @@ continue (initialParseState names)
+           @@ stringExp msgName
   where
     ty = tyCon (unQual $ messageName m)
+    msgName = Text.unpack (messageDescriptor m ^. name)
     loopSig = foldr tyFun
         ("Data.ProtoLens.Encoding.Bytes.Parser" @@ ty)
         (loopArgs $ parseStateTypes m)
@@ -508,7 +511,11 @@ unknownFields' = "Data.ProtoLens.unknownFields"
 
 -- | Returns an expression of type @Parser a@ for the given field.
 parseField :: FieldInfo -> Exp
-parseField = parseFieldType . fieldInfoEncoding
+parseField f = "Data.ProtoLens.Encoding.Bytes.<?>"
+                    @@ (parseFieldType $ fieldInfoEncoding f)
+                    @@ stringExp n
+  where
+    n = Text.unpack (fieldDescriptor f ^. name)
 
 -- | Returns a function corresponding to `a -> Builder`:
 buildField :: FieldInfo -> Exp
