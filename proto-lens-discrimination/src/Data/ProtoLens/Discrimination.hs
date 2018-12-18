@@ -35,7 +35,7 @@ import qualified Data.Text as T
 import Lens.Family2 ((&), (.~), Lens', view)
 
 import Data.ProtoLens.Encoding.Wire
-    ( Tag(..), TaggedValue(..), WireValue(..), WireType(..)
+    ( Tag(..), TaggedValue(..), WireValue(..)
     )
 import Data.ProtoLens.Message
     ( FieldDescriptor(FieldDescriptor)
@@ -110,12 +110,12 @@ discFieldSet discList disc32 disc64 discBS discInt =
           (Either Word64 (Either Word64 Word32))
           (Either B.ByteString (Either () ()))
     toEithers v = case v of
-      WireValue VarInt     x -> Left (Left x)
-      WireValue Fixed64    x -> Left (Right (Left x))
-      WireValue Fixed32    x -> Left (Right (Right x))
-      WireValue Lengthy    x -> Right (Left x)
-      WireValue StartGroup () -> Right (Right (Left ()))
-      WireValue EndGroup   () -> Right (Right (Right ()))
+      VarInt     x -> Left (Left x)
+      Fixed64    x -> Left (Right (Left x))
+      Fixed32    x -> Left (Right (Right x))
+      Lengthy    x -> Right (Left x)
+      StartGroup -> Right (Right (Left ()))
+      EndGroup -> Right (Right (Right ()))
 
 -- | Sort a map by converting its associations to @entry@ and sorting that as a
 -- protobuf.

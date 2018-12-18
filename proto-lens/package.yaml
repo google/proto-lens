@@ -55,7 +55,6 @@ library:
 
   other-modules:
     - Data.ProtoLens.TextFormat.Parser
-    - Data.ProtoLens.Encoding.Reflected.Wire
   dependencies:
     - attoparsec == 0.13.*
     - base >= 4.9 && < 4.13

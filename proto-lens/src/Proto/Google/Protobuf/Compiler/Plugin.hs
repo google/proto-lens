@@ -244,7 +244,8 @@ instance Data.ProtoLens.Message CodeGeneratorRequest where
                                                     (Lens.Labels.Proxy#) "compilerVersion"))
                                               y
                                               x)
-                                wire -> do !y <- Data.ProtoLens.Encoding.Wire.parseTaggedValue wire
+                                wire -> do !y <- Data.ProtoLens.Encoding.Wire.parseTaggedValueFromWire
+                                                   wire
                                            loop
                                              (Lens.Family2.over Data.ProtoLens.unknownFields
                                                 (\ !t -> (:) y t)
@@ -321,9 +322,8 @@ instance Data.ProtoLens.Message CodeGeneratorRequest where
                                                   Prelude.. Data.ProtoLens.encodeMessage)
                                                  _v)
                        Data.Monoid.<>
-                       Data.Monoid.mconcat
-                         (Prelude.map Data.ProtoLens.Encoding.Wire.buildTaggedValue
-                            (Lens.Family2.view Data.ProtoLens.unknownFields _x)))
+                       Data.ProtoLens.Encoding.Wire.buildFieldSet
+                         (Lens.Family2.view Data.ProtoLens.unknownFields _x))
 instance Control.DeepSeq.NFData CodeGeneratorRequest where
         rnf
           = (\ x__ ->
@@ -457,7 +457,8 @@ instance Data.ProtoLens.Message CodeGeneratorResponse where
                                                      (Lens.Labels.Proxy#) "file"))
                                                (\ !t -> (:) y t)
                                                x)
-                                wire -> do !y <- Data.ProtoLens.Encoding.Wire.parseTaggedValue wire
+                                wire -> do !y <- Data.ProtoLens.Encoding.Wire.parseTaggedValueFromWire
+                                                   wire
                                            loop
                                              (Lens.Family2.over Data.ProtoLens.unknownFields
                                                 (\ !t -> (:) y t)
@@ -499,9 +500,8 @@ instance Data.ProtoLens.Message CodeGeneratorResponse where
                              ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "file"))
                           _x)))
                    Data.Monoid.<>
-                   Data.Monoid.mconcat
-                     (Prelude.map Data.ProtoLens.Encoding.Wire.buildTaggedValue
-                        (Lens.Family2.view Data.ProtoLens.unknownFields _x)))
+                   Data.ProtoLens.Encoding.Wire.buildFieldSet
+                     (Lens.Family2.view Data.ProtoLens.unknownFields _x))
 instance Control.DeepSeq.NFData CodeGeneratorResponse where
         rnf
           = (\ x__ ->
@@ -692,7 +692,8 @@ instance Data.ProtoLens.Message CodeGeneratorResponse'File where
                                                      (Lens.Labels.Proxy#) "content"))
                                                y
                                                x)
-                                wire -> do !y <- Data.ProtoLens.Encoding.Wire.parseTaggedValue wire
+                                wire -> do !y <- Data.ProtoLens.Encoding.Wire.parseTaggedValueFromWire
+                                                   wire
                                            loop
                                              (Lens.Family2.over Data.ProtoLens.unknownFields
                                                 (\ !t -> (:) y t)
@@ -756,9 +757,8 @@ instance Data.ProtoLens.Message CodeGeneratorResponse'File where
                                                 Prelude.. Data.Text.Encoding.encodeUtf8)
                                                _v)
                      Data.Monoid.<>
-                     Data.Monoid.mconcat
-                       (Prelude.map Data.ProtoLens.Encoding.Wire.buildTaggedValue
-                          (Lens.Family2.view Data.ProtoLens.unknownFields _x)))
+                     Data.ProtoLens.Encoding.Wire.buildFieldSet
+                       (Lens.Family2.view Data.ProtoLens.unknownFields _x))
 instance Control.DeepSeq.NFData CodeGeneratorResponse'File where
         rnf
           = (\ x__ ->
@@ -960,7 +960,8 @@ instance Data.ProtoLens.Message Version where
                                                     (Lens.Labels.Proxy#) "suffix"))
                                               y
                                               x)
-                                wire -> do !y <- Data.ProtoLens.Encoding.Wire.parseTaggedValue wire
+                                wire -> do !y <- Data.ProtoLens.Encoding.Wire.parseTaggedValueFromWire
+                                                   wire
                                            loop
                                              (Lens.Family2.over Data.ProtoLens.unknownFields
                                                 (\ !t -> (:) y t)
@@ -1027,9 +1028,8 @@ instance Data.ProtoLens.Message Version where
                                                   Prelude.. Data.Text.Encoding.encodeUtf8)
                                                  _v)
                        Data.Monoid.<>
-                       Data.Monoid.mconcat
-                         (Prelude.map Data.ProtoLens.Encoding.Wire.buildTaggedValue
-                            (Lens.Family2.view Data.ProtoLens.unknownFields _x)))
+                       Data.ProtoLens.Encoding.Wire.buildFieldSet
+                         (Lens.Family2.view Data.ProtoLens.unknownFields _x))
 instance Control.DeepSeq.NFData Version where
         rnf
           = (\ x__ ->

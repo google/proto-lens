@@ -468,7 +468,8 @@ instance Data.ProtoLens.Message DescriptorProto where
                                                     (Lens.Labels.Proxy#) "reservedName"))
                                               (\ !t -> (:) y t)
                                               x)
-                                wire -> do !y <- Data.ProtoLens.Encoding.Wire.parseTaggedValue wire
+                                wire -> do !y <- Data.ProtoLens.Encoding.Wire.parseTaggedValueFromWire
+                                                   wire
                                            loop
                                              (Lens.Family2.over Data.ProtoLens.unknownFields
                                                 (\ !t -> (:) y t)
@@ -644,9 +645,8 @@ instance Data.ProtoLens.Message DescriptorProto where
                                                 (Lens.Labels.Proxy#) "reservedName"))
                                           _x)))
                                    Data.Monoid.<>
-                                   Data.Monoid.mconcat
-                                     (Prelude.map Data.ProtoLens.Encoding.Wire.buildTaggedValue
-                                        (Lens.Family2.view Data.ProtoLens.unknownFields _x)))
+                                   Data.ProtoLens.Encoding.Wire.buildFieldSet
+                                     (Lens.Family2.view Data.ProtoLens.unknownFields _x))
 instance Control.DeepSeq.NFData DescriptorProto where
         rnf
           = (\ x__ ->
@@ -839,7 +839,8 @@ instance Data.ProtoLens.Message DescriptorProto'ExtensionRange
                                                     (Lens.Labels.Proxy#) "options"))
                                               y
                                               x)
-                                wire -> do !y <- Data.ProtoLens.Encoding.Wire.parseTaggedValue wire
+                                wire -> do !y <- Data.ProtoLens.Encoding.Wire.parseTaggedValueFromWire
+                                                   wire
                                            loop
                                              (Lens.Family2.over Data.ProtoLens.unknownFields
                                                 (\ !t -> (:) y t)
@@ -893,9 +894,8 @@ instance Data.ProtoLens.Message DescriptorProto'ExtensionRange
                                                 Prelude.. Data.ProtoLens.encodeMessage)
                                                _v)
                      Data.Monoid.<>
-                     Data.Monoid.mconcat
-                       (Prelude.map Data.ProtoLens.Encoding.Wire.buildTaggedValue
-                          (Lens.Family2.view Data.ProtoLens.unknownFields _x)))
+                     Data.ProtoLens.Encoding.Wire.buildFieldSet
+                       (Lens.Family2.view Data.ProtoLens.unknownFields _x))
 instance Control.DeepSeq.NFData DescriptorProto'ExtensionRange
          where
         rnf
@@ -1030,7 +1030,8 @@ instance Data.ProtoLens.Message DescriptorProto'ReservedRange where
                                                     (Lens.Labels.Proxy#) "end"))
                                               y
                                               x)
-                                wire -> do !y <- Data.ProtoLens.Encoding.Wire.parseTaggedValue wire
+                                wire -> do !y <- Data.ProtoLens.Encoding.Wire.parseTaggedValueFromWire
+                                                   wire
                                            loop
                                              (Lens.Family2.over Data.ProtoLens.unknownFields
                                                 (\ !t -> (:) y t)
@@ -1066,9 +1067,8 @@ instance Data.ProtoLens.Message DescriptorProto'ReservedRange where
                                               Prelude.fromIntegral)
                                              _v)
                    Data.Monoid.<>
-                   Data.Monoid.mconcat
-                     (Prelude.map Data.ProtoLens.Encoding.Wire.buildTaggedValue
-                        (Lens.Family2.view Data.ProtoLens.unknownFields _x)))
+                   Data.ProtoLens.Encoding.Wire.buildFieldSet
+                     (Lens.Family2.view Data.ProtoLens.unknownFields _x))
 instance Control.DeepSeq.NFData DescriptorProto'ReservedRange where
         rnf
           = (\ x__ ->
@@ -1320,7 +1320,8 @@ instance Data.ProtoLens.Message EnumDescriptorProto where
                                                     (Lens.Labels.Proxy#) "reservedName"))
                                               (\ !t -> (:) y t)
                                               x)
-                                wire -> do !y <- Data.ProtoLens.Encoding.Wire.parseTaggedValue wire
+                                wire -> do !y <- Data.ProtoLens.Encoding.Wire.parseTaggedValueFromWire
+                                                   wire
                                            loop
                                              (Lens.Family2.over Data.ProtoLens.unknownFields
                                                 (\ !t -> (:) y t)
@@ -1410,9 +1411,8 @@ instance Data.ProtoLens.Message EnumDescriptorProto where
                                    ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "reservedName"))
                                 _x)))
                          Data.Monoid.<>
-                         Data.Monoid.mconcat
-                           (Prelude.map Data.ProtoLens.Encoding.Wire.buildTaggedValue
-                              (Lens.Family2.view Data.ProtoLens.unknownFields _x)))
+                         Data.ProtoLens.Encoding.Wire.buildFieldSet
+                           (Lens.Family2.view Data.ProtoLens.unknownFields _x))
 instance Control.DeepSeq.NFData EnumDescriptorProto where
         rnf
           = (\ x__ ->
@@ -1573,7 +1573,8 @@ instance Data.ProtoLens.Message
                                                     (Lens.Labels.Proxy#) "end"))
                                               y
                                               x)
-                                wire -> do !y <- Data.ProtoLens.Encoding.Wire.parseTaggedValue wire
+                                wire -> do !y <- Data.ProtoLens.Encoding.Wire.parseTaggedValueFromWire
+                                                   wire
                                            loop
                                              (Lens.Family2.over Data.ProtoLens.unknownFields
                                                 (\ !t -> (:) y t)
@@ -1609,9 +1610,8 @@ instance Data.ProtoLens.Message
                                               Prelude.fromIntegral)
                                              _v)
                    Data.Monoid.<>
-                   Data.Monoid.mconcat
-                     (Prelude.map Data.ProtoLens.Encoding.Wire.buildTaggedValue
-                        (Lens.Family2.view Data.ProtoLens.unknownFields _x)))
+                   Data.ProtoLens.Encoding.Wire.buildFieldSet
+                     (Lens.Family2.view Data.ProtoLens.unknownFields _x))
 instance Control.DeepSeq.NFData
            EnumDescriptorProto'EnumReservedRange
          where
@@ -1776,7 +1776,8 @@ instance Data.ProtoLens.Message EnumOptions where
                                                       (Lens.Labels.Proxy#) "uninterpretedOption"))
                                                 (\ !t -> (:) y t)
                                                 x)
-                                wire -> do !y <- Data.ProtoLens.Encoding.Wire.parseTaggedValue wire
+                                wire -> do !y <- Data.ProtoLens.Encoding.Wire.parseTaggedValueFromWire
+                                                   wire
                                            loop
                                              (Lens.Family2.over Data.ProtoLens.unknownFields
                                                 (\ !t -> (:) y t)
@@ -1828,9 +1829,8 @@ instance Data.ProtoLens.Message EnumOptions where
                                   (Lens.Labels.Proxy#) "uninterpretedOption"))
                             _x)))
                      Data.Monoid.<>
-                     Data.Monoid.mconcat
-                       (Prelude.map Data.ProtoLens.Encoding.Wire.buildTaggedValue
-                          (Lens.Family2.view Data.ProtoLens.unknownFields _x)))
+                     Data.ProtoLens.Encoding.Wire.buildFieldSet
+                       (Lens.Family2.view Data.ProtoLens.unknownFields _x))
 instance Control.DeepSeq.NFData EnumOptions where
         rnf
           = (\ x__ ->
@@ -2005,7 +2005,8 @@ instance Data.ProtoLens.Message EnumValueDescriptorProto where
                                                     (Lens.Labels.Proxy#) "options"))
                                               y
                                               x)
-                                wire -> do !y <- Data.ProtoLens.Encoding.Wire.parseTaggedValue wire
+                                wire -> do !y <- Data.ProtoLens.Encoding.Wire.parseTaggedValueFromWire
+                                                   wire
                                            loop
                                              (Lens.Family2.over Data.ProtoLens.unknownFields
                                                 (\ !t -> (:) y t)
@@ -2063,9 +2064,8 @@ instance Data.ProtoLens.Message EnumValueDescriptorProto where
                                                 Prelude.. Data.ProtoLens.encodeMessage)
                                                _v)
                      Data.Monoid.<>
-                     Data.Monoid.mconcat
-                       (Prelude.map Data.ProtoLens.Encoding.Wire.buildTaggedValue
-                          (Lens.Family2.view Data.ProtoLens.unknownFields _x)))
+                     Data.ProtoLens.Encoding.Wire.buildFieldSet
+                       (Lens.Family2.view Data.ProtoLens.unknownFields _x))
 instance Control.DeepSeq.NFData EnumValueDescriptorProto where
         rnf
           = (\ x__ ->
@@ -2194,7 +2194,8 @@ instance Data.ProtoLens.Message EnumValueOptions where
                                                       (Lens.Labels.Proxy#) "uninterpretedOption"))
                                                 (\ !t -> (:) y t)
                                                 x)
-                                wire -> do !y <- Data.ProtoLens.Encoding.Wire.parseTaggedValue wire
+                                wire -> do !y <- Data.ProtoLens.Encoding.Wire.parseTaggedValueFromWire
+                                                   wire
                                            loop
                                              (Lens.Family2.over Data.ProtoLens.unknownFields
                                                 (\ !t -> (:) y t)
@@ -2233,9 +2234,8 @@ instance Data.ProtoLens.Message EnumValueOptions where
                                 (Lens.Labels.Proxy#) "uninterpretedOption"))
                           _x)))
                    Data.Monoid.<>
-                   Data.Monoid.mconcat
-                     (Prelude.map Data.ProtoLens.Encoding.Wire.buildTaggedValue
-                        (Lens.Family2.view Data.ProtoLens.unknownFields _x)))
+                   Data.ProtoLens.Encoding.Wire.buildFieldSet
+                     (Lens.Family2.view Data.ProtoLens.unknownFields _x))
 instance Control.DeepSeq.NFData EnumValueOptions where
         rnf
           = (\ x__ ->
@@ -2328,7 +2328,8 @@ instance Data.ProtoLens.Message ExtensionRangeOptions where
                                                       (Lens.Labels.Proxy#) "uninterpretedOption"))
                                                 (\ !t -> (:) y t)
                                                 x)
-                                wire -> do !y <- Data.ProtoLens.Encoding.Wire.parseTaggedValue wire
+                                wire -> do !y <- Data.ProtoLens.Encoding.Wire.parseTaggedValueFromWire
+                                                   wire
                                            loop
                                              (Lens.Family2.over Data.ProtoLens.unknownFields
                                                 (\ !t -> (:) y t)
@@ -2354,9 +2355,8 @@ instance Data.ProtoLens.Message ExtensionRangeOptions where
                               (Lens.Labels.Proxy#) "uninterpretedOption"))
                         _x)))
                  Data.Monoid.<>
-                 Data.Monoid.mconcat
-                   (Prelude.map Data.ProtoLens.Encoding.Wire.buildTaggedValue
-                      (Lens.Family2.view Data.ProtoLens.unknownFields _x)))
+                 Data.ProtoLens.Encoding.Wire.buildFieldSet
+                   (Lens.Family2.view Data.ProtoLens.unknownFields _x))
 instance Control.DeepSeq.NFData ExtensionRangeOptions where
         rnf
           = (\ x__ ->
@@ -2824,7 +2824,8 @@ instance Data.ProtoLens.Message FieldDescriptorProto where
                                                     (Lens.Labels.Proxy#) "options"))
                                               y
                                               x)
-                                wire -> do !y <- Data.ProtoLens.Encoding.Wire.parseTaggedValue wire
+                                wire -> do !y <- Data.ProtoLens.Encoding.Wire.parseTaggedValueFromWire
+                                                   wire
                                            loop
                                              (Lens.Family2.over Data.ProtoLens.unknownFields
                                                 (\ !t -> (:) y t)
@@ -3005,9 +3006,8 @@ instance Data.ProtoLens.Message FieldDescriptorProto where
                                                               Data.ProtoLens.encodeMessage)
                                                              _v)
                                    Data.Monoid.<>
-                                   Data.Monoid.mconcat
-                                     (Prelude.map Data.ProtoLens.Encoding.Wire.buildTaggedValue
-                                        (Lens.Family2.view Data.ProtoLens.unknownFields _x)))
+                                   Data.ProtoLens.Encoding.Wire.buildFieldSet
+                                     (Lens.Family2.view Data.ProtoLens.unknownFields _x))
 instance Control.DeepSeq.NFData FieldDescriptorProto where
         rnf
           = (\ x__ ->
@@ -3595,7 +3595,8 @@ instance Data.ProtoLens.Message FieldOptions where
                                                       (Lens.Labels.Proxy#) "uninterpretedOption"))
                                                 (\ !t -> (:) y t)
                                                 x)
-                                wire -> do !y <- Data.ProtoLens.Encoding.Wire.parseTaggedValue wire
+                                wire -> do !y <- Data.ProtoLens.Encoding.Wire.parseTaggedValueFromWire
+                                                   wire
                                            loop
                                              (Lens.Family2.over Data.ProtoLens.unknownFields
                                                 (\ !t -> (:) y t)
@@ -3702,9 +3703,8 @@ instance Data.ProtoLens.Message FieldOptions where
                                           (Lens.Labels.Proxy#) "uninterpretedOption"))
                                     _x)))
                              Data.Monoid.<>
-                             Data.Monoid.mconcat
-                               (Prelude.map Data.ProtoLens.Encoding.Wire.buildTaggedValue
-                                  (Lens.Family2.view Data.ProtoLens.unknownFields _x)))
+                             Data.ProtoLens.Encoding.Wire.buildFieldSet
+                               (Lens.Family2.view Data.ProtoLens.unknownFields _x))
 instance Control.DeepSeq.NFData FieldOptions where
         rnf
           = (\ x__ ->
@@ -4385,7 +4385,8 @@ instance Data.ProtoLens.Message FileDescriptorProto where
                                                     (Lens.Labels.Proxy#) "syntax"))
                                               y
                                               x)
-                                wire -> do !y <- Data.ProtoLens.Encoding.Wire.parseTaggedValue wire
+                                wire -> do !y <- Data.ProtoLens.Encoding.Wire.parseTaggedValueFromWire
+                                                   wire
                                            loop
                                              (Lens.Family2.over Data.ProtoLens.unknownFields
                                                 (\ !t -> (:) y t)
@@ -4601,9 +4602,8 @@ instance Data.ProtoLens.Message FileDescriptorProto where
                                                        Prelude.. Data.Text.Encoding.encodeUtf8)
                                                       _v)
                                        Data.Monoid.<>
-                                       Data.Monoid.mconcat
-                                         (Prelude.map Data.ProtoLens.Encoding.Wire.buildTaggedValue
-                                            (Lens.Family2.view Data.ProtoLens.unknownFields _x)))
+                                       Data.ProtoLens.Encoding.Wire.buildFieldSet
+                                         (Lens.Family2.view Data.ProtoLens.unknownFields _x))
 instance Control.DeepSeq.NFData FileDescriptorProto where
         rnf
           = (\ x__ ->
@@ -4702,7 +4702,8 @@ instance Data.ProtoLens.Message FileDescriptorSet where
                                                     (Lens.Labels.Proxy#) "file"))
                                               (\ !t -> (:) y t)
                                               x)
-                                wire -> do !y <- Data.ProtoLens.Encoding.Wire.parseTaggedValue wire
+                                wire -> do !y <- Data.ProtoLens.Encoding.Wire.parseTaggedValueFromWire
+                                                   wire
                                            loop
                                              (Lens.Family2.over Data.ProtoLens.unknownFields
                                                 (\ !t -> (:) y t)
@@ -4727,9 +4728,8 @@ instance Data.ProtoLens.Message FileDescriptorSet where
                            ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "file"))
                         _x)))
                  Data.Monoid.<>
-                 Data.Monoid.mconcat
-                   (Prelude.map Data.ProtoLens.Encoding.Wire.buildTaggedValue
-                      (Lens.Family2.view Data.ProtoLens.unknownFields _x)))
+                 Data.ProtoLens.Encoding.Wire.buildFieldSet
+                   (Lens.Family2.view Data.ProtoLens.unknownFields _x))
 instance Control.DeepSeq.NFData FileDescriptorSet where
         rnf
           = (\ x__ ->
@@ -5653,7 +5653,8 @@ instance Data.ProtoLens.Message FileOptions where
                                                       (Lens.Labels.Proxy#) "uninterpretedOption"))
                                                 (\ !t -> (:) y t)
                                                 x)
-                                wire -> do !y <- Data.ProtoLens.Encoding.Wire.parseTaggedValue wire
+                                wire -> do !y <- Data.ProtoLens.Encoding.Wire.parseTaggedValueFromWire
+                                                   wire
                                            loop
                                              (Lens.Family2.over Data.ProtoLens.unknownFields
                                                 (\ !t -> (:) y t)
@@ -6054,12 +6055,10 @@ instance Data.ProtoLens.Message FileOptions where
                                                                         "uninterpretedOption"))
                                                                 _x)))
                                                          Data.Monoid.<>
-                                                         Data.Monoid.mconcat
-                                                           (Prelude.map
-                                                              Data.ProtoLens.Encoding.Wire.buildTaggedValue
-                                                              (Lens.Family2.view
-                                                                 Data.ProtoLens.unknownFields
-                                                                 _x)))
+                                                         Data.ProtoLens.Encoding.Wire.buildFieldSet
+                                                           (Lens.Family2.view
+                                                              Data.ProtoLens.unknownFields
+                                                              _x))
 instance Control.DeepSeq.NFData FileOptions where
         rnf
           = (\ x__ ->
@@ -6233,7 +6232,8 @@ instance Data.ProtoLens.Message GeneratedCodeInfo where
                                                     (Lens.Labels.Proxy#) "annotation"))
                                               (\ !t -> (:) y t)
                                               x)
-                                wire -> do !y <- Data.ProtoLens.Encoding.Wire.parseTaggedValue wire
+                                wire -> do !y <- Data.ProtoLens.Encoding.Wire.parseTaggedValueFromWire
+                                                   wire
                                            loop
                                              (Lens.Family2.over Data.ProtoLens.unknownFields
                                                 (\ !t -> (:) y t)
@@ -6258,9 +6258,8 @@ instance Data.ProtoLens.Message GeneratedCodeInfo where
                            ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "annotation"))
                         _x)))
                  Data.Monoid.<>
-                 Data.Monoid.mconcat
-                   (Prelude.map Data.ProtoLens.Encoding.Wire.buildTaggedValue
-                      (Lens.Family2.view Data.ProtoLens.unknownFields _x)))
+                 Data.ProtoLens.Encoding.Wire.buildFieldSet
+                   (Lens.Family2.view Data.ProtoLens.unknownFields _x))
 instance Control.DeepSeq.NFData GeneratedCodeInfo where
         rnf
           = (\ x__ ->
@@ -6492,7 +6491,8 @@ instance Data.ProtoLens.Message GeneratedCodeInfo'Annotation where
                                                     (Lens.Labels.Proxy#) "end"))
                                               y
                                               x)
-                                wire -> do !y <- Data.ProtoLens.Encoding.Wire.parseTaggedValue wire
+                                wire -> do !y <- Data.ProtoLens.Encoding.Wire.parseTaggedValueFromWire
+                                                   wire
                                            loop
                                              (Lens.Family2.over Data.ProtoLens.unknownFields
                                                 (\ !t -> (:) y t)
@@ -6564,9 +6564,8 @@ instance Data.ProtoLens.Message GeneratedCodeInfo'Annotation where
                                                   Prelude.fromIntegral)
                                                  _v)
                        Data.Monoid.<>
-                       Data.Monoid.mconcat
-                         (Prelude.map Data.ProtoLens.Encoding.Wire.buildTaggedValue
-                            (Lens.Family2.view Data.ProtoLens.unknownFields _x)))
+                       Data.ProtoLens.Encoding.Wire.buildFieldSet
+                         (Lens.Family2.view Data.ProtoLens.unknownFields _x))
 instance Control.DeepSeq.NFData GeneratedCodeInfo'Annotation where
         rnf
           = (\ x__ ->
@@ -6820,7 +6819,8 @@ instance Data.ProtoLens.Message MessageOptions where
                                                       (Lens.Labels.Proxy#) "uninterpretedOption"))
                                                 (\ !t -> (:) y t)
                                                 x)
-                                wire -> do !y <- Data.ProtoLens.Encoding.Wire.parseTaggedValue wire
+                                wire -> do !y <- Data.ProtoLens.Encoding.Wire.parseTaggedValueFromWire
+                                                   wire
                                            loop
                                              (Lens.Family2.over Data.ProtoLens.unknownFields
                                                 (\ !t -> (:) y t)
@@ -6900,9 +6900,8 @@ instance Data.ProtoLens.Message MessageOptions where
                                       (Lens.Labels.Proxy#) "uninterpretedOption"))
                                 _x)))
                          Data.Monoid.<>
-                         Data.Monoid.mconcat
-                           (Prelude.map Data.ProtoLens.Encoding.Wire.buildTaggedValue
-                              (Lens.Family2.view Data.ProtoLens.unknownFields _x)))
+                         Data.ProtoLens.Encoding.Wire.buildFieldSet
+                           (Lens.Family2.view Data.ProtoLens.unknownFields _x))
 instance Control.DeepSeq.NFData MessageOptions where
         rnf
           = (\ x__ ->
@@ -7213,7 +7212,8 @@ instance Data.ProtoLens.Message MethodDescriptorProto where
                                                     (Lens.Labels.Proxy#) "serverStreaming"))
                                               y
                                               x)
-                                wire -> do !y <- Data.ProtoLens.Encoding.Wire.parseTaggedValue wire
+                                wire -> do !y <- Data.ProtoLens.Encoding.Wire.parseTaggedValueFromWire
+                                                   wire
                                            loop
                                              (Lens.Family2.over Data.ProtoLens.unknownFields
                                                 (\ !t -> (:) y t)
@@ -7322,9 +7322,8 @@ instance Data.ProtoLens.Message MethodDescriptorProto where
                                                       Prelude.. (\ b -> if b then 1 else 0))
                                                      _v)
                            Data.Monoid.<>
-                           Data.Monoid.mconcat
-                             (Prelude.map Data.ProtoLens.Encoding.Wire.buildTaggedValue
-                                (Lens.Family2.view Data.ProtoLens.unknownFields _x)))
+                           Data.ProtoLens.Encoding.Wire.buildFieldSet
+                             (Lens.Family2.view Data.ProtoLens.unknownFields _x))
 instance Control.DeepSeq.NFData MethodDescriptorProto where
         rnf
           = (\ x__ ->
@@ -7495,7 +7494,8 @@ instance Data.ProtoLens.Message MethodOptions where
                                                       (Lens.Labels.Proxy#) "uninterpretedOption"))
                                                 (\ !t -> (:) y t)
                                                 x)
-                                wire -> do !y <- Data.ProtoLens.Encoding.Wire.parseTaggedValue wire
+                                wire -> do !y <- Data.ProtoLens.Encoding.Wire.parseTaggedValueFromWire
+                                                   wire
                                            loop
                                              (Lens.Family2.over Data.ProtoLens.unknownFields
                                                 (\ !t -> (:) y t)
@@ -7549,9 +7549,8 @@ instance Data.ProtoLens.Message MethodOptions where
                                   (Lens.Labels.Proxy#) "uninterpretedOption"))
                             _x)))
                      Data.Monoid.<>
-                     Data.Monoid.mconcat
-                       (Prelude.map Data.ProtoLens.Encoding.Wire.buildTaggedValue
-                          (Lens.Family2.view Data.ProtoLens.unknownFields _x)))
+                     Data.ProtoLens.Encoding.Wire.buildFieldSet
+                       (Lens.Family2.view Data.ProtoLens.unknownFields _x))
 instance Control.DeepSeq.NFData MethodOptions where
         rnf
           = (\ x__ ->
@@ -7745,7 +7744,8 @@ instance Data.ProtoLens.Message OneofDescriptorProto where
                                                     (Lens.Labels.Proxy#) "options"))
                                               y
                                               x)
-                                wire -> do !y <- Data.ProtoLens.Encoding.Wire.parseTaggedValue wire
+                                wire -> do !y <- Data.ProtoLens.Encoding.Wire.parseTaggedValueFromWire
+                                                   wire
                                            loop
                                              (Lens.Family2.over Data.ProtoLens.unknownFields
                                                 (\ !t -> (:) y t)
@@ -7790,9 +7790,8 @@ instance Data.ProtoLens.Message OneofDescriptorProto where
                                               Prelude.. Data.ProtoLens.encodeMessage)
                                              _v)
                    Data.Monoid.<>
-                   Data.Monoid.mconcat
-                     (Prelude.map Data.ProtoLens.Encoding.Wire.buildTaggedValue
-                        (Lens.Family2.view Data.ProtoLens.unknownFields _x)))
+                   Data.ProtoLens.Encoding.Wire.buildFieldSet
+                     (Lens.Family2.view Data.ProtoLens.unknownFields _x))
 instance Control.DeepSeq.NFData OneofDescriptorProto where
         rnf
           = (\ x__ ->
@@ -7878,7 +7877,8 @@ instance Data.ProtoLens.Message OneofOptions where
                                                       (Lens.Labels.Proxy#) "uninterpretedOption"))
                                                 (\ !t -> (:) y t)
                                                 x)
-                                wire -> do !y <- Data.ProtoLens.Encoding.Wire.parseTaggedValue wire
+                                wire -> do !y <- Data.ProtoLens.Encoding.Wire.parseTaggedValueFromWire
+                                                   wire
                                            loop
                                              (Lens.Family2.over Data.ProtoLens.unknownFields
                                                 (\ !t -> (:) y t)
@@ -7904,9 +7904,8 @@ instance Data.ProtoLens.Message OneofOptions where
                               (Lens.Labels.Proxy#) "uninterpretedOption"))
                         _x)))
                  Data.Monoid.<>
-                 Data.Monoid.mconcat
-                   (Prelude.map Data.ProtoLens.Encoding.Wire.buildTaggedValue
-                      (Lens.Family2.view Data.ProtoLens.unknownFields _x)))
+                 Data.ProtoLens.Encoding.Wire.buildFieldSet
+                   (Lens.Family2.view Data.ProtoLens.unknownFields _x))
 instance Control.DeepSeq.NFData OneofOptions where
         rnf
           = (\ x__ ->
@@ -8078,7 +8077,8 @@ instance Data.ProtoLens.Message ServiceDescriptorProto where
                                                     (Lens.Labels.Proxy#) "options"))
                                               y
                                               x)
-                                wire -> do !y <- Data.ProtoLens.Encoding.Wire.parseTaggedValue wire
+                                wire -> do !y <- Data.ProtoLens.Encoding.Wire.parseTaggedValueFromWire
+                                                   wire
                                            loop
                                              (Lens.Family2.over Data.ProtoLens.unknownFields
                                                 (\ !t -> (:) y t)
@@ -8138,9 +8138,8 @@ instance Data.ProtoLens.Message ServiceDescriptorProto where
                                                 Prelude.. Data.ProtoLens.encodeMessage)
                                                _v)
                      Data.Monoid.<>
-                     Data.Monoid.mconcat
-                       (Prelude.map Data.ProtoLens.Encoding.Wire.buildTaggedValue
-                          (Lens.Family2.view Data.ProtoLens.unknownFields _x)))
+                     Data.ProtoLens.Encoding.Wire.buildFieldSet
+                       (Lens.Family2.view Data.ProtoLens.unknownFields _x))
 instance Control.DeepSeq.NFData ServiceDescriptorProto where
         rnf
           = (\ x__ ->
@@ -8266,7 +8265,8 @@ instance Data.ProtoLens.Message ServiceOptions where
                                                       (Lens.Labels.Proxy#) "uninterpretedOption"))
                                                 (\ !t -> (:) y t)
                                                 x)
-                                wire -> do !y <- Data.ProtoLens.Encoding.Wire.parseTaggedValue wire
+                                wire -> do !y <- Data.ProtoLens.Encoding.Wire.parseTaggedValueFromWire
+                                                   wire
                                            loop
                                              (Lens.Family2.over Data.ProtoLens.unknownFields
                                                 (\ !t -> (:) y t)
@@ -8305,9 +8305,8 @@ instance Data.ProtoLens.Message ServiceOptions where
                                 (Lens.Labels.Proxy#) "uninterpretedOption"))
                           _x)))
                    Data.Monoid.<>
-                   Data.Monoid.mconcat
-                     (Prelude.map Data.ProtoLens.Encoding.Wire.buildTaggedValue
-                        (Lens.Family2.view Data.ProtoLens.unknownFields _x)))
+                   Data.ProtoLens.Encoding.Wire.buildFieldSet
+                     (Lens.Family2.view Data.ProtoLens.unknownFields _x))
 instance Control.DeepSeq.NFData ServiceOptions where
         rnf
           = (\ x__ ->
@@ -8391,7 +8390,8 @@ instance Data.ProtoLens.Message SourceCodeInfo where
                                                     (Lens.Labels.Proxy#) "location"))
                                               (\ !t -> (:) y t)
                                               x)
-                                wire -> do !y <- Data.ProtoLens.Encoding.Wire.parseTaggedValue wire
+                                wire -> do !y <- Data.ProtoLens.Encoding.Wire.parseTaggedValueFromWire
+                                                   wire
                                            loop
                                              (Lens.Family2.over Data.ProtoLens.unknownFields
                                                 (\ !t -> (:) y t)
@@ -8416,9 +8416,8 @@ instance Data.ProtoLens.Message SourceCodeInfo where
                            ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "location"))
                         _x)))
                  Data.Monoid.<>
-                 Data.Monoid.mconcat
-                   (Prelude.map Data.ProtoLens.Encoding.Wire.buildTaggedValue
-                      (Lens.Family2.view Data.ProtoLens.unknownFields _x)))
+                 Data.ProtoLens.Encoding.Wire.buildFieldSet
+                   (Lens.Family2.view Data.ProtoLens.unknownFields _x))
 instance Control.DeepSeq.NFData SourceCodeInfo where
         rnf
           = (\ x__ ->
@@ -8730,7 +8729,8 @@ instance Data.ProtoLens.Message SourceCodeInfo'Location where
                                                     (Lens.Labels.Proxy#) "leadingDetachedComments"))
                                               (\ !t -> (:) y t)
                                               x)
-                                wire -> do !y <- Data.ProtoLens.Encoding.Wire.parseTaggedValue wire
+                                wire -> do !y <- Data.ProtoLens.Encoding.Wire.parseTaggedValueFromWire
+                                                   wire
                                            loop
                                              (Lens.Family2.over Data.ProtoLens.unknownFields
                                                 (\ !t -> (:) y t)
@@ -8830,9 +8830,8 @@ instance Data.ProtoLens.Message SourceCodeInfo'Location where
                                       (Lens.Labels.Proxy#) "leadingDetachedComments"))
                                 _x)))
                          Data.Monoid.<>
-                         Data.Monoid.mconcat
-                           (Prelude.map Data.ProtoLens.Encoding.Wire.buildTaggedValue
-                              (Lens.Family2.view Data.ProtoLens.unknownFields _x)))
+                         Data.ProtoLens.Encoding.Wire.buildFieldSet
+                           (Lens.Family2.view Data.ProtoLens.unknownFields _x))
 instance Control.DeepSeq.NFData SourceCodeInfo'Location where
         rnf
           = (\ x__ ->
@@ -9179,7 +9178,8 @@ instance Data.ProtoLens.Message UninterpretedOption where
                                                     (Lens.Labels.Proxy#) "aggregateValue"))
                                               y
                                               x)
-                                wire -> do !y <- Data.ProtoLens.Encoding.Wire.parseTaggedValue wire
+                                wire -> do !y <- Data.ProtoLens.Encoding.Wire.parseTaggedValueFromWire
+                                                   wire
                                            loop
                                              (Lens.Family2.over Data.ProtoLens.unknownFields
                                                 (\ !t -> (:) y t)
@@ -9300,9 +9300,8 @@ instance Data.ProtoLens.Message UninterpretedOption where
                                                         Prelude.. Data.Text.Encoding.encodeUtf8)
                                                        _v)
                              Data.Monoid.<>
-                             Data.Monoid.mconcat
-                               (Prelude.map Data.ProtoLens.Encoding.Wire.buildTaggedValue
-                                  (Lens.Family2.view Data.ProtoLens.unknownFields _x)))
+                             Data.ProtoLens.Encoding.Wire.buildFieldSet
+                               (Lens.Family2.view Data.ProtoLens.unknownFields _x))
 instance Control.DeepSeq.NFData UninterpretedOption where
         rnf
           = (\ x__ ->
@@ -9443,7 +9442,8 @@ instance Data.ProtoLens.Message UninterpretedOption'NamePart where
                                               x)
                                            Prelude.False
                                            required'namePart
-                                wire -> do !y <- Data.ProtoLens.Encoding.Wire.parseTaggedValue wire
+                                wire -> do !y <- Data.ProtoLens.Encoding.Wire.parseTaggedValueFromWire
+                                                   wire
                                            loop
                                              (Lens.Family2.over Data.ProtoLens.unknownFields
                                                 (\ !t -> (:) y t)
@@ -9474,9 +9474,8 @@ instance Data.ProtoLens.Message UninterpretedOption'NamePart where
                             ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "isExtension"))
                          _x))
                    Data.Monoid.<>
-                   Data.Monoid.mconcat
-                     (Prelude.map Data.ProtoLens.Encoding.Wire.buildTaggedValue
-                        (Lens.Family2.view Data.ProtoLens.unknownFields _x)))
+                   Data.ProtoLens.Encoding.Wire.buildFieldSet
+                     (Lens.Family2.view Data.ProtoLens.unknownFields _x))
 instance Control.DeepSeq.NFData UninterpretedOption'NamePart where
         rnf
           = (\ x__ ->
