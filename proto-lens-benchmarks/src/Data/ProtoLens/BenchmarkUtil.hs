@@ -4,7 +4,6 @@
 -- license that can be found in the LICENSE file or at
 -- https://developers.google.com/open-source/licenses/bsd
 
-{-# LANGUAGE CPP #-}
 {-# LANGUAGE ScopedTypeVariables #-}
 
 -- | A utility library for writing proto-lens benchmarks.
@@ -15,16 +14,10 @@ import Criterion.Main
 import qualified Criterion.Main.Options as Criterion
 import qualified Data.ByteString as BS
 import Data.Maybe (fromMaybe)
-import qualified Data.ProtoLens.Encoding.Reflected as Reflected
-import Data.ProtoLens.Message
-    ( Message
-    , unfinishedBuildMessage
-    , unfinishedParseMessage
-    )
-import Data.ProtoLens.Encoding.Bytes (runBuilder, runParser)
 import qualified Options.Applicative as Options
 import Data.Semigroup ((<>))
 
+import Data.ProtoLens (Message, encodeMessage, decodeMessageOrDie)
 -- | Generate a group of benchmarks for encoding and decoding the given proto
 -- message. Includes benchmarks for decoding to both weak head normal form and
 -- normal form (i.e. all fields fully forced.) There is only one encoding
@@ -40,34 +33,22 @@ protoBenchmark
     -> Benchmark
 protoBenchmark groupName proto =
     bgroup fullGroupName
-        [ bgroup "encode"
-            [ bench "reflected" $ whnf (runBuilder . Reflected.buildMessage) proto
-            , bench "generated" $ whnf (runBuilder . unfinishedBuildMessage) proto
-            ]
+        [ bench "encode" $ whnf encodeMessage proto
         , bgroup "decode"
-            [ bgroup "whnf"
-                [ bench "reflected" $ whnf reflectedDecodeMessageOrDie encodedProto
-                , bench "generated" $ whnf generatedDecodeMessageOrDie encodedProto
-                ]
-            , bgroup "nf"
-                [ bench "reflected" $ nf reflectedDecodeMessageOrDie encodedProto
-                , bench "generated" $ nf generatedDecodeMessageOrDie encodedProto
-                ]
+            [ bench "whnf" $ whnf decodeMessageOrDie' encodedProto
+            , bench "nf" $ nf decodeMessageOrDie' encodedProto
             ]
         ]
   where
     -- We must indicate to the compiler that we want to decode to the same
     -- message type as the input proto.
-    -- We use `either error id` here so that if a bug is introduced that
+    -- We use `decodeMessageOrDie` here so that if a bug is introduced that
     -- causes decoding to fail, the benchmark will fail with an error, instead of
     -- silently reporting a misleading value (the amount of time required to
     -- determine that proto decoding failed).
-    reflectedDecodeMessageOrDie, generatedDecodeMessageOrDie :: BS.ByteString -> a
-    reflectedDecodeMessageOrDie =
-        either error id . runParser Reflected.parseMessage
-    generatedDecodeMessageOrDie =
-        either error id . runParser unfinishedParseMessage
-    encodedProto = runBuilder $ Reflected.buildMessage proto
+    decodeMessageOrDie' :: BS.ByteString -> a
+    decodeMessageOrDie' = decodeMessageOrDie
+    encodedProto = encodeMessage proto
     fullGroupName =
         groupName ++ "(" ++ prettySize (BS.length encodedProto) ++ ")"
 

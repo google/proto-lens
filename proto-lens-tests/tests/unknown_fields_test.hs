@@ -10,7 +10,7 @@ import qualified Data.ProtoLens.Encoding.Wire as Wire
 import qualified Data.Text.Lazy as LT
 import Lens.Family2 ((&), (.~))
 import Test.Framework.Providers.HUnit (testCase)
-import Test.HUnit ((@=?), assertBool)
+import Test.HUnit ((@=?))
 
 import Data.ProtoLens.TestUtil
 import Proto.UnknownFields
@@ -19,6 +19,7 @@ import Proto.UnknownFields_Fields
 main :: IO ()
 main = testMain
     [ testPreserveUnknownFields
+    , testPreserveMismatchedFields
     , testUnknownGroup
     ]
 
@@ -57,6 +58,25 @@ testPreserveUnknownFields =
               , tagged 100 $ VarInt 102
               ])
 
+testPreserveMismatchedFields :: Test
+testPreserveMismatchedFields =
+    testUnknownSerialization
+        "mismatched fields"
+        ((defMessage :: Raw)
+              & unknownFields .~
+                  [ TaggedValue 1 $ Wire.WireValue Wire.Fixed32 42
+                  , TaggedValue 2 $ Wire.WireValue Wire.Lengthy "abcde"
+                  ])
+        (vcat [ keyedInt "1" 42
+              , keyedStr "2" "abcde"
+              ])
+        (mconcat
+              [ tagged 1 $ Fixed32 42 -- expects a varint
+              , tagged 2 $ Lengthy "abcde" -- expects a fixed32
+              ])
+
+
+
 -- TODO: The way that we display groups is somewhat hacky.
 testUnknownGroup :: Test
 testUnknownGroup =
@@ -91,5 +111,5 @@ testUnknownSerialization name msg ts bs = testCase name $ do
     bs' @=? encodeMessage msg
     Right msg @=? decodeMessage bs'
     renderIndenting ts @=? renderIndenting (pprintMessage msg)
-    assertBool "can't decode unknown fields from text format"
-        $ isLeft $ (readMessage $ LT.pack $ show ts :: Either String msg)
+    -- Can't decode unknown fields from text format
+    satisfies isLeft $ (readMessage $ LT.pack $ show ts :: Either String msg)

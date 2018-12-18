@@ -74,8 +74,8 @@ lengthy = FieldEncoding
 group :: FieldEncoding
 group = FieldEncoding
             { wireType = 3
-            , buildFieldType = "Data.ProtoLens.unfinishedBuildMessage"
-            , parseFieldType = "Data.ProtoLens.unfinishedParseMessage"
+            , buildFieldType = "Data.ProtoLens.buildMessage"
+            , parseFieldType = "Data.ProtoLens.parseMessage"
             }
 
 groupEnd :: FieldEncoding
@@ -181,11 +181,8 @@ stringField = partialField "Data.Text.Encoding.encodeUtf8" decodeUtf8P lengthy
 -- | A protobuf message type.
 message :: FieldEncoding
 message = partialField
-            ("Prelude.."
-                @@ "Data.ProtoLens.Encoding.Bytes.runBuilder"
-                @@ "Data.ProtoLens.unfinishedBuildMessage")
-            (\m -> "Data.ProtoLens.Encoding.Bytes.runParser"
-                        @@ "Data.ProtoLens.unfinishedParseMessage" @@ m)
+            "Data.ProtoLens.encodeMessage"
+            (\m -> "Data.ProtoLens.decodeMessage" @@ m)
             lengthy
 
 -- | Some functions that are used in multiple places in the generated code.
