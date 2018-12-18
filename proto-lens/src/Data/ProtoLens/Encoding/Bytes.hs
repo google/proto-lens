@@ -15,7 +15,6 @@ module Data.ProtoLens.Encoding.Bytes(
     Builder,
     runParser,
     runBuilder,
-    endOfInput,
     -- * Bytestrings
     getBytes,
     putBytes,
@@ -38,11 +37,13 @@ module Data.ProtoLens.Encoding.Bytes(
     wordToSignedInt64,
     -- * Other utilities
     atEnd,
+    endOfInput,
     runEither,
     (<?>),
     ) where
 
-import Data.Attoparsec.ByteString as Parse
+import Control.Applicative (empty)
+import Control.Monad (when)
 import Data.Bits
 import Data.ByteString (ByteString)
 import Data.ByteString.Lazy.Builder as Builder
@@ -55,12 +56,7 @@ import Foreign.Marshal.Alloc (alloca)
 import Foreign.Storable (Storable, peek, poke)
 import System.IO.Unsafe (unsafePerformIO)
 
--- | Evaluates a parser on the given input.
---
--- If the parser does not consume all of the input, the rest of the
--- input is discarded and the parser still succeeds.
-runParser :: Parser a -> ByteString -> Either String a
-runParser = Parse.parseOnly
+import Data.ProtoLens.Encoding.Parser
 
 -- | Constructs a strict 'ByteString' from the given 'Builder'.
 runBuilder :: Builder -> ByteString
@@ -68,7 +64,7 @@ runBuilder = L.toStrict . Builder.toLazyByteString
 
 -- | Parse a @ByteString@ of the given length.
 getBytes :: Int -> Parser ByteString
-getBytes = Parse.take
+getBytes = takeN
 
 -- | Emit a given @ByteString@.
 putBytes :: ByteString -> Builder
@@ -156,3 +152,6 @@ wordToSignedInt64 n
 
 runEither :: Either String a -> Parser a
 runEither = either fail return
+
+endOfInput :: Parser ()
+endOfInput = atEnd >>= \end -> when end empty

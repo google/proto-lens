@@ -29,7 +29,7 @@ module Data.ProtoLens.Encoding.Reflected.Wire(
     ) where
 
 import Control.DeepSeq (NFData(..))
-import Data.Attoparsec.ByteString (manyTill)
+-- import Data.Attoparsec.ByteString (manyTill)
 import Data.Bits
 import qualified Data.ByteString as B
 import Data.Monoid ((<>))
@@ -173,4 +173,4 @@ putTaggedValue (TaggedValue tag (WireValue wt val)) =
 type FieldSet = [TaggedValue]
 
 decodeFieldSet :: B.ByteString -> Either String FieldSet
-decodeFieldSet = runParser (manyTill getTaggedValue endOfInput)
+decodeFieldSet = undefined -- runParser (manyTill getTaggedValue endOfInput)

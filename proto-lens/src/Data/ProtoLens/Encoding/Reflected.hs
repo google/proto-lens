@@ -29,7 +29,6 @@ import Data.ProtoLens.Encoding.Reflected.Wire
 
 import Control.Applicative ((<|>))
 import Control.Monad (guard)
-import Data.Attoparsec.ByteString ((<?>))
 import Data.Bool (bool)
 import Data.Proxy (Proxy(Proxy))
 import Data.Text.Encoding (encodeUtf8, decodeUtf8')

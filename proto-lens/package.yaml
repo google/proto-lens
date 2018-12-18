@@ -64,8 +64,9 @@ library:
         cpp-options: -DGENERATED_ENCODING=0
 
   other-modules:
-    - Data.ProtoLens.TextFormat.Parser
+    - Data.ProtoLens.Encoding.Parser
     - Data.ProtoLens.Encoding.Reflected.Wire
+    - Data.ProtoLens.TextFormat.Parser
   dependencies:
     - attoparsec == 0.13.*
     - base >= 4.9 && < 4.13
