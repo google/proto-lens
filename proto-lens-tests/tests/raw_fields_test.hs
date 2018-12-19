@@ -13,11 +13,11 @@ module Main where
 import Control.Arrow (second)
 import Proto.RawFields
 import Proto.RawFields_Fields
+import Data.ByteString.Builder (word8)
 import Data.ProtoLens
 import Lens.Family2 (Lens', (&), (.~))
 import Data.Int (Int32, Int64)
 import Data.Word (Word32, Word64)
-import Data.String (fromString)
 import Test.Framework (testGroup)
 import qualified Data.ByteString as B
 import Data.Text (Text)
@@ -27,12 +27,6 @@ import Data.Text.Encoding (encodeUtf8)
 import Data.ByteString.Builder (Builder, byteString)
 
 import Data.ProtoLens.TestUtil
-
-deserializeFails :: String -> Bad -> Test
-deserializeFails name bad = deserializeFrom name expected $ buildMessage bad
-  where
-    expected :: Maybe Raw
-    expected = Nothing
 
 readFails :: String -> LT.Text -> Test
 readFails name = readFrom name (Nothing :: Maybe Raw)
@@ -252,5 +246,6 @@ testBytes = testRawValues "bytes" i
         ])
 
 testFailedDecoding = testGroup "failedDecoding"
-    [ deserializeFails "different types" (defMessage & a .~ fromString "foo")
+    [ deserializeFrom "Incorrect UTF-8" (Nothing :: Maybe Raw)
+        $ tagged 8 $ Lengthy $ word8 255
     ]

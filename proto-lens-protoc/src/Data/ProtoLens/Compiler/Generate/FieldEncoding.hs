@@ -5,7 +5,7 @@
 -- individual field types.
 --
 -- Upstream docs:
--- https://developers.google.com/protocol-buffers/docs/encoding#structure
+-- <https://developers.google.com/protocol-buffers/docs/encoding#structure>
 module Data.ProtoLens.Compiler.Generate.FieldEncoding
     ( FieldEncoding(..)
     , fieldEncoding
@@ -13,6 +13,7 @@ module Data.ProtoLens.Compiler.Generate.FieldEncoding
     , groupEnd
     ) where
 
+import Data.Word (Word8)
 import Data.ProtoLens.Compiler.Combinators
 import Proto.Google.Protobuf.Descriptor (FieldDescriptorProto'Type(..))
 
@@ -20,7 +21,7 @@ import Proto.Google.Protobuf.Descriptor (FieldDescriptorProto'Type(..))
 data FieldEncoding = FieldEncoding
     { buildFieldType :: Exp -- ^ :: a -> Builder
     , parseFieldType :: Exp -- ^ :: Parser a
-    , wireType :: Integer
+    , wireType :: Word8
     }
 
 -- | A variable-length integer, decoded as an unsigned Word64.
@@ -74,8 +75,8 @@ lengthy = FieldEncoding
 group :: FieldEncoding
 group = FieldEncoding
             { wireType = 3
-            , buildFieldType = "Data.ProtoLens.unfinishedBuildMessage"
-            , parseFieldType = "Data.ProtoLens.unfinishedParseMessage"
+            , buildFieldType = "Data.ProtoLens.buildMessage"
+            , parseFieldType = "Data.ProtoLens.parseMessage"
             }
 
 groupEnd :: FieldEncoding
@@ -181,11 +182,8 @@ stringField = partialField "Data.Text.Encoding.encodeUtf8" decodeUtf8P lengthy
 -- | A protobuf message type.
 message :: FieldEncoding
 message = partialField
-            ("Prelude.."
-                @@ "Data.ProtoLens.Encoding.Bytes.runBuilder"
-                @@ "Data.ProtoLens.unfinishedBuildMessage")
-            (\m -> "Data.ProtoLens.Encoding.Bytes.runParser"
-                        @@ "Data.ProtoLens.unfinishedParseMessage" @@ m)
+            "Data.ProtoLens.encodeMessage"
+            (\m -> "Data.ProtoLens.decodeMessage" @@ m)
             lengthy
 
 -- | Some functions that are used in multiple places in the generated code.

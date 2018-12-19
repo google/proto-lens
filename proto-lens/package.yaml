@@ -52,20 +52,9 @@ library:
     - Proto.Google.Protobuf.Compiler.Plugin_Fields
     - Proto.Google.Protobuf.Descriptor
     - Proto.Google.Protobuf.Descriptor_Fields
-    # Expose this module so it can be used by proto-lens-protoc.
-    # Currently, the generated encoding doesn't work well enough to be
-    # used by it.
-    - Data.ProtoLens.Encoding.Reflected
-  when:
-    - condition: flag(generated-encoding)
-      then:
-        cpp-options: -DGENERATED_ENCODING=1
-      else:
-        cpp-options: -DGENERATED_ENCODING=0
 
   other-modules:
     - Data.ProtoLens.TextFormat.Parser
-    - Data.ProtoLens.Encoding.Reflected.Wire
   dependencies:
     - attoparsec == 0.13.*
     - base >= 4.9 && < 4.13

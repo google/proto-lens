@@ -45,8 +45,9 @@ import Prelude hiding ((<>))
 #endif
 
 import Data.ProtoLens.Encoding (decodeMessage, encodeMessage)
-import Data.ProtoLens.Encoding.Reflected.Wire
-import Data.ProtoLens.Message
+import Data.ProtoLens.Encoding.Bytes (runParser)
+import Data.ProtoLens.Encoding.Wire
+import Data.ProtoLens.Message hiding (buildMessage, parseMessage)
 import qualified Data.ProtoLens.TextFormat.Parser as Parser
 
 -- TODO: This code is newer and missing some edge cases,
@@ -185,11 +186,11 @@ boolValue True = text "true"
 boolValue False = text "false"
 
 pprintTaggedValue :: TaggedValue -> Doc
-pprintTaggedValue (TaggedValue t (WireValue v x)) = case v of
-    VarInt -> named name $ primField x
-    Fixed64 -> named name $ primField x
-    Fixed32 -> named name $ primField x
-    Lengthy -> case decodeFieldSet x of
+pprintTaggedValue (TaggedValue t wv) = case wv of
+    VarInt x -> named name $ primField x
+    Fixed64 x -> named name $ primField x
+    Fixed32 x -> named name $ primField x
+    Lengthy x -> case runParser parseFieldSet x of
                   Left _ -> named name $ pprintByteString x
                   Right ts -> pprintSubmessage name
                                 $ sep $ map pprintTaggedValue ts
@@ -198,6 +199,7 @@ pprintTaggedValue (TaggedValue t (WireValue v x)) = case v of
     EndGroup -> named name $ text "end_group"
   where
     name = show (unTag t)
+
 
 --------------------------------------------------------------------------------
 -- Parsing

@@ -2,6 +2,15 @@
 
 ## Unreleased changes
 - Merge proto-lens-combinators into the proto-lens library.
+- Use generated Haskell code to encode/decode proto messages more quickly.
+  In particular:
+  - Add the methods `parseMessage` and `buildMessage` to `Data.ProtoLens.Message`
+  - Expose the module `Data.ProtoLens.Encoding.Bytes`.
+  - Simplify the API of `Data.ProtoLens.Encoding.Wire`, using a plain ADT
+    rather than a GADT to represent unknown field values.
+- If fields have the wrong wire type, store them in `unknownFields` rather
+  than failing the parse. (#125)
+- Export the new function `parseMessageDelimited`. (#61)
 
 ## v0.4.0.1
 - Bump the dependencies on `base` and `containers` to `0.4.0.1`.

@@ -2,6 +2,7 @@
 {-# LANGUAGE ScopedTypeVariables #-}
 module Main (main) where
 
+import qualified Data.ByteString as B
 import Data.ProtoLens
 import Data.ProtoLens.Any
 import Data.ProtoLens.Arbitrary (ArbitraryMessage(..))
@@ -36,9 +37,8 @@ main = testMain
           -- Unpacking with the wrong package name fails
           let any2 = any1 & typeUrl .~ "type.googleapis.com/blah.Foo"
           satisfies isDifferentType (unpack any2 :: Either UnpackError Foo)
-          -- Unpacking with invalid byte data fails
-          -- Foo expects a string for field #2
-          let any3 = any1 & value .~ toStrictByteString (tagged 2 (VarInt 42))
+          -- Unpacking with invalid message data fails
+          let any3 = any1 & value .~ B.pack [255] -- Invalid protobuf message
           satisfies isDecodingError (unpack any3 :: Either UnpackError Foo)
     , testProperty "packWithPrefix/unpack" $ \(ArbitraryMessage (foo :: Foo)) -> do
           -- Generate a random prefix containing in particular URL separation

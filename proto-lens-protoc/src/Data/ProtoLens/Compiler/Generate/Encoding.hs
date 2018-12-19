@@ -1,6 +1,6 @@
 -- | This module generates code for decoding and encoding protocol buffer messages.
 --
--- Upstream docs: https://developers.google.com/protocol-buffers/docs/encoding
+-- Upstream docs: <https://developers.google.com/protocol-buffers/docs/encoding>
 {-# LANGUAGE DeriveFunctor #-}
 {-# LANGUAGE LambdaCase #-}
 {-# LANGUAGE NoMonomorphismRestriction #-}
@@ -10,7 +10,6 @@ module Data.ProtoLens.Compiler.Generate.Encoding
     , generatedBuilder
     ) where
 
-import Data.Bits (shiftL, (.|.))
 import Data.Int (Int32)
 import qualified Data.Map as Map
 import Data.Semigroup ((<>))
@@ -20,6 +19,7 @@ import Lens.Family2 (view, (^.))
 import Data.ProtoLens.Compiler.Combinators
 import Data.ProtoLens.Compiler.Definitions
 import Data.ProtoLens.Compiler.Generate.FieldEncoding
+import Data.ProtoLens.Encoding.Wire (joinTypeAndTag)
 
 import Proto.Google.Protobuf.Descriptor_Fields
     ( name
@@ -286,7 +286,7 @@ parseFieldCase loop x f = case plainFieldKind f of
 unknownFieldCase ::
     (ParseState Exp -> Exp) -> ParseState Exp -> Alt
 unknownFieldCase loop x = wire --> do'
-    [ bangPat y <-- "Data.ProtoLens.Encoding.Wire.parseTaggedValue" @@ wire
+    [ bangPat y <-- "Data.ProtoLens.Encoding.Wire.parseTaggedValueFromWire" @@ wire
     , stmt . loop . updateParseState (over' unknownFields' (cons @@ y))
         $ x
     ]
@@ -360,10 +360,8 @@ generatedBuilder m =
 
 buildUnknown :: Exp -> Exp
 buildUnknown x
-    = "Data.Monoid.mconcat"
-        @@ ("Prelude.map"
-                @@ "Data.ProtoLens.Encoding.Wire.buildTaggedValue"
-                @@ (view' @@ unknownFields' @@ x))
+    = "Data.ProtoLens.Encoding.Wire.buildFieldSet"
+                @@ (view' @@ unknownFields' @@ x)
 
 -- | Concatenate a list of Monoids into a single value.
 -- For example, foldMapExp [a,b,c] will be transformed into
@@ -480,8 +478,7 @@ buildOneofField x info = case' (view' @@ lensOfOneofField info @@ x) $
 -- The last three bits of the number store the wire type, and the
 -- rest store the field number as a varint.
 makeTag :: Int32 -> FieldEncoding -> Integer
-makeTag num enc =
-    fromIntegral num `shiftL` 3 .|. wireType enc
+makeTag num enc = fromIntegral $ joinTypeAndTag (fromIntegral num) (wireType enc)
 
 fieldTag :: FieldInfo -> Integer
 fieldTag f = makeTag (fieldDescriptor f ^. number) $ fieldInfoEncoding f
