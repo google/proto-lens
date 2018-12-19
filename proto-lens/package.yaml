@@ -27,14 +27,6 @@ data-files:
   - proto-lens-imports/google/protobuf/descriptor.proto
   - proto-lens-imports/google/protobuf/compiler/plugin.proto
 
-flags:
-  generated-encoding:
-    description: >
-        Enable the codepath for generated encodings.  Currently
-        incomplete and experimental.
-    manual: True
-    default: False
-
 library:
   source-dirs: src
   exposed-modules:
