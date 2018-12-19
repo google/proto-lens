@@ -21,6 +21,7 @@ module Data.ProtoLens.Encoding.Wire
 import Control.DeepSeq (NFData(..))
 import Data.Bits ((.&.), (.|.), shiftL, shiftR)
 import qualified Data.ByteString as B
+import Data.Semigroup ((<>))
 import Data.Word (Word8, Word32, Word64)
 
 import Data.ProtoLens.Encoding.Bytes
