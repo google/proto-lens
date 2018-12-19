@@ -24,13 +24,13 @@ benchmaker size =
     -- (less likely for the legend to overlap results) if smaller results
     -- are first.
     [ protoBenchmark "int32-packed"
-        (defMessage & num .~ replicate size 5 ::Int32Unpacked)
+        (defMessage & num .~ replicate size 5 :: Int32Packed)
     , protoBenchmark "int32-unpacked"
-        (defMessage & num .~ replicate size 5 ::Int32Packed)
+        (defMessage & num .~ replicate size 5 :: Int32Unpacked)
     , protoBenchmark "float-packed"
         (defMessage & num .~ replicate size 5 :: FloatPacked)
     , protoBenchmark "float-unpacked"
-        (defMessage & num .~ replicate size 5 :: FloatPacked)
+        (defMessage & num .~ replicate size 5 :: FloatUnpacked)
     ]
 
 main :: IO ()
