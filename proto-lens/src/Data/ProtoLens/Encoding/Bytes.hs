@@ -5,6 +5,7 @@
 -- https://developers.google.com/open-source/licenses/bsd
 
 {-# LANGUAGE BangPatterns #-}
+{-# LANGUAGE GeneralizedNewtypeDeriving #-}
 {-# LANGUAGE RankNTypes #-}
 {-# LANGUAGE ScopedTypeVariables #-}
 
@@ -15,7 +16,6 @@ module Data.ProtoLens.Encoding.Bytes(
     Builder,
     runParser,
     runBuilder,
-    endOfInput,
     -- * Bytestrings
     getBytes,
     putBytes,
@@ -42,25 +42,29 @@ module Data.ProtoLens.Encoding.Bytes(
     (<?>),
     ) where
 
-import Data.Attoparsec.ByteString as Parse
+import qualified Data.Attoparsec.ByteString as Atto
 import Data.Bits
 import Data.ByteString (ByteString)
 import Data.ByteString.Lazy.Builder as Builder
 import qualified Data.ByteString.Lazy as L
 import Data.Int (Int32, Int64)
 import Data.Monoid ((<>))
-import Data.Word (Word32, Word64)
+import Data.Word (Word8, Word32, Word64)
 import Foreign.Ptr (castPtr)
 import Foreign.Marshal.Alloc (alloca)
 import Foreign.Storable (Storable, peek, poke)
 import System.IO.Unsafe (unsafePerformIO)
+
+-- | A parsing monad for decoding the wire format.
+newtype Parser a = Parser (Atto.Parser a)
+    deriving (Functor, Applicative, Monad)
 
 -- | Evaluates a parser on the given input.
 --
 -- If the parser does not consume all of the input, the rest of the
 -- input is discarded and the parser still succeeds.
 runParser :: Parser a -> ByteString -> Either String a
-runParser = Parse.parseOnly
+runParser (Parser p) = Atto.parseOnly p
 
 -- | Constructs a strict 'ByteString' from the given 'Builder'.
 runBuilder :: Builder -> ByteString
@@ -68,7 +72,7 @@ runBuilder = L.toStrict . Builder.toLazyByteString
 
 -- | Parse a @ByteString@ of the given length.
 getBytes :: Int -> Parser ByteString
-getBytes = Parse.take
+getBytes = Parser . Atto.take
 
 -- | Emit a given @ByteString@.
 putBytes :: ByteString -> Builder
@@ -80,7 +84,7 @@ getVarInt :: Parser Word64
 getVarInt = loop 1 0
   where
     loop !s !n = do
-        b <- anyWord8
+        b <- getWord8
         let n' = n + s * fromIntegral (b .&. 127)
         if (b .&. 128) == 0
             then return $! n'
@@ -92,13 +96,16 @@ putVarInt n
     | otherwise = Builder.word8 (fromIntegral $ n .&. 127 .|. 128)
                       <> putVarInt (n `shiftR` 7)
 
+getWord8 :: Parser Word8
+getWord8 = Parser Atto.anyWord8
+
 -- | Little-endian decoding function.
 getFixed32 :: Parser Word32
 getFixed32 = do
-    b1 <- anyWord8
-    b2 <- anyWord8
-    b3 <- anyWord8
-    b4 <- anyWord8
+    b1 <- getWord8
+    b2 <- getWord8
+    b3 <- getWord8
+    b4 <- getWord8
     return $ ((fromIntegral b4 `shiftL` 8 + fromIntegral b3)
                 `shiftL` 8 + fromIntegral b2) `shiftL` 8 + fromIntegral b1
 
@@ -156,3 +163,9 @@ wordToSignedInt64 n
 
 runEither :: Either String a -> Parser a
 runEither = either fail return
+
+atEnd :: Parser Bool
+atEnd = Parser Atto.atEnd
+
+(<?>) :: Parser a -> String -> Parser a
+Parser p <?> msg = Parser (p Atto.<?> msg)
