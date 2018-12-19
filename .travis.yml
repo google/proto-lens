@@ -28,8 +28,6 @@ matrix:
     addons: {apt: {packages: [libgmp-dev]}}
   - env: BUILD=stack STACK='stack --stack-yaml=stack-ghc-8.6.yaml'
     addons: {apt: {packages: [libgmp-dev]}}
-  - env: BUILD=stack_generated_encoding STACK='stack'
-    addons: {apt: {packages: [libgmp-dev]}}
 
 before_install:
   - mkdir -p $HOME/.local/bin
@@ -66,8 +64,6 @@ script:
         STACK_ARGS=(--haddock --no-haddock-deps);
         $STACK build --bench --no-run-benchmarks "${STACK_ARGS[@]}" && $STACK test "${STACK_ARGS[@]}" &&
         (cd proto-lens-tutorial && $STACK build "${STACK_ARGS[@]}");;
-      stack_generated_encoding)
-        $STACK build --flag proto-lens:generated-encoding --bench --no-run-benchmarks --test --no-run-tests;;
       cabal)
         ./travis-cabal.sh;;
     esac
