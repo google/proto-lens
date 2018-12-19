@@ -1,6 +1,6 @@
 -- | This module generates code for decoding and encoding protocol buffer messages.
 --
--- Upstream docs: https://developers.google.com/protocol-buffers/docs/encoding
+-- Upstream docs: <https://developers.google.com/protocol-buffers/docs/encoding>
 {-# LANGUAGE DeriveFunctor #-}
 {-# LANGUAGE LambdaCase #-}
 {-# LANGUAGE NoMonomorphismRestriction #-}

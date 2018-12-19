@@ -5,7 +5,7 @@
 -- individual field types.
 --
 -- Upstream docs:
--- https://developers.google.com/protocol-buffers/docs/encoding#structure
+-- <https://developers.google.com/protocol-buffers/docs/encoding#structure>
 module Data.ProtoLens.Compiler.Generate.FieldEncoding
     ( FieldEncoding(..)
     , fieldEncoding

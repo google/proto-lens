@@ -1,6 +1,9 @@
 -- | Module defining the individual base wire types (e.g. VarInt, Fixed64).
 --
 -- They are used to represent the @unknownFields@ within the proto message.
+--
+-- Upstream docs:
+-- <https://developers.google.com/protocol-buffers/docs/encoding#structure>
 {-# LANGUAGE BangPatterns #-}
 {-# LANGUAGE GeneralizedNewtypeDeriving #-}
 module Data.ProtoLens.Encoding.Wire
@@ -24,7 +27,7 @@ import Data.ProtoLens.Encoding.Bytes
 
 -- | A tag that identifies a particular field of the message when converting
 -- to/from the wire format.
-newtype Tag = Tag { unTag :: Int}
+newtype Tag = Tag { unTag :: Int }
     deriving (Show, Eq, Ord, Num, NFData)
 
 -- | The encoding of some unknown field on the wire.
@@ -100,10 +103,10 @@ joinTypeAndTag (Tag t) w = fromIntegral t `shiftL` 3 .|. fromIntegral w
 parseFieldSet :: Parser FieldSet
 parseFieldSet = loop []
   where
-    loop !ws = do
+    loop ws = do
         end <- atEnd
         if end
-            then return $ reverse ws
+            then return $! reverse ws
             else do
                 !w <- parseTaggedValue
                 loop (w:ws)
