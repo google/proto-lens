@@ -5,7 +5,10 @@
 - Use generated Haskell code to encode/decode proto messages more quickly.
   In particular:
   - Add the methods `parseMessage` and `buildMessage` to `Data.ProtoLens.Message`
-  - Expose the module `Data.ProtoLens.Encoding.Bytes`.
+  - Expose an opaque `Parser` monad, which is used by the generated
+    code.
+  - Expose the module `Data.ProtoLens.Encoding.Bytes`, which is used
+    by the generated code.
   - Simplify the API of `Data.ProtoLens.Encoding.Wire`, using a plain ADT
     rather than a GADT to represent unknown field values.
 - If fields have the wrong wire type, store them in `unknownFields` rather
