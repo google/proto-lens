@@ -13,6 +13,8 @@ import qualified Data.Monoid
 import qualified Data.Word
 import qualified Data.ProtoLens
 import qualified Data.ProtoLens.Encoding.Bytes
+import qualified Data.ProtoLens.Encoding.Growing
+import qualified Data.ProtoLens.Encoding.Parser.Unsafe
 import qualified Data.ProtoLens.Encoding.Wire
 import qualified Data.ProtoLens.Message.Enum
 import qualified Data.ProtoLens.Service.Types
@@ -23,6 +25,9 @@ import qualified Data.Map
 import qualified Data.ByteString
 import qualified Data.ByteString.Char8
 import qualified Data.Text.Encoding
+import qualified Data.Vector
+import qualified Data.Vector.Generic
+import qualified Data.Vector.Unboxed
 import qualified Lens.Labels
 import qualified Text.Read
 import qualified Proto.Google.Protobuf.Descriptor
@@ -192,3 +197,26 @@ suffix ::
 suffix
   = Lens.Labels.lensOf'
       ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "suffix")
+vector'file ::
+            forall f s a .
+              (Prelude.Functor f, Lens.Labels.HasLens' s "vector'file" a) =>
+              Lens.Family2.LensLike' f s a
+vector'file
+  = Lens.Labels.lensOf'
+      ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "vector'file")
+vector'fileToGenerate ::
+                      forall f s a .
+                        (Prelude.Functor f,
+                         Lens.Labels.HasLens' s "vector'fileToGenerate" a) =>
+                        Lens.Family2.LensLike' f s a
+vector'fileToGenerate
+  = Lens.Labels.lensOf'
+      ((Lens.Labels.proxy#) ::
+         (Lens.Labels.Proxy#) "vector'fileToGenerate")
+vector'protoFile ::
+                 forall f s a .
+                   (Prelude.Functor f, Lens.Labels.HasLens' s "vector'protoFile" a) =>
+                   Lens.Family2.LensLike' f s a
+vector'protoFile
+  = Lens.Labels.lensOf'
+      ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "vector'protoFile")

@@ -25,6 +25,7 @@ library:
     - lens-labels == 0.3.*
     - proto-lens == 0.4.*
     - text == 1.2.*
+    - vector >= 0.11 && < 0.13
 
 
   reexported-modules:
@@ -38,6 +39,8 @@ library:
     - Data.Map as Data.ProtoLens.Runtime.Data.Map,
     - Data.ProtoLens as Data.ProtoLens.Runtime.Data.ProtoLens,
     - Data.ProtoLens.Encoding.Bytes as Data.ProtoLens.Runtime.Data.ProtoLens.Encoding.Bytes,
+    - Data.ProtoLens.Encoding.Growing as Data.ProtoLens.Runtime.Data.ProtoLens.Encoding.Growing,
+    - Data.ProtoLens.Encoding.Parser.Unsafe as Data.ProtoLens.Runtime.Data.ProtoLens.Encoding.Parser.Unsafe,
     # TODO: try to avoid exposing the Wire module, or else merge it into the
     # Bytes module.
     - Data.ProtoLens.Encoding.Wire as Data.ProtoLens.Runtime.Data.ProtoLens.Encoding.Wire,
@@ -45,6 +48,9 @@ library:
     - Data.ProtoLens.Message.Enum as Data.ProtoLens.Runtime.Data.ProtoLens.Message.Enum,
     - Data.Text as Data.ProtoLens.Runtime.Data.Text,
     - Data.Text.Encoding as Data.ProtoLens.Runtime.Data.Text.Encoding,
+    - Data.Vector as Data.ProtoLens.Runtime.Data.Vector,
+    - Data.Vector.Generic as Data.ProtoLens.Runtime.Data.Vector.Generic,
+    - Data.Vector.Unboxed as Data.ProtoLens.Runtime.Data.Vector.Unboxed,
     - Lens.Family2 as Data.ProtoLens.Runtime.Lens.Family2,
     - Lens.Family2.Unchecked as Data.ProtoLens.Runtime.Lens.Family2.Unchecked,
     - Lens.Labels as Data.ProtoLens.Runtime.Lens.Labels,

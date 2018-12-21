@@ -5,23 +5,47 @@
 -- https://developers.google.com/open-source/licenses/bsd
 
 {-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE RankNTypes #-}
+{-# LANGUAGE ScopedTypeVariables #-}
 module Main where
 
-import Proto.Repeated
-import Proto.Repeated_Fields
-import Test.Framework (testGroup)
-import Data.ProtoLens
-import Lens.Family2 ((&), (.~))
 import Data.ByteString.Builder (byteString)
 import Data.Monoid ((<>))
+import Data.Proxy (Proxy(..))
+import Lens.Family2 (Lens', (&), (.~), view, set)
+import Test.Framework (testGroup)
+import Test.QuickCheck
+import qualified Data.Text as T
+import qualified Data.Vector.Generic as V
 
+import Data.ProtoLens
+import Data.ProtoLens.Arbitrary
 import Data.ProtoLens.TestUtil
+import Proto.Repeated
+import Proto.Repeated_Fields
 
 defFoo :: Foo
 defFoo = defMessage
 
 defBar :: Bar
 defBar = defMessage
+
+-- | Test that the vector and list lenses for repeated fields
+-- behave the same.
+vectorTest ::
+    forall a v b . (Eq a, Eq b, Show a, Show b, Message a, V.Vector v b)
+    => String -> Proxy a -> Gen b
+    -> Lens' a [b] -> Lens' a (v b) -> Test
+vectorTest name _ arbitraryElem listLens vecLens = testGroup name
+    [ testProperty "get"
+        $ \(ArbitraryMessage (m :: a)) ->
+            view listLens m === V.toList (view vecLens m)
+    , testProperty "set"
+        $ forAll arbitraryMessage $ \(m :: a) ->
+            forAll (listOf arbitraryElem)
+                $ \bs -> set listLens bs m
+                            === set vecLens (V.fromList bs) m
+    ]
 
 main :: IO ()
 main = testMain
@@ -61,6 +85,18 @@ main = testMain
         (Just (defFoo & a .~ [1,2,3,4] :: Foo))
         $ buildMessage (defFoo & a .~ [1,2] :: Foo)
             <> buildMessage (defFoo & a .~ [3,4] :: Foo)
+    , testGroup "vector"
+        [ vectorTest "fixed64" (Proxy :: Proxy Bar) arbitrary
+            e vector'e
+        , vectorTest "int32" (Proxy :: Proxy Foo) arbitrary
+            a vector'a
+        , vectorTest "string" (Proxy :: Proxy Foo)
+            (T.pack <$> arbitrary)
+            b vector'b
+        , vectorTest "message" (Proxy :: Proxy Foo)
+            arbitraryMessage
+            c vector'c
+        ]
     , testGroup "roundtrip"
         [ runTypedTest (roundTripTest "foo" :: TypedTest Foo)
         , runTypedTest (roundTripTest "bar" :: TypedTest Bar)

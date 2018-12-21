@@ -13,6 +13,8 @@ import qualified Data.Monoid
 import qualified Data.Word
 import qualified Data.ProtoLens
 import qualified Data.ProtoLens.Encoding.Bytes
+import qualified Data.ProtoLens.Encoding.Growing
+import qualified Data.ProtoLens.Encoding.Parser.Unsafe
 import qualified Data.ProtoLens.Encoding.Wire
 import qualified Data.ProtoLens.Message.Enum
 import qualified Data.ProtoLens.Service.Types
@@ -23,6 +25,9 @@ import qualified Data.Map
 import qualified Data.ByteString
 import qualified Data.ByteString.Char8
 import qualified Data.Text.Encoding
+import qualified Data.Vector
+import qualified Data.Vector.Generic
+import qualified Data.Vector.Unboxed
 import qualified Lens.Labels
 import qualified Text.Read
 
@@ -1086,6 +1091,185 @@ value ::
 value
   = Lens.Labels.lensOf'
       ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "value")
+vector'annotation ::
+                  forall f s a .
+                    (Prelude.Functor f,
+                     Lens.Labels.HasLens' s "vector'annotation" a) =>
+                    Lens.Family2.LensLike' f s a
+vector'annotation
+  = Lens.Labels.lensOf'
+      ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "vector'annotation")
+vector'dependency ::
+                  forall f s a .
+                    (Prelude.Functor f,
+                     Lens.Labels.HasLens' s "vector'dependency" a) =>
+                    Lens.Family2.LensLike' f s a
+vector'dependency
+  = Lens.Labels.lensOf'
+      ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "vector'dependency")
+vector'enumType ::
+                forall f s a .
+                  (Prelude.Functor f, Lens.Labels.HasLens' s "vector'enumType" a) =>
+                  Lens.Family2.LensLike' f s a
+vector'enumType
+  = Lens.Labels.lensOf'
+      ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "vector'enumType")
+vector'extension ::
+                 forall f s a .
+                   (Prelude.Functor f, Lens.Labels.HasLens' s "vector'extension" a) =>
+                   Lens.Family2.LensLike' f s a
+vector'extension
+  = Lens.Labels.lensOf'
+      ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "vector'extension")
+vector'extensionRange ::
+                      forall f s a .
+                        (Prelude.Functor f,
+                         Lens.Labels.HasLens' s "vector'extensionRange" a) =>
+                        Lens.Family2.LensLike' f s a
+vector'extensionRange
+  = Lens.Labels.lensOf'
+      ((Lens.Labels.proxy#) ::
+         (Lens.Labels.Proxy#) "vector'extensionRange")
+vector'field ::
+             forall f s a .
+               (Prelude.Functor f, Lens.Labels.HasLens' s "vector'field" a) =>
+               Lens.Family2.LensLike' f s a
+vector'field
+  = Lens.Labels.lensOf'
+      ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "vector'field")
+vector'file ::
+            forall f s a .
+              (Prelude.Functor f, Lens.Labels.HasLens' s "vector'file" a) =>
+              Lens.Family2.LensLike' f s a
+vector'file
+  = Lens.Labels.lensOf'
+      ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "vector'file")
+vector'leadingDetachedComments ::
+                               forall f s a .
+                                 (Prelude.Functor f,
+                                  Lens.Labels.HasLens' s "vector'leadingDetachedComments" a) =>
+                                 Lens.Family2.LensLike' f s a
+vector'leadingDetachedComments
+  = Lens.Labels.lensOf'
+      ((Lens.Labels.proxy#) ::
+         (Lens.Labels.Proxy#) "vector'leadingDetachedComments")
+vector'location ::
+                forall f s a .
+                  (Prelude.Functor f, Lens.Labels.HasLens' s "vector'location" a) =>
+                  Lens.Family2.LensLike' f s a
+vector'location
+  = Lens.Labels.lensOf'
+      ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "vector'location")
+vector'messageType ::
+                   forall f s a .
+                     (Prelude.Functor f,
+                      Lens.Labels.HasLens' s "vector'messageType" a) =>
+                     Lens.Family2.LensLike' f s a
+vector'messageType
+  = Lens.Labels.lensOf'
+      ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "vector'messageType")
+vector'method ::
+              forall f s a .
+                (Prelude.Functor f, Lens.Labels.HasLens' s "vector'method" a) =>
+                Lens.Family2.LensLike' f s a
+vector'method
+  = Lens.Labels.lensOf'
+      ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "vector'method")
+vector'name ::
+            forall f s a .
+              (Prelude.Functor f, Lens.Labels.HasLens' s "vector'name" a) =>
+              Lens.Family2.LensLike' f s a
+vector'name
+  = Lens.Labels.lensOf'
+      ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "vector'name")
+vector'nestedType ::
+                  forall f s a .
+                    (Prelude.Functor f,
+                     Lens.Labels.HasLens' s "vector'nestedType" a) =>
+                    Lens.Family2.LensLike' f s a
+vector'nestedType
+  = Lens.Labels.lensOf'
+      ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "vector'nestedType")
+vector'oneofDecl ::
+                 forall f s a .
+                   (Prelude.Functor f, Lens.Labels.HasLens' s "vector'oneofDecl" a) =>
+                   Lens.Family2.LensLike' f s a
+vector'oneofDecl
+  = Lens.Labels.lensOf'
+      ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "vector'oneofDecl")
+vector'path ::
+            forall f s a .
+              (Prelude.Functor f, Lens.Labels.HasLens' s "vector'path" a) =>
+              Lens.Family2.LensLike' f s a
+vector'path
+  = Lens.Labels.lensOf'
+      ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "vector'path")
+vector'publicDependency ::
+                        forall f s a .
+                          (Prelude.Functor f,
+                           Lens.Labels.HasLens' s "vector'publicDependency" a) =>
+                          Lens.Family2.LensLike' f s a
+vector'publicDependency
+  = Lens.Labels.lensOf'
+      ((Lens.Labels.proxy#) ::
+         (Lens.Labels.Proxy#) "vector'publicDependency")
+vector'reservedName ::
+                    forall f s a .
+                      (Prelude.Functor f,
+                       Lens.Labels.HasLens' s "vector'reservedName" a) =>
+                      Lens.Family2.LensLike' f s a
+vector'reservedName
+  = Lens.Labels.lensOf'
+      ((Lens.Labels.proxy#) ::
+         (Lens.Labels.Proxy#) "vector'reservedName")
+vector'reservedRange ::
+                     forall f s a .
+                       (Prelude.Functor f,
+                        Lens.Labels.HasLens' s "vector'reservedRange" a) =>
+                       Lens.Family2.LensLike' f s a
+vector'reservedRange
+  = Lens.Labels.lensOf'
+      ((Lens.Labels.proxy#) ::
+         (Lens.Labels.Proxy#) "vector'reservedRange")
+vector'service ::
+               forall f s a .
+                 (Prelude.Functor f, Lens.Labels.HasLens' s "vector'service" a) =>
+                 Lens.Family2.LensLike' f s a
+vector'service
+  = Lens.Labels.lensOf'
+      ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "vector'service")
+vector'span ::
+            forall f s a .
+              (Prelude.Functor f, Lens.Labels.HasLens' s "vector'span" a) =>
+              Lens.Family2.LensLike' f s a
+vector'span
+  = Lens.Labels.lensOf'
+      ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "vector'span")
+vector'uninterpretedOption ::
+                           forall f s a .
+                             (Prelude.Functor f,
+                              Lens.Labels.HasLens' s "vector'uninterpretedOption" a) =>
+                             Lens.Family2.LensLike' f s a
+vector'uninterpretedOption
+  = Lens.Labels.lensOf'
+      ((Lens.Labels.proxy#) ::
+         (Lens.Labels.Proxy#) "vector'uninterpretedOption")
+vector'value ::
+             forall f s a .
+               (Prelude.Functor f, Lens.Labels.HasLens' s "vector'value" a) =>
+               Lens.Family2.LensLike' f s a
+vector'value
+  = Lens.Labels.lensOf'
+      ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "vector'value")
+vector'weakDependency ::
+                      forall f s a .
+                        (Prelude.Functor f,
+                         Lens.Labels.HasLens' s "vector'weakDependency" a) =>
+                        Lens.Family2.LensLike' f s a
+vector'weakDependency
+  = Lens.Labels.lensOf'
+      ((Lens.Labels.proxy#) ::
+         (Lens.Labels.Proxy#) "vector'weakDependency")
 weak ::
      forall f s a .
        (Prelude.Functor f, Lens.Labels.HasLens' s "weak" a) =>

@@ -104,6 +104,7 @@ tests:
     source-dirs: tests
     dependencies:
       - proto-lens-tests
+      - vector
     other-modules:
       - Proto.Repeated
       - Proto.Repeated_Fields

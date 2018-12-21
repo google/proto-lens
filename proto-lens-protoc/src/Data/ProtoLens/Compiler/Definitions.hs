@@ -38,6 +38,7 @@ module Data.ProtoLens.Compiler.Definitions
     , definedFieldType
     , definedType
     , camelCase
+    , overloadedFieldName
     ) where
 
 import Control.Applicative (liftA2)
@@ -644,3 +645,6 @@ capitalize :: Text -> Text
 capitalize s
     | Just (c, s') <- uncons s = cons (toUpper c) s'
     | otherwise = s
+
+overloadedFieldName :: FieldInfo -> Symbol
+overloadedFieldName = overloadedName . fieldName
