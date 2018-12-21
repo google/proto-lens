@@ -26,8 +26,8 @@ import System.IO.Unsafe
 
 -- | A monad for parsing an input buffer.
 newtype Parser a = Parser
-    { unParser :: Ptr Word8 -- ^ End position of the input
-               -> Ptr Word8 -- ^ Current position in the input
+    { unParser :: Ptr Word8 -- End position of the input
+               -> Ptr Word8 -- Current position in the input
                -> ExceptT String IO (ParserResult a) }
 
 data ParserResult a = ParserResult
