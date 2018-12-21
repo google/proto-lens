@@ -41,14 +41,17 @@ module Data.ProtoLens.Encoding.Bytes(
     atEnd,
     runEither,
     (<?>),
+    foldMapBuilder,
     ) where
 
 import Data.Bits
 import Data.ByteString (ByteString)
 import Data.ByteString.Lazy.Builder as Builder
+import qualified Data.ByteString.Builder.Internal as Internal
 import qualified Data.ByteString.Lazy as L
 import Data.Int (Int32, Int64)
 import Data.Monoid ((<>))
+import qualified Data.Vector.Generic as V
 import Data.Word (Word32, Word64)
 import Foreign.Ptr (castPtr)
 import Foreign.Marshal.Alloc (alloca)
@@ -140,3 +143,24 @@ wordToSignedInt64 n
 
 runEither :: Either String a -> Parser a
 runEither = either fail return
+
+-- | Loop over the elements of a vector and concatenate the resulting
+-- @Builder@s.
+--
+-- This function has been hand-tuned to perform better than a naive
+-- implementation using, e.g., Vector.foldr or a manual loop.
+foldMapBuilder :: V.Vector v a => (a -> Builder) -> v a -> Builder
+foldMapBuilder f = \v0 -> Internal.builder (loop v0)
+    -- Place v0 on the right-hand side so that GHC actually inlines
+    -- this function.
+  where
+    -- Fully-saturate the inner loop (rather than currying away `cont`
+    -- and `bs`) to avoid GHC creating an intermediate continuation.
+    loop v cont bs
+        | V.null v = cont bs
+        | otherwise = let
+            !x = V.unsafeHead v
+            in Internal.runBuilderWith
+                        (f x)
+                        (loop (V.unsafeTail v) cont) bs
+{-# INLINE foldMapBuilder #-}

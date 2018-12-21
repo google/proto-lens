@@ -11,6 +11,9 @@
     by the generated code.
   - Simplify the API of `Data.ProtoLens.Encoding.Wire`, using a plain ADT
     rather than a GADT to represent unknown field values.
+- Add functionality for storing unknown fields as `Vector`s.  (See the
+  changelog of `proto-lens-protoc` for more details.)  Exposes the
+  `Growing` type for mutable vectors of growing capacity.
 - If fields have the wrong wire type, store them in `unknownFields` rather
   than failing the parse. (#125)
 - Export the new function `parseMessageDelimited`. (#61)
