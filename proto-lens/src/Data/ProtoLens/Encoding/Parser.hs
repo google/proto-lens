@@ -57,6 +57,9 @@ instance Monad Parser where
 -- If the parser does not consume all of the input, the rest of the
 -- input is discarded and the parser still succeeds.  Parsers may use
 -- 'atEnd' to detect whether they are at the end of the input.
+--
+-- Values returned from actions in this monad will not hold onto the original
+-- ByteString, but rather make immutable copies of subsets of its bytes.
 runParser :: Parser a -> ByteString -> Either String a
 runParser (Parser m) b = unsafePerformIO $ B.unsafeUseAsCStringLen b $ \(p, len)
     -> runExceptT $ fmap unParserResult $ m (p `plusPtr` len) (castPtr p)
@@ -80,6 +83,10 @@ getWord32le = withSized 4 "getWord32le: Unexpected end of input" $ \pos -> do
     return $! f (f (f b4 b3) b2) b1
 
 -- | Parse a 'B.ByteString' of the given length.
+--
+-- The new ByteString is an immutable copy of the bytes in the input
+-- and will be managed separately on the Haskell heap from the original
+-- input 'B.ByteString'.
 getBytes :: Int -> Parser B.ByteString
 getBytes n = withSized n "getBytes: Unexpected end of input" $ \pos ->
     B.packCStringLen (castPtr pos, n)
