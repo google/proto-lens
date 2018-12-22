@@ -11,6 +11,7 @@ module Data.ProtoLens.Compiler.Generate.FieldEncoding
     , fieldEncoding
     , lengthy
     , groupEnd
+    , isolatedLengthy
     ) where
 
 import Data.Word (Word8)
@@ -181,10 +182,24 @@ stringField = partialField "Data.Text.Encoding.encodeUtf8" decodeUtf8P lengthy
 
 -- | A protobuf message type.
 message :: FieldEncoding
-message = partialField
+message = lengthy
+        { buildFieldType = "Prelude.." @@
+            buildFieldType lengthy @@
             "Data.ProtoLens.encodeMessage"
-            (\m -> "Data.ProtoLens.decodeMessage" @@ m)
-            lengthy
+        , parseFieldType = isolatedLengthy "Data.ProtoLens.parseMessage"
+        }
+
+-- | Takes a @Parser a@, reads a varint and then runs the parser
+-- isolated to the given length.
+isolatedLengthy :: Exp -> Exp
+isolatedLengthy parser = do'
+    [ len <-- getVarInt'
+    , stmt $ "Data.ProtoLens.Encoding.Bytes.isolate"
+                @@ (fromIntegral' @@ len)
+                @@ parser
+    ]
+  where
+    len = "len"
 
 -- | Some functions that are used in multiple places in the generated code.
 getVarInt', putVarInt', fromIntegral' :: Exp

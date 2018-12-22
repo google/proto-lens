@@ -1,6 +1,7 @@
 -- | Unit and property tests for our custom parsing monad.
 module Main (main) where
 
+import Control.Applicative (liftA2)
 import qualified Data.ByteString as B
 import Data.Either (isLeft)
 
@@ -18,6 +19,7 @@ main = defaultMain
     , testGroup "getBytes" testGetBytes
     , testGroup "getWord32le" testGetWord32le
     , testGroup "failure" testFailure
+    , testGroup "isolate" testIsolate
     ]
 
 testParser :: [Test]
@@ -64,6 +66,15 @@ testFailure =
     , testProperty "<?>" $ \bs ->
         runParser (fail "abcde" <?> "fghij") (B.pack bs)
             === (Left "fghij: abcde" :: Either String ())
+    ]
+
+testIsolate :: [Test]
+testIsolate =
+    [ testProperty "many" $ \bs bs' ->
+        runParser (liftA2 (,) (isolate (length bs) $ manyTillEnd getWord8)
+                        (manyTillEnd getWord8))
+            (B.pack (bs ++ bs'))
+            == Right (bs, bs')
     ]
 
 -- Since this is a test, just implement the slow stack-heavy way.

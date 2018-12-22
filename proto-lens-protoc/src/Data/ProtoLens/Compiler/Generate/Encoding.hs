@@ -237,7 +237,6 @@ parseFieldCase loop x f = case plainFieldKind f of
     _ -> [valueCase]
   where
     y = "y"
-    bytes = "bytes"
     entry = "entry"
     info = plainFieldInfo f
     valueCase = pLitInt (fieldTag info) --> do'
@@ -258,11 +257,7 @@ parseFieldCase loop x f = case plainFieldKind f of
             $ x
         ]
     packedCase = pLitInt (packedFieldTag info) --> do'
-        [ bytes <-- parseFieldType lengthy
-        , y <-- "Data.ProtoLens.Encoding.Bytes.runEither"
-                    @@ ("Data.ProtoLens.Encoding.Bytes.runParser"
-                        @@ parsePackedField info
-                        @@ bytes)
+        [ y <-- isolatedLengthy (parsePackedField info)
         , stmt . loop . updateParseState (overField info ("Prelude.++" @@ y))
             $ x
         ]

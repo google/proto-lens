@@ -6,6 +6,7 @@ module Data.ProtoLens.Encoding.Parser
     ( Parser
     , runParser
     , atEnd
+    , isolate
     , getWord8
     , getWord32le
     , getBytes
@@ -103,6 +104,17 @@ withSized len message f = Parser $ \end pos ->
         then throwE $ message
         else liftIO $ ParserResult pos' <$> f pos
 {-# INLINE withSized #-}
+
+-- | Run the given parsing action as if there are only 
+-- @len@ bytes remaining.  That is, once @len@ bytes have been
+-- consumed, 'atEnd' will return 'True' and other actions
+-- like 'getWord8' will act like there is no input remaining.
+isolate :: Int -> Parser a -> Parser a
+isolate len (Parser m) = Parser $ \end pos ->
+    let end' = pos `plusPtr` len
+    in if end' > end
+        then throwE "isolate: unexpected end of input"
+        else m end' pos
 
 -- | If the parser fails, prepend an error message.
 (<?>) :: Parser a -> String -> Parser a

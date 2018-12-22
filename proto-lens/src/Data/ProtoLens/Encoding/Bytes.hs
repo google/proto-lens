@@ -15,6 +15,7 @@ module Data.ProtoLens.Encoding.Bytes(
     Parser,
     Builder,
     runParser,
+    isolate,
     runBuilder,
     -- * Bytestrings
     getBytes,
