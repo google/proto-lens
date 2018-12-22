@@ -12,6 +12,7 @@ module Data.ProtoLens.Encoding.Parser
     , (<?>)
     ) where
 
+import Control.Monad (ap)
 import Data.Bits (shiftL, (.|.))
 import Foreign.Ptr
 import Foreign.Storable
@@ -20,7 +21,6 @@ import Data.Word (Word8, Word32)
 import qualified Data.ByteString as B
 import qualified Data.ByteString.Unsafe as B
 import Data.ByteString (ByteString)
-import Control.Monad (ap)
 import Control.Monad.IO.Class
 import System.IO.Unsafe
 
@@ -39,7 +39,7 @@ instance Functor ParserResult where
     fmap f (ParserResult p x) = ParserResult p (f x)
 
 instance Functor Parser where
-    fmap f (Parser g) = Parser $ \end cur -> fmap (fmap f) $ g end cur
+    fmap f (Parser g) = Parser $ \end cur -> fmap f <$> g end cur
 
 instance Applicative Parser where
     pure x = Parser $ \_ cur -> return $ ParserResult cur x
@@ -55,7 +55,8 @@ instance Monad Parser where
 -- | Evaluates a parser on the given input.
 --
 -- If the parser does not consume all of the input, the rest of the
--- input is discarded and the parser still succeeds.
+-- input is discarded and the parser still succeeds.  Parsers may use
+-- 'atEnd' to detect whether they are at the end of the input.
 runParser :: Parser a -> ByteString -> Either String a
 runParser (Parser m) b = unsafePerformIO $ B.unsafeUseAsCStringLen b $ \(p, len)
     -> runExceptT $ fmap unParserResult $ m (p `plusPtr` len) (castPtr p)
@@ -71,12 +72,12 @@ getWord8 = withSized 1 "getWord8: Unexpected end of input" peek
 -- | Parser a 4-byte word in little-endian order.
 getWord32le :: Parser Word32
 getWord32le = withSized 4 "getWord32le: Unexpected end of input" $ \pos -> do
-    b1 <- peek pos
-    b2 <- peek $ pos `plusPtr'` 1
-    b3 <- peek $ pos `plusPtr'` 2
-    b4 <- peek $ pos `plusPtr'` 3
-    return $ ((fromIntegral b4 `shiftL` 8 .|. fromIntegral b3)
-                `shiftL` 8 .|. fromIntegral b2) `shiftL` 8 .|. fromIntegral b1
+    b1 <- fromIntegral <$> peek pos
+    b2 <- fromIntegral <$> peek (pos `plusPtr'` 1)
+    b3 <- fromIntegral <$> peek (pos `plusPtr'` 2)
+    b4 <- fromIntegral <$> peek (pos `plusPtr'` 3)
+    let f b b' = b `shiftL` 8 .|. b'
+    return $! f (f (f b4 b3) b2) b1
 
 -- | Parse a 'B.ByteString' of the given length.
 getBytes :: Int -> Parser B.ByteString
@@ -85,6 +86,9 @@ getBytes n = withSized n "getBytes: Unexpected end of input" $ \pos ->
 
 -- | Helper function for reading bytes from the current position and
 -- advancing the pointer.
+--
+-- It is only safe for @f@ to peek between its argument @p@ and
+-- @p `plusPtr` (len - 1)@, inclusive.
 withSized :: Int -> String -> (Ptr Word8 -> IO a) -> Parser a
 withSized len message f = Parser $ \end pos ->
     let pos' = pos `plusPtr'` len
@@ -95,7 +99,8 @@ withSized len message f = Parser $ \end pos ->
 
 -- | If the parser fails, prepend an error message.
 (<?>) :: Parser a -> String -> Parser a
-Parser m <?> msg = Parser $ \end p -> withExceptT (\s -> msg ++ ": " ++ s) $ m end p
+Parser m <?> msg = Parser $ \end p ->
+    withExceptT (\s -> msg ++ ": " ++ s) $ m end p
 
 -- | Advance a pointer.  Unlike 'plusPtr', preserves the type of the input.
 plusPtr' :: Ptr a -> Int -> Ptr a

@@ -1,4 +1,4 @@
--- | Unit and property tests for of our custom parsing monad.
+-- | Unit and property tests for our custom parsing monad.
 module Main (main) where
 
 import qualified Data.ByteString as B
@@ -13,10 +13,21 @@ import Data.ProtoLens.Encoding.Parser
 
 main :: IO ()
 main = defaultMain
-    [ testGroup "getWord8" testGetWord8
+    [ testGroup "Parser" testParser
+    , testGroup "getWord8" testGetWord8
     , testGroup "getBytes" testGetBytes
     , testGroup "getWord32le" testGetWord32le
     , testGroup "failure" testFailure
+    ]
+
+testParser :: [Test]
+testParser =
+    -- Test out the Applicative instance by using "traverse" to read the same number of bytes
+    -- as in the input.
+    -- "traverse (const f) g" runs f once for every element of g.
+    [ testProperty "traverse" $ \ws -> runParser (traverse (const getWord8) ws)
+                                        (B.pack ws)
+                                    === Right ws
     ]
 
 testGetWord8 :: [Test]
@@ -24,7 +35,6 @@ testGetWord8 =
     [ testProperty "atEnd" $ \ws -> runParser atEnd (B.pack ws) === Right (null ws)
     , testProperty "manyTillEnd"
             $ \ws -> runParser (manyTillEnd getWord8) (B.pack ws) === Right ws
-    , testProperty "idem" $ \x -> x ==> x
     ]
 
 testGetBytes :: [Test]
