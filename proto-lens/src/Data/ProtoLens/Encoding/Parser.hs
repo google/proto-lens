@@ -83,7 +83,7 @@ getWord32le = withSized 4 "getWord32le: Unexpected end of input" $ \pos -> do
     let f b b' = b `shiftL` 8 .|. b'
     return $! f (f (f b4 b3) b2) b1
 
--- | Parse a 'B.ByteString' of the given length.
+-- | Parse a sequence of zero or more bytes of the given length.
 --
 -- The new ByteString is an immutable copy of the bytes in the input
 -- and will be managed separately on the Haskell heap from the original
@@ -91,24 +91,25 @@ getWord32le = withSized 4 "getWord32le: Unexpected end of input" $ \pos -> do
 --
 -- Fails the parse if given a negative length.
 getBytes :: Int -> Parser B.ByteString
-getBytes n
-    | n < 0 = fail "getBytes: negative length"
-    | otherwise = withSized n "getBytes: Unexpected end of input" $ \pos ->
-    B.packCStringLen (castPtr pos, n)
+getBytes n = withSized n "getBytes: Unexpected end of input"
+                    $ \pos -> B.packCStringLen (castPtr pos, n)
 
 -- | Helper function for reading bytes from the current position and
 -- advancing the pointer.
 --
+-- Fails the parse if given a negative length.  (GHC will elide the check
+-- if the length is a nonnegative constant.)
+--
 -- It is only safe for @f@ to peek between its argument @p@ and
 -- @p `plusPtr` (len - 1)@, inclusive.
---
--- This function is not safe to use with a negative length.
 withSized :: Int -> String -> (Ptr Word8 -> IO a) -> Parser a
-withSized len message f = Parser $ \end pos ->
-    let pos' = pos `plusPtr'` len
-    in if pos' > end
-        then throwE $ message
-        else liftIO $ ParserResult pos' <$> f pos
+withSized len message f
+    | len >= 0 = Parser $ \end pos ->
+        let pos' = pos `plusPtr'` len
+        in if pos' > end
+            then throwE $ message
+            else liftIO $ ParserResult pos' <$> f pos
+    | otherwise = fail "withSized: negative length"
 {-# INLINE withSized #-}
 
 -- | Run the given parsing action as if there are only 
@@ -119,12 +120,12 @@ withSized len message f = Parser $ \end pos ->
 -- Fails the parse if given a negative length.
 isolate :: Int -> Parser a -> Parser a
 isolate len (Parser m)
-    | len < 0 = fail "isolate: negative length"
-    | otherwise = Parser $ \end pos ->
+    | len >= 0 = Parser $ \end pos ->
         let end' = pos `plusPtr` len
         in if end' > end
             then throwE "isolate: unexpected end of input"
             else m end' pos
+    | otherwise = fail "isolate: negative length"
 
 -- | If the parser fails, prepend an error message.
 (<?>) :: Parser a -> String -> Parser a
