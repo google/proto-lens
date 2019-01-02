@@ -1,4 +1,4 @@
-resolver: lts-12.7
+resolver: lts-13.1
 packages:
 - proto-lens-protoc
 # Build the current HEAD proto-lens-protoc against older revisions of proto-lens
