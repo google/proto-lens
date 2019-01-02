@@ -88,8 +88,12 @@ getWord32le = withSized 4 "getWord32le: Unexpected end of input" $ \pos -> do
 -- The new ByteString is an immutable copy of the bytes in the input
 -- and will be managed separately on the Haskell heap from the original
 -- input 'B.ByteString'.
+--
+-- Fails the parse if given a negative length.
 getBytes :: Int -> Parser B.ByteString
-getBytes n = withSized n "getBytes: Unexpected end of input" $ \pos ->
+getBytes n
+    | n < 0 = fail "getBytes: negative length"
+    | otherwise = withSized n "getBytes: Unexpected end of input" $ \pos ->
     B.packCStringLen (castPtr pos, n)
 
 -- | Helper function for reading bytes from the current position and
@@ -109,12 +113,16 @@ withSized len message f = Parser $ \end pos ->
 -- @len@ bytes remaining.  That is, once @len@ bytes have been
 -- consumed, 'atEnd' will return 'True' and other actions
 -- like 'getWord8' will act like there is no input remaining.
+--
+-- Fails the parse if given a negative length.
 isolate :: Int -> Parser a -> Parser a
-isolate len (Parser m) = Parser $ \end pos ->
-    let end' = pos `plusPtr` len
-    in if end' > end
-        then throwE "isolate: unexpected end of input"
-        else m end' pos
+isolate len (Parser m)
+    | len < 0 = fail "isolate: negative length"
+    | otherwise = Parser $ \end pos ->
+        let end' = pos `plusPtr` len
+        in if end' > end
+            then throwE "isolate: unexpected end of input"
+            else m end' pos
 
 -- | If the parser fails, prepend an error message.
 (<?>) :: Parser a -> String -> Parser a

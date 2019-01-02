@@ -46,6 +46,9 @@ testGetBytes =
                 packed = map B.pack ws
                 in runParser (mapM (getBytes . B.length) packed) (B.concat packed)
                     === Right packed
+    , testProperty "negative length"
+        $ \n ws -> n < 0 ==> counterexampleF isLeft
+                                (runParser (getBytes n) $ B.pack ws)
     ]
 
 testGetWord32le :: [Test]
@@ -75,6 +78,8 @@ testIsolate =
                         (manyTillEnd getWord8))
             (B.pack (bs ++ bs'))
             == Right (bs, bs')
+    , testProperty "negative length" $ \n ws ->
+        n < 0 ==> counterexampleF isLeft $ runParser (isolate n getWord8) $ B.pack ws
     ]
 
 -- Since this is a test, just implement the slow stack-heavy way.
