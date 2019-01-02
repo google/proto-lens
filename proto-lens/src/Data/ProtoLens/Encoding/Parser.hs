@@ -101,6 +101,8 @@ getBytes n
 --
 -- It is only safe for @f@ to peek between its argument @p@ and
 -- @p `plusPtr` (len - 1)@, inclusive.
+--
+-- This function is not safe to use with a negative length.
 withSized :: Int -> String -> (Ptr Word8 -> IO a) -> Parser a
 withSized len message f = Parser $ \end pos ->
     let pos' = pos `plusPtr'` len
