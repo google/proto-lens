@@ -175,9 +175,6 @@ con = Syntax.Con ()
 list :: [Exp] -> Exp
 list = Syntax.List ()
 
-letE :: [Decl] -> Exp -> Exp
-letE ds = Syntax.Let () (Syntax.BDecls () ds)
-
 if' :: Exp -> Exp -> Exp -> Exp
 if' = Syntax.If ()
 

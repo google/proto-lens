@@ -33,7 +33,7 @@ generatedParser m =
            loop x required'a required'b ... = ...
        in loop defMessage True True ...
     -}
-    letE [typeSig [loop] loopSig
+    let' [typeSig [loop] loopSig
          , funBind [match loop (fmap pVar $ loopArgs names) loopExpr]
          ]
         $ "Data.ProtoLens.Encoding.Bytes.<?>"
@@ -179,7 +179,7 @@ checkMissingFields s =
        in if null missing then return ()
           else fail ("Missing required fields: " ++ show missing)
     -}
-    letE [patBind missing allMissingFields]
+    let' [patBind missing allMissingFields]
     $ if' ("Prelude.null" @@ missing) ("Prelude.return" @@ unit)
     $ "Prelude.fail"
         @@ ("Prelude.++"
@@ -264,7 +264,7 @@ parseFieldCase loop x f = case plainFieldKind f of
     mapCase entryInfo = pLitInt (fieldTag info) --> do'
         [ bangPat (entry `patTypeSig` tyCon (unQual $ mapEntryTypeName entryInfo))
                 <-- parseField info
-        , stmt . letE [ patBind "key"
+        , stmt . let' [ patBind "key"
                             $ view' @@ lensOfField (keyField entryInfo)
                                     @@ entry
                       , patBind "value"
@@ -322,7 +322,7 @@ parsePackedField :: FieldInfo -> Exp
                             ploop (q:qs)
    in ploop []
 -}
-parsePackedField info = letE [funBind [match ploop [qs] ploopExp]]
+parsePackedField info = let' [funBind [match ploop [qs] ploopExp]]
                        (ploop @@ emptyList)
   where
     ploop = "ploop"
@@ -376,7 +376,7 @@ buildPlainField x f = case plainFieldKind f of
                             , "Prelude.Just" `pApp` [v]
                                 --> buildTaggedField info v
                             ]
-    OptionalValueField -> letE [patBind v fieldValue]
+    OptionalValueField -> let' [patBind v fieldValue]
                           $ if' ("Prelude.==" @@ v @@ "Data.ProtoLens.fieldDefault")
                                 mempty'
                                 (buildTaggedField info v)
@@ -445,7 +445,7 @@ buildPackedField :: FieldInfo -> Exp -> Exp
     else putVarInt {TAG}
             <> ... (runBuilder (mconcat (map {BUILD_ELT} p)))
 -}
-buildPackedField f x = letE [patBind p x]
+buildPackedField f x = let' [patBind p x]
     $ if' ("Prelude.null" @@ p) mempty'
     $ "Data.Monoid.<>"
           @@ (putVarInt' @@ litInt (packedFieldTag f))
