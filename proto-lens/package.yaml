@@ -29,26 +29,10 @@ data-files:
 
 library:
   source-dirs: src
-  exposed-modules:
-    - Data.ProtoLens
-    - Data.ProtoLens.Combinators
-    - Data.ProtoLens.Default
-    - Data.ProtoLens.Encoding
-    - Data.ProtoLens.Encoding.Bytes
-    - Data.ProtoLens.Encoding.Wire
-    - Data.ProtoLens.Message
-    - Data.ProtoLens.Message.Enum
-    - Data.ProtoLens.Service.Types
-    - Data.ProtoLens.TextFormat
-    - Proto.Google.Protobuf.Compiler.Plugin
-    - Proto.Google.Protobuf.Compiler.Plugin_Fields
-    - Proto.Google.Protobuf.Descriptor
-    - Proto.Google.Protobuf.Descriptor_Fields
 
   other-modules:
     - Data.ProtoLens.TextFormat.Parser
   dependencies:
-    - attoparsec == 0.13.*
     - base >= 4.9 && < 4.13
     - bytestring == 0.10.*
     - containers >= 0.5 && < 0.7
@@ -60,3 +44,15 @@ library:
     - text == 1.2.*
     - transformers >= 0.4 && < 0.6
     - void == 0.7.*
+
+tests:
+  parser_test:
+    main: parser_test.hs
+    source-dirs: tests
+    dependencies:
+    - base
+    - bytestring
+    - proto-lens
+    - QuickCheck
+    - test-framework
+    - test-framework-quickcheck2
