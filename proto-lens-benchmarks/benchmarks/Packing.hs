@@ -27,6 +27,10 @@ benchmaker size =
         (defMessage & num .~ replicate size 5 :: Int32Packed)
     , protoBenchmark "int32-unpacked"
         (defMessage & num .~ replicate size 5 :: Int32Unpacked)
+    , protoBenchmark "fixed32-packed"
+        (defMessage & num .~ replicate size 5 :: Fixed32Packed)
+    , protoBenchmark "fixed32-unpacked"
+        (defMessage & num .~ replicate size 5 :: Fixed32Unpacked)
     , protoBenchmark "float-packed"
         (defMessage & num .~ replicate size 5 :: FloatPacked)
     , protoBenchmark "float-unpacked"

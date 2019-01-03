@@ -10,6 +10,14 @@ message Int32Packed {
   repeated int32 num = 1 [packed=true];
 }
 
+message Fixed32Unpacked {
+  repeated fixed32 num = 1 [packed=false];
+}
+
+message Fixed32Packed {
+  repeated fixed32 num = 1 [packed=false];
+}
+
 message FloatUnpacked {
   repeated float num = 1 [packed=false];
 }
