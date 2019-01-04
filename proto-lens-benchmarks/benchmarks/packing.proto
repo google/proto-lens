@@ -15,7 +15,7 @@ message Fixed32Unpacked {
 }
 
 message Fixed32Packed {
-  repeated fixed32 num = 1 [packed=false];
+  repeated fixed32 num = 1 [packed=true];
 }
 
 message FloatUnpacked {
