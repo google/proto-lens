@@ -7,11 +7,11 @@
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE RankNTypes #-}
 {-# LANGUAGE ScopedTypeVariables #-}
+{-# LANGUAGE TypeApplications #-}
 module Main where
 
 import Data.ByteString.Builder (byteString)
 import Data.Monoid ((<>))
-import Data.Proxy (Proxy(..))
 import Lens.Family2 (Lens', (&), (.~), view, set)
 import Test.Framework (testGroup)
 import Test.QuickCheck
@@ -34,9 +34,9 @@ defBar = defMessage
 -- behave the same.
 vectorTest ::
     forall a v b . (Eq a, Eq b, Show a, Show b, Message a, V.Vector v b)
-    => String -> Proxy a -> Gen b
+    => String -> Gen b
     -> Lens' a [b] -> Lens' a (v b) -> Test
-vectorTest name _ arbitraryElem listLens vecLens = testGroup name
+vectorTest name arbitraryElem listLens vecLens = testGroup name
     [ testProperty "get"
         $ \(ArbitraryMessage (m :: a)) ->
             view listLens m === V.toList (view vecLens m)
@@ -86,16 +86,10 @@ main = testMain
         $ buildMessage (defFoo & a .~ [1,2] :: Foo)
             <> buildMessage (defFoo & a .~ [3,4] :: Foo)
     , testGroup "vector"
-        [ vectorTest "fixed64" (Proxy :: Proxy Bar) arbitrary
-            e vector'e
-        , vectorTest "int32" (Proxy :: Proxy Foo) arbitrary
-            a vector'a
-        , vectorTest "string" (Proxy :: Proxy Foo)
-            (T.pack <$> arbitrary)
-            b vector'b
-        , vectorTest "message" (Proxy :: Proxy Foo)
-            arbitraryMessage
-            c vector'c
+        [ vectorTest @Bar "fixed64" arbitrary e vector'e
+        , vectorTest @Foo "int32" arbitrary a vector'a
+        , vectorTest @Foo "string" (T.pack <$> arbitrary) b vector'b
+        , vectorTest @Foo "message" arbitraryMessage c vector'c
         ]
     , testGroup "roundtrip"
         [ runTypedTest (roundTripTest "foo" :: TypedTest Foo)

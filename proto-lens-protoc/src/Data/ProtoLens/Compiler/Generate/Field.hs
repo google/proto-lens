@@ -18,11 +18,12 @@ module Data.ProtoLens.Compiler.Generate.Field
 
 import Data.Text (unpack)
 import Data.Word (Word8)
-import Data.ProtoLens.Compiler.Combinators
-import Data.ProtoLens.Compiler.Definitions
 import Lens.Family2
 import Proto.Google.Protobuf.Descriptor (FieldDescriptorProto'Type(..))
 import Proto.Google.Protobuf.Descriptor_Fields (type', typeName)
+
+import Data.ProtoLens.Compiler.Combinators
+import Data.ProtoLens.Compiler.Definitions
 
 hsFieldType :: Env QName -> FieldInfo -> Type
 hsFieldType env f = let

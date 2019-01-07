@@ -99,21 +99,20 @@ generatedParser env m =
                         ]
             ]
 
-{- | A Parser expression that finalizes the message.
-
-do
-    frozen'a <- unsafeLiftIO $ unsafeFreeze mutable'a
-    frozen'b <- unsafeLiftIO $ unsafeFreeze mutable'b
-    ...
-    {checkMissingFields}
-    over unknownFields reverse
-        $ set vector'a frozen'a
-        $ set vector'b frozen'b
-        ...
-        $ {partialMessage}
--}
+-- | A Parser expression that finalizes the message.
 finish :: MessageInfo Name -> ParseState Exp -> Exp
 finish m s = do' $
+    {- do
+        frozen'a <- unsafeLiftIO $ unsafeFreeze mutable'a
+        frozen'b <- unsafeLiftIO $ unsafeFreeze mutable'b
+        ...
+        {checkMissingFields}
+        over unknownFields reverse
+            $ set (lensOf' proxy# :: Proxy# vector'a) frozen'a
+            $ set (lensOf' proxy# :: Proxy# vector'b) frozen'b
+            ...
+            $ {partialMessage}
+    -}
     [ pVar frozen <-- unsafeLiftIO' @@
                     ("Data.ProtoLens.Encoding.Growing.unsafeFreeze"
                         @@ mutable)
@@ -126,7 +125,8 @@ finish m s = do' $
         (over' unknownFields' "Prelude.reverse"
             @@(foldr (\(finfo, frozen) x' -> "Lens.Family2.set"
                                             @@ lensOfVectorField finfo
-                                            @@ var (unQual frozen) @@ x')
+                                            @@ var (unQual frozen)
+                                            @@ x')
                      (partialMessage s)
                      (Map.elems $ Map.intersectionWith (,)
                         repeatedInfos frozenNames)))
@@ -146,9 +146,11 @@ data ParseState v = ParseState
         -- ^ The required fields of the message, each corresponding to
         -- a @Bool@ argument of the loop.
     , repeatedFieldMVectors :: Map.Map FieldId v
+        -- ^ The repeated fields of the message, each corresponding to
+        -- an @MVector@ argument of the loop.
     } deriving Functor
 
--- | Returns a sequence all arguments of the loop function.
+-- | Returns a sequence of all arguments of the loop function.
 loopArgs :: ParseState v -> [v]
 loopArgs s = partialMessage s : Map.elems (requiredFieldsUnset s)
                                 ++ Map.elems (repeatedFieldMVectors s)
@@ -266,9 +268,11 @@ checkMissingFields s =
 -- The exact structure of each case differs based on the field type.  However, it
 -- generally looks like:
 --
+-- @
 --   {N} -> do
 --           {VALUE} <- {PARSE}
 --           loop (set {FIELD} {VALUE} x) required'a False required'c ...
+-- @
 --
 -- where:
 --  - {N} is an integer representing the wire type + field number,

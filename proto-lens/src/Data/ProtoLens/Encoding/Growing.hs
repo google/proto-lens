@@ -1,4 +1,16 @@
 -- | A mutable vector that grows in size.
+--
+-- Example usage:
+--
+-- > import qualified Data.ProtoLens.Encoding.Growing as Growing
+-- > import qualified Data.Vector.Unboxed as V
+-- > test :: IO (V.Vector Int)
+-- > test = do
+-- >     v <- Growing.new
+-- >     v' <- Growing.append v 1
+-- >     v'' <- Growing.append v' 2
+-- >     v''' <- Growing.append v'' 3
+-- >     unsafeFreeze v'''
 module Data.ProtoLens.Encoding.Growing (
     Growing,
     new,
@@ -35,8 +47,7 @@ new = Growing 0 <$> MV.new 0
 unsafeFreeze
     :: (PrimMonad m, V.Vector v a)
     => Growing v (PrimState m) a -> m (v a)
-unsafeFreeze (Growing len m)
-    = V.unsafeFreeze (MV.take len m)
+unsafeFreeze (Growing len m) = V.unsafeFreeze (MV.take len m)
 
 -- | Returns a new growing vector with a new element at the end.
 -- Note that the return value may share storage with the input value.
