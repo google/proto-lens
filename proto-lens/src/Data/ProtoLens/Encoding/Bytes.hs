@@ -5,6 +5,7 @@
 -- https://developers.google.com/open-source/licenses/bsd
 
 {-# LANGUAGE BangPatterns #-}
+{-# LANGUAGE CPP #-}
 {-# LANGUAGE GeneralizedNewtypeDeriving #-}
 {-# LANGUAGE RankNTypes #-}
 {-# LANGUAGE ScopedTypeVariables #-}
@@ -50,10 +51,14 @@ import qualified Data.ByteString.Lazy as L
 import Data.Int (Int32, Int64)
 import Data.Monoid ((<>))
 import Data.Word (Word32, Word64)
+#if MIN_VERSION_base(4,11,0)
+import qualified GHC.Float as Float
+#else
 import Foreign.Ptr (castPtr)
 import Foreign.Marshal.Alloc (alloca)
 import Foreign.Storable (Storable, peek, poke)
 import System.IO.Unsafe (unsafePerformIO)
+#endif
 
 import Data.ProtoLens.Encoding.Parser
 
@@ -98,6 +103,20 @@ putFixed32 = word32LE
 putFixed64 :: Word64 -> Builder
 putFixed64 = word64LE
 
+#if MIN_VERSION_base(4,11,0)
+wordToDouble :: Word64 -> Double
+wordToDouble = Float.castWord64ToDouble
+
+wordToFloat :: Word32 -> Float
+wordToFloat = Float.castWord32ToFloat
+
+doubleToWord :: Double -> Word64
+doubleToWord = Float.castDoubleToWord64
+
+floatToWord :: Float -> Word32
+floatToWord = Float.castFloatToWord32
+
+#else
 -- WARNING: SUPER UNSAFE!
 -- Helper function purely for converting between Word32/Word64 and
 -- Float/Double.  Note that ideally we could just use unsafeCoerce, but this
@@ -123,6 +142,7 @@ doubleToWord = cast
 
 floatToWord :: Float -> Word32
 floatToWord = cast
+#endif
 
 signedInt32ToWord :: Int32 -> Word32
 signedInt32ToWord n = fromIntegral $ shiftL n 1 `xor` shiftR n 31
