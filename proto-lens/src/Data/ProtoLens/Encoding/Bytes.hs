@@ -160,7 +160,10 @@ foldMapBuilder f = \v0 -> Internal.builder (loop v0)
         | V.null v = cont bs
         | otherwise = let
             !x = V.unsafeHead v
+            -- lts-8.24 (ghc-8.0) doesn't inline unsafeTail well.
+            -- We can remove the following bang when we bump the lower bound:
+            !xs = V.unsafeTail v
             in Internal.runBuilderWith
                         (f x)
-                        (loop (V.unsafeTail v) cont) bs
+                        (loop xs cont) bs
 {-# INLINE foldMapBuilder #-}
