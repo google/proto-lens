@@ -123,13 +123,14 @@ finish m s = do' $
     [ stmt $ checkMissingFields s
     , stmt $ "Prelude.return" @@
         (over' unknownFields' "Prelude.reverse"
-            @@(foldr (\(finfo, frozen) x' -> "Lens.Family2.set"
-                                            @@ lensOfVectorField finfo
-                                            @@ var (unQual frozen)
-                                            @@ x')
-                     (partialMessage s)
-                     (Map.elems $ Map.intersectionWith (,)
-                        repeatedInfos frozenNames)))
+            @@(foldr (@@)
+                (partialMessage s)
+                (Map.intersectionWith
+                    (\finfo frozen ->
+                        "Lens.Family2.set"
+                            @@ lensOfVectorField finfo
+                            @@ var (unQual frozen))
+                repeatedInfos frozenNames)))
             ]
 
   where
