@@ -197,26 +197,25 @@ suffix ::
 suffix
   = Lens.Labels.lensOf'
       ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "suffix")
-vector'file ::
-            forall f s a .
-              (Prelude.Functor f, Lens.Labels.HasLens' s "vector'file" a) =>
-              Lens.Family2.LensLike' f s a
-vector'file
+vec'file ::
+         forall f s a .
+           (Prelude.Functor f, Lens.Labels.HasLens' s "vec'file" a) =>
+           Lens.Family2.LensLike' f s a
+vec'file
   = Lens.Labels.lensOf'
-      ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "vector'file")
-vector'fileToGenerate ::
-                      forall f s a .
-                        (Prelude.Functor f,
-                         Lens.Labels.HasLens' s "vector'fileToGenerate" a) =>
-                        Lens.Family2.LensLike' f s a
-vector'fileToGenerate
+      ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "vec'file")
+vec'fileToGenerate ::
+                   forall f s a .
+                     (Prelude.Functor f,
+                      Lens.Labels.HasLens' s "vec'fileToGenerate" a) =>
+                     Lens.Family2.LensLike' f s a
+vec'fileToGenerate
   = Lens.Labels.lensOf'
-      ((Lens.Labels.proxy#) ::
-         (Lens.Labels.Proxy#) "vector'fileToGenerate")
-vector'protoFile ::
-                 forall f s a .
-                   (Prelude.Functor f, Lens.Labels.HasLens' s "vector'protoFile" a) =>
-                   Lens.Family2.LensLike' f s a
-vector'protoFile
+      ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "vec'fileToGenerate")
+vec'protoFile ::
+              forall f s a .
+                (Prelude.Functor f, Lens.Labels.HasLens' s "vec'protoFile" a) =>
+                Lens.Family2.LensLike' f s a
+vec'protoFile
   = Lens.Labels.lensOf'
-      ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "vector'protoFile")
+      ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "vec'protoFile")

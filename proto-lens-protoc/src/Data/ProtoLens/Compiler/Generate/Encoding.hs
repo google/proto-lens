@@ -108,8 +108,8 @@ finish m s = do' $
         ...
         {checkMissingFields}
         over unknownFields reverse
-            $ set (lensOf' proxy# :: Proxy# vector'a) frozen'a
-            $ set (lensOf' proxy# :: Proxy# vector'b) frozen'b
+            $ set (lensOf' proxy# :: Proxy# vec'a) frozen'a
+            $ set (lensOf' proxy# :: Proxy# vec'b) frozen'b
             ...
             $ {partialMessage}
     -}
@@ -514,7 +514,7 @@ lensOfOneofField =
     lensOfExp . ("maybe'" <>) . overloadedName . oneofFieldName
 
 lensOfVectorField :: FieldInfo -> Exp
-lensOfVectorField = lensOfExp . ("vector'" <>) . overloadedFieldName
+lensOfVectorField = lensOfExp . ("vec'" <>) . overloadedFieldName
 
 -- | Build a field along with its tag.
 buildTaggedField :: FieldInfo -> Exp -> Exp

@@ -699,7 +699,7 @@ plainRecordField env (PlainFieldInfo kind f) = case kind of
                       , lensExp = vectorAccessor
                       }
                   , LensInstance
-                      { lensSymbol = "vector'" <> baseName
+                      { lensSymbol = "vec'" <> baseName
                       , lensFieldType = vectorType
                       , lensExp = rawAccessor
                       }

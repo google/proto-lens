@@ -40,12 +40,12 @@ import qualified Proto.Google.Protobuf.Descriptor
 {- | Fields :
 
     * 'Proto.Google.Protobuf.Compiler.Plugin_Fields.fileToGenerate' @:: Lens' CodeGeneratorRequest [Data.Text.Text]@
-    * 'Proto.Google.Protobuf.Compiler.Plugin_Fields.vector'fileToGenerate' @:: Lens' CodeGeneratorRequest (Data.Vector.Vector Data.Text.Text)@
+    * 'Proto.Google.Protobuf.Compiler.Plugin_Fields.vec'fileToGenerate' @:: Lens' CodeGeneratorRequest (Data.Vector.Vector Data.Text.Text)@
     * 'Proto.Google.Protobuf.Compiler.Plugin_Fields.parameter' @:: Lens' CodeGeneratorRequest Data.Text.Text@
     * 'Proto.Google.Protobuf.Compiler.Plugin_Fields.maybe'parameter' @:: Lens' CodeGeneratorRequest (Prelude.Maybe Data.Text.Text)@
     * 'Proto.Google.Protobuf.Compiler.Plugin_Fields.protoFile' @:: Lens' CodeGeneratorRequest
   [Proto.Google.Protobuf.Descriptor.FileDescriptorProto]@
-    * 'Proto.Google.Protobuf.Compiler.Plugin_Fields.vector'protoFile' @:: Lens' CodeGeneratorRequest
+    * 'Proto.Google.Protobuf.Compiler.Plugin_Fields.vec'protoFile' @:: Lens' CodeGeneratorRequest
   (Data.Vector.Vector
      Proto.Google.Protobuf.Descriptor.FileDescriptorProto)@
     * 'Proto.Google.Protobuf.Compiler.Plugin_Fields.compilerVersion' @:: Lens' CodeGeneratorRequest Version@
@@ -78,7 +78,7 @@ instance a ~ ([Data.Text.Text]) =>
               Lens.Family2.Unchecked.lens Data.Vector.Generic.toList
                 (\ _ y__ -> Data.Vector.Generic.fromList y__)
 instance a ~ (Data.Vector.Vector Data.Text.Text) =>
-         Lens.Labels.HasLens' CodeGeneratorRequest "vector'fileToGenerate" a
+         Lens.Labels.HasLens' CodeGeneratorRequest "vec'fileToGenerate" a
          where
         lensOf' _
           = (Lens.Family2.Unchecked.lens _CodeGeneratorRequest'fileToGenerate
@@ -111,7 +111,7 @@ instance a ~
 instance a ~
            (Data.Vector.Vector
               Proto.Google.Protobuf.Descriptor.FileDescriptorProto) =>
-         Lens.Labels.HasLens' CodeGeneratorRequest "vector'protoFile" a
+         Lens.Labels.HasLens' CodeGeneratorRequest "vec'protoFile" a
          where
         lensOf' _
           = (Lens.Family2.Unchecked.lens _CodeGeneratorRequest'protoFile
@@ -218,12 +218,12 @@ instance Data.ProtoLens.Message CodeGeneratorRequest where
                                  (Lens.Family2.set
                                     (Lens.Labels.lensOf'
                                        ((Lens.Labels.proxy#) ::
-                                          (Lens.Labels.Proxy#) "vector'fileToGenerate"))
+                                          (Lens.Labels.Proxy#) "vec'fileToGenerate"))
                                     frozen'fileToGenerate
                                     (Lens.Family2.set
                                        (Lens.Labels.lensOf'
                                           ((Lens.Labels.proxy#) ::
-                                             (Lens.Labels.Proxy#) "vector'protoFile"))
+                                             (Lens.Labels.Proxy#) "vec'protoFile"))
                                        frozen'protoFile
                                        x)))
                          else
@@ -304,21 +304,19 @@ instance Data.ProtoLens.Message CodeGeneratorRequest where
                 Data.ProtoLens.Encoding.Bytes.<?> "CodeGeneratorRequest"
         buildMessage
           = (\ _x ->
-               (Data.Vector.Generic.foldr
-                  (\ _v as ->
-                     ((Data.ProtoLens.Encoding.Bytes.putVarInt 10) Data.Monoid.<>
-                        (((\ bs ->
-                             (Data.ProtoLens.Encoding.Bytes.putVarInt
-                                (Prelude.fromIntegral (Data.ByteString.length bs)))
-                               Data.Monoid.<> Data.ProtoLens.Encoding.Bytes.putBytes bs))
-                           Prelude.. Data.Text.Encoding.encodeUtf8)
-                          _v)
-                       Data.Monoid.<> as)
-                  Data.Monoid.mempty
+               (Data.ProtoLens.Encoding.Bytes.foldMapBuilder
+                  (\ _v ->
+                     (Data.ProtoLens.Encoding.Bytes.putVarInt 10) Data.Monoid.<>
+                       (((\ bs ->
+                            (Data.ProtoLens.Encoding.Bytes.putVarInt
+                               (Prelude.fromIntegral (Data.ByteString.length bs)))
+                              Data.Monoid.<> Data.ProtoLens.Encoding.Bytes.putBytes bs))
+                          Prelude.. Data.Text.Encoding.encodeUtf8)
+                         _v)
                   (Lens.Family2.view
                      (Lens.Labels.lensOf'
                         ((Lens.Labels.proxy#) ::
-                           (Lens.Labels.Proxy#) "vector'fileToGenerate"))
+                           (Lens.Labels.Proxy#) "vec'fileToGenerate"))
                      _x))
                  Data.Monoid.<>
                  (case
@@ -339,20 +337,18 @@ instance Data.ProtoLens.Message CodeGeneratorRequest where
                                               Prelude.. Data.Text.Encoding.encodeUtf8)
                                              _v)
                    Data.Monoid.<>
-                   (Data.Vector.Generic.foldr
-                      (\ _v as ->
-                         ((Data.ProtoLens.Encoding.Bytes.putVarInt 122) Data.Monoid.<>
-                            (((\ bs ->
-                                 (Data.ProtoLens.Encoding.Bytes.putVarInt
-                                    (Prelude.fromIntegral (Data.ByteString.length bs)))
-                                   Data.Monoid.<> Data.ProtoLens.Encoding.Bytes.putBytes bs))
-                               Prelude.. Data.ProtoLens.encodeMessage)
-                              _v)
-                           Data.Monoid.<> as)
-                      Data.Monoid.mempty
+                   (Data.ProtoLens.Encoding.Bytes.foldMapBuilder
+                      (\ _v ->
+                         (Data.ProtoLens.Encoding.Bytes.putVarInt 122) Data.Monoid.<>
+                           (((\ bs ->
+                                (Data.ProtoLens.Encoding.Bytes.putVarInt
+                                   (Prelude.fromIntegral (Data.ByteString.length bs)))
+                                  Data.Monoid.<> Data.ProtoLens.Encoding.Bytes.putBytes bs))
+                              Prelude.. Data.ProtoLens.encodeMessage)
+                             _v)
                       (Lens.Family2.view
                          (Lens.Labels.lensOf'
-                            ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "vector'protoFile"))
+                            ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "vec'protoFile"))
                          _x))
                      Data.Monoid.<>
                      (case
@@ -391,7 +387,7 @@ instance Control.DeepSeq.NFData CodeGeneratorRequest where
     * 'Proto.Google.Protobuf.Compiler.Plugin_Fields.error' @:: Lens' CodeGeneratorResponse Data.Text.Text@
     * 'Proto.Google.Protobuf.Compiler.Plugin_Fields.maybe'error' @:: Lens' CodeGeneratorResponse (Prelude.Maybe Data.Text.Text)@
     * 'Proto.Google.Protobuf.Compiler.Plugin_Fields.file' @:: Lens' CodeGeneratorResponse [CodeGeneratorResponse'File]@
-    * 'Proto.Google.Protobuf.Compiler.Plugin_Fields.vector'file' @:: Lens' CodeGeneratorResponse
+    * 'Proto.Google.Protobuf.Compiler.Plugin_Fields.vec'file' @:: Lens' CodeGeneratorResponse
   (Data.Vector.Vector CodeGeneratorResponse'File)@
  -}
 data CodeGeneratorResponse = CodeGeneratorResponse{_CodeGeneratorResponse'error
@@ -430,7 +426,7 @@ instance a ~ ([CodeGeneratorResponse'File]) =>
               Lens.Family2.Unchecked.lens Data.Vector.Generic.toList
                 (\ _ y__ -> Data.Vector.Generic.fromList y__)
 instance a ~ (Data.Vector.Vector CodeGeneratorResponse'File) =>
-         Lens.Labels.HasLens' CodeGeneratorResponse "vector'file" a
+         Lens.Labels.HasLens' CodeGeneratorResponse "vec'file" a
          where
         lensOf' _
           = (Lens.Family2.Unchecked.lens _CodeGeneratorResponse'file
@@ -491,7 +487,7 @@ instance Data.ProtoLens.Message CodeGeneratorResponse where
                                  (\ !t -> Prelude.reverse t)
                                  (Lens.Family2.set
                                     (Lens.Labels.lensOf'
-                                       ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "vector'file"))
+                                       ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "vec'file"))
                                     frozen'file
                                     x))
                          else
@@ -555,20 +551,18 @@ instance Data.ProtoLens.Message CodeGeneratorResponse where
                                             Prelude.. Data.Text.Encoding.encodeUtf8)
                                            _v)
                  Data.Monoid.<>
-                 (Data.Vector.Generic.foldr
-                    (\ _v as ->
-                       ((Data.ProtoLens.Encoding.Bytes.putVarInt 122) Data.Monoid.<>
-                          (((\ bs ->
-                               (Data.ProtoLens.Encoding.Bytes.putVarInt
-                                  (Prelude.fromIntegral (Data.ByteString.length bs)))
-                                 Data.Monoid.<> Data.ProtoLens.Encoding.Bytes.putBytes bs))
-                             Prelude.. Data.ProtoLens.encodeMessage)
-                            _v)
-                         Data.Monoid.<> as)
-                    Data.Monoid.mempty
+                 (Data.ProtoLens.Encoding.Bytes.foldMapBuilder
+                    (\ _v ->
+                       (Data.ProtoLens.Encoding.Bytes.putVarInt 122) Data.Monoid.<>
+                         (((\ bs ->
+                              (Data.ProtoLens.Encoding.Bytes.putVarInt
+                                 (Prelude.fromIntegral (Data.ByteString.length bs)))
+                                Data.Monoid.<> Data.ProtoLens.Encoding.Bytes.putBytes bs))
+                            Prelude.. Data.ProtoLens.encodeMessage)
+                           _v)
                     (Lens.Family2.view
                        (Lens.Labels.lensOf'
-                          ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "vector'file"))
+                          ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "vec'file"))
                        _x))
                    Data.Monoid.<>
                    Data.ProtoLens.Encoding.Wire.buildFieldSet

@@ -57,25 +57,25 @@ import qualified Text.Read
     * 'Proto.Google.Protobuf.Descriptor_Fields.name' @:: Lens' DescriptorProto Data.Text.Text@
     * 'Proto.Google.Protobuf.Descriptor_Fields.maybe'name' @:: Lens' DescriptorProto (Prelude.Maybe Data.Text.Text)@
     * 'Proto.Google.Protobuf.Descriptor_Fields.field' @:: Lens' DescriptorProto [FieldDescriptorProto]@
-    * 'Proto.Google.Protobuf.Descriptor_Fields.vector'field' @:: Lens' DescriptorProto (Data.Vector.Vector FieldDescriptorProto)@
+    * 'Proto.Google.Protobuf.Descriptor_Fields.vec'field' @:: Lens' DescriptorProto (Data.Vector.Vector FieldDescriptorProto)@
     * 'Proto.Google.Protobuf.Descriptor_Fields.extension' @:: Lens' DescriptorProto [FieldDescriptorProto]@
-    * 'Proto.Google.Protobuf.Descriptor_Fields.vector'extension' @:: Lens' DescriptorProto (Data.Vector.Vector FieldDescriptorProto)@
+    * 'Proto.Google.Protobuf.Descriptor_Fields.vec'extension' @:: Lens' DescriptorProto (Data.Vector.Vector FieldDescriptorProto)@
     * 'Proto.Google.Protobuf.Descriptor_Fields.nestedType' @:: Lens' DescriptorProto [DescriptorProto]@
-    * 'Proto.Google.Protobuf.Descriptor_Fields.vector'nestedType' @:: Lens' DescriptorProto (Data.Vector.Vector DescriptorProto)@
+    * 'Proto.Google.Protobuf.Descriptor_Fields.vec'nestedType' @:: Lens' DescriptorProto (Data.Vector.Vector DescriptorProto)@
     * 'Proto.Google.Protobuf.Descriptor_Fields.enumType' @:: Lens' DescriptorProto [EnumDescriptorProto]@
-    * 'Proto.Google.Protobuf.Descriptor_Fields.vector'enumType' @:: Lens' DescriptorProto (Data.Vector.Vector EnumDescriptorProto)@
+    * 'Proto.Google.Protobuf.Descriptor_Fields.vec'enumType' @:: Lens' DescriptorProto (Data.Vector.Vector EnumDescriptorProto)@
     * 'Proto.Google.Protobuf.Descriptor_Fields.extensionRange' @:: Lens' DescriptorProto [DescriptorProto'ExtensionRange]@
-    * 'Proto.Google.Protobuf.Descriptor_Fields.vector'extensionRange' @:: Lens' DescriptorProto
+    * 'Proto.Google.Protobuf.Descriptor_Fields.vec'extensionRange' @:: Lens' DescriptorProto
   (Data.Vector.Vector DescriptorProto'ExtensionRange)@
     * 'Proto.Google.Protobuf.Descriptor_Fields.oneofDecl' @:: Lens' DescriptorProto [OneofDescriptorProto]@
-    * 'Proto.Google.Protobuf.Descriptor_Fields.vector'oneofDecl' @:: Lens' DescriptorProto (Data.Vector.Vector OneofDescriptorProto)@
+    * 'Proto.Google.Protobuf.Descriptor_Fields.vec'oneofDecl' @:: Lens' DescriptorProto (Data.Vector.Vector OneofDescriptorProto)@
     * 'Proto.Google.Protobuf.Descriptor_Fields.options' @:: Lens' DescriptorProto MessageOptions@
     * 'Proto.Google.Protobuf.Descriptor_Fields.maybe'options' @:: Lens' DescriptorProto (Prelude.Maybe MessageOptions)@
     * 'Proto.Google.Protobuf.Descriptor_Fields.reservedRange' @:: Lens' DescriptorProto [DescriptorProto'ReservedRange]@
-    * 'Proto.Google.Protobuf.Descriptor_Fields.vector'reservedRange' @:: Lens' DescriptorProto
+    * 'Proto.Google.Protobuf.Descriptor_Fields.vec'reservedRange' @:: Lens' DescriptorProto
   (Data.Vector.Vector DescriptorProto'ReservedRange)@
     * 'Proto.Google.Protobuf.Descriptor_Fields.reservedName' @:: Lens' DescriptorProto [Data.Text.Text]@
-    * 'Proto.Google.Protobuf.Descriptor_Fields.vector'reservedName' @:: Lens' DescriptorProto (Data.Vector.Vector Data.Text.Text)@
+    * 'Proto.Google.Protobuf.Descriptor_Fields.vec'reservedName' @:: Lens' DescriptorProto (Data.Vector.Vector Data.Text.Text)@
  -}
 data DescriptorProto = DescriptorProto{_DescriptorProto'name ::
                                        !(Prelude.Maybe Data.Text.Text),
@@ -127,7 +127,7 @@ instance a ~ ([FieldDescriptorProto]) =>
               Lens.Family2.Unchecked.lens Data.Vector.Generic.toList
                 (\ _ y__ -> Data.Vector.Generic.fromList y__)
 instance a ~ (Data.Vector.Vector FieldDescriptorProto) =>
-         Lens.Labels.HasLens' DescriptorProto "vector'field" a
+         Lens.Labels.HasLens' DescriptorProto "vec'field" a
          where
         lensOf' _
           = (Lens.Family2.Unchecked.lens _DescriptorProto'field
@@ -143,7 +143,7 @@ instance a ~ ([FieldDescriptorProto]) =>
               Lens.Family2.Unchecked.lens Data.Vector.Generic.toList
                 (\ _ y__ -> Data.Vector.Generic.fromList y__)
 instance a ~ (Data.Vector.Vector FieldDescriptorProto) =>
-         Lens.Labels.HasLens' DescriptorProto "vector'extension" a
+         Lens.Labels.HasLens' DescriptorProto "vec'extension" a
          where
         lensOf' _
           = (Lens.Family2.Unchecked.lens _DescriptorProto'extension
@@ -159,7 +159,7 @@ instance a ~ ([DescriptorProto]) =>
               Lens.Family2.Unchecked.lens Data.Vector.Generic.toList
                 (\ _ y__ -> Data.Vector.Generic.fromList y__)
 instance a ~ (Data.Vector.Vector DescriptorProto) =>
-         Lens.Labels.HasLens' DescriptorProto "vector'nestedType" a
+         Lens.Labels.HasLens' DescriptorProto "vec'nestedType" a
          where
         lensOf' _
           = (Lens.Family2.Unchecked.lens _DescriptorProto'nestedType
@@ -175,7 +175,7 @@ instance a ~ ([EnumDescriptorProto]) =>
               Lens.Family2.Unchecked.lens Data.Vector.Generic.toList
                 (\ _ y__ -> Data.Vector.Generic.fromList y__)
 instance a ~ (Data.Vector.Vector EnumDescriptorProto) =>
-         Lens.Labels.HasLens' DescriptorProto "vector'enumType" a
+         Lens.Labels.HasLens' DescriptorProto "vec'enumType" a
          where
         lensOf' _
           = (Lens.Family2.Unchecked.lens _DescriptorProto'enumType
@@ -191,7 +191,7 @@ instance a ~ ([DescriptorProto'ExtensionRange]) =>
               Lens.Family2.Unchecked.lens Data.Vector.Generic.toList
                 (\ _ y__ -> Data.Vector.Generic.fromList y__)
 instance a ~ (Data.Vector.Vector DescriptorProto'ExtensionRange) =>
-         Lens.Labels.HasLens' DescriptorProto "vector'extensionRange" a
+         Lens.Labels.HasLens' DescriptorProto "vec'extensionRange" a
          where
         lensOf' _
           = (Lens.Family2.Unchecked.lens _DescriptorProto'extensionRange
@@ -207,7 +207,7 @@ instance a ~ ([OneofDescriptorProto]) =>
               Lens.Family2.Unchecked.lens Data.Vector.Generic.toList
                 (\ _ y__ -> Data.Vector.Generic.fromList y__)
 instance a ~ (Data.Vector.Vector OneofDescriptorProto) =>
-         Lens.Labels.HasLens' DescriptorProto "vector'oneofDecl" a
+         Lens.Labels.HasLens' DescriptorProto "vec'oneofDecl" a
          where
         lensOf' _
           = (Lens.Family2.Unchecked.lens _DescriptorProto'oneofDecl
@@ -237,7 +237,7 @@ instance a ~ ([DescriptorProto'ReservedRange]) =>
               Lens.Family2.Unchecked.lens Data.Vector.Generic.toList
                 (\ _ y__ -> Data.Vector.Generic.fromList y__)
 instance a ~ (Data.Vector.Vector DescriptorProto'ReservedRange) =>
-         Lens.Labels.HasLens' DescriptorProto "vector'reservedRange" a
+         Lens.Labels.HasLens' DescriptorProto "vec'reservedRange" a
          where
         lensOf' _
           = (Lens.Family2.Unchecked.lens _DescriptorProto'reservedRange
@@ -253,7 +253,7 @@ instance a ~ ([Data.Text.Text]) =>
               Lens.Family2.Unchecked.lens Data.Vector.Generic.toList
                 (\ _ y__ -> Data.Vector.Generic.fromList y__)
 instance a ~ (Data.Vector.Vector Data.Text.Text) =>
-         Lens.Labels.HasLens' DescriptorProto "vector'reservedName" a
+         Lens.Labels.HasLens' DescriptorProto "vec'reservedName" a
          where
         lensOf' _
           = (Lens.Family2.Unchecked.lens _DescriptorProto'reservedName
@@ -444,44 +444,44 @@ instance Data.ProtoLens.Message DescriptorProto where
                                  (Lens.Family2.set
                                     (Lens.Labels.lensOf'
                                        ((Lens.Labels.proxy#) ::
-                                          (Lens.Labels.Proxy#) "vector'enumType"))
+                                          (Lens.Labels.Proxy#) "vec'enumType"))
                                     frozen'enumType
                                     (Lens.Family2.set
                                        (Lens.Labels.lensOf'
                                           ((Lens.Labels.proxy#) ::
-                                             (Lens.Labels.Proxy#) "vector'extension"))
+                                             (Lens.Labels.Proxy#) "vec'extension"))
                                        frozen'extension
                                        (Lens.Family2.set
                                           (Lens.Labels.lensOf'
                                              ((Lens.Labels.proxy#) ::
-                                                (Lens.Labels.Proxy#) "vector'extensionRange"))
+                                                (Lens.Labels.Proxy#) "vec'extensionRange"))
                                           frozen'extensionRange
                                           (Lens.Family2.set
                                              (Lens.Labels.lensOf'
                                                 ((Lens.Labels.proxy#) ::
-                                                   (Lens.Labels.Proxy#) "vector'field"))
+                                                   (Lens.Labels.Proxy#) "vec'field"))
                                              frozen'field
                                              (Lens.Family2.set
                                                 (Lens.Labels.lensOf'
                                                    ((Lens.Labels.proxy#) ::
-                                                      (Lens.Labels.Proxy#) "vector'nestedType"))
+                                                      (Lens.Labels.Proxy#) "vec'nestedType"))
                                                 frozen'nestedType
                                                 (Lens.Family2.set
                                                    (Lens.Labels.lensOf'
                                                       ((Lens.Labels.proxy#) ::
-                                                         (Lens.Labels.Proxy#) "vector'oneofDecl"))
+                                                         (Lens.Labels.Proxy#) "vec'oneofDecl"))
                                                    frozen'oneofDecl
                                                    (Lens.Family2.set
                                                       (Lens.Labels.lensOf'
                                                          ((Lens.Labels.proxy#) ::
                                                             (Lens.Labels.Proxy#)
-                                                              "vector'reservedName"))
+                                                              "vec'reservedName"))
                                                       frozen'reservedName
                                                       (Lens.Family2.set
                                                          (Lens.Labels.lensOf'
                                                             ((Lens.Labels.proxy#) ::
                                                                (Lens.Labels.Proxy#)
-                                                                 "vector'reservedRange"))
+                                                                 "vec'reservedRange"))
                                                          frozen'reservedRange
                                                          x)))))))))
                          else
@@ -717,103 +717,89 @@ instance Data.ProtoLens.Message DescriptorProto where
                                             Prelude.. Data.Text.Encoding.encodeUtf8)
                                            _v)
                  Data.Monoid.<>
-                 (Data.Vector.Generic.foldr
-                    (\ _v as ->
-                       ((Data.ProtoLens.Encoding.Bytes.putVarInt 18) Data.Monoid.<>
-                          (((\ bs ->
-                               (Data.ProtoLens.Encoding.Bytes.putVarInt
-                                  (Prelude.fromIntegral (Data.ByteString.length bs)))
-                                 Data.Monoid.<> Data.ProtoLens.Encoding.Bytes.putBytes bs))
-                             Prelude.. Data.ProtoLens.encodeMessage)
-                            _v)
-                         Data.Monoid.<> as)
-                    Data.Monoid.mempty
+                 (Data.ProtoLens.Encoding.Bytes.foldMapBuilder
+                    (\ _v ->
+                       (Data.ProtoLens.Encoding.Bytes.putVarInt 18) Data.Monoid.<>
+                         (((\ bs ->
+                              (Data.ProtoLens.Encoding.Bytes.putVarInt
+                                 (Prelude.fromIntegral (Data.ByteString.length bs)))
+                                Data.Monoid.<> Data.ProtoLens.Encoding.Bytes.putBytes bs))
+                            Prelude.. Data.ProtoLens.encodeMessage)
+                           _v)
                     (Lens.Family2.view
                        (Lens.Labels.lensOf'
-                          ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "vector'field"))
+                          ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "vec'field"))
                        _x))
                    Data.Monoid.<>
-                   (Data.Vector.Generic.foldr
-                      (\ _v as ->
-                         ((Data.ProtoLens.Encoding.Bytes.putVarInt 50) Data.Monoid.<>
-                            (((\ bs ->
-                                 (Data.ProtoLens.Encoding.Bytes.putVarInt
-                                    (Prelude.fromIntegral (Data.ByteString.length bs)))
-                                   Data.Monoid.<> Data.ProtoLens.Encoding.Bytes.putBytes bs))
-                               Prelude.. Data.ProtoLens.encodeMessage)
-                              _v)
-                           Data.Monoid.<> as)
-                      Data.Monoid.mempty
+                   (Data.ProtoLens.Encoding.Bytes.foldMapBuilder
+                      (\ _v ->
+                         (Data.ProtoLens.Encoding.Bytes.putVarInt 50) Data.Monoid.<>
+                           (((\ bs ->
+                                (Data.ProtoLens.Encoding.Bytes.putVarInt
+                                   (Prelude.fromIntegral (Data.ByteString.length bs)))
+                                  Data.Monoid.<> Data.ProtoLens.Encoding.Bytes.putBytes bs))
+                              Prelude.. Data.ProtoLens.encodeMessage)
+                             _v)
                       (Lens.Family2.view
                          (Lens.Labels.lensOf'
-                            ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "vector'extension"))
+                            ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "vec'extension"))
                          _x))
                      Data.Monoid.<>
-                     (Data.Vector.Generic.foldr
-                        (\ _v as ->
-                           ((Data.ProtoLens.Encoding.Bytes.putVarInt 26) Data.Monoid.<>
-                              (((\ bs ->
-                                   (Data.ProtoLens.Encoding.Bytes.putVarInt
-                                      (Prelude.fromIntegral (Data.ByteString.length bs)))
-                                     Data.Monoid.<> Data.ProtoLens.Encoding.Bytes.putBytes bs))
-                                 Prelude.. Data.ProtoLens.encodeMessage)
-                                _v)
-                             Data.Monoid.<> as)
-                        Data.Monoid.mempty
+                     (Data.ProtoLens.Encoding.Bytes.foldMapBuilder
+                        (\ _v ->
+                           (Data.ProtoLens.Encoding.Bytes.putVarInt 26) Data.Monoid.<>
+                             (((\ bs ->
+                                  (Data.ProtoLens.Encoding.Bytes.putVarInt
+                                     (Prelude.fromIntegral (Data.ByteString.length bs)))
+                                    Data.Monoid.<> Data.ProtoLens.Encoding.Bytes.putBytes bs))
+                                Prelude.. Data.ProtoLens.encodeMessage)
+                               _v)
                         (Lens.Family2.view
                            (Lens.Labels.lensOf'
-                              ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "vector'nestedType"))
+                              ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "vec'nestedType"))
                            _x))
                        Data.Monoid.<>
-                       (Data.Vector.Generic.foldr
-                          (\ _v as ->
-                             ((Data.ProtoLens.Encoding.Bytes.putVarInt 34) Data.Monoid.<>
-                                (((\ bs ->
-                                     (Data.ProtoLens.Encoding.Bytes.putVarInt
-                                        (Prelude.fromIntegral (Data.ByteString.length bs)))
-                                       Data.Monoid.<> Data.ProtoLens.Encoding.Bytes.putBytes bs))
-                                   Prelude.. Data.ProtoLens.encodeMessage)
-                                  _v)
-                               Data.Monoid.<> as)
-                          Data.Monoid.mempty
+                       (Data.ProtoLens.Encoding.Bytes.foldMapBuilder
+                          (\ _v ->
+                             (Data.ProtoLens.Encoding.Bytes.putVarInt 34) Data.Monoid.<>
+                               (((\ bs ->
+                                    (Data.ProtoLens.Encoding.Bytes.putVarInt
+                                       (Prelude.fromIntegral (Data.ByteString.length bs)))
+                                      Data.Monoid.<> Data.ProtoLens.Encoding.Bytes.putBytes bs))
+                                  Prelude.. Data.ProtoLens.encodeMessage)
+                                 _v)
                           (Lens.Family2.view
                              (Lens.Labels.lensOf'
-                                ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "vector'enumType"))
+                                ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "vec'enumType"))
                              _x))
                          Data.Monoid.<>
-                         (Data.Vector.Generic.foldr
-                            (\ _v as ->
-                               ((Data.ProtoLens.Encoding.Bytes.putVarInt 42) Data.Monoid.<>
-                                  (((\ bs ->
-                                       (Data.ProtoLens.Encoding.Bytes.putVarInt
-                                          (Prelude.fromIntegral (Data.ByteString.length bs)))
-                                         Data.Monoid.<> Data.ProtoLens.Encoding.Bytes.putBytes bs))
-                                     Prelude.. Data.ProtoLens.encodeMessage)
-                                    _v)
-                                 Data.Monoid.<> as)
-                            Data.Monoid.mempty
+                         (Data.ProtoLens.Encoding.Bytes.foldMapBuilder
+                            (\ _v ->
+                               (Data.ProtoLens.Encoding.Bytes.putVarInt 42) Data.Monoid.<>
+                                 (((\ bs ->
+                                      (Data.ProtoLens.Encoding.Bytes.putVarInt
+                                         (Prelude.fromIntegral (Data.ByteString.length bs)))
+                                        Data.Monoid.<> Data.ProtoLens.Encoding.Bytes.putBytes bs))
+                                    Prelude.. Data.ProtoLens.encodeMessage)
+                                   _v)
                             (Lens.Family2.view
                                (Lens.Labels.lensOf'
                                   ((Lens.Labels.proxy#) ::
-                                     (Lens.Labels.Proxy#) "vector'extensionRange"))
+                                     (Lens.Labels.Proxy#) "vec'extensionRange"))
                                _x))
                            Data.Monoid.<>
-                           (Data.Vector.Generic.foldr
-                              (\ _v as ->
-                                 ((Data.ProtoLens.Encoding.Bytes.putVarInt 66) Data.Monoid.<>
-                                    (((\ bs ->
-                                         (Data.ProtoLens.Encoding.Bytes.putVarInt
-                                            (Prelude.fromIntegral (Data.ByteString.length bs)))
-                                           Data.Monoid.<>
-                                           Data.ProtoLens.Encoding.Bytes.putBytes bs))
-                                       Prelude.. Data.ProtoLens.encodeMessage)
-                                      _v)
-                                   Data.Monoid.<> as)
-                              Data.Monoid.mempty
+                           (Data.ProtoLens.Encoding.Bytes.foldMapBuilder
+                              (\ _v ->
+                                 (Data.ProtoLens.Encoding.Bytes.putVarInt 66) Data.Monoid.<>
+                                   (((\ bs ->
+                                        (Data.ProtoLens.Encoding.Bytes.putVarInt
+                                           (Prelude.fromIntegral (Data.ByteString.length bs)))
+                                          Data.Monoid.<> Data.ProtoLens.Encoding.Bytes.putBytes bs))
+                                      Prelude.. Data.ProtoLens.encodeMessage)
+                                     _v)
                               (Lens.Family2.view
                                  (Lens.Labels.lensOf'
-                                    ((Lens.Labels.proxy#) ::
-                                       (Lens.Labels.Proxy#) "vector'oneofDecl"))
+                                    ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "vec'oneofDecl"))
                                  _x))
                              Data.Monoid.<>
                              (case
@@ -835,41 +821,36 @@ instance Data.ProtoLens.Message DescriptorProto where
                                                           Prelude.. Data.ProtoLens.encodeMessage)
                                                          _v)
                                Data.Monoid.<>
-                               (Data.Vector.Generic.foldr
-                                  (\ _v as ->
-                                     ((Data.ProtoLens.Encoding.Bytes.putVarInt 74) Data.Monoid.<>
-                                        (((\ bs ->
-                                             (Data.ProtoLens.Encoding.Bytes.putVarInt
-                                                (Prelude.fromIntegral (Data.ByteString.length bs)))
-                                               Data.Monoid.<>
-                                               Data.ProtoLens.Encoding.Bytes.putBytes bs))
-                                           Prelude.. Data.ProtoLens.encodeMessage)
-                                          _v)
-                                       Data.Monoid.<> as)
-                                  Data.Monoid.mempty
+                               (Data.ProtoLens.Encoding.Bytes.foldMapBuilder
+                                  (\ _v ->
+                                     (Data.ProtoLens.Encoding.Bytes.putVarInt 74) Data.Monoid.<>
+                                       (((\ bs ->
+                                            (Data.ProtoLens.Encoding.Bytes.putVarInt
+                                               (Prelude.fromIntegral (Data.ByteString.length bs)))
+                                              Data.Monoid.<>
+                                              Data.ProtoLens.Encoding.Bytes.putBytes bs))
+                                          Prelude.. Data.ProtoLens.encodeMessage)
+                                         _v)
                                   (Lens.Family2.view
                                      (Lens.Labels.lensOf'
                                         ((Lens.Labels.proxy#) ::
-                                           (Lens.Labels.Proxy#) "vector'reservedRange"))
+                                           (Lens.Labels.Proxy#) "vec'reservedRange"))
                                      _x))
                                  Data.Monoid.<>
-                                 (Data.Vector.Generic.foldr
-                                    (\ _v as ->
-                                       ((Data.ProtoLens.Encoding.Bytes.putVarInt 82) Data.Monoid.<>
-                                          (((\ bs ->
-                                               (Data.ProtoLens.Encoding.Bytes.putVarInt
-                                                  (Prelude.fromIntegral
-                                                     (Data.ByteString.length bs)))
-                                                 Data.Monoid.<>
-                                                 Data.ProtoLens.Encoding.Bytes.putBytes bs))
-                                             Prelude.. Data.Text.Encoding.encodeUtf8)
-                                            _v)
-                                         Data.Monoid.<> as)
-                                    Data.Monoid.mempty
+                                 (Data.ProtoLens.Encoding.Bytes.foldMapBuilder
+                                    (\ _v ->
+                                       (Data.ProtoLens.Encoding.Bytes.putVarInt 82) Data.Monoid.<>
+                                         (((\ bs ->
+                                              (Data.ProtoLens.Encoding.Bytes.putVarInt
+                                                 (Prelude.fromIntegral (Data.ByteString.length bs)))
+                                                Data.Monoid.<>
+                                                Data.ProtoLens.Encoding.Bytes.putBytes bs))
+                                            Prelude.. Data.Text.Encoding.encodeUtf8)
+                                           _v)
                                     (Lens.Family2.view
                                        (Lens.Labels.lensOf'
                                           ((Lens.Labels.proxy#) ::
-                                             (Lens.Labels.Proxy#) "vector'reservedName"))
+                                             (Lens.Labels.Proxy#) "vec'reservedName"))
                                        _x))
                                    Data.Monoid.<>
                                    Data.ProtoLens.Encoding.Wire.buildFieldSet
@@ -1308,15 +1289,15 @@ instance Control.DeepSeq.NFData DescriptorProto'ReservedRange where
     * 'Proto.Google.Protobuf.Descriptor_Fields.name' @:: Lens' EnumDescriptorProto Data.Text.Text@
     * 'Proto.Google.Protobuf.Descriptor_Fields.maybe'name' @:: Lens' EnumDescriptorProto (Prelude.Maybe Data.Text.Text)@
     * 'Proto.Google.Protobuf.Descriptor_Fields.value' @:: Lens' EnumDescriptorProto [EnumValueDescriptorProto]@
-    * 'Proto.Google.Protobuf.Descriptor_Fields.vector'value' @:: Lens' EnumDescriptorProto
+    * 'Proto.Google.Protobuf.Descriptor_Fields.vec'value' @:: Lens' EnumDescriptorProto
   (Data.Vector.Vector EnumValueDescriptorProto)@
     * 'Proto.Google.Protobuf.Descriptor_Fields.options' @:: Lens' EnumDescriptorProto EnumOptions@
     * 'Proto.Google.Protobuf.Descriptor_Fields.maybe'options' @:: Lens' EnumDescriptorProto (Prelude.Maybe EnumOptions)@
     * 'Proto.Google.Protobuf.Descriptor_Fields.reservedRange' @:: Lens' EnumDescriptorProto [EnumDescriptorProto'EnumReservedRange]@
-    * 'Proto.Google.Protobuf.Descriptor_Fields.vector'reservedRange' @:: Lens' EnumDescriptorProto
+    * 'Proto.Google.Protobuf.Descriptor_Fields.vec'reservedRange' @:: Lens' EnumDescriptorProto
   (Data.Vector.Vector EnumDescriptorProto'EnumReservedRange)@
     * 'Proto.Google.Protobuf.Descriptor_Fields.reservedName' @:: Lens' EnumDescriptorProto [Data.Text.Text]@
-    * 'Proto.Google.Protobuf.Descriptor_Fields.vector'reservedName' @:: Lens' EnumDescriptorProto (Data.Vector.Vector Data.Text.Text)@
+    * 'Proto.Google.Protobuf.Descriptor_Fields.vec'reservedName' @:: Lens' EnumDescriptorProto (Data.Vector.Vector Data.Text.Text)@
  -}
 data EnumDescriptorProto = EnumDescriptorProto{_EnumDescriptorProto'name
                                                :: !(Prelude.Maybe Data.Text.Text),
@@ -1361,7 +1342,7 @@ instance a ~ ([EnumValueDescriptorProto]) =>
               Lens.Family2.Unchecked.lens Data.Vector.Generic.toList
                 (\ _ y__ -> Data.Vector.Generic.fromList y__)
 instance a ~ (Data.Vector.Vector EnumValueDescriptorProto) =>
-         Lens.Labels.HasLens' EnumDescriptorProto "vector'value" a
+         Lens.Labels.HasLens' EnumDescriptorProto "vec'value" a
          where
         lensOf' _
           = (Lens.Family2.Unchecked.lens _EnumDescriptorProto'value
@@ -1392,7 +1373,7 @@ instance a ~ ([EnumDescriptorProto'EnumReservedRange]) =>
                 (\ _ y__ -> Data.Vector.Generic.fromList y__)
 instance a ~
            (Data.Vector.Vector EnumDescriptorProto'EnumReservedRange) =>
-         Lens.Labels.HasLens' EnumDescriptorProto "vector'reservedRange" a
+         Lens.Labels.HasLens' EnumDescriptorProto "vec'reservedRange" a
          where
         lensOf' _
           = (Lens.Family2.Unchecked.lens _EnumDescriptorProto'reservedRange
@@ -1408,7 +1389,7 @@ instance a ~ ([Data.Text.Text]) =>
               Lens.Family2.Unchecked.lens Data.Vector.Generic.toList
                 (\ _ y__ -> Data.Vector.Generic.fromList y__)
 instance a ~ (Data.Vector.Vector Data.Text.Text) =>
-         Lens.Labels.HasLens' EnumDescriptorProto "vector'reservedName" a
+         Lens.Labels.HasLens' EnumDescriptorProto "vec'reservedName" a
          where
         lensOf' _
           = (Lens.Family2.Unchecked.lens _EnumDescriptorProto'reservedName
@@ -1514,17 +1495,17 @@ instance Data.ProtoLens.Message EnumDescriptorProto where
                                  (Lens.Family2.set
                                     (Lens.Labels.lensOf'
                                        ((Lens.Labels.proxy#) ::
-                                          (Lens.Labels.Proxy#) "vector'reservedName"))
+                                          (Lens.Labels.Proxy#) "vec'reservedName"))
                                     frozen'reservedName
                                     (Lens.Family2.set
                                        (Lens.Labels.lensOf'
                                           ((Lens.Labels.proxy#) ::
-                                             (Lens.Labels.Proxy#) "vector'reservedRange"))
+                                             (Lens.Labels.Proxy#) "vec'reservedRange"))
                                        frozen'reservedRange
                                        (Lens.Family2.set
                                           (Lens.Labels.lensOf'
                                              ((Lens.Labels.proxy#) ::
-                                                (Lens.Labels.Proxy#) "vector'value"))
+                                                (Lens.Labels.Proxy#) "vec'value"))
                                           frozen'value
                                           x))))
                          else
@@ -1637,20 +1618,18 @@ instance Data.ProtoLens.Message EnumDescriptorProto where
                                             Prelude.. Data.Text.Encoding.encodeUtf8)
                                            _v)
                  Data.Monoid.<>
-                 (Data.Vector.Generic.foldr
-                    (\ _v as ->
-                       ((Data.ProtoLens.Encoding.Bytes.putVarInt 18) Data.Monoid.<>
-                          (((\ bs ->
-                               (Data.ProtoLens.Encoding.Bytes.putVarInt
-                                  (Prelude.fromIntegral (Data.ByteString.length bs)))
-                                 Data.Monoid.<> Data.ProtoLens.Encoding.Bytes.putBytes bs))
-                             Prelude.. Data.ProtoLens.encodeMessage)
-                            _v)
-                         Data.Monoid.<> as)
-                    Data.Monoid.mempty
+                 (Data.ProtoLens.Encoding.Bytes.foldMapBuilder
+                    (\ _v ->
+                       (Data.ProtoLens.Encoding.Bytes.putVarInt 18) Data.Monoid.<>
+                         (((\ bs ->
+                              (Data.ProtoLens.Encoding.Bytes.putVarInt
+                                 (Prelude.fromIntegral (Data.ByteString.length bs)))
+                                Data.Monoid.<> Data.ProtoLens.Encoding.Bytes.putBytes bs))
+                            Prelude.. Data.ProtoLens.encodeMessage)
+                           _v)
                     (Lens.Family2.view
                        (Lens.Labels.lensOf'
-                          ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "vector'value"))
+                          ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "vec'value"))
                        _x))
                    Data.Monoid.<>
                    (case
@@ -1671,38 +1650,32 @@ instance Data.ProtoLens.Message EnumDescriptorProto where
                                                 Prelude.. Data.ProtoLens.encodeMessage)
                                                _v)
                      Data.Monoid.<>
-                     (Data.Vector.Generic.foldr
-                        (\ _v as ->
-                           ((Data.ProtoLens.Encoding.Bytes.putVarInt 34) Data.Monoid.<>
-                              (((\ bs ->
-                                   (Data.ProtoLens.Encoding.Bytes.putVarInt
-                                      (Prelude.fromIntegral (Data.ByteString.length bs)))
-                                     Data.Monoid.<> Data.ProtoLens.Encoding.Bytes.putBytes bs))
-                                 Prelude.. Data.ProtoLens.encodeMessage)
-                                _v)
-                             Data.Monoid.<> as)
-                        Data.Monoid.mempty
+                     (Data.ProtoLens.Encoding.Bytes.foldMapBuilder
+                        (\ _v ->
+                           (Data.ProtoLens.Encoding.Bytes.putVarInt 34) Data.Monoid.<>
+                             (((\ bs ->
+                                  (Data.ProtoLens.Encoding.Bytes.putVarInt
+                                     (Prelude.fromIntegral (Data.ByteString.length bs)))
+                                    Data.Monoid.<> Data.ProtoLens.Encoding.Bytes.putBytes bs))
+                                Prelude.. Data.ProtoLens.encodeMessage)
+                               _v)
                         (Lens.Family2.view
                            (Lens.Labels.lensOf'
-                              ((Lens.Labels.proxy#) ::
-                                 (Lens.Labels.Proxy#) "vector'reservedRange"))
+                              ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "vec'reservedRange"))
                            _x))
                        Data.Monoid.<>
-                       (Data.Vector.Generic.foldr
-                          (\ _v as ->
-                             ((Data.ProtoLens.Encoding.Bytes.putVarInt 42) Data.Monoid.<>
-                                (((\ bs ->
-                                     (Data.ProtoLens.Encoding.Bytes.putVarInt
-                                        (Prelude.fromIntegral (Data.ByteString.length bs)))
-                                       Data.Monoid.<> Data.ProtoLens.Encoding.Bytes.putBytes bs))
-                                   Prelude.. Data.Text.Encoding.encodeUtf8)
-                                  _v)
-                               Data.Monoid.<> as)
-                          Data.Monoid.mempty
+                       (Data.ProtoLens.Encoding.Bytes.foldMapBuilder
+                          (\ _v ->
+                             (Data.ProtoLens.Encoding.Bytes.putVarInt 42) Data.Monoid.<>
+                               (((\ bs ->
+                                    (Data.ProtoLens.Encoding.Bytes.putVarInt
+                                       (Prelude.fromIntegral (Data.ByteString.length bs)))
+                                      Data.Monoid.<> Data.ProtoLens.Encoding.Bytes.putBytes bs))
+                                  Prelude.. Data.Text.Encoding.encodeUtf8)
+                                 _v)
                           (Lens.Family2.view
                              (Lens.Labels.lensOf'
-                                ((Lens.Labels.proxy#) ::
-                                   (Lens.Labels.Proxy#) "vector'reservedName"))
+                                ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "vec'reservedName"))
                              _x))
                          Data.Monoid.<>
                          Data.ProtoLens.Encoding.Wire.buildFieldSet
@@ -1925,7 +1898,7 @@ instance Control.DeepSeq.NFData
     * 'Proto.Google.Protobuf.Descriptor_Fields.deprecated' @:: Lens' EnumOptions Prelude.Bool@
     * 'Proto.Google.Protobuf.Descriptor_Fields.maybe'deprecated' @:: Lens' EnumOptions (Prelude.Maybe Prelude.Bool)@
     * 'Proto.Google.Protobuf.Descriptor_Fields.uninterpretedOption' @:: Lens' EnumOptions [UninterpretedOption]@
-    * 'Proto.Google.Protobuf.Descriptor_Fields.vector'uninterpretedOption' @:: Lens' EnumOptions (Data.Vector.Vector UninterpretedOption)@
+    * 'Proto.Google.Protobuf.Descriptor_Fields.vec'uninterpretedOption' @:: Lens' EnumOptions (Data.Vector.Vector UninterpretedOption)@
  -}
 data EnumOptions = EnumOptions{_EnumOptions'allowAlias ::
                                !(Prelude.Maybe Prelude.Bool),
@@ -1977,7 +1950,7 @@ instance a ~ ([UninterpretedOption]) =>
               Lens.Family2.Unchecked.lens Data.Vector.Generic.toList
                 (\ _ y__ -> Data.Vector.Generic.fromList y__)
 instance a ~ (Data.Vector.Vector UninterpretedOption) =>
-         Lens.Labels.HasLens' EnumOptions "vector'uninterpretedOption" a
+         Lens.Labels.HasLens' EnumOptions "vec'uninterpretedOption" a
          where
         lensOf' _
           = (Lens.Family2.Unchecked.lens _EnumOptions'uninterpretedOption
@@ -2048,7 +2021,7 @@ instance Data.ProtoLens.Message EnumOptions where
                                  (Lens.Family2.set
                                     (Lens.Labels.lensOf'
                                        ((Lens.Labels.proxy#) ::
-                                          (Lens.Labels.Proxy#) "vector'uninterpretedOption"))
+                                          (Lens.Labels.Proxy#) "vec'uninterpretedOption"))
                                     frozen'uninterpretedOption
                                     x))
                          else
@@ -2127,21 +2100,19 @@ instance Data.ProtoLens.Message EnumOptions where
                                               (\ b -> if b then 1 else 0))
                                              _v)
                    Data.Monoid.<>
-                   (Data.Vector.Generic.foldr
-                      (\ _v as ->
-                         ((Data.ProtoLens.Encoding.Bytes.putVarInt 7994) Data.Monoid.<>
-                            (((\ bs ->
-                                 (Data.ProtoLens.Encoding.Bytes.putVarInt
-                                    (Prelude.fromIntegral (Data.ByteString.length bs)))
-                                   Data.Monoid.<> Data.ProtoLens.Encoding.Bytes.putBytes bs))
-                               Prelude.. Data.ProtoLens.encodeMessage)
-                              _v)
-                           Data.Monoid.<> as)
-                      Data.Monoid.mempty
+                   (Data.ProtoLens.Encoding.Bytes.foldMapBuilder
+                      (\ _v ->
+                         (Data.ProtoLens.Encoding.Bytes.putVarInt 7994) Data.Monoid.<>
+                           (((\ bs ->
+                                (Data.ProtoLens.Encoding.Bytes.putVarInt
+                                   (Prelude.fromIntegral (Data.ByteString.length bs)))
+                                  Data.Monoid.<> Data.ProtoLens.Encoding.Bytes.putBytes bs))
+                              Prelude.. Data.ProtoLens.encodeMessage)
+                             _v)
                       (Lens.Family2.view
                          (Lens.Labels.lensOf'
                             ((Lens.Labels.proxy#) ::
-                               (Lens.Labels.Proxy#) "vector'uninterpretedOption"))
+                               (Lens.Labels.Proxy#) "vec'uninterpretedOption"))
                          _x))
                      Data.Monoid.<>
                      Data.ProtoLens.Encoding.Wire.buildFieldSet
@@ -2394,7 +2365,7 @@ instance Control.DeepSeq.NFData EnumValueDescriptorProto where
     * 'Proto.Google.Protobuf.Descriptor_Fields.deprecated' @:: Lens' EnumValueOptions Prelude.Bool@
     * 'Proto.Google.Protobuf.Descriptor_Fields.maybe'deprecated' @:: Lens' EnumValueOptions (Prelude.Maybe Prelude.Bool)@
     * 'Proto.Google.Protobuf.Descriptor_Fields.uninterpretedOption' @:: Lens' EnumValueOptions [UninterpretedOption]@
-    * 'Proto.Google.Protobuf.Descriptor_Fields.vector'uninterpretedOption' @:: Lens' EnumValueOptions (Data.Vector.Vector UninterpretedOption)@
+    * 'Proto.Google.Protobuf.Descriptor_Fields.vec'uninterpretedOption' @:: Lens' EnumValueOptions (Data.Vector.Vector UninterpretedOption)@
  -}
 data EnumValueOptions = EnumValueOptions{_EnumValueOptions'deprecated
                                          :: !(Prelude.Maybe Prelude.Bool),
@@ -2433,8 +2404,7 @@ instance a ~ ([UninterpretedOption]) =>
               Lens.Family2.Unchecked.lens Data.Vector.Generic.toList
                 (\ _ y__ -> Data.Vector.Generic.fromList y__)
 instance a ~ (Data.Vector.Vector UninterpretedOption) =>
-         Lens.Labels.HasLens' EnumValueOptions "vector'uninterpretedOption"
-           a
+         Lens.Labels.HasLens' EnumValueOptions "vec'uninterpretedOption" a
          where
         lensOf' _
           = (Lens.Family2.Unchecked.lens
@@ -2496,7 +2466,7 @@ instance Data.ProtoLens.Message EnumValueOptions where
                                  (Lens.Family2.set
                                     (Lens.Labels.lensOf'
                                        ((Lens.Labels.proxy#) ::
-                                          (Lens.Labels.Proxy#) "vector'uninterpretedOption"))
+                                          (Lens.Labels.Proxy#) "vec'uninterpretedOption"))
                                     frozen'uninterpretedOption
                                     x))
                          else
@@ -2551,21 +2521,19 @@ instance Data.ProtoLens.Message EnumValueOptions where
                                             (\ b -> if b then 1 else 0))
                                            _v)
                  Data.Monoid.<>
-                 (Data.Vector.Generic.foldr
-                    (\ _v as ->
-                       ((Data.ProtoLens.Encoding.Bytes.putVarInt 7994) Data.Monoid.<>
-                          (((\ bs ->
-                               (Data.ProtoLens.Encoding.Bytes.putVarInt
-                                  (Prelude.fromIntegral (Data.ByteString.length bs)))
-                                 Data.Monoid.<> Data.ProtoLens.Encoding.Bytes.putBytes bs))
-                             Prelude.. Data.ProtoLens.encodeMessage)
-                            _v)
-                         Data.Monoid.<> as)
-                    Data.Monoid.mempty
+                 (Data.ProtoLens.Encoding.Bytes.foldMapBuilder
+                    (\ _v ->
+                       (Data.ProtoLens.Encoding.Bytes.putVarInt 7994) Data.Monoid.<>
+                         (((\ bs ->
+                              (Data.ProtoLens.Encoding.Bytes.putVarInt
+                                 (Prelude.fromIntegral (Data.ByteString.length bs)))
+                                Data.Monoid.<> Data.ProtoLens.Encoding.Bytes.putBytes bs))
+                            Prelude.. Data.ProtoLens.encodeMessage)
+                           _v)
                     (Lens.Family2.view
                        (Lens.Labels.lensOf'
                           ((Lens.Labels.proxy#) ::
-                             (Lens.Labels.Proxy#) "vector'uninterpretedOption"))
+                             (Lens.Labels.Proxy#) "vec'uninterpretedOption"))
                        _x))
                    Data.Monoid.<>
                    Data.ProtoLens.Encoding.Wire.buildFieldSet
@@ -2581,7 +2549,7 @@ instance Control.DeepSeq.NFData EnumValueOptions where
 {- | Fields :
 
     * 'Proto.Google.Protobuf.Descriptor_Fields.uninterpretedOption' @:: Lens' ExtensionRangeOptions [UninterpretedOption]@
-    * 'Proto.Google.Protobuf.Descriptor_Fields.vector'uninterpretedOption' @:: Lens' ExtensionRangeOptions
+    * 'Proto.Google.Protobuf.Descriptor_Fields.vec'uninterpretedOption' @:: Lens' ExtensionRangeOptions
   (Data.Vector.Vector UninterpretedOption)@
  -}
 data ExtensionRangeOptions = ExtensionRangeOptions{_ExtensionRangeOptions'uninterpretedOption
@@ -2607,7 +2575,7 @@ instance a ~ ([UninterpretedOption]) =>
                 (\ _ y__ -> Data.Vector.Generic.fromList y__)
 instance a ~ (Data.Vector.Vector UninterpretedOption) =>
          Lens.Labels.HasLens' ExtensionRangeOptions
-           "vector'uninterpretedOption"
+           "vec'uninterpretedOption"
            a
          where
         lensOf' _
@@ -2663,7 +2631,7 @@ instance Data.ProtoLens.Message ExtensionRangeOptions where
                                  (Lens.Family2.set
                                     (Lens.Labels.lensOf'
                                        ((Lens.Labels.proxy#) ::
-                                          (Lens.Labels.Proxy#) "vector'uninterpretedOption"))
+                                          (Lens.Labels.Proxy#) "vec'uninterpretedOption"))
                                     frozen'uninterpretedOption
                                     x))
                          else
@@ -2694,21 +2662,19 @@ instance Data.ProtoLens.Message ExtensionRangeOptions where
                 Data.ProtoLens.Encoding.Bytes.<?> "ExtensionRangeOptions"
         buildMessage
           = (\ _x ->
-               (Data.Vector.Generic.foldr
-                  (\ _v as ->
-                     ((Data.ProtoLens.Encoding.Bytes.putVarInt 7994) Data.Monoid.<>
-                        (((\ bs ->
-                             (Data.ProtoLens.Encoding.Bytes.putVarInt
-                                (Prelude.fromIntegral (Data.ByteString.length bs)))
-                               Data.Monoid.<> Data.ProtoLens.Encoding.Bytes.putBytes bs))
-                           Prelude.. Data.ProtoLens.encodeMessage)
-                          _v)
-                       Data.Monoid.<> as)
-                  Data.Monoid.mempty
+               (Data.ProtoLens.Encoding.Bytes.foldMapBuilder
+                  (\ _v ->
+                     (Data.ProtoLens.Encoding.Bytes.putVarInt 7994) Data.Monoid.<>
+                       (((\ bs ->
+                            (Data.ProtoLens.Encoding.Bytes.putVarInt
+                               (Prelude.fromIntegral (Data.ByteString.length bs)))
+                              Data.Monoid.<> Data.ProtoLens.Encoding.Bytes.putBytes bs))
+                          Prelude.. Data.ProtoLens.encodeMessage)
+                         _v)
                   (Lens.Family2.view
                      (Lens.Labels.lensOf'
                         ((Lens.Labels.proxy#) ::
-                           (Lens.Labels.Proxy#) "vector'uninterpretedOption"))
+                           (Lens.Labels.Proxy#) "vec'uninterpretedOption"))
                      _x))
                  Data.Monoid.<>
                  Data.ProtoLens.Encoding.Wire.buildFieldSet
@@ -3663,7 +3629,7 @@ instance Control.DeepSeq.NFData FieldDescriptorProto'Type where
     * 'Proto.Google.Protobuf.Descriptor_Fields.weak' @:: Lens' FieldOptions Prelude.Bool@
     * 'Proto.Google.Protobuf.Descriptor_Fields.maybe'weak' @:: Lens' FieldOptions (Prelude.Maybe Prelude.Bool)@
     * 'Proto.Google.Protobuf.Descriptor_Fields.uninterpretedOption' @:: Lens' FieldOptions [UninterpretedOption]@
-    * 'Proto.Google.Protobuf.Descriptor_Fields.vector'uninterpretedOption' @:: Lens' FieldOptions (Data.Vector.Vector UninterpretedOption)@
+    * 'Proto.Google.Protobuf.Descriptor_Fields.vec'uninterpretedOption' @:: Lens' FieldOptions (Data.Vector.Vector UninterpretedOption)@
  -}
 data FieldOptions = FieldOptions{_FieldOptions'ctype ::
                                  !(Prelude.Maybe FieldOptions'CType),
@@ -3775,7 +3741,7 @@ instance a ~ ([UninterpretedOption]) =>
               Lens.Family2.Unchecked.lens Data.Vector.Generic.toList
                 (\ _ y__ -> Data.Vector.Generic.fromList y__)
 instance a ~ (Data.Vector.Vector UninterpretedOption) =>
-         Lens.Labels.HasLens' FieldOptions "vector'uninterpretedOption" a
+         Lens.Labels.HasLens' FieldOptions "vec'uninterpretedOption" a
          where
         lensOf' _
           = (Lens.Family2.Unchecked.lens _FieldOptions'uninterpretedOption
@@ -3886,7 +3852,7 @@ instance Data.ProtoLens.Message FieldOptions where
                                  (Lens.Family2.set
                                     (Lens.Labels.lensOf'
                                        ((Lens.Labels.proxy#) ::
-                                          (Lens.Labels.Proxy#) "vector'uninterpretedOption"))
+                                          (Lens.Labels.Proxy#) "vec'uninterpretedOption"))
                                     frozen'uninterpretedOption
                                     x))
                          else
@@ -4065,22 +4031,19 @@ instance Data.ProtoLens.Message FieldOptions where
                                                       Prelude.. (\ b -> if b then 1 else 0))
                                                      _v)
                            Data.Monoid.<>
-                           (Data.Vector.Generic.foldr
-                              (\ _v as ->
-                                 ((Data.ProtoLens.Encoding.Bytes.putVarInt 7994) Data.Monoid.<>
-                                    (((\ bs ->
-                                         (Data.ProtoLens.Encoding.Bytes.putVarInt
-                                            (Prelude.fromIntegral (Data.ByteString.length bs)))
-                                           Data.Monoid.<>
-                                           Data.ProtoLens.Encoding.Bytes.putBytes bs))
-                                       Prelude.. Data.ProtoLens.encodeMessage)
-                                      _v)
-                                   Data.Monoid.<> as)
-                              Data.Monoid.mempty
+                           (Data.ProtoLens.Encoding.Bytes.foldMapBuilder
+                              (\ _v ->
+                                 (Data.ProtoLens.Encoding.Bytes.putVarInt 7994) Data.Monoid.<>
+                                   (((\ bs ->
+                                        (Data.ProtoLens.Encoding.Bytes.putVarInt
+                                           (Prelude.fromIntegral (Data.ByteString.length bs)))
+                                          Data.Monoid.<> Data.ProtoLens.Encoding.Bytes.putBytes bs))
+                                      Prelude.. Data.ProtoLens.encodeMessage)
+                                     _v)
                               (Lens.Family2.view
                                  (Lens.Labels.lensOf'
                                     ((Lens.Labels.proxy#) ::
-                                       (Lens.Labels.Proxy#) "vector'uninterpretedOption"))
+                                       (Lens.Labels.Proxy#) "vec'uninterpretedOption"))
                                  _x))
                              Data.Monoid.<>
                              Data.ProtoLens.Encoding.Wire.buildFieldSet
@@ -4205,22 +4168,22 @@ instance Control.DeepSeq.NFData FieldOptions'JSType where
     * 'Proto.Google.Protobuf.Descriptor_Fields.package' @:: Lens' FileDescriptorProto Data.Text.Text@
     * 'Proto.Google.Protobuf.Descriptor_Fields.maybe'package' @:: Lens' FileDescriptorProto (Prelude.Maybe Data.Text.Text)@
     * 'Proto.Google.Protobuf.Descriptor_Fields.dependency' @:: Lens' FileDescriptorProto [Data.Text.Text]@
-    * 'Proto.Google.Protobuf.Descriptor_Fields.vector'dependency' @:: Lens' FileDescriptorProto (Data.Vector.Vector Data.Text.Text)@
+    * 'Proto.Google.Protobuf.Descriptor_Fields.vec'dependency' @:: Lens' FileDescriptorProto (Data.Vector.Vector Data.Text.Text)@
     * 'Proto.Google.Protobuf.Descriptor_Fields.publicDependency' @:: Lens' FileDescriptorProto [Data.Int.Int32]@
-    * 'Proto.Google.Protobuf.Descriptor_Fields.vector'publicDependency' @:: Lens' FileDescriptorProto
+    * 'Proto.Google.Protobuf.Descriptor_Fields.vec'publicDependency' @:: Lens' FileDescriptorProto
   (Data.Vector.Unboxed.Vector Data.Int.Int32)@
     * 'Proto.Google.Protobuf.Descriptor_Fields.weakDependency' @:: Lens' FileDescriptorProto [Data.Int.Int32]@
-    * 'Proto.Google.Protobuf.Descriptor_Fields.vector'weakDependency' @:: Lens' FileDescriptorProto
+    * 'Proto.Google.Protobuf.Descriptor_Fields.vec'weakDependency' @:: Lens' FileDescriptorProto
   (Data.Vector.Unboxed.Vector Data.Int.Int32)@
     * 'Proto.Google.Protobuf.Descriptor_Fields.messageType' @:: Lens' FileDescriptorProto [DescriptorProto]@
-    * 'Proto.Google.Protobuf.Descriptor_Fields.vector'messageType' @:: Lens' FileDescriptorProto (Data.Vector.Vector DescriptorProto)@
+    * 'Proto.Google.Protobuf.Descriptor_Fields.vec'messageType' @:: Lens' FileDescriptorProto (Data.Vector.Vector DescriptorProto)@
     * 'Proto.Google.Protobuf.Descriptor_Fields.enumType' @:: Lens' FileDescriptorProto [EnumDescriptorProto]@
-    * 'Proto.Google.Protobuf.Descriptor_Fields.vector'enumType' @:: Lens' FileDescriptorProto (Data.Vector.Vector EnumDescriptorProto)@
+    * 'Proto.Google.Protobuf.Descriptor_Fields.vec'enumType' @:: Lens' FileDescriptorProto (Data.Vector.Vector EnumDescriptorProto)@
     * 'Proto.Google.Protobuf.Descriptor_Fields.service' @:: Lens' FileDescriptorProto [ServiceDescriptorProto]@
-    * 'Proto.Google.Protobuf.Descriptor_Fields.vector'service' @:: Lens' FileDescriptorProto
+    * 'Proto.Google.Protobuf.Descriptor_Fields.vec'service' @:: Lens' FileDescriptorProto
   (Data.Vector.Vector ServiceDescriptorProto)@
     * 'Proto.Google.Protobuf.Descriptor_Fields.extension' @:: Lens' FileDescriptorProto [FieldDescriptorProto]@
-    * 'Proto.Google.Protobuf.Descriptor_Fields.vector'extension' @:: Lens' FileDescriptorProto (Data.Vector.Vector FieldDescriptorProto)@
+    * 'Proto.Google.Protobuf.Descriptor_Fields.vec'extension' @:: Lens' FileDescriptorProto (Data.Vector.Vector FieldDescriptorProto)@
     * 'Proto.Google.Protobuf.Descriptor_Fields.options' @:: Lens' FileDescriptorProto FileOptions@
     * 'Proto.Google.Protobuf.Descriptor_Fields.maybe'options' @:: Lens' FileDescriptorProto (Prelude.Maybe FileOptions)@
     * 'Proto.Google.Protobuf.Descriptor_Fields.sourceCodeInfo' @:: Lens' FileDescriptorProto SourceCodeInfo@
@@ -4298,7 +4261,7 @@ instance a ~ ([Data.Text.Text]) =>
               Lens.Family2.Unchecked.lens Data.Vector.Generic.toList
                 (\ _ y__ -> Data.Vector.Generic.fromList y__)
 instance a ~ (Data.Vector.Vector Data.Text.Text) =>
-         Lens.Labels.HasLens' FileDescriptorProto "vector'dependency" a
+         Lens.Labels.HasLens' FileDescriptorProto "vec'dependency" a
          where
         lensOf' _
           = (Lens.Family2.Unchecked.lens _FileDescriptorProto'dependency
@@ -4315,8 +4278,7 @@ instance a ~ ([Data.Int.Int32]) =>
               Lens.Family2.Unchecked.lens Data.Vector.Generic.toList
                 (\ _ y__ -> Data.Vector.Generic.fromList y__)
 instance a ~ (Data.Vector.Unboxed.Vector Data.Int.Int32) =>
-         Lens.Labels.HasLens' FileDescriptorProto "vector'publicDependency"
-           a
+         Lens.Labels.HasLens' FileDescriptorProto "vec'publicDependency" a
          where
         lensOf' _
           = (Lens.Family2.Unchecked.lens
@@ -4333,7 +4295,7 @@ instance a ~ ([Data.Int.Int32]) =>
               Lens.Family2.Unchecked.lens Data.Vector.Generic.toList
                 (\ _ y__ -> Data.Vector.Generic.fromList y__)
 instance a ~ (Data.Vector.Unboxed.Vector Data.Int.Int32) =>
-         Lens.Labels.HasLens' FileDescriptorProto "vector'weakDependency" a
+         Lens.Labels.HasLens' FileDescriptorProto "vec'weakDependency" a
          where
         lensOf' _
           = (Lens.Family2.Unchecked.lens _FileDescriptorProto'weakDependency
@@ -4349,7 +4311,7 @@ instance a ~ ([DescriptorProto]) =>
               Lens.Family2.Unchecked.lens Data.Vector.Generic.toList
                 (\ _ y__ -> Data.Vector.Generic.fromList y__)
 instance a ~ (Data.Vector.Vector DescriptorProto) =>
-         Lens.Labels.HasLens' FileDescriptorProto "vector'messageType" a
+         Lens.Labels.HasLens' FileDescriptorProto "vec'messageType" a
          where
         lensOf' _
           = (Lens.Family2.Unchecked.lens _FileDescriptorProto'messageType
@@ -4365,7 +4327,7 @@ instance a ~ ([EnumDescriptorProto]) =>
               Lens.Family2.Unchecked.lens Data.Vector.Generic.toList
                 (\ _ y__ -> Data.Vector.Generic.fromList y__)
 instance a ~ (Data.Vector.Vector EnumDescriptorProto) =>
-         Lens.Labels.HasLens' FileDescriptorProto "vector'enumType" a
+         Lens.Labels.HasLens' FileDescriptorProto "vec'enumType" a
          where
         lensOf' _
           = (Lens.Family2.Unchecked.lens _FileDescriptorProto'enumType
@@ -4381,7 +4343,7 @@ instance a ~ ([ServiceDescriptorProto]) =>
               Lens.Family2.Unchecked.lens Data.Vector.Generic.toList
                 (\ _ y__ -> Data.Vector.Generic.fromList y__)
 instance a ~ (Data.Vector.Vector ServiceDescriptorProto) =>
-         Lens.Labels.HasLens' FileDescriptorProto "vector'service" a
+         Lens.Labels.HasLens' FileDescriptorProto "vec'service" a
          where
         lensOf' _
           = (Lens.Family2.Unchecked.lens _FileDescriptorProto'service
@@ -4397,7 +4359,7 @@ instance a ~ ([FieldDescriptorProto]) =>
               Lens.Family2.Unchecked.lens Data.Vector.Generic.toList
                 (\ _ y__ -> Data.Vector.Generic.fromList y__)
 instance a ~ (Data.Vector.Vector FieldDescriptorProto) =>
-         Lens.Labels.HasLens' FileDescriptorProto "vector'extension" a
+         Lens.Labels.HasLens' FileDescriptorProto "vec'extension" a
          where
         lensOf' _
           = (Lens.Family2.Unchecked.lens _FileDescriptorProto'extension
@@ -4646,39 +4608,38 @@ instance Data.ProtoLens.Message FileDescriptorProto where
                                  (Lens.Family2.set
                                     (Lens.Labels.lensOf'
                                        ((Lens.Labels.proxy#) ::
-                                          (Lens.Labels.Proxy#) "vector'dependency"))
+                                          (Lens.Labels.Proxy#) "vec'dependency"))
                                     frozen'dependency
                                     (Lens.Family2.set
                                        (Lens.Labels.lensOf'
                                           ((Lens.Labels.proxy#) ::
-                                             (Lens.Labels.Proxy#) "vector'enumType"))
+                                             (Lens.Labels.Proxy#) "vec'enumType"))
                                        frozen'enumType
                                        (Lens.Family2.set
                                           (Lens.Labels.lensOf'
                                              ((Lens.Labels.proxy#) ::
-                                                (Lens.Labels.Proxy#) "vector'extension"))
+                                                (Lens.Labels.Proxy#) "vec'extension"))
                                           frozen'extension
                                           (Lens.Family2.set
                                              (Lens.Labels.lensOf'
                                                 ((Lens.Labels.proxy#) ::
-                                                   (Lens.Labels.Proxy#) "vector'messageType"))
+                                                   (Lens.Labels.Proxy#) "vec'messageType"))
                                              frozen'messageType
                                              (Lens.Family2.set
                                                 (Lens.Labels.lensOf'
                                                    ((Lens.Labels.proxy#) ::
-                                                      (Lens.Labels.Proxy#)
-                                                        "vector'publicDependency"))
+                                                      (Lens.Labels.Proxy#) "vec'publicDependency"))
                                                 frozen'publicDependency
                                                 (Lens.Family2.set
                                                    (Lens.Labels.lensOf'
                                                       ((Lens.Labels.proxy#) ::
-                                                         (Lens.Labels.Proxy#) "vector'service"))
+                                                         (Lens.Labels.Proxy#) "vec'service"))
                                                    frozen'service
                                                    (Lens.Family2.set
                                                       (Lens.Labels.lensOf'
                                                          ((Lens.Labels.proxy#) ::
                                                             (Lens.Labels.Proxy#)
-                                                              "vector'weakDependency"))
+                                                              "vec'weakDependency"))
                                                       frozen'weakDependency
                                                       x))))))))
                          else
@@ -5016,119 +4977,101 @@ instance Data.ProtoLens.Message FileDescriptorProto where
                                               Prelude.. Data.Text.Encoding.encodeUtf8)
                                              _v)
                    Data.Monoid.<>
-                   (Data.Vector.Generic.foldr
-                      (\ _v as ->
-                         ((Data.ProtoLens.Encoding.Bytes.putVarInt 26) Data.Monoid.<>
-                            (((\ bs ->
-                                 (Data.ProtoLens.Encoding.Bytes.putVarInt
-                                    (Prelude.fromIntegral (Data.ByteString.length bs)))
-                                   Data.Monoid.<> Data.ProtoLens.Encoding.Bytes.putBytes bs))
-                               Prelude.. Data.Text.Encoding.encodeUtf8)
-                              _v)
-                           Data.Monoid.<> as)
-                      Data.Monoid.mempty
+                   (Data.ProtoLens.Encoding.Bytes.foldMapBuilder
+                      (\ _v ->
+                         (Data.ProtoLens.Encoding.Bytes.putVarInt 26) Data.Monoid.<>
+                           (((\ bs ->
+                                (Data.ProtoLens.Encoding.Bytes.putVarInt
+                                   (Prelude.fromIntegral (Data.ByteString.length bs)))
+                                  Data.Monoid.<> Data.ProtoLens.Encoding.Bytes.putBytes bs))
+                              Prelude.. Data.Text.Encoding.encodeUtf8)
+                             _v)
                       (Lens.Family2.view
                          (Lens.Labels.lensOf'
-                            ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "vector'dependency"))
+                            ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "vec'dependency"))
                          _x))
                      Data.Monoid.<>
-                     (Data.Vector.Generic.foldr
-                        (\ _v as ->
-                           ((Data.ProtoLens.Encoding.Bytes.putVarInt 80) Data.Monoid.<>
-                              ((Data.ProtoLens.Encoding.Bytes.putVarInt) Prelude..
-                                 Prelude.fromIntegral)
-                                _v)
-                             Data.Monoid.<> as)
-                        Data.Monoid.mempty
+                     (Data.ProtoLens.Encoding.Bytes.foldMapBuilder
+                        (\ _v ->
+                           (Data.ProtoLens.Encoding.Bytes.putVarInt 80) Data.Monoid.<>
+                             ((Data.ProtoLens.Encoding.Bytes.putVarInt) Prelude..
+                                Prelude.fromIntegral)
+                               _v)
                         (Lens.Family2.view
                            (Lens.Labels.lensOf'
                               ((Lens.Labels.proxy#) ::
-                                 (Lens.Labels.Proxy#) "vector'publicDependency"))
+                                 (Lens.Labels.Proxy#) "vec'publicDependency"))
                            _x))
                        Data.Monoid.<>
-                       (Data.Vector.Generic.foldr
-                          (\ _v as ->
-                             ((Data.ProtoLens.Encoding.Bytes.putVarInt 88) Data.Monoid.<>
-                                ((Data.ProtoLens.Encoding.Bytes.putVarInt) Prelude..
-                                   Prelude.fromIntegral)
-                                  _v)
-                               Data.Monoid.<> as)
-                          Data.Monoid.mempty
+                       (Data.ProtoLens.Encoding.Bytes.foldMapBuilder
+                          (\ _v ->
+                             (Data.ProtoLens.Encoding.Bytes.putVarInt 88) Data.Monoid.<>
+                               ((Data.ProtoLens.Encoding.Bytes.putVarInt) Prelude..
+                                  Prelude.fromIntegral)
+                                 _v)
                           (Lens.Family2.view
                              (Lens.Labels.lensOf'
                                 ((Lens.Labels.proxy#) ::
-                                   (Lens.Labels.Proxy#) "vector'weakDependency"))
+                                   (Lens.Labels.Proxy#) "vec'weakDependency"))
                              _x))
                          Data.Monoid.<>
-                         (Data.Vector.Generic.foldr
-                            (\ _v as ->
-                               ((Data.ProtoLens.Encoding.Bytes.putVarInt 34) Data.Monoid.<>
-                                  (((\ bs ->
-                                       (Data.ProtoLens.Encoding.Bytes.putVarInt
-                                          (Prelude.fromIntegral (Data.ByteString.length bs)))
-                                         Data.Monoid.<> Data.ProtoLens.Encoding.Bytes.putBytes bs))
-                                     Prelude.. Data.ProtoLens.encodeMessage)
-                                    _v)
-                                 Data.Monoid.<> as)
-                            Data.Monoid.mempty
+                         (Data.ProtoLens.Encoding.Bytes.foldMapBuilder
+                            (\ _v ->
+                               (Data.ProtoLens.Encoding.Bytes.putVarInt 34) Data.Monoid.<>
+                                 (((\ bs ->
+                                      (Data.ProtoLens.Encoding.Bytes.putVarInt
+                                         (Prelude.fromIntegral (Data.ByteString.length bs)))
+                                        Data.Monoid.<> Data.ProtoLens.Encoding.Bytes.putBytes bs))
+                                    Prelude.. Data.ProtoLens.encodeMessage)
+                                   _v)
                             (Lens.Family2.view
                                (Lens.Labels.lensOf'
-                                  ((Lens.Labels.proxy#) ::
-                                     (Lens.Labels.Proxy#) "vector'messageType"))
+                                  ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "vec'messageType"))
                                _x))
                            Data.Monoid.<>
-                           (Data.Vector.Generic.foldr
-                              (\ _v as ->
-                                 ((Data.ProtoLens.Encoding.Bytes.putVarInt 42) Data.Monoid.<>
-                                    (((\ bs ->
-                                         (Data.ProtoLens.Encoding.Bytes.putVarInt
-                                            (Prelude.fromIntegral (Data.ByteString.length bs)))
-                                           Data.Monoid.<>
-                                           Data.ProtoLens.Encoding.Bytes.putBytes bs))
-                                       Prelude.. Data.ProtoLens.encodeMessage)
-                                      _v)
-                                   Data.Monoid.<> as)
-                              Data.Monoid.mempty
+                           (Data.ProtoLens.Encoding.Bytes.foldMapBuilder
+                              (\ _v ->
+                                 (Data.ProtoLens.Encoding.Bytes.putVarInt 42) Data.Monoid.<>
+                                   (((\ bs ->
+                                        (Data.ProtoLens.Encoding.Bytes.putVarInt
+                                           (Prelude.fromIntegral (Data.ByteString.length bs)))
+                                          Data.Monoid.<> Data.ProtoLens.Encoding.Bytes.putBytes bs))
+                                      Prelude.. Data.ProtoLens.encodeMessage)
+                                     _v)
                               (Lens.Family2.view
                                  (Lens.Labels.lensOf'
-                                    ((Lens.Labels.proxy#) ::
-                                       (Lens.Labels.Proxy#) "vector'enumType"))
+                                    ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "vec'enumType"))
                                  _x))
                              Data.Monoid.<>
-                             (Data.Vector.Generic.foldr
-                                (\ _v as ->
-                                   ((Data.ProtoLens.Encoding.Bytes.putVarInt 50) Data.Monoid.<>
-                                      (((\ bs ->
-                                           (Data.ProtoLens.Encoding.Bytes.putVarInt
-                                              (Prelude.fromIntegral (Data.ByteString.length bs)))
-                                             Data.Monoid.<>
-                                             Data.ProtoLens.Encoding.Bytes.putBytes bs))
-                                         Prelude.. Data.ProtoLens.encodeMessage)
-                                        _v)
-                                     Data.Monoid.<> as)
-                                Data.Monoid.mempty
+                             (Data.ProtoLens.Encoding.Bytes.foldMapBuilder
+                                (\ _v ->
+                                   (Data.ProtoLens.Encoding.Bytes.putVarInt 50) Data.Monoid.<>
+                                     (((\ bs ->
+                                          (Data.ProtoLens.Encoding.Bytes.putVarInt
+                                             (Prelude.fromIntegral (Data.ByteString.length bs)))
+                                            Data.Monoid.<>
+                                            Data.ProtoLens.Encoding.Bytes.putBytes bs))
+                                        Prelude.. Data.ProtoLens.encodeMessage)
+                                       _v)
                                 (Lens.Family2.view
                                    (Lens.Labels.lensOf'
-                                      ((Lens.Labels.proxy#) ::
-                                         (Lens.Labels.Proxy#) "vector'service"))
+                                      ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "vec'service"))
                                    _x))
                                Data.Monoid.<>
-                               (Data.Vector.Generic.foldr
-                                  (\ _v as ->
-                                     ((Data.ProtoLens.Encoding.Bytes.putVarInt 58) Data.Monoid.<>
-                                        (((\ bs ->
-                                             (Data.ProtoLens.Encoding.Bytes.putVarInt
-                                                (Prelude.fromIntegral (Data.ByteString.length bs)))
-                                               Data.Monoid.<>
-                                               Data.ProtoLens.Encoding.Bytes.putBytes bs))
-                                           Prelude.. Data.ProtoLens.encodeMessage)
-                                          _v)
-                                       Data.Monoid.<> as)
-                                  Data.Monoid.mempty
+                               (Data.ProtoLens.Encoding.Bytes.foldMapBuilder
+                                  (\ _v ->
+                                     (Data.ProtoLens.Encoding.Bytes.putVarInt 58) Data.Monoid.<>
+                                       (((\ bs ->
+                                            (Data.ProtoLens.Encoding.Bytes.putVarInt
+                                               (Prelude.fromIntegral (Data.ByteString.length bs)))
+                                              Data.Monoid.<>
+                                              Data.ProtoLens.Encoding.Bytes.putBytes bs))
+                                          Prelude.. Data.ProtoLens.encodeMessage)
+                                         _v)
                                   (Lens.Family2.view
                                      (Lens.Labels.lensOf'
                                         ((Lens.Labels.proxy#) ::
-                                           (Lens.Labels.Proxy#) "vector'extension"))
+                                           (Lens.Labels.Proxy#) "vec'extension"))
                                      _x))
                                  Data.Monoid.<>
                                  (case
@@ -5224,7 +5167,7 @@ instance Control.DeepSeq.NFData FileDescriptorProto where
 {- | Fields :
 
     * 'Proto.Google.Protobuf.Descriptor_Fields.file' @:: Lens' FileDescriptorSet [FileDescriptorProto]@
-    * 'Proto.Google.Protobuf.Descriptor_Fields.vector'file' @:: Lens' FileDescriptorSet (Data.Vector.Vector FileDescriptorProto)@
+    * 'Proto.Google.Protobuf.Descriptor_Fields.vec'file' @:: Lens' FileDescriptorSet (Data.Vector.Vector FileDescriptorProto)@
  -}
 data FileDescriptorSet = FileDescriptorSet{_FileDescriptorSet'file
                                            :: !(Data.Vector.Vector FileDescriptorProto),
@@ -5246,7 +5189,7 @@ instance a ~ ([FileDescriptorProto]) =>
               Lens.Family2.Unchecked.lens Data.Vector.Generic.toList
                 (\ _ y__ -> Data.Vector.Generic.fromList y__)
 instance a ~ (Data.Vector.Vector FileDescriptorProto) =>
-         Lens.Labels.HasLens' FileDescriptorSet "vector'file" a
+         Lens.Labels.HasLens' FileDescriptorSet "vec'file" a
          where
         lensOf' _
           = (Lens.Family2.Unchecked.lens _FileDescriptorSet'file
@@ -5295,7 +5238,7 @@ instance Data.ProtoLens.Message FileDescriptorSet where
                                  (\ !t -> Prelude.reverse t)
                                  (Lens.Family2.set
                                     (Lens.Labels.lensOf'
-                                       ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "vector'file"))
+                                       ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "vec'file"))
                                     frozen'file
                                     x))
                          else
@@ -5324,20 +5267,18 @@ instance Data.ProtoLens.Message FileDescriptorSet where
                 Data.ProtoLens.Encoding.Bytes.<?> "FileDescriptorSet"
         buildMessage
           = (\ _x ->
-               (Data.Vector.Generic.foldr
-                  (\ _v as ->
-                     ((Data.ProtoLens.Encoding.Bytes.putVarInt 10) Data.Monoid.<>
-                        (((\ bs ->
-                             (Data.ProtoLens.Encoding.Bytes.putVarInt
-                                (Prelude.fromIntegral (Data.ByteString.length bs)))
-                               Data.Monoid.<> Data.ProtoLens.Encoding.Bytes.putBytes bs))
-                           Prelude.. Data.ProtoLens.encodeMessage)
-                          _v)
-                       Data.Monoid.<> as)
-                  Data.Monoid.mempty
+               (Data.ProtoLens.Encoding.Bytes.foldMapBuilder
+                  (\ _v ->
+                     (Data.ProtoLens.Encoding.Bytes.putVarInt 10) Data.Monoid.<>
+                       (((\ bs ->
+                            (Data.ProtoLens.Encoding.Bytes.putVarInt
+                               (Prelude.fromIntegral (Data.ByteString.length bs)))
+                              Data.Monoid.<> Data.ProtoLens.Encoding.Bytes.putBytes bs))
+                          Prelude.. Data.ProtoLens.encodeMessage)
+                         _v)
                   (Lens.Family2.view
                      (Lens.Labels.lensOf'
-                        ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "vector'file"))
+                        ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "vec'file"))
                      _x))
                  Data.Monoid.<>
                  Data.ProtoLens.Encoding.Wire.buildFieldSet
@@ -5390,7 +5331,7 @@ instance Control.DeepSeq.NFData FileDescriptorSet where
     * 'Proto.Google.Protobuf.Descriptor_Fields.rubyPackage' @:: Lens' FileOptions Data.Text.Text@
     * 'Proto.Google.Protobuf.Descriptor_Fields.maybe'rubyPackage' @:: Lens' FileOptions (Prelude.Maybe Data.Text.Text)@
     * 'Proto.Google.Protobuf.Descriptor_Fields.uninterpretedOption' @:: Lens' FileOptions [UninterpretedOption]@
-    * 'Proto.Google.Protobuf.Descriptor_Fields.vector'uninterpretedOption' @:: Lens' FileOptions (Data.Vector.Vector UninterpretedOption)@
+    * 'Proto.Google.Protobuf.Descriptor_Fields.vec'uninterpretedOption' @:: Lens' FileOptions (Data.Vector.Vector UninterpretedOption)@
  -}
 data FileOptions = FileOptions{_FileOptions'javaPackage ::
                                !(Prelude.Maybe Data.Text.Text),
@@ -5718,7 +5659,7 @@ instance a ~ ([UninterpretedOption]) =>
               Lens.Family2.Unchecked.lens Data.Vector.Generic.toList
                 (\ _ y__ -> Data.Vector.Generic.fromList y__)
 instance a ~ (Data.Vector.Vector UninterpretedOption) =>
-         Lens.Labels.HasLens' FileOptions "vector'uninterpretedOption" a
+         Lens.Labels.HasLens' FileOptions "vec'uninterpretedOption" a
          where
         lensOf' _
           = (Lens.Family2.Unchecked.lens _FileOptions'uninterpretedOption
@@ -5988,7 +5929,7 @@ instance Data.ProtoLens.Message FileOptions where
                                  (Lens.Family2.set
                                     (Lens.Labels.lensOf'
                                        ((Lens.Labels.proxy#) ::
-                                          (Lens.Labels.Proxy#) "vector'uninterpretedOption"))
+                                          (Lens.Labels.Proxy#) "vec'uninterpretedOption"))
                                     frozen'uninterpretedOption
                                     x))
                          else
@@ -6681,29 +6622,27 @@ instance Data.ProtoLens.Message FileOptions where
                                                                        Data.Text.Encoding.encodeUtf8)
                                                                       _v)
                                                        Data.Monoid.<>
-                                                       (Data.Vector.Generic.foldr
-                                                          (\ _v as ->
-                                                             ((Data.ProtoLens.Encoding.Bytes.putVarInt
-                                                                 7994)
-                                                                Data.Monoid.<>
-                                                                (((\ bs ->
-                                                                     (Data.ProtoLens.Encoding.Bytes.putVarInt
-                                                                        (Prelude.fromIntegral
-                                                                           (Data.ByteString.length
-                                                                              bs)))
-                                                                       Data.Monoid.<>
-                                                                       Data.ProtoLens.Encoding.Bytes.putBytes
-                                                                         bs))
-                                                                   Prelude..
-                                                                   Data.ProtoLens.encodeMessage)
-                                                                  _v)
-                                                               Data.Monoid.<> as)
-                                                          Data.Monoid.mempty
+                                                       (Data.ProtoLens.Encoding.Bytes.foldMapBuilder
+                                                          (\ _v ->
+                                                             (Data.ProtoLens.Encoding.Bytes.putVarInt
+                                                                7994)
+                                                               Data.Monoid.<>
+                                                               (((\ bs ->
+                                                                    (Data.ProtoLens.Encoding.Bytes.putVarInt
+                                                                       (Prelude.fromIntegral
+                                                                          (Data.ByteString.length
+                                                                             bs)))
+                                                                      Data.Monoid.<>
+                                                                      Data.ProtoLens.Encoding.Bytes.putBytes
+                                                                        bs))
+                                                                  Prelude..
+                                                                  Data.ProtoLens.encodeMessage)
+                                                                 _v)
                                                           (Lens.Family2.view
                                                              (Lens.Labels.lensOf'
                                                                 ((Lens.Labels.proxy#) ::
                                                                    (Lens.Labels.Proxy#)
-                                                                     "vector'uninterpretedOption"))
+                                                                     "vec'uninterpretedOption"))
                                                              _x))
                                                          Data.Monoid.<>
                                                          Data.ProtoLens.Encoding.Wire.buildFieldSet
@@ -6809,7 +6748,7 @@ instance Control.DeepSeq.NFData FileOptions'OptimizeMode where
 {- | Fields :
 
     * 'Proto.Google.Protobuf.Descriptor_Fields.annotation' @:: Lens' GeneratedCodeInfo [GeneratedCodeInfo'Annotation]@
-    * 'Proto.Google.Protobuf.Descriptor_Fields.vector'annotation' @:: Lens' GeneratedCodeInfo
+    * 'Proto.Google.Protobuf.Descriptor_Fields.vec'annotation' @:: Lens' GeneratedCodeInfo
   (Data.Vector.Vector GeneratedCodeInfo'Annotation)@
  -}
 data GeneratedCodeInfo = GeneratedCodeInfo{_GeneratedCodeInfo'annotation
@@ -6832,7 +6771,7 @@ instance a ~ ([GeneratedCodeInfo'Annotation]) =>
               Lens.Family2.Unchecked.lens Data.Vector.Generic.toList
                 (\ _ y__ -> Data.Vector.Generic.fromList y__)
 instance a ~ (Data.Vector.Vector GeneratedCodeInfo'Annotation) =>
-         Lens.Labels.HasLens' GeneratedCodeInfo "vector'annotation" a
+         Lens.Labels.HasLens' GeneratedCodeInfo "vec'annotation" a
          where
         lensOf' _
           = (Lens.Family2.Unchecked.lens _GeneratedCodeInfo'annotation
@@ -6883,7 +6822,7 @@ instance Data.ProtoLens.Message GeneratedCodeInfo where
                                  (Lens.Family2.set
                                     (Lens.Labels.lensOf'
                                        ((Lens.Labels.proxy#) ::
-                                          (Lens.Labels.Proxy#) "vector'annotation"))
+                                          (Lens.Labels.Proxy#) "vec'annotation"))
                                     frozen'annotation
                                     x))
                          else
@@ -6913,20 +6852,18 @@ instance Data.ProtoLens.Message GeneratedCodeInfo where
                 Data.ProtoLens.Encoding.Bytes.<?> "GeneratedCodeInfo"
         buildMessage
           = (\ _x ->
-               (Data.Vector.Generic.foldr
-                  (\ _v as ->
-                     ((Data.ProtoLens.Encoding.Bytes.putVarInt 10) Data.Monoid.<>
-                        (((\ bs ->
-                             (Data.ProtoLens.Encoding.Bytes.putVarInt
-                                (Prelude.fromIntegral (Data.ByteString.length bs)))
-                               Data.Monoid.<> Data.ProtoLens.Encoding.Bytes.putBytes bs))
-                           Prelude.. Data.ProtoLens.encodeMessage)
-                          _v)
-                       Data.Monoid.<> as)
-                  Data.Monoid.mempty
+               (Data.ProtoLens.Encoding.Bytes.foldMapBuilder
+                  (\ _v ->
+                     (Data.ProtoLens.Encoding.Bytes.putVarInt 10) Data.Monoid.<>
+                       (((\ bs ->
+                            (Data.ProtoLens.Encoding.Bytes.putVarInt
+                               (Prelude.fromIntegral (Data.ByteString.length bs)))
+                              Data.Monoid.<> Data.ProtoLens.Encoding.Bytes.putBytes bs))
+                          Prelude.. Data.ProtoLens.encodeMessage)
+                         _v)
                   (Lens.Family2.view
                      (Lens.Labels.lensOf'
-                        ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "vector'annotation"))
+                        ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "vec'annotation"))
                      _x))
                  Data.Monoid.<>
                  Data.ProtoLens.Encoding.Wire.buildFieldSet
@@ -6939,7 +6876,7 @@ instance Control.DeepSeq.NFData GeneratedCodeInfo where
 {- | Fields :
 
     * 'Proto.Google.Protobuf.Descriptor_Fields.path' @:: Lens' GeneratedCodeInfo'Annotation [Data.Int.Int32]@
-    * 'Proto.Google.Protobuf.Descriptor_Fields.vector'path' @:: Lens' GeneratedCodeInfo'Annotation
+    * 'Proto.Google.Protobuf.Descriptor_Fields.vec'path' @:: Lens' GeneratedCodeInfo'Annotation
   (Data.Vector.Unboxed.Vector Data.Int.Int32)@
     * 'Proto.Google.Protobuf.Descriptor_Fields.sourceFile' @:: Lens' GeneratedCodeInfo'Annotation Data.Text.Text@
     * 'Proto.Google.Protobuf.Descriptor_Fields.maybe'sourceFile' @:: Lens' GeneratedCodeInfo'Annotation (Prelude.Maybe Data.Text.Text)@
@@ -6976,7 +6913,7 @@ instance a ~ ([Data.Int.Int32]) =>
               Lens.Family2.Unchecked.lens Data.Vector.Generic.toList
                 (\ _ y__ -> Data.Vector.Generic.fromList y__)
 instance a ~ (Data.Vector.Unboxed.Vector Data.Int.Int32) =>
-         Lens.Labels.HasLens' GeneratedCodeInfo'Annotation "vector'path" a
+         Lens.Labels.HasLens' GeneratedCodeInfo'Annotation "vec'path" a
          where
         lensOf' _
           = (Lens.Family2.Unchecked.lens _GeneratedCodeInfo'Annotation'path
@@ -7106,7 +7043,7 @@ instance Data.ProtoLens.Message GeneratedCodeInfo'Annotation where
                                  (\ !t -> Prelude.reverse t)
                                  (Lens.Family2.set
                                     (Lens.Labels.lensOf'
-                                       ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "vector'path"))
+                                       ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "vec'path"))
                                     frozen'path
                                     x))
                          else
@@ -7194,7 +7131,7 @@ instance Data.ProtoLens.Message GeneratedCodeInfo'Annotation where
           = (\ _x ->
                (let p = Lens.Family2.view
                           (Lens.Labels.lensOf'
-                             ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "vector'path"))
+                             ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "vec'path"))
                           _x
                   in
                   if Data.Vector.Generic.null p then Data.Monoid.mempty else
@@ -7204,13 +7141,9 @@ instance Data.ProtoLens.Message GeneratedCodeInfo'Annotation where
                             (Prelude.fromIntegral (Data.ByteString.length bs)))
                            Data.Monoid.<> Data.ProtoLens.Encoding.Bytes.putBytes bs)
                         (Data.ProtoLens.Encoding.Bytes.runBuilder
-                           (Data.Vector.Generic.foldr
-                              (\ v bs ->
-                                 (((Data.ProtoLens.Encoding.Bytes.putVarInt) Prelude..
-                                     Prelude.fromIntegral)
-                                    v)
-                                   Data.Monoid.<> bs)
-                              Data.Monoid.mempty
+                           (Data.ProtoLens.Encoding.Bytes.foldMapBuilder
+                              ((Data.ProtoLens.Encoding.Bytes.putVarInt) Prelude..
+                                 Prelude.fromIntegral)
                               p)))
                  Data.Monoid.<>
                  (case
@@ -7281,7 +7214,7 @@ instance Control.DeepSeq.NFData GeneratedCodeInfo'Annotation where
     * 'Proto.Google.Protobuf.Descriptor_Fields.mapEntry' @:: Lens' MessageOptions Prelude.Bool@
     * 'Proto.Google.Protobuf.Descriptor_Fields.maybe'mapEntry' @:: Lens' MessageOptions (Prelude.Maybe Prelude.Bool)@
     * 'Proto.Google.Protobuf.Descriptor_Fields.uninterpretedOption' @:: Lens' MessageOptions [UninterpretedOption]@
-    * 'Proto.Google.Protobuf.Descriptor_Fields.vector'uninterpretedOption' @:: Lens' MessageOptions (Data.Vector.Vector UninterpretedOption)@
+    * 'Proto.Google.Protobuf.Descriptor_Fields.vec'uninterpretedOption' @:: Lens' MessageOptions (Data.Vector.Vector UninterpretedOption)@
  -}
 data MessageOptions = MessageOptions{_MessageOptions'messageSetWireFormat
                                      :: !(Prelude.Maybe Prelude.Bool),
@@ -7371,7 +7304,7 @@ instance a ~ ([UninterpretedOption]) =>
               Lens.Family2.Unchecked.lens Data.Vector.Generic.toList
                 (\ _ y__ -> Data.Vector.Generic.fromList y__)
 instance a ~ (Data.Vector.Vector UninterpretedOption) =>
-         Lens.Labels.HasLens' MessageOptions "vector'uninterpretedOption" a
+         Lens.Labels.HasLens' MessageOptions "vec'uninterpretedOption" a
          where
         lensOf' _
           = (Lens.Family2.Unchecked.lens _MessageOptions'uninterpretedOption
@@ -7466,7 +7399,7 @@ instance Data.ProtoLens.Message MessageOptions where
                                  (Lens.Family2.set
                                     (Lens.Labels.lensOf'
                                        ((Lens.Labels.proxy#) ::
-                                          (Lens.Labels.Proxy#) "vector'uninterpretedOption"))
+                                          (Lens.Labels.Proxy#) "vec'uninterpretedOption"))
                                     frozen'uninterpretedOption
                                     x))
                          else
@@ -7598,21 +7531,19 @@ instance Data.ProtoLens.Message MessageOptions where
                                                   (\ b -> if b then 1 else 0))
                                                  _v)
                        Data.Monoid.<>
-                       (Data.Vector.Generic.foldr
-                          (\ _v as ->
-                             ((Data.ProtoLens.Encoding.Bytes.putVarInt 7994) Data.Monoid.<>
-                                (((\ bs ->
-                                     (Data.ProtoLens.Encoding.Bytes.putVarInt
-                                        (Prelude.fromIntegral (Data.ByteString.length bs)))
-                                       Data.Monoid.<> Data.ProtoLens.Encoding.Bytes.putBytes bs))
-                                   Prelude.. Data.ProtoLens.encodeMessage)
-                                  _v)
-                               Data.Monoid.<> as)
-                          Data.Monoid.mempty
+                       (Data.ProtoLens.Encoding.Bytes.foldMapBuilder
+                          (\ _v ->
+                             (Data.ProtoLens.Encoding.Bytes.putVarInt 7994) Data.Monoid.<>
+                               (((\ bs ->
+                                    (Data.ProtoLens.Encoding.Bytes.putVarInt
+                                       (Prelude.fromIntegral (Data.ByteString.length bs)))
+                                      Data.Monoid.<> Data.ProtoLens.Encoding.Bytes.putBytes bs))
+                                  Prelude.. Data.ProtoLens.encodeMessage)
+                                 _v)
                           (Lens.Family2.view
                              (Lens.Labels.lensOf'
                                 ((Lens.Labels.proxy#) ::
-                                   (Lens.Labels.Proxy#) "vector'uninterpretedOption"))
+                                   (Lens.Labels.Proxy#) "vec'uninterpretedOption"))
                              _x))
                          Data.Monoid.<>
                          Data.ProtoLens.Encoding.Wire.buildFieldSet
@@ -8058,7 +7989,7 @@ instance Control.DeepSeq.NFData MethodDescriptorProto where
     * 'Proto.Google.Protobuf.Descriptor_Fields.idempotencyLevel' @:: Lens' MethodOptions MethodOptions'IdempotencyLevel@
     * 'Proto.Google.Protobuf.Descriptor_Fields.maybe'idempotencyLevel' @:: Lens' MethodOptions (Prelude.Maybe MethodOptions'IdempotencyLevel)@
     * 'Proto.Google.Protobuf.Descriptor_Fields.uninterpretedOption' @:: Lens' MethodOptions [UninterpretedOption]@
-    * 'Proto.Google.Protobuf.Descriptor_Fields.vector'uninterpretedOption' @:: Lens' MethodOptions (Data.Vector.Vector UninterpretedOption)@
+    * 'Proto.Google.Protobuf.Descriptor_Fields.vec'uninterpretedOption' @:: Lens' MethodOptions (Data.Vector.Vector UninterpretedOption)@
  -}
 data MethodOptions = MethodOptions{_MethodOptions'deprecated ::
                                    !(Prelude.Maybe Prelude.Bool),
@@ -8112,7 +8043,7 @@ instance a ~ ([UninterpretedOption]) =>
               Lens.Family2.Unchecked.lens Data.Vector.Generic.toList
                 (\ _ y__ -> Data.Vector.Generic.fromList y__)
 instance a ~ (Data.Vector.Vector UninterpretedOption) =>
-         Lens.Labels.HasLens' MethodOptions "vector'uninterpretedOption" a
+         Lens.Labels.HasLens' MethodOptions "vec'uninterpretedOption" a
          where
         lensOf' _
           = (Lens.Family2.Unchecked.lens _MethodOptions'uninterpretedOption
@@ -8184,7 +8115,7 @@ instance Data.ProtoLens.Message MethodOptions where
                                  (Lens.Family2.set
                                     (Lens.Labels.lensOf'
                                        ((Lens.Labels.proxy#) ::
-                                          (Lens.Labels.Proxy#) "vector'uninterpretedOption"))
+                                          (Lens.Labels.Proxy#) "vec'uninterpretedOption"))
                                     frozen'uninterpretedOption
                                     x))
                          else
@@ -8267,21 +8198,19 @@ instance Data.ProtoLens.Message MethodOptions where
                                               Prelude.. Prelude.fromEnum)
                                              _v)
                    Data.Monoid.<>
-                   (Data.Vector.Generic.foldr
-                      (\ _v as ->
-                         ((Data.ProtoLens.Encoding.Bytes.putVarInt 7994) Data.Monoid.<>
-                            (((\ bs ->
-                                 (Data.ProtoLens.Encoding.Bytes.putVarInt
-                                    (Prelude.fromIntegral (Data.ByteString.length bs)))
-                                   Data.Monoid.<> Data.ProtoLens.Encoding.Bytes.putBytes bs))
-                               Prelude.. Data.ProtoLens.encodeMessage)
-                              _v)
-                           Data.Monoid.<> as)
-                      Data.Monoid.mempty
+                   (Data.ProtoLens.Encoding.Bytes.foldMapBuilder
+                      (\ _v ->
+                         (Data.ProtoLens.Encoding.Bytes.putVarInt 7994) Data.Monoid.<>
+                           (((\ bs ->
+                                (Data.ProtoLens.Encoding.Bytes.putVarInt
+                                   (Prelude.fromIntegral (Data.ByteString.length bs)))
+                                  Data.Monoid.<> Data.ProtoLens.Encoding.Bytes.putBytes bs))
+                              Prelude.. Data.ProtoLens.encodeMessage)
+                             _v)
                       (Lens.Family2.view
                          (Lens.Labels.lensOf'
                             ((Lens.Labels.proxy#) ::
-                               (Lens.Labels.Proxy#) "vector'uninterpretedOption"))
+                               (Lens.Labels.Proxy#) "vec'uninterpretedOption"))
                          _x))
                      Data.Monoid.<>
                      Data.ProtoLens.Encoding.Wire.buildFieldSet
@@ -8536,7 +8465,7 @@ instance Control.DeepSeq.NFData OneofDescriptorProto where
 {- | Fields :
 
     * 'Proto.Google.Protobuf.Descriptor_Fields.uninterpretedOption' @:: Lens' OneofOptions [UninterpretedOption]@
-    * 'Proto.Google.Protobuf.Descriptor_Fields.vector'uninterpretedOption' @:: Lens' OneofOptions (Data.Vector.Vector UninterpretedOption)@
+    * 'Proto.Google.Protobuf.Descriptor_Fields.vec'uninterpretedOption' @:: Lens' OneofOptions (Data.Vector.Vector UninterpretedOption)@
  -}
 data OneofOptions = OneofOptions{_OneofOptions'uninterpretedOption
                                  :: !(Data.Vector.Vector UninterpretedOption),
@@ -8557,7 +8486,7 @@ instance a ~ ([UninterpretedOption]) =>
               Lens.Family2.Unchecked.lens Data.Vector.Generic.toList
                 (\ _ y__ -> Data.Vector.Generic.fromList y__)
 instance a ~ (Data.Vector.Vector UninterpretedOption) =>
-         Lens.Labels.HasLens' OneofOptions "vector'uninterpretedOption" a
+         Lens.Labels.HasLens' OneofOptions "vec'uninterpretedOption" a
          where
         lensOf' _
           = (Lens.Family2.Unchecked.lens _OneofOptions'uninterpretedOption
@@ -8609,7 +8538,7 @@ instance Data.ProtoLens.Message OneofOptions where
                                  (Lens.Family2.set
                                     (Lens.Labels.lensOf'
                                        ((Lens.Labels.proxy#) ::
-                                          (Lens.Labels.Proxy#) "vector'uninterpretedOption"))
+                                          (Lens.Labels.Proxy#) "vec'uninterpretedOption"))
                                     frozen'uninterpretedOption
                                     x))
                          else
@@ -8640,21 +8569,19 @@ instance Data.ProtoLens.Message OneofOptions where
                 Data.ProtoLens.Encoding.Bytes.<?> "OneofOptions"
         buildMessage
           = (\ _x ->
-               (Data.Vector.Generic.foldr
-                  (\ _v as ->
-                     ((Data.ProtoLens.Encoding.Bytes.putVarInt 7994) Data.Monoid.<>
-                        (((\ bs ->
-                             (Data.ProtoLens.Encoding.Bytes.putVarInt
-                                (Prelude.fromIntegral (Data.ByteString.length bs)))
-                               Data.Monoid.<> Data.ProtoLens.Encoding.Bytes.putBytes bs))
-                           Prelude.. Data.ProtoLens.encodeMessage)
-                          _v)
-                       Data.Monoid.<> as)
-                  Data.Monoid.mempty
+               (Data.ProtoLens.Encoding.Bytes.foldMapBuilder
+                  (\ _v ->
+                     (Data.ProtoLens.Encoding.Bytes.putVarInt 7994) Data.Monoid.<>
+                       (((\ bs ->
+                            (Data.ProtoLens.Encoding.Bytes.putVarInt
+                               (Prelude.fromIntegral (Data.ByteString.length bs)))
+                              Data.Monoid.<> Data.ProtoLens.Encoding.Bytes.putBytes bs))
+                          Prelude.. Data.ProtoLens.encodeMessage)
+                         _v)
                   (Lens.Family2.view
                      (Lens.Labels.lensOf'
                         ((Lens.Labels.proxy#) ::
-                           (Lens.Labels.Proxy#) "vector'uninterpretedOption"))
+                           (Lens.Labels.Proxy#) "vec'uninterpretedOption"))
                      _x))
                  Data.Monoid.<>
                  Data.ProtoLens.Encoding.Wire.buildFieldSet
@@ -8670,7 +8597,7 @@ instance Control.DeepSeq.NFData OneofOptions where
     * 'Proto.Google.Protobuf.Descriptor_Fields.name' @:: Lens' ServiceDescriptorProto Data.Text.Text@
     * 'Proto.Google.Protobuf.Descriptor_Fields.maybe'name' @:: Lens' ServiceDescriptorProto (Prelude.Maybe Data.Text.Text)@
     * 'Proto.Google.Protobuf.Descriptor_Fields.method' @:: Lens' ServiceDescriptorProto [MethodDescriptorProto]@
-    * 'Proto.Google.Protobuf.Descriptor_Fields.vector'method' @:: Lens' ServiceDescriptorProto
+    * 'Proto.Google.Protobuf.Descriptor_Fields.vec'method' @:: Lens' ServiceDescriptorProto
   (Data.Vector.Vector MethodDescriptorProto)@
     * 'Proto.Google.Protobuf.Descriptor_Fields.options' @:: Lens' ServiceDescriptorProto ServiceOptions@
     * 'Proto.Google.Protobuf.Descriptor_Fields.maybe'options' @:: Lens' ServiceDescriptorProto (Prelude.Maybe ServiceOptions)@
@@ -8713,7 +8640,7 @@ instance a ~ ([MethodDescriptorProto]) =>
               Lens.Family2.Unchecked.lens Data.Vector.Generic.toList
                 (\ _ y__ -> Data.Vector.Generic.fromList y__)
 instance a ~ (Data.Vector.Vector MethodDescriptorProto) =>
-         Lens.Labels.HasLens' ServiceDescriptorProto "vector'method" a
+         Lens.Labels.HasLens' ServiceDescriptorProto "vec'method" a
          where
         lensOf' _
           = (Lens.Family2.Unchecked.lens _ServiceDescriptorProto'method
@@ -8799,8 +8726,7 @@ instance Data.ProtoLens.Message ServiceDescriptorProto where
                                  (\ !t -> Prelude.reverse t)
                                  (Lens.Family2.set
                                     (Lens.Labels.lensOf'
-                                       ((Lens.Labels.proxy#) ::
-                                          (Lens.Labels.Proxy#) "vector'method"))
+                                       ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "vec'method"))
                                     frozen'method
                                     x))
                          else
@@ -8877,20 +8803,18 @@ instance Data.ProtoLens.Message ServiceDescriptorProto where
                                             Prelude.. Data.Text.Encoding.encodeUtf8)
                                            _v)
                  Data.Monoid.<>
-                 (Data.Vector.Generic.foldr
-                    (\ _v as ->
-                       ((Data.ProtoLens.Encoding.Bytes.putVarInt 18) Data.Monoid.<>
-                          (((\ bs ->
-                               (Data.ProtoLens.Encoding.Bytes.putVarInt
-                                  (Prelude.fromIntegral (Data.ByteString.length bs)))
-                                 Data.Monoid.<> Data.ProtoLens.Encoding.Bytes.putBytes bs))
-                             Prelude.. Data.ProtoLens.encodeMessage)
-                            _v)
-                         Data.Monoid.<> as)
-                    Data.Monoid.mempty
+                 (Data.ProtoLens.Encoding.Bytes.foldMapBuilder
+                    (\ _v ->
+                       (Data.ProtoLens.Encoding.Bytes.putVarInt 18) Data.Monoid.<>
+                         (((\ bs ->
+                              (Data.ProtoLens.Encoding.Bytes.putVarInt
+                                 (Prelude.fromIntegral (Data.ByteString.length bs)))
+                                Data.Monoid.<> Data.ProtoLens.Encoding.Bytes.putBytes bs))
+                            Prelude.. Data.ProtoLens.encodeMessage)
+                           _v)
                     (Lens.Family2.view
                        (Lens.Labels.lensOf'
-                          ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "vector'method"))
+                          ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "vec'method"))
                        _x))
                    Data.Monoid.<>
                    (case
@@ -8927,7 +8851,7 @@ instance Control.DeepSeq.NFData ServiceDescriptorProto where
     * 'Proto.Google.Protobuf.Descriptor_Fields.deprecated' @:: Lens' ServiceOptions Prelude.Bool@
     * 'Proto.Google.Protobuf.Descriptor_Fields.maybe'deprecated' @:: Lens' ServiceOptions (Prelude.Maybe Prelude.Bool)@
     * 'Proto.Google.Protobuf.Descriptor_Fields.uninterpretedOption' @:: Lens' ServiceOptions [UninterpretedOption]@
-    * 'Proto.Google.Protobuf.Descriptor_Fields.vector'uninterpretedOption' @:: Lens' ServiceOptions (Data.Vector.Vector UninterpretedOption)@
+    * 'Proto.Google.Protobuf.Descriptor_Fields.vec'uninterpretedOption' @:: Lens' ServiceOptions (Data.Vector.Vector UninterpretedOption)@
  -}
 data ServiceOptions = ServiceOptions{_ServiceOptions'deprecated ::
                                      !(Prelude.Maybe Prelude.Bool),
@@ -8964,7 +8888,7 @@ instance a ~ ([UninterpretedOption]) =>
               Lens.Family2.Unchecked.lens Data.Vector.Generic.toList
                 (\ _ y__ -> Data.Vector.Generic.fromList y__)
 instance a ~ (Data.Vector.Vector UninterpretedOption) =>
-         Lens.Labels.HasLens' ServiceOptions "vector'uninterpretedOption" a
+         Lens.Labels.HasLens' ServiceOptions "vec'uninterpretedOption" a
          where
         lensOf' _
           = (Lens.Family2.Unchecked.lens _ServiceOptions'uninterpretedOption
@@ -9025,7 +8949,7 @@ instance Data.ProtoLens.Message ServiceOptions where
                                  (Lens.Family2.set
                                     (Lens.Labels.lensOf'
                                        ((Lens.Labels.proxy#) ::
-                                          (Lens.Labels.Proxy#) "vector'uninterpretedOption"))
+                                          (Lens.Labels.Proxy#) "vec'uninterpretedOption"))
                                     frozen'uninterpretedOption
                                     x))
                          else
@@ -9080,21 +9004,19 @@ instance Data.ProtoLens.Message ServiceOptions where
                                             (\ b -> if b then 1 else 0))
                                            _v)
                  Data.Monoid.<>
-                 (Data.Vector.Generic.foldr
-                    (\ _v as ->
-                       ((Data.ProtoLens.Encoding.Bytes.putVarInt 7994) Data.Monoid.<>
-                          (((\ bs ->
-                               (Data.ProtoLens.Encoding.Bytes.putVarInt
-                                  (Prelude.fromIntegral (Data.ByteString.length bs)))
-                                 Data.Monoid.<> Data.ProtoLens.Encoding.Bytes.putBytes bs))
-                             Prelude.. Data.ProtoLens.encodeMessage)
-                            _v)
-                         Data.Monoid.<> as)
-                    Data.Monoid.mempty
+                 (Data.ProtoLens.Encoding.Bytes.foldMapBuilder
+                    (\ _v ->
+                       (Data.ProtoLens.Encoding.Bytes.putVarInt 7994) Data.Monoid.<>
+                         (((\ bs ->
+                              (Data.ProtoLens.Encoding.Bytes.putVarInt
+                                 (Prelude.fromIntegral (Data.ByteString.length bs)))
+                                Data.Monoid.<> Data.ProtoLens.Encoding.Bytes.putBytes bs))
+                            Prelude.. Data.ProtoLens.encodeMessage)
+                           _v)
                     (Lens.Family2.view
                        (Lens.Labels.lensOf'
                           ((Lens.Labels.proxy#) ::
-                             (Lens.Labels.Proxy#) "vector'uninterpretedOption"))
+                             (Lens.Labels.Proxy#) "vec'uninterpretedOption"))
                        _x))
                    Data.Monoid.<>
                    Data.ProtoLens.Encoding.Wire.buildFieldSet
@@ -9109,7 +9031,7 @@ instance Control.DeepSeq.NFData ServiceOptions where
 {- | Fields :
 
     * 'Proto.Google.Protobuf.Descriptor_Fields.location' @:: Lens' SourceCodeInfo [SourceCodeInfo'Location]@
-    * 'Proto.Google.Protobuf.Descriptor_Fields.vector'location' @:: Lens' SourceCodeInfo (Data.Vector.Vector SourceCodeInfo'Location)@
+    * 'Proto.Google.Protobuf.Descriptor_Fields.vec'location' @:: Lens' SourceCodeInfo (Data.Vector.Vector SourceCodeInfo'Location)@
  -}
 data SourceCodeInfo = SourceCodeInfo{_SourceCodeInfo'location ::
                                      !(Data.Vector.Vector SourceCodeInfo'Location),
@@ -9130,7 +9052,7 @@ instance a ~ ([SourceCodeInfo'Location]) =>
               Lens.Family2.Unchecked.lens Data.Vector.Generic.toList
                 (\ _ y__ -> Data.Vector.Generic.fromList y__)
 instance a ~ (Data.Vector.Vector SourceCodeInfo'Location) =>
-         Lens.Labels.HasLens' SourceCodeInfo "vector'location" a
+         Lens.Labels.HasLens' SourceCodeInfo "vec'location" a
          where
         lensOf' _
           = (Lens.Family2.Unchecked.lens _SourceCodeInfo'location
@@ -9181,7 +9103,7 @@ instance Data.ProtoLens.Message SourceCodeInfo where
                                  (Lens.Family2.set
                                     (Lens.Labels.lensOf'
                                        ((Lens.Labels.proxy#) ::
-                                          (Lens.Labels.Proxy#) "vector'location"))
+                                          (Lens.Labels.Proxy#) "vec'location"))
                                     frozen'location
                                     x))
                          else
@@ -9211,20 +9133,18 @@ instance Data.ProtoLens.Message SourceCodeInfo where
                 Data.ProtoLens.Encoding.Bytes.<?> "SourceCodeInfo"
         buildMessage
           = (\ _x ->
-               (Data.Vector.Generic.foldr
-                  (\ _v as ->
-                     ((Data.ProtoLens.Encoding.Bytes.putVarInt 10) Data.Monoid.<>
-                        (((\ bs ->
-                             (Data.ProtoLens.Encoding.Bytes.putVarInt
-                                (Prelude.fromIntegral (Data.ByteString.length bs)))
-                               Data.Monoid.<> Data.ProtoLens.Encoding.Bytes.putBytes bs))
-                           Prelude.. Data.ProtoLens.encodeMessage)
-                          _v)
-                       Data.Monoid.<> as)
-                  Data.Monoid.mempty
+               (Data.ProtoLens.Encoding.Bytes.foldMapBuilder
+                  (\ _v ->
+                     (Data.ProtoLens.Encoding.Bytes.putVarInt 10) Data.Monoid.<>
+                       (((\ bs ->
+                            (Data.ProtoLens.Encoding.Bytes.putVarInt
+                               (Prelude.fromIntegral (Data.ByteString.length bs)))
+                              Data.Monoid.<> Data.ProtoLens.Encoding.Bytes.putBytes bs))
+                          Prelude.. Data.ProtoLens.encodeMessage)
+                         _v)
                   (Lens.Family2.view
                      (Lens.Labels.lensOf'
-                        ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "vector'location"))
+                        ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "vec'location"))
                      _x))
                  Data.Monoid.<>
                  Data.ProtoLens.Encoding.Wire.buildFieldSet
@@ -9237,17 +9157,17 @@ instance Control.DeepSeq.NFData SourceCodeInfo where
 {- | Fields :
 
     * 'Proto.Google.Protobuf.Descriptor_Fields.path' @:: Lens' SourceCodeInfo'Location [Data.Int.Int32]@
-    * 'Proto.Google.Protobuf.Descriptor_Fields.vector'path' @:: Lens' SourceCodeInfo'Location
+    * 'Proto.Google.Protobuf.Descriptor_Fields.vec'path' @:: Lens' SourceCodeInfo'Location
   (Data.Vector.Unboxed.Vector Data.Int.Int32)@
     * 'Proto.Google.Protobuf.Descriptor_Fields.span' @:: Lens' SourceCodeInfo'Location [Data.Int.Int32]@
-    * 'Proto.Google.Protobuf.Descriptor_Fields.vector'span' @:: Lens' SourceCodeInfo'Location
+    * 'Proto.Google.Protobuf.Descriptor_Fields.vec'span' @:: Lens' SourceCodeInfo'Location
   (Data.Vector.Unboxed.Vector Data.Int.Int32)@
     * 'Proto.Google.Protobuf.Descriptor_Fields.leadingComments' @:: Lens' SourceCodeInfo'Location Data.Text.Text@
     * 'Proto.Google.Protobuf.Descriptor_Fields.maybe'leadingComments' @:: Lens' SourceCodeInfo'Location (Prelude.Maybe Data.Text.Text)@
     * 'Proto.Google.Protobuf.Descriptor_Fields.trailingComments' @:: Lens' SourceCodeInfo'Location Data.Text.Text@
     * 'Proto.Google.Protobuf.Descriptor_Fields.maybe'trailingComments' @:: Lens' SourceCodeInfo'Location (Prelude.Maybe Data.Text.Text)@
     * 'Proto.Google.Protobuf.Descriptor_Fields.leadingDetachedComments' @:: Lens' SourceCodeInfo'Location [Data.Text.Text]@
-    * 'Proto.Google.Protobuf.Descriptor_Fields.vector'leadingDetachedComments' @:: Lens' SourceCodeInfo'Location (Data.Vector.Vector Data.Text.Text)@
+    * 'Proto.Google.Protobuf.Descriptor_Fields.vec'leadingDetachedComments' @:: Lens' SourceCodeInfo'Location (Data.Vector.Vector Data.Text.Text)@
  -}
 data SourceCodeInfo'Location = SourceCodeInfo'Location{_SourceCodeInfo'Location'path
                                                        ::
@@ -9278,7 +9198,7 @@ instance a ~ ([Data.Int.Int32]) =>
               Lens.Family2.Unchecked.lens Data.Vector.Generic.toList
                 (\ _ y__ -> Data.Vector.Generic.fromList y__)
 instance a ~ (Data.Vector.Unboxed.Vector Data.Int.Int32) =>
-         Lens.Labels.HasLens' SourceCodeInfo'Location "vector'path" a
+         Lens.Labels.HasLens' SourceCodeInfo'Location "vec'path" a
          where
         lensOf' _
           = (Lens.Family2.Unchecked.lens _SourceCodeInfo'Location'path
@@ -9294,7 +9214,7 @@ instance a ~ ([Data.Int.Int32]) =>
               Lens.Family2.Unchecked.lens Data.Vector.Generic.toList
                 (\ _ y__ -> Data.Vector.Generic.fromList y__)
 instance a ~ (Data.Vector.Unboxed.Vector Data.Int.Int32) =>
-         Lens.Labels.HasLens' SourceCodeInfo'Location "vector'span" a
+         Lens.Labels.HasLens' SourceCodeInfo'Location "vec'span" a
          where
         lensOf' _
           = (Lens.Family2.Unchecked.lens _SourceCodeInfo'Location'span
@@ -9353,7 +9273,7 @@ instance a ~ ([Data.Text.Text]) =>
                 (\ _ y__ -> Data.Vector.Generic.fromList y__)
 instance a ~ (Data.Vector.Vector Data.Text.Text) =>
          Lens.Labels.HasLens' SourceCodeInfo'Location
-           "vector'leadingDetachedComments"
+           "vec'leadingDetachedComments"
            a
          where
         lensOf' _
@@ -9467,17 +9387,16 @@ instance Data.ProtoLens.Message SourceCodeInfo'Location where
                                  (Lens.Family2.set
                                     (Lens.Labels.lensOf'
                                        ((Lens.Labels.proxy#) ::
-                                          (Lens.Labels.Proxy#) "vector'leadingDetachedComments"))
+                                          (Lens.Labels.Proxy#) "vec'leadingDetachedComments"))
                                     frozen'leadingDetachedComments
                                     (Lens.Family2.set
                                        (Lens.Labels.lensOf'
-                                          ((Lens.Labels.proxy#) ::
-                                             (Lens.Labels.Proxy#) "vector'path"))
+                                          ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "vec'path"))
                                        frozen'path
                                        (Lens.Family2.set
                                           (Lens.Labels.lensOf'
                                              ((Lens.Labels.proxy#) ::
-                                                (Lens.Labels.Proxy#) "vector'span"))
+                                                (Lens.Labels.Proxy#) "vec'span"))
                                           frozen'span
                                           x))))
                          else
@@ -9615,7 +9534,7 @@ instance Data.ProtoLens.Message SourceCodeInfo'Location where
           = (\ _x ->
                (let p = Lens.Family2.view
                           (Lens.Labels.lensOf'
-                             ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "vector'path"))
+                             ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "vec'path"))
                           _x
                   in
                   if Data.Vector.Generic.null p then Data.Monoid.mempty else
@@ -9625,18 +9544,14 @@ instance Data.ProtoLens.Message SourceCodeInfo'Location where
                             (Prelude.fromIntegral (Data.ByteString.length bs)))
                            Data.Monoid.<> Data.ProtoLens.Encoding.Bytes.putBytes bs)
                         (Data.ProtoLens.Encoding.Bytes.runBuilder
-                           (Data.Vector.Generic.foldr
-                              (\ v bs ->
-                                 (((Data.ProtoLens.Encoding.Bytes.putVarInt) Prelude..
-                                     Prelude.fromIntegral)
-                                    v)
-                                   Data.Monoid.<> bs)
-                              Data.Monoid.mempty
+                           (Data.ProtoLens.Encoding.Bytes.foldMapBuilder
+                              ((Data.ProtoLens.Encoding.Bytes.putVarInt) Prelude..
+                                 Prelude.fromIntegral)
                               p)))
                  Data.Monoid.<>
                  (let p = Lens.Family2.view
                             (Lens.Labels.lensOf'
-                               ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "vector'span"))
+                               ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "vec'span"))
                             _x
                     in
                     if Data.Vector.Generic.null p then Data.Monoid.mempty else
@@ -9646,13 +9561,9 @@ instance Data.ProtoLens.Message SourceCodeInfo'Location where
                               (Prelude.fromIntegral (Data.ByteString.length bs)))
                              Data.Monoid.<> Data.ProtoLens.Encoding.Bytes.putBytes bs)
                           (Data.ProtoLens.Encoding.Bytes.runBuilder
-                             (Data.Vector.Generic.foldr
-                                (\ v bs ->
-                                   (((Data.ProtoLens.Encoding.Bytes.putVarInt) Prelude..
-                                       Prelude.fromIntegral)
-                                      v)
-                                     Data.Monoid.<> bs)
-                                Data.Monoid.mempty
+                             (Data.ProtoLens.Encoding.Bytes.foldMapBuilder
+                                ((Data.ProtoLens.Encoding.Bytes.putVarInt) Prelude..
+                                   Prelude.fromIntegral)
                                 p)))
                    Data.Monoid.<>
                    (case
@@ -9693,21 +9604,19 @@ instance Data.ProtoLens.Message SourceCodeInfo'Location where
                                                   Prelude.. Data.Text.Encoding.encodeUtf8)
                                                  _v)
                        Data.Monoid.<>
-                       (Data.Vector.Generic.foldr
-                          (\ _v as ->
-                             ((Data.ProtoLens.Encoding.Bytes.putVarInt 50) Data.Monoid.<>
-                                (((\ bs ->
-                                     (Data.ProtoLens.Encoding.Bytes.putVarInt
-                                        (Prelude.fromIntegral (Data.ByteString.length bs)))
-                                       Data.Monoid.<> Data.ProtoLens.Encoding.Bytes.putBytes bs))
-                                   Prelude.. Data.Text.Encoding.encodeUtf8)
-                                  _v)
-                               Data.Monoid.<> as)
-                          Data.Monoid.mempty
+                       (Data.ProtoLens.Encoding.Bytes.foldMapBuilder
+                          (\ _v ->
+                             (Data.ProtoLens.Encoding.Bytes.putVarInt 50) Data.Monoid.<>
+                               (((\ bs ->
+                                    (Data.ProtoLens.Encoding.Bytes.putVarInt
+                                       (Prelude.fromIntegral (Data.ByteString.length bs)))
+                                      Data.Monoid.<> Data.ProtoLens.Encoding.Bytes.putBytes bs))
+                                  Prelude.. Data.Text.Encoding.encodeUtf8)
+                                 _v)
                           (Lens.Family2.view
                              (Lens.Labels.lensOf'
                                 ((Lens.Labels.proxy#) ::
-                                   (Lens.Labels.Proxy#) "vector'leadingDetachedComments"))
+                                   (Lens.Labels.Proxy#) "vec'leadingDetachedComments"))
                              _x))
                          Data.Monoid.<>
                          Data.ProtoLens.Encoding.Wire.buildFieldSet
@@ -9729,7 +9638,7 @@ instance Control.DeepSeq.NFData SourceCodeInfo'Location where
 {- | Fields :
 
     * 'Proto.Google.Protobuf.Descriptor_Fields.name' @:: Lens' UninterpretedOption [UninterpretedOption'NamePart]@
-    * 'Proto.Google.Protobuf.Descriptor_Fields.vector'name' @:: Lens' UninterpretedOption
+    * 'Proto.Google.Protobuf.Descriptor_Fields.vec'name' @:: Lens' UninterpretedOption
   (Data.Vector.Vector UninterpretedOption'NamePart)@
     * 'Proto.Google.Protobuf.Descriptor_Fields.identifierValue' @:: Lens' UninterpretedOption Data.Text.Text@
     * 'Proto.Google.Protobuf.Descriptor_Fields.maybe'identifierValue' @:: Lens' UninterpretedOption (Prelude.Maybe Data.Text.Text)@
@@ -9778,7 +9687,7 @@ instance a ~ ([UninterpretedOption'NamePart]) =>
               Lens.Family2.Unchecked.lens Data.Vector.Generic.toList
                 (\ _ y__ -> Data.Vector.Generic.fromList y__)
 instance a ~ (Data.Vector.Vector UninterpretedOption'NamePart) =>
-         Lens.Labels.HasLens' UninterpretedOption "vector'name" a
+         Lens.Labels.HasLens' UninterpretedOption "vec'name" a
          where
         lensOf' _
           = (Lens.Family2.Unchecked.lens _UninterpretedOption'name
@@ -9983,7 +9892,7 @@ instance Data.ProtoLens.Message UninterpretedOption where
                                  (\ !t -> Prelude.reverse t)
                                  (Lens.Family2.set
                                     (Lens.Labels.lensOf'
-                                       ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "vector'name"))
+                                       ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "vec'name"))
                                     frozen'name
                                     x))
                          else
@@ -10093,20 +10002,18 @@ instance Data.ProtoLens.Message UninterpretedOption where
                 Data.ProtoLens.Encoding.Bytes.<?> "UninterpretedOption"
         buildMessage
           = (\ _x ->
-               (Data.Vector.Generic.foldr
-                  (\ _v as ->
-                     ((Data.ProtoLens.Encoding.Bytes.putVarInt 18) Data.Monoid.<>
-                        (((\ bs ->
-                             (Data.ProtoLens.Encoding.Bytes.putVarInt
-                                (Prelude.fromIntegral (Data.ByteString.length bs)))
-                               Data.Monoid.<> Data.ProtoLens.Encoding.Bytes.putBytes bs))
-                           Prelude.. Data.ProtoLens.encodeMessage)
-                          _v)
-                       Data.Monoid.<> as)
-                  Data.Monoid.mempty
+               (Data.ProtoLens.Encoding.Bytes.foldMapBuilder
+                  (\ _v ->
+                     (Data.ProtoLens.Encoding.Bytes.putVarInt 18) Data.Monoid.<>
+                       (((\ bs ->
+                            (Data.ProtoLens.Encoding.Bytes.putVarInt
+                               (Prelude.fromIntegral (Data.ByteString.length bs)))
+                              Data.Monoid.<> Data.ProtoLens.Encoding.Bytes.putBytes bs))
+                          Prelude.. Data.ProtoLens.encodeMessage)
+                         _v)
                   (Lens.Family2.view
                      (Lens.Labels.lensOf'
-                        ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "vector'name"))
+                        ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "vec'name"))
                      _x))
                  Data.Monoid.<>
                  (case

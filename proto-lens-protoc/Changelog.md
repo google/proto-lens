@@ -5,7 +5,7 @@
 - Track changes to `proto-lens` using generated Haskell code to
   encode/decode proto messages more quickly.
 - Store repeated fields as `Vector`s, and expose the internal representation
-  via new `vector'*` lenses.  Use `Vector`s for more efficient
+  via new `vec'*` lenses.  Use `Vector`s for more efficient
   encoding/decoding.
 
 ## v0.4.0.1

@@ -86,10 +86,10 @@ main = testMain
         $ buildMessage (defFoo & a .~ [1,2] :: Foo)
             <> buildMessage (defFoo & a .~ [3,4] :: Foo)
     , testGroup "vector"
-        [ vectorTest @Bar "fixed64" arbitrary e vector'e
-        , vectorTest @Foo "int32" arbitrary a vector'a
-        , vectorTest @Foo "string" (T.pack <$> arbitrary) b vector'b
-        , vectorTest @Foo "message" arbitraryMessage c vector'c
+        [ vectorTest @Bar "fixed64" arbitrary e vec'e
+        , vectorTest @Foo "int32" arbitrary a vec'a
+        , vectorTest @Foo "string" (T.pack <$> arbitrary) b vec'b
+        , vectorTest @Foo "message" arbitraryMessage c vec'c
         ]
     , testGroup "roundtrip"
         [ runTypedTest (roundTripTest "foo" :: TypedTest Foo)
