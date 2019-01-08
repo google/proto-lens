@@ -59,3 +59,14 @@ tests:
     - QuickCheck
     - test-framework
     - test-framework-quickcheck2
+
+  growing_test:
+    main: growing_test.hs
+    source-dirs: tests
+    dependencies:
+    - base
+    - vector
+    - proto-lens
+    - QuickCheck
+    - test-framework
+    - test-framework-quickcheck2
