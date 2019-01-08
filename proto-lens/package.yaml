@@ -31,6 +31,7 @@ library:
   source-dirs: src
 
   other-modules:
+    - Data.ProtoLens.Encoding.Parser.Internal
     - Data.ProtoLens.TextFormat.Parser
   dependencies:
     - base >= 4.9 && < 4.13
@@ -41,8 +42,10 @@ library:
     - lens-labels == 0.3.*
     - parsec == 3.1.*
     - pretty == 1.1.*
+    - primitive == 0.6.*
     - text == 1.2.*
     - transformers >= 0.4 && < 0.6
+    - vector >= 0.11 && < 0.13
     - void == 0.7.*
 
 tests:
@@ -52,6 +55,17 @@ tests:
     dependencies:
     - base
     - bytestring
+    - proto-lens
+    - QuickCheck
+    - test-framework
+    - test-framework-quickcheck2
+
+  growing_test:
+    main: growing_test.hs
+    source-dirs: tests
+    dependencies:
+    - base
+    - vector
     - proto-lens
     - QuickCheck
     - test-framework

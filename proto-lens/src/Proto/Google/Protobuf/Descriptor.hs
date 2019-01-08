@@ -34,6 +34,8 @@ import qualified Data.Monoid
 import qualified Data.Word
 import qualified Data.ProtoLens
 import qualified Data.ProtoLens.Encoding.Bytes
+import qualified Data.ProtoLens.Encoding.Growing
+import qualified Data.ProtoLens.Encoding.Parser.Unsafe
 import qualified Data.ProtoLens.Encoding.Wire
 import qualified Data.ProtoLens.Message.Enum
 import qualified Data.ProtoLens.Service.Types
@@ -44,6 +46,9 @@ import qualified Data.Map
 import qualified Data.ByteString
 import qualified Data.ByteString.Char8
 import qualified Data.Text.Encoding
+import qualified Data.Vector
+import qualified Data.Vector.Generic
+import qualified Data.Vector.Unboxed
 import qualified Lens.Labels
 import qualified Text.Read
 
@@ -52,29 +57,45 @@ import qualified Text.Read
     * 'Proto.Google.Protobuf.Descriptor_Fields.name' @:: Lens' DescriptorProto Data.Text.Text@
     * 'Proto.Google.Protobuf.Descriptor_Fields.maybe'name' @:: Lens' DescriptorProto (Prelude.Maybe Data.Text.Text)@
     * 'Proto.Google.Protobuf.Descriptor_Fields.field' @:: Lens' DescriptorProto [FieldDescriptorProto]@
+    * 'Proto.Google.Protobuf.Descriptor_Fields.vec'field' @:: Lens' DescriptorProto (Data.Vector.Vector FieldDescriptorProto)@
     * 'Proto.Google.Protobuf.Descriptor_Fields.extension' @:: Lens' DescriptorProto [FieldDescriptorProto]@
+    * 'Proto.Google.Protobuf.Descriptor_Fields.vec'extension' @:: Lens' DescriptorProto (Data.Vector.Vector FieldDescriptorProto)@
     * 'Proto.Google.Protobuf.Descriptor_Fields.nestedType' @:: Lens' DescriptorProto [DescriptorProto]@
+    * 'Proto.Google.Protobuf.Descriptor_Fields.vec'nestedType' @:: Lens' DescriptorProto (Data.Vector.Vector DescriptorProto)@
     * 'Proto.Google.Protobuf.Descriptor_Fields.enumType' @:: Lens' DescriptorProto [EnumDescriptorProto]@
+    * 'Proto.Google.Protobuf.Descriptor_Fields.vec'enumType' @:: Lens' DescriptorProto (Data.Vector.Vector EnumDescriptorProto)@
     * 'Proto.Google.Protobuf.Descriptor_Fields.extensionRange' @:: Lens' DescriptorProto [DescriptorProto'ExtensionRange]@
+    * 'Proto.Google.Protobuf.Descriptor_Fields.vec'extensionRange' @:: Lens' DescriptorProto
+  (Data.Vector.Vector DescriptorProto'ExtensionRange)@
     * 'Proto.Google.Protobuf.Descriptor_Fields.oneofDecl' @:: Lens' DescriptorProto [OneofDescriptorProto]@
+    * 'Proto.Google.Protobuf.Descriptor_Fields.vec'oneofDecl' @:: Lens' DescriptorProto (Data.Vector.Vector OneofDescriptorProto)@
     * 'Proto.Google.Protobuf.Descriptor_Fields.options' @:: Lens' DescriptorProto MessageOptions@
     * 'Proto.Google.Protobuf.Descriptor_Fields.maybe'options' @:: Lens' DescriptorProto (Prelude.Maybe MessageOptions)@
     * 'Proto.Google.Protobuf.Descriptor_Fields.reservedRange' @:: Lens' DescriptorProto [DescriptorProto'ReservedRange]@
+    * 'Proto.Google.Protobuf.Descriptor_Fields.vec'reservedRange' @:: Lens' DescriptorProto
+  (Data.Vector.Vector DescriptorProto'ReservedRange)@
     * 'Proto.Google.Protobuf.Descriptor_Fields.reservedName' @:: Lens' DescriptorProto [Data.Text.Text]@
+    * 'Proto.Google.Protobuf.Descriptor_Fields.vec'reservedName' @:: Lens' DescriptorProto (Data.Vector.Vector Data.Text.Text)@
  -}
 data DescriptorProto = DescriptorProto{_DescriptorProto'name ::
                                        !(Prelude.Maybe Data.Text.Text),
-                                       _DescriptorProto'field :: ![FieldDescriptorProto],
-                                       _DescriptorProto'extension :: ![FieldDescriptorProto],
-                                       _DescriptorProto'nestedType :: ![DescriptorProto],
-                                       _DescriptorProto'enumType :: ![EnumDescriptorProto],
+                                       _DescriptorProto'field ::
+                                       !(Data.Vector.Vector FieldDescriptorProto),
+                                       _DescriptorProto'extension ::
+                                       !(Data.Vector.Vector FieldDescriptorProto),
+                                       _DescriptorProto'nestedType ::
+                                       !(Data.Vector.Vector DescriptorProto),
+                                       _DescriptorProto'enumType ::
+                                       !(Data.Vector.Vector EnumDescriptorProto),
                                        _DescriptorProto'extensionRange ::
-                                       ![DescriptorProto'ExtensionRange],
-                                       _DescriptorProto'oneofDecl :: ![OneofDescriptorProto],
+                                       !(Data.Vector.Vector DescriptorProto'ExtensionRange),
+                                       _DescriptorProto'oneofDecl ::
+                                       !(Data.Vector.Vector OneofDescriptorProto),
                                        _DescriptorProto'options :: !(Prelude.Maybe MessageOptions),
                                        _DescriptorProto'reservedRange ::
-                                       ![DescriptorProto'ReservedRange],
-                                       _DescriptorProto'reservedName :: ![Data.Text.Text],
+                                       !(Data.Vector.Vector DescriptorProto'ReservedRange),
+                                       _DescriptorProto'reservedName ::
+                                       !(Data.Vector.Vector Data.Text.Text),
                                        _DescriptorProto'_unknownFields :: !Data.ProtoLens.FieldSet}
                          deriving (Prelude.Eq, Prelude.Ord)
 instance Prelude.Show DescriptorProto where
@@ -102,9 +123,27 @@ instance a ~ ([FieldDescriptorProto]) =>
         lensOf' _
           = (Lens.Family2.Unchecked.lens _DescriptorProto'field
                (\ x__ y__ -> x__{_DescriptorProto'field = y__}))
+              Prelude..
+              Lens.Family2.Unchecked.lens Data.Vector.Generic.toList
+                (\ _ y__ -> Data.Vector.Generic.fromList y__)
+instance a ~ (Data.Vector.Vector FieldDescriptorProto) =>
+         Lens.Labels.HasLens' DescriptorProto "vec'field" a
+         where
+        lensOf' _
+          = (Lens.Family2.Unchecked.lens _DescriptorProto'field
+               (\ x__ y__ -> x__{_DescriptorProto'field = y__}))
               Prelude.. Prelude.id
 instance a ~ ([FieldDescriptorProto]) =>
          Lens.Labels.HasLens' DescriptorProto "extension" a
+         where
+        lensOf' _
+          = (Lens.Family2.Unchecked.lens _DescriptorProto'extension
+               (\ x__ y__ -> x__{_DescriptorProto'extension = y__}))
+              Prelude..
+              Lens.Family2.Unchecked.lens Data.Vector.Generic.toList
+                (\ _ y__ -> Data.Vector.Generic.fromList y__)
+instance a ~ (Data.Vector.Vector FieldDescriptorProto) =>
+         Lens.Labels.HasLens' DescriptorProto "vec'extension" a
          where
         lensOf' _
           = (Lens.Family2.Unchecked.lens _DescriptorProto'extension
@@ -116,9 +155,27 @@ instance a ~ ([DescriptorProto]) =>
         lensOf' _
           = (Lens.Family2.Unchecked.lens _DescriptorProto'nestedType
                (\ x__ y__ -> x__{_DescriptorProto'nestedType = y__}))
+              Prelude..
+              Lens.Family2.Unchecked.lens Data.Vector.Generic.toList
+                (\ _ y__ -> Data.Vector.Generic.fromList y__)
+instance a ~ (Data.Vector.Vector DescriptorProto) =>
+         Lens.Labels.HasLens' DescriptorProto "vec'nestedType" a
+         where
+        lensOf' _
+          = (Lens.Family2.Unchecked.lens _DescriptorProto'nestedType
+               (\ x__ y__ -> x__{_DescriptorProto'nestedType = y__}))
               Prelude.. Prelude.id
 instance a ~ ([EnumDescriptorProto]) =>
          Lens.Labels.HasLens' DescriptorProto "enumType" a
+         where
+        lensOf' _
+          = (Lens.Family2.Unchecked.lens _DescriptorProto'enumType
+               (\ x__ y__ -> x__{_DescriptorProto'enumType = y__}))
+              Prelude..
+              Lens.Family2.Unchecked.lens Data.Vector.Generic.toList
+                (\ _ y__ -> Data.Vector.Generic.fromList y__)
+instance a ~ (Data.Vector.Vector EnumDescriptorProto) =>
+         Lens.Labels.HasLens' DescriptorProto "vec'enumType" a
          where
         lensOf' _
           = (Lens.Family2.Unchecked.lens _DescriptorProto'enumType
@@ -130,9 +187,27 @@ instance a ~ ([DescriptorProto'ExtensionRange]) =>
         lensOf' _
           = (Lens.Family2.Unchecked.lens _DescriptorProto'extensionRange
                (\ x__ y__ -> x__{_DescriptorProto'extensionRange = y__}))
+              Prelude..
+              Lens.Family2.Unchecked.lens Data.Vector.Generic.toList
+                (\ _ y__ -> Data.Vector.Generic.fromList y__)
+instance a ~ (Data.Vector.Vector DescriptorProto'ExtensionRange) =>
+         Lens.Labels.HasLens' DescriptorProto "vec'extensionRange" a
+         where
+        lensOf' _
+          = (Lens.Family2.Unchecked.lens _DescriptorProto'extensionRange
+               (\ x__ y__ -> x__{_DescriptorProto'extensionRange = y__}))
               Prelude.. Prelude.id
 instance a ~ ([OneofDescriptorProto]) =>
          Lens.Labels.HasLens' DescriptorProto "oneofDecl" a
+         where
+        lensOf' _
+          = (Lens.Family2.Unchecked.lens _DescriptorProto'oneofDecl
+               (\ x__ y__ -> x__{_DescriptorProto'oneofDecl = y__}))
+              Prelude..
+              Lens.Family2.Unchecked.lens Data.Vector.Generic.toList
+                (\ _ y__ -> Data.Vector.Generic.fromList y__)
+instance a ~ (Data.Vector.Vector OneofDescriptorProto) =>
+         Lens.Labels.HasLens' DescriptorProto "vec'oneofDecl" a
          where
         lensOf' _
           = (Lens.Family2.Unchecked.lens _DescriptorProto'oneofDecl
@@ -158,9 +233,27 @@ instance a ~ ([DescriptorProto'ReservedRange]) =>
         lensOf' _
           = (Lens.Family2.Unchecked.lens _DescriptorProto'reservedRange
                (\ x__ y__ -> x__{_DescriptorProto'reservedRange = y__}))
+              Prelude..
+              Lens.Family2.Unchecked.lens Data.Vector.Generic.toList
+                (\ _ y__ -> Data.Vector.Generic.fromList y__)
+instance a ~ (Data.Vector.Vector DescriptorProto'ReservedRange) =>
+         Lens.Labels.HasLens' DescriptorProto "vec'reservedRange" a
+         where
+        lensOf' _
+          = (Lens.Family2.Unchecked.lens _DescriptorProto'reservedRange
+               (\ x__ y__ -> x__{_DescriptorProto'reservedRange = y__}))
               Prelude.. Prelude.id
 instance a ~ ([Data.Text.Text]) =>
          Lens.Labels.HasLens' DescriptorProto "reservedName" a
+         where
+        lensOf' _
+          = (Lens.Family2.Unchecked.lens _DescriptorProto'reservedName
+               (\ x__ y__ -> x__{_DescriptorProto'reservedName = y__}))
+              Prelude..
+              Lens.Family2.Unchecked.lens Data.Vector.Generic.toList
+                (\ _ y__ -> Data.Vector.Generic.fromList y__)
+instance a ~ (Data.Vector.Vector Data.Text.Text) =>
+         Lens.Labels.HasLens' DescriptorProto "vec'reservedName" a
          where
         lensOf' _
           = (Lens.Family2.Unchecked.lens _DescriptorProto'reservedName
@@ -266,22 +359,81 @@ instance Data.ProtoLens.Message DescriptorProto where
               (\ x__ y__ -> x__{_DescriptorProto'_unknownFields = y__})
         defMessage
           = DescriptorProto{_DescriptorProto'name = Prelude.Nothing,
-                            _DescriptorProto'field = [], _DescriptorProto'extension = [],
-                            _DescriptorProto'nestedType = [], _DescriptorProto'enumType = [],
-                            _DescriptorProto'extensionRange = [],
-                            _DescriptorProto'oneofDecl = [],
+                            _DescriptorProto'field = Data.Vector.Generic.empty,
+                            _DescriptorProto'extension = Data.Vector.Generic.empty,
+                            _DescriptorProto'nestedType = Data.Vector.Generic.empty,
+                            _DescriptorProto'enumType = Data.Vector.Generic.empty,
+                            _DescriptorProto'extensionRange = Data.Vector.Generic.empty,
+                            _DescriptorProto'oneofDecl = Data.Vector.Generic.empty,
                             _DescriptorProto'options = Prelude.Nothing,
-                            _DescriptorProto'reservedRange = [],
-                            _DescriptorProto'reservedName = [],
+                            _DescriptorProto'reservedRange = Data.Vector.Generic.empty,
+                            _DescriptorProto'reservedName = Data.Vector.Generic.empty,
                             _DescriptorProto'_unknownFields = ([])}
         parseMessage
           = let loop ::
                      DescriptorProto ->
-                       Data.ProtoLens.Encoding.Bytes.Parser DescriptorProto
-                loop x
+                       Data.ProtoLens.Encoding.Growing.Growing Data.Vector.Vector
+                         Data.ProtoLens.Encoding.Growing.RealWorld
+                         EnumDescriptorProto
+                         ->
+                         Data.ProtoLens.Encoding.Growing.Growing Data.Vector.Vector
+                           Data.ProtoLens.Encoding.Growing.RealWorld
+                           FieldDescriptorProto
+                           ->
+                           Data.ProtoLens.Encoding.Growing.Growing Data.Vector.Vector
+                             Data.ProtoLens.Encoding.Growing.RealWorld
+                             DescriptorProto'ExtensionRange
+                             ->
+                             Data.ProtoLens.Encoding.Growing.Growing Data.Vector.Vector
+                               Data.ProtoLens.Encoding.Growing.RealWorld
+                               FieldDescriptorProto
+                               ->
+                               Data.ProtoLens.Encoding.Growing.Growing Data.Vector.Vector
+                                 Data.ProtoLens.Encoding.Growing.RealWorld
+                                 DescriptorProto
+                                 ->
+                                 Data.ProtoLens.Encoding.Growing.Growing Data.Vector.Vector
+                                   Data.ProtoLens.Encoding.Growing.RealWorld
+                                   OneofDescriptorProto
+                                   ->
+                                   Data.ProtoLens.Encoding.Growing.Growing Data.Vector.Vector
+                                     Data.ProtoLens.Encoding.Growing.RealWorld
+                                     Data.Text.Text
+                                     ->
+                                     Data.ProtoLens.Encoding.Growing.Growing Data.Vector.Vector
+                                       Data.ProtoLens.Encoding.Growing.RealWorld
+                                       DescriptorProto'ReservedRange
+                                       -> Data.ProtoLens.Encoding.Bytes.Parser DescriptorProto
+                loop x mutable'enumType mutable'extension mutable'extensionRange
+                  mutable'field mutable'nestedType mutable'oneofDecl
+                  mutable'reservedName mutable'reservedRange
                   = do end <- Data.ProtoLens.Encoding.Bytes.atEnd
                        if end then
-                         do let missing = [] in
+                         do frozen'enumType <- Data.ProtoLens.Encoding.Parser.Unsafe.unsafeLiftIO
+                                                 (Data.ProtoLens.Encoding.Growing.unsafeFreeze
+                                                    mutable'enumType)
+                            frozen'extension <- Data.ProtoLens.Encoding.Parser.Unsafe.unsafeLiftIO
+                                                  (Data.ProtoLens.Encoding.Growing.unsafeFreeze
+                                                     mutable'extension)
+                            frozen'extensionRange <- Data.ProtoLens.Encoding.Parser.Unsafe.unsafeLiftIO
+                                                       (Data.ProtoLens.Encoding.Growing.unsafeFreeze
+                                                          mutable'extensionRange)
+                            frozen'field <- Data.ProtoLens.Encoding.Parser.Unsafe.unsafeLiftIO
+                                              (Data.ProtoLens.Encoding.Growing.unsafeFreeze
+                                                 mutable'field)
+                            frozen'nestedType <- Data.ProtoLens.Encoding.Parser.Unsafe.unsafeLiftIO
+                                                   (Data.ProtoLens.Encoding.Growing.unsafeFreeze
+                                                      mutable'nestedType)
+                            frozen'oneofDecl <- Data.ProtoLens.Encoding.Parser.Unsafe.unsafeLiftIO
+                                                  (Data.ProtoLens.Encoding.Growing.unsafeFreeze
+                                                     mutable'oneofDecl)
+                            frozen'reservedName <- Data.ProtoLens.Encoding.Parser.Unsafe.unsafeLiftIO
+                                                     (Data.ProtoLens.Encoding.Growing.unsafeFreeze
+                                                        mutable'reservedName)
+                            frozen'reservedRange <- Data.ProtoLens.Encoding.Parser.Unsafe.unsafeLiftIO
+                                                      (Data.ProtoLens.Encoding.Growing.unsafeFreeze
+                                                         mutable'reservedRange)
+                            let missing = [] in
                               if Prelude.null missing then Prelude.return () else
                                 Prelude.fail
                                   (("Missing required fields: ") Prelude.++
@@ -289,45 +441,48 @@ instance Data.ProtoLens.Message DescriptorProto where
                             Prelude.return
                               (Lens.Family2.over Data.ProtoLens.unknownFields
                                  (\ !t -> Prelude.reverse t)
-                                 (Lens.Family2.over
+                                 (Lens.Family2.set
                                     (Lens.Labels.lensOf'
-                                       ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "field"))
-                                    (\ !t -> Prelude.reverse t)
-                                    (Lens.Family2.over
+                                       ((Lens.Labels.proxy#) ::
+                                          (Lens.Labels.Proxy#) "vec'enumType"))
+                                    frozen'enumType
+                                    (Lens.Family2.set
                                        (Lens.Labels.lensOf'
                                           ((Lens.Labels.proxy#) ::
-                                             (Lens.Labels.Proxy#) "extension"))
-                                       (\ !t -> Prelude.reverse t)
-                                       (Lens.Family2.over
+                                             (Lens.Labels.Proxy#) "vec'extension"))
+                                       frozen'extension
+                                       (Lens.Family2.set
                                           (Lens.Labels.lensOf'
                                              ((Lens.Labels.proxy#) ::
-                                                (Lens.Labels.Proxy#) "nestedType"))
-                                          (\ !t -> Prelude.reverse t)
-                                          (Lens.Family2.over
+                                                (Lens.Labels.Proxy#) "vec'extensionRange"))
+                                          frozen'extensionRange
+                                          (Lens.Family2.set
                                              (Lens.Labels.lensOf'
                                                 ((Lens.Labels.proxy#) ::
-                                                   (Lens.Labels.Proxy#) "enumType"))
-                                             (\ !t -> Prelude.reverse t)
-                                             (Lens.Family2.over
+                                                   (Lens.Labels.Proxy#) "vec'field"))
+                                             frozen'field
+                                             (Lens.Family2.set
                                                 (Lens.Labels.lensOf'
                                                    ((Lens.Labels.proxy#) ::
-                                                      (Lens.Labels.Proxy#) "extensionRange"))
-                                                (\ !t -> Prelude.reverse t)
-                                                (Lens.Family2.over
+                                                      (Lens.Labels.Proxy#) "vec'nestedType"))
+                                                frozen'nestedType
+                                                (Lens.Family2.set
                                                    (Lens.Labels.lensOf'
                                                       ((Lens.Labels.proxy#) ::
-                                                         (Lens.Labels.Proxy#) "oneofDecl"))
-                                                   (\ !t -> Prelude.reverse t)
-                                                   (Lens.Family2.over
+                                                         (Lens.Labels.Proxy#) "vec'oneofDecl"))
+                                                   frozen'oneofDecl
+                                                   (Lens.Family2.set
                                                       (Lens.Labels.lensOf'
                                                          ((Lens.Labels.proxy#) ::
-                                                            (Lens.Labels.Proxy#) "reservedRange"))
-                                                      (\ !t -> Prelude.reverse t)
-                                                      (Lens.Family2.over
+                                                            (Lens.Labels.Proxy#)
+                                                              "vec'reservedName"))
+                                                      frozen'reservedName
+                                                      (Lens.Family2.set
                                                          (Lens.Labels.lensOf'
                                                             ((Lens.Labels.proxy#) ::
-                                                               (Lens.Labels.Proxy#) "reservedName"))
-                                                         (\ !t -> Prelude.reverse t)
+                                                               (Lens.Labels.Proxy#)
+                                                                 "vec'reservedRange"))
+                                                         frozen'reservedRange
                                                          x)))))))))
                          else
                          do tag <- Data.ProtoLens.Encoding.Bytes.getVarInt
@@ -348,89 +503,110 @@ instance Data.ProtoLens.Message DescriptorProto where
                                                     (Lens.Labels.Proxy#) "name"))
                                               y
                                               x)
-                                18 -> do !y <- (do value <- do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
-                                                               Data.ProtoLens.Encoding.Bytes.getBytes
-                                                                 (Prelude.fromIntegral len)
-                                                   Data.ProtoLens.Encoding.Bytes.runEither
-                                                     (Data.ProtoLens.decodeMessage value))
+                                           mutable'enumType
+                                           mutable'extension
+                                           mutable'extensionRange
+                                           mutable'field
+                                           mutable'nestedType
+                                           mutable'oneofDecl
+                                           mutable'reservedName
+                                           mutable'reservedRange
+                                18 -> do !y <- (do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
+                                                   Data.ProtoLens.Encoding.Bytes.isolate
+                                                     (Prelude.fromIntegral len)
+                                                     Data.ProtoLens.parseMessage)
                                                  Data.ProtoLens.Encoding.Bytes.<?> "field"
-                                         loop
-                                           (Lens.Family2.over
-                                              (Lens.Labels.lensOf'
-                                                 ((Lens.Labels.proxy#) ::
-                                                    (Lens.Labels.Proxy#) "field"))
-                                              (\ !t -> (:) y t)
-                                              x)
-                                50 -> do !y <- (do value <- do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
-                                                               Data.ProtoLens.Encoding.Bytes.getBytes
-                                                                 (Prelude.fromIntegral len)
-                                                   Data.ProtoLens.Encoding.Bytes.runEither
-                                                     (Data.ProtoLens.decodeMessage value))
+                                         v <- Data.ProtoLens.Encoding.Parser.Unsafe.unsafeLiftIO
+                                                (Data.ProtoLens.Encoding.Growing.append
+                                                   mutable'field
+                                                   y)
+                                         loop x mutable'enumType mutable'extension
+                                           mutable'extensionRange
+                                           v
+                                           mutable'nestedType
+                                           mutable'oneofDecl
+                                           mutable'reservedName
+                                           mutable'reservedRange
+                                50 -> do !y <- (do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
+                                                   Data.ProtoLens.Encoding.Bytes.isolate
+                                                     (Prelude.fromIntegral len)
+                                                     Data.ProtoLens.parseMessage)
                                                  Data.ProtoLens.Encoding.Bytes.<?> "extension"
-                                         loop
-                                           (Lens.Family2.over
-                                              (Lens.Labels.lensOf'
-                                                 ((Lens.Labels.proxy#) ::
-                                                    (Lens.Labels.Proxy#) "extension"))
-                                              (\ !t -> (:) y t)
-                                              x)
-                                26 -> do !y <- (do value <- do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
-                                                               Data.ProtoLens.Encoding.Bytes.getBytes
-                                                                 (Prelude.fromIntegral len)
-                                                   Data.ProtoLens.Encoding.Bytes.runEither
-                                                     (Data.ProtoLens.decodeMessage value))
+                                         v <- Data.ProtoLens.Encoding.Parser.Unsafe.unsafeLiftIO
+                                                (Data.ProtoLens.Encoding.Growing.append
+                                                   mutable'extension
+                                                   y)
+                                         loop x mutable'enumType v mutable'extensionRange
+                                           mutable'field
+                                           mutable'nestedType
+                                           mutable'oneofDecl
+                                           mutable'reservedName
+                                           mutable'reservedRange
+                                26 -> do !y <- (do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
+                                                   Data.ProtoLens.Encoding.Bytes.isolate
+                                                     (Prelude.fromIntegral len)
+                                                     Data.ProtoLens.parseMessage)
                                                  Data.ProtoLens.Encoding.Bytes.<?> "nested_type"
-                                         loop
-                                           (Lens.Family2.over
-                                              (Lens.Labels.lensOf'
-                                                 ((Lens.Labels.proxy#) ::
-                                                    (Lens.Labels.Proxy#) "nestedType"))
-                                              (\ !t -> (:) y t)
-                                              x)
-                                34 -> do !y <- (do value <- do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
-                                                               Data.ProtoLens.Encoding.Bytes.getBytes
-                                                                 (Prelude.fromIntegral len)
-                                                   Data.ProtoLens.Encoding.Bytes.runEither
-                                                     (Data.ProtoLens.decodeMessage value))
+                                         v <- Data.ProtoLens.Encoding.Parser.Unsafe.unsafeLiftIO
+                                                (Data.ProtoLens.Encoding.Growing.append
+                                                   mutable'nestedType
+                                                   y)
+                                         loop x mutable'enumType mutable'extension
+                                           mutable'extensionRange
+                                           mutable'field
+                                           v
+                                           mutable'oneofDecl
+                                           mutable'reservedName
+                                           mutable'reservedRange
+                                34 -> do !y <- (do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
+                                                   Data.ProtoLens.Encoding.Bytes.isolate
+                                                     (Prelude.fromIntegral len)
+                                                     Data.ProtoLens.parseMessage)
                                                  Data.ProtoLens.Encoding.Bytes.<?> "enum_type"
-                                         loop
-                                           (Lens.Family2.over
-                                              (Lens.Labels.lensOf'
-                                                 ((Lens.Labels.proxy#) ::
-                                                    (Lens.Labels.Proxy#) "enumType"))
-                                              (\ !t -> (:) y t)
-                                              x)
-                                42 -> do !y <- (do value <- do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
-                                                               Data.ProtoLens.Encoding.Bytes.getBytes
-                                                                 (Prelude.fromIntegral len)
-                                                   Data.ProtoLens.Encoding.Bytes.runEither
-                                                     (Data.ProtoLens.decodeMessage value))
+                                         v <- Data.ProtoLens.Encoding.Parser.Unsafe.unsafeLiftIO
+                                                (Data.ProtoLens.Encoding.Growing.append
+                                                   mutable'enumType
+                                                   y)
+                                         loop x v mutable'extension mutable'extensionRange
+                                           mutable'field
+                                           mutable'nestedType
+                                           mutable'oneofDecl
+                                           mutable'reservedName
+                                           mutable'reservedRange
+                                42 -> do !y <- (do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
+                                                   Data.ProtoLens.Encoding.Bytes.isolate
+                                                     (Prelude.fromIntegral len)
+                                                     Data.ProtoLens.parseMessage)
                                                  Data.ProtoLens.Encoding.Bytes.<?> "extension_range"
-                                         loop
-                                           (Lens.Family2.over
-                                              (Lens.Labels.lensOf'
-                                                 ((Lens.Labels.proxy#) ::
-                                                    (Lens.Labels.Proxy#) "extensionRange"))
-                                              (\ !t -> (:) y t)
-                                              x)
-                                66 -> do !y <- (do value <- do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
-                                                               Data.ProtoLens.Encoding.Bytes.getBytes
-                                                                 (Prelude.fromIntegral len)
-                                                   Data.ProtoLens.Encoding.Bytes.runEither
-                                                     (Data.ProtoLens.decodeMessage value))
+                                         v <- Data.ProtoLens.Encoding.Parser.Unsafe.unsafeLiftIO
+                                                (Data.ProtoLens.Encoding.Growing.append
+                                                   mutable'extensionRange
+                                                   y)
+                                         loop x mutable'enumType mutable'extension v mutable'field
+                                           mutable'nestedType
+                                           mutable'oneofDecl
+                                           mutable'reservedName
+                                           mutable'reservedRange
+                                66 -> do !y <- (do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
+                                                   Data.ProtoLens.Encoding.Bytes.isolate
+                                                     (Prelude.fromIntegral len)
+                                                     Data.ProtoLens.parseMessage)
                                                  Data.ProtoLens.Encoding.Bytes.<?> "oneof_decl"
-                                         loop
-                                           (Lens.Family2.over
-                                              (Lens.Labels.lensOf'
-                                                 ((Lens.Labels.proxy#) ::
-                                                    (Lens.Labels.Proxy#) "oneofDecl"))
-                                              (\ !t -> (:) y t)
-                                              x)
-                                58 -> do y <- (do value <- do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
-                                                              Data.ProtoLens.Encoding.Bytes.getBytes
-                                                                (Prelude.fromIntegral len)
-                                                  Data.ProtoLens.Encoding.Bytes.runEither
-                                                    (Data.ProtoLens.decodeMessage value))
+                                         v <- Data.ProtoLens.Encoding.Parser.Unsafe.unsafeLiftIO
+                                                (Data.ProtoLens.Encoding.Growing.append
+                                                   mutable'oneofDecl
+                                                   y)
+                                         loop x mutable'enumType mutable'extension
+                                           mutable'extensionRange
+                                           mutable'field
+                                           mutable'nestedType
+                                           v
+                                           mutable'reservedName
+                                           mutable'reservedRange
+                                58 -> do y <- (do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
+                                                  Data.ProtoLens.Encoding.Bytes.isolate
+                                                    (Prelude.fromIntegral len)
+                                                    Data.ProtoLens.parseMessage)
                                                 Data.ProtoLens.Encoding.Bytes.<?> "options"
                                          loop
                                            (Lens.Family2.set
@@ -439,19 +615,30 @@ instance Data.ProtoLens.Message DescriptorProto where
                                                     (Lens.Labels.Proxy#) "options"))
                                               y
                                               x)
-                                74 -> do !y <- (do value <- do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
-                                                               Data.ProtoLens.Encoding.Bytes.getBytes
-                                                                 (Prelude.fromIntegral len)
-                                                   Data.ProtoLens.Encoding.Bytes.runEither
-                                                     (Data.ProtoLens.decodeMessage value))
+                                           mutable'enumType
+                                           mutable'extension
+                                           mutable'extensionRange
+                                           mutable'field
+                                           mutable'nestedType
+                                           mutable'oneofDecl
+                                           mutable'reservedName
+                                           mutable'reservedRange
+                                74 -> do !y <- (do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
+                                                   Data.ProtoLens.Encoding.Bytes.isolate
+                                                     (Prelude.fromIntegral len)
+                                                     Data.ProtoLens.parseMessage)
                                                  Data.ProtoLens.Encoding.Bytes.<?> "reserved_range"
-                                         loop
-                                           (Lens.Family2.over
-                                              (Lens.Labels.lensOf'
-                                                 ((Lens.Labels.proxy#) ::
-                                                    (Lens.Labels.Proxy#) "reservedRange"))
-                                              (\ !t -> (:) y t)
-                                              x)
+                                         v <- Data.ProtoLens.Encoding.Parser.Unsafe.unsafeLiftIO
+                                                (Data.ProtoLens.Encoding.Growing.append
+                                                   mutable'reservedRange
+                                                   y)
+                                         loop x mutable'enumType mutable'extension
+                                           mutable'extensionRange
+                                           mutable'field
+                                           mutable'nestedType
+                                           mutable'oneofDecl
+                                           mutable'reservedName
+                                           v
                                 82 -> do !y <- (do value <- do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
                                                                Data.ProtoLens.Encoding.Bytes.getBytes
                                                                  (Prelude.fromIntegral len)
@@ -461,22 +648,56 @@ instance Data.ProtoLens.Message DescriptorProto where
                                                                                 (Prelude.show err)
                                                           Prelude.Right r -> Prelude.Right r))
                                                  Data.ProtoLens.Encoding.Bytes.<?> "reserved_name"
-                                         loop
-                                           (Lens.Family2.over
-                                              (Lens.Labels.lensOf'
-                                                 ((Lens.Labels.proxy#) ::
-                                                    (Lens.Labels.Proxy#) "reservedName"))
-                                              (\ !t -> (:) y t)
-                                              x)
+                                         v <- Data.ProtoLens.Encoding.Parser.Unsafe.unsafeLiftIO
+                                                (Data.ProtoLens.Encoding.Growing.append
+                                                   mutable'reservedName
+                                                   y)
+                                         loop x mutable'enumType mutable'extension
+                                           mutable'extensionRange
+                                           mutable'field
+                                           mutable'nestedType
+                                           mutable'oneofDecl
+                                           v
+                                           mutable'reservedRange
                                 wire -> do !y <- Data.ProtoLens.Encoding.Wire.parseTaggedValueFromWire
                                                    wire
                                            loop
                                              (Lens.Family2.over Data.ProtoLens.unknownFields
                                                 (\ !t -> (:) y t)
                                                 x)
+                                             mutable'enumType
+                                             mutable'extension
+                                             mutable'extensionRange
+                                             mutable'field
+                                             mutable'nestedType
+                                             mutable'oneofDecl
+                                             mutable'reservedName
+                                             mutable'reservedRange
               in
-              (loop Data.ProtoLens.defMessage) Data.ProtoLens.Encoding.Bytes.<?>
-                "DescriptorProto"
+              (do mutable'enumType <- Data.ProtoLens.Encoding.Parser.Unsafe.unsafeLiftIO
+                                        Data.ProtoLens.Encoding.Growing.new
+                  mutable'extension <- Data.ProtoLens.Encoding.Parser.Unsafe.unsafeLiftIO
+                                         Data.ProtoLens.Encoding.Growing.new
+                  mutable'extensionRange <- Data.ProtoLens.Encoding.Parser.Unsafe.unsafeLiftIO
+                                              Data.ProtoLens.Encoding.Growing.new
+                  mutable'field <- Data.ProtoLens.Encoding.Parser.Unsafe.unsafeLiftIO
+                                     Data.ProtoLens.Encoding.Growing.new
+                  mutable'nestedType <- Data.ProtoLens.Encoding.Parser.Unsafe.unsafeLiftIO
+                                          Data.ProtoLens.Encoding.Growing.new
+                  mutable'oneofDecl <- Data.ProtoLens.Encoding.Parser.Unsafe.unsafeLiftIO
+                                         Data.ProtoLens.Encoding.Growing.new
+                  mutable'reservedName <- Data.ProtoLens.Encoding.Parser.Unsafe.unsafeLiftIO
+                                            Data.ProtoLens.Encoding.Growing.new
+                  mutable'reservedRange <- Data.ProtoLens.Encoding.Parser.Unsafe.unsafeLiftIO
+                                             Data.ProtoLens.Encoding.Growing.new
+                  loop Data.ProtoLens.defMessage mutable'enumType mutable'extension
+                    mutable'extensionRange
+                    mutable'field
+                    mutable'nestedType
+                    mutable'oneofDecl
+                    mutable'reservedName
+                    mutable'reservedRange)
+                Data.ProtoLens.Encoding.Bytes.<?> "DescriptorProto"
         buildMessage
           = (\ _x ->
                (case
@@ -496,98 +717,90 @@ instance Data.ProtoLens.Message DescriptorProto where
                                             Prelude.. Data.Text.Encoding.encodeUtf8)
                                            _v)
                  Data.Monoid.<>
-                 (Data.Monoid.mconcat
-                    (Prelude.map
-                       (\ _v ->
-                          (Data.ProtoLens.Encoding.Bytes.putVarInt 18) Data.Monoid.<>
-                            (((\ bs ->
-                                 (Data.ProtoLens.Encoding.Bytes.putVarInt
-                                    (Prelude.fromIntegral (Data.ByteString.length bs)))
-                                   Data.Monoid.<> Data.ProtoLens.Encoding.Bytes.putBytes bs))
-                               Prelude.. Data.ProtoLens.encodeMessage)
-                              _v)
-                       (Lens.Family2.view
-                          (Lens.Labels.lensOf'
-                             ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "field"))
-                          _x)))
+                 (Data.ProtoLens.Encoding.Bytes.foldMapBuilder
+                    (\ _v ->
+                       (Data.ProtoLens.Encoding.Bytes.putVarInt 18) Data.Monoid.<>
+                         (((\ bs ->
+                              (Data.ProtoLens.Encoding.Bytes.putVarInt
+                                 (Prelude.fromIntegral (Data.ByteString.length bs)))
+                                Data.Monoid.<> Data.ProtoLens.Encoding.Bytes.putBytes bs))
+                            Prelude.. Data.ProtoLens.encodeMessage)
+                           _v)
+                    (Lens.Family2.view
+                       (Lens.Labels.lensOf'
+                          ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "vec'field"))
+                       _x))
                    Data.Monoid.<>
-                   (Data.Monoid.mconcat
-                      (Prelude.map
-                         (\ _v ->
-                            (Data.ProtoLens.Encoding.Bytes.putVarInt 50) Data.Monoid.<>
-                              (((\ bs ->
-                                   (Data.ProtoLens.Encoding.Bytes.putVarInt
-                                      (Prelude.fromIntegral (Data.ByteString.length bs)))
-                                     Data.Monoid.<> Data.ProtoLens.Encoding.Bytes.putBytes bs))
-                                 Prelude.. Data.ProtoLens.encodeMessage)
-                                _v)
-                         (Lens.Family2.view
-                            (Lens.Labels.lensOf'
-                               ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "extension"))
-                            _x)))
+                   (Data.ProtoLens.Encoding.Bytes.foldMapBuilder
+                      (\ _v ->
+                         (Data.ProtoLens.Encoding.Bytes.putVarInt 50) Data.Monoid.<>
+                           (((\ bs ->
+                                (Data.ProtoLens.Encoding.Bytes.putVarInt
+                                   (Prelude.fromIntegral (Data.ByteString.length bs)))
+                                  Data.Monoid.<> Data.ProtoLens.Encoding.Bytes.putBytes bs))
+                              Prelude.. Data.ProtoLens.encodeMessage)
+                             _v)
+                      (Lens.Family2.view
+                         (Lens.Labels.lensOf'
+                            ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "vec'extension"))
+                         _x))
                      Data.Monoid.<>
-                     (Data.Monoid.mconcat
-                        (Prelude.map
-                           (\ _v ->
-                              (Data.ProtoLens.Encoding.Bytes.putVarInt 26) Data.Monoid.<>
-                                (((\ bs ->
-                                     (Data.ProtoLens.Encoding.Bytes.putVarInt
-                                        (Prelude.fromIntegral (Data.ByteString.length bs)))
-                                       Data.Monoid.<> Data.ProtoLens.Encoding.Bytes.putBytes bs))
-                                   Prelude.. Data.ProtoLens.encodeMessage)
-                                  _v)
-                           (Lens.Family2.view
-                              (Lens.Labels.lensOf'
-                                 ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "nestedType"))
-                              _x)))
+                     (Data.ProtoLens.Encoding.Bytes.foldMapBuilder
+                        (\ _v ->
+                           (Data.ProtoLens.Encoding.Bytes.putVarInt 26) Data.Monoid.<>
+                             (((\ bs ->
+                                  (Data.ProtoLens.Encoding.Bytes.putVarInt
+                                     (Prelude.fromIntegral (Data.ByteString.length bs)))
+                                    Data.Monoid.<> Data.ProtoLens.Encoding.Bytes.putBytes bs))
+                                Prelude.. Data.ProtoLens.encodeMessage)
+                               _v)
+                        (Lens.Family2.view
+                           (Lens.Labels.lensOf'
+                              ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "vec'nestedType"))
+                           _x))
                        Data.Monoid.<>
-                       (Data.Monoid.mconcat
-                          (Prelude.map
-                             (\ _v ->
-                                (Data.ProtoLens.Encoding.Bytes.putVarInt 34) Data.Monoid.<>
-                                  (((\ bs ->
-                                       (Data.ProtoLens.Encoding.Bytes.putVarInt
-                                          (Prelude.fromIntegral (Data.ByteString.length bs)))
-                                         Data.Monoid.<> Data.ProtoLens.Encoding.Bytes.putBytes bs))
-                                     Prelude.. Data.ProtoLens.encodeMessage)
-                                    _v)
-                             (Lens.Family2.view
-                                (Lens.Labels.lensOf'
-                                   ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "enumType"))
-                                _x)))
+                       (Data.ProtoLens.Encoding.Bytes.foldMapBuilder
+                          (\ _v ->
+                             (Data.ProtoLens.Encoding.Bytes.putVarInt 34) Data.Monoid.<>
+                               (((\ bs ->
+                                    (Data.ProtoLens.Encoding.Bytes.putVarInt
+                                       (Prelude.fromIntegral (Data.ByteString.length bs)))
+                                      Data.Monoid.<> Data.ProtoLens.Encoding.Bytes.putBytes bs))
+                                  Prelude.. Data.ProtoLens.encodeMessage)
+                                 _v)
+                          (Lens.Family2.view
+                             (Lens.Labels.lensOf'
+                                ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "vec'enumType"))
+                             _x))
                          Data.Monoid.<>
-                         (Data.Monoid.mconcat
-                            (Prelude.map
-                               (\ _v ->
-                                  (Data.ProtoLens.Encoding.Bytes.putVarInt 42) Data.Monoid.<>
-                                    (((\ bs ->
-                                         (Data.ProtoLens.Encoding.Bytes.putVarInt
-                                            (Prelude.fromIntegral (Data.ByteString.length bs)))
-                                           Data.Monoid.<>
-                                           Data.ProtoLens.Encoding.Bytes.putBytes bs))
-                                       Prelude.. Data.ProtoLens.encodeMessage)
-                                      _v)
-                               (Lens.Family2.view
-                                  (Lens.Labels.lensOf'
-                                     ((Lens.Labels.proxy#) ::
-                                        (Lens.Labels.Proxy#) "extensionRange"))
-                                  _x)))
+                         (Data.ProtoLens.Encoding.Bytes.foldMapBuilder
+                            (\ _v ->
+                               (Data.ProtoLens.Encoding.Bytes.putVarInt 42) Data.Monoid.<>
+                                 (((\ bs ->
+                                      (Data.ProtoLens.Encoding.Bytes.putVarInt
+                                         (Prelude.fromIntegral (Data.ByteString.length bs)))
+                                        Data.Monoid.<> Data.ProtoLens.Encoding.Bytes.putBytes bs))
+                                    Prelude.. Data.ProtoLens.encodeMessage)
+                                   _v)
+                            (Lens.Family2.view
+                               (Lens.Labels.lensOf'
+                                  ((Lens.Labels.proxy#) ::
+                                     (Lens.Labels.Proxy#) "vec'extensionRange"))
+                               _x))
                            Data.Monoid.<>
-                           (Data.Monoid.mconcat
-                              (Prelude.map
-                                 (\ _v ->
-                                    (Data.ProtoLens.Encoding.Bytes.putVarInt 66) Data.Monoid.<>
-                                      (((\ bs ->
-                                           (Data.ProtoLens.Encoding.Bytes.putVarInt
-                                              (Prelude.fromIntegral (Data.ByteString.length bs)))
-                                             Data.Monoid.<>
-                                             Data.ProtoLens.Encoding.Bytes.putBytes bs))
-                                         Prelude.. Data.ProtoLens.encodeMessage)
-                                        _v)
-                                 (Lens.Family2.view
-                                    (Lens.Labels.lensOf'
-                                       ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "oneofDecl"))
-                                    _x)))
+                           (Data.ProtoLens.Encoding.Bytes.foldMapBuilder
+                              (\ _v ->
+                                 (Data.ProtoLens.Encoding.Bytes.putVarInt 66) Data.Monoid.<>
+                                   (((\ bs ->
+                                        (Data.ProtoLens.Encoding.Bytes.putVarInt
+                                           (Prelude.fromIntegral (Data.ByteString.length bs)))
+                                          Data.Monoid.<> Data.ProtoLens.Encoding.Bytes.putBytes bs))
+                                      Prelude.. Data.ProtoLens.encodeMessage)
+                                     _v)
+                              (Lens.Family2.view
+                                 (Lens.Labels.lensOf'
+                                    ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "vec'oneofDecl"))
+                                 _x))
                              Data.Monoid.<>
                              (case
                                 Lens.Family2.view
@@ -608,42 +821,37 @@ instance Data.ProtoLens.Message DescriptorProto where
                                                           Prelude.. Data.ProtoLens.encodeMessage)
                                                          _v)
                                Data.Monoid.<>
-                               (Data.Monoid.mconcat
-                                  (Prelude.map
-                                     (\ _v ->
-                                        (Data.ProtoLens.Encoding.Bytes.putVarInt 74) Data.Monoid.<>
-                                          (((\ bs ->
-                                               (Data.ProtoLens.Encoding.Bytes.putVarInt
-                                                  (Prelude.fromIntegral
-                                                     (Data.ByteString.length bs)))
-                                                 Data.Monoid.<>
-                                                 Data.ProtoLens.Encoding.Bytes.putBytes bs))
-                                             Prelude.. Data.ProtoLens.encodeMessage)
-                                            _v)
-                                     (Lens.Family2.view
-                                        (Lens.Labels.lensOf'
-                                           ((Lens.Labels.proxy#) ::
-                                              (Lens.Labels.Proxy#) "reservedRange"))
-                                        _x)))
+                               (Data.ProtoLens.Encoding.Bytes.foldMapBuilder
+                                  (\ _v ->
+                                     (Data.ProtoLens.Encoding.Bytes.putVarInt 74) Data.Monoid.<>
+                                       (((\ bs ->
+                                            (Data.ProtoLens.Encoding.Bytes.putVarInt
+                                               (Prelude.fromIntegral (Data.ByteString.length bs)))
+                                              Data.Monoid.<>
+                                              Data.ProtoLens.Encoding.Bytes.putBytes bs))
+                                          Prelude.. Data.ProtoLens.encodeMessage)
+                                         _v)
+                                  (Lens.Family2.view
+                                     (Lens.Labels.lensOf'
+                                        ((Lens.Labels.proxy#) ::
+                                           (Lens.Labels.Proxy#) "vec'reservedRange"))
+                                     _x))
                                  Data.Monoid.<>
-                                 (Data.Monoid.mconcat
-                                    (Prelude.map
-                                       (\ _v ->
-                                          (Data.ProtoLens.Encoding.Bytes.putVarInt 82)
-                                            Data.Monoid.<>
-                                            (((\ bs ->
-                                                 (Data.ProtoLens.Encoding.Bytes.putVarInt
-                                                    (Prelude.fromIntegral
-                                                       (Data.ByteString.length bs)))
-                                                   Data.Monoid.<>
-                                                   Data.ProtoLens.Encoding.Bytes.putBytes bs))
-                                               Prelude.. Data.Text.Encoding.encodeUtf8)
-                                              _v)
-                                       (Lens.Family2.view
-                                          (Lens.Labels.lensOf'
-                                             ((Lens.Labels.proxy#) ::
-                                                (Lens.Labels.Proxy#) "reservedName"))
-                                          _x)))
+                                 (Data.ProtoLens.Encoding.Bytes.foldMapBuilder
+                                    (\ _v ->
+                                       (Data.ProtoLens.Encoding.Bytes.putVarInt 82) Data.Monoid.<>
+                                         (((\ bs ->
+                                              (Data.ProtoLens.Encoding.Bytes.putVarInt
+                                                 (Prelude.fromIntegral (Data.ByteString.length bs)))
+                                                Data.Monoid.<>
+                                                Data.ProtoLens.Encoding.Bytes.putBytes bs))
+                                            Prelude.. Data.Text.Encoding.encodeUtf8)
+                                           _v)
+                                    (Lens.Family2.view
+                                       (Lens.Labels.lensOf'
+                                          ((Lens.Labels.proxy#) ::
+                                             (Lens.Labels.Proxy#) "vec'reservedName"))
+                                       _x))
                                    Data.Monoid.<>
                                    Data.ProtoLens.Encoding.Wire.buildFieldSet
                                      (Lens.Family2.view Data.ProtoLens.unknownFields _x))
@@ -826,11 +1034,10 @@ instance Data.ProtoLens.Message DescriptorProto'ExtensionRange
                                                     (Lens.Labels.Proxy#) "end"))
                                               y
                                               x)
-                                26 -> do y <- (do value <- do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
-                                                              Data.ProtoLens.Encoding.Bytes.getBytes
-                                                                (Prelude.fromIntegral len)
-                                                  Data.ProtoLens.Encoding.Bytes.runEither
-                                                    (Data.ProtoLens.decodeMessage value))
+                                26 -> do y <- (do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
+                                                  Data.ProtoLens.Encoding.Bytes.isolate
+                                                    (Prelude.fromIntegral len)
+                                                    Data.ProtoLens.parseMessage)
                                                 Data.ProtoLens.Encoding.Bytes.<?> "options"
                                          loop
                                            (Lens.Family2.set
@@ -846,8 +1053,8 @@ instance Data.ProtoLens.Message DescriptorProto'ExtensionRange
                                                 (\ !t -> (:) y t)
                                                 x)
               in
-              (loop Data.ProtoLens.defMessage) Data.ProtoLens.Encoding.Bytes.<?>
-                "ExtensionRange"
+              (do loop Data.ProtoLens.defMessage)
+                Data.ProtoLens.Encoding.Bytes.<?> "ExtensionRange"
         buildMessage
           = (\ _x ->
                (case
@@ -1037,8 +1244,8 @@ instance Data.ProtoLens.Message DescriptorProto'ReservedRange where
                                                 (\ !t -> (:) y t)
                                                 x)
               in
-              (loop Data.ProtoLens.defMessage) Data.ProtoLens.Encoding.Bytes.<?>
-                "ReservedRange"
+              (do loop Data.ProtoLens.defMessage)
+                Data.ProtoLens.Encoding.Bytes.<?> "ReservedRange"
         buildMessage
           = (\ _x ->
                (case
@@ -1082,21 +1289,27 @@ instance Control.DeepSeq.NFData DescriptorProto'ReservedRange where
     * 'Proto.Google.Protobuf.Descriptor_Fields.name' @:: Lens' EnumDescriptorProto Data.Text.Text@
     * 'Proto.Google.Protobuf.Descriptor_Fields.maybe'name' @:: Lens' EnumDescriptorProto (Prelude.Maybe Data.Text.Text)@
     * 'Proto.Google.Protobuf.Descriptor_Fields.value' @:: Lens' EnumDescriptorProto [EnumValueDescriptorProto]@
+    * 'Proto.Google.Protobuf.Descriptor_Fields.vec'value' @:: Lens' EnumDescriptorProto
+  (Data.Vector.Vector EnumValueDescriptorProto)@
     * 'Proto.Google.Protobuf.Descriptor_Fields.options' @:: Lens' EnumDescriptorProto EnumOptions@
     * 'Proto.Google.Protobuf.Descriptor_Fields.maybe'options' @:: Lens' EnumDescriptorProto (Prelude.Maybe EnumOptions)@
     * 'Proto.Google.Protobuf.Descriptor_Fields.reservedRange' @:: Lens' EnumDescriptorProto [EnumDescriptorProto'EnumReservedRange]@
+    * 'Proto.Google.Protobuf.Descriptor_Fields.vec'reservedRange' @:: Lens' EnumDescriptorProto
+  (Data.Vector.Vector EnumDescriptorProto'EnumReservedRange)@
     * 'Proto.Google.Protobuf.Descriptor_Fields.reservedName' @:: Lens' EnumDescriptorProto [Data.Text.Text]@
+    * 'Proto.Google.Protobuf.Descriptor_Fields.vec'reservedName' @:: Lens' EnumDescriptorProto (Data.Vector.Vector Data.Text.Text)@
  -}
 data EnumDescriptorProto = EnumDescriptorProto{_EnumDescriptorProto'name
                                                :: !(Prelude.Maybe Data.Text.Text),
                                                _EnumDescriptorProto'value ::
-                                               ![EnumValueDescriptorProto],
+                                               !(Data.Vector.Vector EnumValueDescriptorProto),
                                                _EnumDescriptorProto'options ::
                                                !(Prelude.Maybe EnumOptions),
                                                _EnumDescriptorProto'reservedRange ::
-                                               ![EnumDescriptorProto'EnumReservedRange],
+                                               !(Data.Vector.Vector
+                                                   EnumDescriptorProto'EnumReservedRange),
                                                _EnumDescriptorProto'reservedName ::
-                                               ![Data.Text.Text],
+                                               !(Data.Vector.Vector Data.Text.Text),
                                                _EnumDescriptorProto'_unknownFields ::
                                                !Data.ProtoLens.FieldSet}
                              deriving (Prelude.Eq, Prelude.Ord)
@@ -1125,6 +1338,15 @@ instance a ~ ([EnumValueDescriptorProto]) =>
         lensOf' _
           = (Lens.Family2.Unchecked.lens _EnumDescriptorProto'value
                (\ x__ y__ -> x__{_EnumDescriptorProto'value = y__}))
+              Prelude..
+              Lens.Family2.Unchecked.lens Data.Vector.Generic.toList
+                (\ _ y__ -> Data.Vector.Generic.fromList y__)
+instance a ~ (Data.Vector.Vector EnumValueDescriptorProto) =>
+         Lens.Labels.HasLens' EnumDescriptorProto "vec'value" a
+         where
+        lensOf' _
+          = (Lens.Family2.Unchecked.lens _EnumDescriptorProto'value
+               (\ x__ y__ -> x__{_EnumDescriptorProto'value = y__}))
               Prelude.. Prelude.id
 instance a ~ (EnumOptions) =>
          Lens.Labels.HasLens' EnumDescriptorProto "options" a
@@ -1146,9 +1368,28 @@ instance a ~ ([EnumDescriptorProto'EnumReservedRange]) =>
         lensOf' _
           = (Lens.Family2.Unchecked.lens _EnumDescriptorProto'reservedRange
                (\ x__ y__ -> x__{_EnumDescriptorProto'reservedRange = y__}))
+              Prelude..
+              Lens.Family2.Unchecked.lens Data.Vector.Generic.toList
+                (\ _ y__ -> Data.Vector.Generic.fromList y__)
+instance a ~
+           (Data.Vector.Vector EnumDescriptorProto'EnumReservedRange) =>
+         Lens.Labels.HasLens' EnumDescriptorProto "vec'reservedRange" a
+         where
+        lensOf' _
+          = (Lens.Family2.Unchecked.lens _EnumDescriptorProto'reservedRange
+               (\ x__ y__ -> x__{_EnumDescriptorProto'reservedRange = y__}))
               Prelude.. Prelude.id
 instance a ~ ([Data.Text.Text]) =>
          Lens.Labels.HasLens' EnumDescriptorProto "reservedName" a
+         where
+        lensOf' _
+          = (Lens.Family2.Unchecked.lens _EnumDescriptorProto'reservedName
+               (\ x__ y__ -> x__{_EnumDescriptorProto'reservedName = y__}))
+              Prelude..
+              Lens.Family2.Unchecked.lens Data.Vector.Generic.toList
+                (\ _ y__ -> Data.Vector.Generic.fromList y__)
+instance a ~ (Data.Vector.Vector Data.Text.Text) =>
+         Lens.Labels.HasLens' EnumDescriptorProto "vec'reservedName" a
          where
         lensOf' _
           = (Lens.Family2.Unchecked.lens _EnumDescriptorProto'reservedName
@@ -1211,19 +1452,39 @@ instance Data.ProtoLens.Message EnumDescriptorProto where
               (\ x__ y__ -> x__{_EnumDescriptorProto'_unknownFields = y__})
         defMessage
           = EnumDescriptorProto{_EnumDescriptorProto'name = Prelude.Nothing,
-                                _EnumDescriptorProto'value = [],
+                                _EnumDescriptorProto'value = Data.Vector.Generic.empty,
                                 _EnumDescriptorProto'options = Prelude.Nothing,
-                                _EnumDescriptorProto'reservedRange = [],
-                                _EnumDescriptorProto'reservedName = [],
+                                _EnumDescriptorProto'reservedRange = Data.Vector.Generic.empty,
+                                _EnumDescriptorProto'reservedName = Data.Vector.Generic.empty,
                                 _EnumDescriptorProto'_unknownFields = ([])}
         parseMessage
           = let loop ::
                      EnumDescriptorProto ->
-                       Data.ProtoLens.Encoding.Bytes.Parser EnumDescriptorProto
-                loop x
+                       Data.ProtoLens.Encoding.Growing.Growing Data.Vector.Vector
+                         Data.ProtoLens.Encoding.Growing.RealWorld
+                         Data.Text.Text
+                         ->
+                         Data.ProtoLens.Encoding.Growing.Growing Data.Vector.Vector
+                           Data.ProtoLens.Encoding.Growing.RealWorld
+                           EnumDescriptorProto'EnumReservedRange
+                           ->
+                           Data.ProtoLens.Encoding.Growing.Growing Data.Vector.Vector
+                             Data.ProtoLens.Encoding.Growing.RealWorld
+                             EnumValueDescriptorProto
+                             -> Data.ProtoLens.Encoding.Bytes.Parser EnumDescriptorProto
+                loop x mutable'reservedName mutable'reservedRange mutable'value
                   = do end <- Data.ProtoLens.Encoding.Bytes.atEnd
                        if end then
-                         do let missing = [] in
+                         do frozen'reservedName <- Data.ProtoLens.Encoding.Parser.Unsafe.unsafeLiftIO
+                                                     (Data.ProtoLens.Encoding.Growing.unsafeFreeze
+                                                        mutable'reservedName)
+                            frozen'reservedRange <- Data.ProtoLens.Encoding.Parser.Unsafe.unsafeLiftIO
+                                                      (Data.ProtoLens.Encoding.Growing.unsafeFreeze
+                                                         mutable'reservedRange)
+                            frozen'value <- Data.ProtoLens.Encoding.Parser.Unsafe.unsafeLiftIO
+                                              (Data.ProtoLens.Encoding.Growing.unsafeFreeze
+                                                 mutable'value)
+                            let missing = [] in
                               if Prelude.null missing then Prelude.return () else
                                 Prelude.fail
                                   (("Missing required fields: ") Prelude.++
@@ -1231,20 +1492,21 @@ instance Data.ProtoLens.Message EnumDescriptorProto where
                             Prelude.return
                               (Lens.Family2.over Data.ProtoLens.unknownFields
                                  (\ !t -> Prelude.reverse t)
-                                 (Lens.Family2.over
+                                 (Lens.Family2.set
                                     (Lens.Labels.lensOf'
-                                       ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "value"))
-                                    (\ !t -> Prelude.reverse t)
-                                    (Lens.Family2.over
+                                       ((Lens.Labels.proxy#) ::
+                                          (Lens.Labels.Proxy#) "vec'reservedName"))
+                                    frozen'reservedName
+                                    (Lens.Family2.set
                                        (Lens.Labels.lensOf'
                                           ((Lens.Labels.proxy#) ::
-                                             (Lens.Labels.Proxy#) "reservedRange"))
-                                       (\ !t -> Prelude.reverse t)
-                                       (Lens.Family2.over
+                                             (Lens.Labels.Proxy#) "vec'reservedRange"))
+                                       frozen'reservedRange
+                                       (Lens.Family2.set
                                           (Lens.Labels.lensOf'
                                              ((Lens.Labels.proxy#) ::
-                                                (Lens.Labels.Proxy#) "reservedName"))
-                                          (\ !t -> Prelude.reverse t)
+                                                (Lens.Labels.Proxy#) "vec'value"))
+                                          frozen'value
                                           x))))
                          else
                          do tag <- Data.ProtoLens.Encoding.Bytes.getVarInt
@@ -1265,24 +1527,23 @@ instance Data.ProtoLens.Message EnumDescriptorProto where
                                                     (Lens.Labels.Proxy#) "name"))
                                               y
                                               x)
-                                18 -> do !y <- (do value <- do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
-                                                               Data.ProtoLens.Encoding.Bytes.getBytes
-                                                                 (Prelude.fromIntegral len)
-                                                   Data.ProtoLens.Encoding.Bytes.runEither
-                                                     (Data.ProtoLens.decodeMessage value))
+                                           mutable'reservedName
+                                           mutable'reservedRange
+                                           mutable'value
+                                18 -> do !y <- (do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
+                                                   Data.ProtoLens.Encoding.Bytes.isolate
+                                                     (Prelude.fromIntegral len)
+                                                     Data.ProtoLens.parseMessage)
                                                  Data.ProtoLens.Encoding.Bytes.<?> "value"
-                                         loop
-                                           (Lens.Family2.over
-                                              (Lens.Labels.lensOf'
-                                                 ((Lens.Labels.proxy#) ::
-                                                    (Lens.Labels.Proxy#) "value"))
-                                              (\ !t -> (:) y t)
-                                              x)
-                                26 -> do y <- (do value <- do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
-                                                              Data.ProtoLens.Encoding.Bytes.getBytes
-                                                                (Prelude.fromIntegral len)
-                                                  Data.ProtoLens.Encoding.Bytes.runEither
-                                                    (Data.ProtoLens.decodeMessage value))
+                                         v <- Data.ProtoLens.Encoding.Parser.Unsafe.unsafeLiftIO
+                                                (Data.ProtoLens.Encoding.Growing.append
+                                                   mutable'value
+                                                   y)
+                                         loop x mutable'reservedName mutable'reservedRange v
+                                26 -> do y <- (do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
+                                                  Data.ProtoLens.Encoding.Bytes.isolate
+                                                    (Prelude.fromIntegral len)
+                                                    Data.ProtoLens.parseMessage)
                                                 Data.ProtoLens.Encoding.Bytes.<?> "options"
                                          loop
                                            (Lens.Family2.set
@@ -1291,19 +1552,19 @@ instance Data.ProtoLens.Message EnumDescriptorProto where
                                                     (Lens.Labels.Proxy#) "options"))
                                               y
                                               x)
-                                34 -> do !y <- (do value <- do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
-                                                               Data.ProtoLens.Encoding.Bytes.getBytes
-                                                                 (Prelude.fromIntegral len)
-                                                   Data.ProtoLens.Encoding.Bytes.runEither
-                                                     (Data.ProtoLens.decodeMessage value))
+                                           mutable'reservedName
+                                           mutable'reservedRange
+                                           mutable'value
+                                34 -> do !y <- (do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
+                                                   Data.ProtoLens.Encoding.Bytes.isolate
+                                                     (Prelude.fromIntegral len)
+                                                     Data.ProtoLens.parseMessage)
                                                  Data.ProtoLens.Encoding.Bytes.<?> "reserved_range"
-                                         loop
-                                           (Lens.Family2.over
-                                              (Lens.Labels.lensOf'
-                                                 ((Lens.Labels.proxy#) ::
-                                                    (Lens.Labels.Proxy#) "reservedRange"))
-                                              (\ !t -> (:) y t)
-                                              x)
+                                         v <- Data.ProtoLens.Encoding.Parser.Unsafe.unsafeLiftIO
+                                                (Data.ProtoLens.Encoding.Growing.append
+                                                   mutable'reservedRange
+                                                   y)
+                                         loop x mutable'reservedName v mutable'value
                                 42 -> do !y <- (do value <- do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
                                                                Data.ProtoLens.Encoding.Bytes.getBytes
                                                                  (Prelude.fromIntegral len)
@@ -1313,22 +1574,31 @@ instance Data.ProtoLens.Message EnumDescriptorProto where
                                                                                 (Prelude.show err)
                                                           Prelude.Right r -> Prelude.Right r))
                                                  Data.ProtoLens.Encoding.Bytes.<?> "reserved_name"
-                                         loop
-                                           (Lens.Family2.over
-                                              (Lens.Labels.lensOf'
-                                                 ((Lens.Labels.proxy#) ::
-                                                    (Lens.Labels.Proxy#) "reservedName"))
-                                              (\ !t -> (:) y t)
-                                              x)
+                                         v <- Data.ProtoLens.Encoding.Parser.Unsafe.unsafeLiftIO
+                                                (Data.ProtoLens.Encoding.Growing.append
+                                                   mutable'reservedName
+                                                   y)
+                                         loop x v mutable'reservedRange mutable'value
                                 wire -> do !y <- Data.ProtoLens.Encoding.Wire.parseTaggedValueFromWire
                                                    wire
                                            loop
                                              (Lens.Family2.over Data.ProtoLens.unknownFields
                                                 (\ !t -> (:) y t)
                                                 x)
+                                             mutable'reservedName
+                                             mutable'reservedRange
+                                             mutable'value
               in
-              (loop Data.ProtoLens.defMessage) Data.ProtoLens.Encoding.Bytes.<?>
-                "EnumDescriptorProto"
+              (do mutable'reservedName <- Data.ProtoLens.Encoding.Parser.Unsafe.unsafeLiftIO
+                                            Data.ProtoLens.Encoding.Growing.new
+                  mutable'reservedRange <- Data.ProtoLens.Encoding.Parser.Unsafe.unsafeLiftIO
+                                             Data.ProtoLens.Encoding.Growing.new
+                  mutable'value <- Data.ProtoLens.Encoding.Parser.Unsafe.unsafeLiftIO
+                                     Data.ProtoLens.Encoding.Growing.new
+                  loop Data.ProtoLens.defMessage mutable'reservedName
+                    mutable'reservedRange
+                    mutable'value)
+                Data.ProtoLens.Encoding.Bytes.<?> "EnumDescriptorProto"
         buildMessage
           = (\ _x ->
                (case
@@ -1348,20 +1618,19 @@ instance Data.ProtoLens.Message EnumDescriptorProto where
                                             Prelude.. Data.Text.Encoding.encodeUtf8)
                                            _v)
                  Data.Monoid.<>
-                 (Data.Monoid.mconcat
-                    (Prelude.map
-                       (\ _v ->
-                          (Data.ProtoLens.Encoding.Bytes.putVarInt 18) Data.Monoid.<>
-                            (((\ bs ->
-                                 (Data.ProtoLens.Encoding.Bytes.putVarInt
-                                    (Prelude.fromIntegral (Data.ByteString.length bs)))
-                                   Data.Monoid.<> Data.ProtoLens.Encoding.Bytes.putBytes bs))
-                               Prelude.. Data.ProtoLens.encodeMessage)
-                              _v)
-                       (Lens.Family2.view
-                          (Lens.Labels.lensOf'
-                             ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "value"))
-                          _x)))
+                 (Data.ProtoLens.Encoding.Bytes.foldMapBuilder
+                    (\ _v ->
+                       (Data.ProtoLens.Encoding.Bytes.putVarInt 18) Data.Monoid.<>
+                         (((\ bs ->
+                              (Data.ProtoLens.Encoding.Bytes.putVarInt
+                                 (Prelude.fromIntegral (Data.ByteString.length bs)))
+                                Data.Monoid.<> Data.ProtoLens.Encoding.Bytes.putBytes bs))
+                            Prelude.. Data.ProtoLens.encodeMessage)
+                           _v)
+                    (Lens.Family2.view
+                       (Lens.Labels.lensOf'
+                          ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "vec'value"))
+                       _x))
                    Data.Monoid.<>
                    (case
                       Lens.Family2.view
@@ -1381,35 +1650,33 @@ instance Data.ProtoLens.Message EnumDescriptorProto where
                                                 Prelude.. Data.ProtoLens.encodeMessage)
                                                _v)
                      Data.Monoid.<>
-                     (Data.Monoid.mconcat
-                        (Prelude.map
-                           (\ _v ->
-                              (Data.ProtoLens.Encoding.Bytes.putVarInt 34) Data.Monoid.<>
-                                (((\ bs ->
-                                     (Data.ProtoLens.Encoding.Bytes.putVarInt
-                                        (Prelude.fromIntegral (Data.ByteString.length bs)))
-                                       Data.Monoid.<> Data.ProtoLens.Encoding.Bytes.putBytes bs))
-                                   Prelude.. Data.ProtoLens.encodeMessage)
-                                  _v)
-                           (Lens.Family2.view
-                              (Lens.Labels.lensOf'
-                                 ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "reservedRange"))
-                              _x)))
+                     (Data.ProtoLens.Encoding.Bytes.foldMapBuilder
+                        (\ _v ->
+                           (Data.ProtoLens.Encoding.Bytes.putVarInt 34) Data.Monoid.<>
+                             (((\ bs ->
+                                  (Data.ProtoLens.Encoding.Bytes.putVarInt
+                                     (Prelude.fromIntegral (Data.ByteString.length bs)))
+                                    Data.Monoid.<> Data.ProtoLens.Encoding.Bytes.putBytes bs))
+                                Prelude.. Data.ProtoLens.encodeMessage)
+                               _v)
+                        (Lens.Family2.view
+                           (Lens.Labels.lensOf'
+                              ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "vec'reservedRange"))
+                           _x))
                        Data.Monoid.<>
-                       (Data.Monoid.mconcat
-                          (Prelude.map
-                             (\ _v ->
-                                (Data.ProtoLens.Encoding.Bytes.putVarInt 42) Data.Monoid.<>
-                                  (((\ bs ->
-                                       (Data.ProtoLens.Encoding.Bytes.putVarInt
-                                          (Prelude.fromIntegral (Data.ByteString.length bs)))
-                                         Data.Monoid.<> Data.ProtoLens.Encoding.Bytes.putBytes bs))
-                                     Prelude.. Data.Text.Encoding.encodeUtf8)
-                                    _v)
-                             (Lens.Family2.view
-                                (Lens.Labels.lensOf'
-                                   ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "reservedName"))
-                                _x)))
+                       (Data.ProtoLens.Encoding.Bytes.foldMapBuilder
+                          (\ _v ->
+                             (Data.ProtoLens.Encoding.Bytes.putVarInt 42) Data.Monoid.<>
+                               (((\ bs ->
+                                    (Data.ProtoLens.Encoding.Bytes.putVarInt
+                                       (Prelude.fromIntegral (Data.ByteString.length bs)))
+                                      Data.Monoid.<> Data.ProtoLens.Encoding.Bytes.putBytes bs))
+                                  Prelude.. Data.Text.Encoding.encodeUtf8)
+                                 _v)
+                          (Lens.Family2.view
+                             (Lens.Labels.lensOf'
+                                ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "vec'reservedName"))
+                             _x))
                          Data.Monoid.<>
                          Data.ProtoLens.Encoding.Wire.buildFieldSet
                            (Lens.Family2.view Data.ProtoLens.unknownFields _x))
@@ -1580,8 +1847,8 @@ instance Data.ProtoLens.Message
                                                 (\ !t -> (:) y t)
                                                 x)
               in
-              (loop Data.ProtoLens.defMessage) Data.ProtoLens.Encoding.Bytes.<?>
-                "EnumReservedRange"
+              (do loop Data.ProtoLens.defMessage)
+                Data.ProtoLens.Encoding.Bytes.<?> "EnumReservedRange"
         buildMessage
           = (\ _x ->
                (case
@@ -1631,11 +1898,13 @@ instance Control.DeepSeq.NFData
     * 'Proto.Google.Protobuf.Descriptor_Fields.deprecated' @:: Lens' EnumOptions Prelude.Bool@
     * 'Proto.Google.Protobuf.Descriptor_Fields.maybe'deprecated' @:: Lens' EnumOptions (Prelude.Maybe Prelude.Bool)@
     * 'Proto.Google.Protobuf.Descriptor_Fields.uninterpretedOption' @:: Lens' EnumOptions [UninterpretedOption]@
+    * 'Proto.Google.Protobuf.Descriptor_Fields.vec'uninterpretedOption' @:: Lens' EnumOptions (Data.Vector.Vector UninterpretedOption)@
  -}
 data EnumOptions = EnumOptions{_EnumOptions'allowAlias ::
                                !(Prelude.Maybe Prelude.Bool),
                                _EnumOptions'deprecated :: !(Prelude.Maybe Prelude.Bool),
-                               _EnumOptions'uninterpretedOption :: ![UninterpretedOption],
+                               _EnumOptions'uninterpretedOption ::
+                               !(Data.Vector.Vector UninterpretedOption),
                                _EnumOptions'_unknownFields :: !Data.ProtoLens.FieldSet}
                      deriving (Prelude.Eq, Prelude.Ord)
 instance Prelude.Show EnumOptions where
@@ -1673,6 +1942,15 @@ instance a ~ (Prelude.Maybe Prelude.Bool) =>
               Prelude.. Prelude.id
 instance a ~ ([UninterpretedOption]) =>
          Lens.Labels.HasLens' EnumOptions "uninterpretedOption" a
+         where
+        lensOf' _
+          = (Lens.Family2.Unchecked.lens _EnumOptions'uninterpretedOption
+               (\ x__ y__ -> x__{_EnumOptions'uninterpretedOption = y__}))
+              Prelude..
+              Lens.Family2.Unchecked.lens Data.Vector.Generic.toList
+                (\ _ y__ -> Data.Vector.Generic.fromList y__)
+instance a ~ (Data.Vector.Vector UninterpretedOption) =>
+         Lens.Labels.HasLens' EnumOptions "vec'uninterpretedOption" a
          where
         lensOf' _
           = (Lens.Family2.Unchecked.lens _EnumOptions'uninterpretedOption
@@ -1717,15 +1995,22 @@ instance Data.ProtoLens.Message EnumOptions where
         defMessage
           = EnumOptions{_EnumOptions'allowAlias = Prelude.Nothing,
                         _EnumOptions'deprecated = Prelude.Nothing,
-                        _EnumOptions'uninterpretedOption = [],
+                        _EnumOptions'uninterpretedOption = Data.Vector.Generic.empty,
                         _EnumOptions'_unknownFields = ([])}
         parseMessage
           = let loop ::
-                     EnumOptions -> Data.ProtoLens.Encoding.Bytes.Parser EnumOptions
-                loop x
+                     EnumOptions ->
+                       Data.ProtoLens.Encoding.Growing.Growing Data.Vector.Vector
+                         Data.ProtoLens.Encoding.Growing.RealWorld
+                         UninterpretedOption
+                         -> Data.ProtoLens.Encoding.Bytes.Parser EnumOptions
+                loop x mutable'uninterpretedOption
                   = do end <- Data.ProtoLens.Encoding.Bytes.atEnd
                        if end then
-                         do let missing = [] in
+                         do frozen'uninterpretedOption <- Data.ProtoLens.Encoding.Parser.Unsafe.unsafeLiftIO
+                                                            (Data.ProtoLens.Encoding.Growing.unsafeFreeze
+                                                               mutable'uninterpretedOption)
+                            let missing = [] in
                               if Prelude.null missing then Prelude.return () else
                                 Prelude.fail
                                   (("Missing required fields: ") Prelude.++
@@ -1733,11 +2018,11 @@ instance Data.ProtoLens.Message EnumOptions where
                             Prelude.return
                               (Lens.Family2.over Data.ProtoLens.unknownFields
                                  (\ !t -> Prelude.reverse t)
-                                 (Lens.Family2.over
+                                 (Lens.Family2.set
                                     (Lens.Labels.lensOf'
                                        ((Lens.Labels.proxy#) ::
-                                          (Lens.Labels.Proxy#) "uninterpretedOption"))
-                                    (\ !t -> Prelude.reverse t)
+                                          (Lens.Labels.Proxy#) "vec'uninterpretedOption"))
+                                    frozen'uninterpretedOption
                                     x))
                          else
                          do tag <- Data.ProtoLens.Encoding.Bytes.getVarInt
@@ -1752,6 +2037,7 @@ instance Data.ProtoLens.Message EnumOptions where
                                                     (Lens.Labels.Proxy#) "allowAlias"))
                                               y
                                               x)
+                                           mutable'uninterpretedOption
                                 24 -> do y <- (Prelude.fmap ((Prelude./=) 0)
                                                  Data.ProtoLens.Encoding.Bytes.getVarInt)
                                                 Data.ProtoLens.Encoding.Bytes.<?> "deprecated"
@@ -1762,29 +2048,30 @@ instance Data.ProtoLens.Message EnumOptions where
                                                     (Lens.Labels.Proxy#) "deprecated"))
                                               y
                                               x)
-                                7994 -> do !y <- (do value <- do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
-                                                                 Data.ProtoLens.Encoding.Bytes.getBytes
-                                                                   (Prelude.fromIntegral len)
-                                                     Data.ProtoLens.Encoding.Bytes.runEither
-                                                       (Data.ProtoLens.decodeMessage value))
+                                           mutable'uninterpretedOption
+                                7994 -> do !y <- (do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
+                                                     Data.ProtoLens.Encoding.Bytes.isolate
+                                                       (Prelude.fromIntegral len)
+                                                       Data.ProtoLens.parseMessage)
                                                    Data.ProtoLens.Encoding.Bytes.<?>
                                                    "uninterpreted_option"
-                                           loop
-                                             (Lens.Family2.over
-                                                (Lens.Labels.lensOf'
-                                                   ((Lens.Labels.proxy#) ::
-                                                      (Lens.Labels.Proxy#) "uninterpretedOption"))
-                                                (\ !t -> (:) y t)
-                                                x)
+                                           v <- Data.ProtoLens.Encoding.Parser.Unsafe.unsafeLiftIO
+                                                  (Data.ProtoLens.Encoding.Growing.append
+                                                     mutable'uninterpretedOption
+                                                     y)
+                                           loop x v
                                 wire -> do !y <- Data.ProtoLens.Encoding.Wire.parseTaggedValueFromWire
                                                    wire
                                            loop
                                              (Lens.Family2.over Data.ProtoLens.unknownFields
                                                 (\ !t -> (:) y t)
                                                 x)
+                                             mutable'uninterpretedOption
               in
-              (loop Data.ProtoLens.defMessage) Data.ProtoLens.Encoding.Bytes.<?>
-                "EnumOptions"
+              (do mutable'uninterpretedOption <- Data.ProtoLens.Encoding.Parser.Unsafe.unsafeLiftIO
+                                                   Data.ProtoLens.Encoding.Growing.new
+                  loop Data.ProtoLens.defMessage mutable'uninterpretedOption)
+                Data.ProtoLens.Encoding.Bytes.<?> "EnumOptions"
         buildMessage
           = (\ _x ->
                (case
@@ -1813,21 +2100,20 @@ instance Data.ProtoLens.Message EnumOptions where
                                               (\ b -> if b then 1 else 0))
                                              _v)
                    Data.Monoid.<>
-                   (Data.Monoid.mconcat
-                      (Prelude.map
-                         (\ _v ->
-                            (Data.ProtoLens.Encoding.Bytes.putVarInt 7994) Data.Monoid.<>
-                              (((\ bs ->
-                                   (Data.ProtoLens.Encoding.Bytes.putVarInt
-                                      (Prelude.fromIntegral (Data.ByteString.length bs)))
-                                     Data.Monoid.<> Data.ProtoLens.Encoding.Bytes.putBytes bs))
-                                 Prelude.. Data.ProtoLens.encodeMessage)
-                                _v)
-                         (Lens.Family2.view
-                            (Lens.Labels.lensOf'
-                               ((Lens.Labels.proxy#) ::
-                                  (Lens.Labels.Proxy#) "uninterpretedOption"))
-                            _x)))
+                   (Data.ProtoLens.Encoding.Bytes.foldMapBuilder
+                      (\ _v ->
+                         (Data.ProtoLens.Encoding.Bytes.putVarInt 7994) Data.Monoid.<>
+                           (((\ bs ->
+                                (Data.ProtoLens.Encoding.Bytes.putVarInt
+                                   (Prelude.fromIntegral (Data.ByteString.length bs)))
+                                  Data.Monoid.<> Data.ProtoLens.Encoding.Bytes.putBytes bs))
+                              Prelude.. Data.ProtoLens.encodeMessage)
+                             _v)
+                      (Lens.Family2.view
+                         (Lens.Labels.lensOf'
+                            ((Lens.Labels.proxy#) ::
+                               (Lens.Labels.Proxy#) "vec'uninterpretedOption"))
+                         _x))
                      Data.Monoid.<>
                      Data.ProtoLens.Encoding.Wire.buildFieldSet
                        (Lens.Family2.view Data.ProtoLens.unknownFields _x))
@@ -1992,11 +2278,10 @@ instance Data.ProtoLens.Message EnumValueDescriptorProto where
                                                     (Lens.Labels.Proxy#) "number"))
                                               y
                                               x)
-                                26 -> do y <- (do value <- do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
-                                                              Data.ProtoLens.Encoding.Bytes.getBytes
-                                                                (Prelude.fromIntegral len)
-                                                  Data.ProtoLens.Encoding.Bytes.runEither
-                                                    (Data.ProtoLens.decodeMessage value))
+                                26 -> do y <- (do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
+                                                  Data.ProtoLens.Encoding.Bytes.isolate
+                                                    (Prelude.fromIntegral len)
+                                                    Data.ProtoLens.parseMessage)
                                                 Data.ProtoLens.Encoding.Bytes.<?> "options"
                                          loop
                                            (Lens.Family2.set
@@ -2012,8 +2297,8 @@ instance Data.ProtoLens.Message EnumValueDescriptorProto where
                                                 (\ !t -> (:) y t)
                                                 x)
               in
-              (loop Data.ProtoLens.defMessage) Data.ProtoLens.Encoding.Bytes.<?>
-                "EnumValueDescriptorProto"
+              (do loop Data.ProtoLens.defMessage)
+                Data.ProtoLens.Encoding.Bytes.<?> "EnumValueDescriptorProto"
         buildMessage
           = (\ _x ->
                (case
@@ -2080,11 +2365,12 @@ instance Control.DeepSeq.NFData EnumValueDescriptorProto where
     * 'Proto.Google.Protobuf.Descriptor_Fields.deprecated' @:: Lens' EnumValueOptions Prelude.Bool@
     * 'Proto.Google.Protobuf.Descriptor_Fields.maybe'deprecated' @:: Lens' EnumValueOptions (Prelude.Maybe Prelude.Bool)@
     * 'Proto.Google.Protobuf.Descriptor_Fields.uninterpretedOption' @:: Lens' EnumValueOptions [UninterpretedOption]@
+    * 'Proto.Google.Protobuf.Descriptor_Fields.vec'uninterpretedOption' @:: Lens' EnumValueOptions (Data.Vector.Vector UninterpretedOption)@
  -}
 data EnumValueOptions = EnumValueOptions{_EnumValueOptions'deprecated
                                          :: !(Prelude.Maybe Prelude.Bool),
                                          _EnumValueOptions'uninterpretedOption ::
-                                         ![UninterpretedOption],
+                                         !(Data.Vector.Vector UninterpretedOption),
                                          _EnumValueOptions'_unknownFields ::
                                          !Data.ProtoLens.FieldSet}
                           deriving (Prelude.Eq, Prelude.Ord)
@@ -2109,6 +2395,16 @@ instance a ~ (Prelude.Maybe Prelude.Bool) =>
               Prelude.. Prelude.id
 instance a ~ ([UninterpretedOption]) =>
          Lens.Labels.HasLens' EnumValueOptions "uninterpretedOption" a
+         where
+        lensOf' _
+          = (Lens.Family2.Unchecked.lens
+               _EnumValueOptions'uninterpretedOption
+               (\ x__ y__ -> x__{_EnumValueOptions'uninterpretedOption = y__}))
+              Prelude..
+              Lens.Family2.Unchecked.lens Data.Vector.Generic.toList
+                (\ _ y__ -> Data.Vector.Generic.fromList y__)
+instance a ~ (Data.Vector.Vector UninterpretedOption) =>
+         Lens.Labels.HasLens' EnumValueOptions "vec'uninterpretedOption" a
          where
         lensOf' _
           = (Lens.Family2.Unchecked.lens
@@ -2144,16 +2440,22 @@ instance Data.ProtoLens.Message EnumValueOptions where
               (\ x__ y__ -> x__{_EnumValueOptions'_unknownFields = y__})
         defMessage
           = EnumValueOptions{_EnumValueOptions'deprecated = Prelude.Nothing,
-                             _EnumValueOptions'uninterpretedOption = [],
+                             _EnumValueOptions'uninterpretedOption = Data.Vector.Generic.empty,
                              _EnumValueOptions'_unknownFields = ([])}
         parseMessage
           = let loop ::
                      EnumValueOptions ->
-                       Data.ProtoLens.Encoding.Bytes.Parser EnumValueOptions
-                loop x
+                       Data.ProtoLens.Encoding.Growing.Growing Data.Vector.Vector
+                         Data.ProtoLens.Encoding.Growing.RealWorld
+                         UninterpretedOption
+                         -> Data.ProtoLens.Encoding.Bytes.Parser EnumValueOptions
+                loop x mutable'uninterpretedOption
                   = do end <- Data.ProtoLens.Encoding.Bytes.atEnd
                        if end then
-                         do let missing = [] in
+                         do frozen'uninterpretedOption <- Data.ProtoLens.Encoding.Parser.Unsafe.unsafeLiftIO
+                                                            (Data.ProtoLens.Encoding.Growing.unsafeFreeze
+                                                               mutable'uninterpretedOption)
+                            let missing = [] in
                               if Prelude.null missing then Prelude.return () else
                                 Prelude.fail
                                   (("Missing required fields: ") Prelude.++
@@ -2161,11 +2463,11 @@ instance Data.ProtoLens.Message EnumValueOptions where
                             Prelude.return
                               (Lens.Family2.over Data.ProtoLens.unknownFields
                                  (\ !t -> Prelude.reverse t)
-                                 (Lens.Family2.over
+                                 (Lens.Family2.set
                                     (Lens.Labels.lensOf'
                                        ((Lens.Labels.proxy#) ::
-                                          (Lens.Labels.Proxy#) "uninterpretedOption"))
-                                    (\ !t -> Prelude.reverse t)
+                                          (Lens.Labels.Proxy#) "vec'uninterpretedOption"))
+                                    frozen'uninterpretedOption
                                     x))
                          else
                          do tag <- Data.ProtoLens.Encoding.Bytes.getVarInt
@@ -2180,29 +2482,30 @@ instance Data.ProtoLens.Message EnumValueOptions where
                                                    (Lens.Labels.Proxy#) "deprecated"))
                                              y
                                              x)
-                                7994 -> do !y <- (do value <- do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
-                                                                 Data.ProtoLens.Encoding.Bytes.getBytes
-                                                                   (Prelude.fromIntegral len)
-                                                     Data.ProtoLens.Encoding.Bytes.runEither
-                                                       (Data.ProtoLens.decodeMessage value))
+                                          mutable'uninterpretedOption
+                                7994 -> do !y <- (do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
+                                                     Data.ProtoLens.Encoding.Bytes.isolate
+                                                       (Prelude.fromIntegral len)
+                                                       Data.ProtoLens.parseMessage)
                                                    Data.ProtoLens.Encoding.Bytes.<?>
                                                    "uninterpreted_option"
-                                           loop
-                                             (Lens.Family2.over
-                                                (Lens.Labels.lensOf'
-                                                   ((Lens.Labels.proxy#) ::
-                                                      (Lens.Labels.Proxy#) "uninterpretedOption"))
-                                                (\ !t -> (:) y t)
-                                                x)
+                                           v <- Data.ProtoLens.Encoding.Parser.Unsafe.unsafeLiftIO
+                                                  (Data.ProtoLens.Encoding.Growing.append
+                                                     mutable'uninterpretedOption
+                                                     y)
+                                           loop x v
                                 wire -> do !y <- Data.ProtoLens.Encoding.Wire.parseTaggedValueFromWire
                                                    wire
                                            loop
                                              (Lens.Family2.over Data.ProtoLens.unknownFields
                                                 (\ !t -> (:) y t)
                                                 x)
+                                             mutable'uninterpretedOption
               in
-              (loop Data.ProtoLens.defMessage) Data.ProtoLens.Encoding.Bytes.<?>
-                "EnumValueOptions"
+              (do mutable'uninterpretedOption <- Data.ProtoLens.Encoding.Parser.Unsafe.unsafeLiftIO
+                                                   Data.ProtoLens.Encoding.Growing.new
+                  loop Data.ProtoLens.defMessage mutable'uninterpretedOption)
+                Data.ProtoLens.Encoding.Bytes.<?> "EnumValueOptions"
         buildMessage
           = (\ _x ->
                (case
@@ -2218,21 +2521,20 @@ instance Data.ProtoLens.Message EnumValueOptions where
                                             (\ b -> if b then 1 else 0))
                                            _v)
                  Data.Monoid.<>
-                 (Data.Monoid.mconcat
-                    (Prelude.map
-                       (\ _v ->
-                          (Data.ProtoLens.Encoding.Bytes.putVarInt 7994) Data.Monoid.<>
-                            (((\ bs ->
-                                 (Data.ProtoLens.Encoding.Bytes.putVarInt
-                                    (Prelude.fromIntegral (Data.ByteString.length bs)))
-                                   Data.Monoid.<> Data.ProtoLens.Encoding.Bytes.putBytes bs))
-                               Prelude.. Data.ProtoLens.encodeMessage)
-                              _v)
-                       (Lens.Family2.view
-                          (Lens.Labels.lensOf'
-                             ((Lens.Labels.proxy#) ::
-                                (Lens.Labels.Proxy#) "uninterpretedOption"))
-                          _x)))
+                 (Data.ProtoLens.Encoding.Bytes.foldMapBuilder
+                    (\ _v ->
+                       (Data.ProtoLens.Encoding.Bytes.putVarInt 7994) Data.Monoid.<>
+                         (((\ bs ->
+                              (Data.ProtoLens.Encoding.Bytes.putVarInt
+                                 (Prelude.fromIntegral (Data.ByteString.length bs)))
+                                Data.Monoid.<> Data.ProtoLens.Encoding.Bytes.putBytes bs))
+                            Prelude.. Data.ProtoLens.encodeMessage)
+                           _v)
+                    (Lens.Family2.view
+                       (Lens.Labels.lensOf'
+                          ((Lens.Labels.proxy#) ::
+                             (Lens.Labels.Proxy#) "vec'uninterpretedOption"))
+                       _x))
                    Data.Monoid.<>
                    Data.ProtoLens.Encoding.Wire.buildFieldSet
                      (Lens.Family2.view Data.ProtoLens.unknownFields _x))
@@ -2247,9 +2549,11 @@ instance Control.DeepSeq.NFData EnumValueOptions where
 {- | Fields :
 
     * 'Proto.Google.Protobuf.Descriptor_Fields.uninterpretedOption' @:: Lens' ExtensionRangeOptions [UninterpretedOption]@
+    * 'Proto.Google.Protobuf.Descriptor_Fields.vec'uninterpretedOption' @:: Lens' ExtensionRangeOptions
+  (Data.Vector.Vector UninterpretedOption)@
  -}
 data ExtensionRangeOptions = ExtensionRangeOptions{_ExtensionRangeOptions'uninterpretedOption
-                                                   :: ![UninterpretedOption],
+                                                   :: !(Data.Vector.Vector UninterpretedOption),
                                                    _ExtensionRangeOptions'_unknownFields ::
                                                    !Data.ProtoLens.FieldSet}
                                deriving (Prelude.Eq, Prelude.Ord)
@@ -2260,6 +2564,19 @@ instance Prelude.Show ExtensionRangeOptions where
                  (Prelude.showChar '}' __s))
 instance a ~ ([UninterpretedOption]) =>
          Lens.Labels.HasLens' ExtensionRangeOptions "uninterpretedOption" a
+         where
+        lensOf' _
+          = (Lens.Family2.Unchecked.lens
+               _ExtensionRangeOptions'uninterpretedOption
+               (\ x__ y__ ->
+                  x__{_ExtensionRangeOptions'uninterpretedOption = y__}))
+              Prelude..
+              Lens.Family2.Unchecked.lens Data.Vector.Generic.toList
+                (\ _ y__ -> Data.Vector.Generic.fromList y__)
+instance a ~ (Data.Vector.Vector UninterpretedOption) =>
+         Lens.Labels.HasLens' ExtensionRangeOptions
+           "vec'uninterpretedOption"
+           a
          where
         lensOf' _
           = (Lens.Family2.Unchecked.lens
@@ -2288,16 +2605,22 @@ instance Data.ProtoLens.Message ExtensionRangeOptions where
               (\ x__ y__ -> x__{_ExtensionRangeOptions'_unknownFields = y__})
         defMessage
           = ExtensionRangeOptions{_ExtensionRangeOptions'uninterpretedOption
-                                    = [],
+                                    = Data.Vector.Generic.empty,
                                   _ExtensionRangeOptions'_unknownFields = ([])}
         parseMessage
           = let loop ::
                      ExtensionRangeOptions ->
-                       Data.ProtoLens.Encoding.Bytes.Parser ExtensionRangeOptions
-                loop x
+                       Data.ProtoLens.Encoding.Growing.Growing Data.Vector.Vector
+                         Data.ProtoLens.Encoding.Growing.RealWorld
+                         UninterpretedOption
+                         -> Data.ProtoLens.Encoding.Bytes.Parser ExtensionRangeOptions
+                loop x mutable'uninterpretedOption
                   = do end <- Data.ProtoLens.Encoding.Bytes.atEnd
                        if end then
-                         do let missing = [] in
+                         do frozen'uninterpretedOption <- Data.ProtoLens.Encoding.Parser.Unsafe.unsafeLiftIO
+                                                            (Data.ProtoLens.Encoding.Growing.unsafeFreeze
+                                                               mutable'uninterpretedOption)
+                            let missing = [] in
                               if Prelude.null missing then Prelude.return () else
                                 Prelude.fail
                                   (("Missing required fields: ") Prelude.++
@@ -2305,55 +2628,54 @@ instance Data.ProtoLens.Message ExtensionRangeOptions where
                             Prelude.return
                               (Lens.Family2.over Data.ProtoLens.unknownFields
                                  (\ !t -> Prelude.reverse t)
-                                 (Lens.Family2.over
+                                 (Lens.Family2.set
                                     (Lens.Labels.lensOf'
                                        ((Lens.Labels.proxy#) ::
-                                          (Lens.Labels.Proxy#) "uninterpretedOption"))
-                                    (\ !t -> Prelude.reverse t)
+                                          (Lens.Labels.Proxy#) "vec'uninterpretedOption"))
+                                    frozen'uninterpretedOption
                                     x))
                          else
                          do tag <- Data.ProtoLens.Encoding.Bytes.getVarInt
                             case tag of
-                                7994 -> do !y <- (do value <- do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
-                                                                 Data.ProtoLens.Encoding.Bytes.getBytes
-                                                                   (Prelude.fromIntegral len)
-                                                     Data.ProtoLens.Encoding.Bytes.runEither
-                                                       (Data.ProtoLens.decodeMessage value))
+                                7994 -> do !y <- (do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
+                                                     Data.ProtoLens.Encoding.Bytes.isolate
+                                                       (Prelude.fromIntegral len)
+                                                       Data.ProtoLens.parseMessage)
                                                    Data.ProtoLens.Encoding.Bytes.<?>
                                                    "uninterpreted_option"
-                                           loop
-                                             (Lens.Family2.over
-                                                (Lens.Labels.lensOf'
-                                                   ((Lens.Labels.proxy#) ::
-                                                      (Lens.Labels.Proxy#) "uninterpretedOption"))
-                                                (\ !t -> (:) y t)
-                                                x)
+                                           v <- Data.ProtoLens.Encoding.Parser.Unsafe.unsafeLiftIO
+                                                  (Data.ProtoLens.Encoding.Growing.append
+                                                     mutable'uninterpretedOption
+                                                     y)
+                                           loop x v
                                 wire -> do !y <- Data.ProtoLens.Encoding.Wire.parseTaggedValueFromWire
                                                    wire
                                            loop
                                              (Lens.Family2.over Data.ProtoLens.unknownFields
                                                 (\ !t -> (:) y t)
                                                 x)
+                                             mutable'uninterpretedOption
               in
-              (loop Data.ProtoLens.defMessage) Data.ProtoLens.Encoding.Bytes.<?>
-                "ExtensionRangeOptions"
+              (do mutable'uninterpretedOption <- Data.ProtoLens.Encoding.Parser.Unsafe.unsafeLiftIO
+                                                   Data.ProtoLens.Encoding.Growing.new
+                  loop Data.ProtoLens.defMessage mutable'uninterpretedOption)
+                Data.ProtoLens.Encoding.Bytes.<?> "ExtensionRangeOptions"
         buildMessage
           = (\ _x ->
-               (Data.Monoid.mconcat
-                  (Prelude.map
-                     (\ _v ->
-                        (Data.ProtoLens.Encoding.Bytes.putVarInt 7994) Data.Monoid.<>
-                          (((\ bs ->
-                               (Data.ProtoLens.Encoding.Bytes.putVarInt
-                                  (Prelude.fromIntegral (Data.ByteString.length bs)))
-                                 Data.Monoid.<> Data.ProtoLens.Encoding.Bytes.putBytes bs))
-                             Prelude.. Data.ProtoLens.encodeMessage)
-                            _v)
-                     (Lens.Family2.view
-                        (Lens.Labels.lensOf'
-                           ((Lens.Labels.proxy#) ::
-                              (Lens.Labels.Proxy#) "uninterpretedOption"))
-                        _x)))
+               (Data.ProtoLens.Encoding.Bytes.foldMapBuilder
+                  (\ _v ->
+                     (Data.ProtoLens.Encoding.Bytes.putVarInt 7994) Data.Monoid.<>
+                       (((\ bs ->
+                            (Data.ProtoLens.Encoding.Bytes.putVarInt
+                               (Prelude.fromIntegral (Data.ByteString.length bs)))
+                              Data.Monoid.<> Data.ProtoLens.Encoding.Bytes.putBytes bs))
+                          Prelude.. Data.ProtoLens.encodeMessage)
+                         _v)
+                  (Lens.Family2.view
+                     (Lens.Labels.lensOf'
+                        ((Lens.Labels.proxy#) ::
+                           (Lens.Labels.Proxy#) "vec'uninterpretedOption"))
+                     _x))
                  Data.Monoid.<>
                  Data.ProtoLens.Encoding.Wire.buildFieldSet
                    (Lens.Family2.view Data.ProtoLens.unknownFields _x))
@@ -2811,11 +3133,10 @@ instance Data.ProtoLens.Message FieldDescriptorProto where
                                                     (Lens.Labels.Proxy#) "jsonName"))
                                               y
                                               x)
-                                66 -> do y <- (do value <- do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
-                                                              Data.ProtoLens.Encoding.Bytes.getBytes
-                                                                (Prelude.fromIntegral len)
-                                                  Data.ProtoLens.Encoding.Bytes.runEither
-                                                    (Data.ProtoLens.decodeMessage value))
+                                66 -> do y <- (do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
+                                                  Data.ProtoLens.Encoding.Bytes.isolate
+                                                    (Prelude.fromIntegral len)
+                                                    Data.ProtoLens.parseMessage)
                                                 Data.ProtoLens.Encoding.Bytes.<?> "options"
                                          loop
                                            (Lens.Family2.set
@@ -2831,8 +3152,8 @@ instance Data.ProtoLens.Message FieldDescriptorProto where
                                                 (\ !t -> (:) y t)
                                                 x)
               in
-              (loop Data.ProtoLens.defMessage) Data.ProtoLens.Encoding.Bytes.<?>
-                "FieldDescriptorProto"
+              (do loop Data.ProtoLens.defMessage)
+                Data.ProtoLens.Encoding.Bytes.<?> "FieldDescriptorProto"
         buildMessage
           = (\ _x ->
                (case
@@ -3308,6 +3629,7 @@ instance Control.DeepSeq.NFData FieldDescriptorProto'Type where
     * 'Proto.Google.Protobuf.Descriptor_Fields.weak' @:: Lens' FieldOptions Prelude.Bool@
     * 'Proto.Google.Protobuf.Descriptor_Fields.maybe'weak' @:: Lens' FieldOptions (Prelude.Maybe Prelude.Bool)@
     * 'Proto.Google.Protobuf.Descriptor_Fields.uninterpretedOption' @:: Lens' FieldOptions [UninterpretedOption]@
+    * 'Proto.Google.Protobuf.Descriptor_Fields.vec'uninterpretedOption' @:: Lens' FieldOptions (Data.Vector.Vector UninterpretedOption)@
  -}
 data FieldOptions = FieldOptions{_FieldOptions'ctype ::
                                  !(Prelude.Maybe FieldOptions'CType),
@@ -3316,7 +3638,8 @@ data FieldOptions = FieldOptions{_FieldOptions'ctype ::
                                  _FieldOptions'lazy :: !(Prelude.Maybe Prelude.Bool),
                                  _FieldOptions'deprecated :: !(Prelude.Maybe Prelude.Bool),
                                  _FieldOptions'weak :: !(Prelude.Maybe Prelude.Bool),
-                                 _FieldOptions'uninterpretedOption :: ![UninterpretedOption],
+                                 _FieldOptions'uninterpretedOption ::
+                                 !(Data.Vector.Vector UninterpretedOption),
                                  _FieldOptions'_unknownFields :: !Data.ProtoLens.FieldSet}
                       deriving (Prelude.Eq, Prelude.Ord)
 instance Prelude.Show FieldOptions where
@@ -3414,6 +3737,15 @@ instance a ~ ([UninterpretedOption]) =>
         lensOf' _
           = (Lens.Family2.Unchecked.lens _FieldOptions'uninterpretedOption
                (\ x__ y__ -> x__{_FieldOptions'uninterpretedOption = y__}))
+              Prelude..
+              Lens.Family2.Unchecked.lens Data.Vector.Generic.toList
+                (\ _ y__ -> Data.Vector.Generic.fromList y__)
+instance a ~ (Data.Vector.Vector UninterpretedOption) =>
+         Lens.Labels.HasLens' FieldOptions "vec'uninterpretedOption" a
+         where
+        lensOf' _
+          = (Lens.Family2.Unchecked.lens _FieldOptions'uninterpretedOption
+               (\ x__ y__ -> x__{_FieldOptions'uninterpretedOption = y__}))
               Prelude.. Prelude.id
 instance Data.ProtoLens.Message FieldOptions where
         messageName _ = Data.Text.pack "google.protobuf.FieldOptions"
@@ -3494,15 +3826,22 @@ instance Data.ProtoLens.Message FieldOptions where
                          _FieldOptions'lazy = Prelude.Nothing,
                          _FieldOptions'deprecated = Prelude.Nothing,
                          _FieldOptions'weak = Prelude.Nothing,
-                         _FieldOptions'uninterpretedOption = [],
+                         _FieldOptions'uninterpretedOption = Data.Vector.Generic.empty,
                          _FieldOptions'_unknownFields = ([])}
         parseMessage
           = let loop ::
-                     FieldOptions -> Data.ProtoLens.Encoding.Bytes.Parser FieldOptions
-                loop x
+                     FieldOptions ->
+                       Data.ProtoLens.Encoding.Growing.Growing Data.Vector.Vector
+                         Data.ProtoLens.Encoding.Growing.RealWorld
+                         UninterpretedOption
+                         -> Data.ProtoLens.Encoding.Bytes.Parser FieldOptions
+                loop x mutable'uninterpretedOption
                   = do end <- Data.ProtoLens.Encoding.Bytes.atEnd
                        if end then
-                         do let missing = [] in
+                         do frozen'uninterpretedOption <- Data.ProtoLens.Encoding.Parser.Unsafe.unsafeLiftIO
+                                                            (Data.ProtoLens.Encoding.Growing.unsafeFreeze
+                                                               mutable'uninterpretedOption)
+                            let missing = [] in
                               if Prelude.null missing then Prelude.return () else
                                 Prelude.fail
                                   (("Missing required fields: ") Prelude.++
@@ -3510,11 +3849,11 @@ instance Data.ProtoLens.Message FieldOptions where
                             Prelude.return
                               (Lens.Family2.over Data.ProtoLens.unknownFields
                                  (\ !t -> Prelude.reverse t)
-                                 (Lens.Family2.over
+                                 (Lens.Family2.set
                                     (Lens.Labels.lensOf'
                                        ((Lens.Labels.proxy#) ::
-                                          (Lens.Labels.Proxy#) "uninterpretedOption"))
-                                    (\ !t -> Prelude.reverse t)
+                                          (Lens.Labels.Proxy#) "vec'uninterpretedOption"))
+                                    frozen'uninterpretedOption
                                     x))
                          else
                          do tag <- Data.ProtoLens.Encoding.Bytes.getVarInt
@@ -3530,6 +3869,7 @@ instance Data.ProtoLens.Message FieldOptions where
                                                    (Lens.Labels.Proxy#) "ctype"))
                                              y
                                              x)
+                                          mutable'uninterpretedOption
                                 16 -> do y <- (Prelude.fmap ((Prelude./=) 0)
                                                  Data.ProtoLens.Encoding.Bytes.getVarInt)
                                                 Data.ProtoLens.Encoding.Bytes.<?> "packed"
@@ -3540,6 +3880,7 @@ instance Data.ProtoLens.Message FieldOptions where
                                                     (Lens.Labels.Proxy#) "packed"))
                                               y
                                               x)
+                                           mutable'uninterpretedOption
                                 48 -> do y <- (Prelude.fmap Prelude.toEnum
                                                  (Prelude.fmap Prelude.fromIntegral
                                                     Data.ProtoLens.Encoding.Bytes.getVarInt))
@@ -3551,6 +3892,7 @@ instance Data.ProtoLens.Message FieldOptions where
                                                     (Lens.Labels.Proxy#) "jstype"))
                                               y
                                               x)
+                                           mutable'uninterpretedOption
                                 40 -> do y <- (Prelude.fmap ((Prelude./=) 0)
                                                  Data.ProtoLens.Encoding.Bytes.getVarInt)
                                                 Data.ProtoLens.Encoding.Bytes.<?> "lazy"
@@ -3561,6 +3903,7 @@ instance Data.ProtoLens.Message FieldOptions where
                                                     (Lens.Labels.Proxy#) "lazy"))
                                               y
                                               x)
+                                           mutable'uninterpretedOption
                                 24 -> do y <- (Prelude.fmap ((Prelude./=) 0)
                                                  Data.ProtoLens.Encoding.Bytes.getVarInt)
                                                 Data.ProtoLens.Encoding.Bytes.<?> "deprecated"
@@ -3571,6 +3914,7 @@ instance Data.ProtoLens.Message FieldOptions where
                                                     (Lens.Labels.Proxy#) "deprecated"))
                                               y
                                               x)
+                                           mutable'uninterpretedOption
                                 80 -> do y <- (Prelude.fmap ((Prelude./=) 0)
                                                  Data.ProtoLens.Encoding.Bytes.getVarInt)
                                                 Data.ProtoLens.Encoding.Bytes.<?> "weak"
@@ -3581,29 +3925,30 @@ instance Data.ProtoLens.Message FieldOptions where
                                                     (Lens.Labels.Proxy#) "weak"))
                                               y
                                               x)
-                                7994 -> do !y <- (do value <- do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
-                                                                 Data.ProtoLens.Encoding.Bytes.getBytes
-                                                                   (Prelude.fromIntegral len)
-                                                     Data.ProtoLens.Encoding.Bytes.runEither
-                                                       (Data.ProtoLens.decodeMessage value))
+                                           mutable'uninterpretedOption
+                                7994 -> do !y <- (do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
+                                                     Data.ProtoLens.Encoding.Bytes.isolate
+                                                       (Prelude.fromIntegral len)
+                                                       Data.ProtoLens.parseMessage)
                                                    Data.ProtoLens.Encoding.Bytes.<?>
                                                    "uninterpreted_option"
-                                           loop
-                                             (Lens.Family2.over
-                                                (Lens.Labels.lensOf'
-                                                   ((Lens.Labels.proxy#) ::
-                                                      (Lens.Labels.Proxy#) "uninterpretedOption"))
-                                                (\ !t -> (:) y t)
-                                                x)
+                                           v <- Data.ProtoLens.Encoding.Parser.Unsafe.unsafeLiftIO
+                                                  (Data.ProtoLens.Encoding.Growing.append
+                                                     mutable'uninterpretedOption
+                                                     y)
+                                           loop x v
                                 wire -> do !y <- Data.ProtoLens.Encoding.Wire.parseTaggedValueFromWire
                                                    wire
                                            loop
                                              (Lens.Family2.over Data.ProtoLens.unknownFields
                                                 (\ !t -> (:) y t)
                                                 x)
+                                             mutable'uninterpretedOption
               in
-              (loop Data.ProtoLens.defMessage) Data.ProtoLens.Encoding.Bytes.<?>
-                "FieldOptions"
+              (do mutable'uninterpretedOption <- Data.ProtoLens.Encoding.Parser.Unsafe.unsafeLiftIO
+                                                   Data.ProtoLens.Encoding.Growing.new
+                  loop Data.ProtoLens.defMessage mutable'uninterpretedOption)
+                Data.ProtoLens.Encoding.Bytes.<?> "FieldOptions"
         buildMessage
           = (\ _x ->
                (case
@@ -3686,22 +4031,20 @@ instance Data.ProtoLens.Message FieldOptions where
                                                       Prelude.. (\ b -> if b then 1 else 0))
                                                      _v)
                            Data.Monoid.<>
-                           (Data.Monoid.mconcat
-                              (Prelude.map
-                                 (\ _v ->
-                                    (Data.ProtoLens.Encoding.Bytes.putVarInt 7994) Data.Monoid.<>
-                                      (((\ bs ->
-                                           (Data.ProtoLens.Encoding.Bytes.putVarInt
-                                              (Prelude.fromIntegral (Data.ByteString.length bs)))
-                                             Data.Monoid.<>
-                                             Data.ProtoLens.Encoding.Bytes.putBytes bs))
-                                         Prelude.. Data.ProtoLens.encodeMessage)
-                                        _v)
-                                 (Lens.Family2.view
-                                    (Lens.Labels.lensOf'
-                                       ((Lens.Labels.proxy#) ::
-                                          (Lens.Labels.Proxy#) "uninterpretedOption"))
-                                    _x)))
+                           (Data.ProtoLens.Encoding.Bytes.foldMapBuilder
+                              (\ _v ->
+                                 (Data.ProtoLens.Encoding.Bytes.putVarInt 7994) Data.Monoid.<>
+                                   (((\ bs ->
+                                        (Data.ProtoLens.Encoding.Bytes.putVarInt
+                                           (Prelude.fromIntegral (Data.ByteString.length bs)))
+                                          Data.Monoid.<> Data.ProtoLens.Encoding.Bytes.putBytes bs))
+                                      Prelude.. Data.ProtoLens.encodeMessage)
+                                     _v)
+                              (Lens.Family2.view
+                                 (Lens.Labels.lensOf'
+                                    ((Lens.Labels.proxy#) ::
+                                       (Lens.Labels.Proxy#) "vec'uninterpretedOption"))
+                                 _x))
                              Data.Monoid.<>
                              Data.ProtoLens.Encoding.Wire.buildFieldSet
                                (Lens.Family2.view Data.ProtoLens.unknownFields _x))
@@ -3825,12 +4168,22 @@ instance Control.DeepSeq.NFData FieldOptions'JSType where
     * 'Proto.Google.Protobuf.Descriptor_Fields.package' @:: Lens' FileDescriptorProto Data.Text.Text@
     * 'Proto.Google.Protobuf.Descriptor_Fields.maybe'package' @:: Lens' FileDescriptorProto (Prelude.Maybe Data.Text.Text)@
     * 'Proto.Google.Protobuf.Descriptor_Fields.dependency' @:: Lens' FileDescriptorProto [Data.Text.Text]@
+    * 'Proto.Google.Protobuf.Descriptor_Fields.vec'dependency' @:: Lens' FileDescriptorProto (Data.Vector.Vector Data.Text.Text)@
     * 'Proto.Google.Protobuf.Descriptor_Fields.publicDependency' @:: Lens' FileDescriptorProto [Data.Int.Int32]@
+    * 'Proto.Google.Protobuf.Descriptor_Fields.vec'publicDependency' @:: Lens' FileDescriptorProto
+  (Data.Vector.Unboxed.Vector Data.Int.Int32)@
     * 'Proto.Google.Protobuf.Descriptor_Fields.weakDependency' @:: Lens' FileDescriptorProto [Data.Int.Int32]@
+    * 'Proto.Google.Protobuf.Descriptor_Fields.vec'weakDependency' @:: Lens' FileDescriptorProto
+  (Data.Vector.Unboxed.Vector Data.Int.Int32)@
     * 'Proto.Google.Protobuf.Descriptor_Fields.messageType' @:: Lens' FileDescriptorProto [DescriptorProto]@
+    * 'Proto.Google.Protobuf.Descriptor_Fields.vec'messageType' @:: Lens' FileDescriptorProto (Data.Vector.Vector DescriptorProto)@
     * 'Proto.Google.Protobuf.Descriptor_Fields.enumType' @:: Lens' FileDescriptorProto [EnumDescriptorProto]@
+    * 'Proto.Google.Protobuf.Descriptor_Fields.vec'enumType' @:: Lens' FileDescriptorProto (Data.Vector.Vector EnumDescriptorProto)@
     * 'Proto.Google.Protobuf.Descriptor_Fields.service' @:: Lens' FileDescriptorProto [ServiceDescriptorProto]@
+    * 'Proto.Google.Protobuf.Descriptor_Fields.vec'service' @:: Lens' FileDescriptorProto
+  (Data.Vector.Vector ServiceDescriptorProto)@
     * 'Proto.Google.Protobuf.Descriptor_Fields.extension' @:: Lens' FileDescriptorProto [FieldDescriptorProto]@
+    * 'Proto.Google.Protobuf.Descriptor_Fields.vec'extension' @:: Lens' FileDescriptorProto (Data.Vector.Vector FieldDescriptorProto)@
     * 'Proto.Google.Protobuf.Descriptor_Fields.options' @:: Lens' FileDescriptorProto FileOptions@
     * 'Proto.Google.Protobuf.Descriptor_Fields.maybe'options' @:: Lens' FileDescriptorProto (Prelude.Maybe FileOptions)@
     * 'Proto.Google.Protobuf.Descriptor_Fields.sourceCodeInfo' @:: Lens' FileDescriptorProto SourceCodeInfo@
@@ -3842,19 +4195,20 @@ data FileDescriptorProto = FileDescriptorProto{_FileDescriptorProto'name
                                                :: !(Prelude.Maybe Data.Text.Text),
                                                _FileDescriptorProto'package ::
                                                !(Prelude.Maybe Data.Text.Text),
-                                               _FileDescriptorProto'dependency :: ![Data.Text.Text],
+                                               _FileDescriptorProto'dependency ::
+                                               !(Data.Vector.Vector Data.Text.Text),
                                                _FileDescriptorProto'publicDependency ::
-                                               ![Data.Int.Int32],
+                                               !(Data.Vector.Unboxed.Vector Data.Int.Int32),
                                                _FileDescriptorProto'weakDependency ::
-                                               ![Data.Int.Int32],
+                                               !(Data.Vector.Unboxed.Vector Data.Int.Int32),
                                                _FileDescriptorProto'messageType ::
-                                               ![DescriptorProto],
+                                               !(Data.Vector.Vector DescriptorProto),
                                                _FileDescriptorProto'enumType ::
-                                               ![EnumDescriptorProto],
+                                               !(Data.Vector.Vector EnumDescriptorProto),
                                                _FileDescriptorProto'service ::
-                                               ![ServiceDescriptorProto],
+                                               !(Data.Vector.Vector ServiceDescriptorProto),
                                                _FileDescriptorProto'extension ::
-                                               ![FieldDescriptorProto],
+                                               !(Data.Vector.Vector FieldDescriptorProto),
                                                _FileDescriptorProto'options ::
                                                !(Prelude.Maybe FileOptions),
                                                _FileDescriptorProto'sourceCodeInfo ::
@@ -3903,9 +4257,28 @@ instance a ~ ([Data.Text.Text]) =>
         lensOf' _
           = (Lens.Family2.Unchecked.lens _FileDescriptorProto'dependency
                (\ x__ y__ -> x__{_FileDescriptorProto'dependency = y__}))
+              Prelude..
+              Lens.Family2.Unchecked.lens Data.Vector.Generic.toList
+                (\ _ y__ -> Data.Vector.Generic.fromList y__)
+instance a ~ (Data.Vector.Vector Data.Text.Text) =>
+         Lens.Labels.HasLens' FileDescriptorProto "vec'dependency" a
+         where
+        lensOf' _
+          = (Lens.Family2.Unchecked.lens _FileDescriptorProto'dependency
+               (\ x__ y__ -> x__{_FileDescriptorProto'dependency = y__}))
               Prelude.. Prelude.id
 instance a ~ ([Data.Int.Int32]) =>
          Lens.Labels.HasLens' FileDescriptorProto "publicDependency" a
+         where
+        lensOf' _
+          = (Lens.Family2.Unchecked.lens
+               _FileDescriptorProto'publicDependency
+               (\ x__ y__ -> x__{_FileDescriptorProto'publicDependency = y__}))
+              Prelude..
+              Lens.Family2.Unchecked.lens Data.Vector.Generic.toList
+                (\ _ y__ -> Data.Vector.Generic.fromList y__)
+instance a ~ (Data.Vector.Unboxed.Vector Data.Int.Int32) =>
+         Lens.Labels.HasLens' FileDescriptorProto "vec'publicDependency" a
          where
         lensOf' _
           = (Lens.Family2.Unchecked.lens
@@ -3918,9 +4291,27 @@ instance a ~ ([Data.Int.Int32]) =>
         lensOf' _
           = (Lens.Family2.Unchecked.lens _FileDescriptorProto'weakDependency
                (\ x__ y__ -> x__{_FileDescriptorProto'weakDependency = y__}))
+              Prelude..
+              Lens.Family2.Unchecked.lens Data.Vector.Generic.toList
+                (\ _ y__ -> Data.Vector.Generic.fromList y__)
+instance a ~ (Data.Vector.Unboxed.Vector Data.Int.Int32) =>
+         Lens.Labels.HasLens' FileDescriptorProto "vec'weakDependency" a
+         where
+        lensOf' _
+          = (Lens.Family2.Unchecked.lens _FileDescriptorProto'weakDependency
+               (\ x__ y__ -> x__{_FileDescriptorProto'weakDependency = y__}))
               Prelude.. Prelude.id
 instance a ~ ([DescriptorProto]) =>
          Lens.Labels.HasLens' FileDescriptorProto "messageType" a
+         where
+        lensOf' _
+          = (Lens.Family2.Unchecked.lens _FileDescriptorProto'messageType
+               (\ x__ y__ -> x__{_FileDescriptorProto'messageType = y__}))
+              Prelude..
+              Lens.Family2.Unchecked.lens Data.Vector.Generic.toList
+                (\ _ y__ -> Data.Vector.Generic.fromList y__)
+instance a ~ (Data.Vector.Vector DescriptorProto) =>
+         Lens.Labels.HasLens' FileDescriptorProto "vec'messageType" a
          where
         lensOf' _
           = (Lens.Family2.Unchecked.lens _FileDescriptorProto'messageType
@@ -3932,6 +4323,15 @@ instance a ~ ([EnumDescriptorProto]) =>
         lensOf' _
           = (Lens.Family2.Unchecked.lens _FileDescriptorProto'enumType
                (\ x__ y__ -> x__{_FileDescriptorProto'enumType = y__}))
+              Prelude..
+              Lens.Family2.Unchecked.lens Data.Vector.Generic.toList
+                (\ _ y__ -> Data.Vector.Generic.fromList y__)
+instance a ~ (Data.Vector.Vector EnumDescriptorProto) =>
+         Lens.Labels.HasLens' FileDescriptorProto "vec'enumType" a
+         where
+        lensOf' _
+          = (Lens.Family2.Unchecked.lens _FileDescriptorProto'enumType
+               (\ x__ y__ -> x__{_FileDescriptorProto'enumType = y__}))
               Prelude.. Prelude.id
 instance a ~ ([ServiceDescriptorProto]) =>
          Lens.Labels.HasLens' FileDescriptorProto "service" a
@@ -3939,9 +4339,27 @@ instance a ~ ([ServiceDescriptorProto]) =>
         lensOf' _
           = (Lens.Family2.Unchecked.lens _FileDescriptorProto'service
                (\ x__ y__ -> x__{_FileDescriptorProto'service = y__}))
+              Prelude..
+              Lens.Family2.Unchecked.lens Data.Vector.Generic.toList
+                (\ _ y__ -> Data.Vector.Generic.fromList y__)
+instance a ~ (Data.Vector.Vector ServiceDescriptorProto) =>
+         Lens.Labels.HasLens' FileDescriptorProto "vec'service" a
+         where
+        lensOf' _
+          = (Lens.Family2.Unchecked.lens _FileDescriptorProto'service
+               (\ x__ y__ -> x__{_FileDescriptorProto'service = y__}))
               Prelude.. Prelude.id
 instance a ~ ([FieldDescriptorProto]) =>
          Lens.Labels.HasLens' FileDescriptorProto "extension" a
+         where
+        lensOf' _
+          = (Lens.Family2.Unchecked.lens _FileDescriptorProto'extension
+               (\ x__ y__ -> x__{_FileDescriptorProto'extension = y__}))
+              Prelude..
+              Lens.Family2.Unchecked.lens Data.Vector.Generic.toList
+                (\ _ y__ -> Data.Vector.Generic.fromList y__)
+instance a ~ (Data.Vector.Vector FieldDescriptorProto) =>
+         Lens.Labels.HasLens' FileDescriptorProto "vec'extension" a
          where
         lensOf' _
           = (Lens.Family2.Unchecked.lens _FileDescriptorProto'extension
@@ -4110,13 +4528,13 @@ instance Data.ProtoLens.Message FileDescriptorProto where
         defMessage
           = FileDescriptorProto{_FileDescriptorProto'name = Prelude.Nothing,
                                 _FileDescriptorProto'package = Prelude.Nothing,
-                                _FileDescriptorProto'dependency = [],
-                                _FileDescriptorProto'publicDependency = [],
-                                _FileDescriptorProto'weakDependency = [],
-                                _FileDescriptorProto'messageType = [],
-                                _FileDescriptorProto'enumType = [],
-                                _FileDescriptorProto'service = [],
-                                _FileDescriptorProto'extension = [],
+                                _FileDescriptorProto'dependency = Data.Vector.Generic.empty,
+                                _FileDescriptorProto'publicDependency = Data.Vector.Generic.empty,
+                                _FileDescriptorProto'weakDependency = Data.Vector.Generic.empty,
+                                _FileDescriptorProto'messageType = Data.Vector.Generic.empty,
+                                _FileDescriptorProto'enumType = Data.Vector.Generic.empty,
+                                _FileDescriptorProto'service = Data.Vector.Generic.empty,
+                                _FileDescriptorProto'extension = Data.Vector.Generic.empty,
                                 _FileDescriptorProto'options = Prelude.Nothing,
                                 _FileDescriptorProto'sourceCodeInfo = Prelude.Nothing,
                                 _FileDescriptorProto'syntax = Prelude.Nothing,
@@ -4124,11 +4542,62 @@ instance Data.ProtoLens.Message FileDescriptorProto where
         parseMessage
           = let loop ::
                      FileDescriptorProto ->
-                       Data.ProtoLens.Encoding.Bytes.Parser FileDescriptorProto
-                loop x
+                       Data.ProtoLens.Encoding.Growing.Growing Data.Vector.Vector
+                         Data.ProtoLens.Encoding.Growing.RealWorld
+                         Data.Text.Text
+                         ->
+                         Data.ProtoLens.Encoding.Growing.Growing Data.Vector.Vector
+                           Data.ProtoLens.Encoding.Growing.RealWorld
+                           EnumDescriptorProto
+                           ->
+                           Data.ProtoLens.Encoding.Growing.Growing Data.Vector.Vector
+                             Data.ProtoLens.Encoding.Growing.RealWorld
+                             FieldDescriptorProto
+                             ->
+                             Data.ProtoLens.Encoding.Growing.Growing Data.Vector.Vector
+                               Data.ProtoLens.Encoding.Growing.RealWorld
+                               DescriptorProto
+                               ->
+                               Data.ProtoLens.Encoding.Growing.Growing Data.Vector.Unboxed.Vector
+                                 Data.ProtoLens.Encoding.Growing.RealWorld
+                                 Data.Int.Int32
+                                 ->
+                                 Data.ProtoLens.Encoding.Growing.Growing Data.Vector.Vector
+                                   Data.ProtoLens.Encoding.Growing.RealWorld
+                                   ServiceDescriptorProto
+                                   ->
+                                   Data.ProtoLens.Encoding.Growing.Growing
+                                     Data.Vector.Unboxed.Vector
+                                     Data.ProtoLens.Encoding.Growing.RealWorld
+                                     Data.Int.Int32
+                                     -> Data.ProtoLens.Encoding.Bytes.Parser FileDescriptorProto
+                loop x mutable'dependency mutable'enumType mutable'extension
+                  mutable'messageType mutable'publicDependency mutable'service
+                  mutable'weakDependency
                   = do end <- Data.ProtoLens.Encoding.Bytes.atEnd
                        if end then
-                         do let missing = [] in
+                         do frozen'dependency <- Data.ProtoLens.Encoding.Parser.Unsafe.unsafeLiftIO
+                                                   (Data.ProtoLens.Encoding.Growing.unsafeFreeze
+                                                      mutable'dependency)
+                            frozen'enumType <- Data.ProtoLens.Encoding.Parser.Unsafe.unsafeLiftIO
+                                                 (Data.ProtoLens.Encoding.Growing.unsafeFreeze
+                                                    mutable'enumType)
+                            frozen'extension <- Data.ProtoLens.Encoding.Parser.Unsafe.unsafeLiftIO
+                                                  (Data.ProtoLens.Encoding.Growing.unsafeFreeze
+                                                     mutable'extension)
+                            frozen'messageType <- Data.ProtoLens.Encoding.Parser.Unsafe.unsafeLiftIO
+                                                    (Data.ProtoLens.Encoding.Growing.unsafeFreeze
+                                                       mutable'messageType)
+                            frozen'publicDependency <- Data.ProtoLens.Encoding.Parser.Unsafe.unsafeLiftIO
+                                                         (Data.ProtoLens.Encoding.Growing.unsafeFreeze
+                                                            mutable'publicDependency)
+                            frozen'service <- Data.ProtoLens.Encoding.Parser.Unsafe.unsafeLiftIO
+                                                (Data.ProtoLens.Encoding.Growing.unsafeFreeze
+                                                   mutable'service)
+                            frozen'weakDependency <- Data.ProtoLens.Encoding.Parser.Unsafe.unsafeLiftIO
+                                                       (Data.ProtoLens.Encoding.Growing.unsafeFreeze
+                                                          mutable'weakDependency)
+                            let missing = [] in
                               if Prelude.null missing then Prelude.return () else
                                 Prelude.fail
                                   (("Missing required fields: ") Prelude.++
@@ -4136,40 +4605,42 @@ instance Data.ProtoLens.Message FileDescriptorProto where
                             Prelude.return
                               (Lens.Family2.over Data.ProtoLens.unknownFields
                                  (\ !t -> Prelude.reverse t)
-                                 (Lens.Family2.over
+                                 (Lens.Family2.set
                                     (Lens.Labels.lensOf'
-                                       ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "dependency"))
-                                    (\ !t -> Prelude.reverse t)
-                                    (Lens.Family2.over
+                                       ((Lens.Labels.proxy#) ::
+                                          (Lens.Labels.Proxy#) "vec'dependency"))
+                                    frozen'dependency
+                                    (Lens.Family2.set
                                        (Lens.Labels.lensOf'
                                           ((Lens.Labels.proxy#) ::
-                                             (Lens.Labels.Proxy#) "publicDependency"))
-                                       (\ !t -> Prelude.reverse t)
-                                       (Lens.Family2.over
+                                             (Lens.Labels.Proxy#) "vec'enumType"))
+                                       frozen'enumType
+                                       (Lens.Family2.set
                                           (Lens.Labels.lensOf'
                                              ((Lens.Labels.proxy#) ::
-                                                (Lens.Labels.Proxy#) "weakDependency"))
-                                          (\ !t -> Prelude.reverse t)
-                                          (Lens.Family2.over
+                                                (Lens.Labels.Proxy#) "vec'extension"))
+                                          frozen'extension
+                                          (Lens.Family2.set
                                              (Lens.Labels.lensOf'
                                                 ((Lens.Labels.proxy#) ::
-                                                   (Lens.Labels.Proxy#) "messageType"))
-                                             (\ !t -> Prelude.reverse t)
-                                             (Lens.Family2.over
+                                                   (Lens.Labels.Proxy#) "vec'messageType"))
+                                             frozen'messageType
+                                             (Lens.Family2.set
                                                 (Lens.Labels.lensOf'
                                                    ((Lens.Labels.proxy#) ::
-                                                      (Lens.Labels.Proxy#) "enumType"))
-                                                (\ !t -> Prelude.reverse t)
-                                                (Lens.Family2.over
+                                                      (Lens.Labels.Proxy#) "vec'publicDependency"))
+                                                frozen'publicDependency
+                                                (Lens.Family2.set
                                                    (Lens.Labels.lensOf'
                                                       ((Lens.Labels.proxy#) ::
-                                                         (Lens.Labels.Proxy#) "service"))
-                                                   (\ !t -> Prelude.reverse t)
-                                                   (Lens.Family2.over
+                                                         (Lens.Labels.Proxy#) "vec'service"))
+                                                   frozen'service
+                                                   (Lens.Family2.set
                                                       (Lens.Labels.lensOf'
                                                          ((Lens.Labels.proxy#) ::
-                                                            (Lens.Labels.Proxy#) "extension"))
-                                                      (\ !t -> Prelude.reverse t)
+                                                            (Lens.Labels.Proxy#)
+                                                              "vec'weakDependency"))
+                                                      frozen'weakDependency
                                                       x))))))))
                          else
                          do tag <- Data.ProtoLens.Encoding.Bytes.getVarInt
@@ -4190,6 +4661,13 @@ instance Data.ProtoLens.Message FileDescriptorProto where
                                                     (Lens.Labels.Proxy#) "name"))
                                               y
                                               x)
+                                           mutable'dependency
+                                           mutable'enumType
+                                           mutable'extension
+                                           mutable'messageType
+                                           mutable'publicDependency
+                                           mutable'service
+                                           mutable'weakDependency
                                 18 -> do y <- (do value <- do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
                                                               Data.ProtoLens.Encoding.Bytes.getBytes
                                                                 (Prelude.fromIntegral len)
@@ -4206,6 +4684,13 @@ instance Data.ProtoLens.Message FileDescriptorProto where
                                                     (Lens.Labels.Proxy#) "package"))
                                               y
                                               x)
+                                           mutable'dependency
+                                           mutable'enumType
+                                           mutable'extension
+                                           mutable'messageType
+                                           mutable'publicDependency
+                                           mutable'service
+                                           mutable'weakDependency
                                 26 -> do !y <- (do value <- do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
                                                                Data.ProtoLens.Encoding.Bytes.getBytes
                                                                  (Prelude.fromIntegral len)
@@ -4215,139 +4700,154 @@ instance Data.ProtoLens.Message FileDescriptorProto where
                                                                                 (Prelude.show err)
                                                           Prelude.Right r -> Prelude.Right r))
                                                  Data.ProtoLens.Encoding.Bytes.<?> "dependency"
-                                         loop
-                                           (Lens.Family2.over
-                                              (Lens.Labels.lensOf'
-                                                 ((Lens.Labels.proxy#) ::
-                                                    (Lens.Labels.Proxy#) "dependency"))
-                                              (\ !t -> (:) y t)
-                                              x)
+                                         v <- Data.ProtoLens.Encoding.Parser.Unsafe.unsafeLiftIO
+                                                (Data.ProtoLens.Encoding.Growing.append
+                                                   mutable'dependency
+                                                   y)
+                                         loop x v mutable'enumType mutable'extension
+                                           mutable'messageType
+                                           mutable'publicDependency
+                                           mutable'service
+                                           mutable'weakDependency
                                 80 -> do !y <- (Prelude.fmap Prelude.fromIntegral
                                                   Data.ProtoLens.Encoding.Bytes.getVarInt)
                                                  Data.ProtoLens.Encoding.Bytes.<?>
                                                  "public_dependency"
-                                         loop
-                                           (Lens.Family2.over
-                                              (Lens.Labels.lensOf'
-                                                 ((Lens.Labels.proxy#) ::
-                                                    (Lens.Labels.Proxy#) "publicDependency"))
-                                              (\ !t -> (:) y t)
-                                              x)
-                                82 -> do bytes <- do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
-                                                     Data.ProtoLens.Encoding.Bytes.getBytes
-                                                       (Prelude.fromIntegral len)
-                                         y <- Data.ProtoLens.Encoding.Bytes.runEither
-                                                (Data.ProtoLens.Encoding.Bytes.runParser
-                                                   (let ploop qs
-                                                          = do packedEnd <- Data.ProtoLens.Encoding.Bytes.atEnd
-                                                               if packedEnd then Prelude.return qs
-                                                                 else
-                                                                 do !q <- (Prelude.fmap
-                                                                             Prelude.fromIntegral
-                                                                             Data.ProtoLens.Encoding.Bytes.getVarInt)
-                                                                            Data.ProtoLens.Encoding.Bytes.<?>
-                                                                            "public_dependency"
-                                                                    ploop ((:) q qs)
-                                                      in ploop [])
-                                                   bytes)
-                                         loop
-                                           (Lens.Family2.over
-                                              (Lens.Labels.lensOf'
-                                                 ((Lens.Labels.proxy#) ::
-                                                    (Lens.Labels.Proxy#) "publicDependency"))
-                                              (\ !t -> (y) Prelude.++ t)
-                                              x)
+                                         v <- Data.ProtoLens.Encoding.Parser.Unsafe.unsafeLiftIO
+                                                (Data.ProtoLens.Encoding.Growing.append
+                                                   mutable'publicDependency
+                                                   y)
+                                         loop x mutable'dependency mutable'enumType
+                                           mutable'extension
+                                           mutable'messageType
+                                           v
+                                           mutable'service
+                                           mutable'weakDependency
+                                82 -> do y <- do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
+                                                 Data.ProtoLens.Encoding.Bytes.isolate
+                                                   (Prelude.fromIntegral len)
+                                                   ((let ploop qs
+                                                           = do packedEnd <- Data.ProtoLens.Encoding.Bytes.atEnd
+                                                                if packedEnd then Prelude.return qs
+                                                                  else
+                                                                  do !q <- (Prelude.fmap
+                                                                              Prelude.fromIntegral
+                                                                              Data.ProtoLens.Encoding.Bytes.getVarInt)
+                                                                             Data.ProtoLens.Encoding.Bytes.<?>
+                                                                             "public_dependency"
+                                                                     qs' <- Data.ProtoLens.Encoding.Parser.Unsafe.unsafeLiftIO
+                                                                              (Data.ProtoLens.Encoding.Growing.append
+                                                                                 qs
+                                                                                 q)
+                                                                     ploop qs'
+                                                       in ploop)
+                                                      mutable'publicDependency)
+                                         loop x mutable'dependency mutable'enumType
+                                           mutable'extension
+                                           mutable'messageType
+                                           y
+                                           mutable'service
+                                           mutable'weakDependency
                                 88 -> do !y <- (Prelude.fmap Prelude.fromIntegral
                                                   Data.ProtoLens.Encoding.Bytes.getVarInt)
                                                  Data.ProtoLens.Encoding.Bytes.<?> "weak_dependency"
-                                         loop
-                                           (Lens.Family2.over
-                                              (Lens.Labels.lensOf'
-                                                 ((Lens.Labels.proxy#) ::
-                                                    (Lens.Labels.Proxy#) "weakDependency"))
-                                              (\ !t -> (:) y t)
-                                              x)
-                                90 -> do bytes <- do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
-                                                     Data.ProtoLens.Encoding.Bytes.getBytes
-                                                       (Prelude.fromIntegral len)
-                                         y <- Data.ProtoLens.Encoding.Bytes.runEither
-                                                (Data.ProtoLens.Encoding.Bytes.runParser
-                                                   (let ploop qs
-                                                          = do packedEnd <- Data.ProtoLens.Encoding.Bytes.atEnd
-                                                               if packedEnd then Prelude.return qs
-                                                                 else
-                                                                 do !q <- (Prelude.fmap
-                                                                             Prelude.fromIntegral
-                                                                             Data.ProtoLens.Encoding.Bytes.getVarInt)
-                                                                            Data.ProtoLens.Encoding.Bytes.<?>
-                                                                            "weak_dependency"
-                                                                    ploop ((:) q qs)
-                                                      in ploop [])
-                                                   bytes)
-                                         loop
-                                           (Lens.Family2.over
-                                              (Lens.Labels.lensOf'
-                                                 ((Lens.Labels.proxy#) ::
-                                                    (Lens.Labels.Proxy#) "weakDependency"))
-                                              (\ !t -> (y) Prelude.++ t)
-                                              x)
-                                34 -> do !y <- (do value <- do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
-                                                               Data.ProtoLens.Encoding.Bytes.getBytes
-                                                                 (Prelude.fromIntegral len)
-                                                   Data.ProtoLens.Encoding.Bytes.runEither
-                                                     (Data.ProtoLens.decodeMessage value))
+                                         v <- Data.ProtoLens.Encoding.Parser.Unsafe.unsafeLiftIO
+                                                (Data.ProtoLens.Encoding.Growing.append
+                                                   mutable'weakDependency
+                                                   y)
+                                         loop x mutable'dependency mutable'enumType
+                                           mutable'extension
+                                           mutable'messageType
+                                           mutable'publicDependency
+                                           mutable'service
+                                           v
+                                90 -> do y <- do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
+                                                 Data.ProtoLens.Encoding.Bytes.isolate
+                                                   (Prelude.fromIntegral len)
+                                                   ((let ploop qs
+                                                           = do packedEnd <- Data.ProtoLens.Encoding.Bytes.atEnd
+                                                                if packedEnd then Prelude.return qs
+                                                                  else
+                                                                  do !q <- (Prelude.fmap
+                                                                              Prelude.fromIntegral
+                                                                              Data.ProtoLens.Encoding.Bytes.getVarInt)
+                                                                             Data.ProtoLens.Encoding.Bytes.<?>
+                                                                             "weak_dependency"
+                                                                     qs' <- Data.ProtoLens.Encoding.Parser.Unsafe.unsafeLiftIO
+                                                                              (Data.ProtoLens.Encoding.Growing.append
+                                                                                 qs
+                                                                                 q)
+                                                                     ploop qs'
+                                                       in ploop)
+                                                      mutable'weakDependency)
+                                         loop x mutable'dependency mutable'enumType
+                                           mutable'extension
+                                           mutable'messageType
+                                           mutable'publicDependency
+                                           mutable'service
+                                           y
+                                34 -> do !y <- (do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
+                                                   Data.ProtoLens.Encoding.Bytes.isolate
+                                                     (Prelude.fromIntegral len)
+                                                     Data.ProtoLens.parseMessage)
                                                  Data.ProtoLens.Encoding.Bytes.<?> "message_type"
-                                         loop
-                                           (Lens.Family2.over
-                                              (Lens.Labels.lensOf'
-                                                 ((Lens.Labels.proxy#) ::
-                                                    (Lens.Labels.Proxy#) "messageType"))
-                                              (\ !t -> (:) y t)
-                                              x)
-                                42 -> do !y <- (do value <- do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
-                                                               Data.ProtoLens.Encoding.Bytes.getBytes
-                                                                 (Prelude.fromIntegral len)
-                                                   Data.ProtoLens.Encoding.Bytes.runEither
-                                                     (Data.ProtoLens.decodeMessage value))
+                                         v <- Data.ProtoLens.Encoding.Parser.Unsafe.unsafeLiftIO
+                                                (Data.ProtoLens.Encoding.Growing.append
+                                                   mutable'messageType
+                                                   y)
+                                         loop x mutable'dependency mutable'enumType
+                                           mutable'extension
+                                           v
+                                           mutable'publicDependency
+                                           mutable'service
+                                           mutable'weakDependency
+                                42 -> do !y <- (do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
+                                                   Data.ProtoLens.Encoding.Bytes.isolate
+                                                     (Prelude.fromIntegral len)
+                                                     Data.ProtoLens.parseMessage)
                                                  Data.ProtoLens.Encoding.Bytes.<?> "enum_type"
-                                         loop
-                                           (Lens.Family2.over
-                                              (Lens.Labels.lensOf'
-                                                 ((Lens.Labels.proxy#) ::
-                                                    (Lens.Labels.Proxy#) "enumType"))
-                                              (\ !t -> (:) y t)
-                                              x)
-                                50 -> do !y <- (do value <- do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
-                                                               Data.ProtoLens.Encoding.Bytes.getBytes
-                                                                 (Prelude.fromIntegral len)
-                                                   Data.ProtoLens.Encoding.Bytes.runEither
-                                                     (Data.ProtoLens.decodeMessage value))
+                                         v <- Data.ProtoLens.Encoding.Parser.Unsafe.unsafeLiftIO
+                                                (Data.ProtoLens.Encoding.Growing.append
+                                                   mutable'enumType
+                                                   y)
+                                         loop x mutable'dependency v mutable'extension
+                                           mutable'messageType
+                                           mutable'publicDependency
+                                           mutable'service
+                                           mutable'weakDependency
+                                50 -> do !y <- (do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
+                                                   Data.ProtoLens.Encoding.Bytes.isolate
+                                                     (Prelude.fromIntegral len)
+                                                     Data.ProtoLens.parseMessage)
                                                  Data.ProtoLens.Encoding.Bytes.<?> "service"
-                                         loop
-                                           (Lens.Family2.over
-                                              (Lens.Labels.lensOf'
-                                                 ((Lens.Labels.proxy#) ::
-                                                    (Lens.Labels.Proxy#) "service"))
-                                              (\ !t -> (:) y t)
-                                              x)
-                                58 -> do !y <- (do value <- do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
-                                                               Data.ProtoLens.Encoding.Bytes.getBytes
-                                                                 (Prelude.fromIntegral len)
-                                                   Data.ProtoLens.Encoding.Bytes.runEither
-                                                     (Data.ProtoLens.decodeMessage value))
+                                         v <- Data.ProtoLens.Encoding.Parser.Unsafe.unsafeLiftIO
+                                                (Data.ProtoLens.Encoding.Growing.append
+                                                   mutable'service
+                                                   y)
+                                         loop x mutable'dependency mutable'enumType
+                                           mutable'extension
+                                           mutable'messageType
+                                           mutable'publicDependency
+                                           v
+                                           mutable'weakDependency
+                                58 -> do !y <- (do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
+                                                   Data.ProtoLens.Encoding.Bytes.isolate
+                                                     (Prelude.fromIntegral len)
+                                                     Data.ProtoLens.parseMessage)
                                                  Data.ProtoLens.Encoding.Bytes.<?> "extension"
-                                         loop
-                                           (Lens.Family2.over
-                                              (Lens.Labels.lensOf'
-                                                 ((Lens.Labels.proxy#) ::
-                                                    (Lens.Labels.Proxy#) "extension"))
-                                              (\ !t -> (:) y t)
-                                              x)
-                                66 -> do y <- (do value <- do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
-                                                              Data.ProtoLens.Encoding.Bytes.getBytes
-                                                                (Prelude.fromIntegral len)
-                                                  Data.ProtoLens.Encoding.Bytes.runEither
-                                                    (Data.ProtoLens.decodeMessage value))
+                                         v <- Data.ProtoLens.Encoding.Parser.Unsafe.unsafeLiftIO
+                                                (Data.ProtoLens.Encoding.Growing.append
+                                                   mutable'extension
+                                                   y)
+                                         loop x mutable'dependency mutable'enumType v
+                                           mutable'messageType
+                                           mutable'publicDependency
+                                           mutable'service
+                                           mutable'weakDependency
+                                66 -> do y <- (do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
+                                                  Data.ProtoLens.Encoding.Bytes.isolate
+                                                    (Prelude.fromIntegral len)
+                                                    Data.ProtoLens.parseMessage)
                                                 Data.ProtoLens.Encoding.Bytes.<?> "options"
                                          loop
                                            (Lens.Family2.set
@@ -4356,11 +4856,17 @@ instance Data.ProtoLens.Message FileDescriptorProto where
                                                     (Lens.Labels.Proxy#) "options"))
                                               y
                                               x)
-                                74 -> do y <- (do value <- do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
-                                                              Data.ProtoLens.Encoding.Bytes.getBytes
-                                                                (Prelude.fromIntegral len)
-                                                  Data.ProtoLens.Encoding.Bytes.runEither
-                                                    (Data.ProtoLens.decodeMessage value))
+                                           mutable'dependency
+                                           mutable'enumType
+                                           mutable'extension
+                                           mutable'messageType
+                                           mutable'publicDependency
+                                           mutable'service
+                                           mutable'weakDependency
+                                74 -> do y <- (do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
+                                                  Data.ProtoLens.Encoding.Bytes.isolate
+                                                    (Prelude.fromIntegral len)
+                                                    Data.ProtoLens.parseMessage)
                                                 Data.ProtoLens.Encoding.Bytes.<?> "source_code_info"
                                          loop
                                            (Lens.Family2.set
@@ -4369,6 +4875,13 @@ instance Data.ProtoLens.Message FileDescriptorProto where
                                                     (Lens.Labels.Proxy#) "sourceCodeInfo"))
                                               y
                                               x)
+                                           mutable'dependency
+                                           mutable'enumType
+                                           mutable'extension
+                                           mutable'messageType
+                                           mutable'publicDependency
+                                           mutable'service
+                                           mutable'weakDependency
                                 98 -> do y <- (do value <- do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
                                                               Data.ProtoLens.Encoding.Bytes.getBytes
                                                                 (Prelude.fromIntegral len)
@@ -4385,15 +4898,48 @@ instance Data.ProtoLens.Message FileDescriptorProto where
                                                     (Lens.Labels.Proxy#) "syntax"))
                                               y
                                               x)
+                                           mutable'dependency
+                                           mutable'enumType
+                                           mutable'extension
+                                           mutable'messageType
+                                           mutable'publicDependency
+                                           mutable'service
+                                           mutable'weakDependency
                                 wire -> do !y <- Data.ProtoLens.Encoding.Wire.parseTaggedValueFromWire
                                                    wire
                                            loop
                                              (Lens.Family2.over Data.ProtoLens.unknownFields
                                                 (\ !t -> (:) y t)
                                                 x)
+                                             mutable'dependency
+                                             mutable'enumType
+                                             mutable'extension
+                                             mutable'messageType
+                                             mutable'publicDependency
+                                             mutable'service
+                                             mutable'weakDependency
               in
-              (loop Data.ProtoLens.defMessage) Data.ProtoLens.Encoding.Bytes.<?>
-                "FileDescriptorProto"
+              (do mutable'dependency <- Data.ProtoLens.Encoding.Parser.Unsafe.unsafeLiftIO
+                                          Data.ProtoLens.Encoding.Growing.new
+                  mutable'enumType <- Data.ProtoLens.Encoding.Parser.Unsafe.unsafeLiftIO
+                                        Data.ProtoLens.Encoding.Growing.new
+                  mutable'extension <- Data.ProtoLens.Encoding.Parser.Unsafe.unsafeLiftIO
+                                         Data.ProtoLens.Encoding.Growing.new
+                  mutable'messageType <- Data.ProtoLens.Encoding.Parser.Unsafe.unsafeLiftIO
+                                           Data.ProtoLens.Encoding.Growing.new
+                  mutable'publicDependency <- Data.ProtoLens.Encoding.Parser.Unsafe.unsafeLiftIO
+                                                Data.ProtoLens.Encoding.Growing.new
+                  mutable'service <- Data.ProtoLens.Encoding.Parser.Unsafe.unsafeLiftIO
+                                       Data.ProtoLens.Encoding.Growing.new
+                  mutable'weakDependency <- Data.ProtoLens.Encoding.Parser.Unsafe.unsafeLiftIO
+                                              Data.ProtoLens.Encoding.Growing.new
+                  loop Data.ProtoLens.defMessage mutable'dependency mutable'enumType
+                    mutable'extension
+                    mutable'messageType
+                    mutable'publicDependency
+                    mutable'service
+                    mutable'weakDependency)
+                Data.ProtoLens.Encoding.Bytes.<?> "FileDescriptorProto"
         buildMessage
           = (\ _x ->
                (case
@@ -4431,110 +4977,102 @@ instance Data.ProtoLens.Message FileDescriptorProto where
                                               Prelude.. Data.Text.Encoding.encodeUtf8)
                                              _v)
                    Data.Monoid.<>
-                   (Data.Monoid.mconcat
-                      (Prelude.map
-                         (\ _v ->
-                            (Data.ProtoLens.Encoding.Bytes.putVarInt 26) Data.Monoid.<>
-                              (((\ bs ->
-                                   (Data.ProtoLens.Encoding.Bytes.putVarInt
-                                      (Prelude.fromIntegral (Data.ByteString.length bs)))
-                                     Data.Monoid.<> Data.ProtoLens.Encoding.Bytes.putBytes bs))
-                                 Prelude.. Data.Text.Encoding.encodeUtf8)
-                                _v)
-                         (Lens.Family2.view
-                            (Lens.Labels.lensOf'
-                               ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "dependency"))
-                            _x)))
+                   (Data.ProtoLens.Encoding.Bytes.foldMapBuilder
+                      (\ _v ->
+                         (Data.ProtoLens.Encoding.Bytes.putVarInt 26) Data.Monoid.<>
+                           (((\ bs ->
+                                (Data.ProtoLens.Encoding.Bytes.putVarInt
+                                   (Prelude.fromIntegral (Data.ByteString.length bs)))
+                                  Data.Monoid.<> Data.ProtoLens.Encoding.Bytes.putBytes bs))
+                              Prelude.. Data.Text.Encoding.encodeUtf8)
+                             _v)
+                      (Lens.Family2.view
+                         (Lens.Labels.lensOf'
+                            ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "vec'dependency"))
+                         _x))
                      Data.Monoid.<>
-                     (Data.Monoid.mconcat
-                        (Prelude.map
-                           (\ _v ->
-                              (Data.ProtoLens.Encoding.Bytes.putVarInt 80) Data.Monoid.<>
-                                ((Data.ProtoLens.Encoding.Bytes.putVarInt) Prelude..
-                                   Prelude.fromIntegral)
-                                  _v)
-                           (Lens.Family2.view
-                              (Lens.Labels.lensOf'
-                                 ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "publicDependency"))
-                              _x)))
+                     (Data.ProtoLens.Encoding.Bytes.foldMapBuilder
+                        (\ _v ->
+                           (Data.ProtoLens.Encoding.Bytes.putVarInt 80) Data.Monoid.<>
+                             ((Data.ProtoLens.Encoding.Bytes.putVarInt) Prelude..
+                                Prelude.fromIntegral)
+                               _v)
+                        (Lens.Family2.view
+                           (Lens.Labels.lensOf'
+                              ((Lens.Labels.proxy#) ::
+                                 (Lens.Labels.Proxy#) "vec'publicDependency"))
+                           _x))
                        Data.Monoid.<>
-                       (Data.Monoid.mconcat
-                          (Prelude.map
-                             (\ _v ->
-                                (Data.ProtoLens.Encoding.Bytes.putVarInt 88) Data.Monoid.<>
-                                  ((Data.ProtoLens.Encoding.Bytes.putVarInt) Prelude..
-                                     Prelude.fromIntegral)
-                                    _v)
-                             (Lens.Family2.view
-                                (Lens.Labels.lensOf'
-                                   ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "weakDependency"))
-                                _x)))
+                       (Data.ProtoLens.Encoding.Bytes.foldMapBuilder
+                          (\ _v ->
+                             (Data.ProtoLens.Encoding.Bytes.putVarInt 88) Data.Monoid.<>
+                               ((Data.ProtoLens.Encoding.Bytes.putVarInt) Prelude..
+                                  Prelude.fromIntegral)
+                                 _v)
+                          (Lens.Family2.view
+                             (Lens.Labels.lensOf'
+                                ((Lens.Labels.proxy#) ::
+                                   (Lens.Labels.Proxy#) "vec'weakDependency"))
+                             _x))
                          Data.Monoid.<>
-                         (Data.Monoid.mconcat
-                            (Prelude.map
-                               (\ _v ->
-                                  (Data.ProtoLens.Encoding.Bytes.putVarInt 34) Data.Monoid.<>
-                                    (((\ bs ->
-                                         (Data.ProtoLens.Encoding.Bytes.putVarInt
-                                            (Prelude.fromIntegral (Data.ByteString.length bs)))
-                                           Data.Monoid.<>
-                                           Data.ProtoLens.Encoding.Bytes.putBytes bs))
-                                       Prelude.. Data.ProtoLens.encodeMessage)
-                                      _v)
-                               (Lens.Family2.view
-                                  (Lens.Labels.lensOf'
-                                     ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "messageType"))
-                                  _x)))
+                         (Data.ProtoLens.Encoding.Bytes.foldMapBuilder
+                            (\ _v ->
+                               (Data.ProtoLens.Encoding.Bytes.putVarInt 34) Data.Monoid.<>
+                                 (((\ bs ->
+                                      (Data.ProtoLens.Encoding.Bytes.putVarInt
+                                         (Prelude.fromIntegral (Data.ByteString.length bs)))
+                                        Data.Monoid.<> Data.ProtoLens.Encoding.Bytes.putBytes bs))
+                                    Prelude.. Data.ProtoLens.encodeMessage)
+                                   _v)
+                            (Lens.Family2.view
+                               (Lens.Labels.lensOf'
+                                  ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "vec'messageType"))
+                               _x))
                            Data.Monoid.<>
-                           (Data.Monoid.mconcat
-                              (Prelude.map
-                                 (\ _v ->
-                                    (Data.ProtoLens.Encoding.Bytes.putVarInt 42) Data.Monoid.<>
-                                      (((\ bs ->
-                                           (Data.ProtoLens.Encoding.Bytes.putVarInt
-                                              (Prelude.fromIntegral (Data.ByteString.length bs)))
-                                             Data.Monoid.<>
-                                             Data.ProtoLens.Encoding.Bytes.putBytes bs))
-                                         Prelude.. Data.ProtoLens.encodeMessage)
-                                        _v)
-                                 (Lens.Family2.view
-                                    (Lens.Labels.lensOf'
-                                       ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "enumType"))
-                                    _x)))
+                           (Data.ProtoLens.Encoding.Bytes.foldMapBuilder
+                              (\ _v ->
+                                 (Data.ProtoLens.Encoding.Bytes.putVarInt 42) Data.Monoid.<>
+                                   (((\ bs ->
+                                        (Data.ProtoLens.Encoding.Bytes.putVarInt
+                                           (Prelude.fromIntegral (Data.ByteString.length bs)))
+                                          Data.Monoid.<> Data.ProtoLens.Encoding.Bytes.putBytes bs))
+                                      Prelude.. Data.ProtoLens.encodeMessage)
+                                     _v)
+                              (Lens.Family2.view
+                                 (Lens.Labels.lensOf'
+                                    ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "vec'enumType"))
+                                 _x))
                              Data.Monoid.<>
-                             (Data.Monoid.mconcat
-                                (Prelude.map
-                                   (\ _v ->
-                                      (Data.ProtoLens.Encoding.Bytes.putVarInt 50) Data.Monoid.<>
-                                        (((\ bs ->
-                                             (Data.ProtoLens.Encoding.Bytes.putVarInt
-                                                (Prelude.fromIntegral (Data.ByteString.length bs)))
-                                               Data.Monoid.<>
-                                               Data.ProtoLens.Encoding.Bytes.putBytes bs))
-                                           Prelude.. Data.ProtoLens.encodeMessage)
-                                          _v)
-                                   (Lens.Family2.view
-                                      (Lens.Labels.lensOf'
-                                         ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "service"))
-                                      _x)))
+                             (Data.ProtoLens.Encoding.Bytes.foldMapBuilder
+                                (\ _v ->
+                                   (Data.ProtoLens.Encoding.Bytes.putVarInt 50) Data.Monoid.<>
+                                     (((\ bs ->
+                                          (Data.ProtoLens.Encoding.Bytes.putVarInt
+                                             (Prelude.fromIntegral (Data.ByteString.length bs)))
+                                            Data.Monoid.<>
+                                            Data.ProtoLens.Encoding.Bytes.putBytes bs))
+                                        Prelude.. Data.ProtoLens.encodeMessage)
+                                       _v)
+                                (Lens.Family2.view
+                                   (Lens.Labels.lensOf'
+                                      ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "vec'service"))
+                                   _x))
                                Data.Monoid.<>
-                               (Data.Monoid.mconcat
-                                  (Prelude.map
-                                     (\ _v ->
-                                        (Data.ProtoLens.Encoding.Bytes.putVarInt 58) Data.Monoid.<>
-                                          (((\ bs ->
-                                               (Data.ProtoLens.Encoding.Bytes.putVarInt
-                                                  (Prelude.fromIntegral
-                                                     (Data.ByteString.length bs)))
-                                                 Data.Monoid.<>
-                                                 Data.ProtoLens.Encoding.Bytes.putBytes bs))
-                                             Prelude.. Data.ProtoLens.encodeMessage)
-                                            _v)
-                                     (Lens.Family2.view
-                                        (Lens.Labels.lensOf'
-                                           ((Lens.Labels.proxy#) ::
-                                              (Lens.Labels.Proxy#) "extension"))
-                                        _x)))
+                               (Data.ProtoLens.Encoding.Bytes.foldMapBuilder
+                                  (\ _v ->
+                                     (Data.ProtoLens.Encoding.Bytes.putVarInt 58) Data.Monoid.<>
+                                       (((\ bs ->
+                                            (Data.ProtoLens.Encoding.Bytes.putVarInt
+                                               (Prelude.fromIntegral (Data.ByteString.length bs)))
+                                              Data.Monoid.<>
+                                              Data.ProtoLens.Encoding.Bytes.putBytes bs))
+                                          Prelude.. Data.ProtoLens.encodeMessage)
+                                         _v)
+                                  (Lens.Family2.view
+                                     (Lens.Labels.lensOf'
+                                        ((Lens.Labels.proxy#) ::
+                                           (Lens.Labels.Proxy#) "vec'extension"))
+                                     _x))
                                  Data.Monoid.<>
                                  (case
                                     Lens.Family2.view
@@ -4629,9 +5167,10 @@ instance Control.DeepSeq.NFData FileDescriptorProto where
 {- | Fields :
 
     * 'Proto.Google.Protobuf.Descriptor_Fields.file' @:: Lens' FileDescriptorSet [FileDescriptorProto]@
+    * 'Proto.Google.Protobuf.Descriptor_Fields.vec'file' @:: Lens' FileDescriptorSet (Data.Vector.Vector FileDescriptorProto)@
  -}
 data FileDescriptorSet = FileDescriptorSet{_FileDescriptorSet'file
-                                           :: ![FileDescriptorProto],
+                                           :: !(Data.Vector.Vector FileDescriptorProto),
                                            _FileDescriptorSet'_unknownFields ::
                                            !Data.ProtoLens.FieldSet}
                            deriving (Prelude.Eq, Prelude.Ord)
@@ -4642,6 +5181,15 @@ instance Prelude.Show FileDescriptorSet where
                  (Prelude.showChar '}' __s))
 instance a ~ ([FileDescriptorProto]) =>
          Lens.Labels.HasLens' FileDescriptorSet "file" a
+         where
+        lensOf' _
+          = (Lens.Family2.Unchecked.lens _FileDescriptorSet'file
+               (\ x__ y__ -> x__{_FileDescriptorSet'file = y__}))
+              Prelude..
+              Lens.Family2.Unchecked.lens Data.Vector.Generic.toList
+                (\ _ y__ -> Data.Vector.Generic.fromList y__)
+instance a ~ (Data.Vector.Vector FileDescriptorProto) =>
+         Lens.Labels.HasLens' FileDescriptorSet "vec'file" a
          where
         lensOf' _
           = (Lens.Family2.Unchecked.lens _FileDescriptorSet'file
@@ -4664,16 +5212,23 @@ instance Data.ProtoLens.Message FileDescriptorSet where
           = Lens.Family2.Unchecked.lens _FileDescriptorSet'_unknownFields
               (\ x__ y__ -> x__{_FileDescriptorSet'_unknownFields = y__})
         defMessage
-          = FileDescriptorSet{_FileDescriptorSet'file = [],
+          = FileDescriptorSet{_FileDescriptorSet'file =
+                                Data.Vector.Generic.empty,
                               _FileDescriptorSet'_unknownFields = ([])}
         parseMessage
           = let loop ::
                      FileDescriptorSet ->
-                       Data.ProtoLens.Encoding.Bytes.Parser FileDescriptorSet
-                loop x
+                       Data.ProtoLens.Encoding.Growing.Growing Data.Vector.Vector
+                         Data.ProtoLens.Encoding.Growing.RealWorld
+                         FileDescriptorProto
+                         -> Data.ProtoLens.Encoding.Bytes.Parser FileDescriptorSet
+                loop x mutable'file
                   = do end <- Data.ProtoLens.Encoding.Bytes.atEnd
                        if end then
-                         do let missing = [] in
+                         do frozen'file <- Data.ProtoLens.Encoding.Parser.Unsafe.unsafeLiftIO
+                                             (Data.ProtoLens.Encoding.Growing.unsafeFreeze
+                                                mutable'file)
+                            let missing = [] in
                               if Prelude.null missing then Prelude.return () else
                                 Prelude.fail
                                   (("Missing required fields: ") Prelude.++
@@ -4681,52 +5236,50 @@ instance Data.ProtoLens.Message FileDescriptorSet where
                             Prelude.return
                               (Lens.Family2.over Data.ProtoLens.unknownFields
                                  (\ !t -> Prelude.reverse t)
-                                 (Lens.Family2.over
+                                 (Lens.Family2.set
                                     (Lens.Labels.lensOf'
-                                       ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "file"))
-                                    (\ !t -> Prelude.reverse t)
+                                       ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "vec'file"))
+                                    frozen'file
                                     x))
                          else
                          do tag <- Data.ProtoLens.Encoding.Bytes.getVarInt
                             case tag of
-                                10 -> do !y <- (do value <- do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
-                                                               Data.ProtoLens.Encoding.Bytes.getBytes
-                                                                 (Prelude.fromIntegral len)
-                                                   Data.ProtoLens.Encoding.Bytes.runEither
-                                                     (Data.ProtoLens.decodeMessage value))
+                                10 -> do !y <- (do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
+                                                   Data.ProtoLens.Encoding.Bytes.isolate
+                                                     (Prelude.fromIntegral len)
+                                                     Data.ProtoLens.parseMessage)
                                                  Data.ProtoLens.Encoding.Bytes.<?> "file"
-                                         loop
-                                           (Lens.Family2.over
-                                              (Lens.Labels.lensOf'
-                                                 ((Lens.Labels.proxy#) ::
-                                                    (Lens.Labels.Proxy#) "file"))
-                                              (\ !t -> (:) y t)
-                                              x)
+                                         v <- Data.ProtoLens.Encoding.Parser.Unsafe.unsafeLiftIO
+                                                (Data.ProtoLens.Encoding.Growing.append mutable'file
+                                                   y)
+                                         loop x v
                                 wire -> do !y <- Data.ProtoLens.Encoding.Wire.parseTaggedValueFromWire
                                                    wire
                                            loop
                                              (Lens.Family2.over Data.ProtoLens.unknownFields
                                                 (\ !t -> (:) y t)
                                                 x)
+                                             mutable'file
               in
-              (loop Data.ProtoLens.defMessage) Data.ProtoLens.Encoding.Bytes.<?>
-                "FileDescriptorSet"
+              (do mutable'file <- Data.ProtoLens.Encoding.Parser.Unsafe.unsafeLiftIO
+                                    Data.ProtoLens.Encoding.Growing.new
+                  loop Data.ProtoLens.defMessage mutable'file)
+                Data.ProtoLens.Encoding.Bytes.<?> "FileDescriptorSet"
         buildMessage
           = (\ _x ->
-               (Data.Monoid.mconcat
-                  (Prelude.map
-                     (\ _v ->
-                        (Data.ProtoLens.Encoding.Bytes.putVarInt 10) Data.Monoid.<>
-                          (((\ bs ->
-                               (Data.ProtoLens.Encoding.Bytes.putVarInt
-                                  (Prelude.fromIntegral (Data.ByteString.length bs)))
-                                 Data.Monoid.<> Data.ProtoLens.Encoding.Bytes.putBytes bs))
-                             Prelude.. Data.ProtoLens.encodeMessage)
-                            _v)
-                     (Lens.Family2.view
-                        (Lens.Labels.lensOf'
-                           ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "file"))
-                        _x)))
+               (Data.ProtoLens.Encoding.Bytes.foldMapBuilder
+                  (\ _v ->
+                     (Data.ProtoLens.Encoding.Bytes.putVarInt 10) Data.Monoid.<>
+                       (((\ bs ->
+                            (Data.ProtoLens.Encoding.Bytes.putVarInt
+                               (Prelude.fromIntegral (Data.ByteString.length bs)))
+                              Data.Monoid.<> Data.ProtoLens.Encoding.Bytes.putBytes bs))
+                          Prelude.. Data.ProtoLens.encodeMessage)
+                         _v)
+                  (Lens.Family2.view
+                     (Lens.Labels.lensOf'
+                        ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "vec'file"))
+                     _x))
                  Data.Monoid.<>
                  Data.ProtoLens.Encoding.Wire.buildFieldSet
                    (Lens.Family2.view Data.ProtoLens.unknownFields _x))
@@ -4778,6 +5331,7 @@ instance Control.DeepSeq.NFData FileDescriptorSet where
     * 'Proto.Google.Protobuf.Descriptor_Fields.rubyPackage' @:: Lens' FileOptions Data.Text.Text@
     * 'Proto.Google.Protobuf.Descriptor_Fields.maybe'rubyPackage' @:: Lens' FileOptions (Prelude.Maybe Data.Text.Text)@
     * 'Proto.Google.Protobuf.Descriptor_Fields.uninterpretedOption' @:: Lens' FileOptions [UninterpretedOption]@
+    * 'Proto.Google.Protobuf.Descriptor_Fields.vec'uninterpretedOption' @:: Lens' FileOptions (Data.Vector.Vector UninterpretedOption)@
  -}
 data FileOptions = FileOptions{_FileOptions'javaPackage ::
                                !(Prelude.Maybe Data.Text.Text),
@@ -4803,7 +5357,8 @@ data FileOptions = FileOptions{_FileOptions'javaPackage ::
                                _FileOptions'phpMetadataNamespace ::
                                !(Prelude.Maybe Data.Text.Text),
                                _FileOptions'rubyPackage :: !(Prelude.Maybe Data.Text.Text),
-                               _FileOptions'uninterpretedOption :: ![UninterpretedOption],
+                               _FileOptions'uninterpretedOption ::
+                               !(Data.Vector.Vector UninterpretedOption),
                                _FileOptions'_unknownFields :: !Data.ProtoLens.FieldSet}
                      deriving (Prelude.Eq, Prelude.Ord)
 instance Prelude.Show FileOptions where
@@ -5100,6 +5655,15 @@ instance a ~ ([UninterpretedOption]) =>
         lensOf' _
           = (Lens.Family2.Unchecked.lens _FileOptions'uninterpretedOption
                (\ x__ y__ -> x__{_FileOptions'uninterpretedOption = y__}))
+              Prelude..
+              Lens.Family2.Unchecked.lens Data.Vector.Generic.toList
+                (\ _ y__ -> Data.Vector.Generic.fromList y__)
+instance a ~ (Data.Vector.Vector UninterpretedOption) =>
+         Lens.Labels.HasLens' FileOptions "vec'uninterpretedOption" a
+         where
+        lensOf' _
+          = (Lens.Family2.Unchecked.lens _FileOptions'uninterpretedOption
+               (\ x__ y__ -> x__{_FileOptions'uninterpretedOption = y__}))
               Prelude.. Prelude.id
 instance Data.ProtoLens.Message FileOptions where
         messageName _ = Data.Text.pack "google.protobuf.FileOptions"
@@ -5339,15 +5903,22 @@ instance Data.ProtoLens.Message FileOptions where
                         _FileOptions'phpNamespace = Prelude.Nothing,
                         _FileOptions'phpMetadataNamespace = Prelude.Nothing,
                         _FileOptions'rubyPackage = Prelude.Nothing,
-                        _FileOptions'uninterpretedOption = [],
+                        _FileOptions'uninterpretedOption = Data.Vector.Generic.empty,
                         _FileOptions'_unknownFields = ([])}
         parseMessage
           = let loop ::
-                     FileOptions -> Data.ProtoLens.Encoding.Bytes.Parser FileOptions
-                loop x
+                     FileOptions ->
+                       Data.ProtoLens.Encoding.Growing.Growing Data.Vector.Vector
+                         Data.ProtoLens.Encoding.Growing.RealWorld
+                         UninterpretedOption
+                         -> Data.ProtoLens.Encoding.Bytes.Parser FileOptions
+                loop x mutable'uninterpretedOption
                   = do end <- Data.ProtoLens.Encoding.Bytes.atEnd
                        if end then
-                         do let missing = [] in
+                         do frozen'uninterpretedOption <- Data.ProtoLens.Encoding.Parser.Unsafe.unsafeLiftIO
+                                                            (Data.ProtoLens.Encoding.Growing.unsafeFreeze
+                                                               mutable'uninterpretedOption)
+                            let missing = [] in
                               if Prelude.null missing then Prelude.return () else
                                 Prelude.fail
                                   (("Missing required fields: ") Prelude.++
@@ -5355,11 +5926,11 @@ instance Data.ProtoLens.Message FileOptions where
                             Prelude.return
                               (Lens.Family2.over Data.ProtoLens.unknownFields
                                  (\ !t -> Prelude.reverse t)
-                                 (Lens.Family2.over
+                                 (Lens.Family2.set
                                     (Lens.Labels.lensOf'
                                        ((Lens.Labels.proxy#) ::
-                                          (Lens.Labels.Proxy#) "uninterpretedOption"))
-                                    (\ !t -> Prelude.reverse t)
+                                          (Lens.Labels.Proxy#) "vec'uninterpretedOption"))
+                                    frozen'uninterpretedOption
                                     x))
                          else
                          do tag <- Data.ProtoLens.Encoding.Bytes.getVarInt
@@ -5380,6 +5951,7 @@ instance Data.ProtoLens.Message FileOptions where
                                                     (Lens.Labels.Proxy#) "javaPackage"))
                                               y
                                               x)
+                                           mutable'uninterpretedOption
                                 66 -> do y <- (do value <- do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
                                                               Data.ProtoLens.Encoding.Bytes.getBytes
                                                                 (Prelude.fromIntegral len)
@@ -5397,6 +5969,7 @@ instance Data.ProtoLens.Message FileOptions where
                                                     (Lens.Labels.Proxy#) "javaOuterClassname"))
                                               y
                                               x)
+                                           mutable'uninterpretedOption
                                 80 -> do y <- (Prelude.fmap ((Prelude./=) 0)
                                                  Data.ProtoLens.Encoding.Bytes.getVarInt)
                                                 Data.ProtoLens.Encoding.Bytes.<?>
@@ -5408,6 +5981,7 @@ instance Data.ProtoLens.Message FileOptions where
                                                     (Lens.Labels.Proxy#) "javaMultipleFiles"))
                                               y
                                               x)
+                                           mutable'uninterpretedOption
                                 160 -> do y <- (Prelude.fmap ((Prelude./=) 0)
                                                   Data.ProtoLens.Encoding.Bytes.getVarInt)
                                                  Data.ProtoLens.Encoding.Bytes.<?>
@@ -5420,6 +5994,7 @@ instance Data.ProtoLens.Message FileOptions where
                                                        "javaGenerateEqualsAndHash"))
                                                y
                                                x)
+                                            mutable'uninterpretedOption
                                 216 -> do y <- (Prelude.fmap ((Prelude./=) 0)
                                                   Data.ProtoLens.Encoding.Bytes.getVarInt)
                                                  Data.ProtoLens.Encoding.Bytes.<?>
@@ -5431,6 +6006,7 @@ instance Data.ProtoLens.Message FileOptions where
                                                      (Lens.Labels.Proxy#) "javaStringCheckUtf8"))
                                                y
                                                x)
+                                            mutable'uninterpretedOption
                                 72 -> do y <- (Prelude.fmap Prelude.toEnum
                                                  (Prelude.fmap Prelude.fromIntegral
                                                     Data.ProtoLens.Encoding.Bytes.getVarInt))
@@ -5442,6 +6018,7 @@ instance Data.ProtoLens.Message FileOptions where
                                                     (Lens.Labels.Proxy#) "optimizeFor"))
                                               y
                                               x)
+                                           mutable'uninterpretedOption
                                 90 -> do y <- (do value <- do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
                                                               Data.ProtoLens.Encoding.Bytes.getBytes
                                                                 (Prelude.fromIntegral len)
@@ -5458,6 +6035,7 @@ instance Data.ProtoLens.Message FileOptions where
                                                     (Lens.Labels.Proxy#) "goPackage"))
                                               y
                                               x)
+                                           mutable'uninterpretedOption
                                 128 -> do y <- (Prelude.fmap ((Prelude./=) 0)
                                                   Data.ProtoLens.Encoding.Bytes.getVarInt)
                                                  Data.ProtoLens.Encoding.Bytes.<?>
@@ -5469,6 +6047,7 @@ instance Data.ProtoLens.Message FileOptions where
                                                      (Lens.Labels.Proxy#) "ccGenericServices"))
                                                y
                                                x)
+                                            mutable'uninterpretedOption
                                 136 -> do y <- (Prelude.fmap ((Prelude./=) 0)
                                                   Data.ProtoLens.Encoding.Bytes.getVarInt)
                                                  Data.ProtoLens.Encoding.Bytes.<?>
@@ -5480,6 +6059,7 @@ instance Data.ProtoLens.Message FileOptions where
                                                      (Lens.Labels.Proxy#) "javaGenericServices"))
                                                y
                                                x)
+                                            mutable'uninterpretedOption
                                 144 -> do y <- (Prelude.fmap ((Prelude./=) 0)
                                                   Data.ProtoLens.Encoding.Bytes.getVarInt)
                                                  Data.ProtoLens.Encoding.Bytes.<?>
@@ -5491,6 +6071,7 @@ instance Data.ProtoLens.Message FileOptions where
                                                      (Lens.Labels.Proxy#) "pyGenericServices"))
                                                y
                                                x)
+                                            mutable'uninterpretedOption
                                 336 -> do y <- (Prelude.fmap ((Prelude./=) 0)
                                                   Data.ProtoLens.Encoding.Bytes.getVarInt)
                                                  Data.ProtoLens.Encoding.Bytes.<?>
@@ -5502,6 +6083,7 @@ instance Data.ProtoLens.Message FileOptions where
                                                      (Lens.Labels.Proxy#) "phpGenericServices"))
                                                y
                                                x)
+                                            mutable'uninterpretedOption
                                 184 -> do y <- (Prelude.fmap ((Prelude./=) 0)
                                                   Data.ProtoLens.Encoding.Bytes.getVarInt)
                                                  Data.ProtoLens.Encoding.Bytes.<?> "deprecated"
@@ -5512,6 +6094,7 @@ instance Data.ProtoLens.Message FileOptions where
                                                      (Lens.Labels.Proxy#) "deprecated"))
                                                y
                                                x)
+                                            mutable'uninterpretedOption
                                 248 -> do y <- (Prelude.fmap ((Prelude./=) 0)
                                                   Data.ProtoLens.Encoding.Bytes.getVarInt)
                                                  Data.ProtoLens.Encoding.Bytes.<?>
@@ -5523,6 +6106,7 @@ instance Data.ProtoLens.Message FileOptions where
                                                      (Lens.Labels.Proxy#) "ccEnableArenas"))
                                                y
                                                x)
+                                            mutable'uninterpretedOption
                                 290 -> do y <- (do value <- do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
                                                                Data.ProtoLens.Encoding.Bytes.getBytes
                                                                  (Prelude.fromIntegral len)
@@ -5540,6 +6124,7 @@ instance Data.ProtoLens.Message FileOptions where
                                                      (Lens.Labels.Proxy#) "objcClassPrefix"))
                                                y
                                                x)
+                                            mutable'uninterpretedOption
                                 298 -> do y <- (do value <- do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
                                                                Data.ProtoLens.Encoding.Bytes.getBytes
                                                                  (Prelude.fromIntegral len)
@@ -5557,6 +6142,7 @@ instance Data.ProtoLens.Message FileOptions where
                                                      (Lens.Labels.Proxy#) "csharpNamespace"))
                                                y
                                                x)
+                                            mutable'uninterpretedOption
                                 314 -> do y <- (do value <- do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
                                                                Data.ProtoLens.Encoding.Bytes.getBytes
                                                                  (Prelude.fromIntegral len)
@@ -5573,6 +6159,7 @@ instance Data.ProtoLens.Message FileOptions where
                                                      (Lens.Labels.Proxy#) "swiftPrefix"))
                                                y
                                                x)
+                                            mutable'uninterpretedOption
                                 322 -> do y <- (do value <- do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
                                                                Data.ProtoLens.Encoding.Bytes.getBytes
                                                                  (Prelude.fromIntegral len)
@@ -5590,6 +6177,7 @@ instance Data.ProtoLens.Message FileOptions where
                                                      (Lens.Labels.Proxy#) "phpClassPrefix"))
                                                y
                                                x)
+                                            mutable'uninterpretedOption
                                 330 -> do y <- (do value <- do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
                                                                Data.ProtoLens.Encoding.Bytes.getBytes
                                                                  (Prelude.fromIntegral len)
@@ -5606,6 +6194,7 @@ instance Data.ProtoLens.Message FileOptions where
                                                      (Lens.Labels.Proxy#) "phpNamespace"))
                                                y
                                                x)
+                                            mutable'uninterpretedOption
                                 354 -> do y <- (do value <- do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
                                                                Data.ProtoLens.Encoding.Bytes.getBytes
                                                                  (Prelude.fromIntegral len)
@@ -5623,6 +6212,7 @@ instance Data.ProtoLens.Message FileOptions where
                                                      (Lens.Labels.Proxy#) "phpMetadataNamespace"))
                                                y
                                                x)
+                                            mutable'uninterpretedOption
                                 362 -> do y <- (do value <- do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
                                                                Data.ProtoLens.Encoding.Bytes.getBytes
                                                                  (Prelude.fromIntegral len)
@@ -5639,29 +6229,30 @@ instance Data.ProtoLens.Message FileOptions where
                                                      (Lens.Labels.Proxy#) "rubyPackage"))
                                                y
                                                x)
-                                7994 -> do !y <- (do value <- do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
-                                                                 Data.ProtoLens.Encoding.Bytes.getBytes
-                                                                   (Prelude.fromIntegral len)
-                                                     Data.ProtoLens.Encoding.Bytes.runEither
-                                                       (Data.ProtoLens.decodeMessage value))
+                                            mutable'uninterpretedOption
+                                7994 -> do !y <- (do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
+                                                     Data.ProtoLens.Encoding.Bytes.isolate
+                                                       (Prelude.fromIntegral len)
+                                                       Data.ProtoLens.parseMessage)
                                                    Data.ProtoLens.Encoding.Bytes.<?>
                                                    "uninterpreted_option"
-                                           loop
-                                             (Lens.Family2.over
-                                                (Lens.Labels.lensOf'
-                                                   ((Lens.Labels.proxy#) ::
-                                                      (Lens.Labels.Proxy#) "uninterpretedOption"))
-                                                (\ !t -> (:) y t)
-                                                x)
+                                           v <- Data.ProtoLens.Encoding.Parser.Unsafe.unsafeLiftIO
+                                                  (Data.ProtoLens.Encoding.Growing.append
+                                                     mutable'uninterpretedOption
+                                                     y)
+                                           loop x v
                                 wire -> do !y <- Data.ProtoLens.Encoding.Wire.parseTaggedValueFromWire
                                                    wire
                                            loop
                                              (Lens.Family2.over Data.ProtoLens.unknownFields
                                                 (\ !t -> (:) y t)
                                                 x)
+                                             mutable'uninterpretedOption
               in
-              (loop Data.ProtoLens.defMessage) Data.ProtoLens.Encoding.Bytes.<?>
-                "FileOptions"
+              (do mutable'uninterpretedOption <- Data.ProtoLens.Encoding.Parser.Unsafe.unsafeLiftIO
+                                                   Data.ProtoLens.Encoding.Growing.new
+                  loop Data.ProtoLens.defMessage mutable'uninterpretedOption)
+                Data.ProtoLens.Encoding.Bytes.<?> "FileOptions"
         buildMessage
           = (\ _x ->
                (case
@@ -6031,29 +6622,28 @@ instance Data.ProtoLens.Message FileOptions where
                                                                        Data.Text.Encoding.encodeUtf8)
                                                                       _v)
                                                        Data.Monoid.<>
-                                                       (Data.Monoid.mconcat
-                                                          (Prelude.map
-                                                             (\ _v ->
-                                                                (Data.ProtoLens.Encoding.Bytes.putVarInt
-                                                                   7994)
-                                                                  Data.Monoid.<>
-                                                                  (((\ bs ->
-                                                                       (Data.ProtoLens.Encoding.Bytes.putVarInt
-                                                                          (Prelude.fromIntegral
-                                                                             (Data.ByteString.length
-                                                                                bs)))
-                                                                         Data.Monoid.<>
-                                                                         Data.ProtoLens.Encoding.Bytes.putBytes
-                                                                           bs))
-                                                                     Prelude..
-                                                                     Data.ProtoLens.encodeMessage)
-                                                                    _v)
-                                                             (Lens.Family2.view
-                                                                (Lens.Labels.lensOf'
-                                                                   ((Lens.Labels.proxy#) ::
-                                                                      (Lens.Labels.Proxy#)
-                                                                        "uninterpretedOption"))
-                                                                _x)))
+                                                       (Data.ProtoLens.Encoding.Bytes.foldMapBuilder
+                                                          (\ _v ->
+                                                             (Data.ProtoLens.Encoding.Bytes.putVarInt
+                                                                7994)
+                                                               Data.Monoid.<>
+                                                               (((\ bs ->
+                                                                    (Data.ProtoLens.Encoding.Bytes.putVarInt
+                                                                       (Prelude.fromIntegral
+                                                                          (Data.ByteString.length
+                                                                             bs)))
+                                                                      Data.Monoid.<>
+                                                                      Data.ProtoLens.Encoding.Bytes.putBytes
+                                                                        bs))
+                                                                  Prelude..
+                                                                  Data.ProtoLens.encodeMessage)
+                                                                 _v)
+                                                          (Lens.Family2.view
+                                                             (Lens.Labels.lensOf'
+                                                                ((Lens.Labels.proxy#) ::
+                                                                   (Lens.Labels.Proxy#)
+                                                                     "vec'uninterpretedOption"))
+                                                             _x))
                                                          Data.Monoid.<>
                                                          Data.ProtoLens.Encoding.Wire.buildFieldSet
                                                            (Lens.Family2.view
@@ -6158,9 +6748,11 @@ instance Control.DeepSeq.NFData FileOptions'OptimizeMode where
 {- | Fields :
 
     * 'Proto.Google.Protobuf.Descriptor_Fields.annotation' @:: Lens' GeneratedCodeInfo [GeneratedCodeInfo'Annotation]@
+    * 'Proto.Google.Protobuf.Descriptor_Fields.vec'annotation' @:: Lens' GeneratedCodeInfo
+  (Data.Vector.Vector GeneratedCodeInfo'Annotation)@
  -}
 data GeneratedCodeInfo = GeneratedCodeInfo{_GeneratedCodeInfo'annotation
-                                           :: ![GeneratedCodeInfo'Annotation],
+                                           :: !(Data.Vector.Vector GeneratedCodeInfo'Annotation),
                                            _GeneratedCodeInfo'_unknownFields ::
                                            !Data.ProtoLens.FieldSet}
                            deriving (Prelude.Eq, Prelude.Ord)
@@ -6171,6 +6763,15 @@ instance Prelude.Show GeneratedCodeInfo where
                  (Prelude.showChar '}' __s))
 instance a ~ ([GeneratedCodeInfo'Annotation]) =>
          Lens.Labels.HasLens' GeneratedCodeInfo "annotation" a
+         where
+        lensOf' _
+          = (Lens.Family2.Unchecked.lens _GeneratedCodeInfo'annotation
+               (\ x__ y__ -> x__{_GeneratedCodeInfo'annotation = y__}))
+              Prelude..
+              Lens.Family2.Unchecked.lens Data.Vector.Generic.toList
+                (\ _ y__ -> Data.Vector.Generic.fromList y__)
+instance a ~ (Data.Vector.Vector GeneratedCodeInfo'Annotation) =>
+         Lens.Labels.HasLens' GeneratedCodeInfo "vec'annotation" a
          where
         lensOf' _
           = (Lens.Family2.Unchecked.lens _GeneratedCodeInfo'annotation
@@ -6194,16 +6795,23 @@ instance Data.ProtoLens.Message GeneratedCodeInfo where
           = Lens.Family2.Unchecked.lens _GeneratedCodeInfo'_unknownFields
               (\ x__ y__ -> x__{_GeneratedCodeInfo'_unknownFields = y__})
         defMessage
-          = GeneratedCodeInfo{_GeneratedCodeInfo'annotation = [],
+          = GeneratedCodeInfo{_GeneratedCodeInfo'annotation =
+                                Data.Vector.Generic.empty,
                               _GeneratedCodeInfo'_unknownFields = ([])}
         parseMessage
           = let loop ::
                      GeneratedCodeInfo ->
-                       Data.ProtoLens.Encoding.Bytes.Parser GeneratedCodeInfo
-                loop x
+                       Data.ProtoLens.Encoding.Growing.Growing Data.Vector.Vector
+                         Data.ProtoLens.Encoding.Growing.RealWorld
+                         GeneratedCodeInfo'Annotation
+                         -> Data.ProtoLens.Encoding.Bytes.Parser GeneratedCodeInfo
+                loop x mutable'annotation
                   = do end <- Data.ProtoLens.Encoding.Bytes.atEnd
                        if end then
-                         do let missing = [] in
+                         do frozen'annotation <- Data.ProtoLens.Encoding.Parser.Unsafe.unsafeLiftIO
+                                                   (Data.ProtoLens.Encoding.Growing.unsafeFreeze
+                                                      mutable'annotation)
+                            let missing = [] in
                               if Prelude.null missing then Prelude.return () else
                                 Prelude.fail
                                   (("Missing required fields: ") Prelude.++
@@ -6211,52 +6819,52 @@ instance Data.ProtoLens.Message GeneratedCodeInfo where
                             Prelude.return
                               (Lens.Family2.over Data.ProtoLens.unknownFields
                                  (\ !t -> Prelude.reverse t)
-                                 (Lens.Family2.over
+                                 (Lens.Family2.set
                                     (Lens.Labels.lensOf'
-                                       ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "annotation"))
-                                    (\ !t -> Prelude.reverse t)
+                                       ((Lens.Labels.proxy#) ::
+                                          (Lens.Labels.Proxy#) "vec'annotation"))
+                                    frozen'annotation
                                     x))
                          else
                          do tag <- Data.ProtoLens.Encoding.Bytes.getVarInt
                             case tag of
-                                10 -> do !y <- (do value <- do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
-                                                               Data.ProtoLens.Encoding.Bytes.getBytes
-                                                                 (Prelude.fromIntegral len)
-                                                   Data.ProtoLens.Encoding.Bytes.runEither
-                                                     (Data.ProtoLens.decodeMessage value))
+                                10 -> do !y <- (do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
+                                                   Data.ProtoLens.Encoding.Bytes.isolate
+                                                     (Prelude.fromIntegral len)
+                                                     Data.ProtoLens.parseMessage)
                                                  Data.ProtoLens.Encoding.Bytes.<?> "annotation"
-                                         loop
-                                           (Lens.Family2.over
-                                              (Lens.Labels.lensOf'
-                                                 ((Lens.Labels.proxy#) ::
-                                                    (Lens.Labels.Proxy#) "annotation"))
-                                              (\ !t -> (:) y t)
-                                              x)
+                                         v <- Data.ProtoLens.Encoding.Parser.Unsafe.unsafeLiftIO
+                                                (Data.ProtoLens.Encoding.Growing.append
+                                                   mutable'annotation
+                                                   y)
+                                         loop x v
                                 wire -> do !y <- Data.ProtoLens.Encoding.Wire.parseTaggedValueFromWire
                                                    wire
                                            loop
                                              (Lens.Family2.over Data.ProtoLens.unknownFields
                                                 (\ !t -> (:) y t)
                                                 x)
+                                             mutable'annotation
               in
-              (loop Data.ProtoLens.defMessage) Data.ProtoLens.Encoding.Bytes.<?>
-                "GeneratedCodeInfo"
+              (do mutable'annotation <- Data.ProtoLens.Encoding.Parser.Unsafe.unsafeLiftIO
+                                          Data.ProtoLens.Encoding.Growing.new
+                  loop Data.ProtoLens.defMessage mutable'annotation)
+                Data.ProtoLens.Encoding.Bytes.<?> "GeneratedCodeInfo"
         buildMessage
           = (\ _x ->
-               (Data.Monoid.mconcat
-                  (Prelude.map
-                     (\ _v ->
-                        (Data.ProtoLens.Encoding.Bytes.putVarInt 10) Data.Monoid.<>
-                          (((\ bs ->
-                               (Data.ProtoLens.Encoding.Bytes.putVarInt
-                                  (Prelude.fromIntegral (Data.ByteString.length bs)))
-                                 Data.Monoid.<> Data.ProtoLens.Encoding.Bytes.putBytes bs))
-                             Prelude.. Data.ProtoLens.encodeMessage)
-                            _v)
-                     (Lens.Family2.view
-                        (Lens.Labels.lensOf'
-                           ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "annotation"))
-                        _x)))
+               (Data.ProtoLens.Encoding.Bytes.foldMapBuilder
+                  (\ _v ->
+                     (Data.ProtoLens.Encoding.Bytes.putVarInt 10) Data.Monoid.<>
+                       (((\ bs ->
+                            (Data.ProtoLens.Encoding.Bytes.putVarInt
+                               (Prelude.fromIntegral (Data.ByteString.length bs)))
+                              Data.Monoid.<> Data.ProtoLens.Encoding.Bytes.putBytes bs))
+                          Prelude.. Data.ProtoLens.encodeMessage)
+                         _v)
+                  (Lens.Family2.view
+                     (Lens.Labels.lensOf'
+                        ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "vec'annotation"))
+                     _x))
                  Data.Monoid.<>
                  Data.ProtoLens.Encoding.Wire.buildFieldSet
                    (Lens.Family2.view Data.ProtoLens.unknownFields _x))
@@ -6268,6 +6876,8 @@ instance Control.DeepSeq.NFData GeneratedCodeInfo where
 {- | Fields :
 
     * 'Proto.Google.Protobuf.Descriptor_Fields.path' @:: Lens' GeneratedCodeInfo'Annotation [Data.Int.Int32]@
+    * 'Proto.Google.Protobuf.Descriptor_Fields.vec'path' @:: Lens' GeneratedCodeInfo'Annotation
+  (Data.Vector.Unboxed.Vector Data.Int.Int32)@
     * 'Proto.Google.Protobuf.Descriptor_Fields.sourceFile' @:: Lens' GeneratedCodeInfo'Annotation Data.Text.Text@
     * 'Proto.Google.Protobuf.Descriptor_Fields.maybe'sourceFile' @:: Lens' GeneratedCodeInfo'Annotation (Prelude.Maybe Data.Text.Text)@
     * 'Proto.Google.Protobuf.Descriptor_Fields.begin' @:: Lens' GeneratedCodeInfo'Annotation Data.Int.Int32@
@@ -6276,7 +6886,9 @@ instance Control.DeepSeq.NFData GeneratedCodeInfo where
     * 'Proto.Google.Protobuf.Descriptor_Fields.maybe'end' @:: Lens' GeneratedCodeInfo'Annotation (Prelude.Maybe Data.Int.Int32)@
  -}
 data GeneratedCodeInfo'Annotation = GeneratedCodeInfo'Annotation{_GeneratedCodeInfo'Annotation'path
-                                                                 :: ![Data.Int.Int32],
+                                                                 ::
+                                                                 !(Data.Vector.Unboxed.Vector
+                                                                     Data.Int.Int32),
                                                                  _GeneratedCodeInfo'Annotation'sourceFile
                                                                  :: !(Prelude.Maybe Data.Text.Text),
                                                                  _GeneratedCodeInfo'Annotation'begin
@@ -6293,6 +6905,15 @@ instance Prelude.Show GeneratedCodeInfo'Annotation where
                  (Prelude.showChar '}' __s))
 instance a ~ ([Data.Int.Int32]) =>
          Lens.Labels.HasLens' GeneratedCodeInfo'Annotation "path" a
+         where
+        lensOf' _
+          = (Lens.Family2.Unchecked.lens _GeneratedCodeInfo'Annotation'path
+               (\ x__ y__ -> x__{_GeneratedCodeInfo'Annotation'path = y__}))
+              Prelude..
+              Lens.Family2.Unchecked.lens Data.Vector.Generic.toList
+                (\ _ y__ -> Data.Vector.Generic.fromList y__)
+instance a ~ (Data.Vector.Unboxed.Vector Data.Int.Int32) =>
+         Lens.Labels.HasLens' GeneratedCodeInfo'Annotation "vec'path" a
          where
         lensOf' _
           = (Lens.Family2.Unchecked.lens _GeneratedCodeInfo'Annotation'path
@@ -6393,7 +7014,7 @@ instance Data.ProtoLens.Message GeneratedCodeInfo'Annotation where
                  x__{_GeneratedCodeInfo'Annotation'_unknownFields = y__})
         defMessage
           = GeneratedCodeInfo'Annotation{_GeneratedCodeInfo'Annotation'path =
-                                           [],
+                                           Data.Vector.Generic.empty,
                                          _GeneratedCodeInfo'Annotation'sourceFile = Prelude.Nothing,
                                          _GeneratedCodeInfo'Annotation'begin = Prelude.Nothing,
                                          _GeneratedCodeInfo'Annotation'end = Prelude.Nothing,
@@ -6401,11 +7022,18 @@ instance Data.ProtoLens.Message GeneratedCodeInfo'Annotation where
         parseMessage
           = let loop ::
                      GeneratedCodeInfo'Annotation ->
-                       Data.ProtoLens.Encoding.Bytes.Parser GeneratedCodeInfo'Annotation
-                loop x
+                       Data.ProtoLens.Encoding.Growing.Growing Data.Vector.Unboxed.Vector
+                         Data.ProtoLens.Encoding.Growing.RealWorld
+                         Data.Int.Int32
+                         ->
+                         Data.ProtoLens.Encoding.Bytes.Parser GeneratedCodeInfo'Annotation
+                loop x mutable'path
                   = do end <- Data.ProtoLens.Encoding.Bytes.atEnd
                        if end then
-                         do let missing = [] in
+                         do frozen'path <- Data.ProtoLens.Encoding.Parser.Unsafe.unsafeLiftIO
+                                             (Data.ProtoLens.Encoding.Growing.unsafeFreeze
+                                                mutable'path)
+                            let missing = [] in
                               if Prelude.null missing then Prelude.return () else
                                 Prelude.fail
                                   (("Missing required fields: ") Prelude.++
@@ -6413,10 +7041,10 @@ instance Data.ProtoLens.Message GeneratedCodeInfo'Annotation where
                             Prelude.return
                               (Lens.Family2.over Data.ProtoLens.unknownFields
                                  (\ !t -> Prelude.reverse t)
-                                 (Lens.Family2.over
+                                 (Lens.Family2.set
                                     (Lens.Labels.lensOf'
-                                       ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "path"))
-                                    (\ !t -> Prelude.reverse t)
+                                       ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "vec'path"))
+                                    frozen'path
                                     x))
                          else
                          do tag <- Data.ProtoLens.Encoding.Bytes.getVarInt
@@ -6424,37 +7052,30 @@ instance Data.ProtoLens.Message GeneratedCodeInfo'Annotation where
                                 8 -> do !y <- (Prelude.fmap Prelude.fromIntegral
                                                  Data.ProtoLens.Encoding.Bytes.getVarInt)
                                                 Data.ProtoLens.Encoding.Bytes.<?> "path"
-                                        loop
-                                          (Lens.Family2.over
-                                             (Lens.Labels.lensOf'
-                                                ((Lens.Labels.proxy#) ::
-                                                   (Lens.Labels.Proxy#) "path"))
-                                             (\ !t -> (:) y t)
-                                             x)
-                                10 -> do bytes <- do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
-                                                     Data.ProtoLens.Encoding.Bytes.getBytes
-                                                       (Prelude.fromIntegral len)
-                                         y <- Data.ProtoLens.Encoding.Bytes.runEither
-                                                (Data.ProtoLens.Encoding.Bytes.runParser
-                                                   (let ploop qs
-                                                          = do packedEnd <- Data.ProtoLens.Encoding.Bytes.atEnd
-                                                               if packedEnd then Prelude.return qs
-                                                                 else
-                                                                 do !q <- (Prelude.fmap
-                                                                             Prelude.fromIntegral
-                                                                             Data.ProtoLens.Encoding.Bytes.getVarInt)
-                                                                            Data.ProtoLens.Encoding.Bytes.<?>
-                                                                            "path"
-                                                                    ploop ((:) q qs)
-                                                      in ploop [])
-                                                   bytes)
-                                         loop
-                                           (Lens.Family2.over
-                                              (Lens.Labels.lensOf'
-                                                 ((Lens.Labels.proxy#) ::
-                                                    (Lens.Labels.Proxy#) "path"))
-                                              (\ !t -> (y) Prelude.++ t)
-                                              x)
+                                        v <- Data.ProtoLens.Encoding.Parser.Unsafe.unsafeLiftIO
+                                               (Data.ProtoLens.Encoding.Growing.append mutable'path
+                                                  y)
+                                        loop x v
+                                10 -> do y <- do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
+                                                 Data.ProtoLens.Encoding.Bytes.isolate
+                                                   (Prelude.fromIntegral len)
+                                                   ((let ploop qs
+                                                           = do packedEnd <- Data.ProtoLens.Encoding.Bytes.atEnd
+                                                                if packedEnd then Prelude.return qs
+                                                                  else
+                                                                  do !q <- (Prelude.fmap
+                                                                              Prelude.fromIntegral
+                                                                              Data.ProtoLens.Encoding.Bytes.getVarInt)
+                                                                             Data.ProtoLens.Encoding.Bytes.<?>
+                                                                             "path"
+                                                                     qs' <- Data.ProtoLens.Encoding.Parser.Unsafe.unsafeLiftIO
+                                                                              (Data.ProtoLens.Encoding.Growing.append
+                                                                                 qs
+                                                                                 q)
+                                                                     ploop qs'
+                                                       in ploop)
+                                                      mutable'path)
+                                         loop x y
                                 18 -> do y <- (do value <- do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
                                                               Data.ProtoLens.Encoding.Bytes.getBytes
                                                                 (Prelude.fromIntegral len)
@@ -6471,6 +7092,7 @@ instance Data.ProtoLens.Message GeneratedCodeInfo'Annotation where
                                                     (Lens.Labels.Proxy#) "sourceFile"))
                                               y
                                               x)
+                                           mutable'path
                                 24 -> do y <- (Prelude.fmap Prelude.fromIntegral
                                                  Data.ProtoLens.Encoding.Bytes.getVarInt)
                                                 Data.ProtoLens.Encoding.Bytes.<?> "begin"
@@ -6481,6 +7103,7 @@ instance Data.ProtoLens.Message GeneratedCodeInfo'Annotation where
                                                     (Lens.Labels.Proxy#) "begin"))
                                               y
                                               x)
+                                           mutable'path
                                 32 -> do y <- (Prelude.fmap Prelude.fromIntegral
                                                  Data.ProtoLens.Encoding.Bytes.getVarInt)
                                                 Data.ProtoLens.Encoding.Bytes.<?> "end"
@@ -6491,34 +7114,37 @@ instance Data.ProtoLens.Message GeneratedCodeInfo'Annotation where
                                                     (Lens.Labels.Proxy#) "end"))
                                               y
                                               x)
+                                           mutable'path
                                 wire -> do !y <- Data.ProtoLens.Encoding.Wire.parseTaggedValueFromWire
                                                    wire
                                            loop
                                              (Lens.Family2.over Data.ProtoLens.unknownFields
                                                 (\ !t -> (:) y t)
                                                 x)
+                                             mutable'path
               in
-              (loop Data.ProtoLens.defMessage) Data.ProtoLens.Encoding.Bytes.<?>
-                "Annotation"
+              (do mutable'path <- Data.ProtoLens.Encoding.Parser.Unsafe.unsafeLiftIO
+                                    Data.ProtoLens.Encoding.Growing.new
+                  loop Data.ProtoLens.defMessage mutable'path)
+                Data.ProtoLens.Encoding.Bytes.<?> "Annotation"
         buildMessage
           = (\ _x ->
                (let p = Lens.Family2.view
                           (Lens.Labels.lensOf'
-                             ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "path"))
+                             ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "vec'path"))
                           _x
                   in
-                  if Prelude.null p then Data.Monoid.mempty else
+                  if Data.Vector.Generic.null p then Data.Monoid.mempty else
                     (Data.ProtoLens.Encoding.Bytes.putVarInt 10) Data.Monoid.<>
                       (\ bs ->
                          (Data.ProtoLens.Encoding.Bytes.putVarInt
                             (Prelude.fromIntegral (Data.ByteString.length bs)))
                            Data.Monoid.<> Data.ProtoLens.Encoding.Bytes.putBytes bs)
                         (Data.ProtoLens.Encoding.Bytes.runBuilder
-                           (Data.Monoid.mconcat
-                              (Prelude.map
-                                 ((Data.ProtoLens.Encoding.Bytes.putVarInt) Prelude..
-                                    Prelude.fromIntegral)
-                                 p))))
+                           (Data.ProtoLens.Encoding.Bytes.foldMapBuilder
+                              ((Data.ProtoLens.Encoding.Bytes.putVarInt) Prelude..
+                                 Prelude.fromIntegral)
+                              p)))
                  Data.Monoid.<>
                  (case
                     Lens.Family2.view
@@ -6588,6 +7214,7 @@ instance Control.DeepSeq.NFData GeneratedCodeInfo'Annotation where
     * 'Proto.Google.Protobuf.Descriptor_Fields.mapEntry' @:: Lens' MessageOptions Prelude.Bool@
     * 'Proto.Google.Protobuf.Descriptor_Fields.maybe'mapEntry' @:: Lens' MessageOptions (Prelude.Maybe Prelude.Bool)@
     * 'Proto.Google.Protobuf.Descriptor_Fields.uninterpretedOption' @:: Lens' MessageOptions [UninterpretedOption]@
+    * 'Proto.Google.Protobuf.Descriptor_Fields.vec'uninterpretedOption' @:: Lens' MessageOptions (Data.Vector.Vector UninterpretedOption)@
  -}
 data MessageOptions = MessageOptions{_MessageOptions'messageSetWireFormat
                                      :: !(Prelude.Maybe Prelude.Bool),
@@ -6595,7 +7222,8 @@ data MessageOptions = MessageOptions{_MessageOptions'messageSetWireFormat
                                      !(Prelude.Maybe Prelude.Bool),
                                      _MessageOptions'deprecated :: !(Prelude.Maybe Prelude.Bool),
                                      _MessageOptions'mapEntry :: !(Prelude.Maybe Prelude.Bool),
-                                     _MessageOptions'uninterpretedOption :: ![UninterpretedOption],
+                                     _MessageOptions'uninterpretedOption ::
+                                     !(Data.Vector.Vector UninterpretedOption),
                                      _MessageOptions'_unknownFields :: !Data.ProtoLens.FieldSet}
                         deriving (Prelude.Eq, Prelude.Ord)
 instance Prelude.Show MessageOptions where
@@ -6672,6 +7300,15 @@ instance a ~ ([UninterpretedOption]) =>
         lensOf' _
           = (Lens.Family2.Unchecked.lens _MessageOptions'uninterpretedOption
                (\ x__ y__ -> x__{_MessageOptions'uninterpretedOption = y__}))
+              Prelude..
+              Lens.Family2.Unchecked.lens Data.Vector.Generic.toList
+                (\ _ y__ -> Data.Vector.Generic.fromList y__)
+instance a ~ (Data.Vector.Vector UninterpretedOption) =>
+         Lens.Labels.HasLens' MessageOptions "vec'uninterpretedOption" a
+         where
+        lensOf' _
+          = (Lens.Family2.Unchecked.lens _MessageOptions'uninterpretedOption
+               (\ x__ y__ -> x__{_MessageOptions'uninterpretedOption = y__}))
               Prelude.. Prelude.id
 instance Data.ProtoLens.Message MessageOptions where
         messageName _ = Data.Text.pack "google.protobuf.MessageOptions"
@@ -6736,16 +7373,22 @@ instance Data.ProtoLens.Message MessageOptions where
                            _MessageOptions'noStandardDescriptorAccessor = Prelude.Nothing,
                            _MessageOptions'deprecated = Prelude.Nothing,
                            _MessageOptions'mapEntry = Prelude.Nothing,
-                           _MessageOptions'uninterpretedOption = [],
+                           _MessageOptions'uninterpretedOption = Data.Vector.Generic.empty,
                            _MessageOptions'_unknownFields = ([])}
         parseMessage
           = let loop ::
                      MessageOptions ->
-                       Data.ProtoLens.Encoding.Bytes.Parser MessageOptions
-                loop x
+                       Data.ProtoLens.Encoding.Growing.Growing Data.Vector.Vector
+                         Data.ProtoLens.Encoding.Growing.RealWorld
+                         UninterpretedOption
+                         -> Data.ProtoLens.Encoding.Bytes.Parser MessageOptions
+                loop x mutable'uninterpretedOption
                   = do end <- Data.ProtoLens.Encoding.Bytes.atEnd
                        if end then
-                         do let missing = [] in
+                         do frozen'uninterpretedOption <- Data.ProtoLens.Encoding.Parser.Unsafe.unsafeLiftIO
+                                                            (Data.ProtoLens.Encoding.Growing.unsafeFreeze
+                                                               mutable'uninterpretedOption)
+                            let missing = [] in
                               if Prelude.null missing then Prelude.return () else
                                 Prelude.fail
                                   (("Missing required fields: ") Prelude.++
@@ -6753,11 +7396,11 @@ instance Data.ProtoLens.Message MessageOptions where
                             Prelude.return
                               (Lens.Family2.over Data.ProtoLens.unknownFields
                                  (\ !t -> Prelude.reverse t)
-                                 (Lens.Family2.over
+                                 (Lens.Family2.set
                                     (Lens.Labels.lensOf'
                                        ((Lens.Labels.proxy#) ::
-                                          (Lens.Labels.Proxy#) "uninterpretedOption"))
-                                    (\ !t -> Prelude.reverse t)
+                                          (Lens.Labels.Proxy#) "vec'uninterpretedOption"))
+                                    frozen'uninterpretedOption
                                     x))
                          else
                          do tag <- Data.ProtoLens.Encoding.Bytes.getVarInt
@@ -6773,6 +7416,7 @@ instance Data.ProtoLens.Message MessageOptions where
                                                    (Lens.Labels.Proxy#) "messageSetWireFormat"))
                                              y
                                              x)
+                                          mutable'uninterpretedOption
                                 16 -> do y <- (Prelude.fmap ((Prelude./=) 0)
                                                  Data.ProtoLens.Encoding.Bytes.getVarInt)
                                                 Data.ProtoLens.Encoding.Bytes.<?>
@@ -6785,6 +7429,7 @@ instance Data.ProtoLens.Message MessageOptions where
                                                       "noStandardDescriptorAccessor"))
                                               y
                                               x)
+                                           mutable'uninterpretedOption
                                 24 -> do y <- (Prelude.fmap ((Prelude./=) 0)
                                                  Data.ProtoLens.Encoding.Bytes.getVarInt)
                                                 Data.ProtoLens.Encoding.Bytes.<?> "deprecated"
@@ -6795,6 +7440,7 @@ instance Data.ProtoLens.Message MessageOptions where
                                                     (Lens.Labels.Proxy#) "deprecated"))
                                               y
                                               x)
+                                           mutable'uninterpretedOption
                                 56 -> do y <- (Prelude.fmap ((Prelude./=) 0)
                                                  Data.ProtoLens.Encoding.Bytes.getVarInt)
                                                 Data.ProtoLens.Encoding.Bytes.<?> "map_entry"
@@ -6805,29 +7451,30 @@ instance Data.ProtoLens.Message MessageOptions where
                                                     (Lens.Labels.Proxy#) "mapEntry"))
                                               y
                                               x)
-                                7994 -> do !y <- (do value <- do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
-                                                                 Data.ProtoLens.Encoding.Bytes.getBytes
-                                                                   (Prelude.fromIntegral len)
-                                                     Data.ProtoLens.Encoding.Bytes.runEither
-                                                       (Data.ProtoLens.decodeMessage value))
+                                           mutable'uninterpretedOption
+                                7994 -> do !y <- (do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
+                                                     Data.ProtoLens.Encoding.Bytes.isolate
+                                                       (Prelude.fromIntegral len)
+                                                       Data.ProtoLens.parseMessage)
                                                    Data.ProtoLens.Encoding.Bytes.<?>
                                                    "uninterpreted_option"
-                                           loop
-                                             (Lens.Family2.over
-                                                (Lens.Labels.lensOf'
-                                                   ((Lens.Labels.proxy#) ::
-                                                      (Lens.Labels.Proxy#) "uninterpretedOption"))
-                                                (\ !t -> (:) y t)
-                                                x)
+                                           v <- Data.ProtoLens.Encoding.Parser.Unsafe.unsafeLiftIO
+                                                  (Data.ProtoLens.Encoding.Growing.append
+                                                     mutable'uninterpretedOption
+                                                     y)
+                                           loop x v
                                 wire -> do !y <- Data.ProtoLens.Encoding.Wire.parseTaggedValueFromWire
                                                    wire
                                            loop
                                              (Lens.Family2.over Data.ProtoLens.unknownFields
                                                 (\ !t -> (:) y t)
                                                 x)
+                                             mutable'uninterpretedOption
               in
-              (loop Data.ProtoLens.defMessage) Data.ProtoLens.Encoding.Bytes.<?>
-                "MessageOptions"
+              (do mutable'uninterpretedOption <- Data.ProtoLens.Encoding.Parser.Unsafe.unsafeLiftIO
+                                                   Data.ProtoLens.Encoding.Growing.new
+                  loop Data.ProtoLens.defMessage mutable'uninterpretedOption)
+                Data.ProtoLens.Encoding.Bytes.<?> "MessageOptions"
         buildMessage
           = (\ _x ->
                (case
@@ -6884,21 +7531,20 @@ instance Data.ProtoLens.Message MessageOptions where
                                                   (\ b -> if b then 1 else 0))
                                                  _v)
                        Data.Monoid.<>
-                       (Data.Monoid.mconcat
-                          (Prelude.map
-                             (\ _v ->
-                                (Data.ProtoLens.Encoding.Bytes.putVarInt 7994) Data.Monoid.<>
-                                  (((\ bs ->
-                                       (Data.ProtoLens.Encoding.Bytes.putVarInt
-                                          (Prelude.fromIntegral (Data.ByteString.length bs)))
-                                         Data.Monoid.<> Data.ProtoLens.Encoding.Bytes.putBytes bs))
-                                     Prelude.. Data.ProtoLens.encodeMessage)
-                                    _v)
-                             (Lens.Family2.view
-                                (Lens.Labels.lensOf'
-                                   ((Lens.Labels.proxy#) ::
-                                      (Lens.Labels.Proxy#) "uninterpretedOption"))
-                                _x)))
+                       (Data.ProtoLens.Encoding.Bytes.foldMapBuilder
+                          (\ _v ->
+                             (Data.ProtoLens.Encoding.Bytes.putVarInt 7994) Data.Monoid.<>
+                               (((\ bs ->
+                                    (Data.ProtoLens.Encoding.Bytes.putVarInt
+                                       (Prelude.fromIntegral (Data.ByteString.length bs)))
+                                      Data.Monoid.<> Data.ProtoLens.Encoding.Bytes.putBytes bs))
+                                  Prelude.. Data.ProtoLens.encodeMessage)
+                                 _v)
+                          (Lens.Family2.view
+                             (Lens.Labels.lensOf'
+                                ((Lens.Labels.proxy#) ::
+                                   (Lens.Labels.Proxy#) "vec'uninterpretedOption"))
+                             _x))
                          Data.Monoid.<>
                          Data.ProtoLens.Encoding.Wire.buildFieldSet
                            (Lens.Family2.view Data.ProtoLens.unknownFields _x))
@@ -7179,11 +7825,10 @@ instance Data.ProtoLens.Message MethodDescriptorProto where
                                                     (Lens.Labels.Proxy#) "outputType"))
                                               y
                                               x)
-                                34 -> do y <- (do value <- do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
-                                                              Data.ProtoLens.Encoding.Bytes.getBytes
-                                                                (Prelude.fromIntegral len)
-                                                  Data.ProtoLens.Encoding.Bytes.runEither
-                                                    (Data.ProtoLens.decodeMessage value))
+                                34 -> do y <- (do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
+                                                  Data.ProtoLens.Encoding.Bytes.isolate
+                                                    (Prelude.fromIntegral len)
+                                                    Data.ProtoLens.parseMessage)
                                                 Data.ProtoLens.Encoding.Bytes.<?> "options"
                                          loop
                                            (Lens.Family2.set
@@ -7219,8 +7864,8 @@ instance Data.ProtoLens.Message MethodDescriptorProto where
                                                 (\ !t -> (:) y t)
                                                 x)
               in
-              (loop Data.ProtoLens.defMessage) Data.ProtoLens.Encoding.Bytes.<?>
-                "MethodDescriptorProto"
+              (do loop Data.ProtoLens.defMessage)
+                Data.ProtoLens.Encoding.Bytes.<?> "MethodDescriptorProto"
         buildMessage
           = (\ _x ->
                (case
@@ -7344,12 +7989,14 @@ instance Control.DeepSeq.NFData MethodDescriptorProto where
     * 'Proto.Google.Protobuf.Descriptor_Fields.idempotencyLevel' @:: Lens' MethodOptions MethodOptions'IdempotencyLevel@
     * 'Proto.Google.Protobuf.Descriptor_Fields.maybe'idempotencyLevel' @:: Lens' MethodOptions (Prelude.Maybe MethodOptions'IdempotencyLevel)@
     * 'Proto.Google.Protobuf.Descriptor_Fields.uninterpretedOption' @:: Lens' MethodOptions [UninterpretedOption]@
+    * 'Proto.Google.Protobuf.Descriptor_Fields.vec'uninterpretedOption' @:: Lens' MethodOptions (Data.Vector.Vector UninterpretedOption)@
  -}
 data MethodOptions = MethodOptions{_MethodOptions'deprecated ::
                                    !(Prelude.Maybe Prelude.Bool),
                                    _MethodOptions'idempotencyLevel ::
                                    !(Prelude.Maybe MethodOptions'IdempotencyLevel),
-                                   _MethodOptions'uninterpretedOption :: ![UninterpretedOption],
+                                   _MethodOptions'uninterpretedOption ::
+                                   !(Data.Vector.Vector UninterpretedOption),
                                    _MethodOptions'_unknownFields :: !Data.ProtoLens.FieldSet}
                        deriving (Prelude.Eq, Prelude.Ord)
 instance Prelude.Show MethodOptions where
@@ -7388,6 +8035,15 @@ instance a ~ (Prelude.Maybe MethodOptions'IdempotencyLevel) =>
               Prelude.. Prelude.id
 instance a ~ ([UninterpretedOption]) =>
          Lens.Labels.HasLens' MethodOptions "uninterpretedOption" a
+         where
+        lensOf' _
+          = (Lens.Family2.Unchecked.lens _MethodOptions'uninterpretedOption
+               (\ x__ y__ -> x__{_MethodOptions'uninterpretedOption = y__}))
+              Prelude..
+              Lens.Family2.Unchecked.lens Data.Vector.Generic.toList
+                (\ _ y__ -> Data.Vector.Generic.fromList y__)
+instance a ~ (Data.Vector.Vector UninterpretedOption) =>
+         Lens.Labels.HasLens' MethodOptions "vec'uninterpretedOption" a
          where
         lensOf' _
           = (Lens.Family2.Unchecked.lens _MethodOptions'uninterpretedOption
@@ -7433,15 +8089,22 @@ instance Data.ProtoLens.Message MethodOptions where
         defMessage
           = MethodOptions{_MethodOptions'deprecated = Prelude.Nothing,
                           _MethodOptions'idempotencyLevel = Prelude.Nothing,
-                          _MethodOptions'uninterpretedOption = [],
+                          _MethodOptions'uninterpretedOption = Data.Vector.Generic.empty,
                           _MethodOptions'_unknownFields = ([])}
         parseMessage
           = let loop ::
-                     MethodOptions -> Data.ProtoLens.Encoding.Bytes.Parser MethodOptions
-                loop x
+                     MethodOptions ->
+                       Data.ProtoLens.Encoding.Growing.Growing Data.Vector.Vector
+                         Data.ProtoLens.Encoding.Growing.RealWorld
+                         UninterpretedOption
+                         -> Data.ProtoLens.Encoding.Bytes.Parser MethodOptions
+                loop x mutable'uninterpretedOption
                   = do end <- Data.ProtoLens.Encoding.Bytes.atEnd
                        if end then
-                         do let missing = [] in
+                         do frozen'uninterpretedOption <- Data.ProtoLens.Encoding.Parser.Unsafe.unsafeLiftIO
+                                                            (Data.ProtoLens.Encoding.Growing.unsafeFreeze
+                                                               mutable'uninterpretedOption)
+                            let missing = [] in
                               if Prelude.null missing then Prelude.return () else
                                 Prelude.fail
                                   (("Missing required fields: ") Prelude.++
@@ -7449,11 +8112,11 @@ instance Data.ProtoLens.Message MethodOptions where
                             Prelude.return
                               (Lens.Family2.over Data.ProtoLens.unknownFields
                                  (\ !t -> Prelude.reverse t)
-                                 (Lens.Family2.over
+                                 (Lens.Family2.set
                                     (Lens.Labels.lensOf'
                                        ((Lens.Labels.proxy#) ::
-                                          (Lens.Labels.Proxy#) "uninterpretedOption"))
-                                    (\ !t -> Prelude.reverse t)
+                                          (Lens.Labels.Proxy#) "vec'uninterpretedOption"))
+                                    frozen'uninterpretedOption
                                     x))
                          else
                          do tag <- Data.ProtoLens.Encoding.Bytes.getVarInt
@@ -7468,6 +8131,7 @@ instance Data.ProtoLens.Message MethodOptions where
                                                      (Lens.Labels.Proxy#) "deprecated"))
                                                y
                                                x)
+                                            mutable'uninterpretedOption
                                 272 -> do y <- (Prelude.fmap Prelude.toEnum
                                                   (Prelude.fmap Prelude.fromIntegral
                                                      Data.ProtoLens.Encoding.Bytes.getVarInt))
@@ -7480,29 +8144,30 @@ instance Data.ProtoLens.Message MethodOptions where
                                                      (Lens.Labels.Proxy#) "idempotencyLevel"))
                                                y
                                                x)
-                                7994 -> do !y <- (do value <- do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
-                                                                 Data.ProtoLens.Encoding.Bytes.getBytes
-                                                                   (Prelude.fromIntegral len)
-                                                     Data.ProtoLens.Encoding.Bytes.runEither
-                                                       (Data.ProtoLens.decodeMessage value))
+                                            mutable'uninterpretedOption
+                                7994 -> do !y <- (do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
+                                                     Data.ProtoLens.Encoding.Bytes.isolate
+                                                       (Prelude.fromIntegral len)
+                                                       Data.ProtoLens.parseMessage)
                                                    Data.ProtoLens.Encoding.Bytes.<?>
                                                    "uninterpreted_option"
-                                           loop
-                                             (Lens.Family2.over
-                                                (Lens.Labels.lensOf'
-                                                   ((Lens.Labels.proxy#) ::
-                                                      (Lens.Labels.Proxy#) "uninterpretedOption"))
-                                                (\ !t -> (:) y t)
-                                                x)
+                                           v <- Data.ProtoLens.Encoding.Parser.Unsafe.unsafeLiftIO
+                                                  (Data.ProtoLens.Encoding.Growing.append
+                                                     mutable'uninterpretedOption
+                                                     y)
+                                           loop x v
                                 wire -> do !y <- Data.ProtoLens.Encoding.Wire.parseTaggedValueFromWire
                                                    wire
                                            loop
                                              (Lens.Family2.over Data.ProtoLens.unknownFields
                                                 (\ !t -> (:) y t)
                                                 x)
+                                             mutable'uninterpretedOption
               in
-              (loop Data.ProtoLens.defMessage) Data.ProtoLens.Encoding.Bytes.<?>
-                "MethodOptions"
+              (do mutable'uninterpretedOption <- Data.ProtoLens.Encoding.Parser.Unsafe.unsafeLiftIO
+                                                   Data.ProtoLens.Encoding.Growing.new
+                  loop Data.ProtoLens.defMessage mutable'uninterpretedOption)
+                Data.ProtoLens.Encoding.Bytes.<?> "MethodOptions"
         buildMessage
           = (\ _x ->
                (case
@@ -7533,21 +8198,20 @@ instance Data.ProtoLens.Message MethodOptions where
                                               Prelude.. Prelude.fromEnum)
                                              _v)
                    Data.Monoid.<>
-                   (Data.Monoid.mconcat
-                      (Prelude.map
-                         (\ _v ->
-                            (Data.ProtoLens.Encoding.Bytes.putVarInt 7994) Data.Monoid.<>
-                              (((\ bs ->
-                                   (Data.ProtoLens.Encoding.Bytes.putVarInt
-                                      (Prelude.fromIntegral (Data.ByteString.length bs)))
-                                     Data.Monoid.<> Data.ProtoLens.Encoding.Bytes.putBytes bs))
-                                 Prelude.. Data.ProtoLens.encodeMessage)
-                                _v)
-                         (Lens.Family2.view
-                            (Lens.Labels.lensOf'
-                               ((Lens.Labels.proxy#) ::
-                                  (Lens.Labels.Proxy#) "uninterpretedOption"))
-                            _x)))
+                   (Data.ProtoLens.Encoding.Bytes.foldMapBuilder
+                      (\ _v ->
+                         (Data.ProtoLens.Encoding.Bytes.putVarInt 7994) Data.Monoid.<>
+                           (((\ bs ->
+                                (Data.ProtoLens.Encoding.Bytes.putVarInt
+                                   (Prelude.fromIntegral (Data.ByteString.length bs)))
+                                  Data.Monoid.<> Data.ProtoLens.Encoding.Bytes.putBytes bs))
+                              Prelude.. Data.ProtoLens.encodeMessage)
+                             _v)
+                      (Lens.Family2.view
+                         (Lens.Labels.lensOf'
+                            ((Lens.Labels.proxy#) ::
+                               (Lens.Labels.Proxy#) "vec'uninterpretedOption"))
+                         _x))
                      Data.Monoid.<>
                      Data.ProtoLens.Encoding.Wire.buildFieldSet
                        (Lens.Family2.view Data.ProtoLens.unknownFields _x))
@@ -7731,11 +8395,10 @@ instance Data.ProtoLens.Message OneofDescriptorProto where
                                                     (Lens.Labels.Proxy#) "name"))
                                               y
                                               x)
-                                18 -> do y <- (do value <- do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
-                                                              Data.ProtoLens.Encoding.Bytes.getBytes
-                                                                (Prelude.fromIntegral len)
-                                                  Data.ProtoLens.Encoding.Bytes.runEither
-                                                    (Data.ProtoLens.decodeMessage value))
+                                18 -> do y <- (do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
+                                                  Data.ProtoLens.Encoding.Bytes.isolate
+                                                    (Prelude.fromIntegral len)
+                                                    Data.ProtoLens.parseMessage)
                                                 Data.ProtoLens.Encoding.Bytes.<?> "options"
                                          loop
                                            (Lens.Family2.set
@@ -7751,8 +8414,8 @@ instance Data.ProtoLens.Message OneofDescriptorProto where
                                                 (\ !t -> (:) y t)
                                                 x)
               in
-              (loop Data.ProtoLens.defMessage) Data.ProtoLens.Encoding.Bytes.<?>
-                "OneofDescriptorProto"
+              (do loop Data.ProtoLens.defMessage)
+                Data.ProtoLens.Encoding.Bytes.<?> "OneofDescriptorProto"
         buildMessage
           = (\ _x ->
                (case
@@ -7802,9 +8465,10 @@ instance Control.DeepSeq.NFData OneofDescriptorProto where
 {- | Fields :
 
     * 'Proto.Google.Protobuf.Descriptor_Fields.uninterpretedOption' @:: Lens' OneofOptions [UninterpretedOption]@
+    * 'Proto.Google.Protobuf.Descriptor_Fields.vec'uninterpretedOption' @:: Lens' OneofOptions (Data.Vector.Vector UninterpretedOption)@
  -}
 data OneofOptions = OneofOptions{_OneofOptions'uninterpretedOption
-                                 :: ![UninterpretedOption],
+                                 :: !(Data.Vector.Vector UninterpretedOption),
                                  _OneofOptions'_unknownFields :: !Data.ProtoLens.FieldSet}
                       deriving (Prelude.Eq, Prelude.Ord)
 instance Prelude.Show OneofOptions where
@@ -7814,6 +8478,15 @@ instance Prelude.Show OneofOptions where
                  (Prelude.showChar '}' __s))
 instance a ~ ([UninterpretedOption]) =>
          Lens.Labels.HasLens' OneofOptions "uninterpretedOption" a
+         where
+        lensOf' _
+          = (Lens.Family2.Unchecked.lens _OneofOptions'uninterpretedOption
+               (\ x__ y__ -> x__{_OneofOptions'uninterpretedOption = y__}))
+              Prelude..
+              Lens.Family2.Unchecked.lens Data.Vector.Generic.toList
+                (\ _ y__ -> Data.Vector.Generic.fromList y__)
+instance a ~ (Data.Vector.Vector UninterpretedOption) =>
+         Lens.Labels.HasLens' OneofOptions "vec'uninterpretedOption" a
          where
         lensOf' _
           = (Lens.Family2.Unchecked.lens _OneofOptions'uninterpretedOption
@@ -7838,15 +8511,23 @@ instance Data.ProtoLens.Message OneofOptions where
           = Lens.Family2.Unchecked.lens _OneofOptions'_unknownFields
               (\ x__ y__ -> x__{_OneofOptions'_unknownFields = y__})
         defMessage
-          = OneofOptions{_OneofOptions'uninterpretedOption = [],
+          = OneofOptions{_OneofOptions'uninterpretedOption =
+                           Data.Vector.Generic.empty,
                          _OneofOptions'_unknownFields = ([])}
         parseMessage
           = let loop ::
-                     OneofOptions -> Data.ProtoLens.Encoding.Bytes.Parser OneofOptions
-                loop x
+                     OneofOptions ->
+                       Data.ProtoLens.Encoding.Growing.Growing Data.Vector.Vector
+                         Data.ProtoLens.Encoding.Growing.RealWorld
+                         UninterpretedOption
+                         -> Data.ProtoLens.Encoding.Bytes.Parser OneofOptions
+                loop x mutable'uninterpretedOption
                   = do end <- Data.ProtoLens.Encoding.Bytes.atEnd
                        if end then
-                         do let missing = [] in
+                         do frozen'uninterpretedOption <- Data.ProtoLens.Encoding.Parser.Unsafe.unsafeLiftIO
+                                                            (Data.ProtoLens.Encoding.Growing.unsafeFreeze
+                                                               mutable'uninterpretedOption)
+                            let missing = [] in
                               if Prelude.null missing then Prelude.return () else
                                 Prelude.fail
                                   (("Missing required fields: ") Prelude.++
@@ -7854,55 +8535,54 @@ instance Data.ProtoLens.Message OneofOptions where
                             Prelude.return
                               (Lens.Family2.over Data.ProtoLens.unknownFields
                                  (\ !t -> Prelude.reverse t)
-                                 (Lens.Family2.over
+                                 (Lens.Family2.set
                                     (Lens.Labels.lensOf'
                                        ((Lens.Labels.proxy#) ::
-                                          (Lens.Labels.Proxy#) "uninterpretedOption"))
-                                    (\ !t -> Prelude.reverse t)
+                                          (Lens.Labels.Proxy#) "vec'uninterpretedOption"))
+                                    frozen'uninterpretedOption
                                     x))
                          else
                          do tag <- Data.ProtoLens.Encoding.Bytes.getVarInt
                             case tag of
-                                7994 -> do !y <- (do value <- do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
-                                                                 Data.ProtoLens.Encoding.Bytes.getBytes
-                                                                   (Prelude.fromIntegral len)
-                                                     Data.ProtoLens.Encoding.Bytes.runEither
-                                                       (Data.ProtoLens.decodeMessage value))
+                                7994 -> do !y <- (do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
+                                                     Data.ProtoLens.Encoding.Bytes.isolate
+                                                       (Prelude.fromIntegral len)
+                                                       Data.ProtoLens.parseMessage)
                                                    Data.ProtoLens.Encoding.Bytes.<?>
                                                    "uninterpreted_option"
-                                           loop
-                                             (Lens.Family2.over
-                                                (Lens.Labels.lensOf'
-                                                   ((Lens.Labels.proxy#) ::
-                                                      (Lens.Labels.Proxy#) "uninterpretedOption"))
-                                                (\ !t -> (:) y t)
-                                                x)
+                                           v <- Data.ProtoLens.Encoding.Parser.Unsafe.unsafeLiftIO
+                                                  (Data.ProtoLens.Encoding.Growing.append
+                                                     mutable'uninterpretedOption
+                                                     y)
+                                           loop x v
                                 wire -> do !y <- Data.ProtoLens.Encoding.Wire.parseTaggedValueFromWire
                                                    wire
                                            loop
                                              (Lens.Family2.over Data.ProtoLens.unknownFields
                                                 (\ !t -> (:) y t)
                                                 x)
+                                             mutable'uninterpretedOption
               in
-              (loop Data.ProtoLens.defMessage) Data.ProtoLens.Encoding.Bytes.<?>
-                "OneofOptions"
+              (do mutable'uninterpretedOption <- Data.ProtoLens.Encoding.Parser.Unsafe.unsafeLiftIO
+                                                   Data.ProtoLens.Encoding.Growing.new
+                  loop Data.ProtoLens.defMessage mutable'uninterpretedOption)
+                Data.ProtoLens.Encoding.Bytes.<?> "OneofOptions"
         buildMessage
           = (\ _x ->
-               (Data.Monoid.mconcat
-                  (Prelude.map
-                     (\ _v ->
-                        (Data.ProtoLens.Encoding.Bytes.putVarInt 7994) Data.Monoid.<>
-                          (((\ bs ->
-                               (Data.ProtoLens.Encoding.Bytes.putVarInt
-                                  (Prelude.fromIntegral (Data.ByteString.length bs)))
-                                 Data.Monoid.<> Data.ProtoLens.Encoding.Bytes.putBytes bs))
-                             Prelude.. Data.ProtoLens.encodeMessage)
-                            _v)
-                     (Lens.Family2.view
-                        (Lens.Labels.lensOf'
-                           ((Lens.Labels.proxy#) ::
-                              (Lens.Labels.Proxy#) "uninterpretedOption"))
-                        _x)))
+               (Data.ProtoLens.Encoding.Bytes.foldMapBuilder
+                  (\ _v ->
+                     (Data.ProtoLens.Encoding.Bytes.putVarInt 7994) Data.Monoid.<>
+                       (((\ bs ->
+                            (Data.ProtoLens.Encoding.Bytes.putVarInt
+                               (Prelude.fromIntegral (Data.ByteString.length bs)))
+                              Data.Monoid.<> Data.ProtoLens.Encoding.Bytes.putBytes bs))
+                          Prelude.. Data.ProtoLens.encodeMessage)
+                         _v)
+                  (Lens.Family2.view
+                     (Lens.Labels.lensOf'
+                        ((Lens.Labels.proxy#) ::
+                           (Lens.Labels.Proxy#) "vec'uninterpretedOption"))
+                     _x))
                  Data.Monoid.<>
                  Data.ProtoLens.Encoding.Wire.buildFieldSet
                    (Lens.Family2.view Data.ProtoLens.unknownFields _x))
@@ -7917,13 +8597,15 @@ instance Control.DeepSeq.NFData OneofOptions where
     * 'Proto.Google.Protobuf.Descriptor_Fields.name' @:: Lens' ServiceDescriptorProto Data.Text.Text@
     * 'Proto.Google.Protobuf.Descriptor_Fields.maybe'name' @:: Lens' ServiceDescriptorProto (Prelude.Maybe Data.Text.Text)@
     * 'Proto.Google.Protobuf.Descriptor_Fields.method' @:: Lens' ServiceDescriptorProto [MethodDescriptorProto]@
+    * 'Proto.Google.Protobuf.Descriptor_Fields.vec'method' @:: Lens' ServiceDescriptorProto
+  (Data.Vector.Vector MethodDescriptorProto)@
     * 'Proto.Google.Protobuf.Descriptor_Fields.options' @:: Lens' ServiceDescriptorProto ServiceOptions@
     * 'Proto.Google.Protobuf.Descriptor_Fields.maybe'options' @:: Lens' ServiceDescriptorProto (Prelude.Maybe ServiceOptions)@
  -}
 data ServiceDescriptorProto = ServiceDescriptorProto{_ServiceDescriptorProto'name
                                                      :: !(Prelude.Maybe Data.Text.Text),
                                                      _ServiceDescriptorProto'method ::
-                                                     ![MethodDescriptorProto],
+                                                     !(Data.Vector.Vector MethodDescriptorProto),
                                                      _ServiceDescriptorProto'options ::
                                                      !(Prelude.Maybe ServiceOptions),
                                                      _ServiceDescriptorProto'_unknownFields ::
@@ -7950,6 +8632,15 @@ instance a ~ (Prelude.Maybe Data.Text.Text) =>
               Prelude.. Prelude.id
 instance a ~ ([MethodDescriptorProto]) =>
          Lens.Labels.HasLens' ServiceDescriptorProto "method" a
+         where
+        lensOf' _
+          = (Lens.Family2.Unchecked.lens _ServiceDescriptorProto'method
+               (\ x__ y__ -> x__{_ServiceDescriptorProto'method = y__}))
+              Prelude..
+              Lens.Family2.Unchecked.lens Data.Vector.Generic.toList
+                (\ _ y__ -> Data.Vector.Generic.fromList y__)
+instance a ~ (Data.Vector.Vector MethodDescriptorProto) =>
+         Lens.Labels.HasLens' ServiceDescriptorProto "vec'method" a
          where
         lensOf' _
           = (Lens.Family2.Unchecked.lens _ServiceDescriptorProto'method
@@ -8009,17 +8700,23 @@ instance Data.ProtoLens.Message ServiceDescriptorProto where
         defMessage
           = ServiceDescriptorProto{_ServiceDescriptorProto'name =
                                      Prelude.Nothing,
-                                   _ServiceDescriptorProto'method = [],
+                                   _ServiceDescriptorProto'method = Data.Vector.Generic.empty,
                                    _ServiceDescriptorProto'options = Prelude.Nothing,
                                    _ServiceDescriptorProto'_unknownFields = ([])}
         parseMessage
           = let loop ::
                      ServiceDescriptorProto ->
-                       Data.ProtoLens.Encoding.Bytes.Parser ServiceDescriptorProto
-                loop x
+                       Data.ProtoLens.Encoding.Growing.Growing Data.Vector.Vector
+                         Data.ProtoLens.Encoding.Growing.RealWorld
+                         MethodDescriptorProto
+                         -> Data.ProtoLens.Encoding.Bytes.Parser ServiceDescriptorProto
+                loop x mutable'method
                   = do end <- Data.ProtoLens.Encoding.Bytes.atEnd
                        if end then
-                         do let missing = [] in
+                         do frozen'method <- Data.ProtoLens.Encoding.Parser.Unsafe.unsafeLiftIO
+                                               (Data.ProtoLens.Encoding.Growing.unsafeFreeze
+                                                  mutable'method)
+                            let missing = [] in
                               if Prelude.null missing then Prelude.return () else
                                 Prelude.fail
                                   (("Missing required fields: ") Prelude.++
@@ -8027,10 +8724,10 @@ instance Data.ProtoLens.Message ServiceDescriptorProto where
                             Prelude.return
                               (Lens.Family2.over Data.ProtoLens.unknownFields
                                  (\ !t -> Prelude.reverse t)
-                                 (Lens.Family2.over
+                                 (Lens.Family2.set
                                     (Lens.Labels.lensOf'
-                                       ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "method"))
-                                    (\ !t -> Prelude.reverse t)
+                                       ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "vec'method"))
+                                    frozen'method
                                     x))
                          else
                          do tag <- Data.ProtoLens.Encoding.Bytes.getVarInt
@@ -8051,24 +8748,21 @@ instance Data.ProtoLens.Message ServiceDescriptorProto where
                                                     (Lens.Labels.Proxy#) "name"))
                                               y
                                               x)
-                                18 -> do !y <- (do value <- do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
-                                                               Data.ProtoLens.Encoding.Bytes.getBytes
-                                                                 (Prelude.fromIntegral len)
-                                                   Data.ProtoLens.Encoding.Bytes.runEither
-                                                     (Data.ProtoLens.decodeMessage value))
+                                           mutable'method
+                                18 -> do !y <- (do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
+                                                   Data.ProtoLens.Encoding.Bytes.isolate
+                                                     (Prelude.fromIntegral len)
+                                                     Data.ProtoLens.parseMessage)
                                                  Data.ProtoLens.Encoding.Bytes.<?> "method"
-                                         loop
-                                           (Lens.Family2.over
-                                              (Lens.Labels.lensOf'
-                                                 ((Lens.Labels.proxy#) ::
-                                                    (Lens.Labels.Proxy#) "method"))
-                                              (\ !t -> (:) y t)
-                                              x)
-                                26 -> do y <- (do value <- do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
-                                                              Data.ProtoLens.Encoding.Bytes.getBytes
-                                                                (Prelude.fromIntegral len)
-                                                  Data.ProtoLens.Encoding.Bytes.runEither
-                                                    (Data.ProtoLens.decodeMessage value))
+                                         v <- Data.ProtoLens.Encoding.Parser.Unsafe.unsafeLiftIO
+                                                (Data.ProtoLens.Encoding.Growing.append
+                                                   mutable'method
+                                                   y)
+                                         loop x v
+                                26 -> do y <- (do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
+                                                  Data.ProtoLens.Encoding.Bytes.isolate
+                                                    (Prelude.fromIntegral len)
+                                                    Data.ProtoLens.parseMessage)
                                                 Data.ProtoLens.Encoding.Bytes.<?> "options"
                                          loop
                                            (Lens.Family2.set
@@ -8077,15 +8771,19 @@ instance Data.ProtoLens.Message ServiceDescriptorProto where
                                                     (Lens.Labels.Proxy#) "options"))
                                               y
                                               x)
+                                           mutable'method
                                 wire -> do !y <- Data.ProtoLens.Encoding.Wire.parseTaggedValueFromWire
                                                    wire
                                            loop
                                              (Lens.Family2.over Data.ProtoLens.unknownFields
                                                 (\ !t -> (:) y t)
                                                 x)
+                                             mutable'method
               in
-              (loop Data.ProtoLens.defMessage) Data.ProtoLens.Encoding.Bytes.<?>
-                "ServiceDescriptorProto"
+              (do mutable'method <- Data.ProtoLens.Encoding.Parser.Unsafe.unsafeLiftIO
+                                      Data.ProtoLens.Encoding.Growing.new
+                  loop Data.ProtoLens.defMessage mutable'method)
+                Data.ProtoLens.Encoding.Bytes.<?> "ServiceDescriptorProto"
         buildMessage
           = (\ _x ->
                (case
@@ -8105,20 +8803,19 @@ instance Data.ProtoLens.Message ServiceDescriptorProto where
                                             Prelude.. Data.Text.Encoding.encodeUtf8)
                                            _v)
                  Data.Monoid.<>
-                 (Data.Monoid.mconcat
-                    (Prelude.map
-                       (\ _v ->
-                          (Data.ProtoLens.Encoding.Bytes.putVarInt 18) Data.Monoid.<>
-                            (((\ bs ->
-                                 (Data.ProtoLens.Encoding.Bytes.putVarInt
-                                    (Prelude.fromIntegral (Data.ByteString.length bs)))
-                                   Data.Monoid.<> Data.ProtoLens.Encoding.Bytes.putBytes bs))
-                               Prelude.. Data.ProtoLens.encodeMessage)
-                              _v)
-                       (Lens.Family2.view
-                          (Lens.Labels.lensOf'
-                             ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "method"))
-                          _x)))
+                 (Data.ProtoLens.Encoding.Bytes.foldMapBuilder
+                    (\ _v ->
+                       (Data.ProtoLens.Encoding.Bytes.putVarInt 18) Data.Monoid.<>
+                         (((\ bs ->
+                              (Data.ProtoLens.Encoding.Bytes.putVarInt
+                                 (Prelude.fromIntegral (Data.ByteString.length bs)))
+                                Data.Monoid.<> Data.ProtoLens.Encoding.Bytes.putBytes bs))
+                            Prelude.. Data.ProtoLens.encodeMessage)
+                           _v)
+                    (Lens.Family2.view
+                       (Lens.Labels.lensOf'
+                          ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "vec'method"))
+                       _x))
                    Data.Monoid.<>
                    (case
                       Lens.Family2.view
@@ -8154,10 +8851,12 @@ instance Control.DeepSeq.NFData ServiceDescriptorProto where
     * 'Proto.Google.Protobuf.Descriptor_Fields.deprecated' @:: Lens' ServiceOptions Prelude.Bool@
     * 'Proto.Google.Protobuf.Descriptor_Fields.maybe'deprecated' @:: Lens' ServiceOptions (Prelude.Maybe Prelude.Bool)@
     * 'Proto.Google.Protobuf.Descriptor_Fields.uninterpretedOption' @:: Lens' ServiceOptions [UninterpretedOption]@
+    * 'Proto.Google.Protobuf.Descriptor_Fields.vec'uninterpretedOption' @:: Lens' ServiceOptions (Data.Vector.Vector UninterpretedOption)@
  -}
 data ServiceOptions = ServiceOptions{_ServiceOptions'deprecated ::
                                      !(Prelude.Maybe Prelude.Bool),
-                                     _ServiceOptions'uninterpretedOption :: ![UninterpretedOption],
+                                     _ServiceOptions'uninterpretedOption ::
+                                     !(Data.Vector.Vector UninterpretedOption),
                                      _ServiceOptions'_unknownFields :: !Data.ProtoLens.FieldSet}
                         deriving (Prelude.Eq, Prelude.Ord)
 instance Prelude.Show ServiceOptions where
@@ -8181,6 +8880,15 @@ instance a ~ (Prelude.Maybe Prelude.Bool) =>
               Prelude.. Prelude.id
 instance a ~ ([UninterpretedOption]) =>
          Lens.Labels.HasLens' ServiceOptions "uninterpretedOption" a
+         where
+        lensOf' _
+          = (Lens.Family2.Unchecked.lens _ServiceOptions'uninterpretedOption
+               (\ x__ y__ -> x__{_ServiceOptions'uninterpretedOption = y__}))
+              Prelude..
+              Lens.Family2.Unchecked.lens Data.Vector.Generic.toList
+                (\ _ y__ -> Data.Vector.Generic.fromList y__)
+instance a ~ (Data.Vector.Vector UninterpretedOption) =>
+         Lens.Labels.HasLens' ServiceOptions "vec'uninterpretedOption" a
          where
         lensOf' _
           = (Lens.Family2.Unchecked.lens _ServiceOptions'uninterpretedOption
@@ -8215,16 +8923,22 @@ instance Data.ProtoLens.Message ServiceOptions where
               (\ x__ y__ -> x__{_ServiceOptions'_unknownFields = y__})
         defMessage
           = ServiceOptions{_ServiceOptions'deprecated = Prelude.Nothing,
-                           _ServiceOptions'uninterpretedOption = [],
+                           _ServiceOptions'uninterpretedOption = Data.Vector.Generic.empty,
                            _ServiceOptions'_unknownFields = ([])}
         parseMessage
           = let loop ::
                      ServiceOptions ->
-                       Data.ProtoLens.Encoding.Bytes.Parser ServiceOptions
-                loop x
+                       Data.ProtoLens.Encoding.Growing.Growing Data.Vector.Vector
+                         Data.ProtoLens.Encoding.Growing.RealWorld
+                         UninterpretedOption
+                         -> Data.ProtoLens.Encoding.Bytes.Parser ServiceOptions
+                loop x mutable'uninterpretedOption
                   = do end <- Data.ProtoLens.Encoding.Bytes.atEnd
                        if end then
-                         do let missing = [] in
+                         do frozen'uninterpretedOption <- Data.ProtoLens.Encoding.Parser.Unsafe.unsafeLiftIO
+                                                            (Data.ProtoLens.Encoding.Growing.unsafeFreeze
+                                                               mutable'uninterpretedOption)
+                            let missing = [] in
                               if Prelude.null missing then Prelude.return () else
                                 Prelude.fail
                                   (("Missing required fields: ") Prelude.++
@@ -8232,11 +8946,11 @@ instance Data.ProtoLens.Message ServiceOptions where
                             Prelude.return
                               (Lens.Family2.over Data.ProtoLens.unknownFields
                                  (\ !t -> Prelude.reverse t)
-                                 (Lens.Family2.over
+                                 (Lens.Family2.set
                                     (Lens.Labels.lensOf'
                                        ((Lens.Labels.proxy#) ::
-                                          (Lens.Labels.Proxy#) "uninterpretedOption"))
-                                    (\ !t -> Prelude.reverse t)
+                                          (Lens.Labels.Proxy#) "vec'uninterpretedOption"))
+                                    frozen'uninterpretedOption
                                     x))
                          else
                          do tag <- Data.ProtoLens.Encoding.Bytes.getVarInt
@@ -8251,29 +8965,30 @@ instance Data.ProtoLens.Message ServiceOptions where
                                                      (Lens.Labels.Proxy#) "deprecated"))
                                                y
                                                x)
-                                7994 -> do !y <- (do value <- do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
-                                                                 Data.ProtoLens.Encoding.Bytes.getBytes
-                                                                   (Prelude.fromIntegral len)
-                                                     Data.ProtoLens.Encoding.Bytes.runEither
-                                                       (Data.ProtoLens.decodeMessage value))
+                                            mutable'uninterpretedOption
+                                7994 -> do !y <- (do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
+                                                     Data.ProtoLens.Encoding.Bytes.isolate
+                                                       (Prelude.fromIntegral len)
+                                                       Data.ProtoLens.parseMessage)
                                                    Data.ProtoLens.Encoding.Bytes.<?>
                                                    "uninterpreted_option"
-                                           loop
-                                             (Lens.Family2.over
-                                                (Lens.Labels.lensOf'
-                                                   ((Lens.Labels.proxy#) ::
-                                                      (Lens.Labels.Proxy#) "uninterpretedOption"))
-                                                (\ !t -> (:) y t)
-                                                x)
+                                           v <- Data.ProtoLens.Encoding.Parser.Unsafe.unsafeLiftIO
+                                                  (Data.ProtoLens.Encoding.Growing.append
+                                                     mutable'uninterpretedOption
+                                                     y)
+                                           loop x v
                                 wire -> do !y <- Data.ProtoLens.Encoding.Wire.parseTaggedValueFromWire
                                                    wire
                                            loop
                                              (Lens.Family2.over Data.ProtoLens.unknownFields
                                                 (\ !t -> (:) y t)
                                                 x)
+                                             mutable'uninterpretedOption
               in
-              (loop Data.ProtoLens.defMessage) Data.ProtoLens.Encoding.Bytes.<?>
-                "ServiceOptions"
+              (do mutable'uninterpretedOption <- Data.ProtoLens.Encoding.Parser.Unsafe.unsafeLiftIO
+                                                   Data.ProtoLens.Encoding.Growing.new
+                  loop Data.ProtoLens.defMessage mutable'uninterpretedOption)
+                Data.ProtoLens.Encoding.Bytes.<?> "ServiceOptions"
         buildMessage
           = (\ _x ->
                (case
@@ -8289,21 +9004,20 @@ instance Data.ProtoLens.Message ServiceOptions where
                                             (\ b -> if b then 1 else 0))
                                            _v)
                  Data.Monoid.<>
-                 (Data.Monoid.mconcat
-                    (Prelude.map
-                       (\ _v ->
-                          (Data.ProtoLens.Encoding.Bytes.putVarInt 7994) Data.Monoid.<>
-                            (((\ bs ->
-                                 (Data.ProtoLens.Encoding.Bytes.putVarInt
-                                    (Prelude.fromIntegral (Data.ByteString.length bs)))
-                                   Data.Monoid.<> Data.ProtoLens.Encoding.Bytes.putBytes bs))
-                               Prelude.. Data.ProtoLens.encodeMessage)
-                              _v)
-                       (Lens.Family2.view
-                          (Lens.Labels.lensOf'
-                             ((Lens.Labels.proxy#) ::
-                                (Lens.Labels.Proxy#) "uninterpretedOption"))
-                          _x)))
+                 (Data.ProtoLens.Encoding.Bytes.foldMapBuilder
+                    (\ _v ->
+                       (Data.ProtoLens.Encoding.Bytes.putVarInt 7994) Data.Monoid.<>
+                         (((\ bs ->
+                              (Data.ProtoLens.Encoding.Bytes.putVarInt
+                                 (Prelude.fromIntegral (Data.ByteString.length bs)))
+                                Data.Monoid.<> Data.ProtoLens.Encoding.Bytes.putBytes bs))
+                            Prelude.. Data.ProtoLens.encodeMessage)
+                           _v)
+                    (Lens.Family2.view
+                       (Lens.Labels.lensOf'
+                          ((Lens.Labels.proxy#) ::
+                             (Lens.Labels.Proxy#) "vec'uninterpretedOption"))
+                       _x))
                    Data.Monoid.<>
                    Data.ProtoLens.Encoding.Wire.buildFieldSet
                      (Lens.Family2.view Data.ProtoLens.unknownFields _x))
@@ -8317,9 +9031,10 @@ instance Control.DeepSeq.NFData ServiceOptions where
 {- | Fields :
 
     * 'Proto.Google.Protobuf.Descriptor_Fields.location' @:: Lens' SourceCodeInfo [SourceCodeInfo'Location]@
+    * 'Proto.Google.Protobuf.Descriptor_Fields.vec'location' @:: Lens' SourceCodeInfo (Data.Vector.Vector SourceCodeInfo'Location)@
  -}
 data SourceCodeInfo = SourceCodeInfo{_SourceCodeInfo'location ::
-                                     ![SourceCodeInfo'Location],
+                                     !(Data.Vector.Vector SourceCodeInfo'Location),
                                      _SourceCodeInfo'_unknownFields :: !Data.ProtoLens.FieldSet}
                         deriving (Prelude.Eq, Prelude.Ord)
 instance Prelude.Show SourceCodeInfo where
@@ -8329,6 +9044,15 @@ instance Prelude.Show SourceCodeInfo where
                  (Prelude.showChar '}' __s))
 instance a ~ ([SourceCodeInfo'Location]) =>
          Lens.Labels.HasLens' SourceCodeInfo "location" a
+         where
+        lensOf' _
+          = (Lens.Family2.Unchecked.lens _SourceCodeInfo'location
+               (\ x__ y__ -> x__{_SourceCodeInfo'location = y__}))
+              Prelude..
+              Lens.Family2.Unchecked.lens Data.Vector.Generic.toList
+                (\ _ y__ -> Data.Vector.Generic.fromList y__)
+instance a ~ (Data.Vector.Vector SourceCodeInfo'Location) =>
+         Lens.Labels.HasLens' SourceCodeInfo "vec'location" a
          where
         lensOf' _
           = (Lens.Family2.Unchecked.lens _SourceCodeInfo'location
@@ -8352,16 +9076,23 @@ instance Data.ProtoLens.Message SourceCodeInfo where
           = Lens.Family2.Unchecked.lens _SourceCodeInfo'_unknownFields
               (\ x__ y__ -> x__{_SourceCodeInfo'_unknownFields = y__})
         defMessage
-          = SourceCodeInfo{_SourceCodeInfo'location = [],
+          = SourceCodeInfo{_SourceCodeInfo'location =
+                             Data.Vector.Generic.empty,
                            _SourceCodeInfo'_unknownFields = ([])}
         parseMessage
           = let loop ::
                      SourceCodeInfo ->
-                       Data.ProtoLens.Encoding.Bytes.Parser SourceCodeInfo
-                loop x
+                       Data.ProtoLens.Encoding.Growing.Growing Data.Vector.Vector
+                         Data.ProtoLens.Encoding.Growing.RealWorld
+                         SourceCodeInfo'Location
+                         -> Data.ProtoLens.Encoding.Bytes.Parser SourceCodeInfo
+                loop x mutable'location
                   = do end <- Data.ProtoLens.Encoding.Bytes.atEnd
                        if end then
-                         do let missing = [] in
+                         do frozen'location <- Data.ProtoLens.Encoding.Parser.Unsafe.unsafeLiftIO
+                                                 (Data.ProtoLens.Encoding.Growing.unsafeFreeze
+                                                    mutable'location)
+                            let missing = [] in
                               if Prelude.null missing then Prelude.return () else
                                 Prelude.fail
                                   (("Missing required fields: ") Prelude.++
@@ -8369,52 +9100,52 @@ instance Data.ProtoLens.Message SourceCodeInfo where
                             Prelude.return
                               (Lens.Family2.over Data.ProtoLens.unknownFields
                                  (\ !t -> Prelude.reverse t)
-                                 (Lens.Family2.over
+                                 (Lens.Family2.set
                                     (Lens.Labels.lensOf'
-                                       ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "location"))
-                                    (\ !t -> Prelude.reverse t)
+                                       ((Lens.Labels.proxy#) ::
+                                          (Lens.Labels.Proxy#) "vec'location"))
+                                    frozen'location
                                     x))
                          else
                          do tag <- Data.ProtoLens.Encoding.Bytes.getVarInt
                             case tag of
-                                10 -> do !y <- (do value <- do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
-                                                               Data.ProtoLens.Encoding.Bytes.getBytes
-                                                                 (Prelude.fromIntegral len)
-                                                   Data.ProtoLens.Encoding.Bytes.runEither
-                                                     (Data.ProtoLens.decodeMessage value))
+                                10 -> do !y <- (do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
+                                                   Data.ProtoLens.Encoding.Bytes.isolate
+                                                     (Prelude.fromIntegral len)
+                                                     Data.ProtoLens.parseMessage)
                                                  Data.ProtoLens.Encoding.Bytes.<?> "location"
-                                         loop
-                                           (Lens.Family2.over
-                                              (Lens.Labels.lensOf'
-                                                 ((Lens.Labels.proxy#) ::
-                                                    (Lens.Labels.Proxy#) "location"))
-                                              (\ !t -> (:) y t)
-                                              x)
+                                         v <- Data.ProtoLens.Encoding.Parser.Unsafe.unsafeLiftIO
+                                                (Data.ProtoLens.Encoding.Growing.append
+                                                   mutable'location
+                                                   y)
+                                         loop x v
                                 wire -> do !y <- Data.ProtoLens.Encoding.Wire.parseTaggedValueFromWire
                                                    wire
                                            loop
                                              (Lens.Family2.over Data.ProtoLens.unknownFields
                                                 (\ !t -> (:) y t)
                                                 x)
+                                             mutable'location
               in
-              (loop Data.ProtoLens.defMessage) Data.ProtoLens.Encoding.Bytes.<?>
-                "SourceCodeInfo"
+              (do mutable'location <- Data.ProtoLens.Encoding.Parser.Unsafe.unsafeLiftIO
+                                        Data.ProtoLens.Encoding.Growing.new
+                  loop Data.ProtoLens.defMessage mutable'location)
+                Data.ProtoLens.Encoding.Bytes.<?> "SourceCodeInfo"
         buildMessage
           = (\ _x ->
-               (Data.Monoid.mconcat
-                  (Prelude.map
-                     (\ _v ->
-                        (Data.ProtoLens.Encoding.Bytes.putVarInt 10) Data.Monoid.<>
-                          (((\ bs ->
-                               (Data.ProtoLens.Encoding.Bytes.putVarInt
-                                  (Prelude.fromIntegral (Data.ByteString.length bs)))
-                                 Data.Monoid.<> Data.ProtoLens.Encoding.Bytes.putBytes bs))
-                             Prelude.. Data.ProtoLens.encodeMessage)
-                            _v)
-                     (Lens.Family2.view
-                        (Lens.Labels.lensOf'
-                           ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "location"))
-                        _x)))
+               (Data.ProtoLens.Encoding.Bytes.foldMapBuilder
+                  (\ _v ->
+                     (Data.ProtoLens.Encoding.Bytes.putVarInt 10) Data.Monoid.<>
+                       (((\ bs ->
+                            (Data.ProtoLens.Encoding.Bytes.putVarInt
+                               (Prelude.fromIntegral (Data.ByteString.length bs)))
+                              Data.Monoid.<> Data.ProtoLens.Encoding.Bytes.putBytes bs))
+                          Prelude.. Data.ProtoLens.encodeMessage)
+                         _v)
+                  (Lens.Family2.view
+                     (Lens.Labels.lensOf'
+                        ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "vec'location"))
+                     _x))
                  Data.Monoid.<>
                  Data.ProtoLens.Encoding.Wire.buildFieldSet
                    (Lens.Family2.view Data.ProtoLens.unknownFields _x))
@@ -8426,23 +9157,29 @@ instance Control.DeepSeq.NFData SourceCodeInfo where
 {- | Fields :
 
     * 'Proto.Google.Protobuf.Descriptor_Fields.path' @:: Lens' SourceCodeInfo'Location [Data.Int.Int32]@
+    * 'Proto.Google.Protobuf.Descriptor_Fields.vec'path' @:: Lens' SourceCodeInfo'Location
+  (Data.Vector.Unboxed.Vector Data.Int.Int32)@
     * 'Proto.Google.Protobuf.Descriptor_Fields.span' @:: Lens' SourceCodeInfo'Location [Data.Int.Int32]@
+    * 'Proto.Google.Protobuf.Descriptor_Fields.vec'span' @:: Lens' SourceCodeInfo'Location
+  (Data.Vector.Unboxed.Vector Data.Int.Int32)@
     * 'Proto.Google.Protobuf.Descriptor_Fields.leadingComments' @:: Lens' SourceCodeInfo'Location Data.Text.Text@
     * 'Proto.Google.Protobuf.Descriptor_Fields.maybe'leadingComments' @:: Lens' SourceCodeInfo'Location (Prelude.Maybe Data.Text.Text)@
     * 'Proto.Google.Protobuf.Descriptor_Fields.trailingComments' @:: Lens' SourceCodeInfo'Location Data.Text.Text@
     * 'Proto.Google.Protobuf.Descriptor_Fields.maybe'trailingComments' @:: Lens' SourceCodeInfo'Location (Prelude.Maybe Data.Text.Text)@
     * 'Proto.Google.Protobuf.Descriptor_Fields.leadingDetachedComments' @:: Lens' SourceCodeInfo'Location [Data.Text.Text]@
+    * 'Proto.Google.Protobuf.Descriptor_Fields.vec'leadingDetachedComments' @:: Lens' SourceCodeInfo'Location (Data.Vector.Vector Data.Text.Text)@
  -}
 data SourceCodeInfo'Location = SourceCodeInfo'Location{_SourceCodeInfo'Location'path
-                                                       :: ![Data.Int.Int32],
+                                                       ::
+                                                       !(Data.Vector.Unboxed.Vector Data.Int.Int32),
                                                        _SourceCodeInfo'Location'span ::
-                                                       ![Data.Int.Int32],
+                                                       !(Data.Vector.Unboxed.Vector Data.Int.Int32),
                                                        _SourceCodeInfo'Location'leadingComments ::
                                                        !(Prelude.Maybe Data.Text.Text),
                                                        _SourceCodeInfo'Location'trailingComments ::
                                                        !(Prelude.Maybe Data.Text.Text),
                                                        _SourceCodeInfo'Location'leadingDetachedComments
-                                                       :: ![Data.Text.Text],
+                                                       :: !(Data.Vector.Vector Data.Text.Text),
                                                        _SourceCodeInfo'Location'_unknownFields ::
                                                        !Data.ProtoLens.FieldSet}
                                  deriving (Prelude.Eq, Prelude.Ord)
@@ -8457,9 +9194,27 @@ instance a ~ ([Data.Int.Int32]) =>
         lensOf' _
           = (Lens.Family2.Unchecked.lens _SourceCodeInfo'Location'path
                (\ x__ y__ -> x__{_SourceCodeInfo'Location'path = y__}))
+              Prelude..
+              Lens.Family2.Unchecked.lens Data.Vector.Generic.toList
+                (\ _ y__ -> Data.Vector.Generic.fromList y__)
+instance a ~ (Data.Vector.Unboxed.Vector Data.Int.Int32) =>
+         Lens.Labels.HasLens' SourceCodeInfo'Location "vec'path" a
+         where
+        lensOf' _
+          = (Lens.Family2.Unchecked.lens _SourceCodeInfo'Location'path
+               (\ x__ y__ -> x__{_SourceCodeInfo'Location'path = y__}))
               Prelude.. Prelude.id
 instance a ~ ([Data.Int.Int32]) =>
          Lens.Labels.HasLens' SourceCodeInfo'Location "span" a
+         where
+        lensOf' _
+          = (Lens.Family2.Unchecked.lens _SourceCodeInfo'Location'span
+               (\ x__ y__ -> x__{_SourceCodeInfo'Location'span = y__}))
+              Prelude..
+              Lens.Family2.Unchecked.lens Data.Vector.Generic.toList
+                (\ _ y__ -> Data.Vector.Generic.fromList y__)
+instance a ~ (Data.Vector.Unboxed.Vector Data.Int.Int32) =>
+         Lens.Labels.HasLens' SourceCodeInfo'Location "vec'span" a
          where
         lensOf' _
           = (Lens.Family2.Unchecked.lens _SourceCodeInfo'Location'span
@@ -8506,6 +9261,19 @@ instance a ~ (Prelude.Maybe Data.Text.Text) =>
 instance a ~ ([Data.Text.Text]) =>
          Lens.Labels.HasLens' SourceCodeInfo'Location
            "leadingDetachedComments"
+           a
+         where
+        lensOf' _
+          = (Lens.Family2.Unchecked.lens
+               _SourceCodeInfo'Location'leadingDetachedComments
+               (\ x__ y__ ->
+                  x__{_SourceCodeInfo'Location'leadingDetachedComments = y__}))
+              Prelude..
+              Lens.Family2.Unchecked.lens Data.Vector.Generic.toList
+                (\ _ y__ -> Data.Vector.Generic.fromList y__)
+instance a ~ (Data.Vector.Vector Data.Text.Text) =>
+         Lens.Labels.HasLens' SourceCodeInfo'Location
+           "vec'leadingDetachedComments"
            a
          where
         lensOf' _
@@ -8573,20 +9341,42 @@ instance Data.ProtoLens.Message SourceCodeInfo'Location where
               _SourceCodeInfo'Location'_unknownFields
               (\ x__ y__ -> x__{_SourceCodeInfo'Location'_unknownFields = y__})
         defMessage
-          = SourceCodeInfo'Location{_SourceCodeInfo'Location'path = [],
-                                    _SourceCodeInfo'Location'span = [],
+          = SourceCodeInfo'Location{_SourceCodeInfo'Location'path =
+                                      Data.Vector.Generic.empty,
+                                    _SourceCodeInfo'Location'span = Data.Vector.Generic.empty,
                                     _SourceCodeInfo'Location'leadingComments = Prelude.Nothing,
                                     _SourceCodeInfo'Location'trailingComments = Prelude.Nothing,
-                                    _SourceCodeInfo'Location'leadingDetachedComments = [],
+                                    _SourceCodeInfo'Location'leadingDetachedComments =
+                                      Data.Vector.Generic.empty,
                                     _SourceCodeInfo'Location'_unknownFields = ([])}
         parseMessage
           = let loop ::
                      SourceCodeInfo'Location ->
-                       Data.ProtoLens.Encoding.Bytes.Parser SourceCodeInfo'Location
-                loop x
+                       Data.ProtoLens.Encoding.Growing.Growing Data.Vector.Vector
+                         Data.ProtoLens.Encoding.Growing.RealWorld
+                         Data.Text.Text
+                         ->
+                         Data.ProtoLens.Encoding.Growing.Growing Data.Vector.Unboxed.Vector
+                           Data.ProtoLens.Encoding.Growing.RealWorld
+                           Data.Int.Int32
+                           ->
+                           Data.ProtoLens.Encoding.Growing.Growing Data.Vector.Unboxed.Vector
+                             Data.ProtoLens.Encoding.Growing.RealWorld
+                             Data.Int.Int32
+                             -> Data.ProtoLens.Encoding.Bytes.Parser SourceCodeInfo'Location
+                loop x mutable'leadingDetachedComments mutable'path mutable'span
                   = do end <- Data.ProtoLens.Encoding.Bytes.atEnd
                        if end then
-                         do let missing = [] in
+                         do frozen'leadingDetachedComments <- Data.ProtoLens.Encoding.Parser.Unsafe.unsafeLiftIO
+                                                                (Data.ProtoLens.Encoding.Growing.unsafeFreeze
+                                                                   mutable'leadingDetachedComments)
+                            frozen'path <- Data.ProtoLens.Encoding.Parser.Unsafe.unsafeLiftIO
+                                             (Data.ProtoLens.Encoding.Growing.unsafeFreeze
+                                                mutable'path)
+                            frozen'span <- Data.ProtoLens.Encoding.Parser.Unsafe.unsafeLiftIO
+                                             (Data.ProtoLens.Encoding.Growing.unsafeFreeze
+                                                mutable'span)
+                            let missing = [] in
                               if Prelude.null missing then Prelude.return () else
                                 Prelude.fail
                                   (("Missing required fields: ") Prelude.++
@@ -8594,19 +9384,20 @@ instance Data.ProtoLens.Message SourceCodeInfo'Location where
                             Prelude.return
                               (Lens.Family2.over Data.ProtoLens.unknownFields
                                  (\ !t -> Prelude.reverse t)
-                                 (Lens.Family2.over
+                                 (Lens.Family2.set
                                     (Lens.Labels.lensOf'
-                                       ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "path"))
-                                    (\ !t -> Prelude.reverse t)
-                                    (Lens.Family2.over
+                                       ((Lens.Labels.proxy#) ::
+                                          (Lens.Labels.Proxy#) "vec'leadingDetachedComments"))
+                                    frozen'leadingDetachedComments
+                                    (Lens.Family2.set
                                        (Lens.Labels.lensOf'
-                                          ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "span"))
-                                       (\ !t -> Prelude.reverse t)
-                                       (Lens.Family2.over
+                                          ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "vec'path"))
+                                       frozen'path
+                                       (Lens.Family2.set
                                           (Lens.Labels.lensOf'
                                              ((Lens.Labels.proxy#) ::
-                                                (Lens.Labels.Proxy#) "leadingDetachedComments"))
-                                          (\ !t -> Prelude.reverse t)
+                                                (Lens.Labels.Proxy#) "vec'span"))
+                                          frozen'span
                                           x))))
                          else
                          do tag <- Data.ProtoLens.Encoding.Bytes.getVarInt
@@ -8614,71 +9405,57 @@ instance Data.ProtoLens.Message SourceCodeInfo'Location where
                                 8 -> do !y <- (Prelude.fmap Prelude.fromIntegral
                                                  Data.ProtoLens.Encoding.Bytes.getVarInt)
                                                 Data.ProtoLens.Encoding.Bytes.<?> "path"
-                                        loop
-                                          (Lens.Family2.over
-                                             (Lens.Labels.lensOf'
-                                                ((Lens.Labels.proxy#) ::
-                                                   (Lens.Labels.Proxy#) "path"))
-                                             (\ !t -> (:) y t)
-                                             x)
-                                10 -> do bytes <- do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
-                                                     Data.ProtoLens.Encoding.Bytes.getBytes
-                                                       (Prelude.fromIntegral len)
-                                         y <- Data.ProtoLens.Encoding.Bytes.runEither
-                                                (Data.ProtoLens.Encoding.Bytes.runParser
-                                                   (let ploop qs
-                                                          = do packedEnd <- Data.ProtoLens.Encoding.Bytes.atEnd
-                                                               if packedEnd then Prelude.return qs
-                                                                 else
-                                                                 do !q <- (Prelude.fmap
-                                                                             Prelude.fromIntegral
-                                                                             Data.ProtoLens.Encoding.Bytes.getVarInt)
-                                                                            Data.ProtoLens.Encoding.Bytes.<?>
-                                                                            "path"
-                                                                    ploop ((:) q qs)
-                                                      in ploop [])
-                                                   bytes)
-                                         loop
-                                           (Lens.Family2.over
-                                              (Lens.Labels.lensOf'
-                                                 ((Lens.Labels.proxy#) ::
-                                                    (Lens.Labels.Proxy#) "path"))
-                                              (\ !t -> (y) Prelude.++ t)
-                                              x)
+                                        v <- Data.ProtoLens.Encoding.Parser.Unsafe.unsafeLiftIO
+                                               (Data.ProtoLens.Encoding.Growing.append mutable'path
+                                                  y)
+                                        loop x mutable'leadingDetachedComments v mutable'span
+                                10 -> do y <- do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
+                                                 Data.ProtoLens.Encoding.Bytes.isolate
+                                                   (Prelude.fromIntegral len)
+                                                   ((let ploop qs
+                                                           = do packedEnd <- Data.ProtoLens.Encoding.Bytes.atEnd
+                                                                if packedEnd then Prelude.return qs
+                                                                  else
+                                                                  do !q <- (Prelude.fmap
+                                                                              Prelude.fromIntegral
+                                                                              Data.ProtoLens.Encoding.Bytes.getVarInt)
+                                                                             Data.ProtoLens.Encoding.Bytes.<?>
+                                                                             "path"
+                                                                     qs' <- Data.ProtoLens.Encoding.Parser.Unsafe.unsafeLiftIO
+                                                                              (Data.ProtoLens.Encoding.Growing.append
+                                                                                 qs
+                                                                                 q)
+                                                                     ploop qs'
+                                                       in ploop)
+                                                      mutable'path)
+                                         loop x mutable'leadingDetachedComments y mutable'span
                                 16 -> do !y <- (Prelude.fmap Prelude.fromIntegral
                                                   Data.ProtoLens.Encoding.Bytes.getVarInt)
                                                  Data.ProtoLens.Encoding.Bytes.<?> "span"
-                                         loop
-                                           (Lens.Family2.over
-                                              (Lens.Labels.lensOf'
-                                                 ((Lens.Labels.proxy#) ::
-                                                    (Lens.Labels.Proxy#) "span"))
-                                              (\ !t -> (:) y t)
-                                              x)
-                                18 -> do bytes <- do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
-                                                     Data.ProtoLens.Encoding.Bytes.getBytes
-                                                       (Prelude.fromIntegral len)
-                                         y <- Data.ProtoLens.Encoding.Bytes.runEither
-                                                (Data.ProtoLens.Encoding.Bytes.runParser
-                                                   (let ploop qs
-                                                          = do packedEnd <- Data.ProtoLens.Encoding.Bytes.atEnd
-                                                               if packedEnd then Prelude.return qs
-                                                                 else
-                                                                 do !q <- (Prelude.fmap
-                                                                             Prelude.fromIntegral
-                                                                             Data.ProtoLens.Encoding.Bytes.getVarInt)
-                                                                            Data.ProtoLens.Encoding.Bytes.<?>
-                                                                            "span"
-                                                                    ploop ((:) q qs)
-                                                      in ploop [])
-                                                   bytes)
-                                         loop
-                                           (Lens.Family2.over
-                                              (Lens.Labels.lensOf'
-                                                 ((Lens.Labels.proxy#) ::
-                                                    (Lens.Labels.Proxy#) "span"))
-                                              (\ !t -> (y) Prelude.++ t)
-                                              x)
+                                         v <- Data.ProtoLens.Encoding.Parser.Unsafe.unsafeLiftIO
+                                                (Data.ProtoLens.Encoding.Growing.append mutable'span
+                                                   y)
+                                         loop x mutable'leadingDetachedComments mutable'path v
+                                18 -> do y <- do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
+                                                 Data.ProtoLens.Encoding.Bytes.isolate
+                                                   (Prelude.fromIntegral len)
+                                                   ((let ploop qs
+                                                           = do packedEnd <- Data.ProtoLens.Encoding.Bytes.atEnd
+                                                                if packedEnd then Prelude.return qs
+                                                                  else
+                                                                  do !q <- (Prelude.fmap
+                                                                              Prelude.fromIntegral
+                                                                              Data.ProtoLens.Encoding.Bytes.getVarInt)
+                                                                             Data.ProtoLens.Encoding.Bytes.<?>
+                                                                             "span"
+                                                                     qs' <- Data.ProtoLens.Encoding.Parser.Unsafe.unsafeLiftIO
+                                                                              (Data.ProtoLens.Encoding.Growing.append
+                                                                                 qs
+                                                                                 q)
+                                                                     ploop qs'
+                                                       in ploop)
+                                                      mutable'span)
+                                         loop x mutable'leadingDetachedComments mutable'path y
                                 26 -> do y <- (do value <- do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
                                                               Data.ProtoLens.Encoding.Bytes.getBytes
                                                                 (Prelude.fromIntegral len)
@@ -8695,6 +9472,9 @@ instance Data.ProtoLens.Message SourceCodeInfo'Location where
                                                     (Lens.Labels.Proxy#) "leadingComments"))
                                               y
                                               x)
+                                           mutable'leadingDetachedComments
+                                           mutable'path
+                                           mutable'span
                                 34 -> do y <- (do value <- do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
                                                               Data.ProtoLens.Encoding.Bytes.getBytes
                                                                 (Prelude.fromIntegral len)
@@ -8712,6 +9492,9 @@ instance Data.ProtoLens.Message SourceCodeInfo'Location where
                                                     (Lens.Labels.Proxy#) "trailingComments"))
                                               y
                                               x)
+                                           mutable'leadingDetachedComments
+                                           mutable'path
+                                           mutable'span
                                 50 -> do !y <- (do value <- do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
                                                                Data.ProtoLens.Encoding.Bytes.getBytes
                                                                  (Prelude.fromIntegral len)
@@ -8722,59 +9505,66 @@ instance Data.ProtoLens.Message SourceCodeInfo'Location where
                                                           Prelude.Right r -> Prelude.Right r))
                                                  Data.ProtoLens.Encoding.Bytes.<?>
                                                  "leading_detached_comments"
-                                         loop
-                                           (Lens.Family2.over
-                                              (Lens.Labels.lensOf'
-                                                 ((Lens.Labels.proxy#) ::
-                                                    (Lens.Labels.Proxy#) "leadingDetachedComments"))
-                                              (\ !t -> (:) y t)
-                                              x)
+                                         v <- Data.ProtoLens.Encoding.Parser.Unsafe.unsafeLiftIO
+                                                (Data.ProtoLens.Encoding.Growing.append
+                                                   mutable'leadingDetachedComments
+                                                   y)
+                                         loop x v mutable'path mutable'span
                                 wire -> do !y <- Data.ProtoLens.Encoding.Wire.parseTaggedValueFromWire
                                                    wire
                                            loop
                                              (Lens.Family2.over Data.ProtoLens.unknownFields
                                                 (\ !t -> (:) y t)
                                                 x)
+                                             mutable'leadingDetachedComments
+                                             mutable'path
+                                             mutable'span
               in
-              (loop Data.ProtoLens.defMessage) Data.ProtoLens.Encoding.Bytes.<?>
-                "Location"
+              (do mutable'leadingDetachedComments <- Data.ProtoLens.Encoding.Parser.Unsafe.unsafeLiftIO
+                                                       Data.ProtoLens.Encoding.Growing.new
+                  mutable'path <- Data.ProtoLens.Encoding.Parser.Unsafe.unsafeLiftIO
+                                    Data.ProtoLens.Encoding.Growing.new
+                  mutable'span <- Data.ProtoLens.Encoding.Parser.Unsafe.unsafeLiftIO
+                                    Data.ProtoLens.Encoding.Growing.new
+                  loop Data.ProtoLens.defMessage mutable'leadingDetachedComments
+                    mutable'path
+                    mutable'span)
+                Data.ProtoLens.Encoding.Bytes.<?> "Location"
         buildMessage
           = (\ _x ->
                (let p = Lens.Family2.view
                           (Lens.Labels.lensOf'
-                             ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "path"))
+                             ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "vec'path"))
                           _x
                   in
-                  if Prelude.null p then Data.Monoid.mempty else
+                  if Data.Vector.Generic.null p then Data.Monoid.mempty else
                     (Data.ProtoLens.Encoding.Bytes.putVarInt 10) Data.Monoid.<>
                       (\ bs ->
                          (Data.ProtoLens.Encoding.Bytes.putVarInt
                             (Prelude.fromIntegral (Data.ByteString.length bs)))
                            Data.Monoid.<> Data.ProtoLens.Encoding.Bytes.putBytes bs)
                         (Data.ProtoLens.Encoding.Bytes.runBuilder
-                           (Data.Monoid.mconcat
-                              (Prelude.map
-                                 ((Data.ProtoLens.Encoding.Bytes.putVarInt) Prelude..
-                                    Prelude.fromIntegral)
-                                 p))))
+                           (Data.ProtoLens.Encoding.Bytes.foldMapBuilder
+                              ((Data.ProtoLens.Encoding.Bytes.putVarInt) Prelude..
+                                 Prelude.fromIntegral)
+                              p)))
                  Data.Monoid.<>
                  (let p = Lens.Family2.view
                             (Lens.Labels.lensOf'
-                               ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "span"))
+                               ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "vec'span"))
                             _x
                     in
-                    if Prelude.null p then Data.Monoid.mempty else
+                    if Data.Vector.Generic.null p then Data.Monoid.mempty else
                       (Data.ProtoLens.Encoding.Bytes.putVarInt 18) Data.Monoid.<>
                         (\ bs ->
                            (Data.ProtoLens.Encoding.Bytes.putVarInt
                               (Prelude.fromIntegral (Data.ByteString.length bs)))
                              Data.Monoid.<> Data.ProtoLens.Encoding.Bytes.putBytes bs)
                           (Data.ProtoLens.Encoding.Bytes.runBuilder
-                             (Data.Monoid.mconcat
-                                (Prelude.map
-                                   ((Data.ProtoLens.Encoding.Bytes.putVarInt) Prelude..
-                                      Prelude.fromIntegral)
-                                   p))))
+                             (Data.ProtoLens.Encoding.Bytes.foldMapBuilder
+                                ((Data.ProtoLens.Encoding.Bytes.putVarInt) Prelude..
+                                   Prelude.fromIntegral)
+                                p)))
                    Data.Monoid.<>
                    (case
                       Lens.Family2.view
@@ -8814,21 +9604,20 @@ instance Data.ProtoLens.Message SourceCodeInfo'Location where
                                                   Prelude.. Data.Text.Encoding.encodeUtf8)
                                                  _v)
                        Data.Monoid.<>
-                       (Data.Monoid.mconcat
-                          (Prelude.map
-                             (\ _v ->
-                                (Data.ProtoLens.Encoding.Bytes.putVarInt 50) Data.Monoid.<>
-                                  (((\ bs ->
-                                       (Data.ProtoLens.Encoding.Bytes.putVarInt
-                                          (Prelude.fromIntegral (Data.ByteString.length bs)))
-                                         Data.Monoid.<> Data.ProtoLens.Encoding.Bytes.putBytes bs))
-                                     Prelude.. Data.Text.Encoding.encodeUtf8)
-                                    _v)
-                             (Lens.Family2.view
-                                (Lens.Labels.lensOf'
-                                   ((Lens.Labels.proxy#) ::
-                                      (Lens.Labels.Proxy#) "leadingDetachedComments"))
-                                _x)))
+                       (Data.ProtoLens.Encoding.Bytes.foldMapBuilder
+                          (\ _v ->
+                             (Data.ProtoLens.Encoding.Bytes.putVarInt 50) Data.Monoid.<>
+                               (((\ bs ->
+                                    (Data.ProtoLens.Encoding.Bytes.putVarInt
+                                       (Prelude.fromIntegral (Data.ByteString.length bs)))
+                                      Data.Monoid.<> Data.ProtoLens.Encoding.Bytes.putBytes bs))
+                                  Prelude.. Data.Text.Encoding.encodeUtf8)
+                                 _v)
+                          (Lens.Family2.view
+                             (Lens.Labels.lensOf'
+                                ((Lens.Labels.proxy#) ::
+                                   (Lens.Labels.Proxy#) "vec'leadingDetachedComments"))
+                             _x))
                          Data.Monoid.<>
                          Data.ProtoLens.Encoding.Wire.buildFieldSet
                            (Lens.Family2.view Data.ProtoLens.unknownFields _x))
@@ -8849,6 +9638,8 @@ instance Control.DeepSeq.NFData SourceCodeInfo'Location where
 {- | Fields :
 
     * 'Proto.Google.Protobuf.Descriptor_Fields.name' @:: Lens' UninterpretedOption [UninterpretedOption'NamePart]@
+    * 'Proto.Google.Protobuf.Descriptor_Fields.vec'name' @:: Lens' UninterpretedOption
+  (Data.Vector.Vector UninterpretedOption'NamePart)@
     * 'Proto.Google.Protobuf.Descriptor_Fields.identifierValue' @:: Lens' UninterpretedOption Data.Text.Text@
     * 'Proto.Google.Protobuf.Descriptor_Fields.maybe'identifierValue' @:: Lens' UninterpretedOption (Prelude.Maybe Data.Text.Text)@
     * 'Proto.Google.Protobuf.Descriptor_Fields.positiveIntValue' @:: Lens' UninterpretedOption Data.Word.Word64@
@@ -8864,7 +9655,8 @@ instance Control.DeepSeq.NFData SourceCodeInfo'Location where
     * 'Proto.Google.Protobuf.Descriptor_Fields.maybe'aggregateValue' @:: Lens' UninterpretedOption (Prelude.Maybe Data.Text.Text)@
  -}
 data UninterpretedOption = UninterpretedOption{_UninterpretedOption'name
-                                               :: ![UninterpretedOption'NamePart],
+                                               ::
+                                               !(Data.Vector.Vector UninterpretedOption'NamePart),
                                                _UninterpretedOption'identifierValue ::
                                                !(Prelude.Maybe Data.Text.Text),
                                                _UninterpretedOption'positiveIntValue ::
@@ -8887,6 +9679,15 @@ instance Prelude.Show UninterpretedOption where
                  (Prelude.showChar '}' __s))
 instance a ~ ([UninterpretedOption'NamePart]) =>
          Lens.Labels.HasLens' UninterpretedOption "name" a
+         where
+        lensOf' _
+          = (Lens.Family2.Unchecked.lens _UninterpretedOption'name
+               (\ x__ y__ -> x__{_UninterpretedOption'name = y__}))
+              Prelude..
+              Lens.Family2.Unchecked.lens Data.Vector.Generic.toList
+                (\ _ y__ -> Data.Vector.Generic.fromList y__)
+instance a ~ (Data.Vector.Vector UninterpretedOption'NamePart) =>
+         Lens.Labels.HasLens' UninterpretedOption "vec'name" a
          where
         lensOf' _
           = (Lens.Family2.Unchecked.lens _UninterpretedOption'name
@@ -9059,7 +9860,8 @@ instance Data.ProtoLens.Message UninterpretedOption where
           = Lens.Family2.Unchecked.lens _UninterpretedOption'_unknownFields
               (\ x__ y__ -> x__{_UninterpretedOption'_unknownFields = y__})
         defMessage
-          = UninterpretedOption{_UninterpretedOption'name = [],
+          = UninterpretedOption{_UninterpretedOption'name =
+                                  Data.Vector.Generic.empty,
                                 _UninterpretedOption'identifierValue = Prelude.Nothing,
                                 _UninterpretedOption'positiveIntValue = Prelude.Nothing,
                                 _UninterpretedOption'negativeIntValue = Prelude.Nothing,
@@ -9070,11 +9872,17 @@ instance Data.ProtoLens.Message UninterpretedOption where
         parseMessage
           = let loop ::
                      UninterpretedOption ->
-                       Data.ProtoLens.Encoding.Bytes.Parser UninterpretedOption
-                loop x
+                       Data.ProtoLens.Encoding.Growing.Growing Data.Vector.Vector
+                         Data.ProtoLens.Encoding.Growing.RealWorld
+                         UninterpretedOption'NamePart
+                         -> Data.ProtoLens.Encoding.Bytes.Parser UninterpretedOption
+                loop x mutable'name
                   = do end <- Data.ProtoLens.Encoding.Bytes.atEnd
                        if end then
-                         do let missing = [] in
+                         do frozen'name <- Data.ProtoLens.Encoding.Parser.Unsafe.unsafeLiftIO
+                                             (Data.ProtoLens.Encoding.Growing.unsafeFreeze
+                                                mutable'name)
+                            let missing = [] in
                               if Prelude.null missing then Prelude.return () else
                                 Prelude.fail
                                   (("Missing required fields: ") Prelude.++
@@ -9082,27 +9890,23 @@ instance Data.ProtoLens.Message UninterpretedOption where
                             Prelude.return
                               (Lens.Family2.over Data.ProtoLens.unknownFields
                                  (\ !t -> Prelude.reverse t)
-                                 (Lens.Family2.over
+                                 (Lens.Family2.set
                                     (Lens.Labels.lensOf'
-                                       ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "name"))
-                                    (\ !t -> Prelude.reverse t)
+                                       ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "vec'name"))
+                                    frozen'name
                                     x))
                          else
                          do tag <- Data.ProtoLens.Encoding.Bytes.getVarInt
                             case tag of
-                                18 -> do !y <- (do value <- do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
-                                                               Data.ProtoLens.Encoding.Bytes.getBytes
-                                                                 (Prelude.fromIntegral len)
-                                                   Data.ProtoLens.Encoding.Bytes.runEither
-                                                     (Data.ProtoLens.decodeMessage value))
+                                18 -> do !y <- (do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
+                                                   Data.ProtoLens.Encoding.Bytes.isolate
+                                                     (Prelude.fromIntegral len)
+                                                     Data.ProtoLens.parseMessage)
                                                  Data.ProtoLens.Encoding.Bytes.<?> "name"
-                                         loop
-                                           (Lens.Family2.over
-                                              (Lens.Labels.lensOf'
-                                                 ((Lens.Labels.proxy#) ::
-                                                    (Lens.Labels.Proxy#) "name"))
-                                              (\ !t -> (:) y t)
-                                              x)
+                                         v <- Data.ProtoLens.Encoding.Parser.Unsafe.unsafeLiftIO
+                                                (Data.ProtoLens.Encoding.Growing.append mutable'name
+                                                   y)
+                                         loop x v
                                 26 -> do y <- (do value <- do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
                                                               Data.ProtoLens.Encoding.Bytes.getBytes
                                                                 (Prelude.fromIntegral len)
@@ -9119,6 +9923,7 @@ instance Data.ProtoLens.Message UninterpretedOption where
                                                     (Lens.Labels.Proxy#) "identifierValue"))
                                               y
                                               x)
+                                           mutable'name
                                 32 -> do y <- (Data.ProtoLens.Encoding.Bytes.getVarInt)
                                                 Data.ProtoLens.Encoding.Bytes.<?>
                                                 "positive_int_value"
@@ -9129,6 +9934,7 @@ instance Data.ProtoLens.Message UninterpretedOption where
                                                     (Lens.Labels.Proxy#) "positiveIntValue"))
                                               y
                                               x)
+                                           mutable'name
                                 40 -> do y <- (Prelude.fmap Prelude.fromIntegral
                                                  Data.ProtoLens.Encoding.Bytes.getVarInt)
                                                 Data.ProtoLens.Encoding.Bytes.<?>
@@ -9140,6 +9946,7 @@ instance Data.ProtoLens.Message UninterpretedOption where
                                                     (Lens.Labels.Proxy#) "negativeIntValue"))
                                               y
                                               x)
+                                           mutable'name
                                 49 -> do y <- (Prelude.fmap
                                                  Data.ProtoLens.Encoding.Bytes.wordToDouble
                                                  Data.ProtoLens.Encoding.Bytes.getFixed64)
@@ -9151,6 +9958,7 @@ instance Data.ProtoLens.Message UninterpretedOption where
                                                     (Lens.Labels.Proxy#) "doubleValue"))
                                               y
                                               x)
+                                           mutable'name
                                 58 -> do y <- (do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
                                                   Data.ProtoLens.Encoding.Bytes.getBytes
                                                     (Prelude.fromIntegral len))
@@ -9162,6 +9970,7 @@ instance Data.ProtoLens.Message UninterpretedOption where
                                                     (Lens.Labels.Proxy#) "stringValue"))
                                               y
                                               x)
+                                           mutable'name
                                 66 -> do y <- (do value <- do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
                                                               Data.ProtoLens.Encoding.Bytes.getBytes
                                                                 (Prelude.fromIntegral len)
@@ -9178,31 +9987,34 @@ instance Data.ProtoLens.Message UninterpretedOption where
                                                     (Lens.Labels.Proxy#) "aggregateValue"))
                                               y
                                               x)
+                                           mutable'name
                                 wire -> do !y <- Data.ProtoLens.Encoding.Wire.parseTaggedValueFromWire
                                                    wire
                                            loop
                                              (Lens.Family2.over Data.ProtoLens.unknownFields
                                                 (\ !t -> (:) y t)
                                                 x)
+                                             mutable'name
               in
-              (loop Data.ProtoLens.defMessage) Data.ProtoLens.Encoding.Bytes.<?>
-                "UninterpretedOption"
+              (do mutable'name <- Data.ProtoLens.Encoding.Parser.Unsafe.unsafeLiftIO
+                                    Data.ProtoLens.Encoding.Growing.new
+                  loop Data.ProtoLens.defMessage mutable'name)
+                Data.ProtoLens.Encoding.Bytes.<?> "UninterpretedOption"
         buildMessage
           = (\ _x ->
-               (Data.Monoid.mconcat
-                  (Prelude.map
-                     (\ _v ->
-                        (Data.ProtoLens.Encoding.Bytes.putVarInt 18) Data.Monoid.<>
-                          (((\ bs ->
-                               (Data.ProtoLens.Encoding.Bytes.putVarInt
-                                  (Prelude.fromIntegral (Data.ByteString.length bs)))
-                                 Data.Monoid.<> Data.ProtoLens.Encoding.Bytes.putBytes bs))
-                             Prelude.. Data.ProtoLens.encodeMessage)
-                            _v)
-                     (Lens.Family2.view
-                        (Lens.Labels.lensOf'
-                           ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "name"))
-                        _x)))
+               (Data.ProtoLens.Encoding.Bytes.foldMapBuilder
+                  (\ _v ->
+                     (Data.ProtoLens.Encoding.Bytes.putVarInt 18) Data.Monoid.<>
+                       (((\ bs ->
+                            (Data.ProtoLens.Encoding.Bytes.putVarInt
+                               (Prelude.fromIntegral (Data.ByteString.length bs)))
+                              Data.Monoid.<> Data.ProtoLens.Encoding.Bytes.putBytes bs))
+                          Prelude.. Data.ProtoLens.encodeMessage)
+                         _v)
+                  (Lens.Family2.view
+                     (Lens.Labels.lensOf'
+                        ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "vec'name"))
+                     _x))
                  Data.Monoid.<>
                  (case
                     Lens.Family2.view
@@ -9451,7 +10263,7 @@ instance Data.ProtoLens.Message UninterpretedOption'NamePart where
                                              required'isExtension
                                              required'namePart
               in
-              (loop Data.ProtoLens.defMessage Prelude.True Prelude.True)
+              (do loop Data.ProtoLens.defMessage Prelude.True Prelude.True)
                 Data.ProtoLens.Encoding.Bytes.<?> "NamePart"
         buildMessage
           = (\ _x ->

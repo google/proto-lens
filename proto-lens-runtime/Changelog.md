@@ -1,5 +1,9 @@
 # Changelog for `proto-lens-runtime`
 
+## Unreleased
+- Export more modules from proto-lens, to support generated encoding/decoding
+  and storing repeated fields as `Vector`s.
+
 ## v0.4.0.2
 - Bump the dependencies on `base` and `containers` to support `ghc-8.6.1.
 

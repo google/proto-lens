@@ -4,6 +4,9 @@
 - Capitalize enum values, and capitalize names of enum sub-messages (#270).
 - Track changes to `proto-lens` using generated Haskell code to
   encode/decode proto messages more quickly.
+- Store repeated fields as `Vector`s, and expose the internal representation
+  via new `vec'*` lenses.  Use `Vector`s for more efficient
+  encoding/decoding.
 
 ## v0.4.0.1
 - Bump the dependency on `base` and `containers` to support `ghc-8.6.1`.

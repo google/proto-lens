@@ -46,6 +46,10 @@ import Proto.Google.Protobuf.Descriptor_Fields
 import Data.ProtoLens.Compiler.Combinators
 import Data.ProtoLens.Compiler.Definitions
 import Data.ProtoLens.Compiler.Generate.Encoding
+import Data.ProtoLens.Compiler.Generate.Field
+    ( hsFieldType
+    , hsFieldVectorType
+    )
 
 -- Whether to import the "Runtime" modules or the originals;
 -- e.g., Data.ProtoLens.Runtime.Data.Map vs Data.Map.
@@ -97,12 +101,17 @@ generateModule modName imports modifyImport definitions importedEnv services
               [ "Prelude", "Data.Int", "Data.Monoid", "Data.Word"
               , "Data.ProtoLens"
               , "Data.ProtoLens.Encoding.Bytes"
+              , "Data.ProtoLens.Encoding.Growing"
+              , "Data.ProtoLens.Encoding.Parser.Unsafe"
               , "Data.ProtoLens.Encoding.Wire"
               , "Data.ProtoLens.Message.Enum"
               , "Data.ProtoLens.Service.Types"
               , "Lens.Family2", "Lens.Family2.Unchecked"
               , "Data.Text",  "Data.Map", "Data.ByteString", "Data.ByteString.Char8"
               , "Data.Text.Encoding"
+              , "Data.Vector"
+              , "Data.Vector.Generic"
+              , "Data.Vector.Unboxed"
               , "Lens.Labels", "Text.Read"
               ]
             ++ map importSimple imports
@@ -262,7 +271,7 @@ generateMessageDecls fieldModName env protoName info =
     -- haskell: data Foo'Bar = Foo'Bar'c !Prelude.Float
     --                       | Foo'Bar's !Sub
     [ uncommented $ dataDecl (oneofTypeName oneofInfo)
-      [ conDecl consName [hsFieldType env $ fieldDescriptor f]
+      [ conDecl consName [hsFieldType env f]
       | c <- oneofCases oneofInfo
       , let f = caseField c
       , let consName = caseConstructorName c
@@ -340,7 +349,7 @@ generatePrisms env oneofInfo =
                                 -- The oneof sum type name
                              @@ (tyCon . unQual $ oneofTypeName oneofInfo)
                                 -- The field contained in the sum
-                             @@ (hsFieldType env $ fieldDescriptor f)
+                             @@ (hsFieldType env f)
         -- Generate function definition
         -- Prism' is constructed with Constructor for building value
         -- and Deconstructor and wrapping in Just for getting value
@@ -672,8 +681,8 @@ plainRecordField env (PlainFieldInfo kind f) = case kind of
         -- type instance Field "foo" Foo = Map Bar Baz
     MapField entry ->
             let mapType = "Data.Map.Map"
-                            @@ hsFieldType env (fieldDescriptor $ keyField entry)
-                            @@ hsFieldType env (fieldDescriptor $ valueField entry)
+                            @@ hsFieldType env (keyField entry)
+                            @@ hsFieldType env (valueField entry)
             in recordField mapType
                   [LensInstance
                        { lensSymbol = baseName
@@ -683,23 +692,36 @@ plainRecordField env (PlainFieldInfo kind f) = case kind of
         -- data Foo = Foo { _Foo_bar :: [Bar] }
         -- type instance Field "bar" Foo = [Bar]
     RepeatedField {} ->
-            recordField listType
-                  [LensInstance
+            recordField vectorType
+                  [ LensInstance
                       { lensSymbol = baseName
                       , lensFieldType = listType
+                      , lensExp = vectorAccessor
+                      }
+                  , LensInstance
+                      { lensSymbol = "vec'" <> baseName
+                      , lensFieldType = vectorType
                       , lensExp = rawAccessor
-                      }]
+                      }
+                  ]
   where
     recordField = RecordField (haskellRecordFieldName $ fieldName f)
     baseName = overloadedName $ fieldName f
     fd = fieldDescriptor f
-    baseType = hsFieldType env fd
+    baseType = hsFieldType env f
     maybeType = "Prelude.Maybe" @@ baseType
     listType = tyList baseType
+    vectorType = hsFieldVectorType f @@ baseType
     rawAccessor = "Prelude.id"
     maybeAccessor = "Data.ProtoLens.maybeLens"
                           @@ hsFieldValueDefault env fd
 
+vectorAccessor :: Exp
+vectorAccessor = "Lens.Family2.Unchecked.lens" @@ getter @@ setter
+  where
+    getter = "Data.Vector.Generic.toList"
+    setter = lambda ["_", "y__"]
+                $ "Data.Vector.Generic.fromList" @@ "y__"
 
 oneofRecordField :: Env QName -> OneofInfo -> RecordField
 oneofRecordField env oneofInfo
@@ -746,39 +768,9 @@ oneofRecordField env oneofInfo
             | c <- oneofCases oneofInfo
             , let f = caseField c
             , let baseName = overloadedName $ fieldName f
-            , let baseType = hsFieldType env $ fieldDescriptor f
+            , let baseType = hsFieldType env f
             , let maybeName = "maybe'" <> baseName
             ]
-
-hsFieldType :: Env QName -> FieldDescriptorProto -> Type
-hsFieldType env fd = case fd ^. type' of
-    FieldDescriptorProto'TYPE_DOUBLE -> "Prelude.Double"
-    FieldDescriptorProto'TYPE_FLOAT -> "Prelude.Float"
-    FieldDescriptorProto'TYPE_INT64 -> "Data.Int.Int64"
-    FieldDescriptorProto'TYPE_UINT64 -> "Data.Word.Word64"
-    FieldDescriptorProto'TYPE_INT32 -> "Data.Int.Int32"
-    FieldDescriptorProto'TYPE_FIXED64 -> "Data.Word.Word64"
-    FieldDescriptorProto'TYPE_FIXED32 -> "Data.Word.Word32"
-    FieldDescriptorProto'TYPE_BOOL -> "Prelude.Bool"
-    FieldDescriptorProto'TYPE_STRING -> "Data.Text.Text"
-    FieldDescriptorProto'TYPE_GROUP
-        | Message m <- definedFieldType fd env -> tyCon $ messageName m
-        | otherwise -> error $ "expected TYPE_GROUP for type name"
-                              ++ unpack (fd ^. typeName)
-    FieldDescriptorProto'TYPE_MESSAGE
-        | Message m <- definedFieldType fd env -> tyCon $ messageName m
-        | otherwise -> error $ "expected TYPE_MESSAGE for type name"
-                              ++ unpack (fd ^. typeName)
-    FieldDescriptorProto'TYPE_BYTES -> "Data.ByteString.ByteString"
-    FieldDescriptorProto'TYPE_UINT32 -> "Data.Word.Word32"
-    FieldDescriptorProto'TYPE_ENUM
-        | Enum e <- definedFieldType fd env -> tyCon $ enumName e
-        | otherwise -> error $ "expected TYPE_ENUM for type name"
-                              ++ unpack (fd ^. typeName)
-    FieldDescriptorProto'TYPE_SFIXED32 -> "Data.Int.Int32"
-    FieldDescriptorProto'TYPE_SFIXED64 -> "Data.Int.Int64"
-    FieldDescriptorProto'TYPE_SINT32 -> "Data.Int.Int32"
-    FieldDescriptorProto'TYPE_SINT64 -> "Data.Int.Int64"
 
 hsFieldDefault :: Env QName -> PlainFieldInfo -> Exp
 hsFieldDefault env f = case plainFieldKind f of
@@ -786,7 +778,7 @@ hsFieldDefault env f = case plainFieldKind f of
     OptionalValueField -> hsFieldValueDefault env fd
     OptionalMaybeField -> "Prelude.Nothing"
     MapField {} -> "Data.Map.empty"
-    RepeatedField {} -> list []
+    RepeatedField {} -> "Data.Vector.Generic.empty"
   where
     fd = fieldDescriptor (plainFieldInfo f)
 
@@ -901,7 +893,7 @@ messageInstance env protoName m =
                   [ fieldUpdate (unQual $ messageUnknownFields m)
                         "[]"]
       ]
-    , [ match "parseMessage" [] $ generatedParser m ]
+    , [ match "parseMessage" [] $ generatedParser env m ]
     , [ match "buildMessage" [] $ generatedBuilder m ]
     ]
   where
@@ -950,7 +942,7 @@ fieldDescriptorExpr env n f =
         @@ (fieldTypeDescriptorExpr (fd ^. type')
                 @::@
                     ("Data.ProtoLens.FieldTypeDescriptor"
-                        @@ hsFieldType env fd))
+                        @@ hsFieldType env (plainFieldInfo f)))
         @@ fieldAccessorExpr f)
     -- TODO: why is this type sig needed?
     @::@
