@@ -3,6 +3,7 @@ module Main (main) where
 
 import Control.Monad (void)
 import Control.Monad.ST
+import Data.Foldable (foldlM)
 import qualified Data.Vector.Unboxed as V
 import Test.QuickCheck
 import Test.Framework (defaultMain)
@@ -23,8 +24,7 @@ fromListGrowing :: V.Unbox a => [a] -> V.Vector a
 fromListGrowing xs0 = runST (new >>= fill xs0 >>= unsafeFreeze)
 
 fill :: V.Unbox a => [a] -> Growing V.Vector s a -> ST s (Growing V.Vector s a)
-fill [] v = return v
-fill (x:xs) v = append v x >>= fill xs
+fill xs v = foldlM append v xs
 
 -- Test a weak form of immutability: filling in more values (which may or may
 -- not cause reallocations) doesn't affect the current value.
