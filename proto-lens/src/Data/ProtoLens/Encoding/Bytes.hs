@@ -97,11 +97,20 @@ getFixed64 = do
     y <- getFixed32
     return $ fromIntegral y `shiftL` 32 + fromIntegral x
 
+-- Note: putFixed32 and putFixed32 have added BangPatterns over the
+-- standard Builders.
+-- This works better when they're composed with other functions.
+-- For example, consider `putFixed32 . floatToWord`.
+-- Since `putFixed32` may return a continuation, it doesn't automatically
+-- force the result of `floatToWord`, so the resulting Word32 must be kept
+-- lazily.  The extra strictness means that the Word32 will be evaluated
+-- outside of the continuation, and GHC can pass it around unboxed.
+
 putFixed32 :: Word32 -> Builder
-putFixed32 = word32LE
+putFixed32 !x = word32LE x
 
 putFixed64 :: Word64 -> Builder
-putFixed64 = word64LE
+putFixed64 !x = word64LE x
 
 #if MIN_VERSION_base(4,11,0)
 wordToDouble :: Word64 -> Double
