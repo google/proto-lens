@@ -15,8 +15,6 @@ module Data.ProtoLens.Encoding.Parser
     ) where
 
 import Data.Bits (shiftL, (.|.))
-import Control.Monad.IO.Class
-import Control.Monad.Trans.Except
 import Data.Word (Word8, Word32)
 import Data.ByteString (ByteString, packCStringLen)
 import qualified Data.ByteString.Unsafe as B
@@ -36,13 +34,14 @@ import Data.ProtoLens.Encoding.Parser.Internal
 -- ByteString, but rather make immutable copies of subsets of its bytes.
 runParser :: Parser a -> ByteString -> Either String a
 runParser (Parser m) b =
-    unsafePerformIO $ B.unsafeUseAsCStringLen b
-        $ \(p, len) -> runExceptT $ fmap unParserResult
-                            $ m (p `plusPtr` len) (castPtr p)
+    case unsafePerformIO $ B.unsafeUseAsCStringLen b
+            $ \(p, len) -> m (p `plusPtr` len) (castPtr p) of
+        ParseSuccess _ x -> Right x
+        ParseFailure s -> Left s
 
 -- | Returns True if there is no more input left to consume.
 atEnd :: Parser Bool
-atEnd = Parser $ \end pos -> return $ ParserResult pos (pos == end)
+atEnd = Parser $ \end pos -> return $ ParseSuccess pos (pos == end)
 
 -- | Parse a one-byte word.
 getWord8 :: Parser Word8
@@ -82,8 +81,8 @@ withSized len message f
     | len >= 0 = Parser $ \end pos ->
         let pos' = pos `plusPtr'` len
         in if pos' > end
-            then throwE $ message
-            else liftIO $ ParserResult pos' <$> f pos
+            then return $ ParseFailure message
+            else ParseSuccess pos' <$> f pos
     | otherwise = fail "withSized: negative length"
 {-# INLINE withSized #-}
 
@@ -98,14 +97,16 @@ isolate len (Parser m)
     | len >= 0 = Parser $ \end pos ->
         let end' = pos `plusPtr` len
         in if end' > end
-            then throwE "isolate: unexpected end of input"
+            then return $ ParseFailure "isolate: unexpected end of input"
             else m end' pos
     | otherwise = fail "isolate: negative length"
 
 -- | If the parser fails, prepend an error message.
 (<?>) :: Parser a -> String -> Parser a
-Parser m <?> msg = Parser $ \end p ->
-    withExceptT (\s -> msg ++ ": " ++ s) $ m end p
+Parser m <?> msg = Parser $ \end p -> wrap <$> m end p
+  where
+    wrap (ParseFailure s) = ParseFailure (msg ++ ": " ++ s)
+    wrap r = r
 
 -- | Advance a pointer.  Unlike 'plusPtr', preserves the type of the input.
 plusPtr' :: Ptr a -> Int -> Ptr a

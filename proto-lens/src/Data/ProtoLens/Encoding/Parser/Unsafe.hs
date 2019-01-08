@@ -1,7 +1,6 @@
 module Data.ProtoLens.Encoding.Parser.Unsafe
     ( unsafeLiftIO ) where
 
-import Control.Monad.Trans.Class (lift)
 import Data.ProtoLens.Encoding.Parser.Internal
 
 -- | Runs an arbitrary @IO@ action inside a @Parser@.
@@ -19,4 +18,4 @@ import Data.ProtoLens.Encoding.Parser.Internal
 --   'runParser' will be sequenced according to their order in the Parser
 --   monad.
 unsafeLiftIO :: IO a -> Parser a
-unsafeLiftIO m = Parser $ \_ p -> ParserResult p <$> lift m
+unsafeLiftIO m = Parser $ \_ p -> ParseSuccess p <$> m
