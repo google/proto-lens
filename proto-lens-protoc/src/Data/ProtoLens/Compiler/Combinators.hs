@@ -175,9 +175,6 @@ con = Syntax.Con ()
 list :: [Exp] -> Exp
 list = Syntax.List ()
 
-letE :: [Decl] -> Exp -> Exp
-letE ds = Syntax.Let () (Syntax.BDecls () ds)
-
 if' :: Exp -> Exp -> Exp -> Exp
 if' = Syntax.If ()
 
@@ -188,6 +185,10 @@ cons = var $ Syntax.Special () $ Syntax.Cons ()
 -- | The "[]" constructor.
 emptyList :: Exp
 emptyList = var $ Syntax.Special () $ Syntax.ListCon ()
+
+-- | The "()" constructor.
+unit :: Exp
+unit = var $ Syntax.Special () $ Syntax.UnitCon ()
 
 type Stmt = Syntax.Stmt ()
 
@@ -200,6 +201,9 @@ infixl 1 <--
 
 stmt :: Exp -> Stmt
 stmt = Syntax.Qualifier ()
+
+letStmt :: [Decl] -> Stmt
+letStmt = Syntax.LetStmt () . Syntax.BDecls ()
 
 type FieldUpdate = Syntax.FieldUpdate ()
 
@@ -349,6 +353,9 @@ tyForAll vars ctx t = Syntax.TyForall () (Just vars)
 
 tyBang :: Type -> Type
 tyBang = Syntax.TyBang () (Syntax.BangedTy ()) (Syntax.NoUnpackPragma ())
+
+tyWildCard :: Type
+tyWildCard = Syntax.TyWildCard () Nothing
 
 -- | Application of a Haskell type or expression to an argument.
 -- For example, to represent @f x y@, you can write

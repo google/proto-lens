@@ -10,6 +10,7 @@ module Data.ProtoLens.TestUtil(
     Test,
     serializeTo,
     deserializeFrom,
+    deserializeFromExpectingError,
     renderIndenting,
     readFrom,
     readFromWithRegistry,
@@ -32,15 +33,19 @@ module Data.ProtoLens.TestUtil(
     Doc,
     PrettyPrint.vcat,
     (PrettyPrint.$+$),
+    satisfies,
     ) where
 
 import Data.ProtoLens
 import Data.ProtoLens.Arbitrary
+import Data.Proxy
 
 import qualified Data.ByteString as B
 import qualified Data.ByteString.Builder as Builder
 import qualified Data.ByteString.Lazy as L
+import Data.List (isInfixOf)
 import qualified Data.Text.Lazy as LT
+import GHC.Stack (HasCallStack)
 import Test.QuickCheck (noShrinking)
 #if MIN_VERSION_QuickCheck(2,10,0)
 import Test.QuickCheck (withMaxSuccess)
@@ -49,7 +54,7 @@ import Test.Framework (defaultMain, testGroup)
 import Test.Framework.Providers.HUnit (testCase)
 import Test.Framework.Providers.API (Test)
 import Test.Framework.Providers.QuickCheck2 (testProperty)
-import Test.HUnit ((@=?), assertBool)
+import Test.HUnit ((@=?), assertBool, assertFailure)
 import Data.Either (isLeft)
 import Data.Bits (shiftL, shiftR, (.|.), (.&.))
 import qualified Data.Text.Lazy as TL
@@ -92,10 +97,23 @@ deserializeFrom :: (Show a, Eq a, Message a)
 deserializeFrom name x bs = testCase name $ case x of
     -- Check whether or not it failed without worrying about the exact error
     -- message.
-    Nothing -> assertBool ("Expected failure, found " ++ show y) $ isLeft y
+    Nothing -> satisfies isLeft y
     Just x' -> Right x' @=? y
   where
     y = decodeMessage $ toStrictByteString bs
+
+deserializeFromExpectingError
+    :: forall a . (Show a, Eq a, Message a)
+    => String -> Proxy a -> String -> Builder.Builder -> Test
+deserializeFromExpectingError name _ msg bs = testCase name $
+    case decodeMessage $ toStrictByteString bs :: Either String a of
+        Right x -> assertFailure $ "expected failure; got: " ++ show x
+        Left e
+            | msg `isInfixOf` e -> return ()
+            | otherwise -> assertFailure $
+                            "Incorrect error message; expected "
+                            ++ show msg
+                            ++ ", got " ++ show e
 
 type MessageProperty a = ArbitraryMessage a -> Bool
 
@@ -137,7 +155,7 @@ readFromWithRegistry :: (Show a, Eq a, Message a)
 readFromWithRegistry reg name x text = testCase name $ case x of
     -- Check whether or not it failed without worrying about the exact error
     -- message.
-    Nothing -> assertBool ("Expected failure, found " ++ show y) $ isLeft y
+    Nothing -> satisfies isLeft y
     Just x' -> Right x' @=? y
   where y = readMessageWithRegistry reg text
 
@@ -197,3 +215,8 @@ braced k v = (PrettyPrint.text k <+> char '{')
 
 toStrictByteString :: Builder.Builder -> B.ByteString
 toStrictByteString = L.toStrict . Builder.toLazyByteString
+
+-- | Checks the predicate in HUnit tests, and displays the original
+-- value in case of failure.
+satisfies :: (HasCallStack, Show a) => (a -> Bool) -> a -> IO ()
+satisfies f x = assertBool ("Predicate fails: " ++ show x) (f x)

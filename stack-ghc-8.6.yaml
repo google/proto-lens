@@ -1,4 +1,4 @@
-resolver: nightly-2018-12-01
+resolver: lts-13.1
 packages:
 - discrimination-ieee754
 - lens-labels

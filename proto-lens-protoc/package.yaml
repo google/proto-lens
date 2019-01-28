@@ -35,9 +35,6 @@ library:
     - Data.ProtoLens.Compiler.Definitions
     - Data.ProtoLens.Compiler.Generate
     - Data.ProtoLens.Compiler.Plugin
-  other-modules:
-    - Data.ProtoLens.Compiler.Generate.Encoding
-    - Data.ProtoLens.Compiler.Generate.FieldEncoding
 
 executables:
   proto-lens-protoc:

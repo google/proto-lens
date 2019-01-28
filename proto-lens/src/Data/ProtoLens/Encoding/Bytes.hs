@@ -5,6 +5,8 @@
 -- https://developers.google.com/open-source/licenses/bsd
 
 {-# LANGUAGE BangPatterns #-}
+{-# LANGUAGE CPP #-}
+{-# LANGUAGE GeneralizedNewtypeDeriving #-}
 {-# LANGUAGE RankNTypes #-}
 {-# LANGUAGE ScopedTypeVariables #-}
 
@@ -14,8 +16,8 @@ module Data.ProtoLens.Encoding.Bytes(
     Parser,
     Builder,
     runParser,
+    isolate,
     runBuilder,
-    endOfInput,
     -- * Bytestrings
     getBytes,
     putBytes,
@@ -36,37 +38,36 @@ module Data.ProtoLens.Encoding.Bytes(
     wordToSignedInt32,
     signedInt64ToWord,
     wordToSignedInt64,
+    -- * Other utilities
     atEnd,
     runEither,
+    (<?>),
+    foldMapBuilder,
     ) where
 
-import Data.Attoparsec.ByteString as Parse
 import Data.Bits
 import Data.ByteString (ByteString)
 import Data.ByteString.Lazy.Builder as Builder
+import qualified Data.ByteString.Builder.Internal as Internal
 import qualified Data.ByteString.Lazy as L
 import Data.Int (Int32, Int64)
 import Data.Monoid ((<>))
+import qualified Data.Vector.Generic as V
 import Data.Word (Word32, Word64)
+#if MIN_VERSION_base(4,11,0)
+import qualified GHC.Float as Float
+#else
 import Foreign.Ptr (castPtr)
 import Foreign.Marshal.Alloc (alloca)
 import Foreign.Storable (Storable, peek, poke)
 import System.IO.Unsafe (unsafePerformIO)
+#endif
 
--- | Evaluates a parser on the given input.
---
--- If the parser does not consume all of the input, the rest of the
--- input is discarded and the parser still succeeds.
-runParser :: Parser a -> ByteString -> Either String a
-runParser = Parse.parseOnly
+import Data.ProtoLens.Encoding.Parser
 
 -- | Constructs a strict 'ByteString' from the given 'Builder'.
 runBuilder :: Builder -> ByteString
 runBuilder = L.toStrict . Builder.toLazyByteString
-
--- | Parse a @ByteString@ of the given length.
-getBytes :: Int -> Parser ByteString
-getBytes = Parse.take
 
 -- | Emit a given @ByteString@.
 putBytes :: ByteString -> Builder
@@ -78,7 +79,7 @@ getVarInt :: Parser Word64
 getVarInt = loop 1 0
   where
     loop !s !n = do
-        b <- anyWord8
+        b <- getWord8
         let n' = n + s * fromIntegral (b .&. 127)
         if (b .&. 128) == 0
             then return $! n'
@@ -90,15 +91,8 @@ putVarInt n
     | otherwise = Builder.word8 (fromIntegral $ n .&. 127 .|. 128)
                       <> putVarInt (n `shiftR` 7)
 
--- | Little-endian decoding function.
 getFixed32 :: Parser Word32
-getFixed32 = do
-    b1 <- anyWord8
-    b2 <- anyWord8
-    b3 <- anyWord8
-    b4 <- anyWord8
-    return $ ((fromIntegral b4 `shiftL` 8 + fromIntegral b3)
-                `shiftL` 8 + fromIntegral b2) `shiftL` 8 + fromIntegral b1
+getFixed32 = getWord32le
 
 getFixed64 :: Parser Word64
 getFixed64 = do
@@ -106,12 +100,35 @@ getFixed64 = do
     y <- getFixed32
     return $ fromIntegral y `shiftL` 32 + fromIntegral x
 
+-- Note: putFixed32 and putFixed32 have added BangPatterns over the
+-- standard Builders.
+-- This works better when they're composed with other functions.
+-- For example, consider `putFixed32 . floatToWord`.
+-- Since `putFixed32` may return a continuation, it doesn't automatically
+-- force the result of `floatToWord`, so the resulting Word32 must be kept
+-- lazily.  The extra strictness means that the Word32 will be evaluated
+-- outside of the continuation, and GHC can pass it around unboxed.
+
 putFixed32 :: Word32 -> Builder
-putFixed32 = word32LE
+putFixed32 !x = word32LE x
 
 putFixed64 :: Word64 -> Builder
-putFixed64 = word64LE
+putFixed64 !x = word64LE x
 
+#if MIN_VERSION_base(4,11,0)
+wordToDouble :: Word64 -> Double
+wordToDouble = Float.castWord64ToDouble
+
+wordToFloat :: Word32 -> Float
+wordToFloat = Float.castWord32ToFloat
+
+doubleToWord :: Double -> Word64
+doubleToWord = Float.castDoubleToWord64
+
+floatToWord :: Float -> Word32
+floatToWord = Float.castFloatToWord32
+
+#else
 -- WARNING: SUPER UNSAFE!
 -- Helper function purely for converting between Word32/Word64 and
 -- Float/Double.  Note that ideally we could just use unsafeCoerce, but this
@@ -137,6 +154,7 @@ doubleToWord = cast
 
 floatToWord :: Float -> Word32
 floatToWord = cast
+#endif
 
 signedInt32ToWord :: Int32 -> Word32
 signedInt32ToWord n = fromIntegral $ shiftL n 1 `xor` shiftR n 31
@@ -154,3 +172,27 @@ wordToSignedInt64 n
 
 runEither :: Either String a -> Parser a
 runEither = either fail return
+
+-- | Loop over the elements of a vector and concatenate the resulting
+-- @Builder@s.
+--
+-- This function has been hand-tuned to perform better than a naive
+-- implementation using, e.g., Vector.foldr or a manual loop.
+foldMapBuilder :: V.Vector v a => (a -> Builder) -> v a -> Builder
+foldMapBuilder f = \v0 -> Internal.builder (loop v0)
+    -- Place v0 on the right-hand side so that GHC actually inlines
+    -- this function.
+  where
+    -- Fully-saturate the inner loop (rather than currying away `cont`
+    -- and `bs`) to avoid GHC creating an intermediate continuation.
+    loop v cont bs
+        | V.null v = cont bs
+        | otherwise = let
+            !x = V.unsafeHead v
+            -- lts-8.24 (ghc-8.0) doesn't inline unsafeTail well.
+            -- We can remove the following bang when we bump the lower bound:
+            !xs = V.unsafeTail v
+            in Internal.runBuilderWith
+                        (f x)
+                        (loop xs cont) bs
+{-# INLINE foldMapBuilder #-}

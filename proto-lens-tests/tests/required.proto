@@ -6,3 +6,8 @@ message Foo {
   required int32 a = 1;
   optional int32 b = 2;
 }
+
+message Bar {
+  required int32 first_reqd = 1;
+  required int32 second_reqd = 2;
+}

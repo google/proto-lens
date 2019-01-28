@@ -10,7 +10,7 @@ import qualified Data.ProtoLens.Encoding.Wire as Wire
 import qualified Data.Text.Lazy as LT
 import Lens.Family2 ((&), (.~))
 import Test.Framework.Providers.HUnit (testCase)
-import Test.HUnit ((@=?), assertBool)
+import Test.HUnit ((@=?))
 
 import Data.ProtoLens.TestUtil
 import Proto.UnknownFields
@@ -19,6 +19,7 @@ import Proto.UnknownFields_Fields
 main :: IO ()
 main = testMain
     [ testPreserveUnknownFields
+    , testPreserveMismatchedFields
     , testUnknownGroup
     ]
 
@@ -32,13 +33,13 @@ testPreserveUnknownFields =
             & a .~ 42
               & b .~ 17
               & unknownFields .~
-                  [ TaggedValue 100 $ Wire.WireValue Wire.VarInt 101
-                  , TaggedValue 150 $ Wire.WireValue Wire.Lengthy
+                  [ TaggedValue 100 $ Wire.VarInt 101
+                  , TaggedValue 150 $ Wire.Lengthy
                                     $ toStrictByteString sub
-                  , TaggedValue 200 $ Wire.WireValue Wire.Lengthy "abcde"
+                  , TaggedValue 200 $ Wire.Lengthy "abcde"
                   -- Make sure we allow multiple values for the same tag
                   -- (in particular, to support unknown repeated fields):
-                  , TaggedValue 100 $ Wire.WireValue Wire.VarInt 102
+                  , TaggedValue 100 $ Wire.VarInt 102
                   ])
         (vcat [ keyedInt "a" 42
               , keyedInt "b" 17
@@ -57,6 +58,25 @@ testPreserveUnknownFields =
               , tagged 100 $ VarInt 102
               ])
 
+testPreserveMismatchedFields :: Test
+testPreserveMismatchedFields =
+    testUnknownSerialization
+        "mismatched fields"
+        ((defMessage :: Raw)
+              & unknownFields .~
+                  [ TaggedValue 1 $ Wire.Fixed32 42
+                  , TaggedValue 2 $ Wire.Lengthy "abcde"
+                  ])
+        (vcat [ keyedInt "1" 42
+              , keyedStr "2" "abcde"
+              ])
+        (mconcat
+              [ tagged 1 $ Fixed32 42 -- expects a varint
+              , tagged 2 $ Lengthy "abcde" -- expects a fixed32
+              ])
+
+
+
 -- TODO: The way that we display groups is somewhat hacky.
 testUnknownGroup :: Test
 testUnknownGroup =
@@ -65,9 +85,9 @@ testUnknownGroup =
               & a .~ 42
               & b .~ 17
               & unknownFields .~
-                  [ TaggedValue 100 $ Wire.WireValue Wire.StartGroup ()
-                  , TaggedValue 150 $ Wire.WireValue Wire.VarInt 5
-                  , TaggedValue 100 $ Wire.WireValue Wire.EndGroup ()
+                  [ TaggedValue 100 $ Wire.StartGroup
+                  , TaggedValue 150 $ Wire.VarInt 5
+                  , TaggedValue 100 $ Wire.EndGroup
                   ])
           (vcat [ keyedInt "a" 42
                 , keyedInt "b" 17
@@ -91,5 +111,5 @@ testUnknownSerialization name msg ts bs = testCase name $ do
     bs' @=? encodeMessage msg
     Right msg @=? decodeMessage bs'
     renderIndenting ts @=? renderIndenting (pprintMessage msg)
-    assertBool "can't decode unknown fields from text format"
-        $ isLeft $ (readMessage $ LT.pack $ show ts :: Either String msg)
+    -- Can't decode unknown fields from text format
+    satisfies isLeft $ (readMessage $ LT.pack $ show ts :: Either String msg)

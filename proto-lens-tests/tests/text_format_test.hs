@@ -168,7 +168,7 @@ main = testMain
         , "sub {"
         , "  thing2 {"
         , "    type_url: \"type.googleapis.com/text_format.Test2\""
-        , "    value: \"\\n\\031\\n\\013hello world\\022\\003\\001\\003\\005\\032\\003\\n\\n\\n #\""
+        , "    value: \"\\n\\031 #\\n\\013hello world\\022\\003\\001\\003\\005\\032\\003\\n\\n\\n\""
         , "  }"
         , "}"
         ]

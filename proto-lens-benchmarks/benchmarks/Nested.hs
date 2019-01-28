@@ -19,7 +19,7 @@ import Proto.Nested
 import Proto.Nested_Fields
 
 defaultNumValues :: Int
-defaultNumValues = 10000
+defaultNumValues = 100
 
 intValue :: Int32
 intValue = 5

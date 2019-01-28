@@ -5,21 +5,76 @@
 -- individual field types.
 --
 -- Upstream docs:
--- https://developers.google.com/protocol-buffers/docs/encoding#structure
-module Data.ProtoLens.Compiler.Generate.FieldEncoding
-    ( FieldEncoding(..)
+-- <https://developers.google.com/protocol-buffers/docs/encoding#structure>
+module Data.ProtoLens.Compiler.Generate.Field
+    ( hsFieldType
+    , hsFieldVectorType
+    , FieldEncoding(..)
     , fieldEncoding
     , lengthy
+    , groupEnd
+    , isolatedLengthy
     ) where
 
-import Data.ProtoLens.Compiler.Combinators
+import Data.Text (unpack)
+import Data.Word (Word8)
+import Lens.Family2
 import Proto.Google.Protobuf.Descriptor (FieldDescriptorProto'Type(..))
+import Proto.Google.Protobuf.Descriptor_Fields (type', typeName)
+
+import Data.ProtoLens.Compiler.Combinators
+import Data.ProtoLens.Compiler.Definitions
+
+hsFieldType :: Env QName -> FieldInfo -> Type
+hsFieldType env f = let
+    fd = fieldDescriptor f
+    in case fd ^. type' of
+        FieldDescriptorProto'TYPE_DOUBLE -> "Prelude.Double"
+        FieldDescriptorProto'TYPE_FLOAT -> "Prelude.Float"
+        FieldDescriptorProto'TYPE_INT64 -> "Data.Int.Int64"
+        FieldDescriptorProto'TYPE_UINT64 -> "Data.Word.Word64"
+        FieldDescriptorProto'TYPE_INT32 -> "Data.Int.Int32"
+        FieldDescriptorProto'TYPE_FIXED64 -> "Data.Word.Word64"
+        FieldDescriptorProto'TYPE_FIXED32 -> "Data.Word.Word32"
+        FieldDescriptorProto'TYPE_BOOL -> "Prelude.Bool"
+        FieldDescriptorProto'TYPE_STRING -> "Data.Text.Text"
+        FieldDescriptorProto'TYPE_GROUP
+            | Message m <- definedFieldType fd env -> tyCon $ messageName m
+            | otherwise -> error $ "expected TYPE_GROUP for type name"
+                                ++ unpack (fd ^. typeName)
+        FieldDescriptorProto'TYPE_MESSAGE
+            | Message m <- definedFieldType fd env -> tyCon $ messageName m
+            | otherwise -> error $ "expected TYPE_MESSAGE for type name"
+                                ++ unpack (fd ^. typeName)
+        FieldDescriptorProto'TYPE_BYTES -> "Data.ByteString.ByteString"
+        FieldDescriptorProto'TYPE_UINT32 -> "Data.Word.Word32"
+        FieldDescriptorProto'TYPE_ENUM
+            | Enum e <- definedFieldType fd env -> tyCon $ enumName e
+            | otherwise -> error $ "expected TYPE_ENUM for type name"
+                                ++ unpack (fd ^. typeName)
+        FieldDescriptorProto'TYPE_SFIXED32 -> "Data.Int.Int32"
+        FieldDescriptorProto'TYPE_SFIXED64 -> "Data.Int.Int64"
+        FieldDescriptorProto'TYPE_SINT32 -> "Data.Int.Int32"
+        FieldDescriptorProto'TYPE_SINT64 -> "Data.Int.Int64"
+
+hsFieldVectorType :: FieldInfo -> Type
+hsFieldVectorType f = case fieldDescriptor f ^. type' of
+    FieldDescriptorProto'TYPE_MESSAGE -> boxed
+    -- TODO: store enums in unboxed fields.
+    FieldDescriptorProto'TYPE_ENUM -> boxed
+    FieldDescriptorProto'TYPE_GROUP -> boxed
+    FieldDescriptorProto'TYPE_STRING -> boxed
+    FieldDescriptorProto'TYPE_BYTES -> boxed
+    _ -> unboxed
+  where
+    boxed = "Data.Vector.Vector"
+    unboxed = "Data.Vector.Unboxed.Vector"
 
 -- | A representation for how to encode and decode a particular field type.
 data FieldEncoding = FieldEncoding
     { buildFieldType :: Exp -- ^ :: a -> Builder
     , parseFieldType :: Exp -- ^ :: Parser a
-    , wireType :: Integer
+    , wireType :: Word8
     }
 
 -- | A variable-length integer, decoded as an unsigned Word64.
@@ -70,13 +125,18 @@ lengthy = FieldEncoding
                     @@ (fromIntegral' @@ len)
         ]
 
--- TODO: implement groups.  For now, use incorrect placeholders that match
--- the expected types.
 group :: FieldEncoding
 group = FieldEncoding
             { wireType = 3
+            , buildFieldType = "Data.ProtoLens.buildMessage"
+            , parseFieldType = "Data.ProtoLens.parseMessage"
+            }
+
+groupEnd :: FieldEncoding
+groupEnd = FieldEncoding
+            { wireType = 4
             , buildFieldType = "Prelude.const" @@ "Data.Monoid.mempty"
-            , parseFieldType = "Prelude.return" @@ "Data.ProtoLens.defMessage"
+            , parseFieldType = "Prelude.return" @@ unit
             }
 
 -- Wrap a field encoding  with Haskell functions that should always succeed.
@@ -174,13 +234,24 @@ stringField = partialField "Data.Text.Encoding.encodeUtf8" decodeUtf8P lengthy
 
 -- | A protobuf message type.
 message :: FieldEncoding
-message = partialField
-            ("Prelude.."
-                @@ "Data.ProtoLens.Encoding.Bytes.runBuilder"
-                @@ "Data.ProtoLens.unfinishedBuildMessage")
-            (\m -> "Data.ProtoLens.Encoding.Bytes.runParser"
-                        @@ "Data.ProtoLens.unfinishedParseMessage" @@ m)
-            lengthy
+message = lengthy
+        { buildFieldType = "Prelude.." @@
+            buildFieldType lengthy @@
+            "Data.ProtoLens.encodeMessage"
+        , parseFieldType = isolatedLengthy "Data.ProtoLens.parseMessage"
+        }
+
+-- | Takes a @Parser a@, reads a varint and then runs the parser
+-- isolated to the given length.
+isolatedLengthy :: Exp -> Exp
+isolatedLengthy parser = do'
+    [ len <-- getVarInt'
+    , stmt $ "Data.ProtoLens.Encoding.Bytes.isolate"
+                @@ (fromIntegral' @@ len)
+                @@ parser
+    ]
+  where
+    len = "len"
 
 -- | Some functions that are used in multiple places in the generated code.
 getVarInt', putVarInt', fromIntegral' :: Exp

@@ -4,7 +4,6 @@
 -- license that can be found in the LICENSE file or at
 -- https://developers.google.com/open-source/licenses/bsd
 
-{-# LANGUAGE CPP #-}
 {-# LANGUAGE GADTs #-}
 {-# LANGUAGE GeneralizedNewtypeDeriving #-}
 {-# LANGUAGE OverloadedStrings #-}
@@ -99,20 +98,17 @@ class Message msg where
     -- | Decode a message value.
     --
     -- See also the functions in "Data.ProtoLens.Encoding".
-    --
-    -- NOTE: This function is not fully implemented.
-    unfinishedParseMessage :: Parser msg
+    parseMessage :: Parser msg
 
     -- | Encode a message value.
     --
     -- See also the functions in "Data.ProtoLens.Encoding".
-    --
-    -- NOTE: This function is not fully implemented.
-    unfinishedBuildMessage :: msg -> Builder
+    buildMessage :: msg -> Builder
 
 allFields :: Message msg => [FieldDescriptor msg]
 allFields = Map.elems fieldsByTag
 
+-- TODO: represent FieldSet as a Vector too.
 type FieldSet = [TaggedValue]
 
 -- | A description of a specific field of a protocol buffer.
@@ -196,7 +192,6 @@ instance FieldDefault B.ByteString where
 
 instance FieldDefault T.Text where
     fieldDefault = T.empty
-
 
 -- | How a given repeated field is transmitted on the wire format.
 data Packing = Packed | Unpacked
