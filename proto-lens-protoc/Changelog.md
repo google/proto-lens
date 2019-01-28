@@ -7,6 +7,7 @@
 - Store repeated fields as `Vector`s, and expose the internal representation
   via new `vec'*` lenses.  Use `Vector`s for more efficient
   encoding/decoding.
+- Fix the parser to fail on end-group markers with the wrong tag number (#282).
 
 ## v0.4.0.1
 - Bump the dependency on `base` and `containers` to support `ghc-8.6.1`.

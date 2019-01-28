@@ -13,6 +13,7 @@ import Data.Monoid ((<>))
 import Proto.Group
 import Proto.Group_Fields
 import Lens.Family2 ((&), (.~))
+import Test.Framework (testGroup)
 
 import Data.ProtoLens.TestUtil
 
@@ -33,10 +34,20 @@ serializeSimple = serializeTo
     (braced "Grp" (keyedInt "int" 12))
     (tagged 1 GroupStart <> tagged 2 (VarInt 12) <> tagged 1 GroupEnd)
 
-deserializeEndMismatch = deserializeFrom
-    "end mismatch"
-    (Nothing :: Maybe Simple)
-    (tagged 1 GroupStart <> tagged 2 (VarInt 12) <> tagged 5 GroupEnd)
+deserializeEndMismatch = testGroup "end mismatch"
+    [ deserializeFrom
+        "bad field number"
+        (Nothing :: Maybe Simple)
+        $ tagged 1 GroupStart <> tagged 2 (VarInt 12) <> tagged 5 GroupEnd
+    , deserializeFrom
+        "bad field numbers aren't skipped"
+        (Nothing :: Maybe Simple)
+        $ tagged 1 GroupStart <> tagged 2 (VarInt 12)
+            -- An incorrect field number for the group-end should cause a
+            -- failure, rather than being ignored.
+            <> tagged 5 GroupEnd
+            <> tagged 1 GroupEnd
+    ]
 
 roundTripSimple = runTypedTest
     (roundTripTest "roundtrip Simple" :: TypedTest Simple)

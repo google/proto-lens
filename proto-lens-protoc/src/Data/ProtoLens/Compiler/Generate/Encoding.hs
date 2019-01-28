@@ -291,7 +291,7 @@ parseTagCases ::
 parseTagCases loop x info =
     concatMap (parseFieldCase loop x) allFields
     -- TODO: currently we ignore unknown fields.
-    ++ [unknownFieldCase loop x]
+    ++ [unknownFieldCase info loop x]
   where
     allFields = messageFields info
                 -- Cases of a oneof are decoded like optional oneof fields.
@@ -358,15 +358,40 @@ parseFieldCase loop x f = case plainFieldKind f of
         ]
 
 unknownFieldCase ::
-    (ParseState Exp -> Exp) -> ParseState Exp -> Alt
-unknownFieldCase loop x = wire --> do'
+    MessageInfo Name -> (ParseState Exp -> Exp) -> ParseState Exp -> Alt
+{-
+  wire -> do
+        !y <- parseTaggedValueFromWire wire
+        -- Omitted if not a group:
+        case y of
+            TaggedValue utag EndGroup
+                -> fail ("Mismatched group-end tag number " ++ show utag)
+            _ -> return ()
+        loop (over unknownFields (\!t -> y:t) x) ...
+-}
+unknownFieldCase info loop x = wire --> (do' $
     [ bangPat y <-- "Data.ProtoLens.Encoding.Wire.parseTaggedValueFromWire" @@ wire
-    , stmt . loop . updateParseState (over' unknownFields' (cons @@ y))
-        $ x
     ]
+    ++
+    [ stmt $ case' y
+        [ pApp "Data.ProtoLens.Encoding.Wire.TaggedValue"
+            [utag, "Data.ProtoLens.Encoding.Wire.EndGroup"]
+            --> "Prelude.fail" @@
+                    ("Prelude.++"
+                        @@ stringExp "Mismatched group-end tag number "
+                        @@ ("Prelude.show" @@ utag))
+        , pWildCard --> "Prelude.return" @@ unit
+        ]
+    | Just _ <- [groupFieldNumber info]
+    ]
+    ++
+    [ stmt . loop . updateParseState (over' unknownFields' (cons @@ y))
+        $ x
+    ])
   where
     wire = "wire"
     y = "y"
+    utag = "utag"
 
 -- | An expression of type "b -> a -> a", corresponding to a Lens a b
 -- for this field.
