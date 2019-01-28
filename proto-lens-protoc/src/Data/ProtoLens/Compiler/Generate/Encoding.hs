@@ -359,6 +359,16 @@ parseFieldCase loop x f = case plainFieldKind f of
 
 unknownFieldCase ::
     MessageInfo Name -> (ParseState Exp -> Exp) -> ParseState Exp -> Alt
+{-
+  wire -> do
+        !y <- parseTaggedValueFromWire wire
+        -- Omitted if not a group:
+        case y of
+            TaggedValue utag EndGroup
+                -> fail ("Mismatched group-end tag number " ++ show utag)
+            _ -> return ()
+        loop (over unknownFields (\!t -> y:t) x) ...
+-}
 unknownFieldCase info loop x = wire --> (do' $
     [ bangPat y <-- "Data.ProtoLens.Encoding.Wire.parseTaggedValueFromWire" @@ wire
     ]
