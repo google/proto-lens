@@ -1,5 +1,8 @@
 # Changelog for `proto-lens-optparse`
 
+## v0.1.1.5
+- Bump the upper bound to `proto-lens-0.5.*`.
+
 ## v0.1.1.4
 - Bump the dependency on `base` to support `ghc-8.6.1`.
 
