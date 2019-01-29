@@ -10,7 +10,7 @@
 ### Backwards-Compatible Changes
 - Allow enum names that start with underscores. (#238)
 - Track changes to `proto-lens`: use generated Haskell code and a custom
-  parsing monad to encode/decode proto messages more quickly.
+  parsing monad to encode/decode proto messages faster.
 - Store repeated fields internally as `Vector`s, and expose the internal
   representation via new `vec'*` lenses. (#302)
 - Use `Vector`s for more efficient encoding/decoding.
