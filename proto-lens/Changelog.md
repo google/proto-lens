@@ -1,6 +1,15 @@
 # Changelog for `proto-lens`
 
-## Unreleased changes
+## v0.5.0.0
+
+### Breaking Changes
+- Track lens-labels: Use TypeError to improve type error messages. (#265)
+- Simplify the API of `Data.ProtoLens.Encoding.Wire`, using a plain ADT
+  rather than a GADT to represent unknown field values.
+- If fields have the wrong wire type, store them in `unknownFields` rather
+  than failing the parse. (#125)
+
+### Backwards-Compatible Changes
 - Merge proto-lens-combinators into the proto-lens library.
 - Use generated Haskell code to encode/decode proto messages more quickly.
   In particular:
@@ -9,13 +18,10 @@
     code.
   - Expose the module `Data.ProtoLens.Encoding.Bytes`, which is used
     by the generated code.
-  - Simplify the API of `Data.ProtoLens.Encoding.Wire`, using a plain ADT
-    rather than a GADT to represent unknown field values.
+  - Various other, related performance optimizations.
 - Add functionality for storing unknown fields as `Vector`s.  (See the
   changelog of `proto-lens-protoc` for more details.)  Exposes the
   `Growing` type for mutable vectors of growing capacity.
-- If fields have the wrong wire type, store them in `unknownFields` rather
-  than failing the parse. (#125)
 - Export the new function `parseMessageDelimited`. (#61)
 
 ## v0.4.0.1

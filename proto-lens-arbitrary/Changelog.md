@@ -1,5 +1,8 @@
 # Changelog for `proto-lens-arbitrary`
 
+## v0.1.2.6
+- Bump upper bounds to support `proto-lens-0.5.*`.
+
 ## v0.1.2.5
 - Bump the dependency for `QuickCheck-2.12`.
 

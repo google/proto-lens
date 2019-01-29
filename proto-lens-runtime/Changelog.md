@@ -1,6 +1,6 @@
 # Changelog for `proto-lens-runtime`
 
-## Unreleased
+## v0.5.0.0
 - Export more modules from proto-lens, to support generated encoding/decoding
   and storing repeated fields as `Vector`s.
 

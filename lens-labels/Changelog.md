@@ -1,5 +1,8 @@
 # Changelog for `lens-labels`
 
+## v0.4.0.0
+- Use `TypeErrors` to improve type error messages (#265).
+
 ## v0.3.0.1
 - Bump the dependency on `base` to support `ghc-8.6.1`.
 

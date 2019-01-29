@@ -1,13 +1,20 @@
 # Changelog for `proto-lens-protoc`
 
-## Unreleased
+## v0.5.0.0
+
+### Breaking Changes
 - Capitalize enum values, and capitalize names of enum sub-messages (#270).
-- Track changes to `proto-lens` using generated Haskell code to
-  encode/decode proto messages more quickly.
-- Store repeated fields as `Vector`s, and expose the internal representation
-  via new `vec'*` lenses.  Use `Vector`s for more efficient
-  encoding/decoding.
 - Fix the parser to fail on end-group markers with the wrong tag number (#282).
+- Track lens-labels: Use TypeError to improve type error messages. (#265)
+
+### Backwards-Compatible Changes
+- Allow enum names that start with underscores. (#238)
+- Track changes to `proto-lens`: use generated Haskell code and a custom
+  parsing monad to encode/decode proto messages faster.
+- Store repeated fields internally as `Vector`s, and expose the internal
+  representation via new `vec'*` lenses. (#302)
+- Use `Vector`s for more efficient encoding/decoding.
+- Add more combinators to support the generated code.
 
 ## v0.4.0.1
 - Bump the dependency on `base` and `containers` to support `ghc-8.6.1`.
