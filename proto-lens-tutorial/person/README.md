@@ -160,10 +160,10 @@ data Address = ...
 instance Data.ProtoLens.Message Address where
   -- instance definition
 
-instance Lens.Labels.HasLens' Address "street" Data.Text.Text where
+instance Data.ProtoLens.Field.HasField Address "street" Data.Text.Text where
 -- instance definition
 
-instance Lens.Labels.HasLens' Address "zipCode" Data.Text.Text where
+instance Data.ProtoLens.Field.HasField Address "zipCode" Data.Text.Text where
 -- instance definition
 
 
@@ -179,20 +179,20 @@ data Person = ...
 module Proto.Person_Fields where
 -- imports
 
-addresses :: Lens.Labels.HasLens s "address" a => Lens' s a
+addresses :: Data.ProtoLens.Field.HasField s "address" a => Lens' s a
 
-age :: Lens.Labels.HasLens s "age" a => Lens' s a
+age :: Data.ProtoLens.Field.HasField s "age" a => Lens' s a
 
-name :: Lens.Labels.HasLens s "name" a => Lens' s a
+name :: Data.ProtoLens.Field.HasField s "name" a => Lens' s a
 
-street :: Lens.Labels.HasLens s "street" a => Lens' s a
+street :: Data.ProtoLens.Field.HasField s "street" a => Lens' s a
 
-zipCode :: Lens.Labels.HasLens s "zipCode" a => Lens' s a
+zipCode :: Data.ProtoLens.Field.HasField s "zipCode" a => Lens' s a
 ```
 
 So we have our data types for Person and Address and they have instances for:
 
-* `Lens.Labels.HasLens'`
+* `Data.ProtoLens.Field.HasField`
   * Allows us to use overloaded lenses for interacting with our data i.e. get/set.  
 
 * Message

@@ -41,7 +41,7 @@ Notice `_Foo'_unknownFields :: !Data.ProtoLens.FieldSet`; it stores fields that 
 
 Instances generated are:
 
-* `Lens.Labels.HasLens` and `Lens.Labels.HasLens'` are for overloading field names (see [Field Overloading](#field-overloading).
+* `Data.ProtoLens.Field.HasField` for overloading field names (see [Field Overloading](#field-overloading).
 * `Data.ProtoLens.Message` for having [default message values] and enabling serialization by providing reflection of all of the fields that may be used by this type.
 
 [default message values]: https://developers.google.com/protocol-buffers/docs/proto3#default
@@ -74,17 +74,17 @@ data Foo'Bar = Foo'Baz !Data.Int.Int32
              | Foo'Bippy !Data.Text.Text
              deriving (Prelude.Show, Prelude.Eq, Prelude.Ord)
 
-_Foo'Baz :: Lens.Labels.Prism.Prism' Foo'Bar Data.Int.Int32
+_Foo'Baz :: Data.ProtoLens.Prism.Prism' Foo'Bar Data.Int.Int32
 _Foo'Baz
- = Lens.Labels.Prism.prism' Foo'Baz
+ = Data.ProtoLens.Prism.prism' Foo'Baz
      (\ p__ ->
         case p__ of
             Foo'Baz p__val -> Prelude.Just p__val
             _otherwise -> Prelude.Nothing)
 
-_Foo'Bippy :: Lens.Labels.Prism.Prism' Foo'Bar Data.Text.Text
+_Foo'Bippy :: Data.ProtoLens.Prism.Prism' Foo'Bar Data.Text.Text
 _Foo'Bippy
- = Lens.Labels.Prism.prism' Foo'Bippy
+ = Data.ProtoLens.Prism.prism' Foo'Bippy
      (\ p__ ->
         case p__ of
             Foo'Bippy p__val -> Prelude.Just p__val
@@ -93,7 +93,7 @@ _Foo'Bippy
 
 The `Prism'` functions allow us to succinctly focus on one branch of the sum type for our Message, for example:
 ``` haskell
-import Lens.Labels.Prism
+import Data.ProtoLens.Prism
 
 accessBaz :: Foo -> Maybe Int32
 accessBaz foo = foo
@@ -110,9 +110,9 @@ updateFoo :: String -> Foo -> Foo
 updateFoo s foo = foo ?~ _Foo'Bippy # s
 ```
 
-Our [previously mentioned instances](#message-generation) are generated but we will note the following about `HasLens'`:
+Our [previously mentioned instances](#message-generation) are generated but we will note the following about `HasField`:
 
-* `Lens.Labels.HasLens'` also include `maybe'*` `HasLens'` instances for viewing the individual cases as `Maybe` values.
+* We also generate `maybe'*` `HasField` instances for viewing the individual cases as `Maybe` values.
 
 ## Enum Generation
 
@@ -170,16 +170,14 @@ message Foo {
 ```
 we can see that `baz` is common to both `Bar` and `Foo`. The difference will be that the instances for `HasLens'` will be:
 ``` haskell
-instance Lens.Labels.HasLens' Foo "baz" (Data.Text.Text)
+instance HasField Foo "baz" (Data.Text.Text)
 
-instance Lens.Labels.HasLens' Bar "baz" (Data.Int.Int32)
+instance HasField Bar "baz" (Data.Int.Int32)
 ```
 The fields are overloaded on the symbol `baz` but connect `Foo` to `Text` and `Bar` to `Int32`. Then we can find that there is one, polymorphic definition in the `Foo_Fields.hs` file:
 ``` haskell
-baz :: Lens.Labels.HasLens' s "baz" a => Lens.Family2.Lens' s a
-baz
-  = Lens.Labels.lensOf
-      ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "baz")
+baz :: HasField s "baz" a => Lens' s a
+baz = Data.ProtoLens.Field.field @"baz"
 ```
 If we have any other records that also contain `baz` from other modules these lenses could also be used to access them. We should take care in these cases as to only import one version of `baz` when we are doing this, otherwise name clashes will occur.
 
@@ -198,11 +196,11 @@ main :: IO ()
 main = putStrLn $ myBar ^. P.bippy
 ```
 
-The second method is by using the `OverloadedLabels` extension and importing the orphan instance of `IsLabel` for `proto-lens` `LensFn` type, giving us the use of `#` for prefixing our field accessors. To bring this instance into scope we need to also import `Lens.Labels.Unwrapped`:
+The second method is by using the `OverloadedLabels` extension and importing the orphan instance of `IsLabel` for `proto-lens` `LensFn` type, giving us the use of `#` for prefixing our field accessors. To bring this instance into scope we need to also import `Data.ProtoLens.Labels`:
 ``` haskell
 {-# LANGUAGE OverloadedLabels #-}
 
-import Lens.Labels.Unwrapped ()
+import Data.ProtoLens.Labels ()
 import Microlens             ((^.))
 import Proto.Foo          as P
 

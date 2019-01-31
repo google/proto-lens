@@ -6,7 +6,7 @@
 module Main where
 
 import           Data.ProtoLens (defMessage)
-import           Lens.Labels.Unwrapped ()
+import           Data.ProtoLens.Labels ()
 import           Lens.Micro
 import           Lens.Micro.Extras (view)
 import qualified Proto.Coffee.Order as P

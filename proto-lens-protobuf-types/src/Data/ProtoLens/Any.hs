@@ -21,8 +21,9 @@ import Data.ProtoLens
     , encodeMessage
     , Message(..)
     )
+import Data.ProtoLens.Labels ()
 import Data.Proxy (Proxy(..))
-import Lens.Labels ((&), (.~), (^.))
+import Lens.Family2 ((&), (.~), (^.))
 import Proto.Google.Protobuf.Any
 
 -- | Packs the given message into an 'Any' using the default type URL prefix

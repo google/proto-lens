@@ -1,6 +1,6 @@
 # Changelog for `proto-lens-protobuf-types`
 
-## v0.4.0.2
+## v0.5.0.0
 - Bump upper bounds to support `proto-lens-0.5.*`.
 
 ## v0.4.0.1

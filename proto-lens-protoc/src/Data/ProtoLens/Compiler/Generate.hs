@@ -87,7 +87,7 @@ generateModule modName imports modifyImport definitions importedEnv services
                "UndecidableInstances", "GeneralizedNewtypeDeriving",
                "MultiParamTypeClasses", "FlexibleContexts", "FlexibleInstances",
                "PatternSynonyms", "MagicHash", "NoImplicitPrelude",
-               "DataKinds", "BangPatterns"]
+               "DataKinds", "BangPatterns", "TypeApplications"]
               -- Allow unused imports in case we don't import anything from
               -- Data.Text, Data.Int, etc.
           , optionsGhcPragma "-fno-warn-unused-imports"
@@ -96,7 +96,7 @@ generateModule modName imports modifyImport definitions importedEnv services
           , optionsGhcPragma "-fno-warn-duplicate-exports"
           ]
     mainImports = map (modifyImport . importSimple)
-                    [ "Control.DeepSeq", "Lens.Labels.Prism" ]
+                    [ "Control.DeepSeq", "Data.ProtoLens.Prism" ]
     sharedImports = map (modifyImport . importSimple)
               [ "Prelude", "Data.Int", "Data.Monoid", "Data.Word"
               , "Data.ProtoLens"
@@ -104,6 +104,7 @@ generateModule modName imports modifyImport definitions importedEnv services
               , "Data.ProtoLens.Encoding.Growing"
               , "Data.ProtoLens.Encoding.Parser.Unsafe"
               , "Data.ProtoLens.Encoding.Wire"
+              , "Data.ProtoLens.Field"
               , "Data.ProtoLens.Message.Enum"
               , "Data.ProtoLens.Service.Types"
               , "Lens.Family2", "Lens.Family2.Unchecked"
@@ -112,7 +113,7 @@ generateModule modName imports modifyImport definitions importedEnv services
               , "Data.Vector"
               , "Data.Vector.Generic"
               , "Data.Vector.Unboxed"
-              , "Lens.Labels", "Text.Read"
+              , "Text.Read"
               ]
             ++ map importSimple imports
     env = Map.union (unqualifyEnv definitions) importedEnv
@@ -279,14 +280,14 @@ generateMessageDecls fieldModName env protoName info =
       $ deriving' ["Prelude.Show", "Prelude.Eq", "Prelude.Ord"]
     | oneofInfo <- messageOneofFields info
     ] ++
-    -- instance a ~ Bar => HasLens' Foo "foo" a where
+    -- instance a ~ Bar => HasField Foo "foo" a where
     --   lensOf _ = ...
     -- Note: for optional fields, this generates an instance both for "foo" and
     -- for "maybe'foo" (see plainRecordField below).
     [ uncommented $ instDecl [equalP "a" (tyParen t)]
-        ("Lens.Labels.HasLens'" `ihApp`
+        ("Data.ProtoLens.Field.HasField" `ihApp`
             [dataType, sym, "a"])
-            [[match "lensOf'" [pWildCard] $
+            [[match "lensOf" [pWildCard] $
                 "Prelude.."
                     @@ rawFieldAccessor (unQual $ recordFieldName li)
                     @@ lensExp i]]
@@ -326,9 +327,9 @@ generateMessageDecls fieldModName env protoName info =
 --          _Foo'S :: Prism' Bar'S Sub
 --
 --  example of the function definition for _Foo'C:
--- _Foo'C :: Lens.Prism.Prism' Bar'C Float
+-- _Foo'C :: Prism' Bar'C Float
 -- _Foo'C
---   = Lens.Prism.prism' Bar'C
+--   = prism' Bar'C
 --       (\ p__ ->
 --          case p__ of
 --              Bar'C p__val -> Prelude.Just p__val
@@ -345,7 +346,7 @@ generatePrisms env oneofInfo =
         -- Generate type signature
         -- e.g. Prism' Bar'C Float
         generateTypeSig f funName =
-            typeSig [funName] $ "Lens.Labels.Prism.Prism'"
+            typeSig [funName] $ "Data.ProtoLens.Prism.Prism'"
                                 -- The oneof sum type name
                              @@ (tyCon . unQual $ oneofTypeName oneofInfo)
                                 -- The field contained in the sum
@@ -354,7 +355,7 @@ generatePrisms env oneofInfo =
         -- Prism' is constructed with Constructor for building value
         -- and Deconstructor and wrapping in Just for getting value
         generateFunDef otherwiseCase consName =
-               "Lens.Labels.Prism.prism'"
+               "Data.ProtoLens.Prism.prism'"
                -- Sum type constructor
             @@ con (unQual consName)
                -- Case deconstruction
@@ -604,11 +605,11 @@ generateFieldDecls :: Symbol -> [Decl]
 generateFieldDecls xStr =
     -- foo :: forall f s a
     --        . (Functor f, HasLens s x a) => LensLike' f s a
-    -- foo = lensOf (Proxy# :: Proxy# x)
+    -- foo = lensOf @s
     [ typeSig [x]
           $ tyForAll ["f", "s", "a"]
                   [classA "Prelude.Functor" ["f"],
-                   classA "Lens.Labels.HasLens'" ["s", xSym, "a"]]
+                   classA "Data.ProtoLens.Field.HasField" ["s", xSym, "a"]]
                     $ "Lens.Family2.LensLike'" @@ "f" @@ "s" @@ "a"
     , funBind [match x [] $ lensOfExp xStr]
     ]
@@ -977,9 +978,7 @@ fieldAccessorExpr (PlainFieldInfo kind f) = accessorCon @@ lensOfExp hsFieldName
             _ -> overloadedField f
 
 lensOfExp :: Symbol -> Exp
-lensOfExp sym = ("Lens.Labels.lensOf'"
-                  @@ ("Lens.Labels.proxy#" @::@
-                      ("Lens.Labels.Proxy#" @@ promoteSymbol sym)))
+lensOfExp sym = "Data.ProtoLens.Field.field" @@ typeApp (promoteSymbol sym)
 
 overloadedField :: FieldInfo -> Symbol
 overloadedField = overloadedName . fieldName

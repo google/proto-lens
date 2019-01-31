@@ -1,30 +1,35 @@
 {-# LANGUAGE CPP #-}
 {-# LANGUAGE FlexibleInstances #-}
+{-# LANGUAGE MagicHash #-}
 {-# LANGUAGE MultiParamTypeClasses #-}
+{-# LANGUAGE TypeFamilies #-}
 {-# LANGUAGE UndecidableInstances #-}
 #if __GLASGOW_HASKELL__ >= 802
 {-# LANGUAGE ScopedTypeVariables #-}
-{-# LANGUAGE TypeApplications #-}
-{-# OPTIONS_GHC -fno-warn-simplifiable-class-constraints #-}
 #endif
 {-# OPTIONS_GHC -fno-warn-orphans #-}
 
 ------------------------------------------------------------------------------
 -- | This module provides OverloadedLabels 'IsLabel' support via an
 -- orphan instance. This means a @Lens.Family.Lens@ can be referenced
--- as @#foo@ whenever we have an instance of @Lens.Labels.HasLens@
+-- as @#foo@ whenever we have an instance of 'Data.ProtoLens.Field.HasField'
 -- with the label @"foo"@."
 --
--- This can eliminate the need to call 'runLens' when working with libraries
--- like @lens@, @microlens@, or @lens-family@.
-module Lens.Labels.Unwrapped where
+-- To use these labels, enable the @OverloadedLabels@ extension, and then
+-- import:
+--
+-- > import Data.ProtoLens.Labels()
+module Data.ProtoLens.Labels where
 
 import GHC.OverloadedLabels (IsLabel (..))
-import Lens.Labels (LensFn (..))
+import GHC.Prim (Proxy#, proxy#)
 
-instance IsLabel x (LensFn p q) => IsLabel x (p -> q) where
+import Data.ProtoLens.Field (HasField(..))
+
+instance (HasField s x a, p ~ (a -> f a), q ~ (s -> f s), Functor f,
+        a ~ b) => IsLabel x (p -> q) where
 #if __GLASGOW_HASKELL__ >= 802
-  fromLabel = runLens $ fromLabel @x
+  fromLabel = lensOf (proxy# :: Proxy# x)
 #else
-  fromLabel x = runLens $ fromLabel x
+  fromLabel x = lensOf x
 #endif

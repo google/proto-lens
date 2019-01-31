@@ -89,42 +89,42 @@ To break this down, our proto types `Americano`, `Latte`, etc. are each turned i
 Now that we have looked at the Haskell representation of the data, let's look at the lenses that come with these.
 
 ``` haskell
-instance Lens.Labels.HasLens' Coffee "maybe'coffeeType"
+instance Data.ProtoLens.Field.HasField Coffee "maybe'coffeeType"
             (Prelude.Maybe Coffee'CoffeeType)
     where ...
 
 
-instance Lens.Labels.HasLens' Coffee "maybe'americano"
+instance Data.ProtoLens.Field.HasField Coffee "maybe'americano"
              (Prelude.Maybe Americano)
     where ...
 
-instance Lens.Labels.HasLens' Coffee "americano" (Americano)
+instance Data.ProtoLens.Field.HasField Coffee "americano" (Americano)
     where ...
 
-instance Lens.Labels.HasLens' Coffee "maybe'latte" (Prelude.Maybe Latte)
+instance Data.ProtoLens.Field.HasField Coffee "maybe'latte" (Prelude.Maybe Latte)
     where ...
 
-instance Lens.Labels.HasLens' Coffee "latte" (Latte)
+instance Data.ProtoLens.Field.HasField Coffee "latte" (Latte)
     where ...
 
-instance Lens.Labels.HasLens' Coffee "maybe'flatWhite"
+instance Data.ProtoLens.Field.HasField Coffee "maybe'flatWhite"
              (Prelude.Maybe FlatWhite)
     where ...
 
-instance Lens.Labels.HasLens' Coffee "flatWhite" (FlatWhite)
+instance Data.ProtoLens.Field.HasField Coffee "flatWhite" (FlatWhite)
     where ...
 
-instance Lens.Labels.HasLens' Coffee "maybe'cappuccino"
+instance Data.ProtoLens.Field.HasField Coffee "maybe'cappuccino"
              (Prelude.Maybe Cappuccino)
     where ...
 
-instance Lens.Labels.HasLens' Coffee "cappuccino" (Cappuccino)
+instance Data.ProtoLens.Field.HasField Coffee "cappuccino" (Cappuccino)
     where ...
 
-instance Lens.Labels.HasLens' Coffee "maybe'mocha" (Prelude.Maybe Mocha)
+instance Data.ProtoLens.Field.HasField Coffee "maybe'mocha" (Prelude.Maybe Mocha)
     where ...
 
-instance Lens.Labels.HasLens' Coffee "mocha" (Mocha)
+instance Data.ProtoLens.Field.HasField Coffee "mocha" (Mocha)
     where ...
 ```
 

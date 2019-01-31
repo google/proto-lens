@@ -22,7 +22,6 @@ library:
     - deepseq == 1.4.*
     - filepath >= 1.4 && < 1.6
     - lens-family == 1.2.*
-    - lens-labels == 0.4.*
     - proto-lens == 0.5.*
     - text == 1.2.*
     - vector >= 0.11 && < 0.13
@@ -41,6 +40,8 @@ library:
     - Data.ProtoLens.Encoding.Bytes as Data.ProtoLens.Runtime.Data.ProtoLens.Encoding.Bytes,
     - Data.ProtoLens.Encoding.Growing as Data.ProtoLens.Runtime.Data.ProtoLens.Encoding.Growing,
     - Data.ProtoLens.Encoding.Parser.Unsafe as Data.ProtoLens.Runtime.Data.ProtoLens.Encoding.Parser.Unsafe,
+    - Data.ProtoLens.Field as Data.ProtoLens.Runtime.Data.ProtoLens.Field,
+    - Data.ProtoLens.Prism as Data.ProtoLens.Runtime.Data.ProtoLens.Prism,
     # TODO: try to avoid exposing the Wire module, or else merge it into the
     # Bytes module.
     - Data.ProtoLens.Encoding.Wire as Data.ProtoLens.Runtime.Data.ProtoLens.Encoding.Wire,
@@ -53,8 +54,6 @@ library:
     - Data.Vector.Unboxed as Data.ProtoLens.Runtime.Data.Vector.Unboxed,
     - Lens.Family2 as Data.ProtoLens.Runtime.Lens.Family2,
     - Lens.Family2.Unchecked as Data.ProtoLens.Runtime.Lens.Family2.Unchecked,
-    - Lens.Labels as Data.ProtoLens.Runtime.Lens.Labels,
-    - Lens.Labels.Prism as Data.ProtoLens.Runtime.Lens.Labels.Prism,
     - Text.Read as Data.ProtoLens.Runtime.Text.Read
 
  

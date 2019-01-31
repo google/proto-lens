@@ -8,7 +8,7 @@
 --   'Prism's for oneof fields.
 {-# LANGUAGE RankNTypes #-}
 
-module Lens.Labels.Prism
+module Data.ProtoLens.Prism
     ( Prism
     , Prism'
     , AReview

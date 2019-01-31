@@ -3,7 +3,7 @@
   UndecidableInstances, GeneralizedNewtypeDeriving,
   MultiParamTypeClasses, FlexibleContexts, FlexibleInstances,
   PatternSynonyms, MagicHash, NoImplicitPrelude, DataKinds,
-  BangPatterns #-}
+  BangPatterns, TypeApplications #-}
 {-# OPTIONS_GHC -fno-warn-unused-imports#-}
 {-# OPTIONS_GHC -fno-warn-duplicate-exports#-}
 module Proto.Google.Protobuf.Descriptor_Fields where
@@ -16,6 +16,7 @@ import qualified Data.ProtoLens.Encoding.Bytes
 import qualified Data.ProtoLens.Encoding.Growing
 import qualified Data.ProtoLens.Encoding.Parser.Unsafe
 import qualified Data.ProtoLens.Encoding.Wire
+import qualified Data.ProtoLens.Field
 import qualified Data.ProtoLens.Message.Enum
 import qualified Data.ProtoLens.Service.Types
 import qualified Lens.Family2
@@ -28,1250 +29,1018 @@ import qualified Data.Text.Encoding
 import qualified Data.Vector
 import qualified Data.Vector.Generic
 import qualified Data.Vector.Unboxed
-import qualified Lens.Labels
 import qualified Text.Read
 
 aggregateValue ::
                forall f s a .
-                 (Prelude.Functor f, Lens.Labels.HasLens' s "aggregateValue" a) =>
+                 (Prelude.Functor f,
+                  Data.ProtoLens.Field.HasField s "aggregateValue" a) =>
                  Lens.Family2.LensLike' f s a
-aggregateValue
-  = Lens.Labels.lensOf'
-      ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "aggregateValue")
+aggregateValue = Data.ProtoLens.Field.field @"aggregateValue"
 allowAlias ::
            forall f s a .
-             (Prelude.Functor f, Lens.Labels.HasLens' s "allowAlias" a) =>
+             (Prelude.Functor f,
+              Data.ProtoLens.Field.HasField s "allowAlias" a) =>
              Lens.Family2.LensLike' f s a
-allowAlias
-  = Lens.Labels.lensOf'
-      ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "allowAlias")
+allowAlias = Data.ProtoLens.Field.field @"allowAlias"
 annotation ::
            forall f s a .
-             (Prelude.Functor f, Lens.Labels.HasLens' s "annotation" a) =>
+             (Prelude.Functor f,
+              Data.ProtoLens.Field.HasField s "annotation" a) =>
              Lens.Family2.LensLike' f s a
-annotation
-  = Lens.Labels.lensOf'
-      ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "annotation")
+annotation = Data.ProtoLens.Field.field @"annotation"
 begin ::
       forall f s a .
-        (Prelude.Functor f, Lens.Labels.HasLens' s "begin" a) =>
+        (Prelude.Functor f, Data.ProtoLens.Field.HasField s "begin" a) =>
         Lens.Family2.LensLike' f s a
-begin
-  = Lens.Labels.lensOf'
-      ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "begin")
+begin = Data.ProtoLens.Field.field @"begin"
 ccEnableArenas ::
                forall f s a .
-                 (Prelude.Functor f, Lens.Labels.HasLens' s "ccEnableArenas" a) =>
+                 (Prelude.Functor f,
+                  Data.ProtoLens.Field.HasField s "ccEnableArenas" a) =>
                  Lens.Family2.LensLike' f s a
-ccEnableArenas
-  = Lens.Labels.lensOf'
-      ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "ccEnableArenas")
+ccEnableArenas = Data.ProtoLens.Field.field @"ccEnableArenas"
 ccGenericServices ::
                   forall f s a .
                     (Prelude.Functor f,
-                     Lens.Labels.HasLens' s "ccGenericServices" a) =>
+                     Data.ProtoLens.Field.HasField s "ccGenericServices" a) =>
                     Lens.Family2.LensLike' f s a
-ccGenericServices
-  = Lens.Labels.lensOf'
-      ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "ccGenericServices")
+ccGenericServices = Data.ProtoLens.Field.field @"ccGenericServices"
 clientStreaming ::
                 forall f s a .
-                  (Prelude.Functor f, Lens.Labels.HasLens' s "clientStreaming" a) =>
+                  (Prelude.Functor f,
+                   Data.ProtoLens.Field.HasField s "clientStreaming" a) =>
                   Lens.Family2.LensLike' f s a
-clientStreaming
-  = Lens.Labels.lensOf'
-      ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "clientStreaming")
+clientStreaming = Data.ProtoLens.Field.field @"clientStreaming"
 csharpNamespace ::
                 forall f s a .
-                  (Prelude.Functor f, Lens.Labels.HasLens' s "csharpNamespace" a) =>
+                  (Prelude.Functor f,
+                   Data.ProtoLens.Field.HasField s "csharpNamespace" a) =>
                   Lens.Family2.LensLike' f s a
-csharpNamespace
-  = Lens.Labels.lensOf'
-      ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "csharpNamespace")
+csharpNamespace = Data.ProtoLens.Field.field @"csharpNamespace"
 ctype ::
       forall f s a .
-        (Prelude.Functor f, Lens.Labels.HasLens' s "ctype" a) =>
+        (Prelude.Functor f, Data.ProtoLens.Field.HasField s "ctype" a) =>
         Lens.Family2.LensLike' f s a
-ctype
-  = Lens.Labels.lensOf'
-      ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "ctype")
+ctype = Data.ProtoLens.Field.field @"ctype"
 defaultValue ::
              forall f s a .
-               (Prelude.Functor f, Lens.Labels.HasLens' s "defaultValue" a) =>
+               (Prelude.Functor f,
+                Data.ProtoLens.Field.HasField s "defaultValue" a) =>
                Lens.Family2.LensLike' f s a
-defaultValue
-  = Lens.Labels.lensOf'
-      ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "defaultValue")
+defaultValue = Data.ProtoLens.Field.field @"defaultValue"
 dependency ::
            forall f s a .
-             (Prelude.Functor f, Lens.Labels.HasLens' s "dependency" a) =>
+             (Prelude.Functor f,
+              Data.ProtoLens.Field.HasField s "dependency" a) =>
              Lens.Family2.LensLike' f s a
-dependency
-  = Lens.Labels.lensOf'
-      ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "dependency")
+dependency = Data.ProtoLens.Field.field @"dependency"
 deprecated ::
            forall f s a .
-             (Prelude.Functor f, Lens.Labels.HasLens' s "deprecated" a) =>
+             (Prelude.Functor f,
+              Data.ProtoLens.Field.HasField s "deprecated" a) =>
              Lens.Family2.LensLike' f s a
-deprecated
-  = Lens.Labels.lensOf'
-      ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "deprecated")
+deprecated = Data.ProtoLens.Field.field @"deprecated"
 doubleValue ::
             forall f s a .
-              (Prelude.Functor f, Lens.Labels.HasLens' s "doubleValue" a) =>
+              (Prelude.Functor f,
+               Data.ProtoLens.Field.HasField s "doubleValue" a) =>
               Lens.Family2.LensLike' f s a
-doubleValue
-  = Lens.Labels.lensOf'
-      ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "doubleValue")
+doubleValue = Data.ProtoLens.Field.field @"doubleValue"
 end ::
     forall f s a .
-      (Prelude.Functor f, Lens.Labels.HasLens' s "end" a) =>
+      (Prelude.Functor f, Data.ProtoLens.Field.HasField s "end" a) =>
       Lens.Family2.LensLike' f s a
-end
-  = Lens.Labels.lensOf'
-      ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "end")
+end = Data.ProtoLens.Field.field @"end"
 enumType ::
          forall f s a .
-           (Prelude.Functor f, Lens.Labels.HasLens' s "enumType" a) =>
+           (Prelude.Functor f,
+            Data.ProtoLens.Field.HasField s "enumType" a) =>
            Lens.Family2.LensLike' f s a
-enumType
-  = Lens.Labels.lensOf'
-      ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "enumType")
+enumType = Data.ProtoLens.Field.field @"enumType"
 extendee ::
          forall f s a .
-           (Prelude.Functor f, Lens.Labels.HasLens' s "extendee" a) =>
+           (Prelude.Functor f,
+            Data.ProtoLens.Field.HasField s "extendee" a) =>
            Lens.Family2.LensLike' f s a
-extendee
-  = Lens.Labels.lensOf'
-      ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "extendee")
+extendee = Data.ProtoLens.Field.field @"extendee"
 extension ::
           forall f s a .
-            (Prelude.Functor f, Lens.Labels.HasLens' s "extension" a) =>
+            (Prelude.Functor f,
+             Data.ProtoLens.Field.HasField s "extension" a) =>
             Lens.Family2.LensLike' f s a
-extension
-  = Lens.Labels.lensOf'
-      ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "extension")
+extension = Data.ProtoLens.Field.field @"extension"
 extensionRange ::
                forall f s a .
-                 (Prelude.Functor f, Lens.Labels.HasLens' s "extensionRange" a) =>
+                 (Prelude.Functor f,
+                  Data.ProtoLens.Field.HasField s "extensionRange" a) =>
                  Lens.Family2.LensLike' f s a
-extensionRange
-  = Lens.Labels.lensOf'
-      ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "extensionRange")
+extensionRange = Data.ProtoLens.Field.field @"extensionRange"
 field ::
       forall f s a .
-        (Prelude.Functor f, Lens.Labels.HasLens' s "field" a) =>
+        (Prelude.Functor f, Data.ProtoLens.Field.HasField s "field" a) =>
         Lens.Family2.LensLike' f s a
-field
-  = Lens.Labels.lensOf'
-      ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "field")
+field = Data.ProtoLens.Field.field @"field"
 file ::
      forall f s a .
-       (Prelude.Functor f, Lens.Labels.HasLens' s "file" a) =>
+       (Prelude.Functor f, Data.ProtoLens.Field.HasField s "file" a) =>
        Lens.Family2.LensLike' f s a
-file
-  = Lens.Labels.lensOf'
-      ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "file")
+file = Data.ProtoLens.Field.field @"file"
 goPackage ::
           forall f s a .
-            (Prelude.Functor f, Lens.Labels.HasLens' s "goPackage" a) =>
+            (Prelude.Functor f,
+             Data.ProtoLens.Field.HasField s "goPackage" a) =>
             Lens.Family2.LensLike' f s a
-goPackage
-  = Lens.Labels.lensOf'
-      ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "goPackage")
+goPackage = Data.ProtoLens.Field.field @"goPackage"
 idempotencyLevel ::
                  forall f s a .
-                   (Prelude.Functor f, Lens.Labels.HasLens' s "idempotencyLevel" a) =>
+                   (Prelude.Functor f,
+                    Data.ProtoLens.Field.HasField s "idempotencyLevel" a) =>
                    Lens.Family2.LensLike' f s a
-idempotencyLevel
-  = Lens.Labels.lensOf'
-      ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "idempotencyLevel")
+idempotencyLevel = Data.ProtoLens.Field.field @"idempotencyLevel"
 identifierValue ::
                 forall f s a .
-                  (Prelude.Functor f, Lens.Labels.HasLens' s "identifierValue" a) =>
+                  (Prelude.Functor f,
+                   Data.ProtoLens.Field.HasField s "identifierValue" a) =>
                   Lens.Family2.LensLike' f s a
-identifierValue
-  = Lens.Labels.lensOf'
-      ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "identifierValue")
+identifierValue = Data.ProtoLens.Field.field @"identifierValue"
 inputType ::
           forall f s a .
-            (Prelude.Functor f, Lens.Labels.HasLens' s "inputType" a) =>
+            (Prelude.Functor f,
+             Data.ProtoLens.Field.HasField s "inputType" a) =>
             Lens.Family2.LensLike' f s a
-inputType
-  = Lens.Labels.lensOf'
-      ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "inputType")
+inputType = Data.ProtoLens.Field.field @"inputType"
 isExtension ::
             forall f s a .
-              (Prelude.Functor f, Lens.Labels.HasLens' s "isExtension" a) =>
+              (Prelude.Functor f,
+               Data.ProtoLens.Field.HasField s "isExtension" a) =>
               Lens.Family2.LensLike' f s a
-isExtension
-  = Lens.Labels.lensOf'
-      ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "isExtension")
+isExtension = Data.ProtoLens.Field.field @"isExtension"
 javaGenerateEqualsAndHash ::
                           forall f s a .
                             (Prelude.Functor f,
-                             Lens.Labels.HasLens' s "javaGenerateEqualsAndHash" a) =>
+                             Data.ProtoLens.Field.HasField s "javaGenerateEqualsAndHash" a) =>
                             Lens.Family2.LensLike' f s a
 javaGenerateEqualsAndHash
-  = Lens.Labels.lensOf'
-      ((Lens.Labels.proxy#) ::
-         (Lens.Labels.Proxy#) "javaGenerateEqualsAndHash")
+  = Data.ProtoLens.Field.field @"javaGenerateEqualsAndHash"
 javaGenericServices ::
                     forall f s a .
                       (Prelude.Functor f,
-                       Lens.Labels.HasLens' s "javaGenericServices" a) =>
+                       Data.ProtoLens.Field.HasField s "javaGenericServices" a) =>
                       Lens.Family2.LensLike' f s a
 javaGenericServices
-  = Lens.Labels.lensOf'
-      ((Lens.Labels.proxy#) ::
-         (Lens.Labels.Proxy#) "javaGenericServices")
+  = Data.ProtoLens.Field.field @"javaGenericServices"
 javaMultipleFiles ::
                   forall f s a .
                     (Prelude.Functor f,
-                     Lens.Labels.HasLens' s "javaMultipleFiles" a) =>
+                     Data.ProtoLens.Field.HasField s "javaMultipleFiles" a) =>
                     Lens.Family2.LensLike' f s a
-javaMultipleFiles
-  = Lens.Labels.lensOf'
-      ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "javaMultipleFiles")
+javaMultipleFiles = Data.ProtoLens.Field.field @"javaMultipleFiles"
 javaOuterClassname ::
                    forall f s a .
                      (Prelude.Functor f,
-                      Lens.Labels.HasLens' s "javaOuterClassname" a) =>
+                      Data.ProtoLens.Field.HasField s "javaOuterClassname" a) =>
                      Lens.Family2.LensLike' f s a
 javaOuterClassname
-  = Lens.Labels.lensOf'
-      ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "javaOuterClassname")
+  = Data.ProtoLens.Field.field @"javaOuterClassname"
 javaPackage ::
             forall f s a .
-              (Prelude.Functor f, Lens.Labels.HasLens' s "javaPackage" a) =>
+              (Prelude.Functor f,
+               Data.ProtoLens.Field.HasField s "javaPackage" a) =>
               Lens.Family2.LensLike' f s a
-javaPackage
-  = Lens.Labels.lensOf'
-      ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "javaPackage")
+javaPackage = Data.ProtoLens.Field.field @"javaPackage"
 javaStringCheckUtf8 ::
                     forall f s a .
                       (Prelude.Functor f,
-                       Lens.Labels.HasLens' s "javaStringCheckUtf8" a) =>
+                       Data.ProtoLens.Field.HasField s "javaStringCheckUtf8" a) =>
                       Lens.Family2.LensLike' f s a
 javaStringCheckUtf8
-  = Lens.Labels.lensOf'
-      ((Lens.Labels.proxy#) ::
-         (Lens.Labels.Proxy#) "javaStringCheckUtf8")
+  = Data.ProtoLens.Field.field @"javaStringCheckUtf8"
 jsonName ::
          forall f s a .
-           (Prelude.Functor f, Lens.Labels.HasLens' s "jsonName" a) =>
+           (Prelude.Functor f,
+            Data.ProtoLens.Field.HasField s "jsonName" a) =>
            Lens.Family2.LensLike' f s a
-jsonName
-  = Lens.Labels.lensOf'
-      ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "jsonName")
+jsonName = Data.ProtoLens.Field.field @"jsonName"
 jstype ::
        forall f s a .
-         (Prelude.Functor f, Lens.Labels.HasLens' s "jstype" a) =>
+         (Prelude.Functor f, Data.ProtoLens.Field.HasField s "jstype" a) =>
          Lens.Family2.LensLike' f s a
-jstype
-  = Lens.Labels.lensOf'
-      ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "jstype")
+jstype = Data.ProtoLens.Field.field @"jstype"
 label ::
       forall f s a .
-        (Prelude.Functor f, Lens.Labels.HasLens' s "label" a) =>
+        (Prelude.Functor f, Data.ProtoLens.Field.HasField s "label" a) =>
         Lens.Family2.LensLike' f s a
-label
-  = Lens.Labels.lensOf'
-      ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "label")
+label = Data.ProtoLens.Field.field @"label"
 lazy ::
      forall f s a .
-       (Prelude.Functor f, Lens.Labels.HasLens' s "lazy" a) =>
+       (Prelude.Functor f, Data.ProtoLens.Field.HasField s "lazy" a) =>
        Lens.Family2.LensLike' f s a
-lazy
-  = Lens.Labels.lensOf'
-      ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "lazy")
+lazy = Data.ProtoLens.Field.field @"lazy"
 leadingComments ::
                 forall f s a .
-                  (Prelude.Functor f, Lens.Labels.HasLens' s "leadingComments" a) =>
+                  (Prelude.Functor f,
+                   Data.ProtoLens.Field.HasField s "leadingComments" a) =>
                   Lens.Family2.LensLike' f s a
-leadingComments
-  = Lens.Labels.lensOf'
-      ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "leadingComments")
+leadingComments = Data.ProtoLens.Field.field @"leadingComments"
 leadingDetachedComments ::
                         forall f s a .
                           (Prelude.Functor f,
-                           Lens.Labels.HasLens' s "leadingDetachedComments" a) =>
+                           Data.ProtoLens.Field.HasField s "leadingDetachedComments" a) =>
                           Lens.Family2.LensLike' f s a
 leadingDetachedComments
-  = Lens.Labels.lensOf'
-      ((Lens.Labels.proxy#) ::
-         (Lens.Labels.Proxy#) "leadingDetachedComments")
+  = Data.ProtoLens.Field.field @"leadingDetachedComments"
 location ::
          forall f s a .
-           (Prelude.Functor f, Lens.Labels.HasLens' s "location" a) =>
+           (Prelude.Functor f,
+            Data.ProtoLens.Field.HasField s "location" a) =>
            Lens.Family2.LensLike' f s a
-location
-  = Lens.Labels.lensOf'
-      ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "location")
+location = Data.ProtoLens.Field.field @"location"
 mapEntry ::
          forall f s a .
-           (Prelude.Functor f, Lens.Labels.HasLens' s "mapEntry" a) =>
+           (Prelude.Functor f,
+            Data.ProtoLens.Field.HasField s "mapEntry" a) =>
            Lens.Family2.LensLike' f s a
-mapEntry
-  = Lens.Labels.lensOf'
-      ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "mapEntry")
+mapEntry = Data.ProtoLens.Field.field @"mapEntry"
 maybe'aggregateValue ::
                      forall f s a .
                        (Prelude.Functor f,
-                        Lens.Labels.HasLens' s "maybe'aggregateValue" a) =>
+                        Data.ProtoLens.Field.HasField s "maybe'aggregateValue" a) =>
                        Lens.Family2.LensLike' f s a
 maybe'aggregateValue
-  = Lens.Labels.lensOf'
-      ((Lens.Labels.proxy#) ::
-         (Lens.Labels.Proxy#) "maybe'aggregateValue")
+  = Data.ProtoLens.Field.field @"maybe'aggregateValue"
 maybe'allowAlias ::
                  forall f s a .
-                   (Prelude.Functor f, Lens.Labels.HasLens' s "maybe'allowAlias" a) =>
+                   (Prelude.Functor f,
+                    Data.ProtoLens.Field.HasField s "maybe'allowAlias" a) =>
                    Lens.Family2.LensLike' f s a
-maybe'allowAlias
-  = Lens.Labels.lensOf'
-      ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "maybe'allowAlias")
+maybe'allowAlias = Data.ProtoLens.Field.field @"maybe'allowAlias"
 maybe'begin ::
             forall f s a .
-              (Prelude.Functor f, Lens.Labels.HasLens' s "maybe'begin" a) =>
+              (Prelude.Functor f,
+               Data.ProtoLens.Field.HasField s "maybe'begin" a) =>
               Lens.Family2.LensLike' f s a
-maybe'begin
-  = Lens.Labels.lensOf'
-      ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "maybe'begin")
+maybe'begin = Data.ProtoLens.Field.field @"maybe'begin"
 maybe'ccEnableArenas ::
                      forall f s a .
                        (Prelude.Functor f,
-                        Lens.Labels.HasLens' s "maybe'ccEnableArenas" a) =>
+                        Data.ProtoLens.Field.HasField s "maybe'ccEnableArenas" a) =>
                        Lens.Family2.LensLike' f s a
 maybe'ccEnableArenas
-  = Lens.Labels.lensOf'
-      ((Lens.Labels.proxy#) ::
-         (Lens.Labels.Proxy#) "maybe'ccEnableArenas")
+  = Data.ProtoLens.Field.field @"maybe'ccEnableArenas"
 maybe'ccGenericServices ::
                         forall f s a .
                           (Prelude.Functor f,
-                           Lens.Labels.HasLens' s "maybe'ccGenericServices" a) =>
+                           Data.ProtoLens.Field.HasField s "maybe'ccGenericServices" a) =>
                           Lens.Family2.LensLike' f s a
 maybe'ccGenericServices
-  = Lens.Labels.lensOf'
-      ((Lens.Labels.proxy#) ::
-         (Lens.Labels.Proxy#) "maybe'ccGenericServices")
+  = Data.ProtoLens.Field.field @"maybe'ccGenericServices"
 maybe'clientStreaming ::
                       forall f s a .
                         (Prelude.Functor f,
-                         Lens.Labels.HasLens' s "maybe'clientStreaming" a) =>
+                         Data.ProtoLens.Field.HasField s "maybe'clientStreaming" a) =>
                         Lens.Family2.LensLike' f s a
 maybe'clientStreaming
-  = Lens.Labels.lensOf'
-      ((Lens.Labels.proxy#) ::
-         (Lens.Labels.Proxy#) "maybe'clientStreaming")
+  = Data.ProtoLens.Field.field @"maybe'clientStreaming"
 maybe'csharpNamespace ::
                       forall f s a .
                         (Prelude.Functor f,
-                         Lens.Labels.HasLens' s "maybe'csharpNamespace" a) =>
+                         Data.ProtoLens.Field.HasField s "maybe'csharpNamespace" a) =>
                         Lens.Family2.LensLike' f s a
 maybe'csharpNamespace
-  = Lens.Labels.lensOf'
-      ((Lens.Labels.proxy#) ::
-         (Lens.Labels.Proxy#) "maybe'csharpNamespace")
+  = Data.ProtoLens.Field.field @"maybe'csharpNamespace"
 maybe'ctype ::
             forall f s a .
-              (Prelude.Functor f, Lens.Labels.HasLens' s "maybe'ctype" a) =>
+              (Prelude.Functor f,
+               Data.ProtoLens.Field.HasField s "maybe'ctype" a) =>
               Lens.Family2.LensLike' f s a
-maybe'ctype
-  = Lens.Labels.lensOf'
-      ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "maybe'ctype")
+maybe'ctype = Data.ProtoLens.Field.field @"maybe'ctype"
 maybe'defaultValue ::
                    forall f s a .
                      (Prelude.Functor f,
-                      Lens.Labels.HasLens' s "maybe'defaultValue" a) =>
+                      Data.ProtoLens.Field.HasField s "maybe'defaultValue" a) =>
                      Lens.Family2.LensLike' f s a
 maybe'defaultValue
-  = Lens.Labels.lensOf'
-      ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "maybe'defaultValue")
+  = Data.ProtoLens.Field.field @"maybe'defaultValue"
 maybe'deprecated ::
                  forall f s a .
-                   (Prelude.Functor f, Lens.Labels.HasLens' s "maybe'deprecated" a) =>
+                   (Prelude.Functor f,
+                    Data.ProtoLens.Field.HasField s "maybe'deprecated" a) =>
                    Lens.Family2.LensLike' f s a
-maybe'deprecated
-  = Lens.Labels.lensOf'
-      ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "maybe'deprecated")
+maybe'deprecated = Data.ProtoLens.Field.field @"maybe'deprecated"
 maybe'doubleValue ::
                   forall f s a .
                     (Prelude.Functor f,
-                     Lens.Labels.HasLens' s "maybe'doubleValue" a) =>
+                     Data.ProtoLens.Field.HasField s "maybe'doubleValue" a) =>
                     Lens.Family2.LensLike' f s a
-maybe'doubleValue
-  = Lens.Labels.lensOf'
-      ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "maybe'doubleValue")
+maybe'doubleValue = Data.ProtoLens.Field.field @"maybe'doubleValue"
 maybe'end ::
           forall f s a .
-            (Prelude.Functor f, Lens.Labels.HasLens' s "maybe'end" a) =>
+            (Prelude.Functor f,
+             Data.ProtoLens.Field.HasField s "maybe'end" a) =>
             Lens.Family2.LensLike' f s a
-maybe'end
-  = Lens.Labels.lensOf'
-      ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "maybe'end")
+maybe'end = Data.ProtoLens.Field.field @"maybe'end"
 maybe'extendee ::
                forall f s a .
-                 (Prelude.Functor f, Lens.Labels.HasLens' s "maybe'extendee" a) =>
+                 (Prelude.Functor f,
+                  Data.ProtoLens.Field.HasField s "maybe'extendee" a) =>
                  Lens.Family2.LensLike' f s a
-maybe'extendee
-  = Lens.Labels.lensOf'
-      ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "maybe'extendee")
+maybe'extendee = Data.ProtoLens.Field.field @"maybe'extendee"
 maybe'goPackage ::
                 forall f s a .
-                  (Prelude.Functor f, Lens.Labels.HasLens' s "maybe'goPackage" a) =>
+                  (Prelude.Functor f,
+                   Data.ProtoLens.Field.HasField s "maybe'goPackage" a) =>
                   Lens.Family2.LensLike' f s a
-maybe'goPackage
-  = Lens.Labels.lensOf'
-      ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "maybe'goPackage")
+maybe'goPackage = Data.ProtoLens.Field.field @"maybe'goPackage"
 maybe'idempotencyLevel ::
                        forall f s a .
                          (Prelude.Functor f,
-                          Lens.Labels.HasLens' s "maybe'idempotencyLevel" a) =>
+                          Data.ProtoLens.Field.HasField s "maybe'idempotencyLevel" a) =>
                          Lens.Family2.LensLike' f s a
 maybe'idempotencyLevel
-  = Lens.Labels.lensOf'
-      ((Lens.Labels.proxy#) ::
-         (Lens.Labels.Proxy#) "maybe'idempotencyLevel")
+  = Data.ProtoLens.Field.field @"maybe'idempotencyLevel"
 maybe'identifierValue ::
                       forall f s a .
                         (Prelude.Functor f,
-                         Lens.Labels.HasLens' s "maybe'identifierValue" a) =>
+                         Data.ProtoLens.Field.HasField s "maybe'identifierValue" a) =>
                         Lens.Family2.LensLike' f s a
 maybe'identifierValue
-  = Lens.Labels.lensOf'
-      ((Lens.Labels.proxy#) ::
-         (Lens.Labels.Proxy#) "maybe'identifierValue")
+  = Data.ProtoLens.Field.field @"maybe'identifierValue"
 maybe'inputType ::
                 forall f s a .
-                  (Prelude.Functor f, Lens.Labels.HasLens' s "maybe'inputType" a) =>
+                  (Prelude.Functor f,
+                   Data.ProtoLens.Field.HasField s "maybe'inputType" a) =>
                   Lens.Family2.LensLike' f s a
-maybe'inputType
-  = Lens.Labels.lensOf'
-      ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "maybe'inputType")
+maybe'inputType = Data.ProtoLens.Field.field @"maybe'inputType"
 maybe'javaGenerateEqualsAndHash ::
                                 forall f s a .
                                   (Prelude.Functor f,
-                                   Lens.Labels.HasLens' s "maybe'javaGenerateEqualsAndHash" a) =>
+                                   Data.ProtoLens.Field.HasField s "maybe'javaGenerateEqualsAndHash"
+                                     a) =>
                                   Lens.Family2.LensLike' f s a
 maybe'javaGenerateEqualsAndHash
-  = Lens.Labels.lensOf'
-      ((Lens.Labels.proxy#) ::
-         (Lens.Labels.Proxy#) "maybe'javaGenerateEqualsAndHash")
+  = Data.ProtoLens.Field.field @"maybe'javaGenerateEqualsAndHash"
 maybe'javaGenericServices ::
                           forall f s a .
                             (Prelude.Functor f,
-                             Lens.Labels.HasLens' s "maybe'javaGenericServices" a) =>
+                             Data.ProtoLens.Field.HasField s "maybe'javaGenericServices" a) =>
                             Lens.Family2.LensLike' f s a
 maybe'javaGenericServices
-  = Lens.Labels.lensOf'
-      ((Lens.Labels.proxy#) ::
-         (Lens.Labels.Proxy#) "maybe'javaGenericServices")
+  = Data.ProtoLens.Field.field @"maybe'javaGenericServices"
 maybe'javaMultipleFiles ::
                         forall f s a .
                           (Prelude.Functor f,
-                           Lens.Labels.HasLens' s "maybe'javaMultipleFiles" a) =>
+                           Data.ProtoLens.Field.HasField s "maybe'javaMultipleFiles" a) =>
                           Lens.Family2.LensLike' f s a
 maybe'javaMultipleFiles
-  = Lens.Labels.lensOf'
-      ((Lens.Labels.proxy#) ::
-         (Lens.Labels.Proxy#) "maybe'javaMultipleFiles")
+  = Data.ProtoLens.Field.field @"maybe'javaMultipleFiles"
 maybe'javaOuterClassname ::
                          forall f s a .
                            (Prelude.Functor f,
-                            Lens.Labels.HasLens' s "maybe'javaOuterClassname" a) =>
+                            Data.ProtoLens.Field.HasField s "maybe'javaOuterClassname" a) =>
                            Lens.Family2.LensLike' f s a
 maybe'javaOuterClassname
-  = Lens.Labels.lensOf'
-      ((Lens.Labels.proxy#) ::
-         (Lens.Labels.Proxy#) "maybe'javaOuterClassname")
+  = Data.ProtoLens.Field.field @"maybe'javaOuterClassname"
 maybe'javaPackage ::
                   forall f s a .
                     (Prelude.Functor f,
-                     Lens.Labels.HasLens' s "maybe'javaPackage" a) =>
+                     Data.ProtoLens.Field.HasField s "maybe'javaPackage" a) =>
                     Lens.Family2.LensLike' f s a
-maybe'javaPackage
-  = Lens.Labels.lensOf'
-      ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "maybe'javaPackage")
+maybe'javaPackage = Data.ProtoLens.Field.field @"maybe'javaPackage"
 maybe'javaStringCheckUtf8 ::
                           forall f s a .
                             (Prelude.Functor f,
-                             Lens.Labels.HasLens' s "maybe'javaStringCheckUtf8" a) =>
+                             Data.ProtoLens.Field.HasField s "maybe'javaStringCheckUtf8" a) =>
                             Lens.Family2.LensLike' f s a
 maybe'javaStringCheckUtf8
-  = Lens.Labels.lensOf'
-      ((Lens.Labels.proxy#) ::
-         (Lens.Labels.Proxy#) "maybe'javaStringCheckUtf8")
+  = Data.ProtoLens.Field.field @"maybe'javaStringCheckUtf8"
 maybe'jsonName ::
                forall f s a .
-                 (Prelude.Functor f, Lens.Labels.HasLens' s "maybe'jsonName" a) =>
+                 (Prelude.Functor f,
+                  Data.ProtoLens.Field.HasField s "maybe'jsonName" a) =>
                  Lens.Family2.LensLike' f s a
-maybe'jsonName
-  = Lens.Labels.lensOf'
-      ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "maybe'jsonName")
+maybe'jsonName = Data.ProtoLens.Field.field @"maybe'jsonName"
 maybe'jstype ::
              forall f s a .
-               (Prelude.Functor f, Lens.Labels.HasLens' s "maybe'jstype" a) =>
+               (Prelude.Functor f,
+                Data.ProtoLens.Field.HasField s "maybe'jstype" a) =>
                Lens.Family2.LensLike' f s a
-maybe'jstype
-  = Lens.Labels.lensOf'
-      ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "maybe'jstype")
+maybe'jstype = Data.ProtoLens.Field.field @"maybe'jstype"
 maybe'label ::
             forall f s a .
-              (Prelude.Functor f, Lens.Labels.HasLens' s "maybe'label" a) =>
+              (Prelude.Functor f,
+               Data.ProtoLens.Field.HasField s "maybe'label" a) =>
               Lens.Family2.LensLike' f s a
-maybe'label
-  = Lens.Labels.lensOf'
-      ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "maybe'label")
+maybe'label = Data.ProtoLens.Field.field @"maybe'label"
 maybe'lazy ::
            forall f s a .
-             (Prelude.Functor f, Lens.Labels.HasLens' s "maybe'lazy" a) =>
+             (Prelude.Functor f,
+              Data.ProtoLens.Field.HasField s "maybe'lazy" a) =>
              Lens.Family2.LensLike' f s a
-maybe'lazy
-  = Lens.Labels.lensOf'
-      ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "maybe'lazy")
+maybe'lazy = Data.ProtoLens.Field.field @"maybe'lazy"
 maybe'leadingComments ::
                       forall f s a .
                         (Prelude.Functor f,
-                         Lens.Labels.HasLens' s "maybe'leadingComments" a) =>
+                         Data.ProtoLens.Field.HasField s "maybe'leadingComments" a) =>
                         Lens.Family2.LensLike' f s a
 maybe'leadingComments
-  = Lens.Labels.lensOf'
-      ((Lens.Labels.proxy#) ::
-         (Lens.Labels.Proxy#) "maybe'leadingComments")
+  = Data.ProtoLens.Field.field @"maybe'leadingComments"
 maybe'mapEntry ::
                forall f s a .
-                 (Prelude.Functor f, Lens.Labels.HasLens' s "maybe'mapEntry" a) =>
+                 (Prelude.Functor f,
+                  Data.ProtoLens.Field.HasField s "maybe'mapEntry" a) =>
                  Lens.Family2.LensLike' f s a
-maybe'mapEntry
-  = Lens.Labels.lensOf'
-      ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "maybe'mapEntry")
+maybe'mapEntry = Data.ProtoLens.Field.field @"maybe'mapEntry"
 maybe'messageSetWireFormat ::
                            forall f s a .
                              (Prelude.Functor f,
-                              Lens.Labels.HasLens' s "maybe'messageSetWireFormat" a) =>
+                              Data.ProtoLens.Field.HasField s "maybe'messageSetWireFormat" a) =>
                              Lens.Family2.LensLike' f s a
 maybe'messageSetWireFormat
-  = Lens.Labels.lensOf'
-      ((Lens.Labels.proxy#) ::
-         (Lens.Labels.Proxy#) "maybe'messageSetWireFormat")
+  = Data.ProtoLens.Field.field @"maybe'messageSetWireFormat"
 maybe'name ::
            forall f s a .
-             (Prelude.Functor f, Lens.Labels.HasLens' s "maybe'name" a) =>
+             (Prelude.Functor f,
+              Data.ProtoLens.Field.HasField s "maybe'name" a) =>
              Lens.Family2.LensLike' f s a
-maybe'name
-  = Lens.Labels.lensOf'
-      ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "maybe'name")
+maybe'name = Data.ProtoLens.Field.field @"maybe'name"
 maybe'negativeIntValue ::
                        forall f s a .
                          (Prelude.Functor f,
-                          Lens.Labels.HasLens' s "maybe'negativeIntValue" a) =>
+                          Data.ProtoLens.Field.HasField s "maybe'negativeIntValue" a) =>
                          Lens.Family2.LensLike' f s a
 maybe'negativeIntValue
-  = Lens.Labels.lensOf'
-      ((Lens.Labels.proxy#) ::
-         (Lens.Labels.Proxy#) "maybe'negativeIntValue")
+  = Data.ProtoLens.Field.field @"maybe'negativeIntValue"
 maybe'noStandardDescriptorAccessor ::
                                    forall f s a .
                                      (Prelude.Functor f,
-                                      Lens.Labels.HasLens' s "maybe'noStandardDescriptorAccessor"
-                                        a) =>
+                                      Data.ProtoLens.Field.HasField s
+                                        "maybe'noStandardDescriptorAccessor" a) =>
                                      Lens.Family2.LensLike' f s a
 maybe'noStandardDescriptorAccessor
-  = Lens.Labels.lensOf'
-      ((Lens.Labels.proxy#) ::
-         (Lens.Labels.Proxy#) "maybe'noStandardDescriptorAccessor")
+  = Data.ProtoLens.Field.field @"maybe'noStandardDescriptorAccessor"
 maybe'number ::
              forall f s a .
-               (Prelude.Functor f, Lens.Labels.HasLens' s "maybe'number" a) =>
+               (Prelude.Functor f,
+                Data.ProtoLens.Field.HasField s "maybe'number" a) =>
                Lens.Family2.LensLike' f s a
-maybe'number
-  = Lens.Labels.lensOf'
-      ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "maybe'number")
+maybe'number = Data.ProtoLens.Field.field @"maybe'number"
 maybe'objcClassPrefix ::
                       forall f s a .
                         (Prelude.Functor f,
-                         Lens.Labels.HasLens' s "maybe'objcClassPrefix" a) =>
+                         Data.ProtoLens.Field.HasField s "maybe'objcClassPrefix" a) =>
                         Lens.Family2.LensLike' f s a
 maybe'objcClassPrefix
-  = Lens.Labels.lensOf'
-      ((Lens.Labels.proxy#) ::
-         (Lens.Labels.Proxy#) "maybe'objcClassPrefix")
+  = Data.ProtoLens.Field.field @"maybe'objcClassPrefix"
 maybe'oneofIndex ::
                  forall f s a .
-                   (Prelude.Functor f, Lens.Labels.HasLens' s "maybe'oneofIndex" a) =>
+                   (Prelude.Functor f,
+                    Data.ProtoLens.Field.HasField s "maybe'oneofIndex" a) =>
                    Lens.Family2.LensLike' f s a
-maybe'oneofIndex
-  = Lens.Labels.lensOf'
-      ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "maybe'oneofIndex")
+maybe'oneofIndex = Data.ProtoLens.Field.field @"maybe'oneofIndex"
 maybe'optimizeFor ::
                   forall f s a .
                     (Prelude.Functor f,
-                     Lens.Labels.HasLens' s "maybe'optimizeFor" a) =>
+                     Data.ProtoLens.Field.HasField s "maybe'optimizeFor" a) =>
                     Lens.Family2.LensLike' f s a
-maybe'optimizeFor
-  = Lens.Labels.lensOf'
-      ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "maybe'optimizeFor")
+maybe'optimizeFor = Data.ProtoLens.Field.field @"maybe'optimizeFor"
 maybe'options ::
               forall f s a .
-                (Prelude.Functor f, Lens.Labels.HasLens' s "maybe'options" a) =>
+                (Prelude.Functor f,
+                 Data.ProtoLens.Field.HasField s "maybe'options" a) =>
                 Lens.Family2.LensLike' f s a
-maybe'options
-  = Lens.Labels.lensOf'
-      ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "maybe'options")
+maybe'options = Data.ProtoLens.Field.field @"maybe'options"
 maybe'outputType ::
                  forall f s a .
-                   (Prelude.Functor f, Lens.Labels.HasLens' s "maybe'outputType" a) =>
+                   (Prelude.Functor f,
+                    Data.ProtoLens.Field.HasField s "maybe'outputType" a) =>
                    Lens.Family2.LensLike' f s a
-maybe'outputType
-  = Lens.Labels.lensOf'
-      ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "maybe'outputType")
+maybe'outputType = Data.ProtoLens.Field.field @"maybe'outputType"
 maybe'package ::
               forall f s a .
-                (Prelude.Functor f, Lens.Labels.HasLens' s "maybe'package" a) =>
+                (Prelude.Functor f,
+                 Data.ProtoLens.Field.HasField s "maybe'package" a) =>
                 Lens.Family2.LensLike' f s a
-maybe'package
-  = Lens.Labels.lensOf'
-      ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "maybe'package")
+maybe'package = Data.ProtoLens.Field.field @"maybe'package"
 maybe'packed ::
              forall f s a .
-               (Prelude.Functor f, Lens.Labels.HasLens' s "maybe'packed" a) =>
+               (Prelude.Functor f,
+                Data.ProtoLens.Field.HasField s "maybe'packed" a) =>
                Lens.Family2.LensLike' f s a
-maybe'packed
-  = Lens.Labels.lensOf'
-      ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "maybe'packed")
+maybe'packed = Data.ProtoLens.Field.field @"maybe'packed"
 maybe'phpClassPrefix ::
                      forall f s a .
                        (Prelude.Functor f,
-                        Lens.Labels.HasLens' s "maybe'phpClassPrefix" a) =>
+                        Data.ProtoLens.Field.HasField s "maybe'phpClassPrefix" a) =>
                        Lens.Family2.LensLike' f s a
 maybe'phpClassPrefix
-  = Lens.Labels.lensOf'
-      ((Lens.Labels.proxy#) ::
-         (Lens.Labels.Proxy#) "maybe'phpClassPrefix")
+  = Data.ProtoLens.Field.field @"maybe'phpClassPrefix"
 maybe'phpGenericServices ::
                          forall f s a .
                            (Prelude.Functor f,
-                            Lens.Labels.HasLens' s "maybe'phpGenericServices" a) =>
+                            Data.ProtoLens.Field.HasField s "maybe'phpGenericServices" a) =>
                            Lens.Family2.LensLike' f s a
 maybe'phpGenericServices
-  = Lens.Labels.lensOf'
-      ((Lens.Labels.proxy#) ::
-         (Lens.Labels.Proxy#) "maybe'phpGenericServices")
+  = Data.ProtoLens.Field.field @"maybe'phpGenericServices"
 maybe'phpMetadataNamespace ::
                            forall f s a .
                              (Prelude.Functor f,
-                              Lens.Labels.HasLens' s "maybe'phpMetadataNamespace" a) =>
+                              Data.ProtoLens.Field.HasField s "maybe'phpMetadataNamespace" a) =>
                              Lens.Family2.LensLike' f s a
 maybe'phpMetadataNamespace
-  = Lens.Labels.lensOf'
-      ((Lens.Labels.proxy#) ::
-         (Lens.Labels.Proxy#) "maybe'phpMetadataNamespace")
+  = Data.ProtoLens.Field.field @"maybe'phpMetadataNamespace"
 maybe'phpNamespace ::
                    forall f s a .
                      (Prelude.Functor f,
-                      Lens.Labels.HasLens' s "maybe'phpNamespace" a) =>
+                      Data.ProtoLens.Field.HasField s "maybe'phpNamespace" a) =>
                      Lens.Family2.LensLike' f s a
 maybe'phpNamespace
-  = Lens.Labels.lensOf'
-      ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "maybe'phpNamespace")
+  = Data.ProtoLens.Field.field @"maybe'phpNamespace"
 maybe'positiveIntValue ::
                        forall f s a .
                          (Prelude.Functor f,
-                          Lens.Labels.HasLens' s "maybe'positiveIntValue" a) =>
+                          Data.ProtoLens.Field.HasField s "maybe'positiveIntValue" a) =>
                          Lens.Family2.LensLike' f s a
 maybe'positiveIntValue
-  = Lens.Labels.lensOf'
-      ((Lens.Labels.proxy#) ::
-         (Lens.Labels.Proxy#) "maybe'positiveIntValue")
+  = Data.ProtoLens.Field.field @"maybe'positiveIntValue"
 maybe'pyGenericServices ::
                         forall f s a .
                           (Prelude.Functor f,
-                           Lens.Labels.HasLens' s "maybe'pyGenericServices" a) =>
+                           Data.ProtoLens.Field.HasField s "maybe'pyGenericServices" a) =>
                           Lens.Family2.LensLike' f s a
 maybe'pyGenericServices
-  = Lens.Labels.lensOf'
-      ((Lens.Labels.proxy#) ::
-         (Lens.Labels.Proxy#) "maybe'pyGenericServices")
+  = Data.ProtoLens.Field.field @"maybe'pyGenericServices"
 maybe'rubyPackage ::
                   forall f s a .
                     (Prelude.Functor f,
-                     Lens.Labels.HasLens' s "maybe'rubyPackage" a) =>
+                     Data.ProtoLens.Field.HasField s "maybe'rubyPackage" a) =>
                     Lens.Family2.LensLike' f s a
-maybe'rubyPackage
-  = Lens.Labels.lensOf'
-      ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "maybe'rubyPackage")
+maybe'rubyPackage = Data.ProtoLens.Field.field @"maybe'rubyPackage"
 maybe'serverStreaming ::
                       forall f s a .
                         (Prelude.Functor f,
-                         Lens.Labels.HasLens' s "maybe'serverStreaming" a) =>
+                         Data.ProtoLens.Field.HasField s "maybe'serverStreaming" a) =>
                         Lens.Family2.LensLike' f s a
 maybe'serverStreaming
-  = Lens.Labels.lensOf'
-      ((Lens.Labels.proxy#) ::
-         (Lens.Labels.Proxy#) "maybe'serverStreaming")
+  = Data.ProtoLens.Field.field @"maybe'serverStreaming"
 maybe'sourceCodeInfo ::
                      forall f s a .
                        (Prelude.Functor f,
-                        Lens.Labels.HasLens' s "maybe'sourceCodeInfo" a) =>
+                        Data.ProtoLens.Field.HasField s "maybe'sourceCodeInfo" a) =>
                        Lens.Family2.LensLike' f s a
 maybe'sourceCodeInfo
-  = Lens.Labels.lensOf'
-      ((Lens.Labels.proxy#) ::
-         (Lens.Labels.Proxy#) "maybe'sourceCodeInfo")
+  = Data.ProtoLens.Field.field @"maybe'sourceCodeInfo"
 maybe'sourceFile ::
                  forall f s a .
-                   (Prelude.Functor f, Lens.Labels.HasLens' s "maybe'sourceFile" a) =>
+                   (Prelude.Functor f,
+                    Data.ProtoLens.Field.HasField s "maybe'sourceFile" a) =>
                    Lens.Family2.LensLike' f s a
-maybe'sourceFile
-  = Lens.Labels.lensOf'
-      ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "maybe'sourceFile")
+maybe'sourceFile = Data.ProtoLens.Field.field @"maybe'sourceFile"
 maybe'start ::
             forall f s a .
-              (Prelude.Functor f, Lens.Labels.HasLens' s "maybe'start" a) =>
+              (Prelude.Functor f,
+               Data.ProtoLens.Field.HasField s "maybe'start" a) =>
               Lens.Family2.LensLike' f s a
-maybe'start
-  = Lens.Labels.lensOf'
-      ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "maybe'start")
+maybe'start = Data.ProtoLens.Field.field @"maybe'start"
 maybe'stringValue ::
                   forall f s a .
                     (Prelude.Functor f,
-                     Lens.Labels.HasLens' s "maybe'stringValue" a) =>
+                     Data.ProtoLens.Field.HasField s "maybe'stringValue" a) =>
                     Lens.Family2.LensLike' f s a
-maybe'stringValue
-  = Lens.Labels.lensOf'
-      ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "maybe'stringValue")
+maybe'stringValue = Data.ProtoLens.Field.field @"maybe'stringValue"
 maybe'swiftPrefix ::
                   forall f s a .
                     (Prelude.Functor f,
-                     Lens.Labels.HasLens' s "maybe'swiftPrefix" a) =>
+                     Data.ProtoLens.Field.HasField s "maybe'swiftPrefix" a) =>
                     Lens.Family2.LensLike' f s a
-maybe'swiftPrefix
-  = Lens.Labels.lensOf'
-      ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "maybe'swiftPrefix")
+maybe'swiftPrefix = Data.ProtoLens.Field.field @"maybe'swiftPrefix"
 maybe'syntax ::
              forall f s a .
-               (Prelude.Functor f, Lens.Labels.HasLens' s "maybe'syntax" a) =>
+               (Prelude.Functor f,
+                Data.ProtoLens.Field.HasField s "maybe'syntax" a) =>
                Lens.Family2.LensLike' f s a
-maybe'syntax
-  = Lens.Labels.lensOf'
-      ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "maybe'syntax")
+maybe'syntax = Data.ProtoLens.Field.field @"maybe'syntax"
 maybe'trailingComments ::
                        forall f s a .
                          (Prelude.Functor f,
-                          Lens.Labels.HasLens' s "maybe'trailingComments" a) =>
+                          Data.ProtoLens.Field.HasField s "maybe'trailingComments" a) =>
                          Lens.Family2.LensLike' f s a
 maybe'trailingComments
-  = Lens.Labels.lensOf'
-      ((Lens.Labels.proxy#) ::
-         (Lens.Labels.Proxy#) "maybe'trailingComments")
+  = Data.ProtoLens.Field.field @"maybe'trailingComments"
 maybe'type' ::
             forall f s a .
-              (Prelude.Functor f, Lens.Labels.HasLens' s "maybe'type'" a) =>
+              (Prelude.Functor f,
+               Data.ProtoLens.Field.HasField s "maybe'type'" a) =>
               Lens.Family2.LensLike' f s a
-maybe'type'
-  = Lens.Labels.lensOf'
-      ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "maybe'type'")
+maybe'type' = Data.ProtoLens.Field.field @"maybe'type'"
 maybe'typeName ::
                forall f s a .
-                 (Prelude.Functor f, Lens.Labels.HasLens' s "maybe'typeName" a) =>
+                 (Prelude.Functor f,
+                  Data.ProtoLens.Field.HasField s "maybe'typeName" a) =>
                  Lens.Family2.LensLike' f s a
-maybe'typeName
-  = Lens.Labels.lensOf'
-      ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "maybe'typeName")
+maybe'typeName = Data.ProtoLens.Field.field @"maybe'typeName"
 maybe'weak ::
            forall f s a .
-             (Prelude.Functor f, Lens.Labels.HasLens' s "maybe'weak" a) =>
+             (Prelude.Functor f,
+              Data.ProtoLens.Field.HasField s "maybe'weak" a) =>
              Lens.Family2.LensLike' f s a
-maybe'weak
-  = Lens.Labels.lensOf'
-      ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "maybe'weak")
+maybe'weak = Data.ProtoLens.Field.field @"maybe'weak"
 messageSetWireFormat ::
                      forall f s a .
                        (Prelude.Functor f,
-                        Lens.Labels.HasLens' s "messageSetWireFormat" a) =>
+                        Data.ProtoLens.Field.HasField s "messageSetWireFormat" a) =>
                        Lens.Family2.LensLike' f s a
 messageSetWireFormat
-  = Lens.Labels.lensOf'
-      ((Lens.Labels.proxy#) ::
-         (Lens.Labels.Proxy#) "messageSetWireFormat")
+  = Data.ProtoLens.Field.field @"messageSetWireFormat"
 messageType ::
             forall f s a .
-              (Prelude.Functor f, Lens.Labels.HasLens' s "messageType" a) =>
+              (Prelude.Functor f,
+               Data.ProtoLens.Field.HasField s "messageType" a) =>
               Lens.Family2.LensLike' f s a
-messageType
-  = Lens.Labels.lensOf'
-      ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "messageType")
+messageType = Data.ProtoLens.Field.field @"messageType"
 method ::
        forall f s a .
-         (Prelude.Functor f, Lens.Labels.HasLens' s "method" a) =>
+         (Prelude.Functor f, Data.ProtoLens.Field.HasField s "method" a) =>
          Lens.Family2.LensLike' f s a
-method
-  = Lens.Labels.lensOf'
-      ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "method")
+method = Data.ProtoLens.Field.field @"method"
 name ::
      forall f s a .
-       (Prelude.Functor f, Lens.Labels.HasLens' s "name" a) =>
+       (Prelude.Functor f, Data.ProtoLens.Field.HasField s "name" a) =>
        Lens.Family2.LensLike' f s a
-name
-  = Lens.Labels.lensOf'
-      ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "name")
+name = Data.ProtoLens.Field.field @"name"
 namePart ::
          forall f s a .
-           (Prelude.Functor f, Lens.Labels.HasLens' s "namePart" a) =>
+           (Prelude.Functor f,
+            Data.ProtoLens.Field.HasField s "namePart" a) =>
            Lens.Family2.LensLike' f s a
-namePart
-  = Lens.Labels.lensOf'
-      ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "namePart")
+namePart = Data.ProtoLens.Field.field @"namePart"
 negativeIntValue ::
                  forall f s a .
-                   (Prelude.Functor f, Lens.Labels.HasLens' s "negativeIntValue" a) =>
+                   (Prelude.Functor f,
+                    Data.ProtoLens.Field.HasField s "negativeIntValue" a) =>
                    Lens.Family2.LensLike' f s a
-negativeIntValue
-  = Lens.Labels.lensOf'
-      ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "negativeIntValue")
+negativeIntValue = Data.ProtoLens.Field.field @"negativeIntValue"
 nestedType ::
            forall f s a .
-             (Prelude.Functor f, Lens.Labels.HasLens' s "nestedType" a) =>
+             (Prelude.Functor f,
+              Data.ProtoLens.Field.HasField s "nestedType" a) =>
              Lens.Family2.LensLike' f s a
-nestedType
-  = Lens.Labels.lensOf'
-      ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "nestedType")
+nestedType = Data.ProtoLens.Field.field @"nestedType"
 noStandardDescriptorAccessor ::
                              forall f s a .
                                (Prelude.Functor f,
-                                Lens.Labels.HasLens' s "noStandardDescriptorAccessor" a) =>
+                                Data.ProtoLens.Field.HasField s "noStandardDescriptorAccessor"
+                                  a) =>
                                Lens.Family2.LensLike' f s a
 noStandardDescriptorAccessor
-  = Lens.Labels.lensOf'
-      ((Lens.Labels.proxy#) ::
-         (Lens.Labels.Proxy#) "noStandardDescriptorAccessor")
+  = Data.ProtoLens.Field.field @"noStandardDescriptorAccessor"
 number ::
        forall f s a .
-         (Prelude.Functor f, Lens.Labels.HasLens' s "number" a) =>
+         (Prelude.Functor f, Data.ProtoLens.Field.HasField s "number" a) =>
          Lens.Family2.LensLike' f s a
-number
-  = Lens.Labels.lensOf'
-      ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "number")
+number = Data.ProtoLens.Field.field @"number"
 objcClassPrefix ::
                 forall f s a .
-                  (Prelude.Functor f, Lens.Labels.HasLens' s "objcClassPrefix" a) =>
+                  (Prelude.Functor f,
+                   Data.ProtoLens.Field.HasField s "objcClassPrefix" a) =>
                   Lens.Family2.LensLike' f s a
-objcClassPrefix
-  = Lens.Labels.lensOf'
-      ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "objcClassPrefix")
+objcClassPrefix = Data.ProtoLens.Field.field @"objcClassPrefix"
 oneofDecl ::
           forall f s a .
-            (Prelude.Functor f, Lens.Labels.HasLens' s "oneofDecl" a) =>
+            (Prelude.Functor f,
+             Data.ProtoLens.Field.HasField s "oneofDecl" a) =>
             Lens.Family2.LensLike' f s a
-oneofDecl
-  = Lens.Labels.lensOf'
-      ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "oneofDecl")
+oneofDecl = Data.ProtoLens.Field.field @"oneofDecl"
 oneofIndex ::
            forall f s a .
-             (Prelude.Functor f, Lens.Labels.HasLens' s "oneofIndex" a) =>
+             (Prelude.Functor f,
+              Data.ProtoLens.Field.HasField s "oneofIndex" a) =>
              Lens.Family2.LensLike' f s a
-oneofIndex
-  = Lens.Labels.lensOf'
-      ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "oneofIndex")
+oneofIndex = Data.ProtoLens.Field.field @"oneofIndex"
 optimizeFor ::
             forall f s a .
-              (Prelude.Functor f, Lens.Labels.HasLens' s "optimizeFor" a) =>
+              (Prelude.Functor f,
+               Data.ProtoLens.Field.HasField s "optimizeFor" a) =>
               Lens.Family2.LensLike' f s a
-optimizeFor
-  = Lens.Labels.lensOf'
-      ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "optimizeFor")
+optimizeFor = Data.ProtoLens.Field.field @"optimizeFor"
 options ::
         forall f s a .
-          (Prelude.Functor f, Lens.Labels.HasLens' s "options" a) =>
+          (Prelude.Functor f, Data.ProtoLens.Field.HasField s "options" a) =>
           Lens.Family2.LensLike' f s a
-options
-  = Lens.Labels.lensOf'
-      ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "options")
+options = Data.ProtoLens.Field.field @"options"
 outputType ::
            forall f s a .
-             (Prelude.Functor f, Lens.Labels.HasLens' s "outputType" a) =>
+             (Prelude.Functor f,
+              Data.ProtoLens.Field.HasField s "outputType" a) =>
              Lens.Family2.LensLike' f s a
-outputType
-  = Lens.Labels.lensOf'
-      ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "outputType")
+outputType = Data.ProtoLens.Field.field @"outputType"
 package ::
         forall f s a .
-          (Prelude.Functor f, Lens.Labels.HasLens' s "package" a) =>
+          (Prelude.Functor f, Data.ProtoLens.Field.HasField s "package" a) =>
           Lens.Family2.LensLike' f s a
-package
-  = Lens.Labels.lensOf'
-      ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "package")
+package = Data.ProtoLens.Field.field @"package"
 packed ::
        forall f s a .
-         (Prelude.Functor f, Lens.Labels.HasLens' s "packed" a) =>
+         (Prelude.Functor f, Data.ProtoLens.Field.HasField s "packed" a) =>
          Lens.Family2.LensLike' f s a
-packed
-  = Lens.Labels.lensOf'
-      ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "packed")
+packed = Data.ProtoLens.Field.field @"packed"
 path ::
      forall f s a .
-       (Prelude.Functor f, Lens.Labels.HasLens' s "path" a) =>
+       (Prelude.Functor f, Data.ProtoLens.Field.HasField s "path" a) =>
        Lens.Family2.LensLike' f s a
-path
-  = Lens.Labels.lensOf'
-      ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "path")
+path = Data.ProtoLens.Field.field @"path"
 phpClassPrefix ::
                forall f s a .
-                 (Prelude.Functor f, Lens.Labels.HasLens' s "phpClassPrefix" a) =>
+                 (Prelude.Functor f,
+                  Data.ProtoLens.Field.HasField s "phpClassPrefix" a) =>
                  Lens.Family2.LensLike' f s a
-phpClassPrefix
-  = Lens.Labels.lensOf'
-      ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "phpClassPrefix")
+phpClassPrefix = Data.ProtoLens.Field.field @"phpClassPrefix"
 phpGenericServices ::
                    forall f s a .
                      (Prelude.Functor f,
-                      Lens.Labels.HasLens' s "phpGenericServices" a) =>
+                      Data.ProtoLens.Field.HasField s "phpGenericServices" a) =>
                      Lens.Family2.LensLike' f s a
 phpGenericServices
-  = Lens.Labels.lensOf'
-      ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "phpGenericServices")
+  = Data.ProtoLens.Field.field @"phpGenericServices"
 phpMetadataNamespace ::
                      forall f s a .
                        (Prelude.Functor f,
-                        Lens.Labels.HasLens' s "phpMetadataNamespace" a) =>
+                        Data.ProtoLens.Field.HasField s "phpMetadataNamespace" a) =>
                        Lens.Family2.LensLike' f s a
 phpMetadataNamespace
-  = Lens.Labels.lensOf'
-      ((Lens.Labels.proxy#) ::
-         (Lens.Labels.Proxy#) "phpMetadataNamespace")
+  = Data.ProtoLens.Field.field @"phpMetadataNamespace"
 phpNamespace ::
              forall f s a .
-               (Prelude.Functor f, Lens.Labels.HasLens' s "phpNamespace" a) =>
+               (Prelude.Functor f,
+                Data.ProtoLens.Field.HasField s "phpNamespace" a) =>
                Lens.Family2.LensLike' f s a
-phpNamespace
-  = Lens.Labels.lensOf'
-      ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "phpNamespace")
+phpNamespace = Data.ProtoLens.Field.field @"phpNamespace"
 positiveIntValue ::
                  forall f s a .
-                   (Prelude.Functor f, Lens.Labels.HasLens' s "positiveIntValue" a) =>
+                   (Prelude.Functor f,
+                    Data.ProtoLens.Field.HasField s "positiveIntValue" a) =>
                    Lens.Family2.LensLike' f s a
-positiveIntValue
-  = Lens.Labels.lensOf'
-      ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "positiveIntValue")
+positiveIntValue = Data.ProtoLens.Field.field @"positiveIntValue"
 publicDependency ::
                  forall f s a .
-                   (Prelude.Functor f, Lens.Labels.HasLens' s "publicDependency" a) =>
+                   (Prelude.Functor f,
+                    Data.ProtoLens.Field.HasField s "publicDependency" a) =>
                    Lens.Family2.LensLike' f s a
-publicDependency
-  = Lens.Labels.lensOf'
-      ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "publicDependency")
+publicDependency = Data.ProtoLens.Field.field @"publicDependency"
 pyGenericServices ::
                   forall f s a .
                     (Prelude.Functor f,
-                     Lens.Labels.HasLens' s "pyGenericServices" a) =>
+                     Data.ProtoLens.Field.HasField s "pyGenericServices" a) =>
                     Lens.Family2.LensLike' f s a
-pyGenericServices
-  = Lens.Labels.lensOf'
-      ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "pyGenericServices")
+pyGenericServices = Data.ProtoLens.Field.field @"pyGenericServices"
 reservedName ::
              forall f s a .
-               (Prelude.Functor f, Lens.Labels.HasLens' s "reservedName" a) =>
+               (Prelude.Functor f,
+                Data.ProtoLens.Field.HasField s "reservedName" a) =>
                Lens.Family2.LensLike' f s a
-reservedName
-  = Lens.Labels.lensOf'
-      ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "reservedName")
+reservedName = Data.ProtoLens.Field.field @"reservedName"
 reservedRange ::
               forall f s a .
-                (Prelude.Functor f, Lens.Labels.HasLens' s "reservedRange" a) =>
+                (Prelude.Functor f,
+                 Data.ProtoLens.Field.HasField s "reservedRange" a) =>
                 Lens.Family2.LensLike' f s a
-reservedRange
-  = Lens.Labels.lensOf'
-      ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "reservedRange")
+reservedRange = Data.ProtoLens.Field.field @"reservedRange"
 rubyPackage ::
             forall f s a .
-              (Prelude.Functor f, Lens.Labels.HasLens' s "rubyPackage" a) =>
+              (Prelude.Functor f,
+               Data.ProtoLens.Field.HasField s "rubyPackage" a) =>
               Lens.Family2.LensLike' f s a
-rubyPackage
-  = Lens.Labels.lensOf'
-      ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "rubyPackage")
+rubyPackage = Data.ProtoLens.Field.field @"rubyPackage"
 serverStreaming ::
                 forall f s a .
-                  (Prelude.Functor f, Lens.Labels.HasLens' s "serverStreaming" a) =>
+                  (Prelude.Functor f,
+                   Data.ProtoLens.Field.HasField s "serverStreaming" a) =>
                   Lens.Family2.LensLike' f s a
-serverStreaming
-  = Lens.Labels.lensOf'
-      ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "serverStreaming")
+serverStreaming = Data.ProtoLens.Field.field @"serverStreaming"
 service ::
         forall f s a .
-          (Prelude.Functor f, Lens.Labels.HasLens' s "service" a) =>
+          (Prelude.Functor f, Data.ProtoLens.Field.HasField s "service" a) =>
           Lens.Family2.LensLike' f s a
-service
-  = Lens.Labels.lensOf'
-      ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "service")
+service = Data.ProtoLens.Field.field @"service"
 sourceCodeInfo ::
                forall f s a .
-                 (Prelude.Functor f, Lens.Labels.HasLens' s "sourceCodeInfo" a) =>
+                 (Prelude.Functor f,
+                  Data.ProtoLens.Field.HasField s "sourceCodeInfo" a) =>
                  Lens.Family2.LensLike' f s a
-sourceCodeInfo
-  = Lens.Labels.lensOf'
-      ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "sourceCodeInfo")
+sourceCodeInfo = Data.ProtoLens.Field.field @"sourceCodeInfo"
 sourceFile ::
            forall f s a .
-             (Prelude.Functor f, Lens.Labels.HasLens' s "sourceFile" a) =>
+             (Prelude.Functor f,
+              Data.ProtoLens.Field.HasField s "sourceFile" a) =>
              Lens.Family2.LensLike' f s a
-sourceFile
-  = Lens.Labels.lensOf'
-      ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "sourceFile")
+sourceFile = Data.ProtoLens.Field.field @"sourceFile"
 span ::
      forall f s a .
-       (Prelude.Functor f, Lens.Labels.HasLens' s "span" a) =>
+       (Prelude.Functor f, Data.ProtoLens.Field.HasField s "span" a) =>
        Lens.Family2.LensLike' f s a
-span
-  = Lens.Labels.lensOf'
-      ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "span")
+span = Data.ProtoLens.Field.field @"span"
 start ::
       forall f s a .
-        (Prelude.Functor f, Lens.Labels.HasLens' s "start" a) =>
+        (Prelude.Functor f, Data.ProtoLens.Field.HasField s "start" a) =>
         Lens.Family2.LensLike' f s a
-start
-  = Lens.Labels.lensOf'
-      ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "start")
+start = Data.ProtoLens.Field.field @"start"
 stringValue ::
             forall f s a .
-              (Prelude.Functor f, Lens.Labels.HasLens' s "stringValue" a) =>
+              (Prelude.Functor f,
+               Data.ProtoLens.Field.HasField s "stringValue" a) =>
               Lens.Family2.LensLike' f s a
-stringValue
-  = Lens.Labels.lensOf'
-      ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "stringValue")
+stringValue = Data.ProtoLens.Field.field @"stringValue"
 swiftPrefix ::
             forall f s a .
-              (Prelude.Functor f, Lens.Labels.HasLens' s "swiftPrefix" a) =>
+              (Prelude.Functor f,
+               Data.ProtoLens.Field.HasField s "swiftPrefix" a) =>
               Lens.Family2.LensLike' f s a
-swiftPrefix
-  = Lens.Labels.lensOf'
-      ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "swiftPrefix")
+swiftPrefix = Data.ProtoLens.Field.field @"swiftPrefix"
 syntax ::
        forall f s a .
-         (Prelude.Functor f, Lens.Labels.HasLens' s "syntax" a) =>
+         (Prelude.Functor f, Data.ProtoLens.Field.HasField s "syntax" a) =>
          Lens.Family2.LensLike' f s a
-syntax
-  = Lens.Labels.lensOf'
-      ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "syntax")
+syntax = Data.ProtoLens.Field.field @"syntax"
 trailingComments ::
                  forall f s a .
-                   (Prelude.Functor f, Lens.Labels.HasLens' s "trailingComments" a) =>
+                   (Prelude.Functor f,
+                    Data.ProtoLens.Field.HasField s "trailingComments" a) =>
                    Lens.Family2.LensLike' f s a
-trailingComments
-  = Lens.Labels.lensOf'
-      ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "trailingComments")
+trailingComments = Data.ProtoLens.Field.field @"trailingComments"
 type' ::
       forall f s a .
-        (Prelude.Functor f, Lens.Labels.HasLens' s "type'" a) =>
+        (Prelude.Functor f, Data.ProtoLens.Field.HasField s "type'" a) =>
         Lens.Family2.LensLike' f s a
-type'
-  = Lens.Labels.lensOf'
-      ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "type'")
+type' = Data.ProtoLens.Field.field @"type'"
 typeName ::
          forall f s a .
-           (Prelude.Functor f, Lens.Labels.HasLens' s "typeName" a) =>
+           (Prelude.Functor f,
+            Data.ProtoLens.Field.HasField s "typeName" a) =>
            Lens.Family2.LensLike' f s a
-typeName
-  = Lens.Labels.lensOf'
-      ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "typeName")
+typeName = Data.ProtoLens.Field.field @"typeName"
 uninterpretedOption ::
                     forall f s a .
                       (Prelude.Functor f,
-                       Lens.Labels.HasLens' s "uninterpretedOption" a) =>
+                       Data.ProtoLens.Field.HasField s "uninterpretedOption" a) =>
                       Lens.Family2.LensLike' f s a
 uninterpretedOption
-  = Lens.Labels.lensOf'
-      ((Lens.Labels.proxy#) ::
-         (Lens.Labels.Proxy#) "uninterpretedOption")
+  = Data.ProtoLens.Field.field @"uninterpretedOption"
 value ::
       forall f s a .
-        (Prelude.Functor f, Lens.Labels.HasLens' s "value" a) =>
+        (Prelude.Functor f, Data.ProtoLens.Field.HasField s "value" a) =>
         Lens.Family2.LensLike' f s a
-value
-  = Lens.Labels.lensOf'
-      ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "value")
+value = Data.ProtoLens.Field.field @"value"
 vec'annotation ::
                forall f s a .
-                 (Prelude.Functor f, Lens.Labels.HasLens' s "vec'annotation" a) =>
+                 (Prelude.Functor f,
+                  Data.ProtoLens.Field.HasField s "vec'annotation" a) =>
                  Lens.Family2.LensLike' f s a
-vec'annotation
-  = Lens.Labels.lensOf'
-      ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "vec'annotation")
+vec'annotation = Data.ProtoLens.Field.field @"vec'annotation"
 vec'dependency ::
                forall f s a .
-                 (Prelude.Functor f, Lens.Labels.HasLens' s "vec'dependency" a) =>
+                 (Prelude.Functor f,
+                  Data.ProtoLens.Field.HasField s "vec'dependency" a) =>
                  Lens.Family2.LensLike' f s a
-vec'dependency
-  = Lens.Labels.lensOf'
-      ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "vec'dependency")
+vec'dependency = Data.ProtoLens.Field.field @"vec'dependency"
 vec'enumType ::
              forall f s a .
-               (Prelude.Functor f, Lens.Labels.HasLens' s "vec'enumType" a) =>
+               (Prelude.Functor f,
+                Data.ProtoLens.Field.HasField s "vec'enumType" a) =>
                Lens.Family2.LensLike' f s a
-vec'enumType
-  = Lens.Labels.lensOf'
-      ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "vec'enumType")
+vec'enumType = Data.ProtoLens.Field.field @"vec'enumType"
 vec'extension ::
               forall f s a .
-                (Prelude.Functor f, Lens.Labels.HasLens' s "vec'extension" a) =>
+                (Prelude.Functor f,
+                 Data.ProtoLens.Field.HasField s "vec'extension" a) =>
                 Lens.Family2.LensLike' f s a
-vec'extension
-  = Lens.Labels.lensOf'
-      ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "vec'extension")
+vec'extension = Data.ProtoLens.Field.field @"vec'extension"
 vec'extensionRange ::
                    forall f s a .
                      (Prelude.Functor f,
-                      Lens.Labels.HasLens' s "vec'extensionRange" a) =>
+                      Data.ProtoLens.Field.HasField s "vec'extensionRange" a) =>
                      Lens.Family2.LensLike' f s a
 vec'extensionRange
-  = Lens.Labels.lensOf'
-      ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "vec'extensionRange")
+  = Data.ProtoLens.Field.field @"vec'extensionRange"
 vec'field ::
           forall f s a .
-            (Prelude.Functor f, Lens.Labels.HasLens' s "vec'field" a) =>
+            (Prelude.Functor f,
+             Data.ProtoLens.Field.HasField s "vec'field" a) =>
             Lens.Family2.LensLike' f s a
-vec'field
-  = Lens.Labels.lensOf'
-      ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "vec'field")
+vec'field = Data.ProtoLens.Field.field @"vec'field"
 vec'file ::
          forall f s a .
-           (Prelude.Functor f, Lens.Labels.HasLens' s "vec'file" a) =>
+           (Prelude.Functor f,
+            Data.ProtoLens.Field.HasField s "vec'file" a) =>
            Lens.Family2.LensLike' f s a
-vec'file
-  = Lens.Labels.lensOf'
-      ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "vec'file")
+vec'file = Data.ProtoLens.Field.field @"vec'file"
 vec'leadingDetachedComments ::
                             forall f s a .
                               (Prelude.Functor f,
-                               Lens.Labels.HasLens' s "vec'leadingDetachedComments" a) =>
+                               Data.ProtoLens.Field.HasField s "vec'leadingDetachedComments" a) =>
                               Lens.Family2.LensLike' f s a
 vec'leadingDetachedComments
-  = Lens.Labels.lensOf'
-      ((Lens.Labels.proxy#) ::
-         (Lens.Labels.Proxy#) "vec'leadingDetachedComments")
+  = Data.ProtoLens.Field.field @"vec'leadingDetachedComments"
 vec'location ::
              forall f s a .
-               (Prelude.Functor f, Lens.Labels.HasLens' s "vec'location" a) =>
+               (Prelude.Functor f,
+                Data.ProtoLens.Field.HasField s "vec'location" a) =>
                Lens.Family2.LensLike' f s a
-vec'location
-  = Lens.Labels.lensOf'
-      ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "vec'location")
+vec'location = Data.ProtoLens.Field.field @"vec'location"
 vec'messageType ::
                 forall f s a .
-                  (Prelude.Functor f, Lens.Labels.HasLens' s "vec'messageType" a) =>
+                  (Prelude.Functor f,
+                   Data.ProtoLens.Field.HasField s "vec'messageType" a) =>
                   Lens.Family2.LensLike' f s a
-vec'messageType
-  = Lens.Labels.lensOf'
-      ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "vec'messageType")
+vec'messageType = Data.ProtoLens.Field.field @"vec'messageType"
 vec'method ::
            forall f s a .
-             (Prelude.Functor f, Lens.Labels.HasLens' s "vec'method" a) =>
+             (Prelude.Functor f,
+              Data.ProtoLens.Field.HasField s "vec'method" a) =>
              Lens.Family2.LensLike' f s a
-vec'method
-  = Lens.Labels.lensOf'
-      ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "vec'method")
+vec'method = Data.ProtoLens.Field.field @"vec'method"
 vec'name ::
          forall f s a .
-           (Prelude.Functor f, Lens.Labels.HasLens' s "vec'name" a) =>
+           (Prelude.Functor f,
+            Data.ProtoLens.Field.HasField s "vec'name" a) =>
            Lens.Family2.LensLike' f s a
-vec'name
-  = Lens.Labels.lensOf'
-      ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "vec'name")
+vec'name = Data.ProtoLens.Field.field @"vec'name"
 vec'nestedType ::
                forall f s a .
-                 (Prelude.Functor f, Lens.Labels.HasLens' s "vec'nestedType" a) =>
+                 (Prelude.Functor f,
+                  Data.ProtoLens.Field.HasField s "vec'nestedType" a) =>
                  Lens.Family2.LensLike' f s a
-vec'nestedType
-  = Lens.Labels.lensOf'
-      ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "vec'nestedType")
+vec'nestedType = Data.ProtoLens.Field.field @"vec'nestedType"
 vec'oneofDecl ::
               forall f s a .
-                (Prelude.Functor f, Lens.Labels.HasLens' s "vec'oneofDecl" a) =>
+                (Prelude.Functor f,
+                 Data.ProtoLens.Field.HasField s "vec'oneofDecl" a) =>
                 Lens.Family2.LensLike' f s a
-vec'oneofDecl
-  = Lens.Labels.lensOf'
-      ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "vec'oneofDecl")
+vec'oneofDecl = Data.ProtoLens.Field.field @"vec'oneofDecl"
 vec'path ::
          forall f s a .
-           (Prelude.Functor f, Lens.Labels.HasLens' s "vec'path" a) =>
+           (Prelude.Functor f,
+            Data.ProtoLens.Field.HasField s "vec'path" a) =>
            Lens.Family2.LensLike' f s a
-vec'path
-  = Lens.Labels.lensOf'
-      ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "vec'path")
+vec'path = Data.ProtoLens.Field.field @"vec'path"
 vec'publicDependency ::
                      forall f s a .
                        (Prelude.Functor f,
-                        Lens.Labels.HasLens' s "vec'publicDependency" a) =>
+                        Data.ProtoLens.Field.HasField s "vec'publicDependency" a) =>
                        Lens.Family2.LensLike' f s a
 vec'publicDependency
-  = Lens.Labels.lensOf'
-      ((Lens.Labels.proxy#) ::
-         (Lens.Labels.Proxy#) "vec'publicDependency")
+  = Data.ProtoLens.Field.field @"vec'publicDependency"
 vec'reservedName ::
                  forall f s a .
-                   (Prelude.Functor f, Lens.Labels.HasLens' s "vec'reservedName" a) =>
+                   (Prelude.Functor f,
+                    Data.ProtoLens.Field.HasField s "vec'reservedName" a) =>
                    Lens.Family2.LensLike' f s a
-vec'reservedName
-  = Lens.Labels.lensOf'
-      ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "vec'reservedName")
+vec'reservedName = Data.ProtoLens.Field.field @"vec'reservedName"
 vec'reservedRange ::
                   forall f s a .
                     (Prelude.Functor f,
-                     Lens.Labels.HasLens' s "vec'reservedRange" a) =>
+                     Data.ProtoLens.Field.HasField s "vec'reservedRange" a) =>
                     Lens.Family2.LensLike' f s a
-vec'reservedRange
-  = Lens.Labels.lensOf'
-      ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "vec'reservedRange")
+vec'reservedRange = Data.ProtoLens.Field.field @"vec'reservedRange"
 vec'service ::
             forall f s a .
-              (Prelude.Functor f, Lens.Labels.HasLens' s "vec'service" a) =>
+              (Prelude.Functor f,
+               Data.ProtoLens.Field.HasField s "vec'service" a) =>
               Lens.Family2.LensLike' f s a
-vec'service
-  = Lens.Labels.lensOf'
-      ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "vec'service")
+vec'service = Data.ProtoLens.Field.field @"vec'service"
 vec'span ::
          forall f s a .
-           (Prelude.Functor f, Lens.Labels.HasLens' s "vec'span" a) =>
+           (Prelude.Functor f,
+            Data.ProtoLens.Field.HasField s "vec'span" a) =>
            Lens.Family2.LensLike' f s a
-vec'span
-  = Lens.Labels.lensOf'
-      ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "vec'span")
+vec'span = Data.ProtoLens.Field.field @"vec'span"
 vec'uninterpretedOption ::
                         forall f s a .
                           (Prelude.Functor f,
-                           Lens.Labels.HasLens' s "vec'uninterpretedOption" a) =>
+                           Data.ProtoLens.Field.HasField s "vec'uninterpretedOption" a) =>
                           Lens.Family2.LensLike' f s a
 vec'uninterpretedOption
-  = Lens.Labels.lensOf'
-      ((Lens.Labels.proxy#) ::
-         (Lens.Labels.Proxy#) "vec'uninterpretedOption")
+  = Data.ProtoLens.Field.field @"vec'uninterpretedOption"
 vec'value ::
           forall f s a .
-            (Prelude.Functor f, Lens.Labels.HasLens' s "vec'value" a) =>
+            (Prelude.Functor f,
+             Data.ProtoLens.Field.HasField s "vec'value" a) =>
             Lens.Family2.LensLike' f s a
-vec'value
-  = Lens.Labels.lensOf'
-      ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "vec'value")
+vec'value = Data.ProtoLens.Field.field @"vec'value"
 vec'weakDependency ::
                    forall f s a .
                      (Prelude.Functor f,
-                      Lens.Labels.HasLens' s "vec'weakDependency" a) =>
+                      Data.ProtoLens.Field.HasField s "vec'weakDependency" a) =>
                      Lens.Family2.LensLike' f s a
 vec'weakDependency
-  = Lens.Labels.lensOf'
-      ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "vec'weakDependency")
+  = Data.ProtoLens.Field.field @"vec'weakDependency"
 weak ::
      forall f s a .
-       (Prelude.Functor f, Lens.Labels.HasLens' s "weak" a) =>
+       (Prelude.Functor f, Data.ProtoLens.Field.HasField s "weak" a) =>
        Lens.Family2.LensLike' f s a
-weak
-  = Lens.Labels.lensOf'
-      ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "weak")
+weak = Data.ProtoLens.Field.field @"weak"
 weakDependency ::
                forall f s a .
-                 (Prelude.Functor f, Lens.Labels.HasLens' s "weakDependency" a) =>
+                 (Prelude.Functor f,
+                  Data.ProtoLens.Field.HasField s "weakDependency" a) =>
                  Lens.Family2.LensLike' f s a
-weakDependency
-  = Lens.Labels.lensOf'
-      ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "weakDependency")
+weakDependency = Data.ProtoLens.Field.field @"weakDependency"
