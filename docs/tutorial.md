@@ -248,7 +248,7 @@ of their `*_Fields` modules.  If that happens, you can resolve the conflict
 by  importing the definition from exactly
 one of the modules, and using that name with both of their types.  For example:
 
-`` haskell
+``` haskell
 import Microlens           ((^.))
 import Proto.Foo        as P
 import Proto.Other      as P
@@ -263,8 +263,7 @@ myBar = defMessage
             & bippy .~ "querty"
 
 myOther :: P.Other
-myOther = defMessage
-            & bippy .~ 42
+myOther = defMessage & bippy .~ 42
 
 main :: IO ()
 main = do
