@@ -245,7 +245,7 @@ main = print $ myBar ^. P.bippy
 This approach is less flexible, since it may require manual adjustment when the
 same name is defined in two different `.proto` files, and thus exported by both
 of their `*_Fields` modules.  If that happens, you can resolve the conflict
-by  importing the definition from exactly
+by importing the definition from exactly
 one of the modules, and using that name with both of their types.  For example:
 
 ``` haskell
