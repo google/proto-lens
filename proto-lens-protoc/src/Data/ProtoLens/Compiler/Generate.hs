@@ -281,13 +281,13 @@ generateMessageDecls fieldModName env protoName info =
     | oneofInfo <- messageOneofFields info
     ] ++
     -- instance HasField Foo "foo" Bar
-    --   lensOf _ = ...
+    --   fieldOf _ = ...
     -- Note: for optional fields, this generates an instance both for "foo" and
     -- for "maybe'foo" (see plainRecordField below).
     [ uncommented $ instDecl []
         ("Data.ProtoLens.Field.HasField" `ihApp`
             [dataType, sym, tyParen t])
-            [[match "lensOf" [pWildCard] $
+            [[match "fieldOf" [pWildCard] $
                 "Prelude.."
                     @@ rawFieldAccessor (unQual $ recordFieldName li)
                     @@ lensExp i]]
@@ -605,13 +605,13 @@ generateFieldDecls :: Symbol -> [Decl]
 generateFieldDecls xStr =
     -- foo :: forall f s a
     --        . (Functor f, HasLens s x a) => LensLike' f s a
-    -- foo = lensOf @s
+    -- foo = fieldOf @s
     [ typeSig [x]
           $ tyForAll ["f", "s", "a"]
                   [classA "Prelude.Functor" ["f"],
                    classA "Data.ProtoLens.Field.HasField" ["s", xSym, "a"]]
                     $ "Lens.Family2.LensLike'" @@ "f" @@ "s" @@ "a"
-    , funBind [match x [] $ lensOfExp xStr]
+    , funBind [match x [] $ fieldOfExp xStr]
     ]
   where
     x = nameFromSymbol xStr
@@ -953,7 +953,7 @@ fieldDescriptorExpr env n f =
 
 fieldAccessorExpr :: PlainFieldInfo -> Exp
 -- (PlainField Required foo), (OptionalField foo), etc...
-fieldAccessorExpr (PlainFieldInfo kind f) = accessorCon @@ lensOfExp hsFieldName
+fieldAccessorExpr (PlainFieldInfo kind f) = accessorCon @@ fieldOfExp hsFieldName
 
   where
     accessorCon = case kind of
@@ -965,8 +965,8 @@ fieldAccessorExpr (PlainFieldInfo kind f) = accessorCon @@ lensOfExp hsFieldName
                 -> "Data.ProtoLens.OptionalField"
           MapField entry
                   -> "Data.ProtoLens.MapField"
-                         @@ lensOfExp (overloadedField $ keyField entry)
-                         @@ lensOfExp (overloadedField $ valueField entry)
+                         @@ fieldOfExp (overloadedField $ keyField entry)
+                         @@ fieldOfExp (overloadedField $ valueField entry)
           RepeatedField packed -> 
                 "Data.ProtoLens.RepeatedField"
                   @@ if packed == Packed
@@ -977,8 +977,8 @@ fieldAccessorExpr (PlainFieldInfo kind f) = accessorCon @@ lensOfExp hsFieldName
             OptionalMaybeField -> "maybe'" <> overloadedField f
             _ -> overloadedField f
 
-lensOfExp :: Symbol -> Exp
-lensOfExp sym = "Data.ProtoLens.Field.field" @@ typeApp (promoteSymbol sym)
+fieldOfExp :: Symbol -> Exp
+fieldOfExp sym = "Data.ProtoLens.Field.field" @@ typeApp (promoteSymbol sym)
 
 overloadedField :: FieldInfo -> Symbol
 overloadedField = overloadedName . fieldName

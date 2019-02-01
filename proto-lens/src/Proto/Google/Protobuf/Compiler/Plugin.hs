@@ -72,7 +72,7 @@ instance Data.ProtoLens.Field.HasField CodeGeneratorRequest
            "fileToGenerate"
            ([Data.Text.Text])
          where
-        lensOf _
+        fieldOf _
           = (Lens.Family2.Unchecked.lens _CodeGeneratorRequest'fileToGenerate
                (\ x__ y__ -> x__{_CodeGeneratorRequest'fileToGenerate = y__}))
               Prelude..
@@ -82,7 +82,7 @@ instance Data.ProtoLens.Field.HasField CodeGeneratorRequest
            "vec'fileToGenerate"
            (Data.Vector.Vector Data.Text.Text)
          where
-        lensOf _
+        fieldOf _
           = (Lens.Family2.Unchecked.lens _CodeGeneratorRequest'fileToGenerate
                (\ x__ y__ -> x__{_CodeGeneratorRequest'fileToGenerate = y__}))
               Prelude.. Prelude.id
@@ -90,7 +90,7 @@ instance Data.ProtoLens.Field.HasField CodeGeneratorRequest
            "parameter"
            (Data.Text.Text)
          where
-        lensOf _
+        fieldOf _
           = (Lens.Family2.Unchecked.lens _CodeGeneratorRequest'parameter
                (\ x__ y__ -> x__{_CodeGeneratorRequest'parameter = y__}))
               Prelude.. Data.ProtoLens.maybeLens Data.ProtoLens.fieldDefault
@@ -98,7 +98,7 @@ instance Data.ProtoLens.Field.HasField CodeGeneratorRequest
            "maybe'parameter"
            (Prelude.Maybe Data.Text.Text)
          where
-        lensOf _
+        fieldOf _
           = (Lens.Family2.Unchecked.lens _CodeGeneratorRequest'parameter
                (\ x__ y__ -> x__{_CodeGeneratorRequest'parameter = y__}))
               Prelude.. Prelude.id
@@ -106,7 +106,7 @@ instance Data.ProtoLens.Field.HasField CodeGeneratorRequest
            "protoFile"
            ([Proto.Google.Protobuf.Descriptor.FileDescriptorProto])
          where
-        lensOf _
+        fieldOf _
           = (Lens.Family2.Unchecked.lens _CodeGeneratorRequest'protoFile
                (\ x__ y__ -> x__{_CodeGeneratorRequest'protoFile = y__}))
               Prelude..
@@ -117,7 +117,7 @@ instance Data.ProtoLens.Field.HasField CodeGeneratorRequest
            (Data.Vector.Vector
               Proto.Google.Protobuf.Descriptor.FileDescriptorProto)
          where
-        lensOf _
+        fieldOf _
           = (Lens.Family2.Unchecked.lens _CodeGeneratorRequest'protoFile
                (\ x__ y__ -> x__{_CodeGeneratorRequest'protoFile = y__}))
               Prelude.. Prelude.id
@@ -125,7 +125,7 @@ instance Data.ProtoLens.Field.HasField CodeGeneratorRequest
            "compilerVersion"
            (Version)
          where
-        lensOf _
+        fieldOf _
           = (Lens.Family2.Unchecked.lens
                _CodeGeneratorRequest'compilerVersion
                (\ x__ y__ -> x__{_CodeGeneratorRequest'compilerVersion = y__}))
@@ -134,7 +134,7 @@ instance Data.ProtoLens.Field.HasField CodeGeneratorRequest
            "maybe'compilerVersion"
            (Prelude.Maybe Version)
          where
-        lensOf _
+        fieldOf _
           = (Lens.Family2.Unchecked.lens
                _CodeGeneratorRequest'compilerVersion
                (\ x__ y__ -> x__{_CodeGeneratorRequest'compilerVersion = y__}))
@@ -390,7 +390,7 @@ instance Data.ProtoLens.Field.HasField CodeGeneratorResponse
            "error"
            (Data.Text.Text)
          where
-        lensOf _
+        fieldOf _
           = (Lens.Family2.Unchecked.lens _CodeGeneratorResponse'error
                (\ x__ y__ -> x__{_CodeGeneratorResponse'error = y__}))
               Prelude.. Data.ProtoLens.maybeLens Data.ProtoLens.fieldDefault
@@ -398,14 +398,14 @@ instance Data.ProtoLens.Field.HasField CodeGeneratorResponse
            "maybe'error"
            (Prelude.Maybe Data.Text.Text)
          where
-        lensOf _
+        fieldOf _
           = (Lens.Family2.Unchecked.lens _CodeGeneratorResponse'error
                (\ x__ y__ -> x__{_CodeGeneratorResponse'error = y__}))
               Prelude.. Prelude.id
 instance Data.ProtoLens.Field.HasField CodeGeneratorResponse "file"
            ([CodeGeneratorResponse'File])
          where
-        lensOf _
+        fieldOf _
           = (Lens.Family2.Unchecked.lens _CodeGeneratorResponse'file
                (\ x__ y__ -> x__{_CodeGeneratorResponse'file = y__}))
               Prelude..
@@ -415,7 +415,7 @@ instance Data.ProtoLens.Field.HasField CodeGeneratorResponse
            "vec'file"
            (Data.Vector.Vector CodeGeneratorResponse'File)
          where
-        lensOf _
+        fieldOf _
           = (Lens.Family2.Unchecked.lens _CodeGeneratorResponse'file
                (\ x__ y__ -> x__{_CodeGeneratorResponse'file = y__}))
               Prelude.. Prelude.id
@@ -572,7 +572,7 @@ instance Data.ProtoLens.Field.HasField CodeGeneratorResponse'File
            "name"
            (Data.Text.Text)
          where
-        lensOf _
+        fieldOf _
           = (Lens.Family2.Unchecked.lens _CodeGeneratorResponse'File'name
                (\ x__ y__ -> x__{_CodeGeneratorResponse'File'name = y__}))
               Prelude.. Data.ProtoLens.maybeLens Data.ProtoLens.fieldDefault
@@ -580,7 +580,7 @@ instance Data.ProtoLens.Field.HasField CodeGeneratorResponse'File
            "maybe'name"
            (Prelude.Maybe Data.Text.Text)
          where
-        lensOf _
+        fieldOf _
           = (Lens.Family2.Unchecked.lens _CodeGeneratorResponse'File'name
                (\ x__ y__ -> x__{_CodeGeneratorResponse'File'name = y__}))
               Prelude.. Prelude.id
@@ -588,7 +588,7 @@ instance Data.ProtoLens.Field.HasField CodeGeneratorResponse'File
            "insertionPoint"
            (Data.Text.Text)
          where
-        lensOf _
+        fieldOf _
           = (Lens.Family2.Unchecked.lens
                _CodeGeneratorResponse'File'insertionPoint
                (\ x__ y__ ->
@@ -598,7 +598,7 @@ instance Data.ProtoLens.Field.HasField CodeGeneratorResponse'File
            "maybe'insertionPoint"
            (Prelude.Maybe Data.Text.Text)
          where
-        lensOf _
+        fieldOf _
           = (Lens.Family2.Unchecked.lens
                _CodeGeneratorResponse'File'insertionPoint
                (\ x__ y__ ->
@@ -608,7 +608,7 @@ instance Data.ProtoLens.Field.HasField CodeGeneratorResponse'File
            "content"
            (Data.Text.Text)
          where
-        lensOf _
+        fieldOf _
           = (Lens.Family2.Unchecked.lens _CodeGeneratorResponse'File'content
                (\ x__ y__ -> x__{_CodeGeneratorResponse'File'content = y__}))
               Prelude.. Data.ProtoLens.maybeLens Data.ProtoLens.fieldDefault
@@ -616,7 +616,7 @@ instance Data.ProtoLens.Field.HasField CodeGeneratorResponse'File
            "maybe'content"
            (Prelude.Maybe Data.Text.Text)
          where
-        lensOf _
+        fieldOf _
           = (Lens.Family2.Unchecked.lens _CodeGeneratorResponse'File'content
                (\ x__ y__ -> x__{_CodeGeneratorResponse'File'content = y__}))
               Prelude.. Prelude.id
@@ -815,56 +815,56 @@ instance Prelude.Show Version where
 instance Data.ProtoLens.Field.HasField Version "major"
            (Data.Int.Int32)
          where
-        lensOf _
+        fieldOf _
           = (Lens.Family2.Unchecked.lens _Version'major
                (\ x__ y__ -> x__{_Version'major = y__}))
               Prelude.. Data.ProtoLens.maybeLens Data.ProtoLens.fieldDefault
 instance Data.ProtoLens.Field.HasField Version "maybe'major"
            (Prelude.Maybe Data.Int.Int32)
          where
-        lensOf _
+        fieldOf _
           = (Lens.Family2.Unchecked.lens _Version'major
                (\ x__ y__ -> x__{_Version'major = y__}))
               Prelude.. Prelude.id
 instance Data.ProtoLens.Field.HasField Version "minor"
            (Data.Int.Int32)
          where
-        lensOf _
+        fieldOf _
           = (Lens.Family2.Unchecked.lens _Version'minor
                (\ x__ y__ -> x__{_Version'minor = y__}))
               Prelude.. Data.ProtoLens.maybeLens Data.ProtoLens.fieldDefault
 instance Data.ProtoLens.Field.HasField Version "maybe'minor"
            (Prelude.Maybe Data.Int.Int32)
          where
-        lensOf _
+        fieldOf _
           = (Lens.Family2.Unchecked.lens _Version'minor
                (\ x__ y__ -> x__{_Version'minor = y__}))
               Prelude.. Prelude.id
 instance Data.ProtoLens.Field.HasField Version "patch"
            (Data.Int.Int32)
          where
-        lensOf _
+        fieldOf _
           = (Lens.Family2.Unchecked.lens _Version'patch
                (\ x__ y__ -> x__{_Version'patch = y__}))
               Prelude.. Data.ProtoLens.maybeLens Data.ProtoLens.fieldDefault
 instance Data.ProtoLens.Field.HasField Version "maybe'patch"
            (Prelude.Maybe Data.Int.Int32)
          where
-        lensOf _
+        fieldOf _
           = (Lens.Family2.Unchecked.lens _Version'patch
                (\ x__ y__ -> x__{_Version'patch = y__}))
               Prelude.. Prelude.id
 instance Data.ProtoLens.Field.HasField Version "suffix"
            (Data.Text.Text)
          where
-        lensOf _
+        fieldOf _
           = (Lens.Family2.Unchecked.lens _Version'suffix
                (\ x__ y__ -> x__{_Version'suffix = y__}))
               Prelude.. Data.ProtoLens.maybeLens Data.ProtoLens.fieldDefault
 instance Data.ProtoLens.Field.HasField Version "maybe'suffix"
            (Prelude.Maybe Data.Text.Text)
          where
-        lensOf _
+        fieldOf _
           = (Lens.Family2.Unchecked.lens _Version'suffix
                (\ x__ y__ -> x__{_Version'suffix = y__}))
               Prelude.. Prelude.id

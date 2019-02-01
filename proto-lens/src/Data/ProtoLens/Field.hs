@@ -33,11 +33,11 @@ import GHC.TypeLits (Symbol)
 -- > view field@"abc" x
 -- > set field@"abc" 42 x
 field :: forall x s a f . (HasField s x a, Functor f) => (a -> f a) -> s -> f s
-field = lensOf (proxy# :: Proxy# x)
+field = fieldOf (proxy# :: Proxy# x)
 
 -- | A type class for lens fields.
 --
 -- The instance @HasField s x a@ can be understood as "@s@ has a field named @x@
 -- of type @a@".
 class HasField s (x :: Symbol) a | s x -> a where
-    lensOf :: Functor f => Proxy# x -> (a -> f a) -> s -> f s
+    fieldOf :: Functor f => Proxy# x -> (a -> f a) -> s -> f s

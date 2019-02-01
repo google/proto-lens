@@ -31,7 +31,7 @@ import Data.ProtoLens.Field (HasField(..))
 instance (HasField s x a, p ~ (a -> f a), q ~ (s -> f s), Functor f,
         a ~ b) => IsLabel x (p -> q) where
 #if __GLASGOW_HASKELL__ >= 802
-  fromLabel = lensOf (proxy# :: Proxy# x)
+  fromLabel = fieldOf (proxy# :: Proxy# x)
 #else
-  fromLabel x = lensOf x
+  fromLabel x = fieldOf x
 #endif
