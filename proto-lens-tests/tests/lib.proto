@@ -2,4 +2,6 @@ syntax = "proto3";
 
 package lib;
 
-message LibMessage {}
+message LibMessage {
+    int64 value = 1;
+}

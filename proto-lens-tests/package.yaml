@@ -41,6 +41,8 @@ library:
   exposed-modules:
     - Data.ProtoLens.TestUtil
     - Proto.Lib
+    - Proto.Lib_Fields
+    - LibUtil
 
 tests:
 
@@ -268,3 +270,10 @@ tests:
     other-modules:
       Proto.Combinators
       Proto.Combinators_Fields
+
+  indirect_resolution_test:
+    main: indirect_resolution.hs
+    source-dirs: tests
+    dependencies:
+      - lens-family-core
+      - proto-lens-tests
