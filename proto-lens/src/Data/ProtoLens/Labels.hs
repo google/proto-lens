@@ -22,7 +22,9 @@
 module Data.ProtoLens.Labels where
 
 import GHC.OverloadedLabels (IsLabel (..))
+#if __GLASGOW_HASKELL__ >= 802
 import GHC.Prim (Proxy#, proxy#)
+#endif
 
 import Data.ProtoLens.Field (HasField(..))
 
