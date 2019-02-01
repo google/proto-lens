@@ -76,7 +76,6 @@ tests:
     source-dirs: tests
     dependencies:
       - proto-lens-tests
-      - lens-labels
     other-modules:
       - Proto.Oneof
       - Proto.Oneof_Fields
@@ -185,18 +184,6 @@ tests:
     source-dirs: tests
     dependencies:
       - lens-family-core
-      - lens-labels
-      - proto-lens-tests
-    other-modules:
-      - Proto.Canonical
-      - Proto.Canonical_Fields
-
-  unwrapped_test:
-    main: unwrapped_test.hs
-    source-dirs: tests
-    dependencies:
-      - lens-family-core
-      - lens-labels
       - proto-lens-tests
     other-modules:
       - Proto.Canonical
@@ -250,7 +237,6 @@ tests:
     main: imports_test.hs
     source-dirs: tests
     dependencies:
-      - lens-labels
       - proto-lens-tests
     other-modules:
       - Proto.Enum

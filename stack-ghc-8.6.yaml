@@ -1,7 +1,6 @@
 resolver: lts-13.1
 packages:
 - discrimination-ieee754
-- lens-labels
 - proto-lens
 - proto-lens-arbitrary
 - proto-lens-benchmarks

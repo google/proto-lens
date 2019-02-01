@@ -600,11 +600,9 @@ groupEndTag num = makeTag num groupEnd
 
 -- | An expression that selects the overloaded field lens of this name.
 --
--- lensOf' (proxy# :: Proxy# "fieldName")
+-- field @"fieldName"
 lensOfExp :: Symbol -> Exp
-lensOfExp sym = ("Lens.Labels.lensOf'"
-                  @@ ("Lens.Labels.proxy#" @::@
-                      ("Lens.Labels.Proxy#" @@ promoteSymbol sym)))
+lensOfExp sym = "Data.ProtoLens.Field.field" @@ typeApp (promoteSymbol sym)
 
 -- | Some functions that are used in multiple places in the generated code.
 getVarInt', putVarInt', mempty', view', set', unknownFields', unsafeLiftIO'

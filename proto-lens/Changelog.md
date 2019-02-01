@@ -3,11 +3,15 @@
 ## v0.5.0.0
 
 ### Breaking Changes
-- Track lens-labels: Use TypeError to improve type error messages. (#265)
+- Merge the `lens-labels` library into `proto-lens`:
+    - `Lens.Labels` => `Data.ProtoLens.Fields`
+    - `Lens.Labels.Unwrapped` => `Data.ProtoLens.Labels`
+    - `Lens.Labels.Prism` => `Data.ProtoLens.Prism`
 - Simplify the API of `Data.ProtoLens.Encoding.Wire`, using a plain ADT
   rather than a GADT to represent unknown field values.
 - If fields have the wrong wire type, store them in `unknownFields` rather
   than failing the parse. (#125)
+- Use TypeError to improve type error messages. (#265)
 
 ### Backwards-Compatible Changes
 - Merge proto-lens-combinators into the proto-lens library.

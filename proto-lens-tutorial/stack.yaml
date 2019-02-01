@@ -7,7 +7,6 @@ packages:
   location:
     '..'
   subdirs:
-    - lens-labels
     - proto-lens
     - proto-lens-protoc
     - proto-lens-runtime

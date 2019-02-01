@@ -41,7 +41,7 @@ Notice `_Foo'_unknownFields :: !Data.ProtoLens.FieldSet`; it stores fields that 
 
 Instances generated are:
 
-* `Lens.Labels.HasLens` and `Lens.Labels.HasLens'` are for overloading field names (see [Field Overloading](#field-overloading).
+* `Data.ProtoLens.Field.HasField` for overloading field names (see [Field Overloading](#field-overloading).
 * `Data.ProtoLens.Message` for having [default message values] and enabling serialization by providing reflection of all of the fields that may be used by this type.
 
 [default message values]: https://developers.google.com/protocol-buffers/docs/proto3#default
@@ -74,17 +74,17 @@ data Foo'Bar = Foo'Baz !Data.Int.Int32
              | Foo'Bippy !Data.Text.Text
              deriving (Prelude.Show, Prelude.Eq, Prelude.Ord)
 
-_Foo'Baz :: Lens.Labels.Prism.Prism' Foo'Bar Data.Int.Int32
+_Foo'Baz :: Data.ProtoLens.Prism.Prism' Foo'Bar Data.Int.Int32
 _Foo'Baz
- = Lens.Labels.Prism.prism' Foo'Baz
+ = Data.ProtoLens.Prism.prism' Foo'Baz
      (\ p__ ->
         case p__ of
             Foo'Baz p__val -> Prelude.Just p__val
             _otherwise -> Prelude.Nothing)
 
-_Foo'Bippy :: Lens.Labels.Prism.Prism' Foo'Bar Data.Text.Text
+_Foo'Bippy :: Data.ProtoLens.Prism.Prism' Foo'Bar Data.Text.Text
 _Foo'Bippy
- = Lens.Labels.Prism.prism' Foo'Bippy
+ = Data.ProtoLens.Prism.prism' Foo'Bippy
      (\ p__ ->
         case p__ of
             Foo'Bippy p__val -> Prelude.Just p__val
@@ -93,7 +93,7 @@ _Foo'Bippy
 
 The `Prism'` functions allow us to succinctly focus on one branch of the sum type for our Message, for example:
 ``` haskell
-import Lens.Labels.Prism
+import Data.ProtoLens.Prism
 
 accessBaz :: Foo -> Maybe Int32
 accessBaz foo = foo
@@ -110,9 +110,9 @@ updateFoo :: String -> Foo -> Foo
 updateFoo s foo = foo ?~ _Foo'Bippy # s
 ```
 
-Our [previously mentioned instances](#message-generation) are generated but we will note the following about `HasLens'`:
+Our [previously mentioned instances](#message-generation) are generated but we will note the following about `HasField`:
 
-* `Lens.Labels.HasLens'` also include `maybe'*` `HasLens'` instances for viewing the individual cases as `Maybe` values.
+* We also generate `maybe'*` `HasField` instances for viewing the individual cases as `Maybe` values.
 
 ## Enum Generation
 
@@ -170,20 +170,64 @@ message Foo {
 ```
 we can see that `baz` is common to both `Bar` and `Foo`. The difference will be that the instances for `HasLens'` will be:
 ``` haskell
-instance Lens.Labels.HasLens' Foo "baz" (Data.Text.Text)
+instance HasField Foo "baz" (Data.Text.Text)
 
-instance Lens.Labels.HasLens' Bar "baz" (Data.Int.Int32)
+instance HasField Bar "baz" (Data.Int.Int32)
 ```
 The fields are overloaded on the symbol `baz` but connect `Foo` to `Text` and `Bar` to `Int32`. Then we can find that there is one, polymorphic definition in the `Foo_Fields.hs` file:
 ``` haskell
-baz :: Lens.Labels.HasLens' s "baz" a => Lens.Family2.Lens' s a
-baz
-  = Lens.Labels.lensOf
-      ((Lens.Labels.proxy#) :: (Lens.Labels.Proxy#) "baz")
+baz :: HasField s "baz" a => Lens' s a
+baz = Data.ProtoLens.Field.field @"baz"
 ```
 If we have any other records that also contain `baz` from other modules these lenses could also be used to access them. We should take care in these cases as to only import one version of `baz` when we are doing this, otherwise name clashes will occur.
 
-The use of `baz` can be done in two ways and which way you choose is up to you and your style. The first is by importing the `*_Fields.hs` module, for example:
+The use of `baz` can be done in three ways; which way you choose is up to you and your style.
+
+### OverloadedLabels
+
+The first method is by using the `OverloadedLabels` extension and importing the orphan instance of `IsLabel` for the `Lens` type from `Data.ProtoLens.Labels`.
+That gives us the use of `#` for prefixing our field accessors.
+``` haskell
+{-# LANGUAGE OverloadedLabels #-}
+
+import Data.ProtoLens.Labels ()
+import Microlens             ((^.))
+import Proto.Foo          as P
+
+myBar :: P.Bar
+myBar = defMessage
+            & #baz   .~ 42
+            & #bippy .~ "querty"
+
+main :: IO ()
+main = putStrLn $ myBar ^. #bippy
+```
+
+### The `fields` function
+
+The second method uses the `TypeApplications` extension and the function
+`Data.ProtoLens.Field.field`.  It leads to slightly more noisy syntax,
+but has the advantage of not using orphan instances.
+
+``` haskell
+{-# LANGUAGE TypeApplications #-}
+
+import Data.ProtoLens.Fields (field)
+import Microlens             ((^.))
+import Proto.Foo          as P
+
+myBar :: P.Bar
+myBar = defMessage
+            & field@"baz"   .~ 42
+            & field@"bippy" .~ "querty"
+
+main :: IO ()
+main = print $ myBar ^. field@"bippy"
+```
+
+### The `*_Fields.hs` module
+
+The last method is by importing the `*_Fields.hs` module, for example:
 ``` haskell
 import Microlens           ((^.))
 import Proto.Foo        as P
@@ -195,24 +239,36 @@ myBar = defMessage
             & P.bippy .~ "querty"
 
 main :: IO ()
-main = putStrLn $ myBar ^. P.bippy
+main = print $ myBar ^. P.bippy
 ```
 
-The second method is by using the `OverloadedLabels` extension and importing the orphan instance of `IsLabel` for `proto-lens` `LensFn` type, giving us the use of `#` for prefixing our field accessors. To bring this instance into scope we need to also import `Lens.Labels.Unwrapped`:
-``` haskell
-{-# LANGUAGE OverloadedLabels #-}
+This approach is less flexible, since it may require manual adjustment when the
+same name is defined in two different `.proto` files, and thus exported by both
+of their `*_Fields` modules.  If that happens, you can resolve the conflict
+by importing the definition from exactly
+one of the modules, and using that name with both of their types.  For example:
 
-import Lens.Labels.Unwrapped ()
-import Microlens             ((^.))
-import Proto.Foo          as P
+``` haskell
+import Microlens           ((^.))
+import Proto.Foo        as P
+import Proto.Other      as P
+import Proto.Foo_Fields (baz)
+import Proto.Bar_Fields (bippy)
 
 myBar :: P.Bar
 myBar = defMessage
-            & #baz   .~ 42
-            & #bippy .~ "querty"
+            & baz   .~ 42
+            -- Note: field identifiers from one proto module are compatible
+            -- with the types in any other one.
+            & bippy .~ "querty"
+
+myOther :: P.Other
+myOther = defMessage & bippy .~ 42
 
 main :: IO ()
-main = putStrLn $ myBar ^. #bippy
+main = do
+    print (myBar ^. bippy)
+    print (myOther ^. bippy)
 ```
 
 ## Any

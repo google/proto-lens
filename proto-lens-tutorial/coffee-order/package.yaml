@@ -21,7 +21,6 @@ dependencies:
   - microlens
   - proto-lens
   - proto-lens-runtime
-  - lens-labels
   - text
 
 executables:

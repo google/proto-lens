@@ -18,7 +18,6 @@ chmod +x $HOME/.local/bin/hpack
 # Cabal-2.0 or higher during `sdist` due to using hpack.
 PACKAGES_TO_INSTALL="
     discrimination-ieee754
-    lens-labels
     proto-lens
     proto-lens-protoc
     proto-lens-runtime

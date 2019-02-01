@@ -190,6 +190,9 @@ emptyList = var $ Syntax.Special () $ Syntax.ListCon ()
 unit :: Exp
 unit = var $ Syntax.Special () $ Syntax.UnitCon ()
 
+typeApp :: Type -> Exp
+typeApp = Syntax.TypeApp ()
+
 type Stmt = Syntax.Stmt ()
 
 do' :: [Stmt] -> Exp

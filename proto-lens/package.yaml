@@ -38,11 +38,13 @@ library:
     - bytestring == 0.10.*
     - containers >= 0.5 && < 0.7
     - deepseq == 1.4.*
+    - ghc-prim >= 0.4 && < 0.6
     - lens-family == 1.2.*
-    - lens-labels == 0.4.*
     - parsec == 3.1.*
     - pretty == 1.1.*
     - primitive == 0.6.*
+    - profunctors >= 5.2 && < 5.4
+    - tagged == 0.8.*
     - text == 1.2.*
     - transformers >= 0.4 && < 0.6
     - vector >= 0.11 && < 0.13

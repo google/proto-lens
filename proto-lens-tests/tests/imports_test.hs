@@ -5,7 +5,8 @@
 module Main where
 
 import Data.ProtoLens (Message, defMessage)
-import Lens.Labels (Lens', view, set)
+import Data.ProtoLens.Labels ()
+import Lens.Family2 (Lens', view, set)
 import Test.Framework.Providers.HUnit (testCase)
 import Test.HUnit ((@=?))
 
