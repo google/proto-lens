@@ -181,22 +181,12 @@ baz = Data.ProtoLens.Field.field @"baz"
 ```
 If we have any other records that also contain `baz` from other modules these lenses could also be used to access them. We should take care in these cases as to only import one version of `baz` when we are doing this, otherwise name clashes will occur.
 
-The use of `baz` can be done in two ways and which way you choose is up to you and your style. The first is by importing the `*_Fields.hs` module, for example:
-``` haskell
-import Microlens           ((^.))
-import Proto.Foo        as P
-import Proto.Foo_Fields as P
+The use of `baz` can be done in three ways; which way you choose is up to you and your style.
 
-myBar :: P.Bar
-myBar = defMessage
-            & P.baz   .~ 42
-            & P.bippy .~ "querty"
+### OverloadedLabels
 
-main :: IO ()
-main = putStrLn $ myBar ^. P.bippy
-```
-
-The second method is by using the `OverloadedLabels` extension and importing the orphan instance of `IsLabel` for `proto-lens` `LensFn` type, giving us the use of `#` for prefixing our field accessors. To bring this instance into scope we need to also import `Data.ProtoLens.Labels`:
+The first method is by using the `OverloadedLabels` extension and importing the orphan instance of `IsLabel` for the `Lens` type from `Data.ProtoLens.Labels`.
+That gives us the use of `#` for prefixing our field accessors.
 ``` haskell
 {-# LANGUAGE OverloadedLabels #-}
 
@@ -211,6 +201,75 @@ myBar = defMessage
 
 main :: IO ()
 main = putStrLn $ myBar ^. #bippy
+```
+
+### The `fields` function
+
+The second method uses the `TypeApplications` extension and the function
+`Data.ProtoLens.Field.field`.  It leads to slightly more noisy syntax,
+but has the advantage of not using orphan instances.
+
+``` haskell
+{-# LANGUAGE TypeApplications #-}
+
+import Data.ProtoLens.Fields (field)
+import Microlens             ((^.))
+import Proto.Foo          as P
+
+myBar :: P.Bar
+myBar = defMessage
+            & field@"baz"   .~ 42
+            & field@"bippy" .~ "querty"
+
+main :: IO ()
+main = print $ myBar ^. field@"bippy"
+```
+
+### The `*_Fields.hs` module
+
+The last method is by importing the `*_Fields.hs` module, for example:
+``` haskell
+import Microlens           ((^.))
+import Proto.Foo        as P
+import Proto.Foo_Fields as P
+
+myBar :: P.Bar
+myBar = defMessage
+            & P.baz   .~ 42
+            & P.bippy .~ "querty"
+
+main :: IO ()
+main = print $ myBar ^. P.bippy
+```
+
+This approach is less flexible, since it may require manual adjustment when the
+same name is defined in two different `.proto` files, and thus exported by both
+of their `*_Fields` modules.  If that happens, you can resolve the conflict
+by  importing the definition from exactly
+one of the modules, and using that name with both of their types.  For example:
+
+`` haskell
+import Microlens           ((^.))
+import Proto.Foo        as P
+import Proto.Other      as P
+import Proto.Foo_Fields (baz)
+import Proto.Bar_Fields (bippy)
+
+myBar :: P.Bar
+myBar = defMessage
+            & baz   .~ 42
+            -- Note: field identifiers from one proto module are compatible
+            -- with the types in any other one.
+            & bippy .~ "querty"
+
+myOther :: P.Other
+myOther = defMessage
+            & bippy .~ 42
+
+main :: IO ()
+main = do
+    print (myBar ^. bippy)
+    print (myOther ^. bippy)
 ```
 
 ## Any
