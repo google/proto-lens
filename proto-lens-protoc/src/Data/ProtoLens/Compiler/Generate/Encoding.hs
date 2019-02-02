@@ -108,8 +108,8 @@ finish m s = do' $
         ...
         {checkMissingFields}
         over unknownFields reverse
-            $ set (lensOf' proxy# :: Proxy# vec'a) frozen'a
-            $ set (lensOf' proxy# :: Proxy# vec'b) frozen'b
+            $ set field @"vec'a" frozen'a
+            $ set field @"vec'b" frozen'b
             ...
             $ {partialMessage}
     -}
@@ -128,7 +128,7 @@ finish m s = do' $
                 (Map.intersectionWith
                     (\finfo frozen ->
                         "Lens.Family2.set"
-                            @@ lensOfVectorField finfo
+                            @@ fieldOfVector finfo
                             @@ var (unQual frozen))
                 repeatedInfos frozenNames)))
             ]
@@ -344,10 +344,10 @@ parseFieldCase loop x f = case plainFieldKind f of
         [ bangPat (entry `patTypeSig` tyCon (unQual $ mapEntryTypeName entryInfo))
                 <-- parseField info
         , stmt . let' [ patBind "key"
-                            $ view' @@ lensOfField (keyField entryInfo)
+                            $ view' @@ fieldOf (keyField entryInfo)
                                     @@ entry
                       , patBind "value"
-                            $ view' @@ lensOfField (valueField entryInfo)
+                            $ view' @@ fieldOf (valueField entryInfo)
                                     @@ entry
                       ]
                . loop
@@ -396,12 +396,12 @@ unknownFieldCase info loop x = wire --> (do' $
 -- | An expression of type "b -> a -> a", corresponding to a Lens a b
 -- for this field.
 setField :: FieldInfo -> Exp
-setField f = "Lens.Family2.set" @@ lensOfField f
+setField f = "Lens.Family2.set" @@ fieldOf f
 
 -- | An expression of type "(b -> b) -> a -> a", corresponding to a
 -- Lens a b for this field.
 overField :: FieldInfo -> Exp -> Exp
-overField f = over' (lensOfField f)
+overField f = over' (fieldOf f)
 
 -- | An expression of type "(b -> b) -> a -> a".
 --
@@ -504,43 +504,43 @@ buildPlainField x f = case plainFieldKind f of
     info = plainFieldInfo f
     v = "_v"
     fieldValue = view'
-                    @@ lensOfField info
+                    @@ fieldOf info
                     @@ x
     maybeFieldValue = view'
-                        @@ lensOfMaybeField info
+                        @@ fieldOfMaybe info
                         @@ x
     vectorFieldValue = view'
-                        @@ lensOfVectorField info
+                        @@ fieldOfVector info
                         @@ x
     {- Builds a value of the given map entry type
        from the given key/value pair kv.
 
-       ... set (lensOf {KEY}) (fst kv)
-            (set (lensOf {VALUE}) (snd kv)
+       ... set (fieldOf {KEY}) (fst kv)
+            (set (fieldOf {VALUE}) (snd kv)
                 (defMessage :: Foo'Entry)
     -}
     buildEntry entry kv
         = buildTaggedField info
             $ set'
-                @@ lensOfField (keyField entry)
+                @@ fieldOf (keyField entry)
                 @@ ("Prelude.fst" @@ kv)
-                @@ (set' @@ lensOfField (valueField entry)
+                @@ (set' @@ fieldOf (valueField entry)
                          @@ ("Prelude.snd" @@ kv)
                          @@ ("Data.ProtoLens.defMessage"
                                 @::@ tyCon (unQual $ mapEntryTypeName entry)))
 
-lensOfField :: FieldInfo -> Exp
-lensOfField = lensOfExp . overloadedFieldName
+fieldOf :: FieldInfo -> Exp
+fieldOf = fieldOfExp . overloadedFieldName
 
-lensOfMaybeField :: FieldInfo -> Exp
-lensOfMaybeField = lensOfExp . ("maybe'" <>) . overloadedFieldName
+fieldOfMaybe :: FieldInfo -> Exp
+fieldOfMaybe = fieldOfExp . ("maybe'" <>) . overloadedFieldName
 
-lensOfOneofField :: OneofInfo -> Exp
-lensOfOneofField =
-    lensOfExp . ("maybe'" <>) . overloadedName . oneofFieldName
+fieldOfOneof :: OneofInfo -> Exp
+fieldOfOneof =
+    fieldOfExp . ("maybe'" <>) . overloadedName . oneofFieldName
 
-lensOfVectorField :: FieldInfo -> Exp
-lensOfVectorField = lensOfExp . ("vec'" <>) . overloadedFieldName
+fieldOfVector :: FieldInfo -> Exp
+fieldOfVector = fieldOfExp . ("vec'" <>) . overloadedFieldName
 
 -- | Build a field along with its tag.
 buildTaggedField :: FieldInfo -> Exp -> Exp
@@ -571,7 +571,7 @@ buildPackedField f x = let' [patBind p x]
     p = "p"
 
 buildOneofField :: Exp -> OneofInfo -> Exp
-buildOneofField x info = case' (view' @@ lensOfOneofField info @@ x) $
+buildOneofField x info = case' (view' @@ fieldOfOneof info @@ x) $
     ("Prelude.Nothing" --> mempty')
     : [ pApp "Prelude.Just" [pApp (unQual $ caseConstructorName c)
                                  [v]]
@@ -601,8 +601,8 @@ groupEndTag num = makeTag num groupEnd
 -- | An expression that selects the overloaded field lens of this name.
 --
 -- field @"fieldName"
-lensOfExp :: Symbol -> Exp
-lensOfExp sym = "Data.ProtoLens.Field.field" @@ typeApp (promoteSymbol sym)
+fieldOfExp :: Symbol -> Exp
+fieldOfExp sym = "Data.ProtoLens.Field.field" @@ typeApp (promoteSymbol sym)
 
 -- | Some functions that are used in multiple places in the generated code.
 getVarInt', putVarInt', mempty', view', set', unknownFields', unsafeLiftIO'
