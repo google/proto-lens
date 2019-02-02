@@ -11,7 +11,6 @@
   rather than a GADT to represent unknown field values.
 - If fields have the wrong wire type, store them in `unknownFields` rather
   than failing the parse. (#125)
-- Use TypeError to improve type error messages. (#265)
 
 ### Backwards-Compatible Changes
 - Merge proto-lens-combinators into the proto-lens library.

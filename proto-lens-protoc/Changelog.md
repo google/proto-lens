@@ -5,7 +5,6 @@
 ### Breaking Changes
 - Capitalize enum values, and capitalize names of enum sub-messages (#270).
 - Fix the parser to fail on end-group markers with the wrong tag number (#282).
-- Track lens-labels: Use TypeError to improve type error messages. (#265)
 
 ### Backwards-Compatible Changes
 - Allow enum names that start with underscores. (#238)
