@@ -20,17 +20,17 @@ Here are some OS-specific options for installing the binary:
 
 - Alternately, run the following commands:
 
-      PROTOC_ZIP=protoc-3.3.0-osx-x86_64.zip
-      curl -OL https://github.com/google/protobuf/releases/download/v3.3.0/$PROTOC_ZIP
+      PROTOC_ZIP=protoc-3.7.1-osx-x86_64.zip
+      curl -OL https://github.com/google/protobuf/releases/download/v3.7.1/$PROTOC_ZIP
       sudo unzip -o $PROTOC_ZIP -d /usr/local bin/protoc
       rm -f $PROTOC_ZIP
 
 ## Linux
 - Run the following commands:
 
-      PROTOC_ZIP=protoc-3.3.0-linux-x86_64.zip
-      curl -OL https://github.com/google/protobuf/releases/download/v3.3.0/$PROTOC_ZIP
+      PROTOC_ZIP=protoc-3.7.1-linux-x86_64.zip
+      curl -OL https://github.com/google/protobuf/releases/download/v3.7.1/$PROTOC_ZIP
       sudo unzip -o $PROTOC_ZIP -d /usr/local bin/protoc
       rm -f $PROTOC_ZIP
 
-- Alternately, manually download and install `protoc` from [here](https://github.com/google/protobuf/releases/download/v3.3.0/protoc-3.3.0-linux-x86_64.zip).
+- Alternately, manually download and install `protoc` from [here](https://github.com/google/protobuf/releases/download/v3.7.1/protoc-3.7.1-linux-x86_64.zip).
