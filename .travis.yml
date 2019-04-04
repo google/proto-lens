@@ -38,7 +38,7 @@ before_install:
         export PATH=/opt/ghc/$GHCVER/bin:/opt/cabal/$CABALVER/bin:$HOME/.local/bin:$HOME/.cabal/bin:$PATH;;
     esac
   - curl -L https://github.com/commercialhaskell/stack/releases/download/v1.7.1/stack-1.7.1-linux-x86_64.tar.gz | tar xz --wildcards --strip-components=1 -C $HOME/.local/bin '*/stack'
-  - curl -L https://github.com/protocolbuffers/protobuf/releases/download/v3.6.1/protoc-3.6.1-linux-x86_64.zip > protoc-release.zip
+  - curl -L https://github.com/protocolbuffers/protobuf/releases/download/v3.7.1/protoc-3.7.1-linux-x86_64.zip > protoc-release.zip
   - unzip -p protoc-release.zip bin/protoc > $HOME/.local/bin/protoc
   - chmod a+x $HOME/.local/bin/protoc
   - rm protoc-release.zip
