@@ -39,10 +39,12 @@ main = testMain
     , testProtoKeywords
     , testProtoKeywordTypes
     , testReadReservedName
+    , testMessageEnumOverlap
     ]
 
 testNames, testPreludeType, testHaskellKeywords, testProtoKeywords,
-    testOddCasedMessage, testProtoKeywordTypes, testReadReservedName :: Test
+    testOddCasedMessage, testProtoKeywordTypes, testReadReservedName,
+    testMessageEnumOverlap :: Test
 
 -- | Test that we can get/set each individual field.
 testFields :: forall a . (Show a, Message a, Eq a)
@@ -160,3 +162,7 @@ testProtoKeywordTypes = testFields "protoKeywordTypes" (defMessage :: ProtoKeywo
 testReadReservedName = readFrom "testReadReservedName"
       (Just $ defMessage & set import' 1 :: Prelude.Maybe HaskellKeywords)
       "import: 1"
+
+testMessageEnumOverlap = testCase "messageEnumOverlap" $ do
+    trivial (defMessage :: MessageEnumOverlap)
+    trivial (MessageEnumOverlap :: OverlapEnum)

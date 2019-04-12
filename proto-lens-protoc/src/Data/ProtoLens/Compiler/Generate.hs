@@ -246,7 +246,7 @@ generateMessageDecls fieldModName env protoName info =
     -- }
     [ commented (messageComment fieldModName (messageName info) allFields)
         $ dataDecl dataName
-            [recDecl dataName $
+            [recDecl (messageConstructorName info) $
                       [ (recordFieldName f, recordFieldType f)
                       | f <- allFields
                       ]
@@ -881,7 +881,7 @@ messageInstance env protoName m =
               $ "Data.Map.fromList" @@ list fieldsByTag ]
     , [ match "unknownFields" [] $ rawFieldAccessor (unQual $ messageUnknownFields m) ]
     , [ match "defMessage" []
-           $ recConstr (unQual $ messageName m) $
+           $ recConstr (unQual $ messageConstructorName m) $
                   [ fieldUpdate (unQual $ haskellRecordFieldName
                                     $ fieldName $ plainFieldInfo f)
                         (hsFieldDefault env f)

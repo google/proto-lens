@@ -134,6 +134,7 @@ data Definition n = Message (MessageInfo n) | Enum (EnumInfo n)
 -- | All the information needed to define or use a proto message type.
 data MessageInfo n = MessageInfo
     { messageName :: n  -- ^ Haskell type name
+    , messageConstructorName :: n  -- ^ Haskell constructor name
     , messageDescriptor :: DescriptorProto
     , messageFields :: [PlainFieldInfo] -- ^ Fields not belonging to a oneof.
     , messageOneofFields :: [OneofInfo]
@@ -381,6 +382,10 @@ messageDefs syntaxType protoPrefix hsPrefix groups d
     thisDef =
         Message MessageInfo
             { messageName = fromString $ hsPrefix ++ hsName (d ^. name)
+              -- Set the constructor name to not conflict with enum values.
+            , messageConstructorName =
+                 fromString $ hsPrefix ++ hsName (d ^. name)
+                                ++ "'_constructor"
             , messageDescriptor = d
             , messageFields =
                   map (liftA2 PlainFieldInfo
