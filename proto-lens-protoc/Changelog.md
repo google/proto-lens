@@ -1,5 +1,9 @@
 # Changelog for `proto-lens-protoc`
 
+## Pending
+- Fix a potential naming conflict when message types and enum values
+  are the same except for case.
+
 ## v0.5.0.0
 
 ### Breaking Changes

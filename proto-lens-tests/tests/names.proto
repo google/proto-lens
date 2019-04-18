@@ -117,3 +117,13 @@ message ProtoKeywordTypes {
   optional package package = 2;
   optional import import = 3;
 }
+
+message MessageEnumOverlap {
+}
+
+enum OverlapEnum {
+    // protoc doesn't allow enum values to have the same name
+    // as a message.  However, since we upper-case enum values, it's still
+    // possible for us to get an overlap.
+    messageEnumOverlap = 1;
+}
