@@ -6,6 +6,8 @@
 
 -- | Helper utilities to parse the human-readable text format into a
 -- proto-agnostic syntax tree.
+{-# LANGUAGE FlexibleContexts #-}
+
 module Data.ProtoLens.TextFormat.Parser
     ( Message
     , Field(..)
@@ -129,14 +131,14 @@ parser = whiteSpace ptp *> parseMessage <* eof
 protoStringLiteral :: Parser ByteString
 protoStringLiteral = do
     initialQuoteChar <- char '\'' <|> char '\"'
-    word8s <- many stringChar
+    word8s <- many $ stringChar initialQuoteChar
     _ <- char initialQuoteChar
     return $ pack word8s
   where
-    stringChar :: Parser Word8
-    stringChar = nonEscape <|> stringEscape
-    nonEscape  = fmap (fromIntegral . ord)
-        $ satisfy (\c -> c `notElem` "\\\'\"" && ord c < 256)
+    stringChar :: Char -> Parser Word8
+    stringChar quote = (nonEscape quote) <|> stringEscape
+    nonEscape quote = fmap (fromIntegral . ord)
+        $ satisfy (\c -> c `notElem` "\\" ++ [quote] && ord c < 256)
     stringEscape = char '\\' >> (octal <|> hex <|> unicode <|> simple)
     octal = do d0 <- octDigit
                d1 <- optionMaybe octDigit
