@@ -1,6 +1,9 @@
 # Changelog for `proto-lens`
 
-## v0.5.0.0
+## v0.5.0.1
+- Bump the upper bound on `profunctors` to allow 5.4.
+- Allow text format protobuf strings to contain unescaped quote characters
+  different from the delimiters (#320).
 
 ### Breaking Changes
 - Merge the `lens-labels` library into `proto-lens`:
