@@ -5,7 +5,10 @@ somewhere on your `$PATH`.  You can get it by downloading the corresponding
 file for your system from https://github.com/google/protobuf/releases.   (The
 corresponding file will be named something like `protoc-*-.zip`.)
 
-Here are some OS-specific options for installing the binary:
+Here are some OS-specific options for installing the binary.  These instructions
+also install basic `.proto` files like `wrappers.proto`, `any.proto` and
+`descriptor.proto`.  (Those files aren't needed by `proto-lens` itself,
+but they may be useful for other language bindings/plugins.)
 
 ## Mac OS X
 
