@@ -2,6 +2,7 @@
 
 ## v0.5.0.1
 - Bump the upper bound on `profunctors` to allow 5.4.
+- Bump the upper bound on `primitive` to allow 0.7.
 - Allow text format protobuf strings to contain unescaped quote characters
   different from the delimiters (#320).
 
