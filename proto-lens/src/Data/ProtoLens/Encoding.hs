@@ -7,12 +7,17 @@ module Data.ProtoLens.Encoding (
     -- ** Delimited messages
     buildMessageDelimited,
     parseMessageDelimited,
+    decodeMessageDelimitedH,
     ) where
+
+import System.IO (Handle)
 
 import Data.ProtoLens.Message (Message(..))
 import Data.ProtoLens.Encoding.Bytes (Parser, Builder)
 import qualified Data.ProtoLens.Encoding.Bytes as Bytes
 
+import Control.Monad.IO.Class (liftIO)
+import Control.Monad.Trans.Except (runExceptT, ExceptT(..))
 import qualified Data.ByteString as B
 import Data.Semigroup ((<>))
 
@@ -47,3 +52,10 @@ parseMessageDelimited = do
     len <- Bytes.getVarInt
     bytes <- Bytes.getBytes $ fromIntegral len
     either fail return $ decodeMessage bytes
+
+-- | Same as @decodeMessage@ but for delimited messages read through a Handle
+decodeMessageDelimitedH :: Message msg => Handle -> IO (Either String msg)
+decodeMessageDelimitedH h = runExceptT $
+    Bytes.getVarIntH h >>=
+    liftIO . B.hGet h . fromIntegral >>=
+    ExceptT . return . decodeMessage

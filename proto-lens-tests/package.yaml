@@ -209,6 +209,17 @@ tests:
       - Proto.Any
       - Proto.Any_Fields
 
+  decode_delimited_test:
+    main: decode_delimited_test.hs
+    source-dirs: tests
+    dependencies:
+      - proto-lens-protobuf-types
+      - proto-lens-tests
+      - temporary
+    other-modules:
+      - Proto.DecodeDelimited
+      - Proto.DecodeDelimited_Fields
+
   service_test:
     main: service_test.hs
     source-dirs: tests

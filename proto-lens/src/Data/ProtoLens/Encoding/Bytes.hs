@@ -9,6 +9,7 @@
 {-# LANGUAGE GeneralizedNewtypeDeriving #-}
 {-# LANGUAGE RankNTypes #-}
 {-# LANGUAGE ScopedTypeVariables #-}
+{-# LANGUAGE LambdaCase #-}
 
 -- | Utility functions for parsing and encoding individual types.
 module Data.ProtoLens.Encoding.Bytes(
@@ -23,6 +24,7 @@ module Data.ProtoLens.Encoding.Bytes(
     putBytes,
     -- * Integral types
     getVarInt,
+    getVarIntH,
     putVarInt,
     getFixed32,
     getFixed64,
@@ -45,6 +47,8 @@ module Data.ProtoLens.Encoding.Bytes(
     foldMapBuilder,
     ) where
 
+import Control.Monad.IO.Class (liftIO)
+import Control.Monad.Trans.Except (throwE, ExceptT)
 import Data.Bits
 import Data.ByteString (ByteString)
 import Data.ByteString.Lazy.Builder as Builder
@@ -53,13 +57,16 @@ import qualified Data.ByteString.Lazy as L
 import Data.Int (Int32, Int64)
 import Data.Monoid ((<>))
 import qualified Data.Vector.Generic as V
-import Data.Word (Word32, Word64)
+import Data.Word (Word8, Word32, Word64)
+import Foreign.Marshal (malloc, free)
+import Foreign.Storable (peek)
+import System.IO (Handle, hGetBuf)
 #if MIN_VERSION_base(4,11,0)
 import qualified GHC.Float as Float
 #else
 import Foreign.Ptr (castPtr)
 import Foreign.Marshal.Alloc (alloca)
-import Foreign.Storable (Storable, peek, poke)
+import Foreign.Storable (Storable, poke)
 import System.IO.Unsafe (unsafePerformIO)
 #endif
 
@@ -76,14 +83,43 @@ putBytes = Builder.byteString
 -- VarInts are inherently unsigned; there are different ways of encoding
 -- negative numbers for int32/64 and sint32/64.
 getVarInt :: Parser Word64
-getVarInt = loop 1 0
+getVarInt = loopStart 0 1
   where
-    loop !s !n = do
-        b <- getWord8
-        let n' = n + s * fromIntegral (b .&. 127)
-        if (b .&. 128) == 0
-            then return $! n'
-            else loop (128*s) n'
+    loopStart !n !s = getWord8 >>= getVarIntLoopFinish loopStart n s
+
+-- Same as getVarInt but reads from a Handle
+getVarIntH :: Handle -> ExceptT String IO Word64
+getVarIntH h = do
+    buf <- liftIO malloc
+    let loopStart !n !s =
+          (liftIO $ hGetBuf h buf 1) >>=
+          \case
+            1 -> (liftIO $ peek buf) >>=
+                 getVarIntLoopFinish loopStart n s
+            _ -> throwE "Unexpected end of file"
+    res <- loopStart 0 1
+    liftIO $ free buf
+    return res
+
+getVarIntLoopFinish
+  :: (Monad m)
+  => (Word64 -> Word64 -> m Word64) -- "loop start" callback
+  -> Word64
+  -> Word64
+  -> Word8
+  -> m Word64
+getVarIntLoopFinish ls !n !s !b = do
+    let n' = decodeVarIntStep n s b
+    if testMsb b
+      then ls n' (128*s)
+      else return $! n'
+
+-- n -- result of previous step; s -- 128^{step index}; b -- step byte
+decodeVarIntStep :: Word64 -> Word64 -> Word8 -> Word64
+decodeVarIntStep n s b = n + s * fromIntegral (b .&. 127)
+
+testMsb :: Word8 -> Bool
+testMsb b = (b .&. 128) /= 0
 
 putVarInt :: Word64 -> Builder
 putVarInt n

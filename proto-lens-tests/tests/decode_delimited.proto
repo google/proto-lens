@@ -1,0 +1,8 @@
+syntax = "proto3";
+package test.decode_delimited;
+
+message Foo {
+  int32 a = 1;
+  string b = 2;
+}
+
