@@ -1,5 +1,9 @@
 # Changelog for `proto-lens`
 
+## v0.5.1.0
+- Add `decodeMessageDelimitedH` to decode delimited messages from a file handle
+  (#61).
+
 ## v0.5.0.1
 - Bump the upper bound on `profunctors` to allow 5.4.
 - Bump the upper bound on `primitive` to allow 0.7.
