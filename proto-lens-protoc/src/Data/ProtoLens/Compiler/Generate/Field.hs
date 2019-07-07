@@ -1,5 +1,6 @@
 {-# LANGUAGE LambdaCase #-}
 {-# LANGUAGE NoMonomorphismRestriction #-}
+{-# LANGUAGE OverloadedLabels #-}
 {-# LANGUAGE OverloadedStrings #-}
 -- | This module generates the code for decoding and encoding
 -- individual field types.
@@ -20,7 +21,6 @@ import Data.Text (unpack)
 import Data.Word (Word8)
 import Lens.Family2
 import Proto.Google.Protobuf.Descriptor (FieldDescriptorProto'Type(..))
-import Proto.Google.Protobuf.Descriptor_Fields (type', typeName)
 
 import Data.ProtoLens.Compiler.Combinators
 import Data.ProtoLens.Compiler.Definitions
@@ -28,7 +28,7 @@ import Data.ProtoLens.Compiler.Definitions
 hsFieldType :: Env QName -> FieldInfo -> Type
 hsFieldType env f = let
     fd = fieldDescriptor f
-    in case fd ^. type' of
+    in case fd ^. #type' of
         FieldDescriptorProto'TYPE_DOUBLE -> "Prelude.Double"
         FieldDescriptorProto'TYPE_FLOAT -> "Prelude.Float"
         FieldDescriptorProto'TYPE_INT64 -> "Data.Int.Int64"
@@ -41,24 +41,24 @@ hsFieldType env f = let
         FieldDescriptorProto'TYPE_GROUP
             | Message m <- definedFieldType fd env -> tyCon $ messageName m
             | otherwise -> error $ "expected TYPE_GROUP for type name"
-                                ++ unpack (fd ^. typeName)
+                                ++ unpack (fd ^. #typeName)
         FieldDescriptorProto'TYPE_MESSAGE
             | Message m <- definedFieldType fd env -> tyCon $ messageName m
             | otherwise -> error $ "expected TYPE_MESSAGE for type name"
-                                ++ unpack (fd ^. typeName)
+                                ++ unpack (fd ^. #typeName)
         FieldDescriptorProto'TYPE_BYTES -> "Data.ByteString.ByteString"
         FieldDescriptorProto'TYPE_UINT32 -> "Data.Word.Word32"
         FieldDescriptorProto'TYPE_ENUM
             | Enum e <- definedFieldType fd env -> tyCon $ enumName e
             | otherwise -> error $ "expected TYPE_ENUM for type name"
-                                ++ unpack (fd ^. typeName)
+                                ++ unpack (fd ^. #typeName)
         FieldDescriptorProto'TYPE_SFIXED32 -> "Data.Int.Int32"
         FieldDescriptorProto'TYPE_SFIXED64 -> "Data.Int.Int64"
         FieldDescriptorProto'TYPE_SINT32 -> "Data.Int.Int32"
         FieldDescriptorProto'TYPE_SINT64 -> "Data.Int.Int64"
 
 hsFieldVectorType :: FieldInfo -> Type
-hsFieldVectorType f = case fieldDescriptor f ^. type' of
+hsFieldVectorType f = case fieldDescriptor f ^. #type' of
     FieldDescriptorProto'TYPE_MESSAGE -> boxed
     -- TODO: store enums in unboxed fields.
     FieldDescriptorProto'TYPE_ENUM -> boxed
