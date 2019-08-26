@@ -295,6 +295,9 @@ exportWith q = Syntax.EThingWith ()
                     q
                     . map (Syntax.ConName ())
 
+exportModule :: ModuleName -> ExportSpec
+exportModule = Syntax.EModuleContents ()
+
 type Name = Syntax.Name ()
 
 type Pat = Syntax.Pat ()
