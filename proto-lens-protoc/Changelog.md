@@ -3,6 +3,8 @@
 ## Pending
 - Fix a potential naming conflict when message types and enum values
   are the same except for case.
+- Reexport transitive definitions from files with `import public` statements
+  (#329).
 
 ## v0.5.0.0
 
