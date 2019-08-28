@@ -111,8 +111,6 @@ will generate the haskell files `Proto/Project/{Foo,Bar}.hs`.
 - Extensions (proto2-only) are not supported.
 - Unknown proto2 enum values cause a decoding error, instead of being preserved
   round-trip.
-- Files with `import public` statements compile correctly, but don't explicitly
-  reexport the definitions from those imports.
 
 # Troubleshooting
 
