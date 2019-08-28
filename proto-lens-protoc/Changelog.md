@@ -1,10 +1,14 @@
 # Changelog for `proto-lens-protoc`
 
 ## Pending
+
+### Breaking Changes
+- Reexport transitive definitions from modules generated for `.proto` files
+  with `import public` statements (#329).
+
+### Backwards-Compatible Changes
 - Fix a potential naming conflict when message types and enum values
   are the same except for case.
-- Reexport transitive definitions from files with `import public` statements
-  (#329).
 
 ## v0.5.0.0
 
