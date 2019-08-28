@@ -226,6 +226,7 @@ generateServiceDecls env si =
                      (True,  False) -> "Data.ProtoLens.Service.Types.ClientStreaming"
                      (False, True)  -> "Data.ProtoLens.Service.Types.ServerStreaming"
                      (True,  True)  -> "Data.ProtoLens.Service.Types.BiDiStreaming"
+        , instMatch [match "methodOptions" [] "Prelude.undefined"]
         ]
     | m <- serviceMethods si
     , let instanceHead = tyPromotedString (T.unpack $ methodIdent m)
