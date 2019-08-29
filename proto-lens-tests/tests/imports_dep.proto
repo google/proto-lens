@@ -4,6 +4,8 @@ syntax = "proto2";
 package dep.pkg;
 
 import public "imports_transitive.proto";
+// Test that we supress warnings about reexporting empty modules.
+import public "empty.proto";
 
 message DepPkg {
   optional int32 x = 1;

@@ -95,10 +95,12 @@ generateModule modName imports publicImports modifyImport definitions importedEn
                "DataKinds", "BangPatterns", "TypeApplications"]
               -- Allow unused imports in case we don't import anything from
               -- Data.Text, Data.Int, etc.
-          , optionsGhcPragma "-fno-warn-unused-imports"
-          -- haskell-src-exts doesn't support exporting `Foo(..., A, B)`
-          -- in a single entry, so we use two: `Foo(..)` and `Foo(A, B)`.
-          , optionsGhcPragma "-fno-warn-duplicate-exports"
+          , optionsGhcPragma "-Wno-unused-imports"
+            -- haskell-src-exts doesn't support exporting `Foo(..., A, B)`
+            -- in a single entry, so we use two: `Foo(..)` and `Foo(A, B)`.
+          , optionsGhcPragma "-Wno-duplicate-exports"
+            -- Don't warn if empty "import public" modules are reexported.
+          , optionsGhcPragma "-Wno-dodgy-exports"
           ]
     mainImports = map (modifyImport . importSimple)
                     [ "Control.DeepSeq", "Data.ProtoLens.Prism" ]
