@@ -250,6 +250,7 @@ tests:
     dependencies:
       - proto-lens-tests
     other-modules:
+      - Proto.Empty
       - Proto.Enum
       - Proto.Imports
       - Proto.ImportsDep
