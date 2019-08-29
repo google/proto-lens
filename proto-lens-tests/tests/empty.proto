@@ -1,0 +1,4 @@
+// An empty proto file.
+syntax = "proto3";
+
+package empty;
