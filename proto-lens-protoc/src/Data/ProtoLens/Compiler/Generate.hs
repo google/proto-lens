@@ -16,12 +16,14 @@ module Data.ProtoLens.Compiler.Generate(
 
 
 import Control.Arrow (second)
+import qualified Data.ByteString.Char8 as B
 import qualified Data.Foldable as F
 import qualified Data.List as List
 import qualified Data.Map as Map
 import Data.Maybe (isJust)
 import Data.Monoid ((<>))
 import Data.Ord (comparing)
+import Data.ProtoLens (encodeMessage)
 import qualified Data.Set as Set
 import Data.String (fromString)
 import Data.Text (unpack)
@@ -263,6 +265,14 @@ generateServiceDecls env si =
                      (True,  False) -> "Data.ProtoLens.Service.Types.ClientStreaming"
                      (False, True)  -> "Data.ProtoLens.Service.Types.ServerStreaming"
                      (True,  True)  -> "Data.ProtoLens.Service.Types.BiDiStreaming"
+        -- methodOptions _ _ = decodeMessageOrDie (pack "...")
+        -- (where "..." is the encoded version of the proto message).
+        , instMatch
+            [ match "methodOptions" [pWildCard, pWildCard]
+                $ "Data.ProtoLens.decodeMessageOrDie"
+                      @@ ("Data.ByteString.Char8.pack"
+                            @@ stringExp (B.unpack $ encodeMessage $ methodOptions m))
+            ]
         ]
     | m <- serviceMethods si
     , let instanceHead = tyPromotedString (T.unpack $ methodIdent m)

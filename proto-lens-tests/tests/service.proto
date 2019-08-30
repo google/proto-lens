@@ -17,5 +17,9 @@ service TestService {
   rpc ClientStreaming (stream Foo) returns (Bar);
   rpc ServerStreaming (Foo)        returns (stream Bar);
   rpc BiDiStreaming   (stream Foo) returns (stream Bar);
+  // Test that we pass method options through the API:
+  rpc Deprecated      (Foo)        returns (Bar) {
+    option deprecated = true;
+  }
 }
 
