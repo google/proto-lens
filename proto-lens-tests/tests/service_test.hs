@@ -6,6 +6,8 @@
 
 module Main (main) where
 
+import Control.Exception (evaluate)
+import Control.Monad (void)
 import Data.ProtoLens (defMessage)
 import Data.Proxy (Proxy (..))
 import Lens.Family2 (set)
@@ -18,31 +20,38 @@ import Data.ProtoLens.TestUtil (testMain)
 import Proto.Google.Protobuf.Descriptor_Fields (deprecated)
 
 
--- This module will fail to compile due to @-fwarn-overlapping-patterns@ and
--- @-Werror@ if any of the constraints on the definitions below is incorrect.
 main :: IO ()
 main = testMain
-    [ testCase "module compiles" $ return ()
+    [ testCase "module compiles" $ do
+        -- Use these variables in a monomorphic context to verify that
+        -- their contexts are all correct.
+        void $ evaluate serviceMetadataTest
+        void $ evaluate normalMethodMetadataTest
+        void $ evaluate clientStreamingMethodMetadataTest
+        void $ evaluate serverStreamingMethodMetadataTest
+        void $ evaluate bidiStreamingMethodMetadataTest
+        void $ evaluate revMessagesMetadataTest
     , testMethodOption
     ]
 
 
-_serviceMetadataTest
+serviceMetadataTest
     :: ( s ~ TestService
        , Service s
        , ServicePackage s ~ "test.service"
        -- proto-lens generates this list in alphabetical order.
        , ServiceMethods s ~ '[ "biDiStreaming"
                              , "clientStreaming"
+                             , "deprecated"
                              , "normal"
                              , "revMessages"
                              , "serverStreaming"
                              ]
        ) => Proxy m
-_serviceMetadataTest = Proxy
+serviceMetadataTest = Proxy
 
 
-_normalMethodMetadataTest
+normalMethodMetadataTest
     :: ( s ~ TestService
        , m ~ "normal"
        , HasMethod s m
@@ -50,10 +59,10 @@ _normalMethodMetadataTest
        , MethodOutput s m ~ Bar
        , MethodStreamingType s m ~ 'NonStreaming
        ) => Proxy m
-_normalMethodMetadataTest = Proxy
+normalMethodMetadataTest = Proxy
 
 
-_clientStreamingMethodMetadataTest
+clientStreamingMethodMetadataTest
     :: ( s ~ TestService
        , m ~ "clientStreaming"
        , HasMethod s m
@@ -61,10 +70,10 @@ _clientStreamingMethodMetadataTest
        , MethodOutput s m ~ Bar
        , MethodStreamingType s m ~ 'ClientStreaming
        ) => Proxy m
-_clientStreamingMethodMetadataTest = Proxy
+clientStreamingMethodMetadataTest = Proxy
 
 
-_serverStreamingMethodMetadataTest
+serverStreamingMethodMetadataTest
     :: ( s ~ TestService
        , m ~ "serverStreaming"
        , HasMethod s m
@@ -72,21 +81,21 @@ _serverStreamingMethodMetadataTest
        , MethodOutput s m ~ Bar
        , MethodStreamingType s m ~ 'ServerStreaming
        ) => Proxy m
-_serverStreamingMethodMetadataTest = Proxy
+serverStreamingMethodMetadataTest = Proxy
 
 
-_bidiStreamingMethodMetadataTest
+bidiStreamingMethodMetadataTest
     :: ( s ~ TestService
-       , m ~ "bidiStreaming"
+       , m ~ "biDiStreaming"
        , HasMethod s m
        , MethodInput  s m ~ Foo
        , MethodOutput s m ~ Bar
        , MethodStreamingType s m ~ 'BiDiStreaming
        ) => Proxy m
-_bidiStreamingMethodMetadataTest = Proxy
+bidiStreamingMethodMetadataTest = Proxy
 
 
-_revMessagesMetadataTest
+revMessagesMetadataTest
     :: ( s ~ TestService
        , m ~ "revMessages"
        , HasMethod s m
@@ -94,7 +103,7 @@ _revMessagesMetadataTest
        , MethodOutput s m ~ Foo
        , MethodStreamingType s m ~ 'NonStreaming
        ) => Proxy m
-_revMessagesMetadataTest = Proxy
+revMessagesMetadataTest = Proxy
 
 testMethodOption :: Test
 testMethodOption = testGroup "methodOption"
