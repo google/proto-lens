@@ -42,10 +42,8 @@ data ProtoFile = ProtoFile
     , haskellModule :: ModuleName
     , definitions :: Env Name
     , services :: [ServiceInfo]
-    -- | The names of proto files exported (transitively, via "import public"
-    -- decl) by this file.
-    , exports :: [ProtoFileName]
     , exportedEnv :: Env QName
+    , publicImports :: [ModuleName]
     }
 
 -- Given a list of FileDescriptorProtos, collect information about each file
@@ -59,23 +57,24 @@ analyzeProtoFiles modulePrefix files =
     -- The definitions in each input proto file, indexed by filename.
     definitionsByName = fmap collectDefinitions filesByName
     servicesByName = fmap collectServices filesByName
-    -- The exports from each .proto file (including any "public import"
-    -- dependencies), as they appear to other modules that are importing them;
-    -- i.e., qualified by module name.
     exportsByName = transitiveExports files
-    localExports = Map.intersectionWith qualifyEnv moduleNames definitionsByName
-    exportedEnvs = fmap (\es -> unions [localExports ! e | e <- es]) exportsByName
+    exportedEnvs = fmap (foldMap (definitionsByName !)) exportsByName
 
     ingestFile f = ProtoFile
         { descriptor = f
-        , haskellModule = moduleNames ! n
+        , haskellModule = m
         , definitions = definitionsByName ! n
         , services = servicesByName ! n
-        , exports = exportsByName ! n
-        , exportedEnv = exportedEnvs ! n
+        , exportedEnv = qualifyEnv m $ exportedEnvs ! n
+        , publicImports = [moduleNames ! i | i <- reexported]
         }
       where
         n = f ^. name
+        m = moduleNames ! n
+        reexported =
+            [ (f ^. dependency) !! fromIntegral i
+            | i <- f ^. publicDependency
+            ]
 
 collectEnvFromDeps :: [ProtoFileName] -> Map ProtoFileName ProtoFile -> Env QName
 collectEnvFromDeps deps filesByName =
@@ -106,11 +105,13 @@ moduleNameStr prefix path = fixModuleName rawModuleName
                         . splitDirectories $ dropExtension
                         $ path
 
+
 -- | Given a list of .proto files (topologically sorted), determine which
 -- files' definitions are exported by which files.
 --
 -- Files only export their own definitions, along with the definitions exported
--- by any "import public" declarations.
+-- by any "import public" declarations.  (And any definitions that *those* files
+-- "import public", etc.)
 transitiveExports :: [FileDescriptorProto] -> Map ProtoFileName [ProtoFileName]
 -- Accumulate the transitive dependencies by folding over the files in
 -- topological order.
@@ -127,4 +128,3 @@ transitiveExports = foldl' setExportsFromFile Map.empty
                        | i <- fd ^. publicDependency
                        ]
       where n = fd ^. name
-

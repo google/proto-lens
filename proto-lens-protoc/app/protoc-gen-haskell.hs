@@ -41,6 +41,7 @@ import Data.ProtoLens.Compiler.Combinators
     ( prettyPrint
     , prettyPrintModule
     , getModuleName
+    , Module
     )
 import Data.ProtoLens.Compiler.Generate
 import Data.ProtoLens.Compiler.Plugin
@@ -80,14 +81,13 @@ generateFiles modifyImports header files toGenerate = let
   modulePrefix = "Proto"
   filesByName = analyzeProtoFiles modulePrefix files
   -- The contents of the generated Haskell file for a given .proto file.
+  modulesToBuild :: ProtoFile -> [Module]
   modulesToBuild f = let
       deps = descriptor f ^. dependency
       imports = Set.toAscList $ Set.fromList
-                  [ haskellModule (filesByName ! exportName)
-                  | dep <- deps
-                  , exportName <- exports (filesByName ! dep)
-                  ]
+                  $ map (haskellModule . (filesByName !)) deps
       in generateModule (haskellModule f) imports
+            (publicImports f)
              modifyImports
              (definitions f)
              (collectEnvFromDeps deps filesByName)
