@@ -6,11 +6,16 @@
 
 module Main (main) where
 
+import Data.ProtoLens (defMessage)
 import Data.Proxy (Proxy (..))
+import Lens.Family2 (set)
+import Test.Framework (testGroup, Test)
 import Test.Framework.Providers.HUnit (testCase)
+import Test.HUnit ((@=?))
 import Proto.Service
 import Data.ProtoLens.Service.Types
 import Data.ProtoLens.TestUtil (testMain)
+import Proto.Google.Protobuf.Descriptor_Fields (deprecated)
 
 
 -- This module will fail to compile due to @-fwarn-overlapping-patterns@ and
@@ -18,6 +23,7 @@ import Data.ProtoLens.TestUtil (testMain)
 main :: IO ()
 main = testMain
     [ testCase "module compiles" $ return ()
+    , testMethodOption
     ]
 
 
@@ -89,4 +95,14 @@ _revMessagesMetadataTest
        , MethodStreamingType s m ~ 'NonStreaming
        ) => Proxy m
 _revMessagesMetadataTest = Proxy
+
+testMethodOption :: Test
+testMethodOption = testGroup "methodOption"
+    [ testCase "default" $
+        defMessage
+            @=? methodOptions TestService (Proxy :: Proxy "normal")
+    , testCase "deprecated" $
+        set deprecated True defMessage
+            @=? methodOptions TestService (Proxy :: Proxy "deprecated")
+    ]
 
