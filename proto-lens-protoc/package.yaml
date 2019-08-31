@@ -18,6 +18,7 @@ extra-source-files:
 
 dependencies:
   - base >= 4.9 && < 4.13
+  - bytestring == 0.10.*
   - containers >= 0.5 && < 0.7
   - lens-family == 1.2.*
   - proto-lens == 0.5.*
@@ -41,5 +42,4 @@ executables:
     main: protoc-gen-haskell.hs
     source-dirs: app
     dependencies:
-      - bytestring == 0.10.*
       - proto-lens-protoc

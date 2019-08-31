@@ -1,6 +1,13 @@
 # Changelog for `proto-lens-protoc`
 
 ## Pending
+
+### Breaking Changes
+- Reexport transitive definitions from modules generated for `.proto` files
+  with `import public` statements (#329).
+- Add `methodOptions` to `HasMethodImpl` to provide custom method options.
+
+### Backwards-Compatible Changes
 - Fix a potential naming conflict when message types and enum values
   are the same except for case.
 

@@ -17,12 +17,14 @@ module Data.ProtoLens.Compiler.Generate(
 
 
 import Control.Arrow (second)
+import qualified Data.ByteString.Char8 as B
 import qualified Data.Foldable as F
 import qualified Data.List as List
 import qualified Data.Map as Map
 import Data.Maybe (isJust)
 import Data.Monoid ((<>))
 import Data.Ord (comparing)
+import Data.ProtoLens (encodeMessage)
 import qualified Data.Set as Set
 import Data.String (fromString)
 import Data.Text (unpack)
@@ -54,22 +56,27 @@ data UseRuntime = UseRuntime | UseOriginal
 -- input contains all defined names, incl. those in this module
 generateModule :: ModuleName
                -> [ModuleName]  -- ^ The imported modules
+               -> [ModuleName]  -- ^ The publically imported modules
                -> ModifyImports
                -> Env Name      -- ^ Definitions in this file
                -> Env QName     -- ^ Definitions in the imported modules
                -> [ServiceInfo]
                -> [Module]
-generateModule modName imports modifyImport definitions importedEnv services
+generateModule modName imports publicImports modifyImport definitions importedEnv services
     = [ Module modName
-                (Just $ (serviceExports ++) $ concatMap generateExports $ Map.elems definitions)
+                (Just $ serviceExports
+                        ++ concatMap generateExports (Map.elems definitions)
+                        ++ map exportModule publicImports)
                 pragmas
-                (mainImports ++ sharedImports)
+                (mainImports ++ sharedImports
+                    ++ map importSimple (imports List.\\ publicImports)
+                    ++ map importPublic publicImports)
           $ (concatMap generateDecls $ Map.toList definitions)
          ++ map uncommented (concatMap (generateServiceDecls env) services)
       , Module fieldModName
                 Nothing
                 pragmas
-                sharedImports
+                (sharedImports ++ map importSimple imports)
           . map uncommented
           $ concatMap generateFieldDecls allLensNames
       ]
@@ -84,10 +91,12 @@ generateModule modName imports modifyImport definitions importedEnv services
                "DataKinds", "BangPatterns", "TypeApplications"]
               -- Allow unused imports in case we don't import anything from
               -- Data.Text, Data.Int, etc.
-          , optionsGhcPragma "-fno-warn-unused-imports"
-          -- haskell-src-exts doesn't support exporting `Foo(..., A, B)`
-          -- in a single entry, so we use two: `Foo(..)` and `Foo(A, B)`.
-          , optionsGhcPragma "-fno-warn-duplicate-exports"
+          , optionsGhcPragma "-Wno-unused-imports"
+            -- haskell-src-exts doesn't support exporting `Foo(..., A, B)`
+            -- in a single entry, so we use two: `Foo(..)` and `Foo(A, B)`.
+          , optionsGhcPragma "-Wno-duplicate-exports"
+            -- Don't warn if empty "import public" modules are reexported.
+          , optionsGhcPragma "-Wno-dodgy-exports"
           ]
     mainImports = map (modifyImport . importSimple)
                     [ "Control.DeepSeq", "Data.ProtoLens.Prism" ]
@@ -109,7 +118,6 @@ generateModule modName imports modifyImport definitions importedEnv services
               , "Data.Vector.Unboxed"
               , "Text.Read"
               ]
-            ++ map importSimple imports
     env = Map.union (unqualifyEnv definitions) importedEnv
     generateDecls (protoName, Message m)
         = generateMessageDecls fieldModName env (stripDotPrefix protoName) m
@@ -137,12 +145,43 @@ allMessageFields env info =
     map (plainRecordField env) (messageFields info)
         ++ map (oneofRecordField env) (messageOneofFields info)
 
+{- We import modules as follows:
+
+1) Modules from proto-lens-runtime: import qualified, strip the prefix:
+     import qualified Data.ProtoLens.Runtime.Data.Text as Data.Text
+
+2) Modules from "import" declarations: import qualified:
+     import qualified Proto.Foo.Bar
+
+3) Modules from "import public" declarations: import unqualified:
+     import Proto.Foo.Bar
+   To reexport the imported declarations from the current module via
+     module ... (module Proto.Foo.Bar)
+   the module Proto.Foo.Bar needs to be unqualified. 
+   Alternately we could explicitly enumerate every definition being reexported, but
+   that would lead to less readable Haddocks and also make codegen a little more
+   complicated.
+-}
+
 importSimple :: ModuleName -> ImportDecl ()
 importSimple m = ImportDecl
     { importAnn = ()
     , importModule = m
     -- Import qualified to avoid clashes with names defined in this module.
     , importQualified = True
+    , importSrc = False
+    , importSafe = False
+    , importPkg = Nothing
+    , importAs = Nothing
+    , importSpecs = Nothing
+    }
+
+importPublic :: ModuleName -> ImportDecl ()
+importPublic m = ImportDecl
+    { importAnn = ()
+    , importModule = m
+    -- Don't import qualified so that this module can reexport its definitions.
+    , importQualified = False
     , importSrc = False
     , importSafe = False
     , importPkg = Nothing
@@ -220,6 +259,14 @@ generateServiceDecls env si =
                      (True,  False) -> "Data.ProtoLens.Service.Types.ClientStreaming"
                      (False, True)  -> "Data.ProtoLens.Service.Types.ServerStreaming"
                      (True,  True)  -> "Data.ProtoLens.Service.Types.BiDiStreaming"
+        -- methodOptions _ _ = decodeMessageOrDie (pack "...")
+        -- (where "..." is the encoded version of the proto message).
+        , instMatch
+            [ match "methodOptions" [pWildCard, pWildCard]
+                $ "Data.ProtoLens.decodeMessageOrDie"
+                      @@ ("Data.ByteString.Char8.pack"
+                            @@ stringExp (B.unpack $ encodeMessage $ methodOptions m))
+            ]
         ]
     | m <- serviceMethods si
     , let instanceHead = tyPromotedString (T.unpack $ methodIdent m)
@@ -961,7 +1008,7 @@ fieldAccessorExpr (PlainFieldInfo kind f) = accessorCon @@ fieldOfExp hsFieldNam
                   -> "Data.ProtoLens.MapField"
                          @@ fieldOfExp (overloadedField $ keyField entry)
                          @@ fieldOfExp (overloadedField $ valueField entry)
-          RepeatedField packed -> 
+          RepeatedField packed ->
                 "Data.ProtoLens.RepeatedField"
                   @@ if packed == Packed
                         then "Data.ProtoLens.Packed"

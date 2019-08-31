@@ -1,5 +1,12 @@
 # Changelog for `proto-lens`
 
+## Pending
+
+### Breaking Changes
+- Add `methodOptions` to `HasMethodImpl` to provide custom method options.
+
+### Backwards-Compatible Changes
+
 ## v0.5.1.0
 - Add `decodeMessageDelimitedH` to decode delimited messages from a file handle
   (#61).

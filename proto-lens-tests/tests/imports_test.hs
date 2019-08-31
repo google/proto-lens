@@ -49,6 +49,11 @@ testUseDep = testCase "testUseDep" $ do
     testField @Imports.UseDep @ImportsDep.DepPkg #foo
     testField @Imports.UseDep @ImportsTransitive.TransitiveDep #bar
     testField @Imports.UseDep @ImportsTransitive2.TransitiveDep2 #baz
+    -- Due to "import public" statements, these modules reexport their
+    -- dependencies transitively:
+    testField @Imports.UseDep @ImportsDep.TransitiveDep #bar
+    testField @Imports.UseDep @ImportsDep.TransitiveDep2 #baz
+    testField @Imports.UseDep @ImportsTransitive.TransitiveDep2 #baz
 
 testUseBootstrapped :: Test
 testUseBootstrapped = testCase "testUseBootstrapped" $ do
