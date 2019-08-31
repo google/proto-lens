@@ -4,6 +4,7 @@
 {-# LANGUAGE DeriveFunctor #-}
 {-# LANGUAGE LambdaCase #-}
 {-# LANGUAGE NoMonomorphismRestriction #-}
+{-# LANGUAGE OverloadedLabels #-}
 {-# LANGUAGE OverloadedStrings #-}
 module Data.ProtoLens.Compiler.Generate.Encoding
     ( generatedParser
@@ -20,12 +21,6 @@ import Data.ProtoLens.Compiler.Combinators
 import Data.ProtoLens.Compiler.Definitions
 import Data.ProtoLens.Compiler.Generate.Field
 import Data.ProtoLens.Encoding.Wire (joinTypeAndTag)
-
-import Proto.Google.Protobuf.Descriptor_Fields
-    ( name
-    , number
-    , type'
-    )
 
 generatedParser :: Env QName -> MessageInfo Name -> Exp
 generatedParser env m =
@@ -47,7 +42,7 @@ generatedParser env m =
            @@ stringExp msgName
   where
     ty = tyCon (unQual $ messageName m)
-    msgName = Text.unpack (messageDescriptor m ^. name)
+    msgName = Text.unpack (messageDescriptor m ^. #name)
     loopSig = foldr tyFun
         ("Data.ProtoLens.Encoding.Bytes.Parser" @@ ty)
         (loopArgs $ parseStateTypes env m)
@@ -161,7 +156,7 @@ newtype FieldId = FieldId Text.Text
     deriving (Eq, Ord)
 
 fieldId :: PlainFieldInfo -> FieldId
-fieldId f = FieldId $ fieldDescriptor (plainFieldInfo f) ^. name
+fieldId f = FieldId $ fieldDescriptor (plainFieldInfo f) ^. #name
 
 -- | The names of the loop arguments.
 parseStateNames :: MessageInfo Name -> ParseState Name
@@ -590,10 +585,10 @@ makeTag :: Int32 -> FieldEncoding -> Integer
 makeTag num enc = fromIntegral $ joinTypeAndTag (fromIntegral num) (wireType enc)
 
 fieldTag :: FieldInfo -> Integer
-fieldTag f = makeTag (fieldDescriptor f ^. number) $ fieldInfoEncoding f
+fieldTag f = makeTag (fieldDescriptor f ^. #number) $ fieldInfoEncoding f
 
 packedFieldTag :: FieldInfo -> Integer
-packedFieldTag f = makeTag (fieldDescriptor f ^. number) lengthy
+packedFieldTag f = makeTag (fieldDescriptor f ^. #number) lengthy
 
 groupEndTag :: Int32 -> Integer
 groupEndTag num = makeTag num groupEnd
@@ -621,14 +616,14 @@ parseField f = "Data.ProtoLens.Encoding.Bytes.<?>"
                     @@ (parseFieldType $ fieldInfoEncoding f)
                     @@ stringExp n
   where
-    n = Text.unpack (fieldDescriptor f ^. name)
+    n = Text.unpack (fieldDescriptor f ^. #name)
 
 -- | Returns a function corresponding to `a -> Builder`:
 buildField :: FieldInfo -> Exp
 buildField = buildFieldType . fieldInfoEncoding
 
 fieldInfoEncoding :: FieldInfo -> FieldEncoding
-fieldInfoEncoding = fieldEncoding . view type' . fieldDescriptor
+fieldInfoEncoding = fieldEncoding . view #type' . fieldDescriptor
 
 growingType :: Env QName -> FieldInfo -> Type
 growingType env f

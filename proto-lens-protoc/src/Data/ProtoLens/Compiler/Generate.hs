@@ -7,6 +7,7 @@
 -- | This module builds the actual, generated Haskell file
 -- for a given input .proto file.
 {-# LANGUAGE LambdaCase #-}
+{-# LANGUAGE OverloadedLabels #-}
 {-# LANGUAGE OverloadedStrings #-}
 module Data.ProtoLens.Compiler.Generate(
     generateModule,
@@ -36,13 +37,6 @@ import Proto.Google.Protobuf.Descriptor
     ( EnumValueDescriptorProto
     , FieldDescriptorProto
     , FieldDescriptorProto'Type(..)
-    )
-import Proto.Google.Protobuf.Descriptor_Fields
-    ( defaultValue
-    , name
-    , number
-    , type'
-    , typeName
     )
 
 import Data.ProtoLens.Compiler.Combinators
@@ -504,7 +498,7 @@ generateEnumDecls info =
               $ stringExp pn
           | v <- filter (null . enumAliasOf) $ enumValues info
           , let n = enumValueName v
-          , let pn = T.unpack $ enumValueDescriptor v ^. name
+          , let pn = T.unpack $ enumValueDescriptor v ^. #name
           ] ++
           [ match "showEnum" [pApp (unQual $ unrecognizedName u)
                               [pApp (unQual $ unrecognizedValueName u) [pVar "k"]]
@@ -516,7 +510,7 @@ generateEnumDecls info =
               [ ("Prelude.==" @@ "k" @@ stringExp pn, "Prelude.Just" @@ con (unQual n))
               | v <- enumValues info
               , let n = enumValueName v
-              , let pn = T.unpack $ enumValueDescriptor v ^. name
+              , let pn = T.unpack $ enumValueDescriptor v ^. #name
               ]
           , match "readEnum" [pVar "k"] $ "Prelude.>>="
                                       @@ ("Text.Read.readMaybe" @@ "k")
@@ -602,7 +596,7 @@ generateEnumDecls info =
              , enumUnrecognized = unrecognized
              , enumDescriptor = ed
              } = info
-    errorMessage = "toEnum: unknown value for enum " ++ unpack (ed ^. name)
+    errorMessage = "toEnum: unknown value for enum " ++ unpack (ed ^. #name)
                       ++ ": "
 
     errorMessageExpr = "Prelude.error"
@@ -613,7 +607,7 @@ generateEnumDecls info =
     dataType = tyCon $ unQual dataName
 
     constructors :: [(Name, EnumValueDescriptorProto)]
-    constructors = List.sortBy (comparing ((^. number) . snd))
+    constructors = List.sortBy (comparing ((^. #number) . snd))
                             [(n, d) | EnumValueInfo
                                 { enumValueName = n
                                 , enumValueDescriptor = d
@@ -627,7 +621,7 @@ generateEnumDecls info =
     minBoundName = head constructorNames
     maxBoundName = last constructorNames
 
-    constructorNumbers = map (second (fromIntegral . (^. number))) constructors
+    constructorNumbers = map (second (fromIntegral . (^. #number))) constructors
 
     succPairs = zip constructorNames $ tail constructorNames
     succDecl funName boundName thePairs =
@@ -831,13 +825,13 @@ hsFieldDefault env f = case plainFieldKind f of
     fd = fieldDescriptor (plainFieldInfo f)
 
 hsFieldValueDefault :: Env QName -> FieldDescriptorProto -> Exp
-hsFieldValueDefault env fd = case fd ^. type' of
+hsFieldValueDefault env fd = case fd ^. #type' of
     FieldDescriptorProto'TYPE_MESSAGE -> "Data.ProtoLens.defMessage"
     FieldDescriptorProto'TYPE_GROUP -> "Data.ProtoLens.defMessage"
     FieldDescriptorProto'TYPE_ENUM
         | T.null def -> "Data.ProtoLens.fieldDefault"
         | Enum e <- definedFieldType fd env
-        , Just v <- List.lookup def [ (enumValueDescriptor v ^. name, enumValueName v)
+        , Just v <- List.lookup def [ (enumValueDescriptor v ^. #name, enumValueName v)
                                     | v <- enumValues e
                                     ]
             -> con v
@@ -862,11 +856,11 @@ hsFieldValueDefault env fd = case fd ^. type' of
     -- Otherwise, assume it's an integral field:
     _ -> defaultInt $ T.unpack def
   where
-    def = fd ^. defaultValue
+    def = fd ^. #defaultValue
     errorMessage fieldType
         = error $ "Bad default value " ++ show (T.unpack def)
                     ++ " in default value for " ++ fieldType ++ " field "
-                    ++ unpack (fd ^. name)
+                    ++ unpack (fd ^. #name)
     -- float/double fields can use nan, inf and -inf as default values.
     -- The Prelude doesn't provide names for them, so we implement
     -- them as division by zero.
@@ -951,7 +945,7 @@ messageInstance env protoName m =
               | f <- fields
               , let t = "Data.ProtoLens.Tag"
                           @@ litInt (fromIntegral
-                                      $ fieldDescriptor (plainFieldInfo f) ^. number)
+                                      $ fieldDescriptor (plainFieldInfo f) ^. #number)
               ]
     fieldDescriptorVar = var . unQual . fieldDescriptorName
     fieldDescriptorName f
@@ -971,13 +965,13 @@ messageInstance env protoName m =
 -- special because their text format field name is the name of their type,
 -- not the name of the field in the descriptor (e.g. "Foo", not "foo").
 textFormatFieldName :: Env QName -> FieldDescriptorProto -> T.Text
-textFormatFieldName env descr = case descr ^. type' of
+textFormatFieldName env descr = case descr ^. #type' of
     FieldDescriptorProto'TYPE_GROUP
         | Message msg <- definedFieldType descr env
-              -> messageDescriptor msg ^. name
+              -> messageDescriptor msg ^. #name
         | otherwise -> error $ "expected TYPE_GROUP for type name"
-                           ++ T.unpack (descr ^. typeName)
-    _ -> descr ^. name
+                           ++ T.unpack (descr ^. #typeName)
+    _ -> descr ^. #name
 
 fieldDescriptorExpr :: Env QName -> Name -> PlainFieldInfo
                     -> Exp
@@ -987,7 +981,7 @@ fieldDescriptorExpr env n f =
         @@ stringExp (T.unpack $ textFormatFieldName env fd)
         -- Force the type signature since it can't be inferred for Map entry
         -- types.
-        @@ (fieldTypeDescriptorExpr (fd ^. type')
+        @@ (fieldTypeDescriptorExpr (fd ^. #type')
                 @::@
                     ("Data.ProtoLens.FieldTypeDescriptor"
                         @@ hsFieldType env (plainFieldInfo f)))

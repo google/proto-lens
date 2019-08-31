@@ -6,6 +6,7 @@
 --
 -- Code for writing protocol compiler plugins.
 
+{-# LANGUAGE OverloadedLabels #-}
 {-# LANGUAGE OverloadedStrings #-}
 module Data.ProtoLens.Compiler.Plugin
     ( ProtoFileName
@@ -27,9 +28,7 @@ import qualified Data.Text as T
 import Data.Text (Text)
 import Lens.Family2
 import Proto.Google.Protobuf.Descriptor (FileDescriptorProto)
-import Proto.Google.Protobuf.Descriptor_Fields (name, dependency, publicDependency)
 import System.FilePath (dropExtension, splitDirectories)
-
 
 import Data.ProtoLens.Compiler.Definitions
 import Data.ProtoLens.Compiler.Combinators (ModuleName, Name, QName)
@@ -50,9 +49,9 @@ data ProtoFile = ProtoFile
 -- into a map of 'ProtoFile's keyed by 'ProtoFileName'.
 analyzeProtoFiles :: Text -> [FileDescriptorProto] -> Map ProtoFileName ProtoFile
 analyzeProtoFiles modulePrefix files =
-    Map.fromList [ (f ^. name, ingestFile f) | f <- files ]
+    Map.fromList [ (f ^. #name, ingestFile f) | f <- files ]
   where
-    filesByName = Map.fromList [(f ^. name, f) | f <- files]
+    filesByName = Map.fromList [(f ^. #name, f) | f <- files]
     moduleNames = fmap (moduleName modulePrefix) filesByName
     -- The definitions in each input proto file, indexed by filename.
     definitionsByName = fmap collectDefinitions filesByName
@@ -69,11 +68,11 @@ analyzeProtoFiles modulePrefix files =
         , publicImports = [moduleNames ! i | i <- reexported]
         }
       where
-        n = f ^. name
+        n = f ^. #name
         m = moduleNames ! n
         reexported =
-            [ (f ^. dependency) !! fromIntegral i
-            | i <- f ^. publicDependency
+            [ (f ^. #dependency) !! fromIntegral i
+            | i <- f ^. #publicDependency
             ]
 
 collectEnvFromDeps :: [ProtoFileName] -> Map ProtoFileName ProtoFile -> Env QName
@@ -88,7 +87,7 @@ outputFilePath n = T.replace "." "/" (T.pack n) <> ".hs"
 -- | Get the Haskell 'ModuleName' corresponding to a given .proto file.
 moduleName :: Text -> FileDescriptorProto -> ModuleName
 moduleName modulePrefix fd
-      = fromString $ moduleNameStr (T.unpack modulePrefix) (T.unpack $ fd ^. name)
+      = fromString $ moduleNameStr (T.unpack modulePrefix) (T.unpack $ fd ^. #name)
 
 -- | Get the Haskell module name corresponding to a given .proto file.
 moduleNameStr :: String -> FilePath -> String
@@ -122,9 +121,9 @@ transitiveExports = foldl' setExportsFromFile Map.empty
                        -> Map ProtoFileName [ProtoFileName]
     setExportsFromFile prevExports fd
         = flip (Map.insert n) prevExports $
-            n : concat [ prevExports ! ((fd ^. dependency) !! fromIntegral i)
+            n : concat [ prevExports ! ((fd ^. #dependency) !! fromIntegral i)
                        -- Note that publicDependency is a list of indices into
                        -- the dependency list.
-                       | i <- fd ^. publicDependency
+                       | i <- fd ^. #publicDependency
                        ]
-      where n = fd ^. name
+      where n = fd ^. #name

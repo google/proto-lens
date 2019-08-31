@@ -10,6 +10,7 @@
 {-# LANGUAGE CPP #-}
 {-# LANGUAGE DeriveFunctor #-}
 {-# LANGUAGE GeneralizedNewtypeDeriving #-}
+{-# LANGUAGE OverloadedLabels #-}
 {-# LANGUAGE OverloadedStrings #-}
 module Data.ProtoLens.Compiler.Definitions
     ( Env
@@ -50,6 +51,7 @@ import Data.Maybe (fromMaybe)
 #if !MIN_VERSION_base(4,11,0)
 import Data.Monoid ((<>))
 #endif
+import Data.ProtoLens.Labels ()
 import qualified Data.Semigroup as Semigroup
 import qualified Data.Set as Set
 import Data.String (IsString(..))
@@ -73,32 +75,6 @@ import Proto.Google.Protobuf.Descriptor
     , MethodOptions
     , ServiceDescriptorProto
     )
-import Proto.Google.Protobuf.Descriptor_Fields
-    ( clientStreaming
-    , enumType
-    , field
-    , inputType
-    , label
-    , mapEntry
-    , maybe'oneofIndex
-    , maybe'packed
-    , messageType
-    , method
-    , name
-    , nestedType
-    , number
-    , oneofDecl
-    , options
-    , outputType
-    , package
-    , serverStreaming
-    , service
-    , syntax
-    , type'
-    , typeName
-    , value
-    )
-
 import Data.ProtoLens.Compiler.Combinators
     ( Name
     , QName
@@ -123,7 +99,7 @@ data SyntaxType = Proto2 | Proto3
     deriving (Show, Eq)
 
 fileSyntaxType :: FileDescriptorProto -> SyntaxType
-fileSyntaxType f = case f ^. syntax of
+fileSyntaxType f = case f ^. #syntax of
     "proto2" -> Proto2
     "proto3" -> Proto3
     "" -> Proto2  -- The proto compiler doesn't set syntax for proto2 files.
@@ -309,9 +285,9 @@ unqualifyEnv = mapEnv unQual
 
 -- | Look up the Haskell name for the type of a given field (message or enum).
 definedFieldType :: FieldDescriptorProto -> Env QName -> Definition QName
-definedFieldType fd env = fromMaybe err $ Map.lookup (fd ^. typeName) env
+definedFieldType fd env = fromMaybe err $ Map.lookup (fd ^. #typeName) env
   where
-    err = error $ "definedFieldType: Field type " ++ unpack (fd ^. typeName)
+    err = error $ "definedFieldType: Field type " ++ unpack (fd ^. #typeName)
                   ++ " not found in environment."
 
 -- | Look up the Haskell name for the type of a given type.
@@ -325,36 +301,36 @@ definedType ty = fromMaybe err . Map.lookup ty
 -- nested in other messages), and assign Haskell names to them.
 collectDefinitions :: FileDescriptorProto -> Env Name
 collectDefinitions fd = let
-    protoPrefix = case fd ^. package of
+    protoPrefix = case fd ^. #package of
         "" -> "."
         p -> "." <> p <> "."
     hsPrefix = ""
     in Map.fromList $ concatMap flatten $
             messageAndEnumDefs (fileSyntaxType fd)
                 protoPrefix hsPrefix Map.empty
-                (fd ^. messageType) (fd ^. enumType)
+                (fd ^. #messageType) (fd ^. #enumType)
 
 collectServices :: FileDescriptorProto -> [ServiceInfo]
-collectServices fd = fmap (toServiceInfo $ fd ^. package) $ fd ^. service
+collectServices fd = fmap (toServiceInfo $ fd ^. #package) $ fd ^. #service
   where
     toServiceInfo :: Text -> ServiceDescriptorProto -> ServiceInfo
     toServiceInfo pkg sd =
         ServiceInfo
-            { serviceName    = sd ^. name
+            { serviceName    = sd ^. #name
             , servicePackage = pkg
-            , serviceMethods = fmap toMethodInfo $ sd ^. method
+            , serviceMethods = fmap toMethodInfo $ sd ^. #method
             }
 
     toMethodInfo :: MethodDescriptorProto -> MethodInfo
     toMethodInfo md =
         MethodInfo
-            { methodName   = md ^. name
-            , methodIdent  = camelCase $ md ^. name
-            , methodInput  = fromString . T.unpack $ md ^. inputType
-            , methodOutput = fromString . T.unpack $ md ^. outputType
-            , methodClientStreaming = md ^. clientStreaming
-            , methodServerStreaming = md ^. serverStreaming
-            , methodOptions = md ^. options
+            { methodName   = md ^. #name
+            , methodIdent  = camelCase $ md ^. #name
+            , methodInput  = fromString . T.unpack $ md ^. #inputType
+            , methodOutput = fromString . T.unpack $ md ^. #outputType
+            , methodClientStreaming = md ^. #clientStreaming
+            , methodServerStreaming = md ^. #serverStreaming
+            , methodOptions = md ^. #options
             }
 
 messageAndEnumDefs ::
@@ -379,15 +355,15 @@ messageDefs :: SyntaxType -> Text -> String -> GroupMap -> DescriptorProto
 messageDefs syntaxType protoPrefix hsPrefix groups d
     = Node (protoName, thisDef) subDefs
   where
-    protoName = protoPrefix <> d ^. name
-    hsPrefix' = hsPrefix ++ hsName (d ^. name) ++ "'"
-    allFields = groupFieldsByOneofIndex (d ^. field)
+    protoName = protoPrefix <> d ^. #name
+    hsPrefix' = hsPrefix ++ hsName (d ^. #name) ++ "'"
+    allFields = groupFieldsByOneofIndex (d ^. #field)
     thisDef =
         Message MessageInfo
-            { messageName = fromString $ hsPrefix ++ hsName (d ^. name)
+            { messageName = fromString $ hsPrefix ++ hsName (d ^. #name)
               -- Set the constructor name to not conflict with enum values.
             , messageConstructorName =
-                 fromString $ hsPrefix ++ hsName (d ^. name)
+                 fromString $ hsPrefix ++ hsName (d ^. #name)
                                 ++ "'_constructor"
             , messageDescriptor = d
             , messageFields =
@@ -403,9 +379,9 @@ messageDefs syntaxType protoPrefix hsPrefix groups d
                     syntaxType
                     (protoName <> ".")
                     hsPrefix'
-                    (collectGroupFields $ d ^. field)
-                    (d ^. nestedType)
-                    (d ^. enumType)
+                    (collectGroupFields $ d ^. #field)
+                    (d ^. #nestedType)
+                    (d ^. #enumType)
     -- For efficiency, only look for map entries within the immediate
     -- nested types, rather than recursively searching through all of them.
     mapEntries = collectMapEntries $ map rootLabel subDefs
@@ -414,7 +390,7 @@ messageDefs syntaxType protoPrefix hsPrefix groups d
 -- along with the proto name of this type.
 mapEntryInfo :: Definition Name -> Maybe MapEntryInfo
 mapEntryInfo (Message m)
-    | messageDescriptor m ^. options . mapEntry
+    | messageDescriptor m ^. #options . #mapEntry
     , [keyFd, valueFd] <- messageFields m
     = Just MapEntryInfo
                 { mapEntryTypeName = messageName m
@@ -436,40 +412,40 @@ type GroupMap = Map.Map Text Int32
 
 collectGroupFields :: [FieldDescriptorProto] -> GroupMap
 collectGroupFields fs = Map.fromList
-    [ (f ^. typeName, f ^. number)
+    [ (f ^. #typeName, f ^. #number)
     | f <- fs
-    , f ^. type' == FieldDescriptorProto'TYPE_GROUP
+    , f ^. #type' == FieldDescriptorProto'TYPE_GROUP
       ]
 
 fieldInfo :: String -> FieldDescriptorProto -> FieldInfo
 fieldInfo hsPrefix f = FieldInfo
                             { fieldDescriptor = f
-                            , fieldName = mkFieldName hsPrefix $ f ^. name
+                            , fieldName = mkFieldName hsPrefix $ f ^. #name
                             }
 
 fieldKind ::
     SyntaxType -> Map.Map Text MapEntryInfo -> FieldDescriptorProto
     -> FieldKind
-fieldKind syntaxType mapEntries f = case f ^. label of
+fieldKind syntaxType mapEntries f = case f ^. #label of
             FieldDescriptorProto'LABEL_OPTIONAL
                 | syntaxType == Proto3
-                    && f ^. type' /= FieldDescriptorProto'TYPE_MESSAGE
+                    && f ^. #type' /= FieldDescriptorProto'TYPE_MESSAGE
                     -> OptionalValueField
                 | otherwise -> OptionalMaybeField
             FieldDescriptorProto'LABEL_REQUIRED -> RequiredField
             FieldDescriptorProto'LABEL_REPEATED
-                | Just entryInfo <- Map.lookup (f ^. typeName) mapEntries
+                | Just entryInfo <- Map.lookup (f ^. #typeName) mapEntries
                     -> MapField entryInfo
                 | otherwise -> RepeatedField packed
   where
     packed
-        | f ^. type' `elem` unpackableTypes = NotPackable
+        | f ^. #type' `elem` unpackableTypes = NotPackable
         | packedByDefault = Packed
         | otherwise = Packable
     -- If the "packed" attribute isn't set, then default to packed if proto3.
     -- Unfortunately, protoc doesn't implement this logic for us automatically.
     packedByDefault = fromMaybe (syntaxType == Proto3)
-                        $ f ^. options . maybe'packed
+                        $ f ^. #options . #maybe'packed
     unpackableTypes =
         [ FieldDescriptorProto'TYPE_MESSAGE
         , FieldDescriptorProto'TYPE_GROUP
@@ -481,7 +457,7 @@ collectOneofFields
     :: String -> DescriptorProto -> Map.Map (Maybe Int32) [FieldDescriptorProto]
     -> [OneofInfo]
 collectOneofFields hsPrefix d allFields
-    = zipWith oneofInfo [0..] $ d ^.. oneofDecl . traverse . name
+    = zipWith oneofInfo [0..] $ d ^.. #oneofDecl . traverse . #name
   where
     oneofInfo idx n = OneofInfo
         { oneofFieldName = mkFieldName hsPrefix n
@@ -491,7 +467,7 @@ collectOneofFields hsPrefix d allFields
                               allFields
         }
     oneofCase f =
-        let consName = hsPrefix ++ hsNameUnique subdefCons (f ^. name)
+        let consName = hsPrefix ++ hsNameUnique subdefCons (f ^. #name)
         in OneofCase
             { caseField = fieldInfo hsPrefix f
             , caseConstructorName =
@@ -511,12 +487,12 @@ collectOneofFields hsPrefix d allFields
         n' = hsName $ camelCase n
     -- The Haskell "type" namespace
     subdefTypes = Set.fromList $ map hsName
-                    $ toListOf (nestedType . traverse . name) d
-                    ++ toListOf (enumType . traverse . name) d
+                    $ toListOf (#nestedType . traverse . #name) d
+                    ++ toListOf (#enumType . traverse . #name) d
     -- The Haskell "expression" namespace (i.e., constructors)
     subdefCons = Set.fromList $ map hsName
-                    $ toListOf (nestedType . traverse . name) d
-                    ++ toListOf (enumType . traverse . value . traverse . name) d
+                    $ toListOf (#nestedType . traverse . #name) d
+                    ++ toListOf (#enumType . traverse . #value . traverse . #name) d
 
 -- | Group fields by the index of the oneof field that they belong to.
 -- (Or 'Nothing' if they don't belong to a oneof.)
@@ -525,7 +501,7 @@ groupFieldsByOneofIndex
 groupFieldsByOneofIndex =
     fmap reverse
     . Map.fromListWith (++)
-    . fmap (\f -> (f ^. maybe'oneofIndex, [f]))
+    . fmap (\f -> (f ^. #maybe'oneofIndex, [f]))
 
 hsName :: Text -> String
 hsName = unpack . capitalize
@@ -611,19 +587,19 @@ enumDef syntaxType protoPrefix hsPrefix d = let
     mkHsName n = fromString $ hsPrefix ++ case hsName n of
       ('_':xs) -> 'X':xs
       xs       -> xs
-    in (mkText (d ^. name)
+    in (mkText (d ^. #name)
        , Enum EnumInfo
-            { enumName = mkHsName (d ^. name)
+            { enumName = mkHsName (d ^. #name)
             , enumUnrecognized = if syntaxType == Proto2
                     then Nothing
                     else Just EnumUnrecognizedInfo
                             { unrecognizedName
-                                = mkHsName (d ^. name <> "'Unrecognized")
+                                = mkHsName (d ^. #name <> "'Unrecognized")
                             , unrecognizedValueName
-                                = mkHsName (d ^. name <> "'UnrecognizedValue")
+                                = mkHsName (d ^. #name <> "'UnrecognizedValue")
                             }
             , enumDescriptor = d
-            , enumValues = collectEnumValues mkHsName $ d ^. value
+            , enumValues = collectEnumValues mkHsName $ d ^. #value
             })
 
 -- | Generate the definitions for each enum value.  In particular, decide
@@ -643,8 +619,8 @@ collectEnumValues mkHsName = snd . mapAccumL helper Map.empty
         | otherwise = (Map.insert k n seenNames, mkValue Nothing)
       where
         mkValue = EnumValueInfo n v
-        n = mkHsName (v ^. name)
-        k = v ^. number
+        n = mkHsName (v ^. #name)
+        k = v ^. #number
 
 -- Haskell types must start with an uppercase letter, so we capitalize message
 -- and enum names.
