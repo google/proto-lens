@@ -23,18 +23,19 @@ dependencies:
   - lens-family == 1.2.*
   - proto-lens == 0.5.*
   - text == 1.2.*
+  - ghc-source-gen == 0.2.*
+  - ghc >= 8.2 && < 8.8
 
 
 library:
   source-dirs: src
   dependencies:
     - filepath >= 1.4 && < 1.6
-    - haskell-src-exts >= 1.18 && < 1.22
     - pretty == 1.1.*
   exposed-modules:
-    - Data.ProtoLens.Compiler.Combinators
     - Data.ProtoLens.Compiler.Definitions
     - Data.ProtoLens.Compiler.Generate
+    - Data.ProtoLens.Compiler.Generate.Commented
     - Data.ProtoLens.Compiler.Plugin
 
 executables:
@@ -42,4 +43,5 @@ executables:
     main: protoc-gen-haskell.hs
     source-dirs: app
     dependencies:
+      - ghc-paths == 0.1.*
       - proto-lens-protoc

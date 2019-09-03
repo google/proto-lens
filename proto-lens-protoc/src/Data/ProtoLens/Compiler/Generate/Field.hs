@@ -22,13 +22,14 @@ import Data.Word (Word8)
 import Lens.Family2
 import Proto.Google.Protobuf.Descriptor (FieldDescriptorProto'Type(..))
 
-import Data.ProtoLens.Compiler.Combinators
 import Data.ProtoLens.Compiler.Definitions
 
-hsFieldType :: Env QName -> FieldInfo -> Type
+import GHC.SourceGen
+
+hsFieldType :: Env RdrNameStr -> FieldInfo -> HsType'
 hsFieldType env f = let
     fd = fieldDescriptor f
-    in case fd ^. #type' of
+    in var $ case fd ^. #type' of
         FieldDescriptorProto'TYPE_DOUBLE -> "Prelude.Double"
         FieldDescriptorProto'TYPE_FLOAT -> "Prelude.Float"
         FieldDescriptorProto'TYPE_INT64 -> "Data.Int.Int64"
@@ -39,17 +40,17 @@ hsFieldType env f = let
         FieldDescriptorProto'TYPE_BOOL -> "Prelude.Bool"
         FieldDescriptorProto'TYPE_STRING -> "Data.Text.Text"
         FieldDescriptorProto'TYPE_GROUP
-            | Message m <- definedFieldType fd env -> tyCon $ messageName m
+            | Message m <- definedFieldType fd env -> messageName m
             | otherwise -> error $ "expected TYPE_GROUP for type name"
                                 ++ unpack (fd ^. #typeName)
         FieldDescriptorProto'TYPE_MESSAGE
-            | Message m <- definedFieldType fd env -> tyCon $ messageName m
+            | Message m <- definedFieldType fd env -> messageName m
             | otherwise -> error $ "expected TYPE_MESSAGE for type name"
                                 ++ unpack (fd ^. #typeName)
         FieldDescriptorProto'TYPE_BYTES -> "Data.ByteString.ByteString"
         FieldDescriptorProto'TYPE_UINT32 -> "Data.Word.Word32"
         FieldDescriptorProto'TYPE_ENUM
-            | Enum e <- definedFieldType fd env -> tyCon $ enumName e
+            | Enum e <- definedFieldType fd env -> enumName e
             | otherwise -> error $ "expected TYPE_ENUM for type name"
                                 ++ unpack (fd ^. #typeName)
         FieldDescriptorProto'TYPE_SFIXED32 -> "Data.Int.Int32"
@@ -57,7 +58,7 @@ hsFieldType env f = let
         FieldDescriptorProto'TYPE_SINT32 -> "Data.Int.Int32"
         FieldDescriptorProto'TYPE_SINT64 -> "Data.Int.Int64"
 
-hsFieldVectorType :: FieldInfo -> Type
+hsFieldVectorType :: FieldInfo -> HsType'
 hsFieldVectorType f = case fieldDescriptor f ^. #type' of
     FieldDescriptorProto'TYPE_MESSAGE -> boxed
     -- TODO: store enums in unboxed fields.
@@ -67,13 +68,13 @@ hsFieldVectorType f = case fieldDescriptor f ^. #type' of
     FieldDescriptorProto'TYPE_BYTES -> boxed
     _ -> unboxed
   where
-    boxed = "Data.Vector.Vector"
-    unboxed = "Data.Vector.Unboxed.Vector"
+    boxed = var "Data.Vector.Vector"
+    unboxed = var "Data.Vector.Unboxed.Vector"
 
 -- | A representation for how to encode and decode a particular field type.
 data FieldEncoding = FieldEncoding
-    { buildFieldType :: Exp -- ^ :: a -> Builder
-    , parseFieldType :: Exp -- ^ :: Parser a
+    { buildFieldType :: HsExpr' -- ^ :: a -> Builder
+    , parseFieldType :: HsExpr' -- ^ :: Parser a
     , wireType :: Word8
     }
 
@@ -89,16 +90,16 @@ varint = FieldEncoding
 fixed64 :: FieldEncoding
 fixed64 = FieldEncoding
             { wireType = 1
-            , buildFieldType = "Data.ProtoLens.Encoding.Bytes.putFixed64"
-            , parseFieldType = "Data.ProtoLens.Encoding.Bytes.getFixed64"
+            , buildFieldType = var "Data.ProtoLens.Encoding.Bytes.putFixed64"
+            , parseFieldType = var "Data.ProtoLens.Encoding.Bytes.getFixed64"
             }
 
 -- | A fixed-length integer (Word32).
 fixed32 :: FieldEncoding
 fixed32 = FieldEncoding
             { wireType = 5
-            , buildFieldType = "Data.ProtoLens.Encoding.Bytes.putFixed32"
-            , parseFieldType = "Data.ProtoLens.Encoding.Bytes.getFixed32"
+            , buildFieldType = var "Data.ProtoLens.Encoding.Bytes.putFixed32"
+            , parseFieldType = var "Data.ProtoLens.Encoding.Bytes.getFixed32"
             }
 
 -- | A ByteString, prefixed by its length (which is encoded as a varint).
@@ -109,48 +110,48 @@ lengthy = FieldEncoding
             , parseFieldType = parseLengthy
             }
   where
-    bs = "bs"
-    len = "len"
+    bs = bvar "bs"
+    len = bvar "len"
     buildLengthy =
         -- Bind x since it may be a nontrivial expression:
         lambda [bs]
-            $ "Data.Monoid.<>"
+            $ var "Data.Monoid.<>"
                 @@ (putVarInt'
                         @@ (fromIntegral'
-                                @@ ("Data.ByteString.length" @@ bs)))
-                @@ ("Data.ProtoLens.Encoding.Bytes.putBytes" @@ bs)
+                                @@ (var "Data.ByteString.length" @@ bs)))
+                @@ (var "Data.ProtoLens.Encoding.Bytes.putBytes" @@ bs)
     parseLengthy = do'
         [ len <-- getVarInt'
-        , stmt $ "Data.ProtoLens.Encoding.Bytes.getBytes"
+        , stmt $ var "Data.ProtoLens.Encoding.Bytes.getBytes"
                     @@ (fromIntegral' @@ len)
         ]
 
 group :: FieldEncoding
 group = FieldEncoding
             { wireType = 3
-            , buildFieldType = "Data.ProtoLens.buildMessage"
-            , parseFieldType = "Data.ProtoLens.parseMessage"
+            , buildFieldType = var "Data.ProtoLens.buildMessage"
+            , parseFieldType = var "Data.ProtoLens.parseMessage"
             }
 
 groupEnd :: FieldEncoding
 groupEnd = FieldEncoding
             { wireType = 4
-            , buildFieldType = "Prelude.const" @@ "Data.Monoid.mempty"
-            , parseFieldType = "Prelude.return" @@ unit
+            , buildFieldType = var "Prelude.const" @@ var "Data.Monoid.mempty"
+            , parseFieldType = var "Prelude.return" @@ unit
             }
 
 -- Wrap a field encoding  with Haskell functions that should always succeed.
-bijectField :: Exp -> Exp -> FieldEncoding -> FieldEncoding
+bijectField :: HsExpr' -> HsExpr' -> FieldEncoding -> FieldEncoding
 bijectField buildF parseF f = FieldEncoding
-    { buildFieldType = "Prelude.." @@ buildFieldType f @@ buildF
-    , parseFieldType = "Prelude.fmap" @@ parseF @@ parseFieldType f
+    { buildFieldType = var "Prelude.." @@ buildFieldType f @@ buildF
+    , parseFieldType = var "Prelude.fmap" @@ parseF @@ parseFieldType f
     , wireType = wireType f
     }
 
 -- | Wrap a field encoding with Haskell functions that may fail during parsing.
-partialField :: Exp -> (Exp -> Exp) -> FieldEncoding -> FieldEncoding
+partialField :: HsExpr' -> (HsExpr' -> HsExpr') -> FieldEncoding -> FieldEncoding
 partialField buildF parseF f = FieldEncoding
-    { buildFieldType = "Prelude.." @@ buildFieldType f @@ buildF
+    { buildFieldType = var "Prelude.." @@ buildFieldType f @@ buildF
     -- do
     --  value <- ...
     --  runEither $ {parseF} value
@@ -161,8 +162,8 @@ partialField buildF parseF f = FieldEncoding
     , wireType = wireType f
     }
   where
-    value = "value"
-    runEither = "Data.ProtoLens.Encoding.Bytes.runEither"
+    value = bvar "value"
+    runEither = var "Data.ProtoLens.Encoding.Bytes.runEither"
 
 -- | Convert a field of one integral type to another.
 integralField :: FieldEncoding -> FieldEncoding
@@ -180,32 +181,32 @@ fieldEncoding = \case
     FieldDescriptorProto'TYPE_SFIXED32 -> integralField fixed32
     FieldDescriptorProto'TYPE_DOUBLE ->
         bijectField
-            "Data.ProtoLens.Encoding.Bytes.doubleToWord"
-            "Data.ProtoLens.Encoding.Bytes.wordToDouble"
+            (var "Data.ProtoLens.Encoding.Bytes.doubleToWord")
+            (var "Data.ProtoLens.Encoding.Bytes.wordToDouble")
             fixed64
     FieldDescriptorProto'TYPE_FLOAT ->
         bijectField
-            "Data.ProtoLens.Encoding.Bytes.floatToWord"
-            "Data.ProtoLens.Encoding.Bytes.wordToFloat"
+            (var "Data.ProtoLens.Encoding.Bytes.floatToWord")
+            (var "Data.ProtoLens.Encoding.Bytes.wordToFloat")
             fixed32
     FieldDescriptorProto'TYPE_BOOL ->
         bijectField
-            (lambda ["b"] $ if' "b" (litInt 1) (litInt 0))
-            ("Prelude./=" @@ litInt 0)
+            (lambda [bvar "b"] $ if' (var "b") (int 1) (int 0))
+            (var "Prelude./=" @@ int 0)
             varint
     FieldDescriptorProto'TYPE_ENUM ->
         -- TODO: don't throw an exception on unknown proto2 enums.
-        bijectField "Prelude.fromEnum" "Prelude.toEnum"
+        bijectField (var "Prelude.fromEnum") (var "Prelude.toEnum")
             $ integralField varint
     FieldDescriptorProto'TYPE_SINT64 ->
         bijectField
-            "Data.ProtoLens.Encoding.Bytes.signedInt64ToWord"
-            "Data.ProtoLens.Encoding.Bytes.wordToSignedInt64"
+            (var "Data.ProtoLens.Encoding.Bytes.signedInt64ToWord")
+            (var "Data.ProtoLens.Encoding.Bytes.wordToSignedInt64")
             $ integralField varint
     FieldDescriptorProto'TYPE_SINT32 ->
         bijectField
-            "Data.ProtoLens.Encoding.Bytes.signedInt32ToWord"
-            "Data.ProtoLens.Encoding.Bytes.wordToSignedInt32"
+            (var "Data.ProtoLens.Encoding.Bytes.signedInt32ToWord")
+            (var "Data.ProtoLens.Encoding.Bytes.wordToSignedInt32")
             $ integralField varint
     FieldDescriptorProto'TYPE_BYTES -> lengthy
     FieldDescriptorProto'TYPE_STRING -> stringField
@@ -214,7 +215,7 @@ fieldEncoding = \case
 
 -- | A string, represented as Data.Text.Text.
 stringField :: FieldEncoding
-stringField = partialField "Data.Text.Encoding.encodeUtf8" decodeUtf8P lengthy
+stringField = partialField (var "Data.Text.Encoding.encodeUtf8") decodeUtf8P lengthy
   where
     {- Translates to:
         case decodeUtf8' bytes of
@@ -225,36 +226,36 @@ stringField = partialField "Data.Text.Encoding.encodeUtf8" decodeUtf8P lengthy
     but avoids dragging in Data.Bifunctors.
     -}
     decodeUtf8P bytes =
-        case' ("Data.Text.Encoding.decodeUtf8'" @@ bytes )
-            [ "Prelude.Left" `pApp` ["err"]
-                --> "Prelude.Left" @@ ("Prelude.show" @@ "err")
-            , "Prelude.Right" `pApp` ["r"]
-                --> "Prelude.Right" @@ "r"
+        case' (var "Data.Text.Encoding.decodeUtf8'" @@ bytes)
+            [ match ["Prelude.Left" `conP` [bvar "err"]]
+                $ var "Prelude.Left" @@ (var "Prelude.show" @@ var "err")
+            , match ["Prelude.Right" `conP` [bvar "r"]]
+                $ var "Prelude.Right" @@ var "r"
             ]
 
 -- | A protobuf message type.
 message :: FieldEncoding
 message = lengthy
-        { buildFieldType = "Prelude.." @@
+        { buildFieldType = var "Prelude.." @@
             buildFieldType lengthy @@
-            "Data.ProtoLens.encodeMessage"
-        , parseFieldType = isolatedLengthy "Data.ProtoLens.parseMessage"
+            var "Data.ProtoLens.encodeMessage"
+        , parseFieldType = isolatedLengthy (var "Data.ProtoLens.parseMessage")
         }
 
 -- | Takes a @Parser a@, reads a varint and then runs the parser
 -- isolated to the given length.
-isolatedLengthy :: Exp -> Exp
+isolatedLengthy :: HsExpr' -> HsExpr'
 isolatedLengthy parser = do'
     [ len <-- getVarInt'
-    , stmt $ "Data.ProtoLens.Encoding.Bytes.isolate"
+    , stmt $ var "Data.ProtoLens.Encoding.Bytes.isolate"
                 @@ (fromIntegral' @@ len)
                 @@ parser
     ]
   where
-    len = "len"
+    len = bvar "len"
 
 -- | Some functions that are used in multiple places in the generated code.
-getVarInt', putVarInt', fromIntegral' :: Exp
-getVarInt' = "Data.ProtoLens.Encoding.Bytes.getVarInt"
-putVarInt' = "Data.ProtoLens.Encoding.Bytes.putVarInt"
-fromIntegral' = "Prelude.fromIntegral"
+getVarInt', putVarInt', fromIntegral' :: HsExpr'
+getVarInt' = var "Data.ProtoLens.Encoding.Bytes.getVarInt"
+putVarInt' = var "Data.ProtoLens.Encoding.Bytes.putVarInt"
+fromIntegral' = var "Prelude.fromIntegral"

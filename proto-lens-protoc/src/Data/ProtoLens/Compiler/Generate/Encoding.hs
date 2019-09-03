@@ -16,13 +16,13 @@ import qualified Data.Map as Map
 import Data.Semigroup ((<>))
 import qualified Data.Text as Text
 import Lens.Family2 (view, (^.))
+import GHC.SourceGen
 
-import Data.ProtoLens.Compiler.Combinators
 import Data.ProtoLens.Compiler.Definitions
 import Data.ProtoLens.Compiler.Generate.Field
 import Data.ProtoLens.Encoding.Wire (joinTypeAndTag)
 
-generatedParser :: Env QName -> MessageInfo Name -> Exp
+generatedParser :: Env RdrNameStr -> MessageInfo OccNameStr -> HsExpr'
 generatedParser env m =
     {- let loop :: T -> Bool -> Bool -> ...
                    -> MVector RealWorld Int32 -> MVector RealWorld Float -> ...
@@ -34,29 +34,29 @@ generatedParser env m =
             ...
             loop defMessage True True ... mutable'a mutable'b ...
     -}
-    let' [typeSig [loop] loopSig
-         , funBind [match loop (fmap pVar $ loopArgs names) loopExpr]
+    let' [typeSig loop loopSig
+         , funBind loop $ match (bvar <$> loopArgs names) loopExpr
          ]
-        $ "Data.ProtoLens.Encoding.Bytes.<?>"
+        $ var "Data.ProtoLens.Encoding.Bytes.<?>"
            @@ do' (startStmts ++ [stmt $ continue startExp])
-           @@ stringExp msgName
+           @@ string msgName
   where
-    ty = tyCon (unQual $ messageName m)
+    ty = var (unqual $ messageName m)
     msgName = Text.unpack (messageDescriptor m ^. #name)
-    loopSig = foldr tyFun
-        ("Data.ProtoLens.Encoding.Bytes.Parser" @@ ty)
+    loopSig = foldr (-->)
+        (var "Data.ProtoLens.Encoding.Bytes.Parser" @@ ty)
         (loopArgs $ parseStateTypes env m)
 
     names = parseStateNames m
-    exprs = fmap (var . unQual) names
-    tag = "tag"
-    end = "end"
+    exprs = fmap (var . unqual) names
+    tag = bvar "tag"
+    end = bvar "end"
     loop = "loop"
 
     (startStmts, startExp) = startParse names
 
-    continue :: ParseState Exp -> Exp
-    continue s = foldl (@@) loop (loopArgs s)
+    continue :: ParseState HsExpr' -> HsExpr'
+    continue s = foldl (@@) (var loop) (loopArgs s)
 
     loopExpr
         {- Group:
@@ -72,7 +72,7 @@ generatedParser env m =
         | Just g <- groupFieldNumber m = do'
             [ tag <-- getVarInt'
             , stmt $ case' tag $
-                (pLitInt (groupEndTag g) --> finish m exprs)
+                (match [int (groupEndTag g)] (finish m exprs))
                     : parseTagCases continue exprs m
             ]
         {- Regular message type:
@@ -85,7 +85,7 @@ generatedParser env m =
                         case tag of ...
         -}
         | otherwise = do'
-            [ end <-- "Data.ProtoLens.Encoding.Bytes.atEnd"
+            [ end <-- var "Data.ProtoLens.Encoding.Bytes.atEnd"
             , stmt $
                 if' end (finish m exprs)
                     $ do'
@@ -95,7 +95,7 @@ generatedParser env m =
             ]
 
 -- | A Parser expression that finalizes the message.
-finish :: MessageInfo Name -> ParseState Exp -> Exp
+finish :: MessageInfo OccNameStr -> ParseState HsExpr' -> HsExpr'
 finish m s = do' $
     {- do
         frozen'a <- unsafeLiftIO $ unsafeFreeze mutable'a
@@ -108,23 +108,23 @@ finish m s = do' $
             ...
             $ {partialMessage}
     -}
-    [ pVar frozen <-- unsafeLiftIO' @@
-                    ("Data.ProtoLens.Encoding.Growing.unsafeFreeze"
+    [ bvar frozen <-- unsafeLiftIO' @@
+                    (var "Data.ProtoLens.Encoding.Growing.unsafeFreeze"
                         @@ mutable)
     | (frozen, mutable) <- Map.elems $ Map.intersectionWith (,)
                                 frozenNames (repeatedFieldMVectors s)
     ]
     ++
     [ stmt $ checkMissingFields s
-    , stmt $ "Prelude.return" @@
-        (over' unknownFields' "Prelude.reverse"
+    , stmt $ var "Prelude.return" @@
+        (over' unknownFields' (var "Prelude.reverse")
             @@(foldr (@@)
                 (partialMessage s)
                 (Map.intersectionWith
                     (\finfo frozen ->
-                        "Lens.Family2.set"
+                        var "Lens.Family2.set"
                             @@ fieldOfVector finfo
-                            @@ var (unQual frozen))
+                            @@ var (unqual frozen))
                 repeatedInfos frozenNames)))
             ]
 
@@ -159,7 +159,7 @@ fieldId :: PlainFieldInfo -> FieldId
 fieldId f = FieldId $ fieldDescriptor (plainFieldInfo f) ^. #name
 
 -- | The names of the loop arguments.
-parseStateNames :: MessageInfo Name -> ParseState Name
+parseStateNames :: MessageInfo OccNameStr -> ParseState OccNameStr
 parseStateNames m = ParseState
     { partialMessage = "x"
     , requiredFieldsUnset = Map.fromList
@@ -174,7 +174,7 @@ parseStateNames m = ParseState
             <$> repeatedFields m
     }
 
-repeatedFields :: MessageInfo Name -> Map.Map FieldId FieldInfo
+repeatedFields :: MessageInfo OccNameStr -> Map.Map FieldId FieldInfo
 repeatedFields m = Map.fromList
     [ (fieldId f, plainFieldInfo f)
     | f <- messageFields m
@@ -182,26 +182,26 @@ repeatedFields m = Map.fromList
     ]
 
 -- | Intialize the values of the loop arguments.
-startParse :: ParseState Name -> ([Stmt], ParseState Exp)
+startParse :: ParseState OccNameStr -> ([Stmt'], ParseState HsExpr')
 startParse names =
-    ([ pVar n <-- unsafeLiftIO' @@ "Data.ProtoLens.Encoding.Growing.new"
+    ([ bvar n <-- unsafeLiftIO' @@ var "Data.ProtoLens.Encoding.Growing.new"
      | n <- Map.elems mvectorNames
      ]
     , ParseState
-        { partialMessage = "Data.ProtoLens.defMessage"
-        , requiredFieldsUnset = const "Prelude.True"
+        { partialMessage = var "Data.ProtoLens.defMessage"
+        , requiredFieldsUnset = const (var "Prelude.True")
                                     <$> requiredFieldsUnset names
-        , repeatedFieldMVectors = var . unQual <$> mvectorNames
+        , repeatedFieldMVectors = var . unqual <$> mvectorNames
         }
     )
   where
     mvectorNames = repeatedFieldMVectors names
 
 -- | The types of the loop arguments.
-parseStateTypes :: Env QName -> MessageInfo Name -> ParseState Type
+parseStateTypes :: Env RdrNameStr -> MessageInfo OccNameStr -> ParseState HsType'
 parseStateTypes env m = ParseState
-    { partialMessage = tyCon (unQual $ messageName m)
-    , requiredFieldsUnset = fmap (const "Prelude.Bool")
+    { partialMessage = var $ unqual $ messageName m
+    , requiredFieldsUnset = fmap (const $ var "Prelude.Bool")
                             $ requiredFieldsUnset
                             $ parseStateNames m
     , repeatedFieldMVectors = growingType env <$> repeatedFields m
@@ -210,36 +210,36 @@ parseStateTypes env m = ParseState
 -- | Transform the loop arguments by applying a given function
 -- to the intermediate message value.
 updateParseState ::
-       Exp -- ^ An expression of type @msg -> msg@
-    -> ParseState Exp
-    -> ParseState Exp
+       HsExpr' -- ^ An expression of type @msg -> msg@
+    -> ParseState HsExpr'
+    -> ParseState HsExpr'
 updateParseState f s = s { partialMessage = f @@ (partialMessage s) }
 
 -- | Transform the loop arguments by marking a required field
 -- as having been set.
-markRequiredField :: FieldId -> ParseState Exp -> ParseState Exp
+markRequiredField :: FieldId -> ParseState HsExpr' -> ParseState HsExpr'
 markRequiredField f s =
-    s { requiredFieldsUnset = Map.insert f "Prelude.False"
+    s { requiredFieldsUnset = Map.insert f (var "Prelude.False")
                                 $ requiredFieldsUnset s }
 
 -- | Append to the given repeated field.
-appendToRepeated :: FieldId -> Exp -> ParseState Exp -> (Stmt, ParseState Exp)
+appendToRepeated :: FieldId -> HsExpr' -> ParseState HsExpr' -> (Stmt', ParseState HsExpr')
 appendToRepeated f x s =
     ( v <-- unsafeLiftIO'
-                @@ ("Data.ProtoLens.Encoding.Growing.append"
+                @@ (var "Data.ProtoLens.Encoding.Growing.append"
                         @@ (repeatedFieldMVectors s Map.! f)
                         @@ x)
     , s { repeatedFieldMVectors =
-                            Map.insert f (var $ unQual v)
+                            Map.insert f v
                                 $ repeatedFieldMVectors s
                         }
     )
   where
-    v = "v"
+    v = bvar "v"
 
--- | Returns an Exp of type @Parser ()@
+-- | Returns an HsExpr' of type @Parser ()@
 -- which fails if any of the missing fields aren't set.
-checkMissingFields :: ParseState Exp -> Exp
+checkMissingFields :: ParseState HsExpr' -> HsExpr'
 checkMissingFields s =
     {- let missing = (if required'a then ("a":) else id)
                         ((if required'b then ("b":) else id)
@@ -247,17 +247,17 @@ checkMissingFields s =
        in if null missing then return ()
           else fail ("Missing required fields: " ++ show missing)
     -}
-    let' [patBind missing allMissingFields]
-    $ if' ("Prelude.null" @@ missing) ("Prelude.return" @@ unit)
-    $ "Prelude.fail"
-        @@ ("Prelude.++"
-                @@ stringExp "Missing required fields: "
-                @@ ("Prelude.show" @@ (missing @::@ "[Prelude.String]")))
+    let' [valBind missing $ allMissingFields]
+    $ if' (var "Prelude.null" @@ var missing) (var "Prelude.return" @@ unit)
+    $ var "Prelude.fail"
+        @@ (var "Prelude.++"
+                @@ string "Missing required fields: "
+                @@ (var "Prelude.show" @@ (var missing @::@ listTy (var "Prelude.String"))))
   where
     missing = "missing"
-    allMissingFields = Map.foldrWithKey consIfMissing emptyList (requiredFieldsUnset s)
+    allMissingFields = Map.foldrWithKey consIfMissing (list []) (requiredFieldsUnset s)
     consIfMissing (FieldId f) e rest =
-        (if' e (cons @@ stringExp (Text.unpack f)) "Prelude.id") @@ rest
+        (if' e (cons @@ string (Text.unpack f)) (var "Prelude.id")) @@ rest
 
 -- | A list case alternatives for the fields of a message.
 --
@@ -276,13 +276,13 @@ checkMissingFields s =
 --  - {PARSE} is an expression of the form "Parser V",
 --  - and "loop" and "x" are as in @generatedParser@.
 parseTagCases ::
-       (ParseState Exp -> Exp)
+       (ParseState HsExpr' -> HsExpr')
             -- ^ loop continuation, equivalent to "msg -> Bool -> ... -> Bool -> Parser msg".
             -- It continues the loop with the given new value of the message, keeping track
             -- of whether the required fields are still needed.
-    -> ParseState Exp -- ^ Previous value of the message and required field states
-    -> MessageInfo Name
-    -> [Alt]
+    -> ParseState HsExpr' -- ^ Previous value of the message and required field states
+    -> MessageInfo OccNameStr
+    -> [RawMatch]
 parseTagCases loop x info =
     concatMap (parseFieldCase loop x) allFields
     -- TODO: currently we ignore unknown fields.
@@ -297,7 +297,7 @@ parseTagCases loop x info =
 
 -- | A particular parsing case.  See @parseTagCases@ for details.
 parseFieldCase ::
-    (ParseState Exp -> Exp) -> ParseState Exp -> PlainFieldInfo -> [Alt]
+    (ParseState HsExpr' -> HsExpr') -> ParseState HsExpr' -> PlainFieldInfo -> [RawMatch]
 parseFieldCase loop x f = case plainFieldKind f of
     MapField entryInfo -> [mapCase entryInfo]
     RepeatedField p
@@ -306,54 +306,54 @@ parseFieldCase loop x f = case plainFieldKind f of
     RequiredField -> [requiredCase]
     _ -> [valueCase]
   where
-    y = "y"
-    entry = "entry"
+    y = bvar "y"
+    entry = bvar "entry"
     info = plainFieldInfo f
-    valueCase = pLitInt (fieldTag info) --> do'
+    valueCase = match [int (fieldTag info)] $ do'
         [ y <-- parseField info
         , stmt . loop . updateParseState (setField info @@ y)
             $ x
         ]
-    requiredCase = pLitInt (fieldTag info) --> do'
+    requiredCase = match [int (fieldTag info)] $ do'
         [ y <-- parseField info
         , stmt . loop
                . updateParseState (setField info @@ y)
                . markRequiredField (fieldId f)
                $ x
         ]
-    unpackedCase = pLitInt (fieldTag info) -->
-        let (appendStmt, x') = appendToRepeated (fieldId f) y x
+    unpackedCase = match [int (fieldTag info)]
+        $ let (appendStmt, x') = appendToRepeated (fieldId f) y x
         in do'
-            [ bangPat y <-- parseField info
+            [ strictP y <-- parseField info
             , appendStmt
             , stmt . loop $ x'
             ]
-    packedCase = pLitInt (packedFieldTag info) --> do'
+    packedCase = match [int (packedFieldTag info)] $ do'
         [ y <-- isolatedLengthy (parsePackedField info
                                     @@ repeatedFieldMVectors x Map.! fieldId f)
         , stmt $ loop x { repeatedFieldMVectors =
-                                Map.insert (fieldId f) (var $ unQual y)
+                                Map.insert (fieldId f) y
                                     $ repeatedFieldMVectors x }
         ]
-    mapCase entryInfo = pLitInt (fieldTag info) --> do'
-        [ bangPat (entry `patTypeSig` tyCon (unQual $ mapEntryTypeName entryInfo))
+    mapCase entryInfo = match [int (fieldTag info)] $ do'
+        [ strictP (entry `sigP` var (unqual $ mapEntryTypeName entryInfo))
                 <-- parseField info
-        , stmt . let' [ patBind "key"
+        , stmt . let' [ valBind "key"
                             $ view' @@ fieldOf (keyField entryInfo)
                                     @@ entry
-                      , patBind "value"
+                      , valBind "value"
                             $ view' @@ fieldOf (valueField entryInfo)
                                     @@ entry
                       ]
                . loop
                . updateParseState
                     (overField info
-                                ("Data.Map.insert" @@ "key" @@ "value"))
+                                (var "Data.Map.insert" @@ var "key" @@ var "value"))
                $ x
         ]
 
 unknownFieldCase ::
-    MessageInfo Name -> (ParseState Exp -> Exp) -> ParseState Exp -> Alt
+    MessageInfo OccNameStr -> (ParseState HsExpr' -> HsExpr') -> ParseState HsExpr' -> RawMatch
 {-
   wire -> do
         !y <- parseTaggedValueFromWire wire
@@ -364,38 +364,39 @@ unknownFieldCase ::
             _ -> return ()
         loop (over unknownFields (\!t -> y:t) x) ...
 -}
-unknownFieldCase info loop x = wire --> (do' $
-    [ bangPat y <-- "Data.ProtoLens.Encoding.Wire.parseTaggedValueFromWire" @@ wire
+unknownFieldCase info loop x = match [wire] $ do' $
+    [ strictP y <-- var "Data.ProtoLens.Encoding.Wire.parseTaggedValueFromWire" @@ wire
     ]
     ++
     [ stmt $ case' y
-        [ pApp "Data.ProtoLens.Encoding.Wire.TaggedValue"
-            [utag, "Data.ProtoLens.Encoding.Wire.EndGroup"]
-            --> "Prelude.fail" @@
-                    ("Prelude.++"
-                        @@ stringExp "Mismatched group-end tag number "
-                        @@ ("Prelude.show" @@ utag))
-        , pWildCard --> "Prelude.return" @@ unit
+        [ match
+            [conP "Data.ProtoLens.Encoding.Wire.TaggedValue"
+                [utag, conP_ "Data.ProtoLens.Encoding.Wire.EndGroup"]]
+            $ var "Prelude.fail" @@
+                (var "Prelude.++"
+                    @@ string "Mismatched group-end tag number "
+                    @@ (var "Prelude.show" @@ utag))
+        , match [wildP] $ var "Prelude.return" @@ unit
         ]
     | Just _ <- [groupFieldNumber info]
     ]
     ++
     [ stmt . loop . updateParseState (over' unknownFields' (cons @@ y))
         $ x
-    ])
+    ]
   where
-    wire = "wire"
-    y = "y"
-    utag = "utag"
+    wire = bvar "wire"
+    y = bvar "y"
+    utag = bvar "utag"
 
 -- | An expression of type "b -> a -> a", corresponding to a Lens a b
 -- for this field.
-setField :: FieldInfo -> Exp
-setField f = "Lens.Family2.set" @@ fieldOf f
+setField :: FieldInfo -> HsExpr'
+setField f = var "Lens.Family2.set" @@ fieldOf f
 
 -- | An expression of type "(b -> b) -> a -> a", corresponding to a
 -- Lens a b for this field.
-overField :: FieldInfo -> Exp -> Exp
+overField :: FieldInfo -> HsExpr' -> HsExpr'
 overField f = over' (fieldOf f)
 
 -- | An expression of type "(b -> b) -> a -> a".
@@ -403,16 +404,16 @@ overField f = over' (fieldOf f)
 -- Specifically, this renders to:
 --   over f (\!z -> g z) x
 -- The extra strictness prevents a space leak due to lists being lazy.
-over' :: Exp -> Exp -> Exp
-over' f g = "Lens.Family2.over"
+over' :: HsExpr' -> HsExpr' -> HsExpr'
+over' f g = var "Lens.Family2.over"
                 @@ f
-                @@ lambda [bangPat t] (g @@ t)
+                @@ lambda [strictP t] (g @@ t)
   where
-    t = "t"
+    t = bvar "t"
 
 -- | A "Growing v RealWorld a -> Parser (Growing v RealWorld a)"
 -- for a field that can be packed.
-parsePackedField :: FieldInfo -> Exp
+parsePackedField :: FieldInfo -> HsExpr'
 {- let ploop qs = do
                     packedEnd <- atEnd
                     if packedEnd
@@ -423,81 +424,82 @@ parsePackedField :: FieldInfo -> Exp
                             ploop qs'
    in ploop
 -}
-parsePackedField info = let' [funBind [match ploop [qs] ploopExp]]
-                            ploop
+parsePackedField info = let' [funBind ploop $ match [qs] ploopExp]
+                            (var ploop)
   where
     ploop = "ploop"
-    q = "q"
-    qs = "qs"
-    qs' = "qs'"
-    packedEnd = "packedEnd"
+    q = bvar "q"
+    qs = bvar "qs"
+    qs' = bvar "qs'"
+    packedEnd = bvar "packedEnd"
     ploopExp = do'
-        [ packedEnd <-- "Data.ProtoLens.Encoding.Bytes.atEnd"
+        [ packedEnd <-- var "Data.ProtoLens.Encoding.Bytes.atEnd"
         , stmt $
             if' packedEnd
-                ("Prelude.return" @@ qs)
+                (var "Prelude.return" @@ qs)
                 $ do'
-                    [ bangPat q <-- parseField info
+                    [ strictP q <-- parseField info
                     , qs' <-- unsafeLiftIO' @@
-                                ("Data.ProtoLens.Encoding.Growing.append"
+                                (var "Data.ProtoLens.Encoding.Growing.append"
                                     @@ qs @@ q)
-                    , stmt $ ploop @@ qs'
+                    , stmt $ var ploop @@ qs'
                     ]
         ]
 
-generatedBuilder :: MessageInfo Name -> Exp
+generatedBuilder :: MessageInfo OccNameStr -> HsExpr'
 generatedBuilder m =
     lambda [x] $ foldMapExp $ map (buildPlainField x) (messageFields m)
                                 ++ map (buildOneofField x) (messageOneofFields m)
                             ++ [buildUnknown x]
                             ++ buildGroupEnd
   where
-    x = "_x" -- TODO: rename to "x" once it's always used
+    x = bvar "_x" -- TODO: rename to "x" once it's always used
     -- If this is a group, finish by emitting the end-group tag.
-    buildGroupEnd = [ putVarInt' @@ litInt (groupEndTag g)
+    buildGroupEnd = [ putVarInt' @@ int (groupEndTag g)
                | Just g <- [groupFieldNumber m]
                ]
 
-buildUnknown :: Exp -> Exp
+buildUnknown :: HsExpr' -> HsExpr'
 buildUnknown x
-    = "Data.ProtoLens.Encoding.Wire.buildFieldSet"
+    = var "Data.ProtoLens.Encoding.Wire.buildFieldSet"
                 @@ (view' @@ unknownFields' @@ x)
 
 -- | Concatenate a list of Monoids into a single value.
 -- For example, foldMapExp [a,b,c] will be transformed into
 -- the (unrolled) expression a <> b <> c.
-foldMapExp :: [Exp] -> Exp
+foldMapExp :: [HsExpr'] -> HsExpr'
 foldMapExp [] = mempty'
 foldMapExp [x] = x
-foldMapExp (x:xs) = "Data.Monoid.<>" @@ x @@ foldMapExp xs
+foldMapExp (x:xs) = var "Data.Monoid.<>" @@ x @@ foldMapExp xs
 
 -- | An expression of type @Builder@ which encodes the field value
 -- @x@ based on the kind and type of the field @f@.
-buildPlainField :: Exp -> PlainFieldInfo -> Exp
+buildPlainField :: HsExpr' -> PlainFieldInfo -> HsExpr'
 buildPlainField x f = case plainFieldKind f of
     RequiredField -> buildTaggedField info fieldValue
     OptionalMaybeField -> case' maybeFieldValue
-                            ["Prelude.Nothing" --> mempty'
-                            , "Prelude.Just" `pApp` [v]
-                                --> buildTaggedField info v
+                            [ match [conP_ "Prelude.Nothing"] mempty'
+                            , match [conP "Prelude.Just" [v']]
+                                $ buildTaggedField info v'
                             ]
-    OptionalValueField -> let' [patBind v fieldValue]
-                          $ if' ("Prelude.==" @@ v @@ "Data.ProtoLens.fieldDefault")
+    OptionalValueField -> let' [valBind v $ fieldValue]
+                          $ if' (var "Prelude.==" @@ v' @@ var "Data.ProtoLens.fieldDefault")
                                 mempty'
-                                (buildTaggedField info v)
+                                (buildTaggedField info v')
     MapField entryInfo
-        -> "Data.Monoid.mconcat"
-            @@ ("Prelude.map"
-                    @@ lambda [v] (buildEntry entryInfo v)
-                    @@ ("Data.Map.toList" @@ fieldValue))
+        -> var "Data.Monoid.mconcat"
+            @@ (var "Prelude.map"
+                    @@ lambda [v'] (buildEntry entryInfo v')
+                    @@ (var "Data.Map.toList" @@ fieldValue))
     RepeatedField Packed -> buildPackedField info vectorFieldValue
-    RepeatedField _ -> "Data.ProtoLens.Encoding.Bytes.foldMapBuilder"
-                            @@ lambda [v]
-                                    (buildTaggedField info v)
+    RepeatedField _ -> var "Data.ProtoLens.Encoding.Bytes.foldMapBuilder"
+                            @@ lambda [v']
+                                    (buildTaggedField info v')
                             @@ vectorFieldValue
   where
     info = plainFieldInfo f
     v = "_v"
+    v' = bvar v
     fieldValue = view'
                     @@ fieldOf info
                     @@ x
@@ -518,63 +520,63 @@ buildPlainField x f = case plainFieldKind f of
         = buildTaggedField info
             $ set'
                 @@ fieldOf (keyField entry)
-                @@ ("Prelude.fst" @@ kv)
+                @@ (var "Prelude.fst" @@ kv)
                 @@ (set' @@ fieldOf (valueField entry)
-                         @@ ("Prelude.snd" @@ kv)
-                         @@ ("Data.ProtoLens.defMessage"
-                                @::@ tyCon (unQual $ mapEntryTypeName entry)))
+                         @@ (var "Prelude.snd" @@ kv)
+                         @@ (var "Data.ProtoLens.defMessage"
+                                @::@ var (unqual $ mapEntryTypeName entry)))
 
-fieldOf :: FieldInfo -> Exp
+fieldOf :: FieldInfo -> HsExpr'
 fieldOf = fieldOfExp . overloadedFieldName
 
-fieldOfMaybe :: FieldInfo -> Exp
+fieldOfMaybe :: FieldInfo -> HsExpr'
 fieldOfMaybe = fieldOfExp . ("maybe'" <>) . overloadedFieldName
 
-fieldOfOneof :: OneofInfo -> Exp
+fieldOfOneof :: OneofInfo -> HsExpr'
 fieldOfOneof =
     fieldOfExp . ("maybe'" <>) . overloadedName . oneofFieldName
 
-fieldOfVector :: FieldInfo -> Exp
+fieldOfVector :: FieldInfo -> HsExpr'
 fieldOfVector = fieldOfExp . ("vec'" <>) . overloadedFieldName
 
 -- | Build a field along with its tag.
-buildTaggedField :: FieldInfo -> Exp -> Exp
+buildTaggedField :: FieldInfo -> HsExpr' -> HsExpr'
 buildTaggedField f x = foldMapExp
-    [ putVarInt' @@ litInt (fieldTag f)
+    [ putVarInt' @@ int (fieldTag f)
     , buildField f @@ x
     ]
 
 -- | Encodes a packed field as a byte string, along with
 -- its wire type+number.
-buildPackedField :: FieldInfo -> Exp -> Exp
+buildPackedField :: FieldInfo -> HsExpr' -> HsExpr'
 {-
     let p = x -- where x might be a complicated expression
     in if null p then mempty
     else putVarInt {TAG}
             <> ... (runBuilder (mconcat (map {BUILD_ELT} p)))
 -}
-buildPackedField f x = let' [patBind p x]
-    $ if' ("Data.Vector.Generic.null" @@ p) mempty'
-    $ "Data.Monoid.<>"
-        @@ (putVarInt' @@ litInt (packedFieldTag f))
+buildPackedField f x = let' [valBind p x]
+    $ if' (var "Data.Vector.Generic.null" @@ var p) mempty'
+    $ var "Data.Monoid.<>"
+        @@ (putVarInt' @@ int (packedFieldTag f))
         @@ (buildFieldType lengthy
-                @@ ("Data.ProtoLens.Encoding.Bytes.runBuilder"
-                    @@ ("Data.ProtoLens.Encoding.Bytes.foldMapBuilder"
+                @@ (var "Data.ProtoLens.Encoding.Bytes.runBuilder"
+                    @@ (var "Data.ProtoLens.Encoding.Bytes.foldMapBuilder"
                             @@ buildField f
-                            @@ p)))
+                            @@ var p)))
   where
     p = "p"
 
-buildOneofField :: Exp -> OneofInfo -> Exp
+buildOneofField :: HsExpr' -> OneofInfo -> HsExpr'
 buildOneofField x info = case' (view' @@ fieldOfOneof info @@ x) $
-    ("Prelude.Nothing" --> mempty')
-    : [ pApp "Prelude.Just" [pApp (unQual $ caseConstructorName c)
-                                 [v]]
-            --> buildTaggedField (caseField c) v
+    (match [conP_ "Prelude.Nothing"] mempty')
+    : [ match [conP "Prelude.Just" [conP (unqual $ caseConstructorName c)
+                                 [v]]]
+            $ buildTaggedField (caseField c) v
       | c <- oneofCases info
       ]
   where
-    v = "v"
+    v = bvar "v"
 
 -- | Compute the proto encoding's representation of the wire type
 -- and field number.
@@ -596,38 +598,38 @@ groupEndTag num = makeTag num groupEnd
 -- | An expression that selects the overloaded field lens of this name.
 --
 -- field @"fieldName"
-fieldOfExp :: Symbol -> Exp
-fieldOfExp sym = "Data.ProtoLens.Field.field" @@ typeApp (promoteSymbol sym)
+fieldOfExp :: Symbol -> HsExpr'
+fieldOfExp sym = tyApp (var "Data.ProtoLens.Field.field") (promoteSymbol sym)
 
 -- | Some functions that are used in multiple places in the generated code.
 getVarInt', putVarInt', mempty', view', set', unknownFields', unsafeLiftIO'
-    :: Exp
-getVarInt' = "Data.ProtoLens.Encoding.Bytes.getVarInt"
-putVarInt' = "Data.ProtoLens.Encoding.Bytes.putVarInt"
-mempty' = "Data.Monoid.mempty"
-view' = "Lens.Family2.view"
-set' = "Lens.Family2.set"
-unknownFields' = "Data.ProtoLens.unknownFields"
-unsafeLiftIO' = "Data.ProtoLens.Encoding.Parser.Unsafe.unsafeLiftIO"
+    :: HsExpr'
+getVarInt' = var "Data.ProtoLens.Encoding.Bytes.getVarInt"
+putVarInt' = var "Data.ProtoLens.Encoding.Bytes.putVarInt"
+mempty' = var "Data.Monoid.mempty"
+view' = var "Lens.Family2.view"
+set' = var "Lens.Family2.set"
+unknownFields' = var "Data.ProtoLens.unknownFields"
+unsafeLiftIO' = var "Data.ProtoLens.Encoding.Parser.Unsafe.unsafeLiftIO"
 
 -- | Returns an expression of type @Parser a@ for the given field.
-parseField :: FieldInfo -> Exp
-parseField f = "Data.ProtoLens.Encoding.Bytes.<?>"
+parseField :: FieldInfo -> HsExpr'
+parseField f = var "Data.ProtoLens.Encoding.Bytes.<?>"
                     @@ (parseFieldType $ fieldInfoEncoding f)
-                    @@ stringExp n
+                    @@ string n
   where
     n = Text.unpack (fieldDescriptor f ^. #name)
 
 -- | Returns a function corresponding to `a -> Builder`:
-buildField :: FieldInfo -> Exp
+buildField :: FieldInfo -> HsExpr'
 buildField = buildFieldType . fieldInfoEncoding
 
 fieldInfoEncoding :: FieldInfo -> FieldEncoding
 fieldInfoEncoding = fieldEncoding . view #type' . fieldDescriptor
 
-growingType :: Env QName -> FieldInfo -> Type
+growingType :: Env RdrNameStr -> FieldInfo -> HsType'
 growingType env f
-    = "Data.ProtoLens.Encoding.Growing.Growing"
+    = var "Data.ProtoLens.Encoding.Growing.Growing"
         @@ hsFieldVectorType f
-        @@ "Data.ProtoLens.Encoding.Growing.RealWorld"
+        @@ var "Data.ProtoLens.Encoding.Growing.RealWorld"
         @@ hsFieldType env f

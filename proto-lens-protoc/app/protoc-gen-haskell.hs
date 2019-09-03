@@ -30,14 +30,15 @@ import System.Environment (getProgName)
 import System.Exit (exitWith, ExitCode(..))
 import System.IO as IO
 
-import Data.ProtoLens.Compiler.Combinators
-    ( prettyPrint
-    , prettyPrintModule
-    , getModuleName
-    , Module
-    )
+import Data.ProtoLens.Compiler.Generate.Commented (CommentedModule, getModuleName)
 import Data.ProtoLens.Compiler.Generate
 import Data.ProtoLens.Compiler.Plugin
+
+import DynFlags (DynFlags, getDynFlags)
+import GHC (runGhc)
+import GhcMonad (liftIO)
+import GHC.Paths (libdir)
+import GHC.SourceGen.Pretty (showPpr)
 
 main :: IO ()
 main = do
@@ -45,15 +46,18 @@ main = do
     progName <- getProgName
     case decodeMessage contents of
         Left e -> IO.hPutStrLn stderr e >> exitWith (ExitFailure 1)
-        Right x -> B.putStr $ encodeMessage $ makeResponse progName x
+        Right x -> runGhc (Just libdir) $ do
+                      dflags <- getDynFlags
+                      liftIO $ B.putStr $ encodeMessage $
+                        makeResponse dflags progName x
 
-makeResponse :: String -> CodeGeneratorRequest -> CodeGeneratorResponse
-makeResponse prog request = let
+makeResponse :: DynFlags -> String -> CodeGeneratorRequest -> CodeGeneratorResponse
+makeResponse dflags prog request = let
     useRuntime = case T.unpack $ request ^. #parameter of
                     "" -> reexported
                     "no-runtime" -> id
                     p -> error $ "Error reading parameter: " ++ show p
-    outputFiles = generateFiles useRuntime header
+    outputFiles = generateFiles dflags useRuntime header
                       (request ^. #protoFile)
                       (request ^. #fileToGenerate)
     header :: FileDescriptorProto -> Text
@@ -68,13 +72,13 @@ makeResponse prog request = let
                      ]
 
 
-generateFiles :: ModifyImports -> (FileDescriptorProto -> Text)
+generateFiles :: DynFlags -> ModifyImports -> (FileDescriptorProto -> Text)
               -> [FileDescriptorProto] -> [ProtoFileName] -> [(Text, Text)]
-generateFiles modifyImports header files toGenerate = let
+generateFiles dflags modifyImports header files toGenerate = let
   modulePrefix = "Proto"
   filesByName = analyzeProtoFiles modulePrefix files
   -- The contents of the generated Haskell file for a given .proto file.
-  modulesToBuild :: ProtoFile -> [Module]
+  modulesToBuild :: ProtoFile -> [CommentedModule]
   modulesToBuild f = let
       deps = descriptor f ^. #dependency
       imports = Set.toAscList $ Set.fromList
@@ -85,8 +89,8 @@ generateFiles modifyImports header files toGenerate = let
              (definitions f)
              (collectEnvFromDeps deps filesByName)
              (services f)
-  in [ ( outputFilePath $ prettyPrint $ getModuleName modul
-       , header (descriptor f) <> pack (prettyPrintModule modul)
+  in [ ( outputFilePath $ showPpr dflags $ getModuleName modul
+       , header (descriptor f) <> pack (showPpr dflags modul)
        )
      | fileName <- toGenerate
      , let f = filesByName ! fileName

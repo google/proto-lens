@@ -31,18 +31,19 @@ import Proto.Google.Protobuf.Descriptor (FileDescriptorProto)
 import System.FilePath (dropExtension, splitDirectories)
 
 import Data.ProtoLens.Compiler.Definitions
-import Data.ProtoLens.Compiler.Combinators (ModuleName, Name, QName)
+
+import GHC.SourceGen (ModuleNameStr, OccNameStr, RdrNameStr)
 
 -- | The filename of an input .proto file.
 type ProtoFileName = Text
 
 data ProtoFile = ProtoFile
     { descriptor :: FileDescriptorProto
-    , haskellModule :: ModuleName
-    , definitions :: Env Name
+    , haskellModule :: ModuleNameStr
+    , definitions :: Env OccNameStr
     , services :: [ServiceInfo]
-    , exportedEnv :: Env QName
-    , publicImports :: [ModuleName]
+    , exportedEnv :: Env RdrNameStr
+    , publicImports :: [ModuleNameStr]
     }
 
 -- Given a list of FileDescriptorProtos, collect information about each file
@@ -75,7 +76,7 @@ analyzeProtoFiles modulePrefix files =
             | i <- f ^. #publicDependency
             ]
 
-collectEnvFromDeps :: [ProtoFileName] -> Map ProtoFileName ProtoFile -> Env QName
+collectEnvFromDeps :: [ProtoFileName] -> Map ProtoFileName ProtoFile -> Env RdrNameStr
 collectEnvFromDeps deps filesByName =
     unions $ fmap (exportedEnv . (filesByName !)) deps
 
@@ -85,7 +86,7 @@ outputFilePath :: String -> Text
 outputFilePath n = T.replace "." "/" (T.pack n) <> ".hs"
 
 -- | Get the Haskell 'ModuleName' corresponding to a given .proto file.
-moduleName :: Text -> FileDescriptorProto -> ModuleName
+moduleName :: Text -> FileDescriptorProto -> ModuleNameStr
 moduleName modulePrefix fd
       = fromString $ moduleNameStr (T.unpack modulePrefix) (T.unpack $ fd ^. #name)
 
