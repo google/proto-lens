@@ -4,8 +4,9 @@
   MultiParamTypeClasses, FlexibleContexts, FlexibleInstances,
   PatternSynonyms, MagicHash, NoImplicitPrelude, DataKinds,
   BangPatterns, TypeApplications #-}
-{-# OPTIONS_GHC -fno-warn-unused-imports#-}
-{-# OPTIONS_GHC -fno-warn-duplicate-exports#-}
+{-# OPTIONS_GHC -Wno-unused-imports#-}
+{-# OPTIONS_GHC -Wno-duplicate-exports#-}
+{-# OPTIONS_GHC -Wno-dodgy-exports#-}
 module Proto.Google.Protobuf.Descriptor_Fields where
 import qualified Prelude
 import qualified Data.Int

@@ -4,8 +4,9 @@
   MultiParamTypeClasses, FlexibleContexts, FlexibleInstances,
   PatternSynonyms, MagicHash, NoImplicitPrelude, DataKinds,
   BangPatterns, TypeApplications #-}
-{-# OPTIONS_GHC -fno-warn-unused-imports#-}
-{-# OPTIONS_GHC -fno-warn-duplicate-exports#-}
+{-# OPTIONS_GHC -Wno-unused-imports#-}
+{-# OPTIONS_GHC -Wno-duplicate-exports#-}
+{-# OPTIONS_GHC -Wno-dodgy-exports#-}
 module Proto.Google.Protobuf.Descriptor
        (DescriptorProto(), DescriptorProto'ExtensionRange(),
         DescriptorProto'ReservedRange(), EnumDescriptorProto(),
@@ -77,26 +78,30 @@ import qualified Text.Read
     * 'Proto.Google.Protobuf.Descriptor_Fields.reservedName' @:: Lens' DescriptorProto [Data.Text.Text]@
     * 'Proto.Google.Protobuf.Descriptor_Fields.vec'reservedName' @:: Lens' DescriptorProto (Data.Vector.Vector Data.Text.Text)@
  -}
-data DescriptorProto = DescriptorProto{_DescriptorProto'name ::
-                                       !(Prelude.Maybe Data.Text.Text),
-                                       _DescriptorProto'field ::
-                                       !(Data.Vector.Vector FieldDescriptorProto),
-                                       _DescriptorProto'extension ::
-                                       !(Data.Vector.Vector FieldDescriptorProto),
-                                       _DescriptorProto'nestedType ::
-                                       !(Data.Vector.Vector DescriptorProto),
-                                       _DescriptorProto'enumType ::
-                                       !(Data.Vector.Vector EnumDescriptorProto),
-                                       _DescriptorProto'extensionRange ::
-                                       !(Data.Vector.Vector DescriptorProto'ExtensionRange),
-                                       _DescriptorProto'oneofDecl ::
-                                       !(Data.Vector.Vector OneofDescriptorProto),
-                                       _DescriptorProto'options :: !(Prelude.Maybe MessageOptions),
-                                       _DescriptorProto'reservedRange ::
-                                       !(Data.Vector.Vector DescriptorProto'ReservedRange),
-                                       _DescriptorProto'reservedName ::
-                                       !(Data.Vector.Vector Data.Text.Text),
-                                       _DescriptorProto'_unknownFields :: !Data.ProtoLens.FieldSet}
+data DescriptorProto = DescriptorProto'_constructor{_DescriptorProto'name
+                                                    :: !(Prelude.Maybe Data.Text.Text),
+                                                    _DescriptorProto'field ::
+                                                    !(Data.Vector.Vector FieldDescriptorProto),
+                                                    _DescriptorProto'extension ::
+                                                    !(Data.Vector.Vector FieldDescriptorProto),
+                                                    _DescriptorProto'nestedType ::
+                                                    !(Data.Vector.Vector DescriptorProto),
+                                                    _DescriptorProto'enumType ::
+                                                    !(Data.Vector.Vector EnumDescriptorProto),
+                                                    _DescriptorProto'extensionRange ::
+                                                    !(Data.Vector.Vector
+                                                        DescriptorProto'ExtensionRange),
+                                                    _DescriptorProto'oneofDecl ::
+                                                    !(Data.Vector.Vector OneofDescriptorProto),
+                                                    _DescriptorProto'options ::
+                                                    !(Prelude.Maybe MessageOptions),
+                                                    _DescriptorProto'reservedRange ::
+                                                    !(Data.Vector.Vector
+                                                        DescriptorProto'ReservedRange),
+                                                    _DescriptorProto'reservedName ::
+                                                    !(Data.Vector.Vector Data.Text.Text),
+                                                    _DescriptorProto'_unknownFields ::
+                                                    !Data.ProtoLens.FieldSet}
                          deriving (Prelude.Eq, Prelude.Ord)
 instance Prelude.Show DescriptorProto where
         showsPrec _ __x __s
@@ -359,17 +364,19 @@ instance Data.ProtoLens.Message DescriptorProto where
           = Lens.Family2.Unchecked.lens _DescriptorProto'_unknownFields
               (\ x__ y__ -> x__{_DescriptorProto'_unknownFields = y__})
         defMessage
-          = DescriptorProto{_DescriptorProto'name = Prelude.Nothing,
-                            _DescriptorProto'field = Data.Vector.Generic.empty,
-                            _DescriptorProto'extension = Data.Vector.Generic.empty,
-                            _DescriptorProto'nestedType = Data.Vector.Generic.empty,
-                            _DescriptorProto'enumType = Data.Vector.Generic.empty,
-                            _DescriptorProto'extensionRange = Data.Vector.Generic.empty,
-                            _DescriptorProto'oneofDecl = Data.Vector.Generic.empty,
-                            _DescriptorProto'options = Prelude.Nothing,
-                            _DescriptorProto'reservedRange = Data.Vector.Generic.empty,
-                            _DescriptorProto'reservedName = Data.Vector.Generic.empty,
-                            _DescriptorProto'_unknownFields = ([])}
+          = DescriptorProto'_constructor{_DescriptorProto'name =
+                                           Prelude.Nothing,
+                                         _DescriptorProto'field = Data.Vector.Generic.empty,
+                                         _DescriptorProto'extension = Data.Vector.Generic.empty,
+                                         _DescriptorProto'nestedType = Data.Vector.Generic.empty,
+                                         _DescriptorProto'enumType = Data.Vector.Generic.empty,
+                                         _DescriptorProto'extensionRange =
+                                           Data.Vector.Generic.empty,
+                                         _DescriptorProto'oneofDecl = Data.Vector.Generic.empty,
+                                         _DescriptorProto'options = Prelude.Nothing,
+                                         _DescriptorProto'reservedRange = Data.Vector.Generic.empty,
+                                         _DescriptorProto'reservedName = Data.Vector.Generic.empty,
+                                         _DescriptorProto'_unknownFields = ([])}
         parseMessage
           = let loop ::
                      DescriptorProto ->
@@ -834,20 +841,21 @@ instance Control.DeepSeq.NFData DescriptorProto where
     * 'Proto.Google.Protobuf.Descriptor_Fields.maybe'options' @:: Lens' DescriptorProto'ExtensionRange
   (Prelude.Maybe ExtensionRangeOptions)@
  -}
-data DescriptorProto'ExtensionRange = DescriptorProto'ExtensionRange{_DescriptorProto'ExtensionRange'start
-                                                                     ::
-                                                                     !(Prelude.Maybe
-                                                                         Data.Int.Int32),
-                                                                     _DescriptorProto'ExtensionRange'end
-                                                                     ::
-                                                                     !(Prelude.Maybe
-                                                                         Data.Int.Int32),
-                                                                     _DescriptorProto'ExtensionRange'options
-                                                                     ::
-                                                                     !(Prelude.Maybe
-                                                                         ExtensionRangeOptions),
-                                                                     _DescriptorProto'ExtensionRange'_unknownFields
-                                                                     :: !Data.ProtoLens.FieldSet}
+data DescriptorProto'ExtensionRange = DescriptorProto'ExtensionRange'_constructor{_DescriptorProto'ExtensionRange'start
+                                                                                  ::
+                                                                                  !(Prelude.Maybe
+                                                                                      Data.Int.Int32),
+                                                                                  _DescriptorProto'ExtensionRange'end
+                                                                                  ::
+                                                                                  !(Prelude.Maybe
+                                                                                      Data.Int.Int32),
+                                                                                  _DescriptorProto'ExtensionRange'options
+                                                                                  ::
+                                                                                  !(Prelude.Maybe
+                                                                                      ExtensionRangeOptions),
+                                                                                  _DescriptorProto'ExtensionRange'_unknownFields
+                                                                                  ::
+                                                                                  !Data.ProtoLens.FieldSet}
                                         deriving (Prelude.Eq, Prelude.Ord)
 instance Prelude.Show DescriptorProto'ExtensionRange where
         showsPrec _ __x __s
@@ -949,12 +957,14 @@ instance Data.ProtoLens.Message DescriptorProto'ExtensionRange
               (\ x__ y__ ->
                  x__{_DescriptorProto'ExtensionRange'_unknownFields = y__})
         defMessage
-          = DescriptorProto'ExtensionRange{_DescriptorProto'ExtensionRange'start
-                                             = Prelude.Nothing,
-                                           _DescriptorProto'ExtensionRange'end = Prelude.Nothing,
-                                           _DescriptorProto'ExtensionRange'options =
-                                             Prelude.Nothing,
-                                           _DescriptorProto'ExtensionRange'_unknownFields = ([])}
+          = DescriptorProto'ExtensionRange'_constructor{_DescriptorProto'ExtensionRange'start
+                                                          = Prelude.Nothing,
+                                                        _DescriptorProto'ExtensionRange'end =
+                                                          Prelude.Nothing,
+                                                        _DescriptorProto'ExtensionRange'options =
+                                                          Prelude.Nothing,
+                                                        _DescriptorProto'ExtensionRange'_unknownFields
+                                                          = ([])}
         parseMessage
           = let loop ::
                      DescriptorProto'ExtensionRange ->
@@ -1060,14 +1070,17 @@ instance Control.DeepSeq.NFData DescriptorProto'ExtensionRange
     * 'Proto.Google.Protobuf.Descriptor_Fields.end' @:: Lens' DescriptorProto'ReservedRange Data.Int.Int32@
     * 'Proto.Google.Protobuf.Descriptor_Fields.maybe'end' @:: Lens' DescriptorProto'ReservedRange (Prelude.Maybe Data.Int.Int32)@
  -}
-data DescriptorProto'ReservedRange = DescriptorProto'ReservedRange{_DescriptorProto'ReservedRange'start
-                                                                   ::
-                                                                   !(Prelude.Maybe Data.Int.Int32),
-                                                                   _DescriptorProto'ReservedRange'end
-                                                                   ::
-                                                                   !(Prelude.Maybe Data.Int.Int32),
-                                                                   _DescriptorProto'ReservedRange'_unknownFields
-                                                                   :: !Data.ProtoLens.FieldSet}
+data DescriptorProto'ReservedRange = DescriptorProto'ReservedRange'_constructor{_DescriptorProto'ReservedRange'start
+                                                                                ::
+                                                                                !(Prelude.Maybe
+                                                                                    Data.Int.Int32),
+                                                                                _DescriptorProto'ReservedRange'end
+                                                                                ::
+                                                                                !(Prelude.Maybe
+                                                                                    Data.Int.Int32),
+                                                                                _DescriptorProto'ReservedRange'_unknownFields
+                                                                                ::
+                                                                                !Data.ProtoLens.FieldSet}
                                        deriving (Prelude.Eq, Prelude.Ord)
 instance Prelude.Show DescriptorProto'ReservedRange where
         showsPrec _ __x __s
@@ -1138,10 +1151,12 @@ instance Data.ProtoLens.Message DescriptorProto'ReservedRange where
               (\ x__ y__ ->
                  x__{_DescriptorProto'ReservedRange'_unknownFields = y__})
         defMessage
-          = DescriptorProto'ReservedRange{_DescriptorProto'ReservedRange'start
-                                            = Prelude.Nothing,
-                                          _DescriptorProto'ReservedRange'end = Prelude.Nothing,
-                                          _DescriptorProto'ReservedRange'_unknownFields = ([])}
+          = DescriptorProto'ReservedRange'_constructor{_DescriptorProto'ReservedRange'start
+                                                         = Prelude.Nothing,
+                                                       _DescriptorProto'ReservedRange'end =
+                                                         Prelude.Nothing,
+                                                       _DescriptorProto'ReservedRange'_unknownFields
+                                                         = ([])}
         parseMessage
           = let loop ::
                      DescriptorProto'ReservedRange ->
@@ -1227,19 +1242,20 @@ instance Control.DeepSeq.NFData DescriptorProto'ReservedRange where
     * 'Proto.Google.Protobuf.Descriptor_Fields.reservedName' @:: Lens' EnumDescriptorProto [Data.Text.Text]@
     * 'Proto.Google.Protobuf.Descriptor_Fields.vec'reservedName' @:: Lens' EnumDescriptorProto (Data.Vector.Vector Data.Text.Text)@
  -}
-data EnumDescriptorProto = EnumDescriptorProto{_EnumDescriptorProto'name
-                                               :: !(Prelude.Maybe Data.Text.Text),
-                                               _EnumDescriptorProto'value ::
-                                               !(Data.Vector.Vector EnumValueDescriptorProto),
-                                               _EnumDescriptorProto'options ::
-                                               !(Prelude.Maybe EnumOptions),
-                                               _EnumDescriptorProto'reservedRange ::
-                                               !(Data.Vector.Vector
-                                                   EnumDescriptorProto'EnumReservedRange),
-                                               _EnumDescriptorProto'reservedName ::
-                                               !(Data.Vector.Vector Data.Text.Text),
-                                               _EnumDescriptorProto'_unknownFields ::
-                                               !Data.ProtoLens.FieldSet}
+data EnumDescriptorProto = EnumDescriptorProto'_constructor{_EnumDescriptorProto'name
+                                                            :: !(Prelude.Maybe Data.Text.Text),
+                                                            _EnumDescriptorProto'value ::
+                                                            !(Data.Vector.Vector
+                                                                EnumValueDescriptorProto),
+                                                            _EnumDescriptorProto'options ::
+                                                            !(Prelude.Maybe EnumOptions),
+                                                            _EnumDescriptorProto'reservedRange ::
+                                                            !(Data.Vector.Vector
+                                                                EnumDescriptorProto'EnumReservedRange),
+                                                            _EnumDescriptorProto'reservedName ::
+                                                            !(Data.Vector.Vector Data.Text.Text),
+                                                            _EnumDescriptorProto'_unknownFields ::
+                                                            !Data.ProtoLens.FieldSet}
                              deriving (Prelude.Eq, Prelude.Ord)
 instance Prelude.Show EnumDescriptorProto where
         showsPrec _ __x __s
@@ -1381,12 +1397,15 @@ instance Data.ProtoLens.Message EnumDescriptorProto where
           = Lens.Family2.Unchecked.lens _EnumDescriptorProto'_unknownFields
               (\ x__ y__ -> x__{_EnumDescriptorProto'_unknownFields = y__})
         defMessage
-          = EnumDescriptorProto{_EnumDescriptorProto'name = Prelude.Nothing,
-                                _EnumDescriptorProto'value = Data.Vector.Generic.empty,
-                                _EnumDescriptorProto'options = Prelude.Nothing,
-                                _EnumDescriptorProto'reservedRange = Data.Vector.Generic.empty,
-                                _EnumDescriptorProto'reservedName = Data.Vector.Generic.empty,
-                                _EnumDescriptorProto'_unknownFields = ([])}
+          = EnumDescriptorProto'_constructor{_EnumDescriptorProto'name =
+                                               Prelude.Nothing,
+                                             _EnumDescriptorProto'value = Data.Vector.Generic.empty,
+                                             _EnumDescriptorProto'options = Prelude.Nothing,
+                                             _EnumDescriptorProto'reservedRange =
+                                               Data.Vector.Generic.empty,
+                                             _EnumDescriptorProto'reservedName =
+                                               Data.Vector.Generic.empty,
+                                             _EnumDescriptorProto'_unknownFields = ([])}
         parseMessage
           = let loop ::
                      EnumDescriptorProto ->
@@ -1601,17 +1620,17 @@ instance Control.DeepSeq.NFData EnumDescriptorProto where
     * 'Proto.Google.Protobuf.Descriptor_Fields.maybe'end' @:: Lens' EnumDescriptorProto'EnumReservedRange
   (Prelude.Maybe Data.Int.Int32)@
  -}
-data EnumDescriptorProto'EnumReservedRange = EnumDescriptorProto'EnumReservedRange{_EnumDescriptorProto'EnumReservedRange'start
-                                                                                   ::
-                                                                                   !(Prelude.Maybe
-                                                                                       Data.Int.Int32),
-                                                                                   _EnumDescriptorProto'EnumReservedRange'end
-                                                                                   ::
-                                                                                   !(Prelude.Maybe
-                                                                                       Data.Int.Int32),
-                                                                                   _EnumDescriptorProto'EnumReservedRange'_unknownFields
-                                                                                   ::
-                                                                                   !Data.ProtoLens.FieldSet}
+data EnumDescriptorProto'EnumReservedRange = EnumDescriptorProto'EnumReservedRange'_constructor{_EnumDescriptorProto'EnumReservedRange'start
+                                                                                                ::
+                                                                                                !(Prelude.Maybe
+                                                                                                    Data.Int.Int32),
+                                                                                                _EnumDescriptorProto'EnumReservedRange'end
+                                                                                                ::
+                                                                                                !(Prelude.Maybe
+                                                                                                    Data.Int.Int32),
+                                                                                                _EnumDescriptorProto'EnumReservedRange'_unknownFields
+                                                                                                ::
+                                                                                                !Data.ProtoLens.FieldSet}
                                                deriving (Prelude.Eq, Prelude.Ord)
 instance Prelude.Show EnumDescriptorProto'EnumReservedRange where
         showsPrec _ __x __s
@@ -1697,12 +1716,12 @@ instance Data.ProtoLens.Message
               (\ x__ y__ ->
                  x__{_EnumDescriptorProto'EnumReservedRange'_unknownFields = y__})
         defMessage
-          = EnumDescriptorProto'EnumReservedRange{_EnumDescriptorProto'EnumReservedRange'start
-                                                    = Prelude.Nothing,
-                                                  _EnumDescriptorProto'EnumReservedRange'end =
-                                                    Prelude.Nothing,
-                                                  _EnumDescriptorProto'EnumReservedRange'_unknownFields
-                                                    = ([])}
+          = EnumDescriptorProto'EnumReservedRange'_constructor{_EnumDescriptorProto'EnumReservedRange'start
+                                                                 = Prelude.Nothing,
+                                                               _EnumDescriptorProto'EnumReservedRange'end
+                                                                 = Prelude.Nothing,
+                                                               _EnumDescriptorProto'EnumReservedRange'_unknownFields
+                                                                 = ([])}
         parseMessage
           = let loop ::
                      EnumDescriptorProto'EnumReservedRange ->
@@ -1787,12 +1806,13 @@ instance Control.DeepSeq.NFData
     * 'Proto.Google.Protobuf.Descriptor_Fields.uninterpretedOption' @:: Lens' EnumOptions [UninterpretedOption]@
     * 'Proto.Google.Protobuf.Descriptor_Fields.vec'uninterpretedOption' @:: Lens' EnumOptions (Data.Vector.Vector UninterpretedOption)@
  -}
-data EnumOptions = EnumOptions{_EnumOptions'allowAlias ::
-                               !(Prelude.Maybe Prelude.Bool),
-                               _EnumOptions'deprecated :: !(Prelude.Maybe Prelude.Bool),
-                               _EnumOptions'uninterpretedOption ::
-                               !(Data.Vector.Vector UninterpretedOption),
-                               _EnumOptions'_unknownFields :: !Data.ProtoLens.FieldSet}
+data EnumOptions = EnumOptions'_constructor{_EnumOptions'allowAlias
+                                            :: !(Prelude.Maybe Prelude.Bool),
+                                            _EnumOptions'deprecated ::
+                                            !(Prelude.Maybe Prelude.Bool),
+                                            _EnumOptions'uninterpretedOption ::
+                                            !(Data.Vector.Vector UninterpretedOption),
+                                            _EnumOptions'_unknownFields :: !Data.ProtoLens.FieldSet}
                      deriving (Prelude.Eq, Prelude.Ord)
 instance Prelude.Show EnumOptions where
         showsPrec _ __x __s
@@ -1880,10 +1900,11 @@ instance Data.ProtoLens.Message EnumOptions where
           = Lens.Family2.Unchecked.lens _EnumOptions'_unknownFields
               (\ x__ y__ -> x__{_EnumOptions'_unknownFields = y__})
         defMessage
-          = EnumOptions{_EnumOptions'allowAlias = Prelude.Nothing,
-                        _EnumOptions'deprecated = Prelude.Nothing,
-                        _EnumOptions'uninterpretedOption = Data.Vector.Generic.empty,
-                        _EnumOptions'_unknownFields = ([])}
+          = EnumOptions'_constructor{_EnumOptions'allowAlias =
+                                       Prelude.Nothing,
+                                     _EnumOptions'deprecated = Prelude.Nothing,
+                                     _EnumOptions'uninterpretedOption = Data.Vector.Generic.empty,
+                                     _EnumOptions'_unknownFields = ([])}
         parseMessage
           = let loop ::
                      EnumOptions ->
@@ -2009,14 +2030,20 @@ instance Control.DeepSeq.NFData EnumOptions where
     * 'Proto.Google.Protobuf.Descriptor_Fields.options' @:: Lens' EnumValueDescriptorProto EnumValueOptions@
     * 'Proto.Google.Protobuf.Descriptor_Fields.maybe'options' @:: Lens' EnumValueDescriptorProto (Prelude.Maybe EnumValueOptions)@
  -}
-data EnumValueDescriptorProto = EnumValueDescriptorProto{_EnumValueDescriptorProto'name
-                                                         :: !(Prelude.Maybe Data.Text.Text),
-                                                         _EnumValueDescriptorProto'number ::
-                                                         !(Prelude.Maybe Data.Int.Int32),
-                                                         _EnumValueDescriptorProto'options ::
-                                                         !(Prelude.Maybe EnumValueOptions),
-                                                         _EnumValueDescriptorProto'_unknownFields ::
-                                                         !Data.ProtoLens.FieldSet}
+data EnumValueDescriptorProto = EnumValueDescriptorProto'_constructor{_EnumValueDescriptorProto'name
+                                                                      ::
+                                                                      !(Prelude.Maybe
+                                                                          Data.Text.Text),
+                                                                      _EnumValueDescriptorProto'number
+                                                                      ::
+                                                                      !(Prelude.Maybe
+                                                                          Data.Int.Int32),
+                                                                      _EnumValueDescriptorProto'options
+                                                                      ::
+                                                                      !(Prelude.Maybe
+                                                                          EnumValueOptions),
+                                                                      _EnumValueDescriptorProto'_unknownFields
+                                                                      :: !Data.ProtoLens.FieldSet}
                                   deriving (Prelude.Eq, Prelude.Ord)
 instance Prelude.Show EnumValueDescriptorProto where
         showsPrec _ __x __s
@@ -2106,11 +2133,13 @@ instance Data.ProtoLens.Message EnumValueDescriptorProto where
               _EnumValueDescriptorProto'_unknownFields
               (\ x__ y__ -> x__{_EnumValueDescriptorProto'_unknownFields = y__})
         defMessage
-          = EnumValueDescriptorProto{_EnumValueDescriptorProto'name =
-                                       Prelude.Nothing,
-                                     _EnumValueDescriptorProto'number = Prelude.Nothing,
-                                     _EnumValueDescriptorProto'options = Prelude.Nothing,
-                                     _EnumValueDescriptorProto'_unknownFields = ([])}
+          = EnumValueDescriptorProto'_constructor{_EnumValueDescriptorProto'name
+                                                    = Prelude.Nothing,
+                                                  _EnumValueDescriptorProto'number =
+                                                    Prelude.Nothing,
+                                                  _EnumValueDescriptorProto'options =
+                                                    Prelude.Nothing,
+                                                  _EnumValueDescriptorProto'_unknownFields = ([])}
         parseMessage
           = let loop ::
                      EnumValueDescriptorProto ->
@@ -2225,12 +2254,12 @@ instance Control.DeepSeq.NFData EnumValueDescriptorProto where
     * 'Proto.Google.Protobuf.Descriptor_Fields.uninterpretedOption' @:: Lens' EnumValueOptions [UninterpretedOption]@
     * 'Proto.Google.Protobuf.Descriptor_Fields.vec'uninterpretedOption' @:: Lens' EnumValueOptions (Data.Vector.Vector UninterpretedOption)@
  -}
-data EnumValueOptions = EnumValueOptions{_EnumValueOptions'deprecated
-                                         :: !(Prelude.Maybe Prelude.Bool),
-                                         _EnumValueOptions'uninterpretedOption ::
-                                         !(Data.Vector.Vector UninterpretedOption),
-                                         _EnumValueOptions'_unknownFields ::
-                                         !Data.ProtoLens.FieldSet}
+data EnumValueOptions = EnumValueOptions'_constructor{_EnumValueOptions'deprecated
+                                                      :: !(Prelude.Maybe Prelude.Bool),
+                                                      _EnumValueOptions'uninterpretedOption ::
+                                                      !(Data.Vector.Vector UninterpretedOption),
+                                                      _EnumValueOptions'_unknownFields ::
+                                                      !Data.ProtoLens.FieldSet}
                           deriving (Prelude.Eq, Prelude.Ord)
 instance Prelude.Show EnumValueOptions where
         showsPrec _ __x __s
@@ -2298,9 +2327,11 @@ instance Data.ProtoLens.Message EnumValueOptions where
           = Lens.Family2.Unchecked.lens _EnumValueOptions'_unknownFields
               (\ x__ y__ -> x__{_EnumValueOptions'_unknownFields = y__})
         defMessage
-          = EnumValueOptions{_EnumValueOptions'deprecated = Prelude.Nothing,
-                             _EnumValueOptions'uninterpretedOption = Data.Vector.Generic.empty,
-                             _EnumValueOptions'_unknownFields = ([])}
+          = EnumValueOptions'_constructor{_EnumValueOptions'deprecated =
+                                            Prelude.Nothing,
+                                          _EnumValueOptions'uninterpretedOption =
+                                            Data.Vector.Generic.empty,
+                                          _EnumValueOptions'_unknownFields = ([])}
         parseMessage
           = let loop ::
                      EnumValueOptions ->
@@ -2403,10 +2434,12 @@ instance Control.DeepSeq.NFData EnumValueOptions where
     * 'Proto.Google.Protobuf.Descriptor_Fields.vec'uninterpretedOption' @:: Lens' ExtensionRangeOptions
   (Data.Vector.Vector UninterpretedOption)@
  -}
-data ExtensionRangeOptions = ExtensionRangeOptions{_ExtensionRangeOptions'uninterpretedOption
-                                                   :: !(Data.Vector.Vector UninterpretedOption),
-                                                   _ExtensionRangeOptions'_unknownFields ::
-                                                   !Data.ProtoLens.FieldSet}
+data ExtensionRangeOptions = ExtensionRangeOptions'_constructor{_ExtensionRangeOptions'uninterpretedOption
+                                                                ::
+                                                                !(Data.Vector.Vector
+                                                                    UninterpretedOption),
+                                                                _ExtensionRangeOptions'_unknownFields
+                                                                :: !Data.ProtoLens.FieldSet}
                                deriving (Prelude.Eq, Prelude.Ord)
 instance Prelude.Show ExtensionRangeOptions where
         showsPrec _ __x __s
@@ -2453,9 +2486,9 @@ instance Data.ProtoLens.Message ExtensionRangeOptions where
           = Lens.Family2.Unchecked.lens _ExtensionRangeOptions'_unknownFields
               (\ x__ y__ -> x__{_ExtensionRangeOptions'_unknownFields = y__})
         defMessage
-          = ExtensionRangeOptions{_ExtensionRangeOptions'uninterpretedOption
-                                    = Data.Vector.Generic.empty,
-                                  _ExtensionRangeOptions'_unknownFields = ([])}
+          = ExtensionRangeOptions'_constructor{_ExtensionRangeOptions'uninterpretedOption
+                                                 = Data.Vector.Generic.empty,
+                                               _ExtensionRangeOptions'_unknownFields = ([])}
         parseMessage
           = let loop ::
                      ExtensionRangeOptions ->
@@ -2556,28 +2589,30 @@ instance Control.DeepSeq.NFData ExtensionRangeOptions where
     * 'Proto.Google.Protobuf.Descriptor_Fields.options' @:: Lens' FieldDescriptorProto FieldOptions@
     * 'Proto.Google.Protobuf.Descriptor_Fields.maybe'options' @:: Lens' FieldDescriptorProto (Prelude.Maybe FieldOptions)@
  -}
-data FieldDescriptorProto = FieldDescriptorProto{_FieldDescriptorProto'name
-                                                 :: !(Prelude.Maybe Data.Text.Text),
-                                                 _FieldDescriptorProto'number ::
-                                                 !(Prelude.Maybe Data.Int.Int32),
-                                                 _FieldDescriptorProto'label ::
-                                                 !(Prelude.Maybe FieldDescriptorProto'Label),
-                                                 _FieldDescriptorProto'type' ::
-                                                 !(Prelude.Maybe FieldDescriptorProto'Type),
-                                                 _FieldDescriptorProto'typeName ::
-                                                 !(Prelude.Maybe Data.Text.Text),
-                                                 _FieldDescriptorProto'extendee ::
-                                                 !(Prelude.Maybe Data.Text.Text),
-                                                 _FieldDescriptorProto'defaultValue ::
-                                                 !(Prelude.Maybe Data.Text.Text),
-                                                 _FieldDescriptorProto'oneofIndex ::
-                                                 !(Prelude.Maybe Data.Int.Int32),
-                                                 _FieldDescriptorProto'jsonName ::
-                                                 !(Prelude.Maybe Data.Text.Text),
-                                                 _FieldDescriptorProto'options ::
-                                                 !(Prelude.Maybe FieldOptions),
-                                                 _FieldDescriptorProto'_unknownFields ::
-                                                 !Data.ProtoLens.FieldSet}
+data FieldDescriptorProto = FieldDescriptorProto'_constructor{_FieldDescriptorProto'name
+                                                              :: !(Prelude.Maybe Data.Text.Text),
+                                                              _FieldDescriptorProto'number ::
+                                                              !(Prelude.Maybe Data.Int.Int32),
+                                                              _FieldDescriptorProto'label ::
+                                                              !(Prelude.Maybe
+                                                                  FieldDescriptorProto'Label),
+                                                              _FieldDescriptorProto'type' ::
+                                                              !(Prelude.Maybe
+                                                                  FieldDescriptorProto'Type),
+                                                              _FieldDescriptorProto'typeName ::
+                                                              !(Prelude.Maybe Data.Text.Text),
+                                                              _FieldDescriptorProto'extendee ::
+                                                              !(Prelude.Maybe Data.Text.Text),
+                                                              _FieldDescriptorProto'defaultValue ::
+                                                              !(Prelude.Maybe Data.Text.Text),
+                                                              _FieldDescriptorProto'oneofIndex ::
+                                                              !(Prelude.Maybe Data.Int.Int32),
+                                                              _FieldDescriptorProto'jsonName ::
+                                                              !(Prelude.Maybe Data.Text.Text),
+                                                              _FieldDescriptorProto'options ::
+                                                              !(Prelude.Maybe FieldOptions),
+                                                              _FieldDescriptorProto'_unknownFields
+                                                              :: !Data.ProtoLens.FieldSet}
                               deriving (Prelude.Eq, Prelude.Ord)
 instance Prelude.Show FieldDescriptorProto where
         showsPrec _ __x __s
@@ -2831,18 +2866,18 @@ instance Data.ProtoLens.Message FieldDescriptorProto where
           = Lens.Family2.Unchecked.lens _FieldDescriptorProto'_unknownFields
               (\ x__ y__ -> x__{_FieldDescriptorProto'_unknownFields = y__})
         defMessage
-          = FieldDescriptorProto{_FieldDescriptorProto'name =
-                                   Prelude.Nothing,
-                                 _FieldDescriptorProto'number = Prelude.Nothing,
-                                 _FieldDescriptorProto'label = Prelude.Nothing,
-                                 _FieldDescriptorProto'type' = Prelude.Nothing,
-                                 _FieldDescriptorProto'typeName = Prelude.Nothing,
-                                 _FieldDescriptorProto'extendee = Prelude.Nothing,
-                                 _FieldDescriptorProto'defaultValue = Prelude.Nothing,
-                                 _FieldDescriptorProto'oneofIndex = Prelude.Nothing,
-                                 _FieldDescriptorProto'jsonName = Prelude.Nothing,
-                                 _FieldDescriptorProto'options = Prelude.Nothing,
-                                 _FieldDescriptorProto'_unknownFields = ([])}
+          = FieldDescriptorProto'_constructor{_FieldDescriptorProto'name =
+                                                Prelude.Nothing,
+                                              _FieldDescriptorProto'number = Prelude.Nothing,
+                                              _FieldDescriptorProto'label = Prelude.Nothing,
+                                              _FieldDescriptorProto'type' = Prelude.Nothing,
+                                              _FieldDescriptorProto'typeName = Prelude.Nothing,
+                                              _FieldDescriptorProto'extendee = Prelude.Nothing,
+                                              _FieldDescriptorProto'defaultValue = Prelude.Nothing,
+                                              _FieldDescriptorProto'oneofIndex = Prelude.Nothing,
+                                              _FieldDescriptorProto'jsonName = Prelude.Nothing,
+                                              _FieldDescriptorProto'options = Prelude.Nothing,
+                                              _FieldDescriptorProto'_unknownFields = ([])}
         parseMessage
           = let loop ::
                      FieldDescriptorProto ->
@@ -3422,16 +3457,19 @@ instance Control.DeepSeq.NFData FieldDescriptorProto'Type where
     * 'Proto.Google.Protobuf.Descriptor_Fields.uninterpretedOption' @:: Lens' FieldOptions [UninterpretedOption]@
     * 'Proto.Google.Protobuf.Descriptor_Fields.vec'uninterpretedOption' @:: Lens' FieldOptions (Data.Vector.Vector UninterpretedOption)@
  -}
-data FieldOptions = FieldOptions{_FieldOptions'ctype ::
-                                 !(Prelude.Maybe FieldOptions'CType),
-                                 _FieldOptions'packed :: !(Prelude.Maybe Prelude.Bool),
-                                 _FieldOptions'jstype :: !(Prelude.Maybe FieldOptions'JSType),
-                                 _FieldOptions'lazy :: !(Prelude.Maybe Prelude.Bool),
-                                 _FieldOptions'deprecated :: !(Prelude.Maybe Prelude.Bool),
-                                 _FieldOptions'weak :: !(Prelude.Maybe Prelude.Bool),
-                                 _FieldOptions'uninterpretedOption ::
-                                 !(Data.Vector.Vector UninterpretedOption),
-                                 _FieldOptions'_unknownFields :: !Data.ProtoLens.FieldSet}
+data FieldOptions = FieldOptions'_constructor{_FieldOptions'ctype
+                                              :: !(Prelude.Maybe FieldOptions'CType),
+                                              _FieldOptions'packed :: !(Prelude.Maybe Prelude.Bool),
+                                              _FieldOptions'jstype ::
+                                              !(Prelude.Maybe FieldOptions'JSType),
+                                              _FieldOptions'lazy :: !(Prelude.Maybe Prelude.Bool),
+                                              _FieldOptions'deprecated ::
+                                              !(Prelude.Maybe Prelude.Bool),
+                                              _FieldOptions'weak :: !(Prelude.Maybe Prelude.Bool),
+                                              _FieldOptions'uninterpretedOption ::
+                                              !(Data.Vector.Vector UninterpretedOption),
+                                              _FieldOptions'_unknownFields ::
+                                              !Data.ProtoLens.FieldSet}
                       deriving (Prelude.Eq, Prelude.Ord)
 instance Prelude.Show FieldOptions where
         showsPrec _ __x __s
@@ -3606,14 +3644,14 @@ instance Data.ProtoLens.Message FieldOptions where
           = Lens.Family2.Unchecked.lens _FieldOptions'_unknownFields
               (\ x__ y__ -> x__{_FieldOptions'_unknownFields = y__})
         defMessage
-          = FieldOptions{_FieldOptions'ctype = Prelude.Nothing,
-                         _FieldOptions'packed = Prelude.Nothing,
-                         _FieldOptions'jstype = Prelude.Nothing,
-                         _FieldOptions'lazy = Prelude.Nothing,
-                         _FieldOptions'deprecated = Prelude.Nothing,
-                         _FieldOptions'weak = Prelude.Nothing,
-                         _FieldOptions'uninterpretedOption = Data.Vector.Generic.empty,
-                         _FieldOptions'_unknownFields = ([])}
+          = FieldOptions'_constructor{_FieldOptions'ctype = Prelude.Nothing,
+                                      _FieldOptions'packed = Prelude.Nothing,
+                                      _FieldOptions'jstype = Prelude.Nothing,
+                                      _FieldOptions'lazy = Prelude.Nothing,
+                                      _FieldOptions'deprecated = Prelude.Nothing,
+                                      _FieldOptions'weak = Prelude.Nothing,
+                                      _FieldOptions'uninterpretedOption = Data.Vector.Generic.empty,
+                                      _FieldOptions'_unknownFields = ([])}
         parseMessage
           = let loop ::
                      FieldOptions ->
@@ -3933,32 +3971,37 @@ instance Control.DeepSeq.NFData FieldOptions'JSType where
     * 'Proto.Google.Protobuf.Descriptor_Fields.syntax' @:: Lens' FileDescriptorProto Data.Text.Text@
     * 'Proto.Google.Protobuf.Descriptor_Fields.maybe'syntax' @:: Lens' FileDescriptorProto (Prelude.Maybe Data.Text.Text)@
  -}
-data FileDescriptorProto = FileDescriptorProto{_FileDescriptorProto'name
-                                               :: !(Prelude.Maybe Data.Text.Text),
-                                               _FileDescriptorProto'package ::
-                                               !(Prelude.Maybe Data.Text.Text),
-                                               _FileDescriptorProto'dependency ::
-                                               !(Data.Vector.Vector Data.Text.Text),
-                                               _FileDescriptorProto'publicDependency ::
-                                               !(Data.Vector.Unboxed.Vector Data.Int.Int32),
-                                               _FileDescriptorProto'weakDependency ::
-                                               !(Data.Vector.Unboxed.Vector Data.Int.Int32),
-                                               _FileDescriptorProto'messageType ::
-                                               !(Data.Vector.Vector DescriptorProto),
-                                               _FileDescriptorProto'enumType ::
-                                               !(Data.Vector.Vector EnumDescriptorProto),
-                                               _FileDescriptorProto'service ::
-                                               !(Data.Vector.Vector ServiceDescriptorProto),
-                                               _FileDescriptorProto'extension ::
-                                               !(Data.Vector.Vector FieldDescriptorProto),
-                                               _FileDescriptorProto'options ::
-                                               !(Prelude.Maybe FileOptions),
-                                               _FileDescriptorProto'sourceCodeInfo ::
-                                               !(Prelude.Maybe SourceCodeInfo),
-                                               _FileDescriptorProto'syntax ::
-                                               !(Prelude.Maybe Data.Text.Text),
-                                               _FileDescriptorProto'_unknownFields ::
-                                               !Data.ProtoLens.FieldSet}
+data FileDescriptorProto = FileDescriptorProto'_constructor{_FileDescriptorProto'name
+                                                            :: !(Prelude.Maybe Data.Text.Text),
+                                                            _FileDescriptorProto'package ::
+                                                            !(Prelude.Maybe Data.Text.Text),
+                                                            _FileDescriptorProto'dependency ::
+                                                            !(Data.Vector.Vector Data.Text.Text),
+                                                            _FileDescriptorProto'publicDependency ::
+                                                            !(Data.Vector.Unboxed.Vector
+                                                                Data.Int.Int32),
+                                                            _FileDescriptorProto'weakDependency ::
+                                                            !(Data.Vector.Unboxed.Vector
+                                                                Data.Int.Int32),
+                                                            _FileDescriptorProto'messageType ::
+                                                            !(Data.Vector.Vector DescriptorProto),
+                                                            _FileDescriptorProto'enumType ::
+                                                            !(Data.Vector.Vector
+                                                                EnumDescriptorProto),
+                                                            _FileDescriptorProto'service ::
+                                                            !(Data.Vector.Vector
+                                                                ServiceDescriptorProto),
+                                                            _FileDescriptorProto'extension ::
+                                                            !(Data.Vector.Vector
+                                                                FieldDescriptorProto),
+                                                            _FileDescriptorProto'options ::
+                                                            !(Prelude.Maybe FileOptions),
+                                                            _FileDescriptorProto'sourceCodeInfo ::
+                                                            !(Prelude.Maybe SourceCodeInfo),
+                                                            _FileDescriptorProto'syntax ::
+                                                            !(Prelude.Maybe Data.Text.Text),
+                                                            _FileDescriptorProto'_unknownFields ::
+                                                            !Data.ProtoLens.FieldSet}
                              deriving (Prelude.Eq, Prelude.Ord)
 instance Prelude.Show FileDescriptorProto where
         showsPrec _ __x __s
@@ -4277,19 +4320,27 @@ instance Data.ProtoLens.Message FileDescriptorProto where
           = Lens.Family2.Unchecked.lens _FileDescriptorProto'_unknownFields
               (\ x__ y__ -> x__{_FileDescriptorProto'_unknownFields = y__})
         defMessage
-          = FileDescriptorProto{_FileDescriptorProto'name = Prelude.Nothing,
-                                _FileDescriptorProto'package = Prelude.Nothing,
-                                _FileDescriptorProto'dependency = Data.Vector.Generic.empty,
-                                _FileDescriptorProto'publicDependency = Data.Vector.Generic.empty,
-                                _FileDescriptorProto'weakDependency = Data.Vector.Generic.empty,
-                                _FileDescriptorProto'messageType = Data.Vector.Generic.empty,
-                                _FileDescriptorProto'enumType = Data.Vector.Generic.empty,
-                                _FileDescriptorProto'service = Data.Vector.Generic.empty,
-                                _FileDescriptorProto'extension = Data.Vector.Generic.empty,
-                                _FileDescriptorProto'options = Prelude.Nothing,
-                                _FileDescriptorProto'sourceCodeInfo = Prelude.Nothing,
-                                _FileDescriptorProto'syntax = Prelude.Nothing,
-                                _FileDescriptorProto'_unknownFields = ([])}
+          = FileDescriptorProto'_constructor{_FileDescriptorProto'name =
+                                               Prelude.Nothing,
+                                             _FileDescriptorProto'package = Prelude.Nothing,
+                                             _FileDescriptorProto'dependency =
+                                               Data.Vector.Generic.empty,
+                                             _FileDescriptorProto'publicDependency =
+                                               Data.Vector.Generic.empty,
+                                             _FileDescriptorProto'weakDependency =
+                                               Data.Vector.Generic.empty,
+                                             _FileDescriptorProto'messageType =
+                                               Data.Vector.Generic.empty,
+                                             _FileDescriptorProto'enumType =
+                                               Data.Vector.Generic.empty,
+                                             _FileDescriptorProto'service =
+                                               Data.Vector.Generic.empty,
+                                             _FileDescriptorProto'extension =
+                                               Data.Vector.Generic.empty,
+                                             _FileDescriptorProto'options = Prelude.Nothing,
+                                             _FileDescriptorProto'sourceCodeInfo = Prelude.Nothing,
+                                             _FileDescriptorProto'syntax = Prelude.Nothing,
+                                             _FileDescriptorProto'_unknownFields = ([])}
         parseMessage
           = let loop ::
                      FileDescriptorProto ->
@@ -4859,10 +4910,11 @@ instance Control.DeepSeq.NFData FileDescriptorProto where
     * 'Proto.Google.Protobuf.Descriptor_Fields.file' @:: Lens' FileDescriptorSet [FileDescriptorProto]@
     * 'Proto.Google.Protobuf.Descriptor_Fields.vec'file' @:: Lens' FileDescriptorSet (Data.Vector.Vector FileDescriptorProto)@
  -}
-data FileDescriptorSet = FileDescriptorSet{_FileDescriptorSet'file
-                                           :: !(Data.Vector.Vector FileDescriptorProto),
-                                           _FileDescriptorSet'_unknownFields ::
-                                           !Data.ProtoLens.FieldSet}
+data FileDescriptorSet = FileDescriptorSet'_constructor{_FileDescriptorSet'file
+                                                        ::
+                                                        !(Data.Vector.Vector FileDescriptorProto),
+                                                        _FileDescriptorSet'_unknownFields ::
+                                                        !Data.ProtoLens.FieldSet}
                            deriving (Prelude.Eq, Prelude.Ord)
 instance Prelude.Show FileDescriptorSet where
         showsPrec _ __x __s
@@ -4901,9 +4953,9 @@ instance Data.ProtoLens.Message FileDescriptorSet where
           = Lens.Family2.Unchecked.lens _FileDescriptorSet'_unknownFields
               (\ x__ y__ -> x__{_FileDescriptorSet'_unknownFields = y__})
         defMessage
-          = FileDescriptorSet{_FileDescriptorSet'file =
-                                Data.Vector.Generic.empty,
-                              _FileDescriptorSet'_unknownFields = ([])}
+          = FileDescriptorSet'_constructor{_FileDescriptorSet'file =
+                                             Data.Vector.Generic.empty,
+                                           _FileDescriptorSet'_unknownFields = ([])}
         parseMessage
           = let loop ::
                      FileDescriptorSet ->
@@ -5017,33 +5069,49 @@ instance Control.DeepSeq.NFData FileDescriptorSet where
     * 'Proto.Google.Protobuf.Descriptor_Fields.uninterpretedOption' @:: Lens' FileOptions [UninterpretedOption]@
     * 'Proto.Google.Protobuf.Descriptor_Fields.vec'uninterpretedOption' @:: Lens' FileOptions (Data.Vector.Vector UninterpretedOption)@
  -}
-data FileOptions = FileOptions{_FileOptions'javaPackage ::
-                               !(Prelude.Maybe Data.Text.Text),
-                               _FileOptions'javaOuterClassname :: !(Prelude.Maybe Data.Text.Text),
-                               _FileOptions'javaMultipleFiles :: !(Prelude.Maybe Prelude.Bool),
-                               _FileOptions'javaGenerateEqualsAndHash ::
-                               !(Prelude.Maybe Prelude.Bool),
-                               _FileOptions'javaStringCheckUtf8 :: !(Prelude.Maybe Prelude.Bool),
-                               _FileOptions'optimizeFor ::
-                               !(Prelude.Maybe FileOptions'OptimizeMode),
-                               _FileOptions'goPackage :: !(Prelude.Maybe Data.Text.Text),
-                               _FileOptions'ccGenericServices :: !(Prelude.Maybe Prelude.Bool),
-                               _FileOptions'javaGenericServices :: !(Prelude.Maybe Prelude.Bool),
-                               _FileOptions'pyGenericServices :: !(Prelude.Maybe Prelude.Bool),
-                               _FileOptions'phpGenericServices :: !(Prelude.Maybe Prelude.Bool),
-                               _FileOptions'deprecated :: !(Prelude.Maybe Prelude.Bool),
-                               _FileOptions'ccEnableArenas :: !(Prelude.Maybe Prelude.Bool),
-                               _FileOptions'objcClassPrefix :: !(Prelude.Maybe Data.Text.Text),
-                               _FileOptions'csharpNamespace :: !(Prelude.Maybe Data.Text.Text),
-                               _FileOptions'swiftPrefix :: !(Prelude.Maybe Data.Text.Text),
-                               _FileOptions'phpClassPrefix :: !(Prelude.Maybe Data.Text.Text),
-                               _FileOptions'phpNamespace :: !(Prelude.Maybe Data.Text.Text),
-                               _FileOptions'phpMetadataNamespace ::
-                               !(Prelude.Maybe Data.Text.Text),
-                               _FileOptions'rubyPackage :: !(Prelude.Maybe Data.Text.Text),
-                               _FileOptions'uninterpretedOption ::
-                               !(Data.Vector.Vector UninterpretedOption),
-                               _FileOptions'_unknownFields :: !Data.ProtoLens.FieldSet}
+data FileOptions = FileOptions'_constructor{_FileOptions'javaPackage
+                                            :: !(Prelude.Maybe Data.Text.Text),
+                                            _FileOptions'javaOuterClassname ::
+                                            !(Prelude.Maybe Data.Text.Text),
+                                            _FileOptions'javaMultipleFiles ::
+                                            !(Prelude.Maybe Prelude.Bool),
+                                            _FileOptions'javaGenerateEqualsAndHash ::
+                                            !(Prelude.Maybe Prelude.Bool),
+                                            _FileOptions'javaStringCheckUtf8 ::
+                                            !(Prelude.Maybe Prelude.Bool),
+                                            _FileOptions'optimizeFor ::
+                                            !(Prelude.Maybe FileOptions'OptimizeMode),
+                                            _FileOptions'goPackage ::
+                                            !(Prelude.Maybe Data.Text.Text),
+                                            _FileOptions'ccGenericServices ::
+                                            !(Prelude.Maybe Prelude.Bool),
+                                            _FileOptions'javaGenericServices ::
+                                            !(Prelude.Maybe Prelude.Bool),
+                                            _FileOptions'pyGenericServices ::
+                                            !(Prelude.Maybe Prelude.Bool),
+                                            _FileOptions'phpGenericServices ::
+                                            !(Prelude.Maybe Prelude.Bool),
+                                            _FileOptions'deprecated ::
+                                            !(Prelude.Maybe Prelude.Bool),
+                                            _FileOptions'ccEnableArenas ::
+                                            !(Prelude.Maybe Prelude.Bool),
+                                            _FileOptions'objcClassPrefix ::
+                                            !(Prelude.Maybe Data.Text.Text),
+                                            _FileOptions'csharpNamespace ::
+                                            !(Prelude.Maybe Data.Text.Text),
+                                            _FileOptions'swiftPrefix ::
+                                            !(Prelude.Maybe Data.Text.Text),
+                                            _FileOptions'phpClassPrefix ::
+                                            !(Prelude.Maybe Data.Text.Text),
+                                            _FileOptions'phpNamespace ::
+                                            !(Prelude.Maybe Data.Text.Text),
+                                            _FileOptions'phpMetadataNamespace ::
+                                            !(Prelude.Maybe Data.Text.Text),
+                                            _FileOptions'rubyPackage ::
+                                            !(Prelude.Maybe Data.Text.Text),
+                                            _FileOptions'uninterpretedOption ::
+                                            !(Data.Vector.Vector UninterpretedOption),
+                                            _FileOptions'_unknownFields :: !Data.ProtoLens.FieldSet}
                      deriving (Prelude.Eq, Prelude.Ord)
 instance Prelude.Show FileOptions where
         showsPrec _ __x __s
@@ -5559,28 +5627,29 @@ instance Data.ProtoLens.Message FileOptions where
           = Lens.Family2.Unchecked.lens _FileOptions'_unknownFields
               (\ x__ y__ -> x__{_FileOptions'_unknownFields = y__})
         defMessage
-          = FileOptions{_FileOptions'javaPackage = Prelude.Nothing,
-                        _FileOptions'javaOuterClassname = Prelude.Nothing,
-                        _FileOptions'javaMultipleFiles = Prelude.Nothing,
-                        _FileOptions'javaGenerateEqualsAndHash = Prelude.Nothing,
-                        _FileOptions'javaStringCheckUtf8 = Prelude.Nothing,
-                        _FileOptions'optimizeFor = Prelude.Nothing,
-                        _FileOptions'goPackage = Prelude.Nothing,
-                        _FileOptions'ccGenericServices = Prelude.Nothing,
-                        _FileOptions'javaGenericServices = Prelude.Nothing,
-                        _FileOptions'pyGenericServices = Prelude.Nothing,
-                        _FileOptions'phpGenericServices = Prelude.Nothing,
-                        _FileOptions'deprecated = Prelude.Nothing,
-                        _FileOptions'ccEnableArenas = Prelude.Nothing,
-                        _FileOptions'objcClassPrefix = Prelude.Nothing,
-                        _FileOptions'csharpNamespace = Prelude.Nothing,
-                        _FileOptions'swiftPrefix = Prelude.Nothing,
-                        _FileOptions'phpClassPrefix = Prelude.Nothing,
-                        _FileOptions'phpNamespace = Prelude.Nothing,
-                        _FileOptions'phpMetadataNamespace = Prelude.Nothing,
-                        _FileOptions'rubyPackage = Prelude.Nothing,
-                        _FileOptions'uninterpretedOption = Data.Vector.Generic.empty,
-                        _FileOptions'_unknownFields = ([])}
+          = FileOptions'_constructor{_FileOptions'javaPackage =
+                                       Prelude.Nothing,
+                                     _FileOptions'javaOuterClassname = Prelude.Nothing,
+                                     _FileOptions'javaMultipleFiles = Prelude.Nothing,
+                                     _FileOptions'javaGenerateEqualsAndHash = Prelude.Nothing,
+                                     _FileOptions'javaStringCheckUtf8 = Prelude.Nothing,
+                                     _FileOptions'optimizeFor = Prelude.Nothing,
+                                     _FileOptions'goPackage = Prelude.Nothing,
+                                     _FileOptions'ccGenericServices = Prelude.Nothing,
+                                     _FileOptions'javaGenericServices = Prelude.Nothing,
+                                     _FileOptions'pyGenericServices = Prelude.Nothing,
+                                     _FileOptions'phpGenericServices = Prelude.Nothing,
+                                     _FileOptions'deprecated = Prelude.Nothing,
+                                     _FileOptions'ccEnableArenas = Prelude.Nothing,
+                                     _FileOptions'objcClassPrefix = Prelude.Nothing,
+                                     _FileOptions'csharpNamespace = Prelude.Nothing,
+                                     _FileOptions'swiftPrefix = Prelude.Nothing,
+                                     _FileOptions'phpClassPrefix = Prelude.Nothing,
+                                     _FileOptions'phpNamespace = Prelude.Nothing,
+                                     _FileOptions'phpMetadataNamespace = Prelude.Nothing,
+                                     _FileOptions'rubyPackage = Prelude.Nothing,
+                                     _FileOptions'uninterpretedOption = Data.Vector.Generic.empty,
+                                     _FileOptions'_unknownFields = ([])}
         parseMessage
           = let loop ::
                      FileOptions ->
@@ -6344,10 +6413,12 @@ instance Control.DeepSeq.NFData FileOptions'OptimizeMode where
     * 'Proto.Google.Protobuf.Descriptor_Fields.vec'annotation' @:: Lens' GeneratedCodeInfo
   (Data.Vector.Vector GeneratedCodeInfo'Annotation)@
  -}
-data GeneratedCodeInfo = GeneratedCodeInfo{_GeneratedCodeInfo'annotation
-                                           :: !(Data.Vector.Vector GeneratedCodeInfo'Annotation),
-                                           _GeneratedCodeInfo'_unknownFields ::
-                                           !Data.ProtoLens.FieldSet}
+data GeneratedCodeInfo = GeneratedCodeInfo'_constructor{_GeneratedCodeInfo'annotation
+                                                        ::
+                                                        !(Data.Vector.Vector
+                                                            GeneratedCodeInfo'Annotation),
+                                                        _GeneratedCodeInfo'_unknownFields ::
+                                                        !Data.ProtoLens.FieldSet}
                            deriving (Prelude.Eq, Prelude.Ord)
 instance Prelude.Show GeneratedCodeInfo where
         showsPrec _ __x __s
@@ -6389,9 +6460,9 @@ instance Data.ProtoLens.Message GeneratedCodeInfo where
           = Lens.Family2.Unchecked.lens _GeneratedCodeInfo'_unknownFields
               (\ x__ y__ -> x__{_GeneratedCodeInfo'_unknownFields = y__})
         defMessage
-          = GeneratedCodeInfo{_GeneratedCodeInfo'annotation =
-                                Data.Vector.Generic.empty,
-                              _GeneratedCodeInfo'_unknownFields = ([])}
+          = GeneratedCodeInfo'_constructor{_GeneratedCodeInfo'annotation =
+                                             Data.Vector.Generic.empty,
+                                           _GeneratedCodeInfo'_unknownFields = ([])}
         parseMessage
           = let loop ::
                      GeneratedCodeInfo ->
@@ -6474,18 +6545,25 @@ instance Control.DeepSeq.NFData GeneratedCodeInfo where
     * 'Proto.Google.Protobuf.Descriptor_Fields.end' @:: Lens' GeneratedCodeInfo'Annotation Data.Int.Int32@
     * 'Proto.Google.Protobuf.Descriptor_Fields.maybe'end' @:: Lens' GeneratedCodeInfo'Annotation (Prelude.Maybe Data.Int.Int32)@
  -}
-data GeneratedCodeInfo'Annotation = GeneratedCodeInfo'Annotation{_GeneratedCodeInfo'Annotation'path
-                                                                 ::
-                                                                 !(Data.Vector.Unboxed.Vector
-                                                                     Data.Int.Int32),
-                                                                 _GeneratedCodeInfo'Annotation'sourceFile
-                                                                 :: !(Prelude.Maybe Data.Text.Text),
-                                                                 _GeneratedCodeInfo'Annotation'begin
-                                                                 :: !(Prelude.Maybe Data.Int.Int32),
-                                                                 _GeneratedCodeInfo'Annotation'end
-                                                                 :: !(Prelude.Maybe Data.Int.Int32),
-                                                                 _GeneratedCodeInfo'Annotation'_unknownFields
-                                                                 :: !Data.ProtoLens.FieldSet}
+data GeneratedCodeInfo'Annotation = GeneratedCodeInfo'Annotation'_constructor{_GeneratedCodeInfo'Annotation'path
+                                                                              ::
+                                                                              !(Data.Vector.Unboxed.Vector
+                                                                                  Data.Int.Int32),
+                                                                              _GeneratedCodeInfo'Annotation'sourceFile
+                                                                              ::
+                                                                              !(Prelude.Maybe
+                                                                                  Data.Text.Text),
+                                                                              _GeneratedCodeInfo'Annotation'begin
+                                                                              ::
+                                                                              !(Prelude.Maybe
+                                                                                  Data.Int.Int32),
+                                                                              _GeneratedCodeInfo'Annotation'end
+                                                                              ::
+                                                                              !(Prelude.Maybe
+                                                                                  Data.Int.Int32),
+                                                                              _GeneratedCodeInfo'Annotation'_unknownFields
+                                                                              ::
+                                                                              !Data.ProtoLens.FieldSet}
                                       deriving (Prelude.Eq, Prelude.Ord)
 instance Prelude.Show GeneratedCodeInfo'Annotation where
         showsPrec _ __x __s
@@ -6604,12 +6682,16 @@ instance Data.ProtoLens.Message GeneratedCodeInfo'Annotation where
               (\ x__ y__ ->
                  x__{_GeneratedCodeInfo'Annotation'_unknownFields = y__})
         defMessage
-          = GeneratedCodeInfo'Annotation{_GeneratedCodeInfo'Annotation'path =
-                                           Data.Vector.Generic.empty,
-                                         _GeneratedCodeInfo'Annotation'sourceFile = Prelude.Nothing,
-                                         _GeneratedCodeInfo'Annotation'begin = Prelude.Nothing,
-                                         _GeneratedCodeInfo'Annotation'end = Prelude.Nothing,
-                                         _GeneratedCodeInfo'Annotation'_unknownFields = ([])}
+          = GeneratedCodeInfo'Annotation'_constructor{_GeneratedCodeInfo'Annotation'path
+                                                        = Data.Vector.Generic.empty,
+                                                      _GeneratedCodeInfo'Annotation'sourceFile =
+                                                        Prelude.Nothing,
+                                                      _GeneratedCodeInfo'Annotation'begin =
+                                                        Prelude.Nothing,
+                                                      _GeneratedCodeInfo'Annotation'end =
+                                                        Prelude.Nothing,
+                                                      _GeneratedCodeInfo'Annotation'_unknownFields =
+                                                        ([])}
         parseMessage
           = let loop ::
                      GeneratedCodeInfo'Annotation ->
@@ -6783,15 +6865,18 @@ instance Control.DeepSeq.NFData GeneratedCodeInfo'Annotation where
     * 'Proto.Google.Protobuf.Descriptor_Fields.uninterpretedOption' @:: Lens' MessageOptions [UninterpretedOption]@
     * 'Proto.Google.Protobuf.Descriptor_Fields.vec'uninterpretedOption' @:: Lens' MessageOptions (Data.Vector.Vector UninterpretedOption)@
  -}
-data MessageOptions = MessageOptions{_MessageOptions'messageSetWireFormat
-                                     :: !(Prelude.Maybe Prelude.Bool),
-                                     _MessageOptions'noStandardDescriptorAccessor ::
-                                     !(Prelude.Maybe Prelude.Bool),
-                                     _MessageOptions'deprecated :: !(Prelude.Maybe Prelude.Bool),
-                                     _MessageOptions'mapEntry :: !(Prelude.Maybe Prelude.Bool),
-                                     _MessageOptions'uninterpretedOption ::
-                                     !(Data.Vector.Vector UninterpretedOption),
-                                     _MessageOptions'_unknownFields :: !Data.ProtoLens.FieldSet}
+data MessageOptions = MessageOptions'_constructor{_MessageOptions'messageSetWireFormat
+                                                  :: !(Prelude.Maybe Prelude.Bool),
+                                                  _MessageOptions'noStandardDescriptorAccessor ::
+                                                  !(Prelude.Maybe Prelude.Bool),
+                                                  _MessageOptions'deprecated ::
+                                                  !(Prelude.Maybe Prelude.Bool),
+                                                  _MessageOptions'mapEntry ::
+                                                  !(Prelude.Maybe Prelude.Bool),
+                                                  _MessageOptions'uninterpretedOption ::
+                                                  !(Data.Vector.Vector UninterpretedOption),
+                                                  _MessageOptions'_unknownFields ::
+                                                  !Data.ProtoLens.FieldSet}
                         deriving (Prelude.Eq, Prelude.Ord)
 instance Prelude.Show MessageOptions where
         showsPrec _ __x __s
@@ -6932,13 +7017,15 @@ instance Data.ProtoLens.Message MessageOptions where
           = Lens.Family2.Unchecked.lens _MessageOptions'_unknownFields
               (\ x__ y__ -> x__{_MessageOptions'_unknownFields = y__})
         defMessage
-          = MessageOptions{_MessageOptions'messageSetWireFormat =
-                             Prelude.Nothing,
-                           _MessageOptions'noStandardDescriptorAccessor = Prelude.Nothing,
-                           _MessageOptions'deprecated = Prelude.Nothing,
-                           _MessageOptions'mapEntry = Prelude.Nothing,
-                           _MessageOptions'uninterpretedOption = Data.Vector.Generic.empty,
-                           _MessageOptions'_unknownFields = ([])}
+          = MessageOptions'_constructor{_MessageOptions'messageSetWireFormat
+                                          = Prelude.Nothing,
+                                        _MessageOptions'noStandardDescriptorAccessor =
+                                          Prelude.Nothing,
+                                        _MessageOptions'deprecated = Prelude.Nothing,
+                                        _MessageOptions'mapEntry = Prelude.Nothing,
+                                        _MessageOptions'uninterpretedOption =
+                                          Data.Vector.Generic.empty,
+                                        _MessageOptions'_unknownFields = ([])}
         parseMessage
           = let loop ::
                      MessageOptions ->
@@ -7117,20 +7204,20 @@ instance Control.DeepSeq.NFData MessageOptions where
     * 'Proto.Google.Protobuf.Descriptor_Fields.serverStreaming' @:: Lens' MethodDescriptorProto Prelude.Bool@
     * 'Proto.Google.Protobuf.Descriptor_Fields.maybe'serverStreaming' @:: Lens' MethodDescriptorProto (Prelude.Maybe Prelude.Bool)@
  -}
-data MethodDescriptorProto = MethodDescriptorProto{_MethodDescriptorProto'name
-                                                   :: !(Prelude.Maybe Data.Text.Text),
-                                                   _MethodDescriptorProto'inputType ::
-                                                   !(Prelude.Maybe Data.Text.Text),
-                                                   _MethodDescriptorProto'outputType ::
-                                                   !(Prelude.Maybe Data.Text.Text),
-                                                   _MethodDescriptorProto'options ::
-                                                   !(Prelude.Maybe MethodOptions),
-                                                   _MethodDescriptorProto'clientStreaming ::
-                                                   !(Prelude.Maybe Prelude.Bool),
-                                                   _MethodDescriptorProto'serverStreaming ::
-                                                   !(Prelude.Maybe Prelude.Bool),
-                                                   _MethodDescriptorProto'_unknownFields ::
-                                                   !Data.ProtoLens.FieldSet}
+data MethodDescriptorProto = MethodDescriptorProto'_constructor{_MethodDescriptorProto'name
+                                                                :: !(Prelude.Maybe Data.Text.Text),
+                                                                _MethodDescriptorProto'inputType ::
+                                                                !(Prelude.Maybe Data.Text.Text),
+                                                                _MethodDescriptorProto'outputType ::
+                                                                !(Prelude.Maybe Data.Text.Text),
+                                                                _MethodDescriptorProto'options ::
+                                                                !(Prelude.Maybe MethodOptions),
+                                                                _MethodDescriptorProto'clientStreaming
+                                                                :: !(Prelude.Maybe Prelude.Bool),
+                                                                _MethodDescriptorProto'serverStreaming
+                                                                :: !(Prelude.Maybe Prelude.Bool),
+                                                                _MethodDescriptorProto'_unknownFields
+                                                                :: !Data.ProtoLens.FieldSet}
                                deriving (Prelude.Eq, Prelude.Ord)
 instance Prelude.Show MethodDescriptorProto where
         showsPrec _ __x __s
@@ -7294,14 +7381,16 @@ instance Data.ProtoLens.Message MethodDescriptorProto where
           = Lens.Family2.Unchecked.lens _MethodDescriptorProto'_unknownFields
               (\ x__ y__ -> x__{_MethodDescriptorProto'_unknownFields = y__})
         defMessage
-          = MethodDescriptorProto{_MethodDescriptorProto'name =
-                                    Prelude.Nothing,
-                                  _MethodDescriptorProto'inputType = Prelude.Nothing,
-                                  _MethodDescriptorProto'outputType = Prelude.Nothing,
-                                  _MethodDescriptorProto'options = Prelude.Nothing,
-                                  _MethodDescriptorProto'clientStreaming = Prelude.Nothing,
-                                  _MethodDescriptorProto'serverStreaming = Prelude.Nothing,
-                                  _MethodDescriptorProto'_unknownFields = ([])}
+          = MethodDescriptorProto'_constructor{_MethodDescriptorProto'name =
+                                                 Prelude.Nothing,
+                                               _MethodDescriptorProto'inputType = Prelude.Nothing,
+                                               _MethodDescriptorProto'outputType = Prelude.Nothing,
+                                               _MethodDescriptorProto'options = Prelude.Nothing,
+                                               _MethodDescriptorProto'clientStreaming =
+                                                 Prelude.Nothing,
+                                               _MethodDescriptorProto'serverStreaming =
+                                                 Prelude.Nothing,
+                                               _MethodDescriptorProto'_unknownFields = ([])}
         parseMessage
           = let loop ::
                      MethodDescriptorProto ->
@@ -7505,13 +7594,14 @@ instance Control.DeepSeq.NFData MethodDescriptorProto where
     * 'Proto.Google.Protobuf.Descriptor_Fields.uninterpretedOption' @:: Lens' MethodOptions [UninterpretedOption]@
     * 'Proto.Google.Protobuf.Descriptor_Fields.vec'uninterpretedOption' @:: Lens' MethodOptions (Data.Vector.Vector UninterpretedOption)@
  -}
-data MethodOptions = MethodOptions{_MethodOptions'deprecated ::
-                                   !(Prelude.Maybe Prelude.Bool),
-                                   _MethodOptions'idempotencyLevel ::
-                                   !(Prelude.Maybe MethodOptions'IdempotencyLevel),
-                                   _MethodOptions'uninterpretedOption ::
-                                   !(Data.Vector.Vector UninterpretedOption),
-                                   _MethodOptions'_unknownFields :: !Data.ProtoLens.FieldSet}
+data MethodOptions = MethodOptions'_constructor{_MethodOptions'deprecated
+                                                :: !(Prelude.Maybe Prelude.Bool),
+                                                _MethodOptions'idempotencyLevel ::
+                                                !(Prelude.Maybe MethodOptions'IdempotencyLevel),
+                                                _MethodOptions'uninterpretedOption ::
+                                                !(Data.Vector.Vector UninterpretedOption),
+                                                _MethodOptions'_unknownFields ::
+                                                !Data.ProtoLens.FieldSet}
                        deriving (Prelude.Eq, Prelude.Ord)
 instance Prelude.Show MethodOptions where
         showsPrec _ __x __s
@@ -7601,10 +7691,12 @@ instance Data.ProtoLens.Message MethodOptions where
           = Lens.Family2.Unchecked.lens _MethodOptions'_unknownFields
               (\ x__ y__ -> x__{_MethodOptions'_unknownFields = y__})
         defMessage
-          = MethodOptions{_MethodOptions'deprecated = Prelude.Nothing,
-                          _MethodOptions'idempotencyLevel = Prelude.Nothing,
-                          _MethodOptions'uninterpretedOption = Data.Vector.Generic.empty,
-                          _MethodOptions'_unknownFields = ([])}
+          = MethodOptions'_constructor{_MethodOptions'deprecated =
+                                         Prelude.Nothing,
+                                       _MethodOptions'idempotencyLevel = Prelude.Nothing,
+                                       _MethodOptions'uninterpretedOption =
+                                         Data.Vector.Generic.empty,
+                                       _MethodOptions'_unknownFields = ([])}
         parseMessage
           = let loop ::
                      MethodOptions ->
@@ -7790,12 +7882,12 @@ instance Control.DeepSeq.NFData MethodOptions'IdempotencyLevel
     * 'Proto.Google.Protobuf.Descriptor_Fields.options' @:: Lens' OneofDescriptorProto OneofOptions@
     * 'Proto.Google.Protobuf.Descriptor_Fields.maybe'options' @:: Lens' OneofDescriptorProto (Prelude.Maybe OneofOptions)@
  -}
-data OneofDescriptorProto = OneofDescriptorProto{_OneofDescriptorProto'name
-                                                 :: !(Prelude.Maybe Data.Text.Text),
-                                                 _OneofDescriptorProto'options ::
-                                                 !(Prelude.Maybe OneofOptions),
-                                                 _OneofDescriptorProto'_unknownFields ::
-                                                 !Data.ProtoLens.FieldSet}
+data OneofDescriptorProto = OneofDescriptorProto'_constructor{_OneofDescriptorProto'name
+                                                              :: !(Prelude.Maybe Data.Text.Text),
+                                                              _OneofDescriptorProto'options ::
+                                                              !(Prelude.Maybe OneofOptions),
+                                                              _OneofDescriptorProto'_unknownFields
+                                                              :: !Data.ProtoLens.FieldSet}
                               deriving (Prelude.Eq, Prelude.Ord)
 instance Prelude.Show OneofDescriptorProto where
         showsPrec _ __x __s
@@ -7859,10 +7951,10 @@ instance Data.ProtoLens.Message OneofDescriptorProto where
           = Lens.Family2.Unchecked.lens _OneofDescriptorProto'_unknownFields
               (\ x__ y__ -> x__{_OneofDescriptorProto'_unknownFields = y__})
         defMessage
-          = OneofDescriptorProto{_OneofDescriptorProto'name =
-                                   Prelude.Nothing,
-                                 _OneofDescriptorProto'options = Prelude.Nothing,
-                                 _OneofDescriptorProto'_unknownFields = ([])}
+          = OneofDescriptorProto'_constructor{_OneofDescriptorProto'name =
+                                                Prelude.Nothing,
+                                              _OneofDescriptorProto'options = Prelude.Nothing,
+                                              _OneofDescriptorProto'_unknownFields = ([])}
         parseMessage
           = let loop ::
                      OneofDescriptorProto ->
@@ -7956,9 +8048,10 @@ instance Control.DeepSeq.NFData OneofDescriptorProto where
     * 'Proto.Google.Protobuf.Descriptor_Fields.uninterpretedOption' @:: Lens' OneofOptions [UninterpretedOption]@
     * 'Proto.Google.Protobuf.Descriptor_Fields.vec'uninterpretedOption' @:: Lens' OneofOptions (Data.Vector.Vector UninterpretedOption)@
  -}
-data OneofOptions = OneofOptions{_OneofOptions'uninterpretedOption
-                                 :: !(Data.Vector.Vector UninterpretedOption),
-                                 _OneofOptions'_unknownFields :: !Data.ProtoLens.FieldSet}
+data OneofOptions = OneofOptions'_constructor{_OneofOptions'uninterpretedOption
+                                              :: !(Data.Vector.Vector UninterpretedOption),
+                                              _OneofOptions'_unknownFields ::
+                                              !Data.ProtoLens.FieldSet}
                       deriving (Prelude.Eq, Prelude.Ord)
 instance Prelude.Show OneofOptions where
         showsPrec _ __x __s
@@ -8000,9 +8093,9 @@ instance Data.ProtoLens.Message OneofOptions where
           = Lens.Family2.Unchecked.lens _OneofOptions'_unknownFields
               (\ x__ y__ -> x__{_OneofOptions'_unknownFields = y__})
         defMessage
-          = OneofOptions{_OneofOptions'uninterpretedOption =
-                           Data.Vector.Generic.empty,
-                         _OneofOptions'_unknownFields = ([])}
+          = OneofOptions'_constructor{_OneofOptions'uninterpretedOption =
+                                        Data.Vector.Generic.empty,
+                                      _OneofOptions'_unknownFields = ([])}
         parseMessage
           = let loop ::
                      OneofOptions ->
@@ -8087,14 +8180,16 @@ instance Control.DeepSeq.NFData OneofOptions where
     * 'Proto.Google.Protobuf.Descriptor_Fields.options' @:: Lens' ServiceDescriptorProto ServiceOptions@
     * 'Proto.Google.Protobuf.Descriptor_Fields.maybe'options' @:: Lens' ServiceDescriptorProto (Prelude.Maybe ServiceOptions)@
  -}
-data ServiceDescriptorProto = ServiceDescriptorProto{_ServiceDescriptorProto'name
-                                                     :: !(Prelude.Maybe Data.Text.Text),
-                                                     _ServiceDescriptorProto'method ::
-                                                     !(Data.Vector.Vector MethodDescriptorProto),
-                                                     _ServiceDescriptorProto'options ::
-                                                     !(Prelude.Maybe ServiceOptions),
-                                                     _ServiceDescriptorProto'_unknownFields ::
-                                                     !Data.ProtoLens.FieldSet}
+data ServiceDescriptorProto = ServiceDescriptorProto'_constructor{_ServiceDescriptorProto'name
+                                                                  ::
+                                                                  !(Prelude.Maybe Data.Text.Text),
+                                                                  _ServiceDescriptorProto'method ::
+                                                                  !(Data.Vector.Vector
+                                                                      MethodDescriptorProto),
+                                                                  _ServiceDescriptorProto'options ::
+                                                                  !(Prelude.Maybe ServiceOptions),
+                                                                  _ServiceDescriptorProto'_unknownFields
+                                                                  :: !Data.ProtoLens.FieldSet}
                                 deriving (Prelude.Eq, Prelude.Ord)
 instance Prelude.Show ServiceDescriptorProto where
         showsPrec _ __x __s
@@ -8186,11 +8281,12 @@ instance Data.ProtoLens.Message ServiceDescriptorProto where
               _ServiceDescriptorProto'_unknownFields
               (\ x__ y__ -> x__{_ServiceDescriptorProto'_unknownFields = y__})
         defMessage
-          = ServiceDescriptorProto{_ServiceDescriptorProto'name =
-                                     Prelude.Nothing,
-                                   _ServiceDescriptorProto'method = Data.Vector.Generic.empty,
-                                   _ServiceDescriptorProto'options = Prelude.Nothing,
-                                   _ServiceDescriptorProto'_unknownFields = ([])}
+          = ServiceDescriptorProto'_constructor{_ServiceDescriptorProto'name
+                                                  = Prelude.Nothing,
+                                                _ServiceDescriptorProto'method =
+                                                  Data.Vector.Generic.empty,
+                                                _ServiceDescriptorProto'options = Prelude.Nothing,
+                                                _ServiceDescriptorProto'_unknownFields = ([])}
         parseMessage
           = let loop ::
                      ServiceDescriptorProto ->
@@ -8322,11 +8418,12 @@ instance Control.DeepSeq.NFData ServiceDescriptorProto where
     * 'Proto.Google.Protobuf.Descriptor_Fields.uninterpretedOption' @:: Lens' ServiceOptions [UninterpretedOption]@
     * 'Proto.Google.Protobuf.Descriptor_Fields.vec'uninterpretedOption' @:: Lens' ServiceOptions (Data.Vector.Vector UninterpretedOption)@
  -}
-data ServiceOptions = ServiceOptions{_ServiceOptions'deprecated ::
-                                     !(Prelude.Maybe Prelude.Bool),
-                                     _ServiceOptions'uninterpretedOption ::
-                                     !(Data.Vector.Vector UninterpretedOption),
-                                     _ServiceOptions'_unknownFields :: !Data.ProtoLens.FieldSet}
+data ServiceOptions = ServiceOptions'_constructor{_ServiceOptions'deprecated
+                                                  :: !(Prelude.Maybe Prelude.Bool),
+                                                  _ServiceOptions'uninterpretedOption ::
+                                                  !(Data.Vector.Vector UninterpretedOption),
+                                                  _ServiceOptions'_unknownFields ::
+                                                  !Data.ProtoLens.FieldSet}
                         deriving (Prelude.Eq, Prelude.Ord)
 instance Prelude.Show ServiceOptions where
         showsPrec _ __x __s
@@ -8391,9 +8488,11 @@ instance Data.ProtoLens.Message ServiceOptions where
           = Lens.Family2.Unchecked.lens _ServiceOptions'_unknownFields
               (\ x__ y__ -> x__{_ServiceOptions'_unknownFields = y__})
         defMessage
-          = ServiceOptions{_ServiceOptions'deprecated = Prelude.Nothing,
-                           _ServiceOptions'uninterpretedOption = Data.Vector.Generic.empty,
-                           _ServiceOptions'_unknownFields = ([])}
+          = ServiceOptions'_constructor{_ServiceOptions'deprecated =
+                                          Prelude.Nothing,
+                                        _ServiceOptions'uninterpretedOption =
+                                          Data.Vector.Generic.empty,
+                                        _ServiceOptions'_unknownFields = ([])}
         parseMessage
           = let loop ::
                      ServiceOptions ->
@@ -8494,9 +8593,10 @@ instance Control.DeepSeq.NFData ServiceOptions where
     * 'Proto.Google.Protobuf.Descriptor_Fields.location' @:: Lens' SourceCodeInfo [SourceCodeInfo'Location]@
     * 'Proto.Google.Protobuf.Descriptor_Fields.vec'location' @:: Lens' SourceCodeInfo (Data.Vector.Vector SourceCodeInfo'Location)@
  -}
-data SourceCodeInfo = SourceCodeInfo{_SourceCodeInfo'location ::
-                                     !(Data.Vector.Vector SourceCodeInfo'Location),
-                                     _SourceCodeInfo'_unknownFields :: !Data.ProtoLens.FieldSet}
+data SourceCodeInfo = SourceCodeInfo'_constructor{_SourceCodeInfo'location
+                                                  :: !(Data.Vector.Vector SourceCodeInfo'Location),
+                                                  _SourceCodeInfo'_unknownFields ::
+                                                  !Data.ProtoLens.FieldSet}
                         deriving (Prelude.Eq, Prelude.Ord)
 instance Prelude.Show SourceCodeInfo where
         showsPrec _ __x __s
@@ -8537,9 +8637,9 @@ instance Data.ProtoLens.Message SourceCodeInfo where
           = Lens.Family2.Unchecked.lens _SourceCodeInfo'_unknownFields
               (\ x__ y__ -> x__{_SourceCodeInfo'_unknownFields = y__})
         defMessage
-          = SourceCodeInfo{_SourceCodeInfo'location =
-                             Data.Vector.Generic.empty,
-                           _SourceCodeInfo'_unknownFields = ([])}
+          = SourceCodeInfo'_constructor{_SourceCodeInfo'location =
+                                          Data.Vector.Generic.empty,
+                                        _SourceCodeInfo'_unknownFields = ([])}
         parseMessage
           = let loop ::
                      SourceCodeInfo ->
@@ -8625,19 +8725,25 @@ instance Control.DeepSeq.NFData SourceCodeInfo where
     * 'Proto.Google.Protobuf.Descriptor_Fields.leadingDetachedComments' @:: Lens' SourceCodeInfo'Location [Data.Text.Text]@
     * 'Proto.Google.Protobuf.Descriptor_Fields.vec'leadingDetachedComments' @:: Lens' SourceCodeInfo'Location (Data.Vector.Vector Data.Text.Text)@
  -}
-data SourceCodeInfo'Location = SourceCodeInfo'Location{_SourceCodeInfo'Location'path
-                                                       ::
-                                                       !(Data.Vector.Unboxed.Vector Data.Int.Int32),
-                                                       _SourceCodeInfo'Location'span ::
-                                                       !(Data.Vector.Unboxed.Vector Data.Int.Int32),
-                                                       _SourceCodeInfo'Location'leadingComments ::
-                                                       !(Prelude.Maybe Data.Text.Text),
-                                                       _SourceCodeInfo'Location'trailingComments ::
-                                                       !(Prelude.Maybe Data.Text.Text),
-                                                       _SourceCodeInfo'Location'leadingDetachedComments
-                                                       :: !(Data.Vector.Vector Data.Text.Text),
-                                                       _SourceCodeInfo'Location'_unknownFields ::
-                                                       !Data.ProtoLens.FieldSet}
+data SourceCodeInfo'Location = SourceCodeInfo'Location'_constructor{_SourceCodeInfo'Location'path
+                                                                    ::
+                                                                    !(Data.Vector.Unboxed.Vector
+                                                                        Data.Int.Int32),
+                                                                    _SourceCodeInfo'Location'span ::
+                                                                    !(Data.Vector.Unboxed.Vector
+                                                                        Data.Int.Int32),
+                                                                    _SourceCodeInfo'Location'leadingComments
+                                                                    ::
+                                                                    !(Prelude.Maybe Data.Text.Text),
+                                                                    _SourceCodeInfo'Location'trailingComments
+                                                                    ::
+                                                                    !(Prelude.Maybe Data.Text.Text),
+                                                                    _SourceCodeInfo'Location'leadingDetachedComments
+                                                                    ::
+                                                                    !(Data.Vector.Vector
+                                                                        Data.Text.Text),
+                                                                    _SourceCodeInfo'Location'_unknownFields
+                                                                    :: !Data.ProtoLens.FieldSet}
                                  deriving (Prelude.Eq, Prelude.Ord)
 instance Prelude.Show SourceCodeInfo'Location where
         showsPrec _ __x __s
@@ -8791,14 +8897,17 @@ instance Data.ProtoLens.Message SourceCodeInfo'Location where
               _SourceCodeInfo'Location'_unknownFields
               (\ x__ y__ -> x__{_SourceCodeInfo'Location'_unknownFields = y__})
         defMessage
-          = SourceCodeInfo'Location{_SourceCodeInfo'Location'path =
-                                      Data.Vector.Generic.empty,
-                                    _SourceCodeInfo'Location'span = Data.Vector.Generic.empty,
-                                    _SourceCodeInfo'Location'leadingComments = Prelude.Nothing,
-                                    _SourceCodeInfo'Location'trailingComments = Prelude.Nothing,
-                                    _SourceCodeInfo'Location'leadingDetachedComments =
-                                      Data.Vector.Generic.empty,
-                                    _SourceCodeInfo'Location'_unknownFields = ([])}
+          = SourceCodeInfo'Location'_constructor{_SourceCodeInfo'Location'path
+                                                   = Data.Vector.Generic.empty,
+                                                 _SourceCodeInfo'Location'span =
+                                                   Data.Vector.Generic.empty,
+                                                 _SourceCodeInfo'Location'leadingComments =
+                                                   Prelude.Nothing,
+                                                 _SourceCodeInfo'Location'trailingComments =
+                                                   Prelude.Nothing,
+                                                 _SourceCodeInfo'Location'leadingDetachedComments =
+                                                   Data.Vector.Generic.empty,
+                                                 _SourceCodeInfo'Location'_unknownFields = ([])}
         parseMessage
           = let loop ::
                      SourceCodeInfo'Location ->
@@ -9083,23 +9192,25 @@ instance Control.DeepSeq.NFData SourceCodeInfo'Location where
     * 'Proto.Google.Protobuf.Descriptor_Fields.aggregateValue' @:: Lens' UninterpretedOption Data.Text.Text@
     * 'Proto.Google.Protobuf.Descriptor_Fields.maybe'aggregateValue' @:: Lens' UninterpretedOption (Prelude.Maybe Data.Text.Text)@
  -}
-data UninterpretedOption = UninterpretedOption{_UninterpretedOption'name
-                                               ::
-                                               !(Data.Vector.Vector UninterpretedOption'NamePart),
-                                               _UninterpretedOption'identifierValue ::
-                                               !(Prelude.Maybe Data.Text.Text),
-                                               _UninterpretedOption'positiveIntValue ::
-                                               !(Prelude.Maybe Data.Word.Word64),
-                                               _UninterpretedOption'negativeIntValue ::
-                                               !(Prelude.Maybe Data.Int.Int64),
-                                               _UninterpretedOption'doubleValue ::
-                                               !(Prelude.Maybe Prelude.Double),
-                                               _UninterpretedOption'stringValue ::
-                                               !(Prelude.Maybe Data.ByteString.ByteString),
-                                               _UninterpretedOption'aggregateValue ::
-                                               !(Prelude.Maybe Data.Text.Text),
-                                               _UninterpretedOption'_unknownFields ::
-                                               !Data.ProtoLens.FieldSet}
+data UninterpretedOption = UninterpretedOption'_constructor{_UninterpretedOption'name
+                                                            ::
+                                                            !(Data.Vector.Vector
+                                                                UninterpretedOption'NamePart),
+                                                            _UninterpretedOption'identifierValue ::
+                                                            !(Prelude.Maybe Data.Text.Text),
+                                                            _UninterpretedOption'positiveIntValue ::
+                                                            !(Prelude.Maybe Data.Word.Word64),
+                                                            _UninterpretedOption'negativeIntValue ::
+                                                            !(Prelude.Maybe Data.Int.Int64),
+                                                            _UninterpretedOption'doubleValue ::
+                                                            !(Prelude.Maybe Prelude.Double),
+                                                            _UninterpretedOption'stringValue ::
+                                                            !(Prelude.Maybe
+                                                                Data.ByteString.ByteString),
+                                                            _UninterpretedOption'aggregateValue ::
+                                                            !(Prelude.Maybe Data.Text.Text),
+                                                            _UninterpretedOption'_unknownFields ::
+                                                            !Data.ProtoLens.FieldSet}
                              deriving (Prelude.Eq, Prelude.Ord)
 instance Prelude.Show UninterpretedOption where
         showsPrec _ __x __s
@@ -9289,15 +9400,17 @@ instance Data.ProtoLens.Message UninterpretedOption where
           = Lens.Family2.Unchecked.lens _UninterpretedOption'_unknownFields
               (\ x__ y__ -> x__{_UninterpretedOption'_unknownFields = y__})
         defMessage
-          = UninterpretedOption{_UninterpretedOption'name =
-                                  Data.Vector.Generic.empty,
-                                _UninterpretedOption'identifierValue = Prelude.Nothing,
-                                _UninterpretedOption'positiveIntValue = Prelude.Nothing,
-                                _UninterpretedOption'negativeIntValue = Prelude.Nothing,
-                                _UninterpretedOption'doubleValue = Prelude.Nothing,
-                                _UninterpretedOption'stringValue = Prelude.Nothing,
-                                _UninterpretedOption'aggregateValue = Prelude.Nothing,
-                                _UninterpretedOption'_unknownFields = ([])}
+          = UninterpretedOption'_constructor{_UninterpretedOption'name =
+                                               Data.Vector.Generic.empty,
+                                             _UninterpretedOption'identifierValue = Prelude.Nothing,
+                                             _UninterpretedOption'positiveIntValue =
+                                               Prelude.Nothing,
+                                             _UninterpretedOption'negativeIntValue =
+                                               Prelude.Nothing,
+                                             _UninterpretedOption'doubleValue = Prelude.Nothing,
+                                             _UninterpretedOption'stringValue = Prelude.Nothing,
+                                             _UninterpretedOption'aggregateValue = Prelude.Nothing,
+                                             _UninterpretedOption'_unknownFields = ([])}
         parseMessage
           = let loop ::
                      UninterpretedOption ->
@@ -9534,12 +9647,13 @@ instance Control.DeepSeq.NFData UninterpretedOption where
     * 'Proto.Google.Protobuf.Descriptor_Fields.namePart' @:: Lens' UninterpretedOption'NamePart Data.Text.Text@
     * 'Proto.Google.Protobuf.Descriptor_Fields.isExtension' @:: Lens' UninterpretedOption'NamePart Prelude.Bool@
  -}
-data UninterpretedOption'NamePart = UninterpretedOption'NamePart{_UninterpretedOption'NamePart'namePart
-                                                                 :: !Data.Text.Text,
-                                                                 _UninterpretedOption'NamePart'isExtension
-                                                                 :: !Prelude.Bool,
-                                                                 _UninterpretedOption'NamePart'_unknownFields
-                                                                 :: !Data.ProtoLens.FieldSet}
+data UninterpretedOption'NamePart = UninterpretedOption'NamePart'_constructor{_UninterpretedOption'NamePart'namePart
+                                                                              :: !Data.Text.Text,
+                                                                              _UninterpretedOption'NamePart'isExtension
+                                                                              :: !Prelude.Bool,
+                                                                              _UninterpretedOption'NamePart'_unknownFields
+                                                                              ::
+                                                                              !Data.ProtoLens.FieldSet}
                                       deriving (Prelude.Eq, Prelude.Ord)
 instance Prelude.Show UninterpretedOption'NamePart where
         showsPrec _ __x __s
@@ -9593,11 +9707,12 @@ instance Data.ProtoLens.Message UninterpretedOption'NamePart where
               (\ x__ y__ ->
                  x__{_UninterpretedOption'NamePart'_unknownFields = y__})
         defMessage
-          = UninterpretedOption'NamePart{_UninterpretedOption'NamePart'namePart
-                                           = Data.ProtoLens.fieldDefault,
-                                         _UninterpretedOption'NamePart'isExtension =
-                                           Data.ProtoLens.fieldDefault,
-                                         _UninterpretedOption'NamePart'_unknownFields = ([])}
+          = UninterpretedOption'NamePart'_constructor{_UninterpretedOption'NamePart'namePart
+                                                        = Data.ProtoLens.fieldDefault,
+                                                      _UninterpretedOption'NamePart'isExtension =
+                                                        Data.ProtoLens.fieldDefault,
+                                                      _UninterpretedOption'NamePart'_unknownFields =
+                                                        ([])}
         parseMessage
           = let loop ::
                      UninterpretedOption'NamePart ->
