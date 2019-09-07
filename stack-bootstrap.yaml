@@ -1,14 +1,14 @@
 resolver: lts-12.7
+
 packages:
 - proto-lens-protoc
+
 # Build the current HEAD proto-lens-protoc against older revisions of proto-lens
 # and proto-lens-descriptors that are consistent with each other.
-- location:
-    commit: master
-    # To use the github master:
-    git: https://github.com/google/proto-lens
-    # To use the current repository:
-    # git: ../..  # stack runs 'git clone' in a subdirectory
+extra-deps:
+- git: https://github.com/google/proto-lens
+  # To use the current repository:
+  # git: ../..  # stack runs 'git clone' in a subdirectory
+  commit: master
   subdirs:
   - proto-lens
-  extra-dep: True
