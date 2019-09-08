@@ -1,5 +1,8 @@
 # Changelog for `proto-lens-runtime`
 
+## Pending
+- Bump lower bounds to base-4.10 (ghc-8.2).
+
 ## v0.5.0.0
 - Export more modules from proto-lens, to support generated encoding/decoding
   and storing repeated fields as `Vector`s.
