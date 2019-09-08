@@ -1,21 +1,18 @@
-resolver: lts-12.7
+resolver: lts-14.4
 packages:
 - discrimination-ieee754
 - proto-lens
 - proto-lens-arbitrary
+- proto-lens-benchmarks
 - proto-lens-discrimination
 - proto-lens-optparse
 - proto-lens-protobuf-types
 - proto-lens-protoc
 - proto-lens-runtime
 - proto-lens-setup
-# Internal packages, not to be released:
-- proto-lens-benchmarks
 - proto-lens-tests
 - proto-lens-tests-dep
 extra-deps:
-- discrimination-0.3
+- discrimination-0.4
 - promises-0.3
-
-ghc-options:
-  "$locals": -Wall -Werror
+- primitive-0.6.4.0  # For discrimination-0.4 on older LTSes

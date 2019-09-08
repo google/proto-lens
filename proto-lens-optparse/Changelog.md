@@ -1,5 +1,8 @@
 # Changelog for `proto-lens-optparse`
 
+## Pending
+- Bump lower bounds to base-4.10 (ghc-8.2).
+
 ## v0.1.1.5
 - Bump the upper bound to `proto-lens-0.5.*`.
 

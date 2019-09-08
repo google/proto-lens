@@ -4,8 +4,10 @@
 
 ### Breaking Changes
 - Add `methodOptions` to `HasMethodImpl` to provide custom method options.
+- Bump lower bounds to base-4.10 (ghc-8.2).
 
 ### Backwards-Compatible Changes
+- Bump upper bound to allo profunctors-5.5.
 
 ## v0.5.1.0
 - Add `decodeMessageDelimitedH` to decode delimited messages from a file handle

@@ -34,7 +34,7 @@ library:
     - Data.ProtoLens.Encoding.Parser.Internal
     - Data.ProtoLens.TextFormat.Parser
   dependencies:
-    - base >= 4.9 && < 4.13
+    - base >= 4.10 && < 4.13
     - bytestring == 0.10.*
     - containers >= 0.5 && < 0.7
     - deepseq == 1.4.*
@@ -43,7 +43,7 @@ library:
     - parsec == 3.1.*
     - pretty == 1.1.*
     - primitive >= 0.6 && < 0.8
-    - profunctors >= 5.2 && < 5.5
+    - profunctors >= 5.2 && < 5.6
     - tagged == 0.8.*
     - text == 1.2.*
     - transformers >= 0.4 && < 0.6

@@ -17,7 +17,7 @@ extra-source-files:
   - Changelog.md
 
 dependencies:
-  - base >= 4.9 && < 4.13
+  - base >= 4.10 && < 4.13
   - bytestring == 0.10.*
   - containers >= 0.5 && < 0.7
   - lens-family == 1.2.*

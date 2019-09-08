@@ -1,5 +1,8 @@
 # Changelog for `proto-lens-protobuf-types`
 
+## Pending
+- Bump lower bounds to base-4.10 (ghc-8.2).
+
 ## v0.5.0.0
 - Bump upper bounds to support `proto-lens-0.5.*`.
 

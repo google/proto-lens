@@ -14,19 +14,17 @@ cache:
 
 matrix:
   include:
-  - env: BUILD=cabal GHCVER=8.0.2 CABALVER=1.24
-    addons: {apt: {packages: [cabal-install-1.24, ghc-8.0.2], sources: [hvr-ghc]}}
   - env: BUILD=cabal GHCVER=8.2.2 CABALVER=2.0
     addons: {apt: {packages: [cabal-install-2.0, ghc-8.2.2], sources: [hvr-ghc]}}
-  - env: BUILD=stack STACK='stack --resolver=lts-8.24'
+  - env: BUILD=cabal GHCVER=8.4.4 CABALVER=2.2
+    addons: {apt: {packages: [cabal-install-2.2, ghc-8.4.4], sources: [hvr-ghc]}}
+  - env: BUILD=cabal GHCVER=8.6.5 CABALVER=2.4
+    addons: {apt: {packages: [cabal-install-2.4, ghc-8.6.5], sources: [hvr-ghc]}}
+  - env: BUILD=stack STACK='stack --resolver=lts-11.22'
     addons: {apt: {packages: [libgmp-dev]}}
-  - env: BUILD=stack STACK='stack --resolver=lts-9.6'
-    addons: {apt: {packages: [libgmp-dev]}}
-  - env: BUILD=stack STACK=stack --resolver=11.22'
+  - env: BUILD=stack STACK='stack --resolver=lts-12.26'
     addons: {apt: {packages: [libgmp-dev]}}
   - env: BUILD=stack STACK='stack'  # Use the resolver in stack.yaml
-    addons: {apt: {packages: [libgmp-dev]}}
-  - env: BUILD=stack STACK='stack --stack-yaml=stack-ghc-8.6.yaml'
     addons: {apt: {packages: [libgmp-dev]}}
 
 before_install:
@@ -37,7 +35,7 @@ before_install:
       cabal)
         export PATH=/opt/ghc/$GHCVER/bin:/opt/cabal/$CABALVER/bin:$HOME/.local/bin:$HOME/.cabal/bin:$PATH;;
     esac
-  - curl -L https://github.com/commercialhaskell/stack/releases/download/v1.7.1/stack-1.7.1-linux-x86_64.tar.gz | tar xz --wildcards --strip-components=1 -C $HOME/.local/bin '*/stack'
+  - curl -L https://github.com/commercialhaskell/stack/releases/download/v1.9.3/stack-1.9.3-linux-x86_64.tar.gz | tar xz --wildcards --strip-components=1 -C $HOME/.local/bin '*/stack'
   - curl -L https://github.com/protocolbuffers/protobuf/releases/download/v3.7.1/protoc-3.7.1-linux-x86_64.zip > protoc-release.zip
   - unzip -p protoc-release.zip bin/protoc > $HOME/.local/bin/protoc
   - chmod a+x $HOME/.local/bin/protoc
