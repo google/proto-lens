@@ -75,14 +75,14 @@ import Proto.Google.Protobuf.Descriptor
     , MethodOptions
     , ServiceDescriptorProto
     )
-import Data.ProtoLens.Compiler.Combinators
-    ( Name
-    , QName
-    , ModuleName
-    , Type
+import GHC.SourceGen
+    ( OccNameStr
+    , RdrNameStr
+    , ModuleNameStr
+    , HsType'
     , qual
-    , tyPromotedString
-    , unQual
+    , stringTy
+    , unqual
     )
 
 -- | 'Env' contains a mapping of proto names (as specified in the .proto file)
@@ -91,7 +91,7 @@ import Data.ProtoLens.Compiler.Combinators
 -- message field types in this form, even if they refer to local definitions.)
 --
 -- The type 'n' can be either a 'Name' (when talking about definitions within
--- the current file) or a (qualified) 'QName' (when talking about definitions
+-- the current file) or a (qualified) 'RdrNameStr' (when talking about definitions
 -- either from this or another file).
 type Env n = Map.Map Text (Definition n)
 
@@ -117,7 +117,7 @@ data MessageInfo n = MessageInfo
     , messageOneofFields :: [OneofInfo]
       -- ^ The oneofs in this message, associated with the fields that
       --   belong to them.
-    , messageUnknownFields :: Name
+    , messageUnknownFields :: OccNameStr
       -- ^ The name of the Haskell field in this message that holds the
       -- unknown fields.
     , groupFieldNumber :: Maybe Int32
@@ -185,7 +185,7 @@ data FieldPacking
 
 data OneofInfo = OneofInfo
     { oneofFieldName :: FieldName
-    , oneofTypeName :: Name
+    , oneofTypeName :: OccNameStr
       -- ^ The name of the sum type corresponding to this oneof.
     , oneofCases :: [OneofCase]
       -- ^ The individual fields that make up this oneof.
@@ -193,10 +193,10 @@ data OneofInfo = OneofInfo
 
 data OneofCase = OneofCase
     { caseField :: FieldInfo
-    , caseConstructorName :: Name
+    , caseConstructorName :: OccNameStr
         -- ^ The constructor for building a 'oneofTypeName' from the
         -- value in this field.
-    , casePrismName :: Name
+    , casePrismName :: OccNameStr
         -- ^ The name for building 'Prism' definition.
     }
 
@@ -204,7 +204,7 @@ data OneofCase = OneofCase
 -- protoc, that has two fields: a key and a value. The map field should be
 -- serialized like a repeated field of the entry messages.
 data MapEntryInfo = MapEntryInfo
-    { mapEntryTypeName :: Name
+    { mapEntryTypeName :: OccNameStr
         -- ^ The Haskell name for this type.
     , keyField :: FieldInfo
         -- ^ The field of the entry type corresponding to the map key.
@@ -221,7 +221,7 @@ data FieldName = FieldName
       --
       -- May be shared between two different message data types in the same
       -- module.
-    , haskellRecordFieldName :: Name
+    , haskellRecordFieldName :: OccNameStr
       -- ^ The Haskell name of this internal record field; for example,
       -- "_Foo'Bar'baz.  Unique within each module.
     }
@@ -240,12 +240,12 @@ data FieldName = FieldName
 newtype Symbol = Symbol String
     deriving (Eq, Ord, IsString, Semigroup.Semigroup, Monoid)
 
-nameFromSymbol :: Symbol -> Name
+nameFromSymbol :: Symbol -> OccNameStr
 nameFromSymbol (Symbol s) = fromString s
 
 -- | Construct a promoted, type-level string.
-promoteSymbol :: Symbol -> Type
-promoteSymbol (Symbol s) = tyPromotedString s
+promoteSymbol :: Symbol -> HsType'
+promoteSymbol (Symbol s) = stringTy s
 
 -- | All the information needed to define or use a proto enum type.
 data EnumInfo n = EnumInfo
@@ -257,15 +257,15 @@ data EnumInfo n = EnumInfo
 
 -- | Information about the "unrecognized" case of an enum.
 data EnumUnrecognizedInfo = EnumUnrecognizedInfo
-    { unrecognizedName :: Name
-    , unrecognizedValueName :: Name
+    { unrecognizedName :: OccNameStr
+    , unrecognizedValueName :: OccNameStr
     }
 
 -- | Information about a single value case of a proto enum.
 data EnumValueInfo n = EnumValueInfo
     { enumValueName :: n
     , enumValueDescriptor :: EnumValueDescriptorProto
-    , enumAliasOf :: Maybe Name
+    , enumAliasOf :: Maybe OccNameStr
         -- ^ If 'Nothing', we turn value into a normal constructor of the enum.
         -- If @'Just' n@, we're treating it as an alias of the constructor @n@
         -- (a PatternSynonym in Haskell).  This mirrors the behavior of the
@@ -276,22 +276,22 @@ mapEnv :: (n -> n') -> Env n -> Env n'
 mapEnv f = fmap $ fmap f
 
 -- Lift a set of local definitions into references to a specific module.
-qualifyEnv :: ModuleName -> Env Name -> Env QName
+qualifyEnv :: ModuleNameStr -> Env OccNameStr -> Env RdrNameStr
 qualifyEnv m = mapEnv (qual m)
 
 -- Lift a set of local definitions into references to the current module.
-unqualifyEnv :: Env Name -> Env QName
-unqualifyEnv = mapEnv unQual
+unqualifyEnv :: Env OccNameStr -> Env RdrNameStr
+unqualifyEnv = mapEnv unqual
 
 -- | Look up the Haskell name for the type of a given field (message or enum).
-definedFieldType :: FieldDescriptorProto -> Env QName -> Definition QName
+definedFieldType :: FieldDescriptorProto -> Env RdrNameStr -> Definition RdrNameStr
 definedFieldType fd env = fromMaybe err $ Map.lookup (fd ^. #typeName) env
   where
     err = error $ "definedFieldType: Field type " ++ unpack (fd ^. #typeName)
                   ++ " not found in environment."
 
 -- | Look up the Haskell name for the type of a given type.
-definedType :: Text -> Env QName -> Definition QName
+definedType :: Text -> Env RdrNameStr -> Definition RdrNameStr
 definedType ty = fromMaybe err . Map.lookup ty
   where
     err = error $ "definedType: Type " ++ unpack ty
@@ -299,7 +299,7 @@ definedType ty = fromMaybe err . Map.lookup ty
 
 -- | Collect all the definitions in the given file (including definitions
 -- nested in other messages), and assign Haskell names to them.
-collectDefinitions :: FileDescriptorProto -> Env Name
+collectDefinitions :: FileDescriptorProto -> Env OccNameStr
 collectDefinitions fd = let
     protoPrefix = case fd ^. #package of
         "" -> "."
@@ -339,7 +339,7 @@ messageAndEnumDefs ::
         -- ^ Group fields of the parent message (if any).
     -> [DescriptorProto]
     -> [EnumDescriptorProto]
-    -> Forest (Text, Definition Name)
+    -> Forest (Text, Definition OccNameStr)
         -- ^ Organized as a list of trees, to make it possible for callers
         -- to get the immediate child nested types.
 messageAndEnumDefs syntaxType protoPrefix hsPrefix groups messages enums
@@ -351,7 +351,7 @@ messageAndEnumDefs syntaxType protoPrefix hsPrefix groups messages enums
 
 -- | Generate the definitions for a message and its nested types (if any).
 messageDefs :: SyntaxType -> Text -> String -> GroupMap -> DescriptorProto
-            -> Tree (Text, Definition Name)
+            -> Tree (Text, Definition OccNameStr)
 messageDefs syntaxType protoPrefix hsPrefix groups d
     = Node (protoName, thisDef) subDefs
   where
@@ -388,7 +388,7 @@ messageDefs syntaxType protoPrefix hsPrefix groups d
 
 -- | If this type is a map entry, retrieves the relevant information
 -- along with the proto name of this type.
-mapEntryInfo :: Definition Name -> Maybe MapEntryInfo
+mapEntryInfo :: Definition OccNameStr -> Maybe MapEntryInfo
 mapEntryInfo (Message m)
     | messageDescriptor m ^. #options . #mapEntry
     , [keyFd, valueFd] <- messageFields m
@@ -400,7 +400,7 @@ mapEntryInfo (Message m)
 mapEntryInfo _ = Nothing
 
 -- | Returns a map whose keys are the proto type name of the entry message.
-collectMapEntries :: [(Text, Definition Name)] -> Map.Map Text MapEntryInfo
+collectMapEntries :: [(Text, Definition OccNameStr)] -> Map.Map Text MapEntryInfo
 collectMapEntries defs =
     Map.fromList
         [(protoName, e) | (protoName, d) <- defs, Just e <- [mapEntryInfo d]]
@@ -581,7 +581,7 @@ reservedKeywords = Set.fromList $
 
 -- | Generate the definition for an enum type.
 enumDef :: SyntaxType -> Text -> String -> EnumDescriptorProto
-          -> (Text, Definition Name)
+          -> (Text, Definition OccNameStr)
 enumDef syntaxType protoPrefix hsPrefix d = let
     mkText n = protoPrefix <> n
     mkHsName n = fromString $ hsPrefix ++ case hsName n of
@@ -608,12 +608,12 @@ enumDef syntaxType protoPrefix hsPrefix d = let
 --
 -- Like Java, we treat the first case of each numeric value as the "real"
 -- constructor, and subsequent cases as synonyms.
-collectEnumValues :: (Text -> Name) -> [EnumValueDescriptorProto]
-                  -> [EnumValueInfo Name]
+collectEnumValues :: (Text -> OccNameStr) -> [EnumValueDescriptorProto]
+                  -> [EnumValueInfo OccNameStr]
 collectEnumValues mkHsName = snd . mapAccumL helper Map.empty
   where
-    helper :: Map.Map Int32 Name -> EnumValueDescriptorProto
-           -> (Map.Map Int32 Name, EnumValueInfo Name)
+    helper :: Map.Map Int32 OccNameStr -> EnumValueDescriptorProto
+           -> (Map.Map Int32 OccNameStr, EnumValueInfo OccNameStr)
     helper seenNames v
         | Just n' <- Map.lookup k seenNames = (seenNames, mkValue (Just n'))
         | otherwise = (Map.insert k n seenNames, mkValue Nothing)
@@ -624,7 +624,7 @@ collectEnumValues mkHsName = snd . mapAccumL helper Map.empty
 
 -- Haskell types must start with an uppercase letter, so we capitalize message
 -- and enum names.
--- Name collisions will show up as build errors in the generated haskell file.
+-- OccNameStr collisions will show up as build errors in the generated haskell file.
 capitalize :: Text -> Text
 capitalize s
     | Just (c, s') <- uncons s = cons (toUpper c) s'
