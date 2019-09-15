@@ -1,4 +1,4 @@
-# Proto lens
+# proto-lens
 
 [![Build Status](https://travis-ci.org/google/proto-lens.svg?branch=master)](https://travis-ci.org/google/proto-lens)
 
