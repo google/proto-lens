@@ -1,3 +1,5 @@
+# proto-lens
+
 [![Build Status](https://travis-ci.org/google/proto-lens.svg?branch=master)](https://travis-ci.org/google/proto-lens)
 
 The proto-lens library provides an API for protocol buffers using modern Haskell
