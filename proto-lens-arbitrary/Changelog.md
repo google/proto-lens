@@ -2,6 +2,7 @@
 
 ## Pending
 - Bump lower bounds to base-4.10 (ghc-8.2).
+- Support dependencies on base-4.13 (ghc-8.8) and lens-family-2.0.
 
 ## v0.1.2.7
 - Bump the dependency for `QuickCheck-2.13`.

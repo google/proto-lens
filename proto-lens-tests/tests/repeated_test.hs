@@ -11,7 +11,6 @@
 module Main where
 
 import Data.ByteString.Builder (byteString)
-import Data.Monoid ((<>))
 import Lens.Family2 (Lens', (&), (.~), view, set)
 import Test.Tasty (testGroup)
 import Test.QuickCheck

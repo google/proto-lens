@@ -5,6 +5,7 @@
 -- Upstream docs:
 -- <https://developers.google.com/protocol-buffers/docs/encoding#structure>
 {-# LANGUAGE BangPatterns #-}
+{-# LANGUAGE CPP #-}
 {-# LANGUAGE GeneralizedNewtypeDeriving #-}
 module Data.ProtoLens.Encoding.Wire
     ( Tag(..)
@@ -21,7 +22,9 @@ module Data.ProtoLens.Encoding.Wire
 import Control.DeepSeq (NFData(..))
 import Data.Bits ((.&.), (.|.), shiftL, shiftR)
 import qualified Data.ByteString as B
+#if !MIN_VERSION_base(4,11,0)
 import Data.Semigroup ((<>))
+#endif
 import Data.Word (Word8, Word32, Word64)
 
 import Data.ProtoLens.Encoding.Bytes

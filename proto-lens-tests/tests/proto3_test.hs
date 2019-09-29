@@ -10,7 +10,6 @@ module Main where
 import Data.ProtoLens
 import Lens.Family2 ((&), (.~), (^.))
 import qualified Data.ByteString.Builder as Builder
-import Data.Monoid ((<>))
 import Proto.Proto3
     ( Foo
     , Foo'FooEnum(..)

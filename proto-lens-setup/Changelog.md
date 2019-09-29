@@ -2,6 +2,7 @@
 
 ## Pending
 - Bump lower bounds to base-4.10 (ghc-8.2) and Cabal-2.0.
+- Support dependencies on base-4.13 (ghc-8.8) and Cabal-3.0.
 
 ## v0.4.0.2
 - Bump upper bounds to support `proto-lens-0.5.*`.

@@ -16,12 +16,12 @@ extra-source-files:
 
 library:
   dependencies:
-    - base >= 4.10 && < 4.13
+    - base >= 4.10 && < 4.14
     - bytestring == 0.10.*
     - containers >= 0.5 && < 0.7
     - deepseq == 1.4.*
     - filepath >= 1.4 && < 1.6
-    - lens-family == 1.2.*
+    - lens-family >= 1.2 && < 2.1
     - proto-lens == 0.5.*
     - text == 1.2.*
     - vector >= 0.11 && < 0.13

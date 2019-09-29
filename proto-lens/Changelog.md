@@ -8,6 +8,7 @@
 
 ### Backwards-Compatible Changes
 - Bump upper bound to allo profunctors-5.5.
+- Support dependencies on base-4.13 (ghc-8.8) and lens-family-2.0.
 
 ## v0.5.1.0
 - Add `decodeMessageDelimitedH` to decode delimited messages from a file handle

@@ -34,12 +34,12 @@ library:
     - Data.ProtoLens.Encoding.Parser.Internal
     - Data.ProtoLens.TextFormat.Parser
   dependencies:
-    - base >= 4.10 && < 4.13
+    - base >= 4.10 && < 4.14
     - bytestring == 0.10.*
     - containers >= 0.5 && < 0.7
     - deepseq == 1.4.*
     - ghc-prim >= 0.4 && < 0.6
-    - lens-family == 1.2.*
+    - lens-family >= 1.2 && < 2.1
     - parsec == 3.1.*
     - pretty == 1.1.*
     - primitive >= 0.6 && < 0.8

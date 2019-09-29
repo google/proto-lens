@@ -14,6 +14,7 @@
 ### Backwards-Compatible Changes
 - Fix a potential naming conflict when message types and enum values
   are the same except for case.
+- Support dependencies on base-4.13 (ghc-8.8) and lens-family-2.0.
 
 ## v0.5.0.0
 

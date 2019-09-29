@@ -10,7 +10,6 @@ module Main where
 
 import qualified Data.ByteString
 import Data.Char (ord)
-import Data.Monoid ((<>))
 import qualified Data.Text.Lazy
 import qualified Data.ProtoLens.Any as Any
 import Data.ProtoLens (

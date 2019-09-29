@@ -4,6 +4,7 @@
 -- license that can be found in the LICENSE file or at
 -- https://developers.google.com/open-source/licenses/bsd
 
+{-# LANGUAGE CPP #-}
 {-# LANGUAGE OverloadedLabels #-}
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE PatternSynonyms #-}
@@ -11,7 +12,9 @@ module Main where
 
 import qualified Data.ByteString as B
 import Data.Map.Strict ((!))
-import Data.Monoid ((<>))
+#if !MIN_VERSION_base(4,11,0)
+import Data.Semigroup ((<>))
+#endif
 import qualified Data.Set as Set
 import qualified Data.Text as T
 import Data.Text (Text, pack)

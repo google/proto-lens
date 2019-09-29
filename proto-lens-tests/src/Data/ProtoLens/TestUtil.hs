@@ -34,6 +34,9 @@ module Data.ProtoLens.TestUtil(
     PrettyPrint.vcat,
     (PrettyPrint.$+$),
     satisfies,
+    -- TODO: remove this after we drop support for base-4.10 (ghc-8.2),
+    -- which didn't export (<>) from Prelude.
+    (<>)
     ) where
 
 import Data.ProtoLens
@@ -57,7 +60,9 @@ import Test.HUnit ((@=?), assertBool, assertFailure)
 import Data.Either (isLeft)
 import Data.Bits (shiftL, shiftR, (.|.), (.&.))
 import qualified Data.Text.Lazy as TL
-import Data.Monoid ((<>))
+#if !MIN_VERSION_base(4,11,0)
+import Data.Semigroup ((<>))
+#endif
 import Data.Word (Word32, Word64)
 import qualified Text.PrettyPrint as PrettyPrint
 import Text.PrettyPrint

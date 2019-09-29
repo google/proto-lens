@@ -1,6 +1,7 @@
 -- | This module generates code for decoding and encoding protocol buffer messages.
 --
 -- Upstream docs: <https://developers.google.com/protocol-buffers/docs/encoding>
+{-# LANGUAGE CPP #-}
 {-# LANGUAGE DeriveFunctor #-}
 {-# LANGUAGE LambdaCase #-}
 {-# LANGUAGE NoMonomorphismRestriction #-}
@@ -13,7 +14,9 @@ module Data.ProtoLens.Compiler.Generate.Encoding
 
 import Data.Int (Int32)
 import qualified Data.Map as Map
+#if !MIN_VERSION_base(4,11,0)
 import Data.Semigroup ((<>))
+#endif
 import qualified Data.Text as Text
 import Lens.Family2 (view, (^.))
 import GHC.SourceGen

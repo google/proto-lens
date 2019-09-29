@@ -60,6 +60,9 @@ import Distribution.Simple.LocalBuildInfo
     , componentPackageDeps
     , allComponentsInBuildOrder
     , componentNameMap
+#if MIN_VERSION_Cabal(3,0,0)
+    , LibraryName(..)
+#endif
     )
 import qualified Distribution.Simple.PackageIndex as PackageIndex
 import Distribution.Simple.Setup (fromFlag, copyDest, copyVerbosity)
@@ -375,7 +378,12 @@ collectActiveModules
 collectActiveModules l = map (\(n, c) -> (c, f n)) $ Map.toList $ allComponents l
   where
     p = localPkgDescr l
-    f CLibName = maybeToList (library p) >>=
+#if MIN_VERSION_Cabal(3,0,0)
+    f (CLibName LMainLibName)
+#else
+    f CLibName
+#endif
+        = maybeToList (library p) >>=
                     \lib -> exposedModules lib
                                 ++ otherModules (libBuildInfo lib)
     f (CExeName n) = otherModules . buildInfo $ exes Map.! n
