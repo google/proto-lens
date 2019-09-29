@@ -33,8 +33,8 @@ import Proto.Proto3_Fields
     , bytes
     , string
     )
-import Test.Framework (testGroup)
-import Test.Framework.Providers.HUnit (testCase)
+import Test.Tasty (testGroup)
+import Test.Tasty.HUnit (testCase)
 import Test.HUnit ((@=?), assertBool)
 
 import Data.ProtoLens.TestUtil

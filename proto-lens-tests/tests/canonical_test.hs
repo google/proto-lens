@@ -16,7 +16,7 @@ module Main where
 import Lens.Family2 ((&), (.~))
 import Proto.Canonical (Test1, Test2, Test3, Test4)
 import Proto.Canonical_Fields (a, b, c, d)
-import Test.Framework (testGroup)
+import Test.Tasty (testGroup)
 import Data.ProtoLens
 import qualified Data.ByteString as B
 import Data.ByteString.Builder (word8)
@@ -29,11 +29,11 @@ main = testMain
            [int32Test, stringTest, embeddedTest, packedIntsTest, roundTripTests]
 
 canonicalTest :: (Show a, Eq a, Message a)
-              => String -> a -> Doc -> [Word8] -> Test
+              => String -> a -> Doc -> [Word8] -> TestTree
 canonicalTest name val text bytes
     = testGroup name [serializeTo "bytes" val text $ mconcat $ map word8 bytes]
 
-int32Test, stringTest, embeddedTest, packedIntsTest, roundTripTests :: Test
+int32Test, stringTest, embeddedTest, packedIntsTest, roundTripTests :: TestTree
 int32Test = canonicalTest
     "int32"
     (defMessage & a .~ 150 :: Test1)

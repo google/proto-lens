@@ -18,7 +18,7 @@ import Data.ProtoLens
 import Lens.Family2 (Lens', (&), (.~))
 import Data.Int (Int32, Int64)
 import Data.Word (Word32, Word64)
-import Test.Framework (testGroup)
+import Test.Tasty (testGroup)
 import qualified Data.ByteString as B
 import Data.Text (Text)
 import qualified Data.Text as Text
@@ -28,10 +28,10 @@ import Data.ByteString.Builder (Builder, byteString)
 
 import Data.ProtoLens.TestUtil
 
-readFails :: String -> LT.Text -> Test
+readFails :: String -> LT.Text -> TestTree
 readFails name = readFrom name (Nothing :: Maybe Raw)
 
-readSucceeds :: String -> Raw -> LT.Text -> Test
+readSucceeds :: String -> Raw -> LT.Text -> TestTree
 readSucceeds name value = readFrom name (Just value)
 
 main :: IO ()
@@ -59,16 +59,16 @@ main = testMain
 testInt32, testInt64, testUInt32, testUInt64, testSInt32, testSInt64,
     testFixed32, testFixed64, testSFixed32, testSFixed64, testFloat,
     testDouble, testBool, testString, testUnicode, testBytes,
-    testFailedDecoding :: Test
+    testFailedDecoding :: TestTree
 
 testRawValues :: String -> Lens' Raw a -> (a -> Doc)
-              -> (a -> Builder) -> [(String, a)] -> Test
+              -> (a -> Builder) -> [(String, a)] -> TestTree
 testRawValues groupName access showMsg encode values
     = testRawValuePairs groupName access showMsg encode
         [(name, x, x) | (name, x) <- values]
 
 testRawValuePairs :: String -> Lens' Raw a -> (a -> Doc)
-                  -> (b -> Builder) -> [(String, a, b)] -> Test
+                  -> (b -> Builder) -> [(String, a, b)] -> TestTree
 testRawValuePairs groupName access showMsg encode values
     = testGroup groupName
           [ serializeTo name (defMessage & access .~ x) (showMsg x)

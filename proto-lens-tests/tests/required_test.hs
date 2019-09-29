@@ -13,7 +13,7 @@ import Data.Proxy (Proxy(..))
 import Lens.Family ((&), (.~))
 import Proto.Required (Foo, Bar)
 import Proto.Required_Fields (a, b)
-import Test.Framework (testGroup)
+import Test.Tasty (testGroup)
 
 import Data.ProtoLens.TestUtil
 
@@ -33,7 +33,7 @@ main = testMain
     ]
 
 empty, onlyRequired, onlyOptional, both,
-    multipleRequired :: Test
+    multipleRequired :: TestTree
 
 empty = testGroup "empty"
     [ deserializeFrom "wire" failedFoo mempty

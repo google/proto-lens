@@ -11,8 +11,8 @@ import Control.Monad (void)
 import Data.ProtoLens (defMessage)
 import Data.Proxy (Proxy (..))
 import Lens.Family2 (set)
-import Test.Framework (testGroup, Test)
-import Test.Framework.Providers.HUnit (testCase)
+import Test.Tasty (testGroup, TestTree)
+import Test.Tasty.HUnit (testCase)
 import Test.HUnit ((@=?))
 import Proto.Service
 import Data.ProtoLens.Service.Types
@@ -105,7 +105,7 @@ revMessagesMetadataTest
        ) => Proxy m
 revMessagesMetadataTest = Proxy
 
-testMethodOption :: Test
+testMethodOption :: TestTree
 testMethodOption = testGroup "methodOption"
     [ testCase "default" $
         defMessage
