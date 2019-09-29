@@ -7,7 +7,7 @@ import qualified Data.Text as T
 import Data.ProtoLens
 import Data.ProtoLens.Encoding.Bytes (runBuilder)
 import Lens.Family2 ((&), (.~))
-import Test.Framework.Providers.HUnit (testCase)
+import Test.Tasty.HUnit (testCase)
 import Test.HUnit ((@=?))
 
 import Data.ProtoLens.TestUtil

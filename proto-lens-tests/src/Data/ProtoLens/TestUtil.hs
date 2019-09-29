@@ -7,7 +7,7 @@
 {-# LANGUAGE ScopedTypeVariables #-}
 module Data.ProtoLens.TestUtil(
     testMain,
-    Test,
+    TestTree,
     serializeTo,
     deserializeFrom,
     deserializeFromExpectingError,
@@ -50,10 +50,9 @@ import Test.QuickCheck (noShrinking)
 #if MIN_VERSION_QuickCheck(2,10,0)
 import Test.QuickCheck (withMaxSuccess)
 #endif
-import Test.Framework (defaultMain, testGroup)
-import Test.Framework.Providers.HUnit (testCase)
-import Test.Framework.Providers.API (Test)
-import Test.Framework.Providers.QuickCheck2 (testProperty)
+import Test.Tasty (defaultMain, testGroup, TestTree)
+import Test.Tasty.HUnit (testCase)
+import Test.Tasty.QuickCheck (testProperty)
 import Test.HUnit ((@=?), assertBool, assertFailure)
 import Data.Either (isLeft)
 import Data.Bits (shiftL, shiftR, (.|.), (.&.))
@@ -74,11 +73,11 @@ import Text.PrettyPrint
     , ($+$)
     )
 
-testMain :: [Test] -> IO ()
-testMain = defaultMain
+testMain :: [TestTree] -> IO ()
+testMain = defaultMain . testGroup "tests"
 
 serializeTo :: (Show a, Eq a, Message a)
-            => String -> a -> Doc -> Builder.Builder -> Test
+            => String -> a -> Doc -> Builder.Builder -> TestTree
 serializeTo name x text bs = testCase name $ do
     let bs' = toStrictByteString bs
     bs' @=? encodeMessage x
@@ -93,7 +92,7 @@ renderIndenting :: Doc -> String
 renderIndenting = renderStyle style { lineLength = 1 }
 
 deserializeFrom :: (Show a, Eq a, Message a)
-                => String -> Maybe a -> Builder.Builder -> Test
+                => String -> Maybe a -> Builder.Builder -> TestTree
 deserializeFrom name x bs = testCase name $ case x of
     -- Check whether or not it failed without worrying about the exact error
     -- message.
@@ -104,7 +103,7 @@ deserializeFrom name x bs = testCase name $ case x of
 
 deserializeFromExpectingError
     :: forall a . (Show a, Eq a, Message a)
-    => String -> Proxy a -> String -> Builder.Builder -> Test
+    => String -> Proxy a -> String -> Builder.Builder -> TestTree
 deserializeFromExpectingError name _ msg bs = testCase name $
     case decodeMessage $ toStrictByteString bs :: Either String a of
         Right x -> assertFailure $ "expected failure; got: " ++ show x
@@ -133,7 +132,7 @@ textRoundTripProperty (ArbitraryMessage msg) =
 shrinkSanityProperty :: (Message a, Eq a) => MessageProperty a
 shrinkSanityProperty (ArbitraryMessage msg) = msg `notElem` shrinkMessage msg
 
-newtype TypedTest a = TypedTest { runTypedTest :: Test }
+newtype TypedTest a = TypedTest { runTypedTest :: TestTree }
 
 roundTripTest :: forall a . (Show a, Message a, Eq a) => String -> TypedTest a
 roundTripTest name = TypedTest $ testGroup name
@@ -151,7 +150,7 @@ roundTripTest name = TypedTest $ testGroup name
     ]
 
 readFromWithRegistry :: (Show a, Eq a, Message a)
-                     => Registry -> String -> Maybe a -> LT.Text -> Test
+                     => Registry -> String -> Maybe a -> LT.Text -> TestTree
 readFromWithRegistry reg name x text = testCase name $ case x of
     -- Check whether or not it failed without worrying about the exact error
     -- message.
@@ -160,7 +159,7 @@ readFromWithRegistry reg name x text = testCase name $ case x of
   where y = readMessageWithRegistry reg text
 
 readFrom :: (Show a, Eq a, Message a)
-         => String -> Maybe a -> LT.Text -> Test
+         => String -> Maybe a -> LT.Text -> TestTree
 readFrom = readFromWithRegistry mempty
 
 varInt :: Word64 -> Builder.Builder

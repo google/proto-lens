@@ -6,14 +6,14 @@ import qualified Data.ByteString as B
 import Data.Either (isLeft)
 
 import Test.QuickCheck
-import Test.Framework (defaultMain, testGroup, Test)
-import Test.Framework.Providers.QuickCheck2 (testProperty)
+import Test.Tasty (defaultMain, testGroup, TestTree)
+import Test.Tasty.QuickCheck (testProperty)
 
 import Data.ProtoLens.Encoding.Bytes
 import Data.ProtoLens.Encoding.Parser
 
 main :: IO ()
-main = defaultMain
+main = defaultMain $ testGroup "tests"
     [ testGroup "Parser" testParser
     , testGroup "getWord8" testGetWord8
     , testGroup "getBytes" testGetBytes
@@ -22,7 +22,7 @@ main = defaultMain
     , testGroup "isolate" testIsolate
     ]
 
-testParser :: [Test]
+testParser :: [TestTree]
 testParser =
     -- Test out the Applicative instance by using "traverse" to read the same number of bytes
     -- as in the input.
@@ -32,14 +32,14 @@ testParser =
                                     === Right ws
     ]
 
-testGetWord8 :: [Test]
+testGetWord8 :: [TestTree]
 testGetWord8 =
     [ testProperty "atEnd" $ \ws -> runParser atEnd (B.pack ws) === Right (null ws)
     , testProperty "manyTillEnd"
             $ \ws -> runParser (manyTillEnd getWord8) (B.pack ws) === Right ws
     ]
 
-testGetBytes :: [Test]
+testGetBytes :: [TestTree]
 testGetBytes =
     [ testProperty "many"
             $ \ws -> let
@@ -51,7 +51,7 @@ testGetBytes =
                                 (runParser (getBytes n) $ B.pack ws)
     ]
 
-testGetWord32le :: [Test]
+testGetWord32le :: [TestTree]
 testGetWord32le =
     [ testProperty "align"
         $ \ws -> length ws `mod` 4 /= 0 ==>
@@ -61,7 +61,7 @@ testGetWord32le =
                 === Right ws
     ]
 
-testFailure :: [Test]
+testFailure :: [TestTree]
 testFailure =
     [ testProperty "fail-fast" $ \bs ->
         runParser (fail "abcde") (B.pack bs)
@@ -71,7 +71,7 @@ testFailure =
             === (Left "fghij: abcde" :: Either String ())
     ]
 
-testIsolate :: [Test]
+testIsolate :: [TestTree]
 testIsolate =
     [ testProperty "many" $ \bs bs' ->
         runParser (liftA2 (,) (isolate (length bs) $ manyTillEnd getWord8)

@@ -13,7 +13,7 @@ import Data.Monoid ((<>))
 import Proto.Group
 import Proto.Group_Fields
 import Lens.Family2 ((&), (.~))
-import Test.Framework (testGroup)
+import Test.Tasty (testGroup)
 
 import Data.ProtoLens.TestUtil
 
@@ -26,7 +26,7 @@ main = testMain
            ]
 
 serializeSimple, deserializeEndMismatch, roundTripSimple,
-    roundTripComplicated :: Test
+    roundTripComplicated :: TestTree
 
 serializeSimple = serializeTo
     "serialize Simple"

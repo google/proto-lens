@@ -7,10 +7,10 @@ module Main where
 import Data.ProtoLens (Message, defMessage)
 import Data.ProtoLens.Labels ()
 import Lens.Family2 (Lens', view, set)
-import Test.Framework.Providers.HUnit (testCase)
+import Test.Tasty.HUnit (testCase)
 import Test.HUnit ((@=?))
 
-import Data.ProtoLens.TestUtil (Test, testMain)
+import Data.ProtoLens.TestUtil (TestTree, testMain)
 import qualified Proto.Enum as Enum
 import qualified Proto.Imports as Imports
 import qualified Proto.ImportsDep as ImportsDep
@@ -35,7 +35,7 @@ testField
     => Lens' a b -> IO ()
 testField f = defMessage @=? view f (set f defMessage defMessage)
 
-testFoo :: Test
+testFoo :: TestTree
 testFoo = testCase "testFoo" $ do
     testField @Imports.Foo @Nested.A #a
     testField @Imports.Foo @Nested.A'B #b
@@ -44,7 +44,7 @@ testFoo = testCase "testFoo" $ do
     Enum.BAR5 @=? view #bar (defMessage :: Imports.Foo)
     Enum.Foo'BAZ4 @=? view #baz (defMessage :: Imports.Foo)
 
-testUseDep :: Test
+testUseDep :: TestTree
 testUseDep = testCase "testUseDep" $ do
     testField @Imports.UseDep @ImportsDep.DepPkg #foo
     testField @Imports.UseDep @ImportsTransitive.TransitiveDep #bar
@@ -55,7 +55,7 @@ testUseDep = testCase "testUseDep" $ do
     testField @Imports.UseDep @ImportsDep.TransitiveDep2 #baz
     testField @Imports.UseDep @ImportsTransitive.TransitiveDep2 #baz
 
-testUseBootstrapped :: Test
+testUseBootstrapped :: TestTree
 testUseBootstrapped = testCase "testUseBootstrapped" $ do
     testField @Imports.UseBootstrapped @Descriptor.DescriptorProto #descriptor
     testField @Imports.UseBootstrapped @Plugin.CodeGeneratorRequest #request

@@ -13,27 +13,26 @@ import Lens.Family2 ((^.), (.~), (&))
 import Lens.Family2.State ((.=), (<~), use, zoom)
 import Proto.Combinators
 import Proto.Combinators_Fields
-import Test.Framework (defaultMain)
-import Test.Framework.Providers.HUnit (hUnitTestToTests)
-import Test.HUnit ((~:), (~?=))
+import Test.Tasty (defaultMain, testGroup)
+import Test.Tasty.HUnit (testCase, (@?=))
 
 main :: IO ()
-main = defaultMain $ hUnitTestToTests $ "" ~:
+main = defaultMain $ testGroup "tests"
     [ let proto = defMessage & quux .~ 1 & foo .~ defMessage :: Foo
-      in "has" ~:
-          [ "True" ~: proto ^. has maybe'quux ~?= True
-          , "False" ~: proto ^. has maybe'bar ~?= False
-          , "Nested" ~:
-              [ "True" ~: proto ^. has maybe'foo ~?= True
-              , "False" ~: proto ^. has (foo . maybe'buzz) ~?= False
+      in testGroup "has"
+          [ testCase "True" $ proto ^. has maybe'quux @?= True
+          , testCase "False" $ proto ^. has maybe'bar @?= False
+          , testGroup "Nested"
+              [ testCase "True" $ proto ^. has maybe'foo @?= True
+              , testCase "False" $ proto ^. has (foo . maybe'buzz) @?= False
               ]
           ]
     , let proto = defMessage & quux .~ 2 & foo . fizz .~ 3 :: Foo
-      in "clear" ~:
-          [ "no-op" ~: clear maybe'bar proto ~?= proto
-          , "scalar" ~: clear maybe'quux proto ~?= (defMessage & foo . fizz .~ 3)
-          , "group" ~: clear maybe'foo proto ~?= (defMessage & quux .~ 2)
-          , "nested" ~: clear (foo . maybe'fizz) proto ~?=
+      in testGroup "clear"
+          [ testCase "no-op" $ clear maybe'bar proto @?= proto
+          , testCase "scalar" $ clear maybe'quux proto @?= (defMessage & foo . fizz .~ 3)
+          , testCase "group" $ clear maybe'foo proto @?= (defMessage & quux .~ 2)
+          , testCase "nested" $ clear (foo . maybe'fizz) proto @?=
               (defMessage & quux .~ 2 & foo .~ defMessage)
           ]
     , let actual :: Foo
@@ -46,11 +45,11 @@ main = defaultMain $ hUnitTestToTests $ "" ~:
               zoom baz $ return ()
           expected = defMessage & quux .~ 4 & foo . buzz .~ "A" &
               bar .~ (defMessage & fizz .~ 5 & buzz .~ "B") & baz .~ defMessage
-      in "make" ~: actual ~?= expected
+      in testCase "make" $ actual @?= expected
     , let original = defMessage & quux .~ 6 & baz . fizz .~ 7 :: Foo
           actual = modifyInState original $ do
               bar . fizz <~ use quux
               quux .= 8
           expected = defMessage & quux .~ 8 & bar . fizz .~ 6 & baz . fizz .~ 7
-      in "modifyInState" ~: actual ~?= expected
+      in testCase "modifyInState" $ actual @?= expected
     ]

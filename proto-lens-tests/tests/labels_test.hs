@@ -11,7 +11,7 @@ import Data.ProtoLens (build, defMessage)
 import Data.ProtoLens.Labels ()
 import Data.ProtoLens.TestUtil
 import Test.HUnit ((@?=))
-import Test.Framework.Providers.HUnit (testCase)
+import Test.Tasty.HUnit (testCase)
 
 main :: IO ()
 main = testMain

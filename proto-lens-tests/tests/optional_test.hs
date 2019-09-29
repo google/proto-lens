@@ -10,8 +10,8 @@ import Proto.Optional
 import Proto.Optional_Fields
 import Data.ProtoLens
 import Lens.Family2 ((&), (.~), (^.))
-import Test.Framework (testGroup)
-import Test.Framework.Providers.HUnit (testCase)
+import Test.Tasty (testGroup)
+import Test.Tasty.HUnit (testCase)
 import Test.HUnit ((@=?))
 
 import Data.ProtoLens.TestUtil

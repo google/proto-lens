@@ -22,9 +22,8 @@ import Data.Function (on)
 import Data.ProtoLens
 import Data.ProtoLens.Arbitrary
 import Lens.Family2 ((&), (.~), (^.))
-import Test.Framework (plusTestOptions, testGroup)
-import Test.Framework.Options (topt_timeout)
-import Test.Framework.Providers.HUnit (testCase)
+import Test.Tasty (localOption, mkTimeout, testGroup)
+import Test.Tasty.HUnit (testCase)
 import Test.HUnit ((@?=))
 
 import Data.ProtoLens.TestUtil
@@ -52,7 +51,7 @@ main = testMain
 testExternalEnum, testNestedEnum, testDefaults, testBadEnumValues,
     testNamedEnumValues, testRoundTrip, testBounded, testMaybeSuccAndPred,
     testEnumFromThenTo, testMonotonicFromEnum, testAliases,
-    testManyCases :: Test
+    testManyCases :: TestTree
 
 testExternalEnum = testGroup "external"
     [ serializeTo (show e1)
@@ -114,7 +113,7 @@ testMaybeSuccAndPred = testGroup "succPred"
         ]
     ]
 
-testEnumFromThenTo = plusTestOptions testOptions $ testGroup "enumFromThenTo"
+testEnumFromThenTo = localOption testOptions $ testGroup "enumFromThenTo"
     [ testCaseEnum "[min ..]" [minBound :: Baz ..]
         [BAZ1, BAZ2, BAZ3, BAZ4, BAZ5, BAZ6, BAZ7, BAZ8]
     , testCaseEnum "[3..5]" [BAZ3 .. BAZ5] [BAZ3, BAZ4, BAZ5]
@@ -131,7 +130,7 @@ testEnumFromThenTo = plusTestOptions testOptions $ testGroup "enumFromThenTo"
     ]
   where
     -- One second timeout in µs in case there's an infinite loop.
-    testOptions = mempty {topt_timeout = Just $ Just 1000000}
+    testOptions = mkTimeout 1000000
     testCaseEnum name actual expected =
         -- We limit the actual to 10 in case of accidental infinite sequences.
         -- Note that there are only 10 values, so this should happen rarely.

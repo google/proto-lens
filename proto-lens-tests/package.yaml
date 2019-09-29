@@ -30,9 +30,9 @@ dependencies:
     - proto-lens
     - proto-lens-arbitrary
     - proto-lens-runtime
-    - test-framework
-    - test-framework-hunit
-    - test-framework-quickcheck2
+    - tasty
+    - tasty-hunit
+    - tasty-quickcheck
     - text
 
 

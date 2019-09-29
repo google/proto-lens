@@ -13,7 +13,7 @@ module Main where
 import Data.ByteString.Builder (byteString)
 import Data.Monoid ((<>))
 import Lens.Family2 (Lens', (&), (.~), view, set)
-import Test.Framework (testGroup)
+import Test.Tasty (testGroup)
 import Test.QuickCheck
 import qualified Data.Text as T
 import qualified Data.Vector.Generic as V
@@ -35,7 +35,7 @@ defBar = defMessage
 vectorTest ::
     forall a v b . (Eq a, Eq b, Show a, Show b, Message a, V.Vector v b)
     => String -> Gen b
-    -> Lens' a [b] -> Lens' a (v b) -> Test
+    -> Lens' a [b] -> Lens' a (v b) -> TestTree
 vectorTest name arbitraryElem listLens vecLens = testGroup name
     [ testProperty "get"
         $ \(ArbitraryMessage (m :: a)) ->

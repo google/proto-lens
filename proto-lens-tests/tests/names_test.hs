@@ -16,8 +16,8 @@ import Data.ProtoLens (Message(defMessage))
 import Lens.Family2 (Lens', (&), view, set)
 import Prelude hiding (Maybe, maybe, map, head, span)
 import qualified Prelude
-import Test.Framework (Test, testGroup)
-import Test.Framework.Providers.HUnit (testCase)
+import Test.Tasty (TestTree, testGroup)
+import Test.Tasty.HUnit (testCase)
 import Test.HUnit ((@=?))
 
 import Proto.Names
@@ -44,13 +44,13 @@ main = testMain
 
 testNames, testPreludeType, testHaskellKeywords, testProtoKeywords,
     testOddCasedMessage, testProtoKeywordTypes, testReadReservedName,
-    testMessageEnumOverlap :: Test
+    testMessageEnumOverlap :: TestTree
 
 -- | Test that we can get/set each individual field.
 testFields :: forall a . (Show a, Message a, Eq a)
            => String -> a
            -> [SomeLens a Int32]
-           -> Test
+           -> TestTree
 testFields name defValue fields = testGroup name
     [ testCase "fields" $ mapM_ testField fields
     , runTypedTest (roundTripTest "roundTrip" :: TypedTest a)

@@ -8,7 +8,7 @@ import Data.ProtoLens.Any
 import Data.ProtoLens.Arbitrary (ArbitraryMessage(..))
 import Proto.Google.Protobuf.Any_Fields (typeUrl, value)
 import Lens.Family2 ((&), (.~), (^.))
-import Test.Framework.Providers.HUnit (testCase)
+import Test.Tasty.HUnit (testCase)
 import Test.HUnit ((@=?))
 import qualified Data.Text as Text
 import Test.QuickCheck ((===), counterexample, listOf, elements)

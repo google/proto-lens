@@ -20,7 +20,7 @@ import Data.Proxy (Proxy(..))
 import Lens.Family2 ((&), (.~))
 import Proto.TextFormat
 import Proto.TextFormat_Fields
-import Test.Framework.Providers.HUnit (testCase)
+import Test.Tasty.HUnit (testCase)
 import Test.HUnit ((@=?))
 import Text.PrettyPrint (renderStyle, style, lineLength)
 

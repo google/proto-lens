@@ -59,8 +59,8 @@ tests:
     - bytestring
     - proto-lens
     - QuickCheck
-    - test-framework
-    - test-framework-quickcheck2
+    - tasty
+    - tasty-quickcheck
 
   growing_test:
     main: growing_test.hs
@@ -70,5 +70,5 @@ tests:
     - vector
     - proto-lens
     - QuickCheck
-    - test-framework
-    - test-framework-quickcheck2
+    - tasty
+    - tasty-quickcheck

@@ -9,7 +9,7 @@ import Data.ProtoLens
 import qualified Data.ProtoLens.Encoding.Wire as Wire
 import qualified Data.Text.Lazy as LT
 import Lens.Family2 ((&), (.~))
-import Test.Framework.Providers.HUnit (testCase)
+import Test.Tasty.HUnit (testCase)
 import Test.HUnit ((@=?))
 
 import Data.ProtoLens.TestUtil
@@ -24,7 +24,7 @@ main = testMain
     ]
 
 
-testPreserveUnknownFields :: Test
+testPreserveUnknownFields :: TestTree
 testPreserveUnknownFields =
     let sub = tagged 50 (VarInt 43) <> tagged 51 (Lengthy $ tagged 52 (Fixed32 44))
     in testUnknownSerialization
@@ -58,7 +58,7 @@ testPreserveUnknownFields =
               , tagged 100 $ VarInt 102
               ])
 
-testPreserveMismatchedFields :: Test
+testPreserveMismatchedFields :: TestTree
 testPreserveMismatchedFields =
     testUnknownSerialization
         "mismatched fields"
@@ -78,7 +78,7 @@ testPreserveMismatchedFields =
 
 
 -- TODO: The way that we display groups is somewhat hacky.
-testUnknownGroup :: Test
+testUnknownGroup :: TestTree
 testUnknownGroup =
     testUnknownSerialization "unknown group"
           ((defMessage :: Raw)
@@ -105,7 +105,7 @@ testUnknownGroup =
 
 testUnknownSerialization
     :: forall msg . (Eq msg, Show msg, Message msg)
-    => String -> msg -> Doc -> Builder -> Test
+    => String -> msg -> Doc -> Builder -> TestTree
 testUnknownSerialization name msg ts bs = testCase name $ do
     let bs' = toStrictByteString bs
     bs' @=? encodeMessage msg

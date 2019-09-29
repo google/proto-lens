@@ -6,13 +6,13 @@ import Control.Monad.ST
 import Data.Foldable (foldlM)
 import qualified Data.Vector.Unboxed as V
 import Test.QuickCheck
-import Test.Framework (defaultMain)
-import Test.Framework.Providers.QuickCheck2 (testProperty)
+import Test.Tasty (defaultMain, testGroup)
+import Test.Tasty.QuickCheck (testProperty)
 
 import Data.ProtoLens.Encoding.Growing
 
 main :: IO ()
-main = defaultMain
+main = defaultMain $ testGroup "tests"
     [ testProperty "fromList" testFromList
     , testProperty "unchanged" testUnchanged
     ]
