@@ -26,7 +26,7 @@ but they may be useful for other language bindings/plugins.)
       PROTOC_ZIP=protoc-3.7.1-osx-x86_64.zip
       curl -OL https://github.com/protocolbuffers/protobuf/releases/download/v3.7.1/$PROTOC_ZIP
       sudo unzip -o $PROTOC_ZIP -d /usr/local bin/protoc
-      sudo unzip -o $PROTOC_ZIP -d /usr/local include/*
+      sudo unzip -o $PROTOC_ZIP -d /usr/local 'include/*'
       rm -f $PROTOC_ZIP
 
 ## Linux
@@ -35,7 +35,7 @@ but they may be useful for other language bindings/plugins.)
       PROTOC_ZIP=protoc-3.7.1-linux-x86_64.zip
       curl -OL https://github.com/protocolbuffers/protobuf/releases/download/v3.7.1/$PROTOC_ZIP
       sudo unzip -o $PROTOC_ZIP -d /usr/local bin/protoc
-      sudo unzip -o $PROTOC_ZIP -d /usr/local include/*
+      sudo unzip -o $PROTOC_ZIP -d /usr/local 'include/*'
       rm -f $PROTOC_ZIP
 
 - Alternately, manually download and install `protoc` from [here](https://github.com/protocolbuffers/protobuf/releases/download/v3.7.1/protoc-3.7.1-linux-x86_64.zip).
