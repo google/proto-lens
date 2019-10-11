@@ -1,3 +1,4 @@
+{-# LANGUAGE CPP #-}
 {-# LANGUAGE OverloadedLabels #-}
 {-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE ScopedTypeVariables #-}
@@ -11,7 +12,9 @@ module Data.ProtoLens.Any
     ) where
 
 import Control.Exception (Exception(..))
-import Data.Monoid ((<>))
+#if !MIN_VERSION_base(4,11,0)
+import Data.Semigroup ((<>))
+#endif
 import qualified Data.Text as Text
 import Data.Text (Text)
 import Data.Typeable (Typeable)

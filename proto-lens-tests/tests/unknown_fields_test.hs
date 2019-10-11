@@ -4,7 +4,6 @@ module Main (main) where
 
 import Data.ByteString.Builder (Builder)
 import Data.Either (isLeft)
-import Data.Monoid ((<>))
 import Data.ProtoLens
 import qualified Data.ProtoLens.Encoding.Wire as Wire
 import qualified Data.Text.Lazy as LT

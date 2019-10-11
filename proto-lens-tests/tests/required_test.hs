@@ -4,10 +4,13 @@
 -- license that can be found in the LICENSE file or at
 -- https://developers.google.com/open-source/licenses/bsd
 
+{-# LANGUAGE CPP #-}
 {-# LANGUAGE OverloadedStrings #-}
 module Main where
 
-import Data.Monoid ((<>), mempty)
+#if !MIN_VERSION_base(4,11,0)
+import Data.Semigroup ((<>))
+#endif
 import Data.ProtoLens (defMessage)
 import Data.Proxy (Proxy(..))
 import Lens.Family ((&), (.~))

@@ -1,3 +1,4 @@
+{-# LANGUAGE CPP #-}
 {-# LANGUAGE LambdaCase #-}
 -- | Definition of the parsing monad, plus internal
 -- unsafe functions.
@@ -7,6 +8,7 @@ module Data.ProtoLens.Encoding.Parser.Internal
     ) where
 
 import Control.Monad (ap)
+import qualified Control.Monad.Fail as Fail
 import Data.Word (Word8)
 import Foreign.Ptr
 
@@ -36,8 +38,13 @@ instance Applicative Parser where
     (<*>) = ap
 
 instance Monad Parser where
-    fail s = Parser $ \_ _ -> return $ ParseFailure s
+#if !MIN_VERSION_base(4,13,0)
+    fail = Fail.fail
+#endif
     return = pure
     Parser f >>= g = Parser $ \end pos -> f end pos >>= \case
         ParseSuccess pos' x -> unParser (g x) end pos'
         ParseFailure s -> return $ ParseFailure s
+
+instance Fail.MonadFail Parser where
+    fail s = Parser $ \_ _ -> return $ ParseFailure s

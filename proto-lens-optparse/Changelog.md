@@ -2,6 +2,8 @@
 
 ## Pending
 - Bump lower bounds to base-4.10 (ghc-8.2).
+- Support dependencies on base-4.13 (ghc-8.8) and optparse-applicative-0.15.
+
 
 ## v0.1.1.5
 - Bump the upper bound to `proto-lens-0.5.*`.

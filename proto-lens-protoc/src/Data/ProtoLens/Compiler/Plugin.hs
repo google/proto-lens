@@ -6,6 +6,7 @@
 --
 -- Code for writing protocol compiler plugins.
 
+{-# LANGUAGE CPP #-}
 {-# LANGUAGE OverloadedLabels #-}
 {-# LANGUAGE OverloadedStrings #-}
 module Data.ProtoLens.Compiler.Plugin
@@ -22,7 +23,9 @@ import Data.Char (toUpper)
 import Data.List (foldl', intercalate)
 import qualified Data.Map.Strict as Map
 import Data.Map.Strict (Map, unions, (!))
-import Data.Monoid ((<>))
+#if !MIN_VERSION_base(4,11,0)
+import Data.Semigroup ((<>))
+#endif
 import Data.String (fromString)
 import qualified Data.Text as T
 import Data.Text (Text)

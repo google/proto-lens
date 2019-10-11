@@ -14,7 +14,6 @@ import Data.ProtoLens
 import Lens.Family2 ((&), (.~))
 import qualified Data.ByteString.Char8 as C
 import Data.ByteString.Builder (Builder, byteString)
-import Data.Monoid ((<>))
 import Data.Word (Word64)
 
 import Data.ProtoLens.TestUtil

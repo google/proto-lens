@@ -6,6 +6,7 @@
 
 -- | This module builds the actual, generated Haskell file
 -- for a given input .proto file.
+{-# LANGUAGE CPP #-}
 {-# LANGUAGE LambdaCase #-}
 {-# LANGUAGE OverloadedLabels #-}
 {-# LANGUAGE OverloadedStrings #-}
@@ -22,7 +23,9 @@ import qualified Data.Foldable as F
 import qualified Data.List as List
 import qualified Data.Map as Map
 import Data.Maybe (isJust)
-import Data.Monoid ((<>))
+#if !MIN_VERSION_base(4,11,0)
+import Data.Semigroup ((<>))
+#endif
 import Data.Ord (comparing)
 import Data.ProtoLens (encodeMessage)
 import qualified Data.Set as Set

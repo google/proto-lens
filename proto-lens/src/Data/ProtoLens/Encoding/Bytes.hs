@@ -55,7 +55,9 @@ import Data.ByteString.Lazy.Builder as Builder
 import qualified Data.ByteString.Builder.Internal as Internal
 import qualified Data.ByteString.Lazy as L
 import Data.Int (Int32, Int64)
-import Data.Monoid ((<>))
+#if !MIN_VERSION_base(4,11,0)
+import Data.Semigroup ((<>))
+#endif
 import qualified Data.Vector.Generic as V
 import Data.Word (Word8, Word32, Word64)
 import Foreign.Marshal (malloc, free)

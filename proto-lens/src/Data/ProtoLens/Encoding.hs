@@ -1,3 +1,4 @@
+{-# LANGUAGE CPP #-}
 module Data.ProtoLens.Encoding (
     encodeMessage,
     buildMessage,
@@ -19,7 +20,9 @@ import qualified Data.ProtoLens.Encoding.Bytes as Bytes
 import Control.Monad.IO.Class (liftIO)
 import Control.Monad.Trans.Except (runExceptT, ExceptT(..))
 import qualified Data.ByteString as B
+#if !MIN_VERSION_base(4,11,0)
 import Data.Semigroup ((<>))
+#endif
 
 -- | Decode a message from its wire format.  Returns 'Left' if the decoding
 -- fails.

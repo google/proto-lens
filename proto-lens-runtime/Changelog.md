@@ -2,6 +2,7 @@
 
 ## Pending
 - Bump lower bounds to base-4.10 (ghc-8.2).
+- Support dependencies on base-4.13 (ghc-8.8) and lens-family-2.0.
 
 ## v0.5.0.0
 - Export more modules from proto-lens, to support generated encoding/decoding

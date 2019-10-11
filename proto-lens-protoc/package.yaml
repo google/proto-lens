@@ -17,14 +17,14 @@ extra-source-files:
   - Changelog.md
 
 dependencies:
-  - base >= 4.10 && < 4.13
+  - base >= 4.10 && < 4.14
   - bytestring == 0.10.*
   - containers >= 0.5 && < 0.7
-  - lens-family == 1.2.*
+  - lens-family >= 1.2 && < 2.1
   - proto-lens == 0.5.*
   - text == 1.2.*
   - ghc-source-gen == 0.2.*
-  - ghc >= 8.2 && < 8.8
+  - ghc >= 8.2 && < 8.10
 
 
 library:
