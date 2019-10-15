@@ -72,7 +72,6 @@ import Proto.Google.Protobuf.Descriptor
     , FieldDescriptorProto'Type(..)
     , FileDescriptorProto
     , MethodDescriptorProto
-    , MethodOptions
     , ServiceDescriptorProto
     )
 import GHC.SourceGen
@@ -137,7 +136,6 @@ data MethodInfo = MethodInfo
     , methodOutput :: Text
     , methodClientStreaming :: Bool
     , methodServerStreaming :: Bool
-    , methodOptions :: MethodOptions
     }
 
 -- | Information about a single field of a proto message,
@@ -330,7 +328,6 @@ collectServices fd = fmap (toServiceInfo $ fd ^. #package) $ fd ^. #service
             , methodOutput = fromString . T.unpack $ md ^. #outputType
             , methodClientStreaming = md ^. #clientStreaming
             , methodServerStreaming = md ^. #serverStreaming
-            , methodOptions = md ^. #options
             }
 
 messageAndEnumDefs ::

@@ -5,7 +5,6 @@
 ### Breaking Changes
 - Reexport transitive definitions from modules generated for `.proto` files
   with `import public` statements (#329).
-- Add `methodOptions` to `HasMethodImpl` to provide custom method options.
 - Bump lower bounds to base-4.10 (ghc-8.2).
 - Use `ghc-source-gen` instead of `haskell-src-exts`.  Removes
   `Data.ProtoLens.Compiler.Combinators` and adds

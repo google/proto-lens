@@ -3,7 +3,6 @@
 ## Pending
 
 ### Breaking Changes
-- Add `methodOptions` to `HasMethodImpl` to provide custom method options.
 - Bump lower bounds to base-4.10 (ghc-8.2).
 
 ### Backwards-Compatible Changes
