@@ -25,9 +25,7 @@ module Data.ProtoLens.Service.Types
 
 import Data.Kind (Constraint)
 import Data.ProtoLens.Message (Message)
-import {-# SOURCE #-} Proto.Google.Protobuf.Descriptor (MethodOptions)
 import GHC.TypeLits
-import Data.Proxy (Proxy)
 
 
 -- | Reifies the fact that there is a 'HasMethod' instance for every symbol
@@ -87,7 +85,6 @@ class ( KnownSymbol m
   type MethodInput         s m :: *
   type MethodOutput        s m :: *
   type MethodStreamingType s m :: StreamingType
-  methodOptions :: s -> Proxy m -> MethodOptions
 
 
 -- | Helper constraint that expands to a user-friendly error message when 'm'

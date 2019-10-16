@@ -8,16 +8,11 @@ module Main (main) where
 
 import Control.Exception (evaluate)
 import Control.Monad (void)
-import Data.ProtoLens (defMessage)
 import Data.Proxy (Proxy (..))
-import Lens.Family2 (set)
-import Test.Tasty (testGroup, TestTree)
 import Test.Tasty.HUnit (testCase)
-import Test.HUnit ((@=?))
 import Proto.Service
 import Data.ProtoLens.Service.Types
 import Data.ProtoLens.TestUtil (testMain)
-import Proto.Google.Protobuf.Descriptor_Fields (deprecated)
 
 
 main :: IO ()
@@ -31,7 +26,6 @@ main = testMain
         void $ evaluate serverStreamingMethodMetadataTest
         void $ evaluate bidiStreamingMethodMetadataTest
         void $ evaluate revMessagesMetadataTest
-    , testMethodOption
     ]
 
 
@@ -42,7 +36,6 @@ serviceMetadataTest
        -- proto-lens generates this list in alphabetical order.
        , ServiceMethods s ~ '[ "biDiStreaming"
                              , "clientStreaming"
-                             , "deprecated"
                              , "normal"
                              , "revMessages"
                              , "serverStreaming"
@@ -104,14 +97,4 @@ revMessagesMetadataTest
        , MethodStreamingType s m ~ 'NonStreaming
        ) => Proxy m
 revMessagesMetadataTest = Proxy
-
-testMethodOption :: TestTree
-testMethodOption = testGroup "methodOption"
-    [ testCase "default" $
-        defMessage
-            @=? methodOptions TestService (Proxy :: Proxy "normal")
-    , testCase "deprecated" $
-        set deprecated True defMessage
-            @=? methodOptions TestService (Proxy :: Proxy "deprecated")
-    ]
 
