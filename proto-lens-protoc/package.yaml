@@ -22,7 +22,7 @@ dependencies:
   - lens-family >= 1.2 && < 2.1
   - proto-lens == 0.5.*
   - text == 1.2.*
-  - ghc-source-gen == 0.2.*
+  - ghc-source-gen == 0.3.*
   - ghc >= 8.2 && < 8.10
 
 

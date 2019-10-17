@@ -11,7 +11,7 @@ packages:
 - proto-lens-tests
 - proto-lens-tests-dep
 extra-deps:
-- ghc-source-gen-0.2.0.1
+- ghc-source-gen-0.3.0.0
 
 ghc-options:
   "$locals": -Wall -Werror
