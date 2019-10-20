@@ -19,6 +19,8 @@ custom-setup:
     - Cabal
     - proto-lens-setup
 
+build-tools: proto-lens-protoc
+
 # Dependencies shared by the library and/or several of the tests:
 dependencies:
     - HUnit

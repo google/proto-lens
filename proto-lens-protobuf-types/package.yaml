@@ -24,6 +24,8 @@ custom-setup:
     - Cabal
     - proto-lens-setup == 0.4.*
 
+build-tools: proto-lens-protoc
+
 dependencies:
   - base >= 4.10 && < 4.14
   - lens-family >= 1.2 && < 2.1

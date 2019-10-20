@@ -16,6 +16,8 @@ custom-setup:
     - Cabal
     - proto-lens-setup
 
+build-tools: proto-lens-protoc
+
 dependencies:
   - base >= 4.7 && < 5
   - microlens

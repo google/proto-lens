@@ -6,6 +6,8 @@ custom-setup:
     - Cabal
     - proto-lens-setup
 
+build-tools: proto-lens-protoc
+
 extra-source-files: proto/**/*.proto
 
 library:

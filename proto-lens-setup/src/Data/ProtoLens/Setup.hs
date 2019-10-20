@@ -107,6 +107,7 @@ import System.Directory
 import System.IO (hPutStrLn, stderr)
 import System.IO.Temp (withSystemTempDirectory)
 import System.Process (callProcess)
+import System.Environment (getEnvironment)
 
 import qualified Data.ProtoLens.Compiler.Plugin as Plugin
 
@@ -346,6 +347,8 @@ generateProtosWithImports imports output files = do
     protoc <- findExecutableOrDie "protoc"
                 $ "Follow the installation instructions at "
                     ++ "https://google.github.io/proto-lens/installing-protoc.html ."
+    env <- getEnvironment
+    print (protoc, imports, env)
     createDirectoryIfMissing True output
     callProcess protoc $
         [ "--plugin=protoc-gen-haskell=" ++ protoLensProtoc

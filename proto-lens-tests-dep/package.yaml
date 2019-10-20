@@ -24,6 +24,8 @@ custom-setup:
     - Cabal
     - proto-lens-setup
 
+build-tools: proto-lens-protoc
+
 dependencies:
   - proto-lens-runtime
   - base
