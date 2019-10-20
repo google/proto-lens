@@ -13,4 +13,4 @@ packages:
     - proto-lens-setup
 
 extra-deps:
-- ghc-source-gen-0.2.0.1
+- ghc-source-gen-0.3.0.0
