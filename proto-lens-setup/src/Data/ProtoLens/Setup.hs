@@ -24,10 +24,13 @@ module Data.ProtoLens.Setup
     , generateProtos
     ) where
 
-import Control.Monad (filterM, forM_, when)
+import Control.Applicative ((<|>))
+import Control.Monad (filterM, forM_, guard, when)
+import Control.Monad.IO.Class (liftIO)
+import Control.Monad.Trans.Maybe
 import qualified Data.ByteString as BS
 import qualified Data.Map as Map
-import Data.Maybe (maybeToList)
+import Data.Maybe (catMaybes, maybeToList)
 import qualified Data.Set as Set
 import qualified Data.Text as T
 import Distribution.ModuleName (ModuleName)
@@ -79,9 +82,11 @@ import Distribution.Simple.Glob (matchDirFileGlob)
 #endif
 import Distribution.Simple
     ( defaultMainWithHooks
+    , packageName
     , simpleUserHooks
     , UserHooks(..)
     )
+import Distribution.Text (display)
 import Distribution.Verbosity
     ( Verbosity
 #if MIN_VERSION_Cabal(2,4,0)
@@ -104,10 +109,10 @@ import System.Directory
     , findExecutable
     , removeDirectoryRecursive
     )
+import System.Environment (lookupEnv)
 import System.IO (hPutStrLn, stderr)
 import System.IO.Temp (withSystemTempDirectory)
 import System.Process (callProcess)
-import System.Environment (getEnvironment)
 
 import qualified Data.ProtoLens.Compiler.Plugin as Plugin
 
@@ -235,10 +240,8 @@ generateSources :: FilePath -- ^ The root directory
                 -> IO ()
 generateSources root l files = withSystemTempDirectory "protoc-out" $ \tmpDir -> do
     -- Collect import paths from build-depends of this package.
-    importDirs <- filterM doesDirectoryExist
-                     [ InstalledPackageInfo.dataDir info </> protoLensImportsPrefix
-                     | info <- collectDeps l
-                     ]
+    print [(InstalledPackageInfo.sourcePackageId i, InstalledPackageInfo.dataDir i) | i <- collectDeps l]
+    importDirs <- catMaybes <$> mapM findDataDir (collectDeps l)
     -- Generate .hs files for all active components into a single temporary
     -- directory.
     let activeModules = collectActiveModules l
@@ -258,6 +261,25 @@ generateSources root l files = withSystemTempDirectory "protoc-out" $ \tmpDir ->
           when sourceExists $ do
             let dest = autogenComponentModulesDir l compBI </> f
             copyIfDifferent sourcePath dest
+
+findDataDir :: InstalledPackageInfo.InstalledPackageInfo -> IO (Maybe FilePath)
+findDataDir info = runMaybeT $ importsDir <|> envDir <|> fallback
+  where
+    guardExists f = liftIO (doesDirectoryExist f) >>= guard
+    importsDir = do
+        let dataD = InstalledPackageInfo.dataDir info </> protoLensImportsPrefix
+        guardExists dataD
+        return dataD
+    envDir = do
+        let envVar = map dashToUnderscore (display $ packageName info)
+                        ++ "_datadir"
+        MaybeT $ lookupEnv envVar
+    fallback = do
+        liftIO $ print ("MISSING", packageName info)
+        guard False
+        return undefined
+    dashToUnderscore '-' = '_'
+    dashToUnderscore x = x
 
 -- Note: we do a copy rather than a move since a given module may be used in
 -- more than one component.
@@ -347,8 +369,7 @@ generateProtosWithImports imports output files = do
     protoc <- findExecutableOrDie "protoc"
                 $ "Follow the installation instructions at "
                     ++ "https://google.github.io/proto-lens/installing-protoc.html ."
-    env <- getEnvironment
-    print (protoc, imports, env)
+    print ("IMPORTS", imports)
     createDirectoryIfMissing True output
     callProcess protoc $
         [ "--plugin=protoc-gen-haskell=" ++ protoLensProtoc
@@ -402,11 +423,12 @@ collectActiveModules l = map (\(n, c) -> (c, f n)) $ Map.toList $ allComponents 
 
 -- | List all the packages that this one depends on.
 collectDeps :: LocalBuildInfo -> [InstalledPackageInfo.InstalledPackageInfo]
-collectDeps l = do
-    c <- allComponentsInBuildOrder l
-    (i,_) <- componentPackageDeps c
-    Just p <- [PackageIndex.lookupUnitId (installedPkgs l) i]
-    return p
+collectDeps l =
+    let unitIds = Set.toList $ Set.fromList $ do
+                    c <- allComponentsInBuildOrder l
+                    (i,_) <- componentPackageDeps c
+                    return i
+    in catMaybes $ map (PackageIndex.lookupUnitId $ installedPkgs l) unitIds
 
 -- | All the components that will be built by this Cabal command.
 allComponents :: LocalBuildInfo -> Map.Map ComponentName ComponentLocalBuildInfo
