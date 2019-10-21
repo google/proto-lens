@@ -6,4 +6,4 @@
 
 import Data.ProtoLens.Setup
 
-main = defaultMainGeneratingProtos "tests"
+main = defaultMainGeneratingProtosIncluding ["../proto-lens-tests-dep/protos"] "tests"

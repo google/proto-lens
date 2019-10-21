@@ -17,6 +17,7 @@
 {-# LANGUAGE BangPatterns #-}
 module Data.ProtoLens.Setup
     ( defaultMainGeneratingProtos
+    , defaultMainGeneratingProtosIncluding
     , defaultMainGeneratingSpecificProtos
     , generatingProtos
     , generatingSpecificProtos
@@ -133,8 +134,12 @@ import qualified Data.ProtoLens.Compiler.Plugin as Plugin
 defaultMainGeneratingProtos
     :: FilePath -- ^ The root directory under which .proto files can be found.
     -> IO ()
-defaultMainGeneratingProtos root
-    = defaultMainWithHooks $ generatingProtos root simpleUserHooks
+defaultMainGeneratingProtos = defaultMainGeneratingProtosIncluding []
+
+defaultMainGeneratingProtosIncluding :: [FilePath] -> FilePath -> IO ()
+defaultMainGeneratingProtosIncluding includes root
+    = defaultMainWithHooks $
+        generatingProtos includes root simpleUserHooks
 
 -- | This behaves the same as 'Distribution.Simple.defaultMain', but
 -- auto-generates Haskell files from the .proto files listed. The given .proto
@@ -145,15 +150,15 @@ defaultMainGeneratingProtos root
 --
 -- Throws an exception if the @proto-lens-protoc@ executable is not on the PATH.
 defaultMainGeneratingSpecificProtos
-    :: FilePath -- ^ The root directory under which .proto files can be found.
+    :: [FilePath] -> FilePath -- ^ The root directory under which .proto files can be found.
     -> (LocalBuildInfo -> IO [FilePath])
     -- ^ A function to return a list of .proto files. Takes the Cabal package
     -- description as input. Non-absolute paths are treated as relative to the
     -- provided root directory.
     -> IO ()
-defaultMainGeneratingSpecificProtos root getProtos
+defaultMainGeneratingSpecificProtos includes root getProtos
     = defaultMainWithHooks
-    $ generatingSpecificProtos root getProtos simpleUserHooks
+    $ generatingSpecificProtos includes root getProtos simpleUserHooks
 
 -- | Augment the given 'UserHooks' to auto-generate Haskell files from the
 -- .proto files which are:
@@ -170,9 +175,10 @@ defaultMainGeneratingSpecificProtos root getProtos
 --
 -- Throws an exception if the @proto-lens-protoc@ executable is not on the PATH.
 generatingProtos
-    :: FilePath -- ^ The root directory under which .proto files can be found.
+    :: [FilePath]
+    -> FilePath -- ^ The root directory under which .proto files can be found.
     -> UserHooks -> UserHooks
-generatingProtos root = generatingSpecificProtos root getProtos
+generatingProtos includes root = generatingSpecificProtos includes root getProtos
   where
     getProtos l = do
       -- Replicate Cabal's own logic for parsing file globs.
@@ -199,13 +205,14 @@ match _ f = matchFileGlob f
 --
 -- Throws an exception if the @proto-lens-protoc@ executable is not on the PATH.
 generatingSpecificProtos
-    :: FilePath -- ^ The root directory under which .proto files can be found.
+    :: [FilePath]
+    -> FilePath -- ^ The root directory under which .proto files can be found.
     -> (LocalBuildInfo -> IO [FilePath])
     -- ^ A function to return a list of .proto files. Takes the Cabal package
     -- description as input. Non-absolute paths are treated as relative to the
     -- provided root directory.
     -> UserHooks -> UserHooks
-generatingSpecificProtos root getProtos hooks = hooks
+generatingSpecificProtos includes root getProtos hooks = hooks
     { buildHook = \p l h f -> generate l >> buildHook hooks p l h f
     , haddockHook = \p l h f -> generate l >> haddockHook hooks p l h f
     , replHook = \p l h f args -> generate l >> replHook hooks p l h f args
@@ -218,7 +225,7 @@ generatingSpecificProtos root getProtos hooks = hooks
                   postCopy hooks a flags pkg lbi
     }
   where
-    generate l = getProtos l >>= generateSources root l
+    generate l = getProtos l >>= generateSources includes root l
 
 -- | Generate Haskell source files for the given input .proto files.
 --
@@ -234,11 +241,11 @@ generatingSpecificProtos root getProtos hooks = hooks
 -- touch the generated .hs files when nothing changes, and thus don't
 -- needlessly make GHC recompile them (as it considers their modification
 -- times for that).
-generateSources :: FilePath -- ^ The root directory
+generateSources :: [FilePath] -> FilePath -- ^ The root directory
                 -> LocalBuildInfo
                 -> [FilePath] -- ^ Proto files relative to the root directory.
                 -> IO ()
-generateSources root l files = withSystemTempDirectory "protoc-out" $ \tmpDir -> do
+generateSources includes root l files = withSystemTempDirectory "protoc-out" $ \tmpDir -> do
     -- Collect import paths from build-depends of this package.
     print [(InstalledPackageInfo.sourcePackageId i, InstalledPackageInfo.dataDir i) | i <- collectDeps l]
     importDirs <- catMaybes <$> mapM findDataDir (collectDeps l)
@@ -248,7 +255,7 @@ generateSources root l files = withSystemTempDirectory "protoc-out" $ \tmpDir ->
     let allModules = Set.fromList . concat . map snd $ activeModules
     let usedInComponent f = ModuleName.fromString (Plugin.moduleNameStr "Proto" f)
                           `Set.member` allModules
-    generateProtosWithImports (root : importDirs) tmpDir
+    generateProtosWithImports (root : includes ++ importDirs) tmpDir
                               -- Applying 'root </>' does nothing if the path is already
                               -- absolute.
                               $ map (root </>) $ filter usedInComponent files
