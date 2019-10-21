@@ -33,8 +33,9 @@ dependencies:
 
 library:
   source-dirs: src
-  generated-exposed-modules:
+  exposed-modules:
     - Data.ProtoLens.Any
+  generated-exposed-modules:
     - Proto.Google.Protobuf.Any
     - Proto.Google.Protobuf.Any_Fields
     - Proto.Google.Protobuf.Duration
