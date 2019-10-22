@@ -48,7 +48,6 @@ library:
     - text == 1.2.*
     - transformers >= 0.4 && < 0.6
     - vector >= 0.11 && < 0.13
-    - void == 0.7.*
 
 tests:
   parser_test:
