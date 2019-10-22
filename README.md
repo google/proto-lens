@@ -43,6 +43,7 @@ First, edit the `.cabal` file of your project to:
 
 * Specify `build-type: Custom`, and add a `custom-setup` clause that
   depends on `proto-lens-setup`.
+* Add `build-tool-depends: proto-lens-protoc:proto-lens-protoc`.
 * List the .proto files in `extra-source-files`.  Note that the field belongs
   at the top level of the `.cabal` file, rather than once per
   library/executable/etc.
@@ -60,6 +61,7 @@ For example, in `foo-bar-proto.cabal`:
     ...
     custom-setup
       setup-depends: base, Cabal, proto-lens-setup
+      build-tools-depends: proto-lens-protoc:proto-lens-protoc
 
     library
         exposed-modules: Proto.Foo.Bar, Proto.Foo.Bar_Fields

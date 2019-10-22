@@ -19,6 +19,8 @@ custom-setup:
     - Cabal
     - proto-lens-setup
 
+build-tools: proto-lens-protoc:proto-lens-protoc
+
 # Dependencies shared by the library and/or several of the tests:
 dependencies:
     - HUnit
@@ -40,6 +42,8 @@ library:
   source-dirs: src
   exposed-modules:
     - Data.ProtoLens.TestUtil
+
+  generated-exposed-modules:
     - Proto.Lib
 
 tests:
@@ -49,7 +53,7 @@ tests:
     source-dirs: tests
     dependencies:
       - proto-lens-tests
-    other-modules:
+    generated-other-modules:
       - Proto.Canonical
       - Proto.Canonical_Fields
 
@@ -58,7 +62,7 @@ tests:
     source-dirs: tests
     dependencies:
       - proto-lens-tests
-    other-modules:
+    generated-other-modules:
       - Proto.Group
       - Proto.Group_Fields
 
@@ -67,7 +71,7 @@ tests:
     source-dirs: tests
     dependencies:
       - proto-lens-tests
-    other-modules:
+    generated-other-modules:
       - Proto.Map
       - Proto.Map_Fields
 
@@ -76,7 +80,7 @@ tests:
     source-dirs: tests
     dependencies:
       - proto-lens-tests
-    other-modules:
+    generated-other-modules:
       - Proto.Oneof
       - Proto.Oneof_Fields
 
@@ -85,7 +89,7 @@ tests:
     source-dirs: tests
     dependencies:
       - proto-lens-tests
-    other-modules:
+    generated-other-modules:
       - Proto.Optional
       - Proto.Optional_Fields
 
@@ -94,7 +98,7 @@ tests:
     source-dirs: tests
     dependencies:
       - proto-lens-tests
-    other-modules:
+    generated-other-modules:
       - Proto.Proto3
       - Proto.Proto3_Fields
 
@@ -104,7 +108,7 @@ tests:
     dependencies:
       - proto-lens-tests
       - vector
-    other-modules:
+    generated-other-modules:
       - Proto.Repeated
       - Proto.Repeated_Fields
 
@@ -114,7 +118,7 @@ tests:
     dependencies:
       - proto-lens-protobuf-types
       - proto-lens-tests
-    other-modules:
+    generated-other-modules:
       - Proto.TextFormat
       - Proto.TextFormat_Fields
 
@@ -129,7 +133,7 @@ tests:
       - -Werror
     dependencies:
       - proto-lens-tests
-    other-modules:
+    generated-other-modules:
       - Proto.Enum
       - Proto.Enum_Fields
 
@@ -138,7 +142,7 @@ tests:
     source-dirs: tests
     dependencies:
       - proto-lens-tests
-    other-modules:
+    generated-other-modules:
       - Proto.Names
       - Proto.Names_Fields
 
@@ -147,7 +151,7 @@ tests:
     source-dirs: tests
     dependencies:
       - proto-lens-tests
-    other-modules:
+    generated-other-modules:
       - Proto.NoPackage
       - Proto.NoPackage_Fields
 
@@ -156,7 +160,7 @@ tests:
     source-dirs: tests
     dependencies:
       - proto-lens-tests
-    other-modules:
+    generated-other-modules:
       - Proto.Packed
       - Proto.Packed_Fields
 
@@ -165,7 +169,7 @@ tests:
     source-dirs: tests
     dependencies:
       - proto-lens-tests
-    other-modules:
+    generated-other-modules:
       - Proto.RawFields
       - Proto.RawFields_Fields
 
@@ -175,7 +179,7 @@ tests:
     dependencies:
       - lens-family-core
       - proto-lens-tests
-    other-modules:
+    generated-other-modules:
       - Proto.Required
       - Proto.Required_Fields
 
@@ -185,7 +189,7 @@ tests:
     dependencies:
       - lens-family-core
       - proto-lens-tests
-    other-modules:
+    generated-other-modules:
       - Proto.Canonical
       - Proto.Canonical_Fields
 
@@ -195,7 +199,7 @@ tests:
     dependencies:
       - proto-lens-tests
       - proto-lens-tests-dep
-    other-modules:
+    generated-other-modules:
       - Proto.PackageDeps
       - Proto.PackageDeps_Fields
 
@@ -205,7 +209,7 @@ tests:
     dependencies:
       - proto-lens-protobuf-types
       - proto-lens-tests
-    other-modules:
+    generated-other-modules:
       - Proto.Any
       - Proto.Any_Fields
 
@@ -216,7 +220,7 @@ tests:
       - proto-lens-protobuf-types
       - proto-lens-tests
       - temporary
-    other-modules:
+    generated-other-modules:
       - Proto.DecodeDelimited
       - Proto.DecodeDelimited_Fields
 
@@ -231,7 +235,7 @@ tests:
     dependencies:
       - proto-lens-protobuf-types
       - proto-lens-tests
-    other-modules:
+    generated-other-modules:
       - Proto.Service
       - Proto.Service_Fields
 
@@ -240,7 +244,7 @@ tests:
     source-dirs: tests
     dependencies:
       - proto-lens-tests
-    other-modules:
+    generated-other-modules:
       - Proto.UnknownFields
       - Proto.UnknownFields_Fields
 
@@ -249,7 +253,7 @@ tests:
     source-dirs: tests
     dependencies:
       - proto-lens-tests
-    other-modules:
+    generated-other-modules:
       - Proto.Empty
       - Proto.Enum
       - Proto.Imports
@@ -263,7 +267,7 @@ tests:
     source-dirs: tests
     dependencies:
       - proto-lens-tests
-    other-modules:
+    generated-other-modules:
       - Proto.Pathological
 
   dependent_test:
@@ -271,12 +275,12 @@ tests:
     source-dirs: tests
     dependencies:
       - proto-lens-tests
-    other-modules:
+    generated-other-modules:
       - Proto.Dependent
 
   combinators_test:
     main: combinators_test.hs
     source-dirs: tests
-    other-modules:
+    generated-other-modules:
       Proto.Combinators
       Proto.Combinators_Fields

@@ -20,6 +20,9 @@ matrix:
     addons: {apt: {packages: [cabal-install-2.2, ghc-8.4.4], sources: [hvr-ghc]}}
   - env: BUILD=cabal GHCVER=8.6.5 CABALVER=2.4
     addons: {apt: {packages: [cabal-install-2.4, ghc-8.6.5], sources: [hvr-ghc]}}
+  # TODO: switch everything to cabal new-build
+  - env: BUILD=cabal-new GHCVER=8.6.5 CABALVER=2.4
+    addons: {apt: {packages: [cabal-install-2.4, ghc-8.6.5], sources: [hvr-ghc]}}
   - env: BUILD=stack STACK='stack --resolver=lts-11.22'
     addons: {apt: {packages: [libgmp-dev]}}
   - env: BUILD=stack STACK='stack --resolver=lts-12.26'
@@ -35,6 +38,8 @@ before_install:
       stack)
         export PATH=/opt/ghc/$GHCVER/bin:$HOME/.local/bin:$PATH;;
       cabal)
+        export PATH=/opt/ghc/$GHCVER/bin:/opt/cabal/$CABALVER/bin:$HOME/.local/bin:$HOME/.cabal/bin:$PATH;;
+      cabal-new)
         export PATH=/opt/ghc/$GHCVER/bin:/opt/cabal/$CABALVER/bin:$HOME/.local/bin:$HOME/.cabal/bin:$PATH;;
     esac
   - curl -L https://github.com/commercialhaskell/stack/releases/download/v1.9.3/stack-1.9.3-linux-x86_64.tar.gz | tar xz --wildcards --strip-components=1 -C $HOME/.local/bin '*/stack'
@@ -66,4 +71,6 @@ script:
         (cd proto-lens-tutorial && $STACK build "${STACK_ARGS[@]}");;
       cabal)
         ./travis-cabal.sh;;
+      cabal-new)
+        ./travis-cabal-new.sh;;
     esac
