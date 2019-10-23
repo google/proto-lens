@@ -19,9 +19,6 @@ module Data.ProtoLens.Compiler.Plugin
 import Data.List (foldl')
 import qualified Data.Map.Strict as Map
 import Data.Map.Strict (Map, unions, (!))
-#if !MIN_VERSION_base(4,11,0)
-import Data.Semigroup ((<>))
-#endif
 import Data.String (fromString)
 import qualified Data.Text as T
 import Data.Text (Text)
