@@ -9,6 +9,9 @@
 - Use `ghc-source-gen` instead of `haskell-src-exts`.  Removes
   `Data.ProtoLens.Compiler.Combinators` and adds
   `Data.ProtoLens.Compiler.Definitions`.
+- Limit the exposed library to a single module
+  `Data.ProtoLens.Compiler.ModuleName`.  The other modules were not
+  used in practice, and exposed internals unnecessarily.
 
 ### Backwards-Compatible Changes
 - Fix a potential naming conflict when message types and enum values

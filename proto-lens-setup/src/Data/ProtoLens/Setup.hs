@@ -29,7 +29,6 @@ import qualified Data.ByteString as BS
 import qualified Data.Map as Map
 import Data.Maybe (maybeToList)
 import qualified Data.Set as Set
-import qualified Data.Text as T
 import Distribution.ModuleName (ModuleName)
 import qualified Distribution.ModuleName as ModuleName
 import qualified Distribution.InstalledPackageInfo as InstalledPackageInfo
@@ -90,6 +89,7 @@ import Distribution.Verbosity
     )
 import System.FilePath
     ( (</>)
+    , (<.>)
     , equalFilePath
     , isRelative
     , makeRelative
@@ -108,7 +108,7 @@ import System.IO (hPutStrLn, stderr)
 import System.IO.Temp (withSystemTempDirectory)
 import System.Process (callProcess)
 
-import qualified Data.ProtoLens.Compiler.Plugin as Plugin
+import Data.ProtoLens.Compiler.ModuleName (protoModuleName)
 
 -- | This behaves the same as 'Distribution.Simple.defaultMain', but
 -- auto-generates Haskell files from .proto files which are:
@@ -242,7 +242,7 @@ generateSources root l files = withSystemTempDirectory "protoc-out" $ \tmpDir ->
     -- directory.
     let activeModules = collectActiveModules l
     let allModules = Set.fromList . concat . map snd $ activeModules
-    let usedInComponent f = ModuleName.fromString (Plugin.moduleNameStr "Proto" f)
+    let usedInComponent f = ModuleName.fromString (protoModuleName f)
                           `Set.member` allModules
     generateProtosWithImports (root : importDirs) tmpDir
                               -- Applying 'root </>' does nothing if the path is already
@@ -251,7 +251,7 @@ generateSources root l files = withSystemTempDirectory "protoc-out" $ \tmpDir ->
     -- Copy each active component's files over to its autogen directory, but
     -- only if they've changed since last time.
     forM_ activeModules $ \(compBI, mods) -> forM_ mods $ \m -> do
-          let f = T.unpack (Plugin.outputFilePath $ ModuleName.toFilePath m)
+          let f = ModuleName.toFilePath m <.> ".hs"
           let sourcePath = tmpDir </> f
           sourceExists <- doesFileExist sourcePath
           when sourceExists $ do

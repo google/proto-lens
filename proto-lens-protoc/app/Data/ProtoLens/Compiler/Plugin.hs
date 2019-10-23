@@ -14,26 +14,19 @@ module Data.ProtoLens.Compiler.Plugin
     , ProtoFile(..)
     , analyzeProtoFiles
     , collectEnvFromDeps
-    , outputFilePath
-    , moduleName
-    , moduleNameStr
     ) where
 
-import Data.Char (toUpper)
-import Data.List (foldl', intercalate)
+import Data.List (foldl')
 import qualified Data.Map.Strict as Map
 import Data.Map.Strict (Map, unions, (!))
-#if !MIN_VERSION_base(4,11,0)
-import Data.Semigroup ((<>))
-#endif
 import Data.String (fromString)
 import qualified Data.Text as T
 import Data.Text (Text)
 import Lens.Family2
 import Proto.Google.Protobuf.Descriptor (FileDescriptorProto)
-import System.FilePath (dropExtension, splitDirectories)
 
 import Data.ProtoLens.Compiler.Definitions
+import Data.ProtoLens.Compiler.ModuleName
 
 import GHC.SourceGen (ModuleNameStr, OccNameStr, RdrNameStr)
 
@@ -51,12 +44,12 @@ data ProtoFile = ProtoFile
 
 -- Given a list of FileDescriptorProtos, collect information about each file
 -- into a map of 'ProtoFile's keyed by 'ProtoFileName'.
-analyzeProtoFiles :: Text -> [FileDescriptorProto] -> Map ProtoFileName ProtoFile
-analyzeProtoFiles modulePrefix files =
+analyzeProtoFiles :: [FileDescriptorProto] -> Map ProtoFileName ProtoFile
+analyzeProtoFiles files =
     Map.fromList [ (f ^. #name, ingestFile f) | f <- files ]
   where
     filesByName = Map.fromList [(f ^. #name, f) | f <- files]
-    moduleNames = fmap (moduleName modulePrefix) filesByName
+    moduleNames = fmap fdModuleName filesByName
     -- The definitions in each input proto file, indexed by filename.
     definitionsByName = fmap collectDefinitions filesByName
     servicesByName = fmap collectServices filesByName
@@ -83,31 +76,10 @@ collectEnvFromDeps :: [ProtoFileName] -> Map ProtoFileName ProtoFile -> Env RdrN
 collectEnvFromDeps deps filesByName =
     unions $ fmap (exportedEnv . (filesByName !)) deps
 
--- | Get the output file path (for CodeGeneratorResponse.File) for a Haskell
--- ModuleName.
-outputFilePath :: String -> Text
-outputFilePath n = T.replace "." "/" (T.pack n) <> ".hs"
-
 -- | Get the Haskell 'ModuleName' corresponding to a given .proto file.
-moduleName :: Text -> FileDescriptorProto -> ModuleNameStr
-moduleName modulePrefix fd
-      = fromString $ moduleNameStr (T.unpack modulePrefix) (T.unpack $ fd ^. #name)
-
--- | Get the Haskell module name corresponding to a given .proto file.
-moduleNameStr :: String -> FilePath -> String
-moduleNameStr prefix path = fixModuleName rawModuleName
-  where
-    fixModuleName "" = ""
-    -- Characters allowed in Bazel filenames but not in module names:
-    fixModuleName ('.':c:cs) = '.' : toUpper c : fixModuleName cs
-    fixModuleName ('_':c:cs) = toUpper c : fixModuleName cs
-    fixModuleName ('-':c:cs) = toUpper c : fixModuleName cs
-    fixModuleName (c:cs) = c : fixModuleName cs
-    rawModuleName = intercalate "."
-                        . (prefix :)
-                        . splitDirectories $ dropExtension
-                        $ path
-
+fdModuleName :: FileDescriptorProto -> ModuleNameStr
+fdModuleName fd
+      = fromString $ protoModuleName (T.unpack $ fd ^. #name)
 
 -- | Given a list of .proto files (topologically sorted), determine which
 -- files' definitions are exported by which files.

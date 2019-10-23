@@ -78,8 +78,7 @@ makeResponse dflags prog request = let
 generateFiles :: DynFlags -> ModifyImports -> (FileDescriptorProto -> Text)
               -> [FileDescriptorProto] -> [ProtoFileName] -> [(Text, Text)]
 generateFiles dflags modifyImports header files toGenerate = let
-  modulePrefix = "Proto"
-  filesByName = analyzeProtoFiles modulePrefix files
+  filesByName = analyzeProtoFiles files
   -- The contents of the generated Haskell file for a given .proto file.
   modulesToBuild :: ProtoFile -> [CommentedModule]
   modulesToBuild f = let
@@ -92,7 +91,7 @@ generateFiles dflags modifyImports header files toGenerate = let
              (definitions f)
              (collectEnvFromDeps deps filesByName)
              (services f)
-  in [ ( outputFilePath $ showPpr dflags $ getModuleName modul
+  in [ ( moduleFilePath $ pack $ showPpr dflags (getModuleName modul)
        , header (descriptor f) <> pack (showPpr dflags modul)
        )
      | fileName <- toGenerate
@@ -100,3 +99,5 @@ generateFiles dflags modifyImports header files toGenerate = let
      , modul <- modulesToBuild f
      ]
 
+moduleFilePath :: Text -> Text
+moduleFilePath n = T.replace "." "/" n <> ".hs"
