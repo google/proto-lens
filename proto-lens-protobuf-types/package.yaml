@@ -13,6 +13,8 @@ github: google/proto-lens/proto-lens-protobuf-types
 extra-source-files:
   - Changelog.md
   - proto-src/google/protobuf/any.proto
+  - proto-src/google/protobuf/compiler/plugin.proto
+  - proto-src/google/protobuf/descriptor.proto
   - proto-src/google/protobuf/duration.proto
   - proto-src/google/protobuf/empty.proto
   - proto-src/google/protobuf/wrappers.proto
@@ -40,6 +42,10 @@ library:
   generated-exposed-modules:
     - Proto.Google.Protobuf.Any
     - Proto.Google.Protobuf.Any_Fields
+    - Proto.Google.Protobuf.Compiler.Plugin
+    - Proto.Google.Protobuf.Compiler.Plugin_Fields
+    - Proto.Google.Protobuf.Descriptor
+    - Proto.Google.Protobuf.Descriptor_Fields
     - Proto.Google.Protobuf.Duration
     - Proto.Google.Protobuf.Duration_Fields
     - Proto.Google.Protobuf.Empty

@@ -252,6 +252,7 @@ tests:
     main: imports_test.hs
     source-dirs: tests
     dependencies:
+      - proto-lens-protobuf-types
       - proto-lens-tests
     generated-other-modules:
       - Proto.Empty

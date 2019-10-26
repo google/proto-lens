@@ -10,6 +10,8 @@ extra-deps:
 - git: https://github.com/google/proto-lens
   # To use the current repository:
   # git: ../..  # stack runs 'git clone' in a subdirectory
+  # Note: this commit should match the value of bootstrapCommit in bootstrap.hs
   commit: master
   subdirs:
   - proto-lens
+  - proto-lens-runtime
