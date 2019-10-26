@@ -56,11 +56,7 @@ main = do
 
 makeResponse :: DynFlags -> String -> CodeGeneratorRequest -> CodeGeneratorResponse
 makeResponse dflags prog request = let
-    useRuntime = case T.unpack $ request ^. #parameter of
-                    "" -> reexported
-                    "no-runtime" -> id
-                    p -> error $ "Error reading parameter: " ++ show p
-    outputFiles = generateFiles dflags useRuntime header
+    outputFiles = generateFiles dflags header
                       (request ^. #protoFile)
                       (request ^. #fileToGenerate)
     header :: FileDescriptorProto -> Text
@@ -75,9 +71,9 @@ makeResponse dflags prog request = let
                      ]
 
 
-generateFiles :: DynFlags -> ModifyImports -> (FileDescriptorProto -> Text)
+generateFiles :: DynFlags -> (FileDescriptorProto -> Text)
               -> [FileDescriptorProto] -> [ProtoFileName] -> [(Text, Text)]
-generateFiles dflags modifyImports header files toGenerate = let
+generateFiles dflags header files toGenerate = let
   filesByName = analyzeProtoFiles files
   -- The contents of the generated Haskell file for a given .proto file.
   modulesToBuild :: ProtoFile -> [CommentedModule]
@@ -87,7 +83,6 @@ generateFiles dflags modifyImports header files toGenerate = let
                   $ map (haskellModule . (filesByName !)) deps
       in generateModule (haskellModule f) imports
             (publicImports f)
-             modifyImports
              (definitions f)
              (collectEnvFromDeps deps filesByName)
              (services f)

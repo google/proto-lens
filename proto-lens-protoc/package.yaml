@@ -39,4 +39,5 @@ executables:
       - pretty == 1.1.*
       - proto-lens == 0.5.*
       - proto-lens-protoc
+      - proto-lens-runtime == 0.5.*
       - text == 1.2.*

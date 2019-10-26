@@ -3,6 +3,9 @@
 ## Pending
 - Bump lower bounds to base-4.10 (ghc-8.2).
 - Support dependencies on base-4.13 (ghc-8.8) and lens-family-2.0.
+- Add new bindings `Proto.Google.Protobuf.Descriptor` and
+  `Proto.Google.Protobuf.Compiler.Plugin`, which were previously exported
+  by the `proto-lens` package.
 
 ## v0.5.0.0
 - Bump upper bounds to support `proto-lens-0.5.*`.

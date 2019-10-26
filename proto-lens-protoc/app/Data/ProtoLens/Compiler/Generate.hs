@@ -12,8 +12,6 @@
 {-# LANGUAGE OverloadedStrings #-}
 module Data.ProtoLens.Compiler.Generate(
     generateModule,
-    ModifyImports,
-    reexported,
     ) where
 
 
@@ -63,12 +61,11 @@ data UseRuntime = UseRuntime | UseOriginal
 generateModule :: ModuleNameStr
                -> [ModuleNameStr]  -- ^ The imported modules
                -> [ModuleNameStr]  -- ^ The publicly imported modules
-               -> ModifyImports
                -> Env OccNameStr      -- ^ Definitions in this file
                -> Env RdrNameStr     -- ^ Definitions in the imported modules
                -> [ServiceInfo]
                -> [CommentedModule]
-generateModule modName imports publicImports modifyImport definitions importedEnv services
+generateModule modName imports publicImports definitions importedEnv services
     = [ CommentedModule pragmas
             (module' (Just modName)
                 (Just $ serviceExports
@@ -104,9 +101,9 @@ generateModule modName imports publicImports modifyImport definitions importedEn
             -- Don't warn if empty "import public" modules are reexported.
           , optionsGhcPragma "-Wno-dodgy-exports"
           ]
-    mainImports = map (modifyImport . importQualified)
+    mainImports = map (reexported . importQualified)
                     [ "Control.DeepSeq", "Data.ProtoLens.Prism" ]
-    sharedImports = map (modifyImport . importQualified)
+    sharedImports = map (reexported . importQualified)
               [ "Prelude", "Data.Int", "Data.Monoid", "Data.Word"
               , "Data.ProtoLens"
               , "Data.ProtoLens.Encoding.Bytes"

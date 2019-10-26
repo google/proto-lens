@@ -4,6 +4,9 @@
 
 ### Breaking Changes
 - Bump lower bounds to base-4.10 (ghc-8.2).
+- Move `Proto.Google.Protobuf.Descriptor` and
+  `Proto.Google.Protobuf.Compiler.Plugin` to the `proto-lens-protobuf-types`
+  package.
 
 ### Backwards-Compatible Changes
 - Bump upper bound to allo profunctors-5.5.
