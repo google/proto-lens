@@ -1,6 +1,6 @@
 # Changelog for `proto-lens-protoc`
 
-## Pending
+## v0.6.0.0
 
 ### Breaking Changes
 - Reexport transitive definitions from modules generated for `.proto` files

@@ -1,8 +1,9 @@
 # Changelog for `proto-lens-runtime`
 
-## Pending
+## v0.6.0.0
 - Bump lower bounds to base-4.10 (ghc-8.2).
 - Support dependencies on base-4.13 (ghc-8.8) and lens-family-2.0.
+- Bump upper bounds to proto-lens-0.6.
 
 ## v0.5.0.0
 - Export more modules from proto-lens, to support generated encoding/decoding
