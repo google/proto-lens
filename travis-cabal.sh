@@ -19,8 +19,8 @@ chmod +x $HOME/.local/bin/hpack
 PACKAGES_TO_INSTALL="
     discrimination-ieee754
     proto-lens
-    proto-lens-protoc
     proto-lens-runtime
+    proto-lens-protoc
     proto-lens-setup
     proto-lens-protobuf-types
     proto-lens-arbitrary

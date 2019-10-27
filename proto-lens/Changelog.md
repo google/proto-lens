@@ -1,6 +1,6 @@
 # Changelog for `proto-lens`
 
-## Pending
+## v0.6.0.0
 
 ### Breaking Changes
 - Bump lower bounds to base-4.10 (ghc-8.2).
@@ -9,7 +9,7 @@
   package.
 
 ### Backwards-Compatible Changes
-- Bump upper bound to allo profunctors-5.5.
+- Bump upper bound to allow profunctors-5.5.
 - Support dependencies on base-4.13 (ghc-8.8) and lens-family-2.0.
 
 ## v0.5.1.0

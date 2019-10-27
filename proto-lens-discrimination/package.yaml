@@ -29,8 +29,8 @@ dependencies:
   - discrimination >= 0.3 && < 0.5
   - discrimination-ieee754 == 0.1.*
   - lens-family == 1.2.*
-  - proto-lens == 0.5.*
-  - proto-lens-runtime == 0.5.*
+  - proto-lens == 0.6.*
+  - proto-lens-runtime == 0.6.*
   - text == 1.2.*
 
 library:

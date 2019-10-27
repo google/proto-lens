@@ -1,7 +1,8 @@
 # Changelog for `proto-lens-arbitrary`
 
-## Pending
+## v0.1.2.8
 - Bump lower bounds to base-4.10 (ghc-8.2).
+- Bump upper bounds for proto-lens-0.6.
 - Support dependencies on base-4.13 (ghc-8.8) and lens-family-2.0.
 
 ## v0.1.2.7

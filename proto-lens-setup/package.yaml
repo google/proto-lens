@@ -1,5 +1,5 @@
 name: proto-lens-setup
-version: '0.4.0.2'
+version: '0.4.0.3'
 synopsis: 'Cabal support for codegen with proto-lens.'
 description: |
   This package provides Cabal support for the @proto-lens@ package.
@@ -61,7 +61,7 @@ library:
     # Depend transitively on the binary.
     # TODO: once there's sufficient support from Stack and Cabal,
     # make this a build-tool dependency.
-    - proto-lens-protoc >= 0.4 && < 0.6
+    - proto-lens-protoc >= 0.4 && < 0.7
     - temporary >= 1.2 && < 1.4
     - text == 1.2.*
   exposed-modules:

@@ -1,6 +1,6 @@
 # Changelog for `proto-lens-protobuf-types`
 
-## Pending
+## v0.6.0.0
 - Bump lower bounds to base-4.10 (ghc-8.2).
 - Support dependencies on base-4.13 (ghc-8.8) and lens-family-2.0.
 - Add new bindings `Proto.Google.Protobuf.Descriptor` and
