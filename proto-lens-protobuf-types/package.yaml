@@ -54,3 +54,9 @@ library:
     - Proto.Google.Protobuf.Wrappers_Fields
     - Proto.Google.Protobuf.Timestamp
     - Proto.Google.Protobuf.Timestamp_Fields
+  # Prevent hpack from putting Paths_* in the other-modules.
+  # Otherwise, "cabal check" complains (preventing upload to Hackage)
+  # because it expects it to be listed in autogen-modules.
+  # For details, see https://github.com/sol/hpack/issues/303.
+  verbatim:
+    other-modules:
