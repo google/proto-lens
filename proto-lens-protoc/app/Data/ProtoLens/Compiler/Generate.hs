@@ -51,6 +51,10 @@ import Data.ProtoLens.Compiler.Generate.Field
     , hsFieldVectorType
     )
 
+import Data.ProtoLens.Encoding.Bytes (runBuilder)
+import Data.ProtoLens.Message (buildMessage)
+import qualified Data.ByteString as BS
+
 -- Whether to import the "Runtime" modules or the originals;
 -- e.g., Data.ProtoLens.Runtime.Data.Map vs Data.Map.
 data UseRuntime = UseRuntime | UseOriginal
@@ -904,6 +908,8 @@ messageInstance :: Env RdrNameStr -> T.Text -> MessageInfo OccNameStr -> [RawIns
 messageInstance env protoName m =
     [ funBind "messageName" $ match [wildP] $
           var "Data.Text.pack" @@ string (T.unpack protoName)
+    , funBind "messageDescriptor" $ match [wildP] $
+          var "Data.ByteString.pack" @@ list msgDescriptor
     , valBind "fieldsByTag" $
           let' (map (fieldDescriptorVarBind $ messageName m) $ fields)
               $ var "Data.Map.fromList" @@ list fieldsByTag
@@ -925,6 +931,8 @@ messageInstance env protoName m =
     , valBind "buildMessage" $ generatedBuilder m
     ]
   where
+    msgDescriptor = fmap (int . toEnum . fromEnum) . BS.unpack . runBuilder . buildMessage $
+                    messageDescriptor m
     fieldsByTag =
         [tuple
               [ t, fieldDescriptorVar f ]
