@@ -1,6 +1,7 @@
 # Changelog for `proto-lens-protoc`
 
-## v0.6.0.0
+## v0.7.0.0
+- Support `proto-lens` changes for the new method `packedMessageDescriptor`.
 
 ### Breaking Changes
 - Reexport transitive definitions from modules generated for `.proto` files

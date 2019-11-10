@@ -1,5 +1,10 @@
 # Changelog for `proto-lens`
 
+## v0.7.0.0
+- Add a method to `Data.ProtoLens.Message` for getting the `DescriptorProto`
+  of a given message.  For a simpler API, see `Data.ProtoLens.Descriptor`
+  from `proto-lens-protobuf-types`.
+
 ## v0.6.0.0
 
 ### Breaking Changes
