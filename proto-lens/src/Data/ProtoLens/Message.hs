@@ -76,6 +76,10 @@ class Message msg where
     messageName :: Proxy msg -> T.Text
 
     -- | The serialized protobuffer message descriptor for this type.
+    --
+    -- For a friendlier version which returns the actual descriptor type,
+    -- use @Data.ProtoLens.Descriptor.messageDescriptor@
+    -- from the @proto-lens-protobuf-types@ package.
     packedMessageDescriptor :: Proxy msg -> B.ByteString
 
     -- | A message with all fields set to their default values.

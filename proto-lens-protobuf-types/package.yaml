@@ -39,6 +39,7 @@ library:
   source-dirs: src
   exposed-modules:
     - Data.ProtoLens.Any
+    - Data.ProtoLens.Descriptor
   generated-exposed-modules:
     - Proto.Google.Protobuf.Any
     - Proto.Google.Protobuf.Any_Fields
