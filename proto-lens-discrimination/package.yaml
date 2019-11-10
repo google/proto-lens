@@ -46,6 +46,7 @@ tests:
     source-dirs: tests
     dependencies:
       - HUnit >= 1.3 && < 1.7
+      - QuickCheck >= 2.8 && < 2.14
       - proto-lens-arbitrary >= 0.1 && < 0.2
       - proto-lens-discrimination
       - proto-lens-runtime >= 0.6 && < 0.8
