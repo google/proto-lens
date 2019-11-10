@@ -1,0 +1,14 @@
+syntax = "proto2";
+
+package descriptor;
+
+message DescriptorTest {
+    optional string a_string = 1;
+    repeated int32 some_ints = 2;
+
+    message Inner {
+        optional string inner_field = 1;
+    }
+
+    optional Inner inner = 3;
+}

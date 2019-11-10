@@ -285,3 +285,12 @@ tests:
     generated-other-modules:
       Proto.Combinators
       Proto.Combinators_Fields
+
+  descriptor_test:
+    main: descriptor_test.hs
+    source-dirs: tests
+    dependencies:
+      - proto-lens-protobuf-types
+      - proto-lens-tests
+    generated-other-modules:
+      - Proto.Descriptor

@@ -75,6 +75,9 @@ class Message msg where
     -- @"packagename.messagename"@.
     messageName :: Proxy msg -> T.Text
 
+    -- | The serialized protobuffer message descriptor for this type.
+    packedMessageDescriptor :: Proxy msg -> B.ByteString
+
     -- | A message with all fields set to their default values.
     --
     -- Satisfies @encodeMessage defMessage == ""@ and @decodeMessage "" == Right defMessage@.

@@ -1,5 +1,5 @@
 {- This file was auto-generated from google/protobuf/compiler/plugin.proto by the proto-lens-protoc program. -}
-{-# LANGUAGE ScopedTypeVariables, DataKinds, TypeFamilies, UndecidableInstances, GeneralizedNewtypeDeriving, MultiParamTypeClasses, FlexibleContexts, FlexibleInstances, PatternSynonyms, MagicHash, NoImplicitPrelude, DataKinds, BangPatterns, TypeApplications#-}
+{-# LANGUAGE ScopedTypeVariables, DataKinds, TypeFamilies, UndecidableInstances, GeneralizedNewtypeDeriving, MultiParamTypeClasses, FlexibleContexts, FlexibleInstances, PatternSynonyms, MagicHash, NoImplicitPrelude, DataKinds, BangPatterns, TypeApplications, OverloadedStrings#-}
 {-# OPTIONS_GHC -Wno-unused-imports#-}
 {-# OPTIONS_GHC -Wno-duplicate-exports#-}
 {-# OPTIONS_GHC -Wno-dodgy-exports#-}
@@ -119,6 +119,14 @@ instance Data.ProtoLens.Field.HasField CodeGeneratorRequest "maybe'compilerVersi
 instance Data.ProtoLens.Message CodeGeneratorRequest where
   messageName _
     = Data.Text.pack "google.protobuf.compiler.CodeGeneratorRequest"
+  packedMessageDescriptor _
+    = "\n\
+      \\DC4CodeGeneratorRequest\DC2(\n\
+      \\DLEfile_to_generate\CAN\SOH \ETX(\tR\SOfileToGenerate\DC2\FS\n\
+      \\tparameter\CAN\STX \SOH(\tR\tparameter\DC2C\n\
+      \\n\
+      \proto_file\CAN\SI \ETX(\v2$.google.protobuf.FileDescriptorProtoR\tprotoFile\DC2L\n\
+      \\DLEcompiler_version\CAN\ETX \SOH(\v2!.google.protobuf.compiler.VersionR\SIcompilerVersion"
   fieldsByTag
     = let
         fileToGenerate__field_descriptor
@@ -408,6 +416,15 @@ instance Data.ProtoLens.Field.HasField CodeGeneratorResponse "vec'file" (Data.Ve
 instance Data.ProtoLens.Message CodeGeneratorResponse where
   messageName _
     = Data.Text.pack "google.protobuf.compiler.CodeGeneratorResponse"
+  packedMessageDescriptor _
+    = "\n\
+      \\NAKCodeGeneratorResponse\DC2\DC4\n\
+      \\ENQerror\CAN\SOH \SOH(\tR\ENQerror\DC2H\n\
+      \\EOTfile\CAN\SI \ETX(\v24.google.protobuf.compiler.CodeGeneratorResponse.FileR\EOTfile\SUB]\n\
+      \\EOTFile\DC2\DC2\n\
+      \\EOTname\CAN\SOH \SOH(\tR\EOTname\DC2'\n\
+      \\SIinsertion_point\CAN\STX \SOH(\tR\SOinsertionPoint\DC2\CAN\n\
+      \\acontent\CAN\SI \SOH(\tR\acontent"
   fieldsByTag
     = let
         error__field_descriptor
@@ -615,6 +632,12 @@ instance Data.ProtoLens.Message CodeGeneratorResponse'File where
   messageName _
     = Data.Text.pack
         "google.protobuf.compiler.CodeGeneratorResponse.File"
+  packedMessageDescriptor _
+    = "\n\
+      \\EOTFile\DC2\DC2\n\
+      \\EOTname\CAN\SOH \SOH(\tR\EOTname\DC2'\n\
+      \\SIinsertion_point\CAN\STX \SOH(\tR\SOinsertionPoint\DC2\CAN\n\
+      \\acontent\CAN\SI \SOH(\tR\acontent"
   fieldsByTag
     = let
         name__field_descriptor
@@ -864,6 +887,13 @@ instance Data.ProtoLens.Field.HasField Version "maybe'suffix" (Prelude.Maybe Dat
         Prelude.id
 instance Data.ProtoLens.Message Version where
   messageName _ = Data.Text.pack "google.protobuf.compiler.Version"
+  packedMessageDescriptor _
+    = "\n\
+      \\aVersion\DC2\DC4\n\
+      \\ENQmajor\CAN\SOH \SOH(\ENQR\ENQmajor\DC2\DC4\n\
+      \\ENQminor\CAN\STX \SOH(\ENQR\ENQminor\DC2\DC4\n\
+      \\ENQpatch\CAN\ETX \SOH(\ENQR\ENQpatch\DC2\SYN\n\
+      \\ACKsuffix\CAN\EOT \SOH(\tR\ACKsuffix"
   fieldsByTag
     = let
         major__field_descriptor

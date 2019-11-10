@@ -1,5 +1,5 @@
 {- This file was auto-generated from google/protobuf/descriptor.proto by the proto-lens-protoc program. -}
-{-# LANGUAGE ScopedTypeVariables, DataKinds, TypeFamilies, UndecidableInstances, GeneralizedNewtypeDeriving, MultiParamTypeClasses, FlexibleContexts, FlexibleInstances, PatternSynonyms, MagicHash, NoImplicitPrelude, DataKinds, BangPatterns, TypeApplications#-}
+{-# LANGUAGE ScopedTypeVariables, DataKinds, TypeFamilies, UndecidableInstances, GeneralizedNewtypeDeriving, MultiParamTypeClasses, FlexibleContexts, FlexibleInstances, PatternSynonyms, MagicHash, NoImplicitPrelude, DataKinds, BangPatterns, TypeApplications, OverloadedStrings#-}
 {-# OPTIONS_GHC -Wno-unused-imports#-}
 {-# OPTIONS_GHC -Wno-duplicate-exports#-}
 {-# OPTIONS_GHC -Wno-dodgy-exports#-}
@@ -247,6 +247,29 @@ instance Data.ProtoLens.Field.HasField DescriptorProto "vec'reservedName" (Data.
         Prelude.id
 instance Data.ProtoLens.Message DescriptorProto where
   messageName _ = Data.Text.pack "google.protobuf.DescriptorProto"
+  packedMessageDescriptor _
+    = "\n\
+      \\SIDescriptorProto\DC2\DC2\n\
+      \\EOTname\CAN\SOH \SOH(\tR\EOTname\DC2;\n\
+      \\ENQfield\CAN\STX \ETX(\v2%.google.protobuf.FieldDescriptorProtoR\ENQfield\DC2C\n\
+      \\textension\CAN\ACK \ETX(\v2%.google.protobuf.FieldDescriptorProtoR\textension\DC2A\n\
+      \\vnested_type\CAN\ETX \ETX(\v2 .google.protobuf.DescriptorProtoR\n\
+      \nestedType\DC2A\n\
+      \\tenum_type\CAN\EOT \ETX(\v2$.google.protobuf.EnumDescriptorProtoR\benumType\DC2X\n\
+      \\SIextension_range\CAN\ENQ \ETX(\v2/.google.protobuf.DescriptorProto.ExtensionRangeR\SOextensionRange\DC2D\n\
+      \\n\
+      \oneof_decl\CAN\b \ETX(\v2%.google.protobuf.OneofDescriptorProtoR\toneofDecl\DC29\n\
+      \\aoptions\CAN\a \SOH(\v2\US.google.protobuf.MessageOptionsR\aoptions\DC2U\n\
+      \\SOreserved_range\CAN\t \ETX(\v2..google.protobuf.DescriptorProto.ReservedRangeR\rreservedRange\DC2#\n\
+      \\rreserved_name\CAN\n\
+      \ \ETX(\tR\freservedName\SUBz\n\
+      \\SOExtensionRange\DC2\DC4\n\
+      \\ENQstart\CAN\SOH \SOH(\ENQR\ENQstart\DC2\DLE\n\
+      \\ETXend\CAN\STX \SOH(\ENQR\ETXend\DC2@\n\
+      \\aoptions\CAN\ETX \SOH(\v2&.google.protobuf.ExtensionRangeOptionsR\aoptions\SUB7\n\
+      \\rReservedRange\DC2\DC4\n\
+      \\ENQstart\CAN\SOH \SOH(\ENQR\ENQstart\DC2\DLE\n\
+      \\ETXend\CAN\STX \SOH(\ENQR\ETXend"
   fieldsByTag
     = let
         name__field_descriptor
@@ -948,6 +971,12 @@ instance Data.ProtoLens.Field.HasField DescriptorProto'ExtensionRange "maybe'opt
 instance Data.ProtoLens.Message DescriptorProto'ExtensionRange where
   messageName _
     = Data.Text.pack "google.protobuf.DescriptorProto.ExtensionRange"
+  packedMessageDescriptor _
+    = "\n\
+      \\SOExtensionRange\DC2\DC4\n\
+      \\ENQstart\CAN\SOH \SOH(\ENQR\ENQstart\DC2\DLE\n\
+      \\ETXend\CAN\STX \SOH(\ENQR\ETXend\DC2@\n\
+      \\aoptions\CAN\ETX \SOH(\v2&.google.protobuf.ExtensionRangeOptionsR\aoptions"
   fieldsByTag
     = let
         start__field_descriptor
@@ -1141,6 +1170,11 @@ instance Data.ProtoLens.Field.HasField DescriptorProto'ReservedRange "maybe'end"
 instance Data.ProtoLens.Message DescriptorProto'ReservedRange where
   messageName _
     = Data.Text.pack "google.protobuf.DescriptorProto.ReservedRange"
+  packedMessageDescriptor _
+    = "\n\
+      \\rReservedRange\DC2\DC4\n\
+      \\ENQstart\CAN\SOH \SOH(\ENQR\ENQstart\DC2\DLE\n\
+      \\ETXend\CAN\STX \SOH(\ENQR\ETXend"
   fieldsByTag
     = let
         start__field_descriptor
@@ -1356,6 +1390,17 @@ instance Data.ProtoLens.Field.HasField EnumDescriptorProto "vec'reservedName" (D
 instance Data.ProtoLens.Message EnumDescriptorProto where
   messageName _
     = Data.Text.pack "google.protobuf.EnumDescriptorProto"
+  packedMessageDescriptor _
+    = "\n\
+      \\DC3EnumDescriptorProto\DC2\DC2\n\
+      \\EOTname\CAN\SOH \SOH(\tR\EOTname\DC2?\n\
+      \\ENQvalue\CAN\STX \ETX(\v2).google.protobuf.EnumValueDescriptorProtoR\ENQvalue\DC26\n\
+      \\aoptions\CAN\ETX \SOH(\v2\FS.google.protobuf.EnumOptionsR\aoptions\DC2]\n\
+      \\SOreserved_range\CAN\EOT \ETX(\v26.google.protobuf.EnumDescriptorProto.EnumReservedRangeR\rreservedRange\DC2#\n\
+      \\rreserved_name\CAN\ENQ \ETX(\tR\freservedName\SUB;\n\
+      \\DC1EnumReservedRange\DC2\DC4\n\
+      \\ENQstart\CAN\SOH \SOH(\ENQR\ENQstart\DC2\DLE\n\
+      \\ETXend\CAN\STX \SOH(\ENQR\ETXend"
   fieldsByTag
     = let
         name__field_descriptor
@@ -1697,6 +1742,11 @@ instance Data.ProtoLens.Message EnumDescriptorProto'EnumReservedRange where
   messageName _
     = Data.Text.pack
         "google.protobuf.EnumDescriptorProto.EnumReservedRange"
+  packedMessageDescriptor _
+    = "\n\
+      \\DC1EnumReservedRange\DC2\DC4\n\
+      \\ENQstart\CAN\SOH \SOH(\ENQR\ENQstart\DC2\DLE\n\
+      \\ETXend\CAN\STX \SOH(\ENQR\ETXend"
   fieldsByTag
     = let
         start__field_descriptor
@@ -1874,6 +1924,15 @@ instance Data.ProtoLens.Field.HasField EnumOptions "vec'uninterpretedOption" (Da
         Prelude.id
 instance Data.ProtoLens.Message EnumOptions where
   messageName _ = Data.Text.pack "google.protobuf.EnumOptions"
+  packedMessageDescriptor _
+    = "\n\
+      \\vEnumOptions\DC2\US\n\
+      \\vallow_alias\CAN\STX \SOH(\bR\n\
+      \allowAlias\DC2%\n\
+      \\n\
+      \deprecated\CAN\ETX \SOH(\b:\ENQfalseR\n\
+      \deprecated\DC2X\n\
+      \\DC4uninterpreted_option\CAN\231\a \ETX(\v2$.google.protobuf.UninterpretedOptionR\DC3uninterpretedOption*\t\b\232\a\DLE\128\128\128\128\STXJ\EOT\b\ENQ\DLE\ACK"
   fieldsByTag
     = let
         allowAlias__field_descriptor
@@ -2109,6 +2168,12 @@ instance Data.ProtoLens.Field.HasField EnumValueDescriptorProto "maybe'options" 
 instance Data.ProtoLens.Message EnumValueDescriptorProto where
   messageName _
     = Data.Text.pack "google.protobuf.EnumValueDescriptorProto"
+  packedMessageDescriptor _
+    = "\n\
+      \\CANEnumValueDescriptorProto\DC2\DC2\n\
+      \\EOTname\CAN\SOH \SOH(\tR\EOTname\DC2\SYN\n\
+      \\ACKnumber\CAN\STX \SOH(\ENQR\ACKnumber\DC2;\n\
+      \\aoptions\CAN\ETX \SOH(\v2!.google.protobuf.EnumValueOptionsR\aoptions"
   fieldsByTag
     = let
         name__field_descriptor
@@ -2314,6 +2379,13 @@ instance Data.ProtoLens.Field.HasField EnumValueOptions "vec'uninterpretedOption
         Prelude.id
 instance Data.ProtoLens.Message EnumValueOptions where
   messageName _ = Data.Text.pack "google.protobuf.EnumValueOptions"
+  packedMessageDescriptor _
+    = "\n\
+      \\DLEEnumValueOptions\DC2%\n\
+      \\n\
+      \deprecated\CAN\SOH \SOH(\b:\ENQfalseR\n\
+      \deprecated\DC2X\n\
+      \\DC4uninterpreted_option\CAN\231\a \ETX(\v2$.google.protobuf.UninterpretedOptionR\DC3uninterpretedOption*\t\b\232\a\DLE\128\128\128\128\STX"
   fieldsByTag
     = let
         deprecated__field_descriptor
@@ -2485,6 +2557,10 @@ instance Data.ProtoLens.Field.HasField ExtensionRangeOptions "vec'uninterpretedO
 instance Data.ProtoLens.Message ExtensionRangeOptions where
   messageName _
     = Data.Text.pack "google.protobuf.ExtensionRangeOptions"
+  packedMessageDescriptor _
+    = "\n\
+      \\NAKExtensionRangeOptions\DC2X\n\
+      \\DC4uninterpreted_option\CAN\231\a \ETX(\v2$.google.protobuf.UninterpretedOptionR\DC3uninterpretedOption*\t\b\232\a\DLE\128\128\128\128\STX"
   fieldsByTag
     = let
         uninterpretedOption__field_descriptor
@@ -2773,6 +2849,50 @@ instance Data.ProtoLens.Field.HasField FieldDescriptorProto "maybe'options" (Pre
 instance Data.ProtoLens.Message FieldDescriptorProto where
   messageName _
     = Data.Text.pack "google.protobuf.FieldDescriptorProto"
+  packedMessageDescriptor _
+    = "\n\
+      \\DC4FieldDescriptorProto\DC2\DC2\n\
+      \\EOTname\CAN\SOH \SOH(\tR\EOTname\DC2\SYN\n\
+      \\ACKnumber\CAN\ETX \SOH(\ENQR\ACKnumber\DC2A\n\
+      \\ENQlabel\CAN\EOT \SOH(\SO2+.google.protobuf.FieldDescriptorProto.LabelR\ENQlabel\DC2>\n\
+      \\EOTtype\CAN\ENQ \SOH(\SO2*.google.protobuf.FieldDescriptorProto.TypeR\EOTtype\DC2\ESC\n\
+      \\ttype_name\CAN\ACK \SOH(\tR\btypeName\DC2\SUB\n\
+      \\bextendee\CAN\STX \SOH(\tR\bextendee\DC2#\n\
+      \\rdefault_value\CAN\a \SOH(\tR\fdefaultValue\DC2\US\n\
+      \\voneof_index\CAN\t \SOH(\ENQR\n\
+      \oneofIndex\DC2\ESC\n\
+      \\tjson_name\CAN\n\
+      \ \SOH(\tR\bjsonName\DC27\n\
+      \\aoptions\CAN\b \SOH(\v2\GS.google.protobuf.FieldOptionsR\aoptions\"\182\STX\n\
+      \\EOTType\DC2\SI\n\
+      \\vTYPE_DOUBLE\DLE\SOH\DC2\SO\n\
+      \\n\
+      \TYPE_FLOAT\DLE\STX\DC2\SO\n\
+      \\n\
+      \TYPE_INT64\DLE\ETX\DC2\SI\n\
+      \\vTYPE_UINT64\DLE\EOT\DC2\SO\n\
+      \\n\
+      \TYPE_INT32\DLE\ENQ\DC2\DLE\n\
+      \\fTYPE_FIXED64\DLE\ACK\DC2\DLE\n\
+      \\fTYPE_FIXED32\DLE\a\DC2\r\n\
+      \\tTYPE_BOOL\DLE\b\DC2\SI\n\
+      \\vTYPE_STRING\DLE\t\DC2\SO\n\
+      \\n\
+      \TYPE_GROUP\DLE\n\
+      \\DC2\DLE\n\
+      \\fTYPE_MESSAGE\DLE\v\DC2\SO\n\
+      \\n\
+      \TYPE_BYTES\DLE\f\DC2\SI\n\
+      \\vTYPE_UINT32\DLE\r\DC2\r\n\
+      \\tTYPE_ENUM\DLE\SO\DC2\DC1\n\
+      \\rTYPE_SFIXED32\DLE\SI\DC2\DC1\n\
+      \\rTYPE_SFIXED64\DLE\DLE\DC2\SI\n\
+      \\vTYPE_SINT32\DLE\DC1\DC2\SI\n\
+      \\vTYPE_SINT64\DLE\DC2\"C\n\
+      \\ENQLabel\DC2\DC2\n\
+      \\SOLABEL_OPTIONAL\DLE\SOH\DC2\DC2\n\
+      \\SOLABEL_REQUIRED\DLE\STX\DC2\DC2\n\
+      \\SOLABEL_REPEATED\DLE\ETX"
   fieldsByTag
     = let
         name__field_descriptor
@@ -3599,6 +3719,28 @@ instance Data.ProtoLens.Field.HasField FieldOptions "vec'uninterpretedOption" (D
         Prelude.id
 instance Data.ProtoLens.Message FieldOptions where
   messageName _ = Data.Text.pack "google.protobuf.FieldOptions"
+  packedMessageDescriptor _
+    = "\n\
+      \\fFieldOptions\DC2A\n\
+      \\ENQctype\CAN\SOH \SOH(\SO2#.google.protobuf.FieldOptions.CType:\ACKSTRINGR\ENQctype\DC2\SYN\n\
+      \\ACKpacked\CAN\STX \SOH(\bR\ACKpacked\DC2G\n\
+      \\ACKjstype\CAN\ACK \SOH(\SO2$.google.protobuf.FieldOptions.JSType:\tJS_NORMALR\ACKjstype\DC2\EM\n\
+      \\EOTlazy\CAN\ENQ \SOH(\b:\ENQfalseR\EOTlazy\DC2%\n\
+      \\n\
+      \deprecated\CAN\ETX \SOH(\b:\ENQfalseR\n\
+      \deprecated\DC2\EM\n\
+      \\EOTweak\CAN\n\
+      \ \SOH(\b:\ENQfalseR\EOTweak\DC2X\n\
+      \\DC4uninterpreted_option\CAN\231\a \ETX(\v2$.google.protobuf.UninterpretedOptionR\DC3uninterpretedOption\"/\n\
+      \\ENQCType\DC2\n\
+      \\n\
+      \\ACKSTRING\DLE\NUL\DC2\b\n\
+      \\EOTCORD\DLE\SOH\DC2\DLE\n\
+      \\fSTRING_PIECE\DLE\STX\"5\n\
+      \\ACKJSType\DC2\r\n\
+      \\tJS_NORMAL\DLE\NUL\DC2\r\n\
+      \\tJS_STRING\DLE\SOH\DC2\r\n\
+      \\tJS_NUMBER\DLE\STX*\t\b\232\a\DLE\128\128\128\128\STXJ\EOT\b\EOT\DLE\ENQ"
   fieldsByTag
     = let
         ctype__field_descriptor
@@ -4239,6 +4381,24 @@ instance Data.ProtoLens.Field.HasField FileDescriptorProto "maybe'syntax" (Prelu
 instance Data.ProtoLens.Message FileDescriptorProto where
   messageName _
     = Data.Text.pack "google.protobuf.FileDescriptorProto"
+  packedMessageDescriptor _
+    = "\n\
+      \\DC3FileDescriptorProto\DC2\DC2\n\
+      \\EOTname\CAN\SOH \SOH(\tR\EOTname\DC2\CAN\n\
+      \\apackage\CAN\STX \SOH(\tR\apackage\DC2\RS\n\
+      \\n\
+      \dependency\CAN\ETX \ETX(\tR\n\
+      \dependency\DC2+\n\
+      \\DC1public_dependency\CAN\n\
+      \ \ETX(\ENQR\DLEpublicDependency\DC2'\n\
+      \\SIweak_dependency\CAN\v \ETX(\ENQR\SOweakDependency\DC2C\n\
+      \\fmessage_type\CAN\EOT \ETX(\v2 .google.protobuf.DescriptorProtoR\vmessageType\DC2A\n\
+      \\tenum_type\CAN\ENQ \ETX(\v2$.google.protobuf.EnumDescriptorProtoR\benumType\DC2A\n\
+      \\aservice\CAN\ACK \ETX(\v2'.google.protobuf.ServiceDescriptorProtoR\aservice\DC2C\n\
+      \\textension\CAN\a \ETX(\v2%.google.protobuf.FieldDescriptorProtoR\textension\DC26\n\
+      \\aoptions\CAN\b \SOH(\v2\FS.google.protobuf.FileOptionsR\aoptions\DC2I\n\
+      \\DLEsource_code_info\CAN\t \SOH(\v2\US.google.protobuf.SourceCodeInfoR\SOsourceCodeInfo\DC2\SYN\n\
+      \\ACKsyntax\CAN\f \SOH(\tR\ACKsyntax"
   fieldsByTag
     = let
         name__field_descriptor
@@ -5039,6 +5199,10 @@ instance Data.ProtoLens.Field.HasField FileDescriptorSet "vec'file" (Data.Vector
         Prelude.id
 instance Data.ProtoLens.Message FileDescriptorSet where
   messageName _ = Data.Text.pack "google.protobuf.FileDescriptorSet"
+  packedMessageDescriptor _
+    = "\n\
+      \\DC1FileDescriptorSet\DC28\n\
+      \\EOTfile\CAN\SOH \ETX(\v2$.google.protobuf.FileDescriptorProtoR\EOTfile"
   fieldsByTag
     = let
         file__field_descriptor
@@ -5507,6 +5671,38 @@ instance Data.ProtoLens.Field.HasField FileOptions "vec'uninterpretedOption" (Da
         Prelude.id
 instance Data.ProtoLens.Message FileOptions where
   messageName _ = Data.Text.pack "google.protobuf.FileOptions"
+  packedMessageDescriptor _
+    = "\n\
+      \\vFileOptions\DC2!\n\
+      \\fjava_package\CAN\SOH \SOH(\tR\vjavaPackage\DC20\n\
+      \\DC4java_outer_classname\CAN\b \SOH(\tR\DC2javaOuterClassname\DC25\n\
+      \\DC3java_multiple_files\CAN\n\
+      \ \SOH(\b:\ENQfalseR\DC1javaMultipleFiles\DC2D\n\
+      \\GSjava_generate_equals_and_hash\CAN\DC4 \SOH(\bR\EMjavaGenerateEqualsAndHashB\STX\CAN\SOH\DC2:\n\
+      \\SYNjava_string_check_utf8\CAN\ESC \SOH(\b:\ENQfalseR\DC3javaStringCheckUtf8\DC2S\n\
+      \\foptimize_for\CAN\t \SOH(\SO2).google.protobuf.FileOptions.OptimizeMode:\ENQSPEEDR\voptimizeFor\DC2\GS\n\
+      \\n\
+      \go_package\CAN\v \SOH(\tR\tgoPackage\DC25\n\
+      \\DC3cc_generic_services\CAN\DLE \SOH(\b:\ENQfalseR\DC1ccGenericServices\DC29\n\
+      \\NAKjava_generic_services\CAN\DC1 \SOH(\b:\ENQfalseR\DC3javaGenericServices\DC25\n\
+      \\DC3py_generic_services\CAN\DC2 \SOH(\b:\ENQfalseR\DC1pyGenericServices\DC27\n\
+      \\DC4php_generic_services\CAN* \SOH(\b:\ENQfalseR\DC2phpGenericServices\DC2%\n\
+      \\n\
+      \deprecated\CAN\ETB \SOH(\b:\ENQfalseR\n\
+      \deprecated\DC2/\n\
+      \\DLEcc_enable_arenas\CAN\US \SOH(\b:\ENQfalseR\SOccEnableArenas\DC2*\n\
+      \\DC1objc_class_prefix\CAN$ \SOH(\tR\SIobjcClassPrefix\DC2)\n\
+      \\DLEcsharp_namespace\CAN% \SOH(\tR\SIcsharpNamespace\DC2!\n\
+      \\fswift_prefix\CAN' \SOH(\tR\vswiftPrefix\DC2(\n\
+      \\DLEphp_class_prefix\CAN( \SOH(\tR\SOphpClassPrefix\DC2#\n\
+      \\rphp_namespace\CAN) \SOH(\tR\fphpNamespace\DC24\n\
+      \\SYNphp_metadata_namespace\CAN, \SOH(\tR\DC4phpMetadataNamespace\DC2!\n\
+      \\fruby_package\CAN- \SOH(\tR\vrubyPackage\DC2X\n\
+      \\DC4uninterpreted_option\CAN\231\a \ETX(\v2$.google.protobuf.UninterpretedOptionR\DC3uninterpretedOption\":\n\
+      \\fOptimizeMode\DC2\t\n\
+      \\ENQSPEED\DLE\SOH\DC2\r\n\
+      \\tCODE_SIZE\DLE\STX\DC2\DLE\n\
+      \\fLITE_RUNTIME\DLE\ETX*\t\b\232\a\DLE\128\128\128\128\STXJ\EOT\b&\DLE'"
   fieldsByTag
     = let
         javaPackage__field_descriptor
@@ -6547,6 +6743,19 @@ instance Data.ProtoLens.Field.HasField GeneratedCodeInfo "vec'annotation" (Data.
         Prelude.id
 instance Data.ProtoLens.Message GeneratedCodeInfo where
   messageName _ = Data.Text.pack "google.protobuf.GeneratedCodeInfo"
+  packedMessageDescriptor _
+    = "\n\
+      \\DC1GeneratedCodeInfo\DC2M\n\
+      \\n\
+      \annotation\CAN\SOH \ETX(\v2-.google.protobuf.GeneratedCodeInfo.AnnotationR\n\
+      \annotation\SUBm\n\
+      \\n\
+      \Annotation\DC2\SYN\n\
+      \\EOTpath\CAN\SOH \ETX(\ENQR\EOTpathB\STX\DLE\SOH\DC2\US\n\
+      \\vsource_file\CAN\STX \SOH(\tR\n\
+      \sourceFile\DC2\DC4\n\
+      \\ENQbegin\CAN\ETX \SOH(\ENQR\ENQbegin\DC2\DLE\n\
+      \\ETXend\CAN\EOT \SOH(\ENQR\ETXend"
   fieldsByTag
     = let
         annotation__field_descriptor
@@ -6735,6 +6944,15 @@ instance Data.ProtoLens.Field.HasField GeneratedCodeInfo'Annotation "maybe'end" 
 instance Data.ProtoLens.Message GeneratedCodeInfo'Annotation where
   messageName _
     = Data.Text.pack "google.protobuf.GeneratedCodeInfo.Annotation"
+  packedMessageDescriptor _
+    = "\n\
+      \\n\
+      \Annotation\DC2\SYN\n\
+      \\EOTpath\CAN\SOH \ETX(\ENQR\EOTpathB\STX\DLE\SOH\DC2\US\n\
+      \\vsource_file\CAN\STX \SOH(\tR\n\
+      \sourceFile\DC2\DC4\n\
+      \\ENQbegin\CAN\ETX \SOH(\ENQR\ENQbegin\DC2\DLE\n\
+      \\ETXend\CAN\EOT \SOH(\ENQR\ETXend"
   fieldsByTag
     = let
         path__field_descriptor
@@ -7066,6 +7284,16 @@ instance Data.ProtoLens.Field.HasField MessageOptions "vec'uninterpretedOption" 
         Prelude.id
 instance Data.ProtoLens.Message MessageOptions where
   messageName _ = Data.Text.pack "google.protobuf.MessageOptions"
+  packedMessageDescriptor _
+    = "\n\
+      \\SOMessageOptions\DC2<\n\
+      \\ETBmessage_set_wire_format\CAN\SOH \SOH(\b:\ENQfalseR\DC4messageSetWireFormat\DC2L\n\
+      \\USno_standard_descriptor_accessor\CAN\STX \SOH(\b:\ENQfalseR\FSnoStandardDescriptorAccessor\DC2%\n\
+      \\n\
+      \deprecated\CAN\ETX \SOH(\b:\ENQfalseR\n\
+      \deprecated\DC2\ESC\n\
+      \\tmap_entry\CAN\a \SOH(\bR\bmapEntry\DC2X\n\
+      \\DC4uninterpreted_option\CAN\231\a \ETX(\v2$.google.protobuf.UninterpretedOptionR\DC3uninterpretedOption*\t\b\232\a\DLE\128\128\128\128\STXJ\EOT\b\b\DLE\tJ\EOT\b\t\DLE\n"
   fieldsByTag
     = let
         messageSetWireFormat__field_descriptor
@@ -7424,6 +7652,17 @@ instance Data.ProtoLens.Field.HasField MethodDescriptorProto "maybe'serverStream
 instance Data.ProtoLens.Message MethodDescriptorProto where
   messageName _
     = Data.Text.pack "google.protobuf.MethodDescriptorProto"
+  packedMessageDescriptor _
+    = "\n\
+      \\NAKMethodDescriptorProto\DC2\DC2\n\
+      \\EOTname\CAN\SOH \SOH(\tR\EOTname\DC2\GS\n\
+      \\n\
+      \input_type\CAN\STX \SOH(\tR\tinputType\DC2\US\n\
+      \\voutput_type\CAN\ETX \SOH(\tR\n\
+      \outputType\DC28\n\
+      \\aoptions\CAN\EOT \SOH(\v2\RS.google.protobuf.MethodOptionsR\aoptions\DC20\n\
+      \\DLEclient_streaming\CAN\ENQ \SOH(\b:\ENQfalseR\SIclientStreaming\DC20\n\
+      \\DLEserver_streaming\CAN\ACK \SOH(\b:\ENQfalseR\SIserverStreaming"
   fieldsByTag
     = let
         name__field_descriptor
@@ -7767,6 +8006,19 @@ instance Data.ProtoLens.Field.HasField MethodOptions "vec'uninterpretedOption" (
         Prelude.id
 instance Data.ProtoLens.Message MethodOptions where
   messageName _ = Data.Text.pack "google.protobuf.MethodOptions"
+  packedMessageDescriptor _
+    = "\n\
+      \\rMethodOptions\DC2%\n\
+      \\n\
+      \deprecated\CAN! \SOH(\b:\ENQfalseR\n\
+      \deprecated\DC2q\n\
+      \\DC1idempotency_level\CAN\" \SOH(\SO2/.google.protobuf.MethodOptions.IdempotencyLevel:\DC3IDEMPOTENCY_UNKNOWNR\DLEidempotencyLevel\DC2X\n\
+      \\DC4uninterpreted_option\CAN\231\a \ETX(\v2$.google.protobuf.UninterpretedOptionR\DC3uninterpretedOption\"P\n\
+      \\DLEIdempotencyLevel\DC2\ETB\n\
+      \\DC3IDEMPOTENCY_UNKNOWN\DLE\NUL\DC2\DC3\n\
+      \\SINO_SIDE_EFFECTS\DLE\SOH\DC2\SO\n\
+      \\n\
+      \IDEMPOTENT\DLE\STX*\t\b\232\a\DLE\128\128\128\128\STX"
   fieldsByTag
     = let
         deprecated__field_descriptor
@@ -8047,6 +8299,11 @@ instance Data.ProtoLens.Field.HasField OneofDescriptorProto "maybe'options" (Pre
 instance Data.ProtoLens.Message OneofDescriptorProto where
   messageName _
     = Data.Text.pack "google.protobuf.OneofDescriptorProto"
+  packedMessageDescriptor _
+    = "\n\
+      \\DC4OneofDescriptorProto\DC2\DC2\n\
+      \\EOTname\CAN\SOH \SOH(\tR\EOTname\DC27\n\
+      \\aoptions\CAN\STX \SOH(\v2\GS.google.protobuf.OneofOptionsR\aoptions"
   fieldsByTag
     = let
         name__field_descriptor
@@ -8205,6 +8462,10 @@ instance Data.ProtoLens.Field.HasField OneofOptions "vec'uninterpretedOption" (D
         Prelude.id
 instance Data.ProtoLens.Message OneofOptions where
   messageName _ = Data.Text.pack "google.protobuf.OneofOptions"
+  packedMessageDescriptor _
+    = "\n\
+      \\fOneofOptions\DC2X\n\
+      \\DC4uninterpreted_option\CAN\231\a \ETX(\v2$.google.protobuf.UninterpretedOptionR\DC3uninterpretedOption*\t\b\232\a\DLE\128\128\128\128\STX"
   fieldsByTag
     = let
         uninterpretedOption__field_descriptor
@@ -8376,6 +8637,12 @@ instance Data.ProtoLens.Field.HasField ServiceDescriptorProto "maybe'options" (P
 instance Data.ProtoLens.Message ServiceDescriptorProto where
   messageName _
     = Data.Text.pack "google.protobuf.ServiceDescriptorProto"
+  packedMessageDescriptor _
+    = "\n\
+      \\SYNServiceDescriptorProto\DC2\DC2\n\
+      \\EOTname\CAN\SOH \SOH(\tR\EOTname\DC2>\n\
+      \\ACKmethod\CAN\STX \ETX(\v2&.google.protobuf.MethodDescriptorProtoR\ACKmethod\DC29\n\
+      \\aoptions\CAN\ETX \SOH(\v2\US.google.protobuf.ServiceOptionsR\aoptions"
   fieldsByTag
     = let
         name__field_descriptor
@@ -8603,6 +8870,13 @@ instance Data.ProtoLens.Field.HasField ServiceOptions "vec'uninterpretedOption" 
         Prelude.id
 instance Data.ProtoLens.Message ServiceOptions where
   messageName _ = Data.Text.pack "google.protobuf.ServiceOptions"
+  packedMessageDescriptor _
+    = "\n\
+      \\SOServiceOptions\DC2%\n\
+      \\n\
+      \deprecated\CAN! \SOH(\b:\ENQfalseR\n\
+      \deprecated\DC2X\n\
+      \\DC4uninterpreted_option\CAN\231\a \ETX(\v2$.google.protobuf.UninterpretedOptionR\DC3uninterpretedOption*\t\b\232\a\DLE\128\128\128\128\STX"
   fieldsByTag
     = let
         deprecated__field_descriptor
@@ -8772,6 +9046,16 @@ instance Data.ProtoLens.Field.HasField SourceCodeInfo "vec'location" (Data.Vecto
         Prelude.id
 instance Data.ProtoLens.Message SourceCodeInfo where
   messageName _ = Data.Text.pack "google.protobuf.SourceCodeInfo"
+  packedMessageDescriptor _
+    = "\n\
+      \\SOSourceCodeInfo\DC2D\n\
+      \\blocation\CAN\SOH \ETX(\v2(.google.protobuf.SourceCodeInfo.LocationR\blocation\SUB\206\SOH\n\
+      \\bLocation\DC2\SYN\n\
+      \\EOTpath\CAN\SOH \ETX(\ENQR\EOTpathB\STX\DLE\SOH\DC2\SYN\n\
+      \\EOTspan\CAN\STX \ETX(\ENQR\EOTspanB\STX\DLE\SOH\DC2)\n\
+      \\DLEleading_comments\CAN\ETX \SOH(\tR\SIleadingComments\DC2+\n\
+      \\DC1trailing_comments\CAN\EOT \SOH(\tR\DLEtrailingComments\DC2:\n\
+      \\EMleading_detached_comments\CAN\ACK \ETX(\tR\ETBleadingDetachedComments"
   fieldsByTag
     = let
         location__field_descriptor
@@ -8983,6 +9267,14 @@ instance Data.ProtoLens.Field.HasField SourceCodeInfo'Location "vec'leadingDetac
 instance Data.ProtoLens.Message SourceCodeInfo'Location where
   messageName _
     = Data.Text.pack "google.protobuf.SourceCodeInfo.Location"
+  packedMessageDescriptor _
+    = "\n\
+      \\bLocation\DC2\SYN\n\
+      \\EOTpath\CAN\SOH \ETX(\ENQR\EOTpathB\STX\DLE\SOH\DC2\SYN\n\
+      \\EOTspan\CAN\STX \ETX(\ENQR\EOTspanB\STX\DLE\SOH\DC2)\n\
+      \\DLEleading_comments\CAN\ETX \SOH(\tR\SIleadingComments\DC2+\n\
+      \\DC1trailing_comments\CAN\EOT \SOH(\tR\DLEtrailingComments\DC2:\n\
+      \\EMleading_detached_comments\CAN\ACK \ETX(\tR\ETBleadingDetachedComments"
   fieldsByTag
     = let
         path__field_descriptor
@@ -9462,6 +9754,19 @@ instance Data.ProtoLens.Field.HasField UninterpretedOption "maybe'aggregateValue
 instance Data.ProtoLens.Message UninterpretedOption where
   messageName _
     = Data.Text.pack "google.protobuf.UninterpretedOption"
+  packedMessageDescriptor _
+    = "\n\
+      \\DC3UninterpretedOption\DC2A\n\
+      \\EOTname\CAN\STX \ETX(\v2-.google.protobuf.UninterpretedOption.NamePartR\EOTname\DC2)\n\
+      \\DLEidentifier_value\CAN\ETX \SOH(\tR\SIidentifierValue\DC2,\n\
+      \\DC2positive_int_value\CAN\EOT \SOH(\EOTR\DLEpositiveIntValue\DC2,\n\
+      \\DC2negative_int_value\CAN\ENQ \SOH(\ETXR\DLEnegativeIntValue\DC2!\n\
+      \\fdouble_value\CAN\ACK \SOH(\SOHR\vdoubleValue\DC2!\n\
+      \\fstring_value\CAN\a \SOH(\fR\vstringValue\DC2'\n\
+      \\SIaggregate_value\CAN\b \SOH(\tR\SOaggregateValue\SUBJ\n\
+      \\bNamePart\DC2\ESC\n\
+      \\tname_part\CAN\SOH \STX(\tR\bnamePart\DC2!\n\
+      \\fis_extension\CAN\STX \STX(\bR\visExtension"
   fieldsByTag
     = let
         name__field_descriptor
@@ -9815,6 +10120,11 @@ instance Data.ProtoLens.Field.HasField UninterpretedOption'NamePart "isExtension
 instance Data.ProtoLens.Message UninterpretedOption'NamePart where
   messageName _
     = Data.Text.pack "google.protobuf.UninterpretedOption.NamePart"
+  packedMessageDescriptor _
+    = "\n\
+      \\bNamePart\DC2\ESC\n\
+      \\tname_part\CAN\SOH \STX(\tR\bnamePart\DC2!\n\
+      \\fis_extension\CAN\STX \STX(\bR\visExtension"
   fieldsByTag
     = let
         namePart__field_descriptor
