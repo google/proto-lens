@@ -1,17 +1,15 @@
 {-# LANGUAGE OverloadedLabels #-}
-{-# LANGUAGE OverloadedStrings #-}
 {-# LANGUAGE RankNTypes #-}
 {-# LANGUAGE ScopedTypeVariables #-}
 {-# LANGUAGE TypeApplications #-}
 module Main where
 
-import Data.ProtoLens (Message(..), defMessage, decodeMessage)
+import Data.ProtoLens (Message, defMessage)
 import Data.ProtoLens.Labels ()
-import Lens.Family2 (Lens', view, toListOf, set)
+import Lens.Family2 (Lens', view, set)
 import Test.Tasty.HUnit (testCase)
-import Test.HUnit ((@=?), assertFailure)
+import Test.HUnit ((@=?))
 
-import Data.Proxy (Proxy(..))
 import Data.ProtoLens.TestUtil (TestTree, testMain)
 import qualified Proto.Enum as Enum
 import qualified Proto.Imports as Imports
@@ -27,7 +25,6 @@ main = testMain
     [ testFoo
     , testUseDep
     , testUseBootstrapped
-    , testDescriptor
     ]
 
 -- A simple check that a type is a sub-field of another type.
@@ -62,16 +59,3 @@ testUseBootstrapped :: TestTree
 testUseBootstrapped = testCase "testUseBootstrapped" $ do
     testField @Imports.UseBootstrapped @Descriptor.DescriptorProto #descriptor
     testField @Imports.UseBootstrapped @Plugin.CodeGeneratorRequest #request
-
-testDescriptor :: TestTree
-testDescriptor = testCase "testDescriptor" $ do
-  d <- case descProto (Proxy :: Proxy ImportsTransitive.TransitiveDep) of
-         Left x -> assertFailure x
-         Right x -> pure x
-
-  "TransitiveDep" @=? view #name d
-  ["x", "y"] @=? toListOf (#field . traverse . #name) d
-
-  where
-    descProto :: Message a => Proxy a -> Either String Descriptor.DescriptorProto
-    descProto = decodeMessage . messageDescriptor

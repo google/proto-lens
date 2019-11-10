@@ -1,5 +1,5 @@
 {- This file was auto-generated from google/protobuf/compiler/plugin.proto by the proto-lens-protoc program. -}
-{-# LANGUAGE ScopedTypeVariables, DataKinds, TypeFamilies, UndecidableInstances, GeneralizedNewtypeDeriving, MultiParamTypeClasses, FlexibleContexts, FlexibleInstances, PatternSynonyms, MagicHash, NoImplicitPrelude, DataKinds, BangPatterns, TypeApplications#-}
+{-# LANGUAGE ScopedTypeVariables, DataKinds, TypeFamilies, UndecidableInstances, GeneralizedNewtypeDeriving, MultiParamTypeClasses, FlexibleContexts, FlexibleInstances, PatternSynonyms, MagicHash, NoImplicitPrelude, DataKinds, BangPatterns, TypeApplications, OverloadedStrings#-}
 {-# OPTIONS_GHC -Wno-unused-imports#-}
 {-# OPTIONS_GHC -Wno-duplicate-exports#-}
 {-# OPTIONS_GHC -Wno-dodgy-exports#-}
@@ -119,25 +119,14 @@ instance Data.ProtoLens.Field.HasField CodeGeneratorRequest "maybe'compilerVersi
 instance Data.ProtoLens.Message CodeGeneratorRequest where
   messageName _
     = Data.Text.pack "google.protobuf.compiler.CodeGeneratorRequest"
-  messageDescriptor _
-    = Data.ByteString.pack
-        [10, 20, 67, 111, 100, 101, 71, 101, 110, 101, 114, 97, 116, 111,
-         114, 82, 101, 113, 117, 101, 115, 116, 18, 40, 10, 16, 102, 105,
-         108, 101, 95, 116, 111, 95, 103, 101, 110, 101, 114, 97, 116, 101,
-         24, 1, 32, 3, 40, 9, 82, 14, 102, 105, 108, 101, 84, 111, 71, 101,
-         110, 101, 114, 97, 116, 101, 18, 28, 10, 9, 112, 97, 114, 97, 109,
-         101, 116, 101, 114, 24, 2, 32, 1, 40, 9, 82, 9, 112, 97, 114, 97,
-         109, 101, 116, 101, 114, 18, 67, 10, 10, 112, 114, 111, 116, 111,
-         95, 102, 105, 108, 101, 24, 15, 32, 3, 40, 11, 50, 36, 46, 103,
-         111, 111, 103, 108, 101, 46, 112, 114, 111, 116, 111, 98, 117, 102,
-         46, 70, 105, 108, 101, 68, 101, 115, 99, 114, 105, 112, 116, 111,
-         114, 80, 114, 111, 116, 111, 82, 9, 112, 114, 111, 116, 111, 70,
-         105, 108, 101, 18, 76, 10, 16, 99, 111, 109, 112, 105, 108, 101,
-         114, 95, 118, 101, 114, 115, 105, 111, 110, 24, 3, 32, 1, 40, 11,
-         50, 33, 46, 103, 111, 111, 103, 108, 101, 46, 112, 114, 111, 116,
-         111, 98, 117, 102, 46, 99, 111, 109, 112, 105, 108, 101, 114, 46,
-         86, 101, 114, 115, 105, 111, 110, 82, 15, 99, 111, 109, 112, 105,
-         108, 101, 114, 86, 101, 114, 115, 105, 111, 110]
+  packedMessageDescriptor _
+    = "\n\
+      \\DC4CodeGeneratorRequest\DC2(\n\
+      \\DLEfile_to_generate\CAN\SOH \ETX(\tR\SOfileToGenerate\DC2\FS\n\
+      \\tparameter\CAN\STX \SOH(\tR\tparameter\DC2C\n\
+      \\n\
+      \proto_file\CAN\SI \ETX(\v2$.google.protobuf.FileDescriptorProtoR\tprotoFile\DC2L\n\
+      \\DLEcompiler_version\CAN\ETX \SOH(\v2!.google.protobuf.compiler.VersionR\SIcompilerVersion"
   fieldsByTag
     = let
         fileToGenerate__field_descriptor
@@ -427,23 +416,15 @@ instance Data.ProtoLens.Field.HasField CodeGeneratorResponse "vec'file" (Data.Ve
 instance Data.ProtoLens.Message CodeGeneratorResponse where
   messageName _
     = Data.Text.pack "google.protobuf.compiler.CodeGeneratorResponse"
-  messageDescriptor _
-    = Data.ByteString.pack
-        [10, 21, 67, 111, 100, 101, 71, 101, 110, 101, 114, 97, 116, 111,
-         114, 82, 101, 115, 112, 111, 110, 115, 101, 18, 20, 10, 5, 101,
-         114, 114, 111, 114, 24, 1, 32, 1, 40, 9, 82, 5, 101, 114, 114, 111,
-         114, 18, 72, 10, 4, 102, 105, 108, 101, 24, 15, 32, 3, 40, 11, 50,
-         52, 46, 103, 111, 111, 103, 108, 101, 46, 112, 114, 111, 116, 111,
-         98, 117, 102, 46, 99, 111, 109, 112, 105, 108, 101, 114, 46, 67,
-         111, 100, 101, 71, 101, 110, 101, 114, 97, 116, 111, 114, 82, 101,
-         115, 112, 111, 110, 115, 101, 46, 70, 105, 108, 101, 82, 4, 102,
-         105, 108, 101, 26, 93, 10, 4, 70, 105, 108, 101, 18, 18, 10, 4,
-         110, 97, 109, 101, 24, 1, 32, 1, 40, 9, 82, 4, 110, 97, 109, 101,
-         18, 39, 10, 15, 105, 110, 115, 101, 114, 116, 105, 111, 110, 95,
-         112, 111, 105, 110, 116, 24, 2, 32, 1, 40, 9, 82, 14, 105, 110,
-         115, 101, 114, 116, 105, 111, 110, 80, 111, 105, 110, 116, 18, 24,
-         10, 7, 99, 111, 110, 116, 101, 110, 116, 24, 15, 32, 1, 40, 9, 82,
-         7, 99, 111, 110, 116, 101, 110, 116]
+  packedMessageDescriptor _
+    = "\n\
+      \\NAKCodeGeneratorResponse\DC2\DC4\n\
+      \\ENQerror\CAN\SOH \SOH(\tR\ENQerror\DC2H\n\
+      \\EOTfile\CAN\SI \ETX(\v24.google.protobuf.compiler.CodeGeneratorResponse.FileR\EOTfile\SUB]\n\
+      \\EOTFile\DC2\DC2\n\
+      \\EOTname\CAN\SOH \SOH(\tR\EOTname\DC2'\n\
+      \\SIinsertion_point\CAN\STX \SOH(\tR\SOinsertionPoint\DC2\CAN\n\
+      \\acontent\CAN\SI \SOH(\tR\acontent"
   fieldsByTag
     = let
         error__field_descriptor
@@ -651,15 +632,12 @@ instance Data.ProtoLens.Message CodeGeneratorResponse'File where
   messageName _
     = Data.Text.pack
         "google.protobuf.compiler.CodeGeneratorResponse.File"
-  messageDescriptor _
-    = Data.ByteString.pack
-        [10, 4, 70, 105, 108, 101, 18, 18, 10, 4, 110, 97, 109, 101, 24, 1,
-         32, 1, 40, 9, 82, 4, 110, 97, 109, 101, 18, 39, 10, 15, 105, 110,
-         115, 101, 114, 116, 105, 111, 110, 95, 112, 111, 105, 110, 116, 24,
-         2, 32, 1, 40, 9, 82, 14, 105, 110, 115, 101, 114, 116, 105, 111,
-         110, 80, 111, 105, 110, 116, 18, 24, 10, 7, 99, 111, 110, 116, 101,
-         110, 116, 24, 15, 32, 1, 40, 9, 82, 7, 99, 111, 110, 116, 101, 110,
-         116]
+  packedMessageDescriptor _
+    = "\n\
+      \\EOTFile\DC2\DC2\n\
+      \\EOTname\CAN\SOH \SOH(\tR\EOTname\DC2'\n\
+      \\SIinsertion_point\CAN\STX \SOH(\tR\SOinsertionPoint\DC2\CAN\n\
+      \\acontent\CAN\SI \SOH(\tR\acontent"
   fieldsByTag
     = let
         name__field_descriptor
@@ -909,15 +887,13 @@ instance Data.ProtoLens.Field.HasField Version "maybe'suffix" (Prelude.Maybe Dat
         Prelude.id
 instance Data.ProtoLens.Message Version where
   messageName _ = Data.Text.pack "google.protobuf.compiler.Version"
-  messageDescriptor _
-    = Data.ByteString.pack
-        [10, 7, 86, 101, 114, 115, 105, 111, 110, 18, 20, 10, 5, 109, 97,
-         106, 111, 114, 24, 1, 32, 1, 40, 5, 82, 5, 109, 97, 106, 111, 114,
-         18, 20, 10, 5, 109, 105, 110, 111, 114, 24, 2, 32, 1, 40, 5, 82, 5,
-         109, 105, 110, 111, 114, 18, 20, 10, 5, 112, 97, 116, 99, 104, 24,
-         3, 32, 1, 40, 5, 82, 5, 112, 97, 116, 99, 104, 18, 22, 10, 6, 115,
-         117, 102, 102, 105, 120, 24, 4, 32, 1, 40, 9, 82, 6, 115, 117, 102,
-         102, 105, 120]
+  packedMessageDescriptor _
+    = "\n\
+      \\aVersion\DC2\DC4\n\
+      \\ENQmajor\CAN\SOH \SOH(\ENQR\ENQmajor\DC2\DC4\n\
+      \\ENQminor\CAN\STX \SOH(\ENQR\ENQminor\DC2\DC4\n\
+      \\ENQpatch\CAN\ETX \SOH(\ENQR\ENQpatch\DC2\SYN\n\
+      \\ACKsuffix\CAN\EOT \SOH(\tR\ACKsuffix"
   fieldsByTag
     = let
         major__field_descriptor

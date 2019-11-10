@@ -76,7 +76,7 @@ class Message msg where
     messageName :: Proxy msg -> T.Text
 
     -- | The serialized protobuffer message descriptor for this type.
-    messageDescriptor :: Proxy msg -> B.ByteString
+    packedMessageDescriptor :: Proxy msg -> B.ByteString
 
     -- | A message with all fields set to their default values.
     --

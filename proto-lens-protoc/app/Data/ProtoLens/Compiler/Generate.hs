@@ -51,8 +51,7 @@ import Data.ProtoLens.Compiler.Generate.Field
     , hsFieldVectorType
     )
 
-import Data.ProtoLens.Encoding.Bytes (runBuilder)
-import Data.ProtoLens.Message (buildMessage)
+import Data.ProtoLens.Encoding (encodeMessage)
 import qualified Data.ByteString as BS
 
 -- Whether to import the "Runtime" modules or the originals;
@@ -95,7 +94,8 @@ generateModule modName imports publicImports definitions importedEnv services
                "UndecidableInstances", "GeneralizedNewtypeDeriving",
                "MultiParamTypeClasses", "FlexibleContexts", "FlexibleInstances",
                "PatternSynonyms", "MagicHash", "NoImplicitPrelude",
-               "DataKinds", "BangPatterns", "TypeApplications"]
+               "DataKinds", "BangPatterns", "TypeApplications",
+               "OverloadedStrings"]
               -- Allow unused imports in case we don't import anything from
               -- Data.Text, Data.Int, etc.
           , optionsGhcPragma "-Wno-unused-imports"
@@ -908,8 +908,7 @@ messageInstance :: Env RdrNameStr -> T.Text -> MessageInfo OccNameStr -> [RawIns
 messageInstance env protoName m =
     [ funBind "messageName" $ match [wildP] $
           var "Data.Text.pack" @@ string (T.unpack protoName)
-    , funBind "messageDescriptor" $ match [wildP] $
-          var "Data.ByteString.pack" @@ list msgDescriptor
+    , funBind "packedMessageDescriptor" $ match [wildP] $ string msgDescriptor
     , valBind "fieldsByTag" $
           let' (map (fieldDescriptorVarBind $ messageName m) $ fields)
               $ var "Data.Map.fromList" @@ list fieldsByTag
@@ -931,8 +930,7 @@ messageInstance env protoName m =
     , valBind "buildMessage" $ generatedBuilder m
     ]
   where
-    msgDescriptor = fmap (int . toEnum . fromEnum) . BS.unpack . runBuilder . buildMessage $
-                    messageDescriptor m
+    msgDescriptor = fmap (toEnum . fromEnum) . BS.unpack . encodeMessage $ messageDescriptor m
     fieldsByTag =
         [tuple
               [ t, fieldDescriptorVar f ]
