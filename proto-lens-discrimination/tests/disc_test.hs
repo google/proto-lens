@@ -12,6 +12,7 @@ import Test.Framework (testGroup, defaultMain)
 import Test.Framework.Providers.API (Test)
 import Test.Framework.Providers.HUnit (testCase)
 import Test.Framework.Providers.QuickCheck2 (testProperty)
+import Test.QuickCheck ((===), (.||.))
 
 import qualified Data.Map as M
 
@@ -120,13 +121,13 @@ messageSortTest = testGroup "Message"
         (defMessage & bar .~ BAR5 & barDefaulted .~ BAR3) $ s
     , testProperty "symmetry" $
         \(ArbitraryMessage msg1) (ArbitraryMessage msg2) ->
-            (LT == sortCompare s msg1 msg2) ==
+            (LT == sortCompare s msg1 msg2) ===
             (GT == sortCompare s msg2 msg1)
     , testProperty "transitivity" $
         \(ArbitraryMessage m1) (ArbitraryMessage m2) (ArbitraryMessage m3) ->
-            let [low, _, high] =
-                    sortBy (sortCompare s) [m1, m2, m3]
-            in LT == sortCompare s low high
+            let [low, mid, high] = sortBy (sortCompare s) [m1, m2, m3]
+            in  LT === sortCompare s low high .||.
+                (EQ, EQ) === (sortCompare s low mid, sortCompare s mid high)
     ]
   where
     -- This fixes the types of all the ArbitraryMessages and defs above.
