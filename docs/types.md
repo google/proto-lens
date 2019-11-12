@@ -1,7 +1,6 @@
-
-This page serves as a reference for mappings between scalar protobuf types and generated Haskell types.
-
 # Scalar Type Reference
+
+Reference for mappings between scalar protobuf types and generated Haskell types.
 
 
 | Protobuf type  | Haskell type               |
@@ -21,4 +20,3 @@ This page serves as a reference for mappings between scalar protobuf types and g
 | bool           | Prelude.Bool               |
 | string         | Data.Text.Text             |
 | bytes          | Data.ByteString.ByteString |
-

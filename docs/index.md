@@ -8,8 +8,9 @@ language and library patterns.  Specifically, it provides:
 Links for more information:
 
 - [Tutorial](tutorial.md)
-- [Build Instructions](https://github.com/google/proto-lens/blob/master/README.md)
+- [Build instructions](https://github.com/google/proto-lens/blob/master/README.md)
 - [Installing protoc](installing-protoc.md)
 - [Reference table of scalar types used by generated code](types.md)
+- [List of reserved variable names](reserved-names.md)
 
 This is not an official Google product.
