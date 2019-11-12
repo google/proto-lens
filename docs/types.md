@@ -1,7 +1,6 @@
 # Scalar Type Reference
 
-Reference for mappings between scalar protobuf types and generated Haskell types.
-
+This is the reference for mappings between scalar protobuf types and generated Haskell types.
 
 | Protobuf type  | Haskell type               |
 | -------------- | -------------              |
