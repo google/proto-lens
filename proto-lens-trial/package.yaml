@@ -1,0 +1,27 @@
+name: proto-lens-trial
+version: '0.1.0.1'
+synopsis: Test package dependency.
+category: Data
+author: Judah Jacobson
+maintainer: proto-lens@googlegroups.com
+copyright: Google Inc.
+license: BSD3
+github: google/proto-lens/proto-lens-tests-dep
+extra-source-files:
+  - protos/foo.proto
+
+custom-setup:
+  dependencies:
+    - base
+    - Cabal
+    - proto-lens-setup
+
+build-tools: proto-lens-protoc:proto-lens-protoc
+
+dependencies:
+  - proto-lens-runtime
+  - base
+
+library:
+  generated-exposed-modules:
+    - Proto.Foo

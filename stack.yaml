@@ -2,6 +2,7 @@ resolver: lts-14.4
 packages:
 - discrimination-ieee754
 - proto-lens
+- proto-lens-trial
 - proto-lens-arbitrary
 - proto-lens-benchmarks
 - proto-lens-discrimination
