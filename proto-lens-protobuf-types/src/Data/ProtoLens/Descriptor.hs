@@ -5,6 +5,7 @@
 module Data.ProtoLens.Descriptor
     ( DescriptorProto
     , messageDescriptor
+    , fileDescriptor
     ) where
 
 import Data.ProtoLens
@@ -22,3 +23,11 @@ messageDescriptor :: forall a . Message a => DescriptorProto
 -- in proto-lens-protoc; and furthermore proto decoding is robust
 -- to unknown/missing fields.
 messageDescriptor = decodeMessageOrDie $ packedMessageDescriptor (Proxy @a)
+
+-- | The protocol buffer file descriptor containing a given type.
+--
+-- This function should be used with @TypeApplications@, e.g.:
+--
+-- > fileDescriptor @SomeProtoType
+fileDescriptor :: forall a . Message a => FileDescriptorProto
+fileDescriptor = decodeMessageOrDie $ packedFileDescriptor (Proxy @a)

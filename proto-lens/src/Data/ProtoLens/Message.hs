@@ -82,6 +82,13 @@ class Message msg where
     -- from the @proto-lens-protobuf-types@ package.
     packedMessageDescriptor :: Proxy msg -> B.ByteString
 
+    -- | The serialized protobuffer file message descriptor containing this type.
+    --
+    -- For a friendlier version which returns the actual file descriptor type,
+    -- use @Data.ProtoLens.Descriptor.fileDescriptor@
+    -- from the @proto-lens-protobuf-types@ package.
+    packedFileDescriptor :: Proxy msg -> B.ByteString
+
     -- | A message with all fields set to their default values.
     --
     -- Satisfies @encodeMessage defMessage == ""@ and @decodeMessage "" == Right defMessage@.

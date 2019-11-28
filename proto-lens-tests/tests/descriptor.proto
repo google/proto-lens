@@ -12,3 +12,8 @@ message DescriptorTest {
 
     optional Inner inner = 3;
 }
+
+message DescriptorTest2 {
+    optional string another_string = 1;
+    repeated int32 some_ints = 2;
+}

@@ -81,7 +81,7 @@ generateFiles dflags header files toGenerate = let
       deps = descriptor f ^. #dependency
       imports = Set.toAscList $ Set.fromList
                   $ map (haskellModule . (filesByName !)) deps
-      in generateModule (haskellModule f) imports
+      in generateModule (haskellModule f) (descriptor f) imports
             (publicImports f)
              (definitions f)
              (collectEnvFromDeps deps filesByName)

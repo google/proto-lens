@@ -39,6 +39,7 @@ import Text.Printf (printf)
 
 import Proto.Google.Protobuf.Descriptor
     ( EnumValueDescriptorProto
+    , FileDescriptorProto
     , FieldDescriptorProto
     , FieldDescriptorProto'Type(..)
     )
@@ -62,13 +63,14 @@ data UseRuntime = UseRuntime | UseOriginal
 -- | Generate a Haskell module for the given input file(s).
 -- input contains all defined names, incl. those in this module
 generateModule :: ModuleNameStr
+               -> FileDescriptorProto -- ^ The complete file descriptor
                -> [ModuleNameStr]  -- ^ The imported modules
                -> [ModuleNameStr]  -- ^ The publicly imported modules
                -> Env OccNameStr      -- ^ Definitions in this file
                -> Env RdrNameStr     -- ^ Definitions in the imported modules
                -> [ServiceInfo]
                -> [CommentedModule]
-generateModule modName imports publicImports definitions importedEnv services
+generateModule modName fdesc imports publicImports definitions importedEnv services
     = [ CommentedModule pragmas
             (module' (Just modName)
                 (Just $ serviceExports
@@ -80,6 +82,7 @@ generateModule modName imports publicImports definitions importedEnv services
                 [])
           $ (concatMap generateDecls $ Map.toList definitions)
          ++ map uncommented (concatMap (generateServiceDecls env) services)
+         ++ map uncommented packedFileDescriptorProto
       , CommentedModule pragmas
             (module' (Just fieldModName) Nothing
                 (sharedImports ++ map importQualified imports) [])
@@ -140,6 +143,18 @@ generateModule modName imports publicImports definitions importedEnv services
         , info <- allMessageFields env m
         , inst <- recordFieldLenses info
         ]
+    -- The packedFileDescriptorProto is a file level definition that's
+    -- shared across all message definitions.  If there are no
+    -- messages, it's omitted since it's only used inside of Message
+    -- instances.
+    packedFileDescriptorProto
+      | null definitions = []
+      | otherwise = [
+          typeSig "packedFileDescriptor" $ var "Data.ByteString.ByteString",
+          valBind "packedFileDescriptor" $ string packedFDesc
+          ]
+      where
+        packedFDesc = fmap (toEnum . fromEnum) . BS.unpack . encodeMessage $ fdesc
     -- The Env uses the convention that Message names are prefixed with '.'
     -- (since that's how the FileDescriptorProto refers to them).
     -- Strip that off when defining MessageDescriptor.messageName.
@@ -909,6 +924,7 @@ messageInstance env protoName m =
     [ funBind "messageName" $ match [wildP] $
           var "Data.Text.pack" @@ string (T.unpack protoName)
     , funBind "packedMessageDescriptor" $ match [wildP] $ string msgDescriptor
+    , funBind "packedFileDescriptor" $ match [wildP] $ var "packedFileDescriptor"
     , valBind "fieldsByTag" $
           let' (map (fieldDescriptorVarBind $ messageName m) $ fields)
               $ var "Data.Map.fromList" @@ list fieldsByTag
