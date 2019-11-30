@@ -15,6 +15,7 @@ import Data.ProtoLens.Descriptor
 main :: IO ()
 main = testMain
   [ testDescriptor
+  , testFileDescriptor
   ]
 
 testDescriptor :: TestTree
@@ -24,3 +25,14 @@ testDescriptor = testCase "testDescriptor" $ do
 
   where
     d = messageDescriptor @PB.DescriptorTest
+
+testFileDescriptor :: TestTree
+testFileDescriptor = testCase "testFileDescriptor" $ do
+  "descriptor.proto" @=? view #name d
+  "descriptor" @=? view #package d
+  ["DescriptorTest", "DescriptorTest2"] @=? toListOf (#messageType . traverse . #name) d
+  ["a_string", "some_ints", "inner", "another_string", "some_ints"] @=?
+    toListOf (#messageType . traverse . #field . traverse . #name) d
+
+  where
+    d = fileDescriptor @PB.DescriptorTest
