@@ -1,0 +1,10 @@
+// A file that only contains an enum, not a message.
+// Checks that we're not generating unused top-level definitions.
+
+syntax = "proto2";
+
+package enums;
+
+enum Lone {
+  LONE = 0;
+}

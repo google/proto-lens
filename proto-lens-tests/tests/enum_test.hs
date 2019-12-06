@@ -17,6 +17,7 @@ import Proto.Enum
     , Alias(..)
     , ManyCasesProto
     )
+import Proto.EnumOnly (Lone(..))
 import Proto.Enum_Fields
 import Data.Function (on)
 import Data.ProtoLens
@@ -46,12 +47,13 @@ main = testMain
     , testMonotonicFromEnum
     , testAliases
     , testManyCases
+    , testLone
     ]
 
 testExternalEnum, testNestedEnum, testDefaults, testBadEnumValues,
     testNamedEnumValues, testRoundTrip, testBounded, testMaybeSuccAndPred,
     testEnumFromThenTo, testMonotonicFromEnum, testAliases,
-    testManyCases :: TestTree
+    testManyCases, testLone :: TestTree
 
 testExternalEnum = testGroup "external"
     [ serializeTo (show e1)
@@ -163,3 +165,7 @@ testAliases = testCase "alias" $ do
 
 testManyCases =
     runTypedTest (roundTripTest "many cases" :: TypedTest ManyCasesProto)
+
+-- A trivial test to check that the module Lone came from was compiled
+-- successfully.
+testLone = testCase "no messages" $ LONE @?= LONE

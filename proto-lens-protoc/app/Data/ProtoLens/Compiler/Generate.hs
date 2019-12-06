@@ -148,7 +148,7 @@ generateModule modName fdesc imports publicImports definitions importedEnv servi
     -- messages, it's omitted since it's only used inside of Message
     -- instances.
     packedFileDescriptorProto
-      | null definitions = []
+      | null [m | Message m <- Map.elems definitions] = []
       | otherwise = [
           typeSig "packedFileDescriptor" $ var "Data.ByteString.ByteString",
           valBind "packedFileDescriptor" $ string packedFDesc

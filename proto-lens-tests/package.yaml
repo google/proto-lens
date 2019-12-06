@@ -136,6 +136,7 @@ tests:
     generated-other-modules:
       - Proto.Enum
       - Proto.Enum_Fields
+      - Proto.EnumOnly
 
   names_test:
     main: names_test.hs
