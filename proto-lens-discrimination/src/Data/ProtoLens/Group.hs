@@ -30,7 +30,6 @@ import Data.Discrimination
     , groupingEq
     )
 import Data.Discrimination.IEEE754 (groupingFloat, groupingDouble)
-import Data.Monoid ((<>))
 import Lens.Family2 (view)
 
 import Data.ProtoLens.Message

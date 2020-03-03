@@ -15,7 +15,6 @@ module Data.ProtoLens.Discrimination
 import Data.Bits ((.|.), shift)
 import qualified Data.ByteString as B
 import qualified Data.ByteString.Unsafe as B (unsafeIndex)
-import Data.Foldable (foldMap)
 import Data.Functor.Contravariant
     ( Contravariant(contramap)
     , (>$<)

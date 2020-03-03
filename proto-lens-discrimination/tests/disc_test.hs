@@ -2,7 +2,6 @@
 {-# LANGUAGE ScopedTypeVariables #-}
 module Main where
 
-import Control.Applicative ((<$>))
 import Data.Discrimination (Sort, runSort, sorting1)
 import Data.Int (Int32)
 import Data.List (sortBy)
