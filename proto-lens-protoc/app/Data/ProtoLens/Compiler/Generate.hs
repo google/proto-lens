@@ -98,7 +98,7 @@ generateModule modName fdesc imports publicImports definitions importedEnv servi
                "MultiParamTypeClasses", "FlexibleContexts", "FlexibleInstances",
                "PatternSynonyms", "MagicHash", "NoImplicitPrelude",
                "DataKinds", "BangPatterns", "TypeApplications",
-               "OverloadedStrings"]
+               "OverloadedStrings", "DerivingStrategies"]
               -- Allow unused imports in case we don't import anything from
               -- Data.Text, Data.Int, etc.
           , optionsGhcPragma "-Wno-unused-imports"
@@ -287,7 +287,7 @@ generateMessageDecls fieldModName env protoName info =
                 ]
                 ++ [(messageUnknownFields info, strict $ field $ var "Data.ProtoLens.FieldSet")]
             ]
-            [deriving' [var "Prelude.Eq", var "Prelude.Ord"]]
+            [derivingStock [var "Prelude.Eq", var "Prelude.Ord"]]
     -- instance Show Bar where
     --   showsPrec __x __s = showChar '{' (showString (showMessageShort __x) (showChar '}' s))
     , uncommented $
@@ -313,7 +313,7 @@ generateMessageDecls fieldModName env protoName info =
       , let f = caseField c
       , let consName = caseConstructorName c
       ]
-      [deriving' [var "Prelude.Show", var "Prelude.Eq", var "Prelude.Ord"]]
+      [derivingStock [var "Prelude.Show", var "Prelude.Eq", var "Prelude.Ord"]]
     | oneofInfo <- messageOneofFields info
     ] ++
     -- instance HasField Foo "foo" Bar
@@ -435,7 +435,7 @@ generateEnumDecls info =
     --   deriving (Prelude.Eq, Prelude.Ord, Prelude.Show, Prelude.Read)
     [ newtype' (unrecognizedValueName u) []
        (prefixCon (unrecognizedValueName u) [field $ var "Data.Int.Int32"])
-       [deriving' [var "Prelude.Eq", var "Prelude.Ord", var "Prelude.Show"]]
+       [derivingStock [var "Prelude.Eq", var "Prelude.Ord", var "Prelude.Show"]]
     | Just u <- [unrecognized]
     ]
     ++
@@ -452,7 +452,7 @@ generateEnumDecls info =
            | Just u <- [unrecognized]
            ]
         )
-        [deriving' [var "Prelude.Show", var "Prelude.Eq", var "Prelude.Ord"]]
+        [derivingStock [var "Prelude.Show", var "Prelude.Eq", var "Prelude.Ord"]]
 
     -- instance Data.ProtoLens.MessageEnum FooEnum where
     --       maybeToEnum 0 = Prelude.Just Enum1

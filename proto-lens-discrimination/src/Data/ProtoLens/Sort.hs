@@ -33,7 +33,6 @@ import Data.Discrimination
     , sortingCompare
     )
 import Data.Discrimination.IEEE754 (sortingFloat, sortingDouble)
-import Data.Monoid ((<>))
 import Lens.Family2 (view)
 
 import Data.ProtoLens.Message
