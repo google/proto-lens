@@ -16,7 +16,9 @@ module Data.ProtoLens.Encoding.Wire
     , joinTypeAndTag
     , parseFieldSet
     , buildFieldSet
+    , buildMessageSet
     , parseTaggedValueFromWire
+    , parseMessageSetTaggedValueFromWire
     ) where
 
 import Control.DeepSeq (NFData(..))
@@ -63,6 +65,13 @@ buildTaggedValue (TaggedValue tag wv) =
     putVarInt (joinTypeAndTag tag (wireValueToInt wv))
     <> buildWireValue wv
 
+buildTaggedValueAsMessageSet :: TaggedValue -> Builder
+buildTaggedValueAsMessageSet (TaggedValue (Tag t) wv) =
+    buildTaggedValue ( TaggedValue 1 StartGroup)
+    <> buildTaggedValue (TaggedValue 2 (VarInt $ fromIntegral t))
+    <> buildTaggedValue (TaggedValue 3 wv)
+    <> buildTaggedValue (TaggedValue 1 EndGroup)
+
 buildWireValue :: WireValue -> Builder
 buildWireValue (VarInt w) = putVarInt w
 buildWireValue (Fixed64 w) = putFixed64 w
@@ -98,6 +107,18 @@ parseTaggedValueFromWire t =
         5 -> Fixed32 <$> getFixed32
         _ -> fail $ "Unknown wire type " ++ show w
 
+parseMessageSetTaggedValueFromWire :: Word64 -> Parser TaggedValue
+parseMessageSetTaggedValueFromWire t =
+    parseTaggedValueFromWire t >>= \v -> case v of
+        TaggedValue 1 StartGroup -> parseTaggedValue >>= \ft -> case ft of
+            TaggedValue 2 (VarInt f) -> parseTaggedValue >>= \dt -> case dt of
+                TaggedValue 3 (Lengthy b) -> parseTaggedValue >>= \et -> case et of
+                    TaggedValue 1 EndGroup -> return $ TaggedValue (Tag $ fromIntegral f) (Lengthy b)
+                    _ -> fail "missing end_group"
+                _ -> fail "missing message"
+            _ -> fail "missing field tag"
+        _ -> return v
+
 splitTypeAndTag :: Word64 -> (Tag, Word8)
 splitTypeAndTag w = (fromIntegral $ w `shiftR` 3, fromIntegral (w .&. 7))
 
@@ -117,3 +138,6 @@ parseFieldSet = loop []
 
 buildFieldSet :: FieldSet -> Builder
 buildFieldSet = mconcat . map buildTaggedValue 
+
+buildMessageSet :: FieldSet -> Builder
+buildMessageSet = mconcat . map buildTaggedValueAsMessageSet
