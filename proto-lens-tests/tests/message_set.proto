@@ -1,0 +1,22 @@
+syntax = "proto2";
+
+package message_set;
+
+message Foo {
+    option message_set_wire_format = true;
+    extensions 4 to max;
+}
+
+message Bar {
+    extend Foo {
+        optional Bar bar_extension = 10;
+    }
+    optional string bar = 1;
+}
+
+message Baz {
+    extend Foo {
+        optional Baz baz_extension = 11;
+    }
+    optional string baz = 1;
+}

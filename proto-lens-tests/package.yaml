@@ -295,3 +295,12 @@ tests:
       - proto-lens-tests
     generated-other-modules:
       - Proto.Descriptor
+
+  message_set_test:
+    main: message_set_test.hs
+    source-dirs: tests
+    dependencies:
+      - proto-lens-tests
+    generated-other-modules:
+      - Proto.MessageSet
+      - Proto.MessageSet_Fields
