@@ -65,6 +65,8 @@ buildTaggedValue (TaggedValue tag wv) =
     putVarInt (joinTypeAndTag tag (wireValueToInt wv))
     <> buildWireValue wv
 
+-- builds in legacy MessageSet format.
+-- See https://github.com/protocolbuffers/protobuf/blob/dec4939439d9ca2adf2bb14edccf876c2587faf2/src/google/protobuf/descriptor.proto#L444
 buildTaggedValueAsMessageSet :: TaggedValue -> Builder
 buildTaggedValueAsMessageSet (TaggedValue (Tag t) wv) =
     buildTaggedValue ( TaggedValue 1 StartGroup)
