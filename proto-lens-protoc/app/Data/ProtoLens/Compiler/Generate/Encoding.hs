@@ -368,7 +368,9 @@ unknownFieldCase ::
         loop (over unknownFields (\!t -> y:t) x) ...
 -}
 unknownFieldCase info loop x = match [wire] $ do' $
-    [ strictP y <-- var "Data.ProtoLens.Encoding.Wire.parseTaggedValueFromWire" @@ wire
+    [ strictP y <-- if messageDescriptor info ^. #options ^. #messageSetWireFormat
+        then var "Data.ProtoLens.Encoding.Wire.parseMessageSetTaggedValueFromWire" @@ wire
+        else var "Data.ProtoLens.Encoding.Wire.parseTaggedValueFromWire" @@ wire
     ]
     ++
     [ stmt $ case' y
@@ -453,7 +455,8 @@ generatedBuilder :: MessageInfo OccNameStr -> HsExpr'
 generatedBuilder m =
     lambda [x] $ foldMapExp $ map (buildPlainField x) (messageFields m)
                                 ++ map (buildOneofField x) (messageOneofFields m)
-                            ++ [buildUnknown x]
+                            ++ [if messageDescriptor m ^. #options ^. #messageSetWireFormat
+                                  then buildUnknownMessageSet x else buildUnknown x]
                             ++ buildGroupEnd
   where
     x = bvar "_x" -- TODO: rename to "x" once it's always used
@@ -465,6 +468,11 @@ generatedBuilder m =
 buildUnknown :: HsExpr' -> HsExpr'
 buildUnknown x
     = var "Data.ProtoLens.Encoding.Wire.buildFieldSet"
+                @@ (view' @@ unknownFields' @@ x)
+
+buildUnknownMessageSet :: HsExpr' -> HsExpr'
+buildUnknownMessageSet x
+    = var "Data.ProtoLens.Encoding.Wire.buildMessageSet"
                 @@ (view' @@ unknownFields' @@ x)
 
 -- | Concatenate a list of Monoids into a single value.
