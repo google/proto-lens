@@ -15,7 +15,7 @@ In this example we will go through a more complicated data structure compared to
 
 ## Modeling Coffee Orders
 
-We will examine what gets generated as the data and lenses for the definitions in [order.proto](./proto/src/coffee/order.proto)
+We will examine what gets generated as the data and lenses for the definitions in [order.proto](./proto/coffee/order.proto)
 which models some way of making coffee orders at a coffee shop.
 
 ### Coffee Types
