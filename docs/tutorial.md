@@ -106,8 +106,8 @@ createFoo :: Int32 -> Foo
 createFoo i = defMessage & maybe'bar .~ (_Just # _Foo'Baz # i)
 
 -- | Sets a new `bippy` value
-updateFoo :: String -> Foo -> Foo
-updateFoo s foo = foo ?~ _Foo'Bippy # s
+updateFoo :: Text -> Foo -> Foo
+updateFoo s foo = foo & maybe'bar ?~ (_Foo'Bippy # s)
 ```
 
 Our [previously mentioned instances](#message-generation) are generated but we will note the following about `HasField`:
