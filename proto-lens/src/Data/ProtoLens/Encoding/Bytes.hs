@@ -126,7 +126,7 @@ testMsb b = (b .&. 128) /= 0
 putVarInt :: Word64 -> Builder
 putVarInt n
     | n < 128 = Builder.word8 (fromIntegral n)
-    | otherwise = Builder.word8 (fromIntegral $ n .&. 127 .|. 128)
+    | otherwise = Builder.word8 (fromIntegral $ n .|. 128)
                       <> putVarInt (n `shiftR` 7)
 
 getFixed32 :: Parser Word32
