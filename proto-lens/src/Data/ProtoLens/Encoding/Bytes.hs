@@ -123,11 +123,17 @@ decodeVarIntStep n s b = n + s * fromIntegral (b .&. 127)
 testMsb :: Word8 -> Bool
 testMsb b = (b .&. 128) /= 0
 
+{-# INLINE putVarInt #-}
 putVarInt :: Word64 -> Builder
-putVarInt n
-    | n < 128 = Builder.word8 (fromIntegral n)
-    | otherwise = Builder.word8 (fromIntegral $ n .|. 128)
-                      <> putVarInt (n `shiftR` 7)
+putVarInt n | n < 128 = Builder.word8 (fromIntegral n)
+putVarInt n =
+  -- Note that the narrowing done by (fromIntegral :: Word64 -> Word8) 
+  -- effectively throws out bits higher than 8 so we don't have to do
+  -- an explicit (n .&. 127)
+  Builder.word8 (fromIntegral n .|. 128) <> go (n `shiftR` 7)
+  where
+  go x | x < 128 = Builder.word8 (fromIntegral x)
+  go x = Builder.word8 (fromIntegral x .|. 128) <> go (x `shiftR` 7)
 
 getFixed32 :: Parser Word32
 getFixed32 = getWord32le
