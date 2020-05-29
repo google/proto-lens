@@ -34,7 +34,7 @@ executables:
       - containers >= 0.5 && < 0.7
       - ghc >= 8.2 && < 8.10
       - ghc-paths == 0.1.*
-      - ghc-source-gen == 0.3.*
+      - ghc-source-gen >= 0.3 && < 0.5
       - lens-family >= 1.2 && < 2.1
       - pretty == 1.1.*
       - proto-lens == 0.7.*
