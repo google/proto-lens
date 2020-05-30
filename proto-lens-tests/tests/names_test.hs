@@ -17,8 +17,7 @@ import Lens.Family2 (Lens', (&), view, set)
 import Prelude hiding (Maybe, maybe, map, head, span)
 import qualified Prelude
 import Test.Tasty (TestTree, testGroup)
-import Test.Tasty.HUnit (testCase)
-import Test.HUnit ((@=?))
+import Test.Tasty.HUnit (testCase, (@=?))
 
 import Proto.Names
 import Proto.Names_Fields

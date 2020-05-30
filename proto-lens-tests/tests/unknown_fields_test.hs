@@ -8,8 +8,7 @@ import Data.ProtoLens
 import qualified Data.ProtoLens.Encoding.Wire as Wire
 import qualified Data.Text.Lazy as LT
 import Lens.Family2 ((&), (.~))
-import Test.Tasty.HUnit (testCase)
-import Test.HUnit ((@=?))
+import Test.Tasty.HUnit (testCase, (@=?))
 
 import Data.ProtoLens.TestUtil
 import Proto.UnknownFields

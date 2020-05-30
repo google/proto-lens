@@ -23,7 +23,6 @@ build-tools: proto-lens-protoc:proto-lens-protoc
 
 # Dependencies shared by the library and/or several of the tests:
 dependencies:
-    - HUnit
     - QuickCheck
     - base
     - bytestring

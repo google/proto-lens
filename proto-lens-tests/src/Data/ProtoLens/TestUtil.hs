@@ -54,9 +54,8 @@ import Test.QuickCheck (noShrinking)
 import Test.QuickCheck (withMaxSuccess)
 #endif
 import Test.Tasty (defaultMain, testGroup, TestTree)
-import Test.Tasty.HUnit (testCase)
+import Test.Tasty.HUnit (testCase, (@=?), assertBool, assertFailure)
 import Test.Tasty.QuickCheck (testProperty)
-import Test.HUnit ((@=?), assertBool, assertFailure)
 import Data.Either (isLeft)
 import Data.Bits (shiftL, shiftR, (.|.), (.&.))
 import qualified Data.Text.Lazy as TL
