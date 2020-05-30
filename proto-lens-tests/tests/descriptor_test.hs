@@ -5,8 +5,7 @@ module Main where
 
 import Data.ProtoLens.Labels ()
 import Lens.Family2 (view, toListOf)
-import Test.Tasty.HUnit (testCase)
-import Test.HUnit ((@=?))
+import Test.Tasty.HUnit (testCase, (@=?))
 
 import Data.ProtoLens.TestUtil (TestTree, testMain)
 import qualified Proto.Descriptor as PB

@@ -24,8 +24,7 @@ import Data.ProtoLens
 import Data.ProtoLens.Arbitrary
 import Lens.Family2 ((&), (.~), (^.))
 import Test.Tasty (localOption, mkTimeout, testGroup)
-import Test.Tasty.HUnit (testCase)
-import Test.HUnit ((@?=))
+import Test.Tasty.HUnit (testCase, (@?=))
 
 import Data.ProtoLens.TestUtil
 

@@ -6,8 +6,7 @@ import Proto.Oneof_Fields
 import Data.ProtoLens
 import Data.ProtoLens.Prism (_Just, (#))
 import Lens.Family2 ((&), (.~), (^?), (%~), view)
-import Test.Tasty.HUnit (testCase)
-import Test.HUnit
+import Test.Tasty.HUnit (testCase, (@=?))
 
 import Data.ProtoLens.TestUtil
 

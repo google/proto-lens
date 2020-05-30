@@ -8,8 +8,7 @@ import Data.ByteString.Builder (Builder)
 import Data.ProtoLens
 import qualified Data.ProtoLens.Encoding.Wire as Wire
 import Lens.Family2 ((&), (.~))
-import Test.HUnit ((@=?))
-import Test.Tasty.HUnit (testCase)
+import Test.Tasty.HUnit (testCase, (@=?))
 
 import Proto.MessageSet
 import Proto.MessageSet_Fields

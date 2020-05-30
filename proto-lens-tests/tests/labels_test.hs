@@ -10,8 +10,7 @@ import Proto.Canonical (Test1, Test3)
 import Data.ProtoLens (build, defMessage)
 import Data.ProtoLens.Labels ()
 import Data.ProtoLens.TestUtil
-import Test.HUnit ((@?=))
-import Test.Tasty.HUnit (testCase)
+import Test.Tasty.HUnit (testCase, (@?=))
 
 main :: IO ()
 main = testMain

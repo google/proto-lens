@@ -7,8 +7,7 @@ module Main where
 import Data.ProtoLens (Message, defMessage)
 import Data.ProtoLens.Labels ()
 import Lens.Family2 (Lens', view, set)
-import Test.Tasty.HUnit (testCase)
-import Test.HUnit ((@=?))
+import Test.Tasty.HUnit (testCase, (@=?))
 
 import Data.ProtoLens.TestUtil (TestTree, testMain)
 import qualified Proto.Enum as Enum
