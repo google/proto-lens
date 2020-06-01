@@ -634,8 +634,8 @@ generateEnumDecls info =
                 , ". This value would be out of bounds."
                 ]))
         :
-        [ match [conP_ (unqual from)] $ var $ unqual to
-        | (from, to) <- thePairs
+        [ match [conP_ (unqual from')] $ var $ unqual to
+        | (from', to) <- thePairs
         ]
         ++
         [ match [conP (unqual $ unrecognizedName u) [wildP]]
