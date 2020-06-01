@@ -28,32 +28,32 @@ library:
 
 
   reexported-modules:
-    - Prelude as Data.ProtoLens.Runtime.Prelude,
-    - Control.DeepSeq as Data.ProtoLens.Runtime.Control.DeepSeq,
-    - Data.Int as Data.ProtoLens.Runtime.Data.Int,
-    - Data.Monoid as Data.ProtoLens.Runtime.Data.Monoid,
-    - Data.Word as Data.ProtoLens.Runtime.Data.Word,
-    - Data.ByteString as Data.ProtoLens.Runtime.Data.ByteString,
-    - Data.ByteString.Char8 as Data.ProtoLens.Runtime.Data.ByteString.Char8,
-    - Data.Map as Data.ProtoLens.Runtime.Data.Map,
-    - Data.ProtoLens as Data.ProtoLens.Runtime.Data.ProtoLens,
-    - Data.ProtoLens.Encoding.Bytes as Data.ProtoLens.Runtime.Data.ProtoLens.Encoding.Bytes,
-    - Data.ProtoLens.Encoding.Growing as Data.ProtoLens.Runtime.Data.ProtoLens.Encoding.Growing,
-    - Data.ProtoLens.Encoding.Parser.Unsafe as Data.ProtoLens.Runtime.Data.ProtoLens.Encoding.Parser.Unsafe,
-    - Data.ProtoLens.Field as Data.ProtoLens.Runtime.Data.ProtoLens.Field,
-    - Data.ProtoLens.Prism as Data.ProtoLens.Runtime.Data.ProtoLens.Prism,
+    - Prelude as Data.ProtoLens.Runtime.Prelude
+    - Control.DeepSeq as Data.ProtoLens.Runtime.Control.DeepSeq
+    - Data.Int as Data.ProtoLens.Runtime.Data.Int
+    - Data.Monoid as Data.ProtoLens.Runtime.Data.Monoid
+    - Data.Word as Data.ProtoLens.Runtime.Data.Word
+    - Data.ByteString as Data.ProtoLens.Runtime.Data.ByteString
+    - Data.ByteString.Char8 as Data.ProtoLens.Runtime.Data.ByteString.Char8
+    - Data.Map as Data.ProtoLens.Runtime.Data.Map
+    - Data.ProtoLens as Data.ProtoLens.Runtime.Data.ProtoLens
+    - Data.ProtoLens.Encoding.Bytes as Data.ProtoLens.Runtime.Data.ProtoLens.Encoding.Bytes
+    - Data.ProtoLens.Encoding.Growing as Data.ProtoLens.Runtime.Data.ProtoLens.Encoding.Growing
+    - Data.ProtoLens.Encoding.Parser.Unsafe as Data.ProtoLens.Runtime.Data.ProtoLens.Encoding.Parser.Unsafe
+    - Data.ProtoLens.Field as Data.ProtoLens.Runtime.Data.ProtoLens.Field
+    - Data.ProtoLens.Prism as Data.ProtoLens.Runtime.Data.ProtoLens.Prism
     # TODO: try to avoid exposing the Wire module, or else merge it into the
     # Bytes module.
-    - Data.ProtoLens.Encoding.Wire as Data.ProtoLens.Runtime.Data.ProtoLens.Encoding.Wire,
-    - Data.ProtoLens.Service.Types as Data.ProtoLens.Runtime.Data.ProtoLens.Service.Types,
-    - Data.ProtoLens.Message.Enum as Data.ProtoLens.Runtime.Data.ProtoLens.Message.Enum,
-    - Data.Text as Data.ProtoLens.Runtime.Data.Text,
-    - Data.Text.Encoding as Data.ProtoLens.Runtime.Data.Text.Encoding,
-    - Data.Vector as Data.ProtoLens.Runtime.Data.Vector,
-    - Data.Vector.Generic as Data.ProtoLens.Runtime.Data.Vector.Generic,
-    - Data.Vector.Unboxed as Data.ProtoLens.Runtime.Data.Vector.Unboxed,
-    - Lens.Family2 as Data.ProtoLens.Runtime.Lens.Family2,
-    - Lens.Family2.Unchecked as Data.ProtoLens.Runtime.Lens.Family2.Unchecked,
+    - Data.ProtoLens.Encoding.Wire as Data.ProtoLens.Runtime.Data.ProtoLens.Encoding.Wire
+    - Data.ProtoLens.Service.Types as Data.ProtoLens.Runtime.Data.ProtoLens.Service.Types
+    - Data.ProtoLens.Message.Enum as Data.ProtoLens.Runtime.Data.ProtoLens.Message.Enum
+    - Data.Text as Data.ProtoLens.Runtime.Data.Text
+    - Data.Text.Encoding as Data.ProtoLens.Runtime.Data.Text.Encoding
+    - Data.Vector as Data.ProtoLens.Runtime.Data.Vector
+    - Data.Vector.Generic as Data.ProtoLens.Runtime.Data.Vector.Generic
+    - Data.Vector.Unboxed as Data.ProtoLens.Runtime.Data.Vector.Unboxed
+    - Lens.Family2 as Data.ProtoLens.Runtime.Lens.Family2
+    - Lens.Family2.Unchecked as Data.ProtoLens.Runtime.Lens.Family2.Unchecked
     - Text.Read as Data.ProtoLens.Runtime.Text.Read
 
  
