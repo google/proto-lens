@@ -30,7 +30,7 @@ To build and test this repository from HEAD, run:
     git submodule update --init --recursive
     stack test
 
-Note: building this repository requires `stack-1.7.1` or newer.
+Note: building this repository requires `stack-2.3.1` or newer.
 
 ## Using in a Cabal or Stack package
 `proto-lens` is available on Hackage and Stackage.  Cabal and Stack projects can use it
