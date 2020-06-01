@@ -30,7 +30,11 @@ import Data.Text (unpack)
 import qualified Data.Text as T
 import Data.Tuple (swap)
 import GHC.SourceGen
+#if MIN_VERSION_ghc(8,10,0)
+import GHC.Hs (ideclName, ideclAs)
+#else
 import HsSyn (ideclName, ideclAs)
+#endif
 import Module (moduleNameString, mkModuleName)
 import qualified Outputable
 import SrcLoc (unLoc, noLoc)

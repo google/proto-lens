@@ -27,6 +27,8 @@ matrix:
     addons: {apt: {packages: [libgmp-dev]}}
   - env: BUILD=stack STACK='stack --stack-yaml=stack-nightly.yaml'
     addons: {apt: {packages: [libgmp-dev]}}
+  - env: BUILD=stack STACK='stack --stack-yaml=stack-8.10.yaml'
+    addons: {apt: {packages: [libgmp-dev]}}
 
 before_install:
   - mkdir -p $HOME/.local/bin

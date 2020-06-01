@@ -132,6 +132,8 @@ tests:
       - -Werror
     dependencies:
       - proto-lens-tests
+      # For MIN_VERSION_ghc.
+      - ghc
     generated-other-modules:
       - Proto.Enum
       - Proto.Enum_Fields

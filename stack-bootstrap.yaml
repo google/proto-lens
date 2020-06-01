@@ -6,7 +6,7 @@ packages:
 # Build the current HEAD proto-lens-protoc against older revisions of proto-lens
 # and proto-lens-descriptors that are consistent with each other.
 extra-deps:
-- ghc-source-gen-0.3.0.0
+- ghc-source-gen-0.4.0.0
 - git: https://github.com/google/proto-lens
   # To use the current repository:
   # git: ../..  # stack runs 'git clone' in a subdirectory
