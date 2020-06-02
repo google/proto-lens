@@ -1,4 +1,3 @@
-{-# LANGUAGE CPP #-}
 {-# LANGUAGE OverloadedStrings #-}
 
 -- Copyright 2016 Google Inc. All Rights Reserved.
@@ -155,15 +154,15 @@ testAliases = testCase "alias" $ do
     True @?= case Alias2 of
               Alias2a -> True
               _ -> False
-    Alias2 @?= case Alias2 of
-        -- Check that this explicit list (which doesn't include Alias2) covers
-        -- all the constructor cases for this type.
-        -- We turn on warnings and -Werror for this test in the .cabal file.
-        Alias2 -> Alias2
-#if !MIN_VERSION_ghc(8,10,0)
-        Alias1 -> Alias1
-        Alias3 -> Alias3
-#endif
+    Alias2 @?= caseTest Alias2
+
+-- Check that this explicit list covers all the constructor cases for this
+-- type and satisfies GHC's warnings even without including Alias2a.
+-- Note: we turn on warnings and -Werror for this test in the .cabal file.
+caseTest :: Alias -> Alias
+caseTest Alias1 = Alias1
+caseTest Alias2 = Alias2
+caseTest Alias3 = Alias3
 
 testManyCases =
     runTypedTest (roundTripTest "many cases" :: TypedTest ManyCasesProto)
