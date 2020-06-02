@@ -3,14 +3,9 @@ packages:
 - person
 - coffee-order
 
-- extra-dep: true
-  location:
-    '..'
-  subdirs:
-    - proto-lens
-    - proto-lens-protoc
-    - proto-lens-runtime
-    - proto-lens-setup
-
 extra-deps:
 - ghc-source-gen-0.3.0.0
+- ../proto-lens
+- ../proto-lens-protoc
+- ../proto-lens-runtime
+- ../proto-lens-setup

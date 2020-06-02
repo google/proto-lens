@@ -5,7 +5,7 @@ set -euo pipefail
 set -x
 
 echo Installing hpack
-curl -L https://github.com/sol/hpack/releases/download/0.31.2/hpack_linux.gz \
+curl -L https://github.com/sol/hpack/releases/download/0.34.1/hpack_linux.gz \
   | gunzip > $HOME/.local/bin/hpack
 chmod +x $HOME/.local/bin/hpack
 
