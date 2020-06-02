@@ -1,4 +1,4 @@
-resolver: nightly-2019-09-28
+resolver: lts-15.15
 packages:
 - proto-lens
 - proto-lens-arbitrary
