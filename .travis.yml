@@ -21,13 +21,13 @@ matrix:
   # TODO: switch everything to cabal new-build
   - env: BUILD=cabal-new GHCVER=8.6.5 CABALVER=2.4
     addons: {apt: {packages: [cabal-install-2.4, ghc-8.6.5], sources: [hvr-ghc]}}
-  - env: BUILD=stack STACK='stack --resolver=lts-12.26'
+  - env: BUILD=stack STACK='stack --resolver=lts-12.26'  # ghc-8.4.4
     addons: {apt: {packages: [libgmp-dev]}}
-  - env: BUILD=stack STACK='stack'  # Use the resolver in stack.yaml
+  - env: BUILD=stack STACK='stack --resolver=lts-14.27  # ghc-8.6.5
     addons: {apt: {packages: [libgmp-dev]}}
-  - env: BUILD=stack STACK='stack --stack-yaml=stack-8.8.yaml'
+  - env: BUILD=stack STACK='stack'  # Default in stack.yaml: ghc-8.8.3
     addons: {apt: {packages: [libgmp-dev]}}
-  - env: BUILD=stack STACK='stack --stack-yaml=stack-8.10.yaml'
+  - env: BUILD=stack STACK='stack --stack-yaml=stack-8.10.yaml'  # ghc-8.10.1
     addons: {apt: {packages: [libgmp-dev]}}
 
 before_install:
