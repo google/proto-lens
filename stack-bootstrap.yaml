@@ -8,10 +8,8 @@ packages:
 extra-deps:
 - ghc-source-gen-0.4.0.0
 - git: https://github.com/google/proto-lens
-  # To use the current repository:
-  # git: ../..  # stack runs 'git clone' in a subdirectory
-  # Note: this commit should match the value of bootstrapCommit in bootstrap.hs
-  commit: master
   subdirs:
   - proto-lens
   - proto-lens-runtime
+  # A line like below will be appended by bootstrap.hs.
+  # commit: 0bef8c2f3da645f068b8a26ac168c1da41608182

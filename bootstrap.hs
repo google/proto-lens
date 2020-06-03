@@ -9,23 +9,35 @@
 -- Note: if this doesn't work, you may need to edit the "location" field in
 -- stack-boostrap.yaml.
 import Control.Applicative ((<$>))
-import Control.Exception (bracket_)
 import System.FilePath ((</>))
 import System.Process (callProcess, readProcess)
 
+protoRoot :: String
 protoRoot = "google/protobuf/src"
+
+protoc :: String
 protoc = "protoc"
+
+bootstrapModuleRoot :: String
 bootstrapModuleRoot = "proto-lens-protoc/app"
-useBootstrappingYaml = "--stack-yaml=stack-bootstrap.yaml"
+
+bootstrappingYaml :: FilePath
+bootstrappingYaml = "stack-bootstrap.yaml"
+
+useBootstrappingYaml :: String
+useBootstrappingYaml = "--stack-yaml=" ++ bootstrappingYaml
 
 -- Change this to build with an older version of stack.
 -- TODO: remove this after we can use stack v2 (#332).
+stack :: String
 stack = "stack"
 
 -- This should match (or at least be API-compatible with) the value of bootstrapCommit
 -- in stack-bootstrap.yaml.
+bootstrapCommit :: String
 bootstrapCommit = "master"
 
+main :: IO ()
 main = do
     -- 1. Temporarily replace the bootstrap proto bindings in proto-lens-protoc
     --    with an older version that's compatible with the bootstrap version of
@@ -35,6 +47,9 @@ main = do
     --    overwriting the previous versions.
     callProcess "git" ["checkout", bootstrapCommit, "--",
                        bootstrapModuleRoot </> "Proto"]
+    [sha] <- lines <$> readProcess "git" ["rev-parse", bootstrapCommit] ""
+    -- Append the bootstrapping commit hash to the yaml file.
+    appendFile bootstrappingYaml ("  commit: " ++ sha ++ "\n")
     [installRoot] <- lines <$> readProcess stack
                     [useBootstrappingYaml, "path", "--local-install-root"] ""
     let protocGenHaskell = installRoot </> "bin/proto-lens-protoc"
