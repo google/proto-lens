@@ -1,9 +1,13 @@
 # Changelog for `proto-lens`
 
 ## v0.7.0.0
+- Support GHC 8.10.
 - Add a method to `Data.ProtoLens.Message` for getting the `DescriptorProto`
   of a given message.  For a simpler API, see `Data.ProtoLens.Descriptor`
   from `proto-lens-protobuf-types`.
+- Bump ghc-source-gen to version 0.4.0.0.
+- Bump upper bound to allow base-4.14.
+- Bump upper bound to allow ghc-prim-0.6.
 
 ## v0.6.0.0
 

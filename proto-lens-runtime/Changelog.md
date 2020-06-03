@@ -1,5 +1,8 @@
 # Changelog for `proto-lens-runtime`
 
+## v0.7.0.0
+- Bump upper bound to allow base-4.14.
+
 ## v0.6.0.0
 - Bump lower bounds to base-4.10 (ghc-8.2).
 - Support dependencies on base-4.13 (ghc-8.8) and lens-family-2.0.
