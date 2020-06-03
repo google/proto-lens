@@ -1,5 +1,8 @@
 # Changelog for `proto-lens-arbitrary`
 
+## v0.1.2.9
+- Bump upper bound to allow base-4.14.
+
 ## v0.1.2.8
 - Bump lower bounds to base-4.10 (ghc-8.2).
 - Bump upper bounds for proto-lens-0.6.

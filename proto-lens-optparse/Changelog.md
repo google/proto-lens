@@ -1,5 +1,8 @@
 # Changelog for `proto-lens-optparse`
 
+## v0.1.1.7
+- Bump upper bound to allow base-4.14.
+
 ## v0.1.1.6
 - Bump lower bounds to base-4.10 (ghc-8.2).
 - Support dependencies on base-4.13 (ghc-8.8) and optparse-applicative-0.15.

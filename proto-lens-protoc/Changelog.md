@@ -1,7 +1,10 @@
 # Changelog for `proto-lens-protoc`
 
 ## v0.7.0.0
+- Support GHC 8.10.
 - Support `proto-lens` changes for the new method `packedMessageDescriptor`.
+- Bump upper bound to allow base-4.14.
+- Bump to ghc-source-gen-0.4.0.0.
 
 ### Breaking Changes
 - Reexport transitive definitions from modules generated for `.proto` files
