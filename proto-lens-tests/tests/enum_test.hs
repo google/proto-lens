@@ -1,10 +1,10 @@
+{-# LANGUAGE OverloadedStrings #-}
+
 -- Copyright 2016 Google Inc. All Rights Reserved.
 --
 -- Use of this source code is governed by a BSD-style
 -- license that can be found in the LICENSE file or at
 -- https://developers.google.com/open-source/licenses/bsd
-
-{-# LANGUAGE OverloadedStrings #-}
 module Main where
 
 import Proto.Enum
@@ -154,13 +154,15 @@ testAliases = testCase "alias" $ do
     True @?= case Alias2 of
               Alias2a -> True
               _ -> False
-    Alias2 @?= case Alias2 of
-        -- Check that this explicit list (which doesn't include Alias2) covers
-        -- all the constructor cases for this type.
-        -- We turn on warnings and -Werror for this test in the .cabal file.
-        Alias1 -> Alias1
-        Alias2 -> Alias2
-        Alias3 -> Alias3
+    Alias2 @?= caseTest Alias2
+
+-- Check that this explicit list covers all the constructor cases for this
+-- type and satisfies GHC's warnings even without including Alias2a.
+-- Note: we turn on warnings and -Werror for this test in the .cabal file.
+caseTest :: Alias -> Alias
+caseTest Alias1 = Alias1
+caseTest Alias2 = Alias2
+caseTest Alias3 = Alias3
 
 testManyCases =
     runTypedTest (roundTripTest "many cases" :: TypedTest ManyCasesProto)

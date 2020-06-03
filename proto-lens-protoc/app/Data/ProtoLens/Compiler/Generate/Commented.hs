@@ -1,10 +1,15 @@
+{-# LANGUAGE CPP #-}
 -- | Enables pretty-printing Haddock comments along with top-level declarations.
 module Data.ProtoLens.Compiler.Generate.Commented where
 
 import Data.Maybe (fromMaybe)
 import GHC.SourceGen
 import Outputable (Outputable(..), SDoc, (<+>), ($+$), vcat, empty, text)
+#if MIN_VERSION_ghc(8,10,0)
+import GHC.Hs (hsmodName)
+#else
 import HsSyn (hsmodName)
+#endif
 import GHC (ModuleName)
 import SrcLoc (unLoc)
 

@@ -50,10 +50,10 @@ extra-source-files:
 library:
   source-dirs: src
   dependencies:
-    - base >= 4.10 && < 4.14
+    - base >= 4.10 && < 4.15
     - bytestring == 0.10.*
     - containers >= 0.5 && < 0.7
-    - Cabal >= 2.0 && < 3.1
+    - Cabal >= 2.0 && < 3.3
     - deepseq == 1.4.*
     - directory >= 1.2 && < 1.4
     - filepath >= 1.4 && < 1.6

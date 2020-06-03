@@ -15,7 +15,7 @@ extra-source-files:
 
 dependencies:
   - proto-lens >= 0.4 && < 0.8
-  - base >= 4.10 && < 4.14
+  - base >= 4.10 && < 4.15
   - bytestring == 0.10.*
   - containers >= 0.5 && < 0.7
   - text == 1.2.*

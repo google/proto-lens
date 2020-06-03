@@ -1,10 +1,10 @@
-resolver: nightly-2019-09-28
+resolver: lts-15.15
 packages:
 - person
 - coffee-order
 
 extra-deps:
-- ghc-source-gen-0.3.0.0
+- ghc-source-gen-0.4.0.0
 - ../proto-lens
 - ../proto-lens-protoc
 - ../proto-lens-runtime
