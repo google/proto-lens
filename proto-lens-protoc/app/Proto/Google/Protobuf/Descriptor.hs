@@ -3357,6 +3357,7 @@ instance Data.ProtoLens.MessageEnum FieldDescriptorProto'Label where
     = Prelude.Just FieldDescriptorProto'LABEL_REPEATED
     | Prelude.otherwise
     = (Prelude.>>=) (Text.Read.readMaybe k) Data.ProtoLens.maybeToEnum
+  enumName _ = Data.Text.pack "google.protobuf.FieldDescriptorProto.Label"
 instance Prelude.Bounded FieldDescriptorProto'Label where
   minBound = FieldDescriptorProto'LABEL_OPTIONAL
   maxBound = FieldDescriptorProto'LABEL_REPEATED
@@ -3490,6 +3491,7 @@ instance Data.ProtoLens.MessageEnum FieldDescriptorProto'Type where
     = Prelude.Just FieldDescriptorProto'TYPE_SINT64
     | Prelude.otherwise
     = (Prelude.>>=) (Text.Read.readMaybe k) Data.ProtoLens.maybeToEnum
+  enumName _ = Data.Text.pack "google.protobuf.FieldDescriptorProto.Type"
 instance Prelude.Bounded FieldDescriptorProto'Type where
   minBound = FieldDescriptorProto'TYPE_DOUBLE
   maxBound = FieldDescriptorProto'TYPE_SINT64
@@ -4077,6 +4079,7 @@ instance Data.ProtoLens.MessageEnum FieldOptions'CType where
     = Prelude.Just FieldOptions'STRING_PIECE
     | Prelude.otherwise
     = (Prelude.>>=) (Text.Read.readMaybe k) Data.ProtoLens.maybeToEnum
+  enumName _ = Data.Text.pack "google.protobuf.FieldOptions.CType"
 instance Prelude.Bounded FieldOptions'CType where
   minBound = FieldOptions'STRING
   maxBound = FieldOptions'STRING_PIECE
@@ -4128,6 +4131,7 @@ instance Data.ProtoLens.MessageEnum FieldOptions'JSType where
     | (Prelude.==) k "JS_NUMBER" = Prelude.Just FieldOptions'JS_NUMBER
     | Prelude.otherwise
     = (Prelude.>>=) (Text.Read.readMaybe k) Data.ProtoLens.maybeToEnum
+  enumName _ = Data.Text.pack "google.protobuf.FieldOptions.JSType"
 instance Prelude.Bounded FieldOptions'JSType where
   minBound = FieldOptions'JS_NORMAL
   maxBound = FieldOptions'JS_NUMBER
@@ -6692,6 +6696,7 @@ instance Data.ProtoLens.MessageEnum FileOptions'OptimizeMode where
     = Prelude.Just FileOptions'LITE_RUNTIME
     | Prelude.otherwise
     = (Prelude.>>=) (Text.Read.readMaybe k) Data.ProtoLens.maybeToEnum
+  enumName _ = Data.Text.pack "google.protobuf.FileOptions.OptimizeMode"
 instance Prelude.Bounded FileOptions'OptimizeMode where
   minBound = FileOptions'SPEED
   maxBound = FileOptions'LITE_RUNTIME
@@ -8235,6 +8240,7 @@ instance Data.ProtoLens.MessageEnum MethodOptions'IdempotencyLevel where
     = Prelude.Just MethodOptions'IDEMPOTENT
     | Prelude.otherwise
     = (Prelude.>>=) (Text.Read.readMaybe k) Data.ProtoLens.maybeToEnum
+  enumName _ = Data.Text.pack "google.protobuf.MethodOptions.IdempotencyLevel"
 instance Prelude.Bounded MethodOptions'IdempotencyLevel where
   minBound = MethodOptions'IDEMPOTENCY_UNKNOWN
   maxBound = MethodOptions'IDEMPOTENT

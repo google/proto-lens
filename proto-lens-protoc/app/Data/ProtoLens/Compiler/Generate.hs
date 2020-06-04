@@ -132,7 +132,8 @@ generateModule modName fdesc imports publicImports definitions importedEnv servi
     generateDecls (protoName, Message m)
         = generateMessageDecls fieldModName env (stripDotPrefix protoName) m
        ++ map uncommented (concatMap (generatePrisms env) (messageOneofFields m))
-    generateDecls (_, Enum e) = map uncommented $ generateEnumDecls e
+    generateDecls (qualifiedEnumName, Enum e) =
+        map uncommented $ generateEnumDecls (stripDotPrefix qualifiedEnumName) e
     generateExports (Message m) = generateMessageExports m
                                ++ concatMap generatePrismExports (messageOneofFields m)
     generateExports (Enum e) = generateEnumExports e
@@ -428,8 +429,8 @@ generateEnumExports e = [thingAll n, thingWith n aliases] ++ proto3NewType
 generateServiceExports :: ServiceInfo -> IE'
 generateServiceExports si = thingAll $ unqual $ fromString $ T.unpack $ serviceName si
 
-generateEnumDecls :: EnumInfo OccNameStr -> [HsDecl']
-generateEnumDecls info =
+generateEnumDecls :: T.Text -> EnumInfo OccNameStr -> [HsDecl']
+generateEnumDecls qualifiedEnumName info =
     -- Proto3-only:
     -- newtype FooEnum'UnrecognizedValue = FooEnum'UnrecognizedValue Data.Int.Int32
     --   deriving (Prelude.Eq, Prelude.Ord, Prelude.Show, Prelude.Read)
@@ -513,6 +514,7 @@ generateEnumDecls info =
               ++ [guard (var "Prelude.otherwise") $ var "Prelude.>>="
                                       @@ (var "Text.Read.readMaybe" @@ var "k")
                                       @@ var "Data.ProtoLens.maybeToEnum"]
+        , funBind "enumName" $ match [wildP] $ var "Data.Text.pack" @@ string (T.unpack qualifiedEnumName)
         ]
 
       -- instance Bounded Foo where
