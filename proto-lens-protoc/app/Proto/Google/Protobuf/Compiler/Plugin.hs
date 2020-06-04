@@ -1,5 +1,5 @@
 {- This file was auto-generated from google/protobuf/compiler/plugin.proto by the proto-lens-protoc program. -}
-{-# LANGUAGE ScopedTypeVariables, DataKinds, TypeFamilies, UndecidableInstances, GeneralizedNewtypeDeriving, MultiParamTypeClasses, FlexibleContexts, FlexibleInstances, PatternSynonyms, MagicHash, NoImplicitPrelude, DataKinds, BangPatterns, TypeApplications, OverloadedStrings#-}
+{-# LANGUAGE ScopedTypeVariables, DataKinds, TypeFamilies, UndecidableInstances, GeneralizedNewtypeDeriving, MultiParamTypeClasses, FlexibleContexts, FlexibleInstances, PatternSynonyms, MagicHash, NoImplicitPrelude, DataKinds, BangPatterns, TypeApplications, OverloadedStrings, DerivingStrategies#-}
 {-# OPTIONS_GHC -Wno-unused-imports#-}
 {-# OPTIONS_GHC -Wno-duplicate-exports#-}
 {-# OPTIONS_GHC -Wno-dodgy-exports#-}
@@ -49,7 +49,7 @@ data CodeGeneratorRequest
                                        _CodeGeneratorRequest'protoFile :: !(Data.Vector.Vector Proto.Google.Protobuf.Descriptor.FileDescriptorProto),
                                        _CodeGeneratorRequest'compilerVersion :: !(Prelude.Maybe Version),
                                        _CodeGeneratorRequest'_unknownFields :: !Data.ProtoLens.FieldSet}
-  deriving (Prelude.Eq, Prelude.Ord)
+  deriving stock (Prelude.Eq, Prelude.Ord)
 instance Prelude.Show CodeGeneratorRequest where
   showsPrec _ __x __s
     = Prelude.showChar
@@ -377,7 +377,7 @@ data CodeGeneratorResponse
   = CodeGeneratorResponse'_constructor {_CodeGeneratorResponse'error :: !(Prelude.Maybe Data.Text.Text),
                                         _CodeGeneratorResponse'file :: !(Data.Vector.Vector CodeGeneratorResponse'File),
                                         _CodeGeneratorResponse'_unknownFields :: !Data.ProtoLens.FieldSet}
-  deriving (Prelude.Eq, Prelude.Ord)
+  deriving stock (Prelude.Eq, Prelude.Ord)
 instance Prelude.Show CodeGeneratorResponse where
   showsPrec _ __x __s
     = Prelude.showChar
@@ -579,7 +579,7 @@ data CodeGeneratorResponse'File
                                              _CodeGeneratorResponse'File'insertionPoint :: !(Prelude.Maybe Data.Text.Text),
                                              _CodeGeneratorResponse'File'content :: !(Prelude.Maybe Data.Text.Text),
                                              _CodeGeneratorResponse'File'_unknownFields :: !Data.ProtoLens.FieldSet}
-  deriving (Prelude.Eq, Prelude.Ord)
+  deriving stock (Prelude.Eq, Prelude.Ord)
 instance Prelude.Show CodeGeneratorResponse'File where
   showsPrec _ __x __s
     = Prelude.showChar
@@ -833,7 +833,7 @@ data Version
                           _Version'patch :: !(Prelude.Maybe Data.Int.Int32),
                           _Version'suffix :: !(Prelude.Maybe Data.Text.Text),
                           _Version'_unknownFields :: !Data.ProtoLens.FieldSet}
-  deriving (Prelude.Eq, Prelude.Ord)
+  deriving stock (Prelude.Eq, Prelude.Ord)
 instance Prelude.Show Version where
   showsPrec _ __x __s
     = Prelude.showChar
@@ -1071,7 +1071,6 @@ instance Control.DeepSeq.NFData Version where
                    (Control.DeepSeq.deepseq
                       (_Version'patch x__)
                       (Control.DeepSeq.deepseq (_Version'suffix x__) ()))))
-{- | FileDescriptorProto for protos defined in Proto.Google.Protobuf.Compiler.Plugin -}
 packedFileDescriptor :: Data.ByteString.ByteString
 packedFileDescriptor
   = "\n\
@@ -1094,7 +1093,7 @@ packedFileDescriptor
     \\EOTname\CAN\SOH \SOH(\tR\EOTname\DC2'\n\
     \\SIinsertion_point\CAN\STX \SOH(\tR\SOinsertionPoint\DC2\CAN\n\
     \\acontent\CAN\SI \SOH(\tR\acontentBg\n\
-    \\FScom.google.protobuf.compilerB\fPluginProtosZ9github.com/golang/protobuf/protoc-gen-go/plugin;plugin_goJ\239>\n\
+    \\FScom.google.protobuf.compilerB\fPluginProtosZ9github.com/golang/protobuf/protoc-gen-go/plugin;plugin_goJ\166@\n\
     \\a\DC2\ENQ.\NUL\166\SOH\SOH\n\
     \\202\DC1\n\
     \\SOH\f\DC2\ETX.\NUL\DC22\193\f Protocol Buffers - Google's data interchange format\n\
@@ -1143,21 +1142,45 @@ packedFileDescriptor
     \ flag \"--${NAME}_out\" is passed to protoc.\n\
     \\n\
     \\b\n\
-    \\SOH\STX\DC2\ETX/\NUL!\n\
+    \\SOH\STX\DC2\ETX/\b \n\
     \\b\n\
     \\SOH\b\DC2\ETX0\NUL5\n\
-    \\t\n\
-    \\STX\b\SOH\DC2\ETX0\NUL5\n\
+    \\v\n\
+    \\EOT\b\231\a\NUL\DC2\ETX0\NUL5\n\
+    \\f\n\
+    \\ENQ\b\231\a\NUL\STX\DC2\ETX0\a\DC3\n\
+    \\r\n\
+    \\ACK\b\231\a\NUL\STX\NUL\DC2\ETX0\a\DC3\n\
+    \\SO\n\
+    \\a\b\231\a\NUL\STX\NUL\SOH\DC2\ETX0\a\DC3\n\
+    \\f\n\
+    \\ENQ\b\231\a\NUL\a\DC2\ETX0\SYN4\n\
     \\b\n\
     \\SOH\b\DC2\ETX1\NUL-\n\
-    \\t\n\
-    \\STX\b\b\DC2\ETX1\NUL-\n\
+    \\v\n\
+    \\EOT\b\231\a\SOH\DC2\ETX1\NUL-\n\
+    \\f\n\
+    \\ENQ\b\231\a\SOH\STX\DC2\ETX1\a\ESC\n\
+    \\r\n\
+    \\ACK\b\231\a\SOH\STX\NUL\DC2\ETX1\a\ESC\n\
+    \\SO\n\
+    \\a\b\231\a\SOH\STX\NUL\SOH\DC2\ETX1\a\ESC\n\
+    \\f\n\
+    \\ENQ\b\231\a\SOH\a\DC2\ETX1\RS,\n\
     \\b\n\
     \\SOH\b\DC2\ETX3\NULP\n\
+    \\v\n\
+    \\EOT\b\231\a\STX\DC2\ETX3\NULP\n\
+    \\f\n\
+    \\ENQ\b\231\a\STX\STX\DC2\ETX3\a\DC1\n\
+    \\r\n\
+    \\ACK\b\231\a\STX\STX\NUL\DC2\ETX3\a\DC1\n\
+    \\SO\n\
+    \\a\b\231\a\STX\STX\NUL\SOH\DC2\ETX3\a\DC1\n\
+    \\f\n\
+    \\ENQ\b\231\a\STX\a\DC2\ETX3\DC4O\n\
     \\t\n\
-    \\STX\b\v\DC2\ETX3\NULP\n\
-    \\t\n\
-    \\STX\ETX\NUL\DC2\ETX5\NUL*\n\
+    \\STX\ETX\NUL\DC2\ETX5\a)\n\
     \6\n\
     \\STX\EOT\NUL\DC2\EOT8\NUL?\SOH\SUB* The version number of protocol compiler.\n\
     \\n\

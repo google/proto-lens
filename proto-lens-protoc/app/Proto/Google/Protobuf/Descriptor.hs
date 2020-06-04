@@ -1,5 +1,5 @@
 {- This file was auto-generated from google/protobuf/descriptor.proto by the proto-lens-protoc program. -}
-{-# LANGUAGE ScopedTypeVariables, DataKinds, TypeFamilies, UndecidableInstances, GeneralizedNewtypeDeriving, MultiParamTypeClasses, FlexibleContexts, FlexibleInstances, PatternSynonyms, MagicHash, NoImplicitPrelude, DataKinds, BangPatterns, TypeApplications, OverloadedStrings#-}
+{-# LANGUAGE ScopedTypeVariables, DataKinds, TypeFamilies, UndecidableInstances, GeneralizedNewtypeDeriving, MultiParamTypeClasses, FlexibleContexts, FlexibleInstances, PatternSynonyms, MagicHash, NoImplicitPrelude, DataKinds, BangPatterns, TypeApplications, OverloadedStrings, DerivingStrategies#-}
 {-# OPTIONS_GHC -Wno-unused-imports#-}
 {-# OPTIONS_GHC -Wno-duplicate-exports#-}
 {-# OPTIONS_GHC -Wno-dodgy-exports#-}
@@ -82,7 +82,7 @@ data DescriptorProto
                                   _DescriptorProto'reservedRange :: !(Data.Vector.Vector DescriptorProto'ReservedRange),
                                   _DescriptorProto'reservedName :: !(Data.Vector.Vector Data.Text.Text),
                                   _DescriptorProto'_unknownFields :: !Data.ProtoLens.FieldSet}
-  deriving (Prelude.Eq, Prelude.Ord)
+  deriving stock (Prelude.Eq, Prelude.Ord)
 instance Prelude.Show DescriptorProto where
   showsPrec _ __x __s
     = Prelude.showChar
@@ -920,7 +920,7 @@ data DescriptorProto'ExtensionRange
                                                  _DescriptorProto'ExtensionRange'end :: !(Prelude.Maybe Data.Int.Int32),
                                                  _DescriptorProto'ExtensionRange'options :: !(Prelude.Maybe ExtensionRangeOptions),
                                                  _DescriptorProto'ExtensionRange'_unknownFields :: !Data.ProtoLens.FieldSet}
-  deriving (Prelude.Eq, Prelude.Ord)
+  deriving stock (Prelude.Eq, Prelude.Ord)
 instance Prelude.Show DescriptorProto'ExtensionRange where
   showsPrec _ __x __s
     = Prelude.showChar
@@ -1134,7 +1134,7 @@ data DescriptorProto'ReservedRange
   = DescriptorProto'ReservedRange'_constructor {_DescriptorProto'ReservedRange'start :: !(Prelude.Maybe Data.Int.Int32),
                                                 _DescriptorProto'ReservedRange'end :: !(Prelude.Maybe Data.Int.Int32),
                                                 _DescriptorProto'ReservedRange'_unknownFields :: !Data.ProtoLens.FieldSet}
-  deriving (Prelude.Eq, Prelude.Ord)
+  deriving stock (Prelude.Eq, Prelude.Ord)
 instance Prelude.Show DescriptorProto'ReservedRange where
   showsPrec _ __x __s
     = Prelude.showChar
@@ -1307,7 +1307,7 @@ data EnumDescriptorProto
                                       _EnumDescriptorProto'reservedRange :: !(Data.Vector.Vector EnumDescriptorProto'EnumReservedRange),
                                       _EnumDescriptorProto'reservedName :: !(Data.Vector.Vector Data.Text.Text),
                                       _EnumDescriptorProto'_unknownFields :: !Data.ProtoLens.FieldSet}
-  deriving (Prelude.Eq, Prelude.Ord)
+  deriving stock (Prelude.Eq, Prelude.Ord)
 instance Prelude.Show EnumDescriptorProto where
   showsPrec _ __x __s
     = Prelude.showChar
@@ -1703,7 +1703,7 @@ data EnumDescriptorProto'EnumReservedRange
   = EnumDescriptorProto'EnumReservedRange'_constructor {_EnumDescriptorProto'EnumReservedRange'start :: !(Prelude.Maybe Data.Int.Int32),
                                                         _EnumDescriptorProto'EnumReservedRange'end :: !(Prelude.Maybe Data.Int.Int32),
                                                         _EnumDescriptorProto'EnumReservedRange'_unknownFields :: !Data.ProtoLens.FieldSet}
-  deriving (Prelude.Eq, Prelude.Ord)
+  deriving stock (Prelude.Eq, Prelude.Ord)
 instance Prelude.Show EnumDescriptorProto'EnumReservedRange where
   showsPrec _ __x __s
     = Prelude.showChar
@@ -1876,7 +1876,7 @@ data EnumOptions
                               _EnumOptions'deprecated :: !(Prelude.Maybe Prelude.Bool),
                               _EnumOptions'uninterpretedOption :: !(Data.Vector.Vector UninterpretedOption),
                               _EnumOptions'_unknownFields :: !Data.ProtoLens.FieldSet}
-  deriving (Prelude.Eq, Prelude.Ord)
+  deriving stock (Prelude.Eq, Prelude.Ord)
 instance Prelude.Show EnumOptions where
   showsPrec _ __x __s
     = Prelude.showChar
@@ -2122,7 +2122,7 @@ data EnumValueDescriptorProto
                                            _EnumValueDescriptorProto'number :: !(Prelude.Maybe Data.Int.Int32),
                                            _EnumValueDescriptorProto'options :: !(Prelude.Maybe EnumValueOptions),
                                            _EnumValueDescriptorProto'_unknownFields :: !Data.ProtoLens.FieldSet}
-  deriving (Prelude.Eq, Prelude.Ord)
+  deriving stock (Prelude.Eq, Prelude.Ord)
 instance Prelude.Show EnumValueDescriptorProto where
   showsPrec _ __x __s
     = Prelude.showChar
@@ -2347,7 +2347,7 @@ data EnumValueOptions
   = EnumValueOptions'_constructor {_EnumValueOptions'deprecated :: !(Prelude.Maybe Prelude.Bool),
                                    _EnumValueOptions'uninterpretedOption :: !(Data.Vector.Vector UninterpretedOption),
                                    _EnumValueOptions'_unknownFields :: !Data.ProtoLens.FieldSet}
-  deriving (Prelude.Eq, Prelude.Ord)
+  deriving stock (Prelude.Eq, Prelude.Ord)
 instance Prelude.Show EnumValueOptions where
   showsPrec _ __x __s
     = Prelude.showChar
@@ -2537,7 +2537,7 @@ instance Control.DeepSeq.NFData EnumValueOptions where
 data ExtensionRangeOptions
   = ExtensionRangeOptions'_constructor {_ExtensionRangeOptions'uninterpretedOption :: !(Data.Vector.Vector UninterpretedOption),
                                         _ExtensionRangeOptions'_unknownFields :: !Data.ProtoLens.FieldSet}
-  deriving (Prelude.Eq, Prelude.Ord)
+  deriving stock (Prelude.Eq, Prelude.Ord)
 instance Prelude.Show ExtensionRangeOptions where
   showsPrec _ __x __s
     = Prelude.showChar
@@ -2708,7 +2708,7 @@ data FieldDescriptorProto
                                        _FieldDescriptorProto'jsonName :: !(Prelude.Maybe Data.Text.Text),
                                        _FieldDescriptorProto'options :: !(Prelude.Maybe FieldOptions),
                                        _FieldDescriptorProto'_unknownFields :: !Data.ProtoLens.FieldSet}
-  deriving (Prelude.Eq, Prelude.Ord)
+  deriving stock (Prelude.Eq, Prelude.Ord)
 instance Prelude.Show FieldDescriptorProto where
   showsPrec _ __x __s
     = Prelude.showChar
@@ -3339,7 +3339,7 @@ data FieldDescriptorProto'Label
   = FieldDescriptorProto'LABEL_OPTIONAL |
     FieldDescriptorProto'LABEL_REQUIRED |
     FieldDescriptorProto'LABEL_REPEATED
-  deriving (Prelude.Show, Prelude.Eq, Prelude.Ord)
+  deriving stock (Prelude.Show, Prelude.Eq, Prelude.Ord)
 instance Data.ProtoLens.MessageEnum FieldDescriptorProto'Label where
   maybeToEnum 1 = Prelude.Just FieldDescriptorProto'LABEL_OPTIONAL
   maybeToEnum 2 = Prelude.Just FieldDescriptorProto'LABEL_REQUIRED
@@ -3412,7 +3412,7 @@ data FieldDescriptorProto'Type
     FieldDescriptorProto'TYPE_SFIXED64 |
     FieldDescriptorProto'TYPE_SINT32 |
     FieldDescriptorProto'TYPE_SINT64
-  deriving (Prelude.Show, Prelude.Eq, Prelude.Ord)
+  deriving stock (Prelude.Show, Prelude.Eq, Prelude.Ord)
 instance Data.ProtoLens.MessageEnum FieldDescriptorProto'Type where
   maybeToEnum 1 = Prelude.Just FieldDescriptorProto'TYPE_DOUBLE
   maybeToEnum 2 = Prelude.Just FieldDescriptorProto'TYPE_FLOAT
@@ -3626,7 +3626,7 @@ data FieldOptions
                                _FieldOptions'weak :: !(Prelude.Maybe Prelude.Bool),
                                _FieldOptions'uninterpretedOption :: !(Data.Vector.Vector UninterpretedOption),
                                _FieldOptions'_unknownFields :: !Data.ProtoLens.FieldSet}
-  deriving (Prelude.Eq, Prelude.Ord)
+  deriving stock (Prelude.Eq, Prelude.Ord)
 instance Prelude.Show FieldOptions where
   showsPrec _ __x __s
     = Prelude.showChar
@@ -4061,7 +4061,7 @@ data FieldOptions'CType
   = FieldOptions'STRING |
     FieldOptions'CORD |
     FieldOptions'STRING_PIECE
-  deriving (Prelude.Show, Prelude.Eq, Prelude.Ord)
+  deriving stock (Prelude.Show, Prelude.Eq, Prelude.Ord)
 instance Data.ProtoLens.MessageEnum FieldOptions'CType where
   maybeToEnum 0 = Prelude.Just FieldOptions'STRING
   maybeToEnum 1 = Prelude.Just FieldOptions'CORD
@@ -4113,7 +4113,7 @@ data FieldOptions'JSType
   = FieldOptions'JS_NORMAL |
     FieldOptions'JS_STRING |
     FieldOptions'JS_NUMBER
-  deriving (Prelude.Show, Prelude.Eq, Prelude.Ord)
+  deriving stock (Prelude.Show, Prelude.Eq, Prelude.Ord)
 instance Data.ProtoLens.MessageEnum FieldOptions'JSType where
   maybeToEnum 0 = Prelude.Just FieldOptions'JS_NORMAL
   maybeToEnum 1 = Prelude.Just FieldOptions'JS_STRING
@@ -4200,7 +4200,7 @@ data FileDescriptorProto
                                       _FileDescriptorProto'sourceCodeInfo :: !(Prelude.Maybe SourceCodeInfo),
                                       _FileDescriptorProto'syntax :: !(Prelude.Maybe Data.Text.Text),
                                       _FileDescriptorProto'_unknownFields :: !Data.ProtoLens.FieldSet}
-  deriving (Prelude.Eq, Prelude.Ord)
+  deriving stock (Prelude.Eq, Prelude.Ord)
 instance Prelude.Show FileDescriptorProto where
   showsPrec _ __x __s
     = Prelude.showChar
@@ -5186,7 +5186,7 @@ instance Control.DeepSeq.NFData FileDescriptorProto where
 data FileDescriptorSet
   = FileDescriptorSet'_constructor {_FileDescriptorSet'file :: !(Data.Vector.Vector FileDescriptorProto),
                                     _FileDescriptorSet'_unknownFields :: !Data.ProtoLens.FieldSet}
-  deriving (Prelude.Eq, Prelude.Ord)
+  deriving stock (Prelude.Eq, Prelude.Ord)
 instance Prelude.Show FileDescriptorSet where
   showsPrec _ __x __s
     = Prelude.showChar
@@ -5379,7 +5379,7 @@ data FileOptions
                               _FileOptions'rubyPackage :: !(Prelude.Maybe Data.Text.Text),
                               _FileOptions'uninterpretedOption :: !(Data.Vector.Vector UninterpretedOption),
                               _FileOptions'_unknownFields :: !Data.ProtoLens.FieldSet}
-  deriving (Prelude.Eq, Prelude.Ord)
+  deriving stock (Prelude.Eq, Prelude.Ord)
 instance Prelude.Show FileOptions where
   showsPrec _ __x __s
     = Prelude.showChar
@@ -6676,7 +6676,7 @@ data FileOptions'OptimizeMode
   = FileOptions'SPEED |
     FileOptions'CODE_SIZE |
     FileOptions'LITE_RUNTIME
-  deriving (Prelude.Show, Prelude.Eq, Prelude.Ord)
+  deriving stock (Prelude.Show, Prelude.Eq, Prelude.Ord)
 instance Data.ProtoLens.MessageEnum FileOptions'OptimizeMode where
   maybeToEnum 1 = Prelude.Just FileOptions'SPEED
   maybeToEnum 2 = Prelude.Just FileOptions'CODE_SIZE
@@ -6732,7 +6732,7 @@ instance Control.DeepSeq.NFData FileOptions'OptimizeMode where
 data GeneratedCodeInfo
   = GeneratedCodeInfo'_constructor {_GeneratedCodeInfo'annotation :: !(Data.Vector.Vector GeneratedCodeInfo'Annotation),
                                     _GeneratedCodeInfo'_unknownFields :: !Data.ProtoLens.FieldSet}
-  deriving (Prelude.Eq, Prelude.Ord)
+  deriving stock (Prelude.Eq, Prelude.Ord)
 instance Prelude.Show GeneratedCodeInfo where
   showsPrec _ __x __s
     = Prelude.showChar
@@ -6889,7 +6889,7 @@ data GeneratedCodeInfo'Annotation
                                                _GeneratedCodeInfo'Annotation'begin :: !(Prelude.Maybe Data.Int.Int32),
                                                _GeneratedCodeInfo'Annotation'end :: !(Prelude.Maybe Data.Int.Int32),
                                                _GeneratedCodeInfo'Annotation'_unknownFields :: !Data.ProtoLens.FieldSet}
-  deriving (Prelude.Eq, Prelude.Ord)
+  deriving stock (Prelude.Eq, Prelude.Ord)
 instance Prelude.Show GeneratedCodeInfo'Annotation where
   showsPrec _ __x __s
     = Prelude.showChar
@@ -7217,7 +7217,7 @@ data MessageOptions
                                  _MessageOptions'mapEntry :: !(Prelude.Maybe Prelude.Bool),
                                  _MessageOptions'uninterpretedOption :: !(Data.Vector.Vector UninterpretedOption),
                                  _MessageOptions'_unknownFields :: !Data.ProtoLens.FieldSet}
-  deriving (Prelude.Eq, Prelude.Ord)
+  deriving stock (Prelude.Eq, Prelude.Ord)
 instance Prelude.Show MessageOptions where
   showsPrec _ __x __s
     = Prelude.showChar
@@ -7575,7 +7575,7 @@ data MethodDescriptorProto
                                         _MethodDescriptorProto'clientStreaming :: !(Prelude.Maybe Prelude.Bool),
                                         _MethodDescriptorProto'serverStreaming :: !(Prelude.Maybe Prelude.Bool),
                                         _MethodDescriptorProto'_unknownFields :: !Data.ProtoLens.FieldSet}
-  deriving (Prelude.Eq, Prelude.Ord)
+  deriving stock (Prelude.Eq, Prelude.Ord)
 instance Prelude.Show MethodDescriptorProto where
   showsPrec _ __x __s
     = Prelude.showChar
@@ -7971,7 +7971,7 @@ data MethodOptions
                                 _MethodOptions'idempotencyLevel :: !(Prelude.Maybe MethodOptions'IdempotencyLevel),
                                 _MethodOptions'uninterpretedOption :: !(Data.Vector.Vector UninterpretedOption),
                                 _MethodOptions'_unknownFields :: !Data.ProtoLens.FieldSet}
-  deriving (Prelude.Eq, Prelude.Ord)
+  deriving stock (Prelude.Eq, Prelude.Ord)
 instance Prelude.Show MethodOptions where
   showsPrec _ __x __s
     = Prelude.showChar
@@ -8217,7 +8217,7 @@ data MethodOptions'IdempotencyLevel
   = MethodOptions'IDEMPOTENCY_UNKNOWN |
     MethodOptions'NO_SIDE_EFFECTS |
     MethodOptions'IDEMPOTENT
-  deriving (Prelude.Show, Prelude.Eq, Prelude.Ord)
+  deriving stock (Prelude.Show, Prelude.Eq, Prelude.Ord)
 instance Data.ProtoLens.MessageEnum MethodOptions'IdempotencyLevel where
   maybeToEnum 0 = Prelude.Just MethodOptions'IDEMPOTENCY_UNKNOWN
   maybeToEnum 1 = Prelude.Just MethodOptions'NO_SIDE_EFFECTS
@@ -8280,7 +8280,7 @@ data OneofDescriptorProto
   = OneofDescriptorProto'_constructor {_OneofDescriptorProto'name :: !(Prelude.Maybe Data.Text.Text),
                                        _OneofDescriptorProto'options :: !(Prelude.Maybe OneofOptions),
                                        _OneofDescriptorProto'_unknownFields :: !Data.ProtoLens.FieldSet}
-  deriving (Prelude.Eq, Prelude.Ord)
+  deriving stock (Prelude.Eq, Prelude.Ord)
 instance Prelude.Show OneofDescriptorProto where
   showsPrec _ __x __s
     = Prelude.showChar
@@ -8457,7 +8457,7 @@ instance Control.DeepSeq.NFData OneofDescriptorProto where
 data OneofOptions
   = OneofOptions'_constructor {_OneofOptions'uninterpretedOption :: !(Data.Vector.Vector UninterpretedOption),
                                _OneofOptions'_unknownFields :: !Data.ProtoLens.FieldSet}
-  deriving (Prelude.Eq, Prelude.Ord)
+  deriving stock (Prelude.Eq, Prelude.Ord)
 instance Prelude.Show OneofOptions where
   showsPrec _ __x __s
     = Prelude.showChar
@@ -8604,7 +8604,7 @@ data ServiceDescriptorProto
                                          _ServiceDescriptorProto'method :: !(Data.Vector.Vector MethodDescriptorProto),
                                          _ServiceDescriptorProto'options :: !(Prelude.Maybe ServiceOptions),
                                          _ServiceDescriptorProto'_unknownFields :: !Data.ProtoLens.FieldSet}
-  deriving (Prelude.Eq, Prelude.Ord)
+  deriving stock (Prelude.Eq, Prelude.Ord)
 instance Prelude.Show ServiceDescriptorProto where
   showsPrec _ __x __s
     = Prelude.showChar
@@ -8853,7 +8853,7 @@ data ServiceOptions
   = ServiceOptions'_constructor {_ServiceOptions'deprecated :: !(Prelude.Maybe Prelude.Bool),
                                  _ServiceOptions'uninterpretedOption :: !(Data.Vector.Vector UninterpretedOption),
                                  _ServiceOptions'_unknownFields :: !Data.ProtoLens.FieldSet}
-  deriving (Prelude.Eq, Prelude.Ord)
+  deriving stock (Prelude.Eq, Prelude.Ord)
 instance Prelude.Show ServiceOptions where
   showsPrec _ __x __s
     = Prelude.showChar
@@ -9044,7 +9044,7 @@ instance Control.DeepSeq.NFData ServiceOptions where
 data SourceCodeInfo
   = SourceCodeInfo'_constructor {_SourceCodeInfo'location :: !(Data.Vector.Vector SourceCodeInfo'Location),
                                  _SourceCodeInfo'_unknownFields :: !Data.ProtoLens.FieldSet}
-  deriving (Prelude.Eq, Prelude.Ord)
+  deriving stock (Prelude.Eq, Prelude.Ord)
 instance Prelude.Show SourceCodeInfo where
   showsPrec _ __x __s
     = Prelude.showChar
@@ -9199,7 +9199,7 @@ data SourceCodeInfo'Location
                                           _SourceCodeInfo'Location'trailingComments :: !(Prelude.Maybe Data.Text.Text),
                                           _SourceCodeInfo'Location'leadingDetachedComments :: !(Data.Vector.Vector Data.Text.Text),
                                           _SourceCodeInfo'Location'_unknownFields :: !Data.ProtoLens.FieldSet}
-  deriving (Prelude.Eq, Prelude.Ord)
+  deriving stock (Prelude.Eq, Prelude.Ord)
 instance Prelude.Show SourceCodeInfo'Location where
   showsPrec _ __x __s
     = Prelude.showChar
@@ -9669,7 +9669,7 @@ data UninterpretedOption
                                       _UninterpretedOption'stringValue :: !(Prelude.Maybe Data.ByteString.ByteString),
                                       _UninterpretedOption'aggregateValue :: !(Prelude.Maybe Data.Text.Text),
                                       _UninterpretedOption'_unknownFields :: !Data.ProtoLens.FieldSet}
-  deriving (Prelude.Eq, Prelude.Ord)
+  deriving stock (Prelude.Eq, Prelude.Ord)
 instance Prelude.Show UninterpretedOption where
   showsPrec _ __x __s
     = Prelude.showChar
@@ -10121,7 +10121,7 @@ data UninterpretedOption'NamePart
   = UninterpretedOption'NamePart'_constructor {_UninterpretedOption'NamePart'namePart :: !Data.Text.Text,
                                                _UninterpretedOption'NamePart'isExtension :: !Prelude.Bool,
                                                _UninterpretedOption'NamePart'_unknownFields :: !Data.ProtoLens.FieldSet}
-  deriving (Prelude.Eq, Prelude.Ord)
+  deriving stock (Prelude.Eq, Prelude.Ord)
 instance Prelude.Show UninterpretedOption'NamePart where
   showsPrec _ __x __s
     = Prelude.showChar
@@ -10282,7 +10282,6 @@ instance Control.DeepSeq.NFData UninterpretedOption'NamePart where
                 (_UninterpretedOption'NamePart'namePart x__)
                 (Control.DeepSeq.deepseq
                    (_UninterpretedOption'NamePart'isExtension x__) ()))
-{- | FileDescriptorProto for protos defined in Proto.Google.Protobuf.Descriptor -}
 packedFileDescriptor :: Data.ByteString.ByteString
 packedFileDescriptor
   = "\n\
@@ -10518,7 +10517,7 @@ packedFileDescriptor
     \sourceFile\DC2\DC4\n\
     \\ENQbegin\CAN\ETX \SOH(\ENQR\ENQbegin\DC2\DLE\n\
     \\ETXend\CAN\EOT \SOH(\ENQR\ETXendB\143\SOH\n\
-    \\DC3com.google.protobufB\DLEDescriptorProtosH\SOHZ>github.com/golang/protobuf/protoc-gen-go/descriptor;descriptor\248\SOH\SOH\162\STX\ETXGPB\170\STX\SUBGoogle.Protobuf.ReflectionJ\172\190\STX\n\
+    \\DC3com.google.protobufB\DLEDescriptorProtosH\SOHZ>github.com/golang/protobuf/protoc-gen-go/descriptor;descriptor\248\SOH\SOH\162\STX\ETXGPB\170\STX\SUBGoogle.Protobuf.ReflectionJ\180\196\STX\n\
     \\a\DC2\ENQ'\NUL\242\ACK\SOH\n\
     \\170\SI\n\
     \\SOH\f\DC2\ETX'\NUL\DC22\193\f Protocol Buffers - Google's data interchange format\n\
@@ -10559,37 +10558,93 @@ packedFileDescriptor
     \ without any other information (e.g. without reading its imports).\n\
     \\n\
     \\b\n\
-    \\SOH\STX\DC2\ETX)\NUL\CAN\n\
+    \\SOH\STX\DC2\ETX)\b\ETB\n\
     \\b\n\
     \\SOH\b\DC2\ETX*\NULU\n\
-    \\t\n\
-    \\STX\b\v\DC2\ETX*\NULU\n\
+    \\v\n\
+    \\EOT\b\231\a\NUL\DC2\ETX*\NULU\n\
+    \\f\n\
+    \\ENQ\b\231\a\NUL\STX\DC2\ETX*\a\DC1\n\
+    \\r\n\
+    \\ACK\b\231\a\NUL\STX\NUL\DC2\ETX*\a\DC1\n\
+    \\SO\n\
+    \\a\b\231\a\NUL\STX\NUL\SOH\DC2\ETX*\a\DC1\n\
+    \\f\n\
+    \\ENQ\b\231\a\NUL\a\DC2\ETX*\DC4T\n\
     \\b\n\
     \\SOH\b\DC2\ETX+\NUL,\n\
-    \\t\n\
-    \\STX\b\SOH\DC2\ETX+\NUL,\n\
+    \\v\n\
+    \\EOT\b\231\a\SOH\DC2\ETX+\NUL,\n\
+    \\f\n\
+    \\ENQ\b\231\a\SOH\STX\DC2\ETX+\a\DC3\n\
+    \\r\n\
+    \\ACK\b\231\a\SOH\STX\NUL\DC2\ETX+\a\DC3\n\
+    \\SO\n\
+    \\a\b\231\a\SOH\STX\NUL\SOH\DC2\ETX+\a\DC3\n\
+    \\f\n\
+    \\ENQ\b\231\a\SOH\a\DC2\ETX+\SYN+\n\
     \\b\n\
     \\SOH\b\DC2\ETX,\NUL1\n\
-    \\t\n\
-    \\STX\b\b\DC2\ETX,\NUL1\n\
+    \\v\n\
+    \\EOT\b\231\a\STX\DC2\ETX,\NUL1\n\
+    \\f\n\
+    \\ENQ\b\231\a\STX\STX\DC2\ETX,\a\ESC\n\
+    \\r\n\
+    \\ACK\b\231\a\STX\STX\NUL\DC2\ETX,\a\ESC\n\
+    \\SO\n\
+    \\a\b\231\a\STX\STX\NUL\SOH\DC2\ETX,\a\ESC\n\
+    \\f\n\
+    \\ENQ\b\231\a\STX\a\DC2\ETX,\RS0\n\
     \\b\n\
     \\SOH\b\DC2\ETX-\NUL7\n\
-    \\t\n\
-    \\STX\b%\DC2\ETX-\NUL7\n\
+    \\v\n\
+    \\EOT\b\231\a\ETX\DC2\ETX-\NUL7\n\
+    \\f\n\
+    \\ENQ\b\231\a\ETX\STX\DC2\ETX-\a\ETB\n\
+    \\r\n\
+    \\ACK\b\231\a\ETX\STX\NUL\DC2\ETX-\a\ETB\n\
+    \\SO\n\
+    \\a\b\231\a\ETX\STX\NUL\SOH\DC2\ETX-\a\ETB\n\
+    \\f\n\
+    \\ENQ\b\231\a\ETX\a\DC2\ETX-\SUB6\n\
     \\b\n\
     \\SOH\b\DC2\ETX.\NUL!\n\
-    \\t\n\
-    \\STX\b$\DC2\ETX.\NUL!\n\
+    \\v\n\
+    \\EOT\b\231\a\EOT\DC2\ETX.\NUL!\n\
+    \\f\n\
+    \\ENQ\b\231\a\EOT\STX\DC2\ETX.\a\CAN\n\
+    \\r\n\
+    \\ACK\b\231\a\EOT\STX\NUL\DC2\ETX.\a\CAN\n\
+    \\SO\n\
+    \\a\b\231\a\EOT\STX\NUL\SOH\DC2\ETX.\a\CAN\n\
+    \\f\n\
+    \\ENQ\b\231\a\EOT\a\DC2\ETX.\ESC \n\
     \\b\n\
     \\SOH\b\DC2\ETX/\NUL\US\n\
-    \\t\n\
-    \\STX\b\US\DC2\ETX/\NUL\US\n\
+    \\v\n\
+    \\EOT\b\231\a\ENQ\DC2\ETX/\NUL\US\n\
+    \\f\n\
+    \\ENQ\b\231\a\ENQ\STX\DC2\ETX/\a\ETB\n\
+    \\r\n\
+    \\ACK\b\231\a\ENQ\STX\NUL\DC2\ETX/\a\ETB\n\
+    \\SO\n\
+    \\a\b\231\a\ENQ\STX\NUL\SOH\DC2\ETX/\a\ETB\n\
+    \\f\n\
+    \\ENQ\b\231\a\ENQ\ETX\DC2\ETX/\SUB\RS\n\
     \\b\n\
     \\SOH\b\DC2\ETX3\NUL\FS\n\
-    \\DEL\n\
-    \\STX\b\t\DC2\ETX3\NUL\FS\SUBt descriptor.proto must be optimized for speed because reflection-based\n\
+    \\129\SOH\n\
+    \\EOT\b\231\a\ACK\DC2\ETX3\NUL\FS\SUBt descriptor.proto must be optimized for speed because reflection-based\n\
     \ algorithms don't work during bootstrapping.\n\
     \\n\
+    \\f\n\
+    \\ENQ\b\231\a\ACK\STX\DC2\ETX3\a\DC3\n\
+    \\r\n\
+    \\ACK\b\231\a\ACK\STX\NUL\DC2\ETX3\a\DC3\n\
+    \\SO\n\
+    \\a\b\231\a\ACK\STX\NUL\SOH\DC2\ETX3\a\DC3\n\
+    \\f\n\
+    \\ENQ\b\231\a\ACK\ETX\DC2\ETX3\SYN\ESC\n\
     \j\n\
     \\STX\EOT\NUL\DC2\EOT7\NUL9\SOH\SUB^ The protocol compiler can output a FileDescriptorSet containing the .proto\n\
     \ files it parses.\n\
@@ -11669,9 +11724,22 @@ packedFileDescriptor
     \\r\n\
     \\ENQ\EOT\n\
     \\STX\ETX\b\DC2\EOT\214\STX3D\n\
-    \\SO\n\
-    \\ACK\EOT\n\
-    \\STX\ETX\b\ETX\DC2\EOT\214\STX4C\n\
+    \\DLE\n\
+    \\b\EOT\n\
+    \\STX\ETX\b\231\a\NUL\DC2\EOT\214\STX4C\n\
+    \\DC1\n\
+    \\t\EOT\n\
+    \\STX\ETX\b\231\a\NUL\STX\DC2\EOT\214\STX4>\n\
+    \\DC2\n\
+    \\n\
+    \\EOT\n\
+    \\STX\ETX\b\231\a\NUL\STX\NUL\DC2\EOT\214\STX4>\n\
+    \\DC3\n\
+    \\v\EOT\n\
+    \\STX\ETX\b\231\a\NUL\STX\NUL\SOH\DC2\EOT\214\STX4>\n\
+    \\DC1\n\
+    \\t\EOT\n\
+    \\STX\ETX\b\231\a\NUL\ETX\DC2\EOT\214\STX?C\n\
     \\230\STX\n\
     \\EOT\EOT\n\
     \\STX\EOT\DC2\EOT\222\STX\STX<\SUB\215\STX If set true, then the Java2 code generator will generate code that\n\
@@ -12100,7 +12168,7 @@ packedFileDescriptor
     \\ENQ\NUL\STX\DC2\EOT\180\ETX\NAK\CAN\n\
     \\v\n\
     \\ETX\EOT\n\
-    \\t\DC2\EOT\182\ETX\STX\SO\n\
+    \\t\DC2\EOT\182\ETX\v\SO\n\
     \\f\n\
     \\EOT\EOT\n\
     \\t\NUL\DC2\EOT\182\ETX\v\r\n\
@@ -12217,7 +12285,7 @@ packedFileDescriptor
     \\r\n\
     \\ENQ\EOT\v\STX\ETX\ETX\DC2\EOT\238\ETX\FS\GS\n\
     \$\n\
-    \\ETX\EOT\v\t\DC2\EOT\240\ETX\STX\r\"\ETB javalite_serializable\n\
+    \\ETX\EOT\v\t\DC2\EOT\240\ETX\v\r\"\ETB javalite_serializable\n\
     \\n\
     \\f\n\
     \\EOT\EOT\v\t\NUL\DC2\EOT\240\ETX\v\f\n\
@@ -12226,7 +12294,7 @@ packedFileDescriptor
     \\r\n\
     \\ENQ\EOT\v\t\NUL\STX\DC2\EOT\240\ETX\v\f\n\
     \\US\n\
-    \\ETX\EOT\v\t\DC2\EOT\241\ETX\STX\r\"\DC2 javanano_as_lite\n\
+    \\ETX\EOT\v\t\DC2\EOT\241\ETX\v\r\"\DC2 javanano_as_lite\n\
     \\n\
     \\f\n\
     \\EOT\EOT\v\t\SOH\DC2\EOT\241\ETX\v\f\n\
@@ -12469,7 +12537,7 @@ packedFileDescriptor
     \\r\n\
     \\ENQ\EOT\f\ENQ\NUL\STX\DC2\EOT\210\EOT\NAK\CAN\n\
     \\FS\n\
-    \\ETX\EOT\f\t\DC2\EOT\212\EOT\STX\r\"\SI removed jtype\n\
+    \\ETX\EOT\f\t\DC2\EOT\212\EOT\v\r\"\SI removed jtype\n\
     \\n\
     \\f\n\
     \\EOT\EOT\f\t\NUL\DC2\EOT\212\EOT\v\f\n\
@@ -12539,7 +12607,7 @@ packedFileDescriptor
     \\r\n\
     \\ENQ\EOT\SO\STX\SOH\a\DC2\EOT\233\EOT(-\n\
     \\US\n\
-    \\ETX\EOT\SO\t\DC2\EOT\235\EOT\STX\r\"\DC2 javanano_as_lite\n\
+    \\ETX\EOT\SO\t\DC2\EOT\235\EOT\v\r\"\DC2 javanano_as_lite\n\
     \\n\
     \\f\n\
     \\EOT\EOT\SO\t\NUL\DC2\EOT\235\EOT\v\f\n\
@@ -12971,8 +13039,17 @@ packedFileDescriptor
     \\a\EOT\DC3\ETX\NUL\STX\NUL\ETX\DC2\EOT\156\ACK\SUB\ESC\n\
     \\SI\n\
     \\a\EOT\DC3\ETX\NUL\STX\NUL\b\DC2\EOT\156\ACK\FS)\n\
-    \\DLE\n\
-    \\b\EOT\DC3\ETX\NUL\STX\NUL\b\STX\DC2\EOT\156\ACK\GS(\n\
+    \\DC2\n\
+    \\n\
+    \\EOT\DC3\ETX\NUL\STX\NUL\b\231\a\NUL\DC2\EOT\156\ACK\GS(\n\
+    \\DC3\n\
+    \\v\EOT\DC3\ETX\NUL\STX\NUL\b\231\a\NUL\STX\DC2\EOT\156\ACK\GS#\n\
+    \\DC4\n\
+    \\f\EOT\DC3\ETX\NUL\STX\NUL\b\231\a\NUL\STX\NUL\DC2\EOT\156\ACK\GS#\n\
+    \\NAK\n\
+    \\r\EOT\DC3\ETX\NUL\STX\NUL\b\231\a\NUL\STX\NUL\SOH\DC2\EOT\156\ACK\GS#\n\
+    \\DC3\n\
+    \\v\EOT\DC3\ETX\NUL\STX\NUL\b\231\a\NUL\ETX\DC2\EOT\156\ACK$(\n\
     \\210\STX\n\
     \\ACK\EOT\DC3\ETX\NUL\STX\SOH\DC2\EOT\163\ACK\EOT*\SUB\193\STX Always has exactly three or four elements: start line, start column,\n\
     \ end line (optional, otherwise assumed same as start line), end column.\n\
@@ -12990,8 +13067,17 @@ packedFileDescriptor
     \\a\EOT\DC3\ETX\NUL\STX\SOH\ETX\DC2\EOT\163\ACK\SUB\ESC\n\
     \\SI\n\
     \\a\EOT\DC3\ETX\NUL\STX\SOH\b\DC2\EOT\163\ACK\FS)\n\
-    \\DLE\n\
-    \\b\EOT\DC3\ETX\NUL\STX\SOH\b\STX\DC2\EOT\163\ACK\GS(\n\
+    \\DC2\n\
+    \\n\
+    \\EOT\DC3\ETX\NUL\STX\SOH\b\231\a\NUL\DC2\EOT\163\ACK\GS(\n\
+    \\DC3\n\
+    \\v\EOT\DC3\ETX\NUL\STX\SOH\b\231\a\NUL\STX\DC2\EOT\163\ACK\GS#\n\
+    \\DC4\n\
+    \\f\EOT\DC3\ETX\NUL\STX\SOH\b\231\a\NUL\STX\NUL\DC2\EOT\163\ACK\GS#\n\
+    \\NAK\n\
+    \\r\EOT\DC3\ETX\NUL\STX\SOH\b\231\a\NUL\STX\NUL\SOH\DC2\EOT\163\ACK\GS#\n\
+    \\DC3\n\
+    \\v\EOT\DC3\ETX\NUL\STX\SOH\b\231\a\NUL\ETX\DC2\EOT\163\ACK$(\n\
     \\165\f\n\
     \\ACK\EOT\DC3\ETX\NUL\STX\STX\DC2\EOT\212\ACK\EOT)\SUB\148\f If this SourceCodeInfo represents a complete declaration, these are any\n\
     \ comments appearing before and after the declaration which appear to be\n\
@@ -13108,8 +13194,17 @@ packedFileDescriptor
     \\a\EOT\DC4\ETX\NUL\STX\NUL\ETX\DC2\EOT\228\ACK\SUB\ESC\n\
     \\SI\n\
     \\a\EOT\DC4\ETX\NUL\STX\NUL\b\DC2\EOT\228\ACK\FS)\n\
-    \\DLE\n\
-    \\b\EOT\DC4\ETX\NUL\STX\NUL\b\STX\DC2\EOT\228\ACK\GS(\n\
+    \\DC2\n\
+    \\n\
+    \\EOT\DC4\ETX\NUL\STX\NUL\b\231\a\NUL\DC2\EOT\228\ACK\GS(\n\
+    \\DC3\n\
+    \\v\EOT\DC4\ETX\NUL\STX\NUL\b\231\a\NUL\STX\DC2\EOT\228\ACK\GS#\n\
+    \\DC4\n\
+    \\f\EOT\DC4\ETX\NUL\STX\NUL\b\231\a\NUL\STX\NUL\DC2\EOT\228\ACK\GS#\n\
+    \\NAK\n\
+    \\r\EOT\DC4\ETX\NUL\STX\NUL\b\231\a\NUL\STX\NUL\SOH\DC2\EOT\228\ACK\GS#\n\
+    \\DC3\n\
+    \\v\EOT\DC4\ETX\NUL\STX\NUL\b\231\a\NUL\ETX\DC2\EOT\228\ACK$(\n\
     \O\n\
     \\ACK\EOT\DC4\ETX\NUL\STX\SOH\DC2\EOT\231\ACK\EOT$\SUB? Identifies the filesystem path to the original source .proto.\n\
     \\n\
