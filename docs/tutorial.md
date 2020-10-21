@@ -162,13 +162,13 @@ message Bar {
   string bippy = 2;
 }
 ```
-we said that `baz` and `bippy` accessors are created via `HasLens'` instances. If we add a further message into the mix such as:
+we said that `baz` and `bippy` accessors are created via `HasField` instances. If we add a further message into the mix such as:
 ``` protobuf
 message Foo {
   string baz = 1;
 }
 ```
-we can see that `baz` is common to both `Bar` and `Foo`. The difference will be that the instances for `HasLens'` will be:
+we can see that `baz` is common to both `Bar` and `Foo`. The difference will be that the instances for `HasField` will be:
 ``` haskell
 instance HasField Foo "baz" (Data.Text.Text)
 
