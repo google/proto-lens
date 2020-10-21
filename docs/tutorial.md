@@ -41,7 +41,7 @@ Notice `_Foo'_unknownFields :: !Data.ProtoLens.FieldSet`; it stores fields that 
 
 Instances generated are:
 
-* `Data.ProtoLens.Field.HasField` for overloading field names (see [Field Overloading](#field-overloading).
+* `Data.ProtoLens.Field.HasField` for overloading field names (see [Field Overloading](#field-overloading)).
 * `Data.ProtoLens.Message` for having [default message values] and enabling serialization by providing reflection of all of the fields that may be used by this type.
 
 [default message values]: https://developers.google.com/protocol-buffers/docs/proto3#default
