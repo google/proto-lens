@@ -43,7 +43,7 @@ library:
     - parsec == 3.1.*
     - pretty == 1.1.*
     - primitive >= 0.6 && < 0.8
-    - profunctors >= 5.2 && < 5.6
+    - profunctors >= 5.2 && < 6.0
     - tagged == 0.8.*
     - text == 1.2.*
     - transformers >= 0.4 && < 0.6
