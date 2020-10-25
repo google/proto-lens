@@ -61,7 +61,7 @@ For example, in `foo-bar-proto.cabal`:
     ...
     custom-setup
       setup-depends: base, Cabal, proto-lens-setup
-      build-tools-depends: proto-lens-protoc:proto-lens-protoc
+      build-tool-depends: proto-lens-protoc:proto-lens-protoc
 
     library
         exposed-modules: Proto.Foo.Bar, Proto.Foo.Bar_Fields

@@ -41,7 +41,7 @@ Notice `_Foo'_unknownFields :: !Data.ProtoLens.FieldSet`; it stores fields that 
 
 Instances generated are:
 
-* `Data.ProtoLens.Field.HasField` for overloading field names (see [Field Overloading](#field-overloading).
+* `Data.ProtoLens.Field.HasField` for overloading field names (see [Field Overloading](#field-overloading)).
 * `Data.ProtoLens.Message` for having [default message values] and enabling serialization by providing reflection of all of the fields that may be used by this type.
 
 [default message values]: https://developers.google.com/protocol-buffers/docs/proto3#default
@@ -162,13 +162,13 @@ message Bar {
   string bippy = 2;
 }
 ```
-we said that `baz` and `bippy` accessors are created via `HasLens'` instances. If we add a further message into the mix such as:
+we said that `baz` and `bippy` accessors are created via `HasField` instances. If we add a further message into the mix such as:
 ``` protobuf
 message Foo {
   string baz = 1;
 }
 ```
-we can see that `baz` is common to both `Bar` and `Foo`. The difference will be that the instances for `HasLens'` will be:
+we can see that `baz` is common to both `Bar` and `Foo`. The difference will be that the instances for `HasField` will be:
 ``` haskell
 instance HasField Foo "baz" (Data.Text.Text)
 
@@ -188,11 +188,13 @@ The use of `baz` can be done in three ways; which way you choose is up to you an
 The first method is by using the `OverloadedLabels` extension and importing the orphan instance of `IsLabel` for the `Lens` type from `Data.ProtoLens.Labels`.
 That gives us the use of `#` for prefixing our field accessors.
 ``` haskell
-{-# LANGUAGE OverloadedLabels #-}
+{-# LANGUAGE OverloadedLabels  #-}
+{-# LANGUAGE OverloadedStrings #-}
 
+import Data.ProtoLens        (defMessage)
 import Data.ProtoLens.Labels ()
-import Microlens             ((^.))
-import Proto.Foo          as P
+import Lens.Micro            ((&), (.~), (^.))
+import Proto.Foo             as P
 
 myBar :: P.Bar
 myBar = defMessage
@@ -200,7 +202,7 @@ myBar = defMessage
             & #bippy .~ "querty"
 
 main :: IO ()
-main = putStrLn $ myBar ^. #bippy
+main = print $ myBar ^. #bippy
 ```
 
 ### The `fields` function
@@ -210,26 +212,32 @@ The second method uses the `TypeApplications` extension and the function
 but has the advantage of not using orphan instances.
 
 ``` haskell
-{-# LANGUAGE TypeApplications #-}
+{-# LANGUAGE DataKinds         #-}
+{-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE TypeApplications  #-}
 
-import Data.ProtoLens.Fields (field)
-import Microlens             ((^.))
-import Proto.Foo          as P
+import Data.ProtoLens       (defMessage)
+import Data.ProtoLens.Field (field)
+import Lens.Micro           ((&), (.~), (^.))
+import Proto.Foo            as P
 
 myBar :: P.Bar
 myBar = defMessage
-            & field@"baz"   .~ 42
-            & field@"bippy" .~ "querty"
+            & field @"baz"   .~ 42
+            & field @"bippy" .~ "querty"
 
 main :: IO ()
-main = print $ myBar ^. field@"bippy"
+main = print $ myBar ^. field @"bippy"
 ```
 
 ### The `*_Fields.hs` module
 
 The last method is by importing the `*_Fields.hs` module, for example:
 ``` haskell
-import Microlens           ((^.))
+{-# LANGUAGE OverloadedStrings #-}
+
+import Data.ProtoLens   (defMessage)
+import Lens.Micro       ((&), (.~), (^.))
 import Proto.Foo        as P
 import Proto.Foo_Fields as P
 
@@ -249,11 +257,14 @@ by importing the definition from exactly
 one of the modules, and using that name with both of their types.  For example:
 
 ``` haskell
-import Microlens           ((^.))
-import Proto.Foo        as P
-import Proto.Other      as P
-import Proto.Foo_Fields (baz)
-import Proto.Bar_Fields (bippy)
+{-# LANGUAGE OverloadedStrings #-}
+
+import Data.ProtoLens      (defMessage)
+import Lens.Micro          ((&), (.~), (^.))
+import Proto.Foo           as P
+import Proto.Other         as P
+import Proto.Foo_Fields    (baz)
+import Proto.Other_Fields  (bippy)
 
 myBar :: P.Bar
 myBar = defMessage
