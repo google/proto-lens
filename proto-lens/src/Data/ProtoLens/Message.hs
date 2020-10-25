@@ -34,8 +34,11 @@ module Data.ProtoLens.Message (
     -- * Proto registries
     Registry,
     register,
+    registerEnum,
     lookupRegistered,
+    lookupRegisteredEnum,
     SomeMessageType(..),
+    SomeEnumType(..),
     -- * Any messages
     matchAnyMessage,
     AnyMessageDescriptor(..),
@@ -267,6 +270,9 @@ class (Enum a, Bounded a) => MessageEnum a where
     -- | Convert the given 'String' to an enum value. Returns 'Nothing' if
     -- no corresponding value was defined in the .proto file.
     readEnum :: String -> Maybe a
+    -- | A unique identifier for this type, of the format
+    -- @"packagename.enumname"@.
+    enumName :: Proxy a -> T.Text
 
 -- | Utility function for building a message from a default value.
 -- For example:
@@ -317,7 +323,7 @@ reverseRepeatedFields fields x0
 -- Registries can be combined using their 'Monoid' instance.
 --
 -- See the @withRegistry@ functions in 'Data.ProtoLens.TextFormat'
-newtype Registry = Registry (Map.Map T.Text SomeMessageType)
+newtype Registry = Registry (Map.Map T.Text SomeMessageType, Map.Map T.Text SomeEnumType)
     deriving (Semigroup.Semigroup, Monoid)
 
 -- | Build a 'Registry' containing a single proto type.
@@ -325,16 +331,31 @@ newtype Registry = Registry (Map.Map T.Text SomeMessageType)
 --   Example:
 -- > register (Proxy :: Proxy Proto.My.Proto.Type)
 register :: forall msg . Message msg => Proxy msg -> Registry
-register p = Registry $ Map.singleton (messageName (Proxy @msg)) (SomeMessageType p)
+register p = Registry (Map.singleton (messageName p) (SomeMessageType p), Map.empty)
+
+-- | Build a 'Registry' containing a single enum type.
+--
+--   Example:
+-- > registerEnum (Proxy :: Proxy Proto.My.Proto.EnumType)
+registerEnum :: forall e . MessageEnum e => Proxy e -> Registry
+registerEnum p = Registry (Map.empty, Map.singleton (enumName p) (SomeEnumType p))
 
 -- | Look up a message type by name (e.g.,
 -- @"type.googleapis.com/google.protobuf.FloatValue"@). The URL corresponds to
 -- the field @google.protobuf.Any.type_url@.
 lookupRegistered :: T.Text -> Registry -> Maybe SomeMessageType
-lookupRegistered n (Registry m) = Map.lookup (snd $ T.breakOnEnd "/" n) m
+lookupRegistered n (Registry (m, _)) = Map.lookup (snd $ T.breakOnEnd "/" n) m
+
+-- | Look up a enum type by name (e.g.,
+-- @"type.googleapis.com/google.protobuf.Syntax"@).
+lookupRegisteredEnum :: T.Text -> Registry -> Maybe SomeEnumType
+lookupRegisteredEnum n (Registry (_, m)) = Map.lookup (snd $ T.breakOnEnd "/" n) m
 
 data SomeMessageType where
     SomeMessageType :: Message msg => Proxy msg -> SomeMessageType
+
+data SomeEnumType where
+    SomeEnumType :: MessageEnum e => Proxy e -> SomeEnumType
 
 -- TODO: recursively
 discardUnknownFields :: Message msg => msg -> msg
