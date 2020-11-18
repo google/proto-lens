@@ -5,6 +5,7 @@
 {-# OPTIONS_GHC -Wno-dodgy-exports#-}
 module Proto.Google.Protobuf.Compiler.Plugin (
         CodeGeneratorRequest(), CodeGeneratorResponse(),
+        CodeGeneratorResponse'Feature(..), CodeGeneratorResponse'Feature(),
         CodeGeneratorResponse'File(), Version()
     ) where
 import qualified Data.ProtoLens.Runtime.Control.DeepSeq as Control.DeepSeq
@@ -371,10 +372,13 @@ instance Control.DeepSeq.NFData CodeGeneratorRequest where
      
          * 'Proto.Google.Protobuf.Compiler.Plugin_Fields.error' @:: Lens' CodeGeneratorResponse Data.Text.Text@
          * 'Proto.Google.Protobuf.Compiler.Plugin_Fields.maybe'error' @:: Lens' CodeGeneratorResponse (Prelude.Maybe Data.Text.Text)@
+         * 'Proto.Google.Protobuf.Compiler.Plugin_Fields.supportedFeatures' @:: Lens' CodeGeneratorResponse Data.Word.Word64@
+         * 'Proto.Google.Protobuf.Compiler.Plugin_Fields.maybe'supportedFeatures' @:: Lens' CodeGeneratorResponse (Prelude.Maybe Data.Word.Word64)@
          * 'Proto.Google.Protobuf.Compiler.Plugin_Fields.file' @:: Lens' CodeGeneratorResponse [CodeGeneratorResponse'File]@
          * 'Proto.Google.Protobuf.Compiler.Plugin_Fields.vec'file' @:: Lens' CodeGeneratorResponse (Data.Vector.Vector CodeGeneratorResponse'File)@ -}
 data CodeGeneratorResponse
   = CodeGeneratorResponse'_constructor {_CodeGeneratorResponse'error :: !(Prelude.Maybe Data.Text.Text),
+                                        _CodeGeneratorResponse'supportedFeatures :: !(Prelude.Maybe Data.Word.Word64),
                                         _CodeGeneratorResponse'file :: !(Data.Vector.Vector CodeGeneratorResponse'File),
                                         _CodeGeneratorResponse'_unknownFields :: !Data.ProtoLens.FieldSet}
   deriving stock (Prelude.Eq, Prelude.Ord)
@@ -398,6 +402,22 @@ instance Data.ProtoLens.Field.HasField CodeGeneratorResponse "maybe'error" (Prel
            _CodeGeneratorResponse'error
            (\ x__ y__ -> x__ {_CodeGeneratorResponse'error = y__}))
         Prelude.id
+instance Data.ProtoLens.Field.HasField CodeGeneratorResponse "supportedFeatures" Data.Word.Word64 where
+  fieldOf _
+    = (Prelude..)
+        (Lens.Family2.Unchecked.lens
+           _CodeGeneratorResponse'supportedFeatures
+           (\ x__ y__
+              -> x__ {_CodeGeneratorResponse'supportedFeatures = y__}))
+        (Data.ProtoLens.maybeLens Data.ProtoLens.fieldDefault)
+instance Data.ProtoLens.Field.HasField CodeGeneratorResponse "maybe'supportedFeatures" (Prelude.Maybe Data.Word.Word64) where
+  fieldOf _
+    = (Prelude..)
+        (Lens.Family2.Unchecked.lens
+           _CodeGeneratorResponse'supportedFeatures
+           (\ x__ y__
+              -> x__ {_CodeGeneratorResponse'supportedFeatures = y__}))
+        Prelude.id
 instance Data.ProtoLens.Field.HasField CodeGeneratorResponse "file" [CodeGeneratorResponse'File] where
   fieldOf _
     = (Prelude..)
@@ -420,12 +440,17 @@ instance Data.ProtoLens.Message CodeGeneratorResponse where
   packedMessageDescriptor _
     = "\n\
       \\NAKCodeGeneratorResponse\DC2\DC4\n\
-      \\ENQerror\CAN\SOH \SOH(\tR\ENQerror\DC2H\n\
-      \\EOTfile\CAN\SI \ETX(\v24.google.protobuf.compiler.CodeGeneratorResponse.FileR\EOTfile\SUB]\n\
+      \\ENQerror\CAN\SOH \SOH(\tR\ENQerror\DC2-\n\
+      \\DC2supported_features\CAN\STX \SOH(\EOTR\DC1supportedFeatures\DC2H\n\
+      \\EOTfile\CAN\SI \ETX(\v24.google.protobuf.compiler.CodeGeneratorResponse.FileR\EOTfile\SUB\177\SOH\n\
       \\EOTFile\DC2\DC2\n\
       \\EOTname\CAN\SOH \SOH(\tR\EOTname\DC2'\n\
       \\SIinsertion_point\CAN\STX \SOH(\tR\SOinsertionPoint\DC2\CAN\n\
-      \\acontent\CAN\SI \SOH(\tR\acontent"
+      \\acontent\CAN\SI \SOH(\tR\acontent\DC2R\n\
+      \\DC3generated_code_info\CAN\DLE \SOH(\v2\".google.protobuf.GeneratedCodeInfoR\DC1generatedCodeInfo\"8\n\
+      \\aFeature\DC2\DLE\n\
+      \\fFEATURE_NONE\DLE\NUL\DC2\ESC\n\
+      \\ETBFEATURE_PROTO3_OPTIONAL\DLE\SOH"
   packedFileDescriptor _ = packedFileDescriptor
   fieldsByTag
     = let
@@ -436,6 +461,14 @@ instance Data.ProtoLens.Message CodeGeneratorResponse where
                  Data.ProtoLens.FieldTypeDescriptor Data.Text.Text)
               (Data.ProtoLens.OptionalField
                  (Data.ProtoLens.Field.field @"maybe'error")) ::
+              Data.ProtoLens.FieldDescriptor CodeGeneratorResponse
+        supportedFeatures__field_descriptor
+          = Data.ProtoLens.FieldDescriptor
+              "supported_features"
+              (Data.ProtoLens.ScalarField Data.ProtoLens.UInt64Field ::
+                 Data.ProtoLens.FieldTypeDescriptor Data.Word.Word64)
+              (Data.ProtoLens.OptionalField
+                 (Data.ProtoLens.Field.field @"maybe'supportedFeatures")) ::
               Data.ProtoLens.FieldDescriptor CodeGeneratorResponse
         file__field_descriptor
           = Data.ProtoLens.FieldDescriptor
@@ -448,6 +481,7 @@ instance Data.ProtoLens.Message CodeGeneratorResponse where
       in
         Data.Map.fromList
           [(Data.ProtoLens.Tag 1, error__field_descriptor),
+           (Data.ProtoLens.Tag 2, supportedFeatures__field_descriptor),
            (Data.ProtoLens.Tag 15, file__field_descriptor)]
   unknownFields
     = Lens.Family2.Unchecked.lens
@@ -456,6 +490,7 @@ instance Data.ProtoLens.Message CodeGeneratorResponse where
   defMessage
     = CodeGeneratorResponse'_constructor
         {_CodeGeneratorResponse'error = Prelude.Nothing,
+         _CodeGeneratorResponse'supportedFeatures = Prelude.Nothing,
          _CodeGeneratorResponse'file = Data.Vector.Generic.empty,
          _CodeGeneratorResponse'_unknownFields = []}
   parseMessage
@@ -501,6 +536,13 @@ instance Data.ProtoLens.Message CodeGeneratorResponse where
                                 loop
                                   (Lens.Family2.set (Data.ProtoLens.Field.field @"error") y x)
                                   mutable'file
+                        16
+                          -> do y <- (Data.ProtoLens.Encoding.Bytes.<?>)
+                                       Data.ProtoLens.Encoding.Bytes.getVarInt "supported_features"
+                                loop
+                                  (Lens.Family2.set
+                                     (Data.ProtoLens.Field.field @"supportedFeatures") y x)
+                                  mutable'file
                         122
                           -> do !y <- (Data.ProtoLens.Encoding.Bytes.<?>)
                                         (do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
@@ -543,21 +585,31 @@ instance Data.ProtoLens.Message CodeGeneratorResponse where
                           Data.Text.Encoding.encodeUtf8
                           _v))
              ((Data.Monoid.<>)
-                (Data.ProtoLens.Encoding.Bytes.foldMapBuilder
-                   (\ _v
-                      -> (Data.Monoid.<>)
-                           (Data.ProtoLens.Encoding.Bytes.putVarInt 122)
-                           ((Prelude..)
-                              (\ bs
-                                 -> (Data.Monoid.<>)
-                                      (Data.ProtoLens.Encoding.Bytes.putVarInt
-                                         (Prelude.fromIntegral (Data.ByteString.length bs)))
-                                      (Data.ProtoLens.Encoding.Bytes.putBytes bs))
-                              Data.ProtoLens.encodeMessage
-                              _v))
-                   (Lens.Family2.view (Data.ProtoLens.Field.field @"vec'file") _x))
-                (Data.ProtoLens.Encoding.Wire.buildFieldSet
-                   (Lens.Family2.view Data.ProtoLens.unknownFields _x)))
+                (case
+                     Lens.Family2.view
+                       (Data.ProtoLens.Field.field @"maybe'supportedFeatures") _x
+                 of
+                   Prelude.Nothing -> Data.Monoid.mempty
+                   (Prelude.Just _v)
+                     -> (Data.Monoid.<>)
+                          (Data.ProtoLens.Encoding.Bytes.putVarInt 16)
+                          (Data.ProtoLens.Encoding.Bytes.putVarInt _v))
+                ((Data.Monoid.<>)
+                   (Data.ProtoLens.Encoding.Bytes.foldMapBuilder
+                      (\ _v
+                         -> (Data.Monoid.<>)
+                              (Data.ProtoLens.Encoding.Bytes.putVarInt 122)
+                              ((Prelude..)
+                                 (\ bs
+                                    -> (Data.Monoid.<>)
+                                         (Data.ProtoLens.Encoding.Bytes.putVarInt
+                                            (Prelude.fromIntegral (Data.ByteString.length bs)))
+                                         (Data.ProtoLens.Encoding.Bytes.putBytes bs))
+                                 Data.ProtoLens.encodeMessage
+                                 _v))
+                      (Lens.Family2.view (Data.ProtoLens.Field.field @"vec'file") _x))
+                   (Data.ProtoLens.Encoding.Wire.buildFieldSet
+                      (Lens.Family2.view Data.ProtoLens.unknownFields _x))))
 instance Control.DeepSeq.NFData CodeGeneratorResponse where
   rnf
     = \ x__
@@ -565,7 +617,59 @@ instance Control.DeepSeq.NFData CodeGeneratorResponse where
              (_CodeGeneratorResponse'_unknownFields x__)
              (Control.DeepSeq.deepseq
                 (_CodeGeneratorResponse'error x__)
-                (Control.DeepSeq.deepseq (_CodeGeneratorResponse'file x__) ()))
+                (Control.DeepSeq.deepseq
+                   (_CodeGeneratorResponse'supportedFeatures x__)
+                   (Control.DeepSeq.deepseq (_CodeGeneratorResponse'file x__) ())))
+data CodeGeneratorResponse'Feature
+  = CodeGeneratorResponse'FEATURE_NONE |
+    CodeGeneratorResponse'FEATURE_PROTO3_OPTIONAL
+  deriving stock (Prelude.Show, Prelude.Eq, Prelude.Ord)
+instance Data.ProtoLens.MessageEnum CodeGeneratorResponse'Feature where
+  maybeToEnum 0 = Prelude.Just CodeGeneratorResponse'FEATURE_NONE
+  maybeToEnum 1
+    = Prelude.Just CodeGeneratorResponse'FEATURE_PROTO3_OPTIONAL
+  maybeToEnum _ = Prelude.Nothing
+  showEnum CodeGeneratorResponse'FEATURE_NONE = "FEATURE_NONE"
+  showEnum CodeGeneratorResponse'FEATURE_PROTO3_OPTIONAL
+    = "FEATURE_PROTO3_OPTIONAL"
+  readEnum k
+    | (Prelude.==) k "FEATURE_NONE"
+    = Prelude.Just CodeGeneratorResponse'FEATURE_NONE
+    | (Prelude.==) k "FEATURE_PROTO3_OPTIONAL"
+    = Prelude.Just CodeGeneratorResponse'FEATURE_PROTO3_OPTIONAL
+    | Prelude.otherwise
+    = (Prelude.>>=) (Text.Read.readMaybe k) Data.ProtoLens.maybeToEnum
+instance Prelude.Bounded CodeGeneratorResponse'Feature where
+  minBound = CodeGeneratorResponse'FEATURE_NONE
+  maxBound = CodeGeneratorResponse'FEATURE_PROTO3_OPTIONAL
+instance Prelude.Enum CodeGeneratorResponse'Feature where
+  toEnum k__
+    = Prelude.maybe
+        (Prelude.error
+           ((Prelude.++)
+              "toEnum: unknown value for enum Feature: " (Prelude.show k__)))
+        Prelude.id
+        (Data.ProtoLens.maybeToEnum k__)
+  fromEnum CodeGeneratorResponse'FEATURE_NONE = 0
+  fromEnum CodeGeneratorResponse'FEATURE_PROTO3_OPTIONAL = 1
+  succ CodeGeneratorResponse'FEATURE_PROTO3_OPTIONAL
+    = Prelude.error
+        "CodeGeneratorResponse'Feature.succ: bad argument CodeGeneratorResponse'FEATURE_PROTO3_OPTIONAL. This value would be out of bounds."
+  succ CodeGeneratorResponse'FEATURE_NONE
+    = CodeGeneratorResponse'FEATURE_PROTO3_OPTIONAL
+  pred CodeGeneratorResponse'FEATURE_NONE
+    = Prelude.error
+        "CodeGeneratorResponse'Feature.pred: bad argument CodeGeneratorResponse'FEATURE_NONE. This value would be out of bounds."
+  pred CodeGeneratorResponse'FEATURE_PROTO3_OPTIONAL
+    = CodeGeneratorResponse'FEATURE_NONE
+  enumFrom = Data.ProtoLens.Message.Enum.messageEnumFrom
+  enumFromTo = Data.ProtoLens.Message.Enum.messageEnumFromTo
+  enumFromThen = Data.ProtoLens.Message.Enum.messageEnumFromThen
+  enumFromThenTo = Data.ProtoLens.Message.Enum.messageEnumFromThenTo
+instance Data.ProtoLens.FieldDefault CodeGeneratorResponse'Feature where
+  fieldDefault = CodeGeneratorResponse'FEATURE_NONE
+instance Control.DeepSeq.NFData CodeGeneratorResponse'Feature where
+  rnf x__ = Prelude.seq x__ ()
 {- | Fields :
      
          * 'Proto.Google.Protobuf.Compiler.Plugin_Fields.name' @:: Lens' CodeGeneratorResponse'File Data.Text.Text@
@@ -573,11 +677,14 @@ instance Control.DeepSeq.NFData CodeGeneratorResponse where
          * 'Proto.Google.Protobuf.Compiler.Plugin_Fields.insertionPoint' @:: Lens' CodeGeneratorResponse'File Data.Text.Text@
          * 'Proto.Google.Protobuf.Compiler.Plugin_Fields.maybe'insertionPoint' @:: Lens' CodeGeneratorResponse'File (Prelude.Maybe Data.Text.Text)@
          * 'Proto.Google.Protobuf.Compiler.Plugin_Fields.content' @:: Lens' CodeGeneratorResponse'File Data.Text.Text@
-         * 'Proto.Google.Protobuf.Compiler.Plugin_Fields.maybe'content' @:: Lens' CodeGeneratorResponse'File (Prelude.Maybe Data.Text.Text)@ -}
+         * 'Proto.Google.Protobuf.Compiler.Plugin_Fields.maybe'content' @:: Lens' CodeGeneratorResponse'File (Prelude.Maybe Data.Text.Text)@
+         * 'Proto.Google.Protobuf.Compiler.Plugin_Fields.generatedCodeInfo' @:: Lens' CodeGeneratorResponse'File Proto.Google.Protobuf.Descriptor.GeneratedCodeInfo@
+         * 'Proto.Google.Protobuf.Compiler.Plugin_Fields.maybe'generatedCodeInfo' @:: Lens' CodeGeneratorResponse'File (Prelude.Maybe Proto.Google.Protobuf.Descriptor.GeneratedCodeInfo)@ -}
 data CodeGeneratorResponse'File
   = CodeGeneratorResponse'File'_constructor {_CodeGeneratorResponse'File'name :: !(Prelude.Maybe Data.Text.Text),
                                              _CodeGeneratorResponse'File'insertionPoint :: !(Prelude.Maybe Data.Text.Text),
                                              _CodeGeneratorResponse'File'content :: !(Prelude.Maybe Data.Text.Text),
+                                             _CodeGeneratorResponse'File'generatedCodeInfo :: !(Prelude.Maybe Proto.Google.Protobuf.Descriptor.GeneratedCodeInfo),
                                              _CodeGeneratorResponse'File'_unknownFields :: !Data.ProtoLens.FieldSet}
   deriving stock (Prelude.Eq, Prelude.Ord)
 instance Prelude.Show CodeGeneratorResponse'File where
@@ -630,6 +737,22 @@ instance Data.ProtoLens.Field.HasField CodeGeneratorResponse'File "maybe'content
            _CodeGeneratorResponse'File'content
            (\ x__ y__ -> x__ {_CodeGeneratorResponse'File'content = y__}))
         Prelude.id
+instance Data.ProtoLens.Field.HasField CodeGeneratorResponse'File "generatedCodeInfo" Proto.Google.Protobuf.Descriptor.GeneratedCodeInfo where
+  fieldOf _
+    = (Prelude..)
+        (Lens.Family2.Unchecked.lens
+           _CodeGeneratorResponse'File'generatedCodeInfo
+           (\ x__ y__
+              -> x__ {_CodeGeneratorResponse'File'generatedCodeInfo = y__}))
+        (Data.ProtoLens.maybeLens Data.ProtoLens.defMessage)
+instance Data.ProtoLens.Field.HasField CodeGeneratorResponse'File "maybe'generatedCodeInfo" (Prelude.Maybe Proto.Google.Protobuf.Descriptor.GeneratedCodeInfo) where
+  fieldOf _
+    = (Prelude..)
+        (Lens.Family2.Unchecked.lens
+           _CodeGeneratorResponse'File'generatedCodeInfo
+           (\ x__ y__
+              -> x__ {_CodeGeneratorResponse'File'generatedCodeInfo = y__}))
+        Prelude.id
 instance Data.ProtoLens.Message CodeGeneratorResponse'File where
   messageName _
     = Data.Text.pack
@@ -639,7 +762,8 @@ instance Data.ProtoLens.Message CodeGeneratorResponse'File where
       \\EOTFile\DC2\DC2\n\
       \\EOTname\CAN\SOH \SOH(\tR\EOTname\DC2'\n\
       \\SIinsertion_point\CAN\STX \SOH(\tR\SOinsertionPoint\DC2\CAN\n\
-      \\acontent\CAN\SI \SOH(\tR\acontent"
+      \\acontent\CAN\SI \SOH(\tR\acontent\DC2R\n\
+      \\DC3generated_code_info\CAN\DLE \SOH(\v2\".google.protobuf.GeneratedCodeInfoR\DC1generatedCodeInfo"
   packedFileDescriptor _ = packedFileDescriptor
   fieldsByTag
     = let
@@ -667,11 +791,20 @@ instance Data.ProtoLens.Message CodeGeneratorResponse'File where
               (Data.ProtoLens.OptionalField
                  (Data.ProtoLens.Field.field @"maybe'content")) ::
               Data.ProtoLens.FieldDescriptor CodeGeneratorResponse'File
+        generatedCodeInfo__field_descriptor
+          = Data.ProtoLens.FieldDescriptor
+              "generated_code_info"
+              (Data.ProtoLens.MessageField Data.ProtoLens.MessageType ::
+                 Data.ProtoLens.FieldTypeDescriptor Proto.Google.Protobuf.Descriptor.GeneratedCodeInfo)
+              (Data.ProtoLens.OptionalField
+                 (Data.ProtoLens.Field.field @"maybe'generatedCodeInfo")) ::
+              Data.ProtoLens.FieldDescriptor CodeGeneratorResponse'File
       in
         Data.Map.fromList
           [(Data.ProtoLens.Tag 1, name__field_descriptor),
            (Data.ProtoLens.Tag 2, insertionPoint__field_descriptor),
-           (Data.ProtoLens.Tag 15, content__field_descriptor)]
+           (Data.ProtoLens.Tag 15, content__field_descriptor),
+           (Data.ProtoLens.Tag 16, generatedCodeInfo__field_descriptor)]
   unknownFields
     = Lens.Family2.Unchecked.lens
         _CodeGeneratorResponse'File'_unknownFields
@@ -682,6 +815,7 @@ instance Data.ProtoLens.Message CodeGeneratorResponse'File where
         {_CodeGeneratorResponse'File'name = Prelude.Nothing,
          _CodeGeneratorResponse'File'insertionPoint = Prelude.Nothing,
          _CodeGeneratorResponse'File'content = Prelude.Nothing,
+         _CodeGeneratorResponse'File'generatedCodeInfo = Prelude.Nothing,
          _CodeGeneratorResponse'File'_unknownFields = []}
   parseMessage
     = let
@@ -744,6 +878,15 @@ instance Data.ProtoLens.Message CodeGeneratorResponse'File where
                                                 (Prelude.Right r) -> Prelude.Right r))
                                        "content"
                                 loop (Lens.Family2.set (Data.ProtoLens.Field.field @"content") y x)
+                        130
+                          -> do y <- (Data.ProtoLens.Encoding.Bytes.<?>)
+                                       (do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
+                                           Data.ProtoLens.Encoding.Bytes.isolate
+                                             (Prelude.fromIntegral len) Data.ProtoLens.parseMessage)
+                                       "generated_code_info"
+                                loop
+                                  (Lens.Family2.set
+                                     (Data.ProtoLens.Field.field @"generatedCodeInfo") y x)
                         wire
                           -> do !y <- Data.ProtoLens.Encoding.Wire.parseTaggedValueFromWire
                                         wire
@@ -804,8 +947,25 @@ instance Data.ProtoLens.Message CodeGeneratorResponse'File where
                                         (Data.ProtoLens.Encoding.Bytes.putBytes bs))
                                 Data.Text.Encoding.encodeUtf8
                                 _v))
-                   (Data.ProtoLens.Encoding.Wire.buildFieldSet
-                      (Lens.Family2.view Data.ProtoLens.unknownFields _x))))
+                   ((Data.Monoid.<>)
+                      (case
+                           Lens.Family2.view
+                             (Data.ProtoLens.Field.field @"maybe'generatedCodeInfo") _x
+                       of
+                         Prelude.Nothing -> Data.Monoid.mempty
+                         (Prelude.Just _v)
+                           -> (Data.Monoid.<>)
+                                (Data.ProtoLens.Encoding.Bytes.putVarInt 130)
+                                ((Prelude..)
+                                   (\ bs
+                                      -> (Data.Monoid.<>)
+                                           (Data.ProtoLens.Encoding.Bytes.putVarInt
+                                              (Prelude.fromIntegral (Data.ByteString.length bs)))
+                                           (Data.ProtoLens.Encoding.Bytes.putBytes bs))
+                                   Data.ProtoLens.encodeMessage
+                                   _v))
+                      (Data.ProtoLens.Encoding.Wire.buildFieldSet
+                         (Lens.Family2.view Data.ProtoLens.unknownFields _x)))))
 instance Control.DeepSeq.NFData CodeGeneratorResponse'File where
   rnf
     = \ x__
@@ -816,7 +976,9 @@ instance Control.DeepSeq.NFData CodeGeneratorResponse'File where
                 (Control.DeepSeq.deepseq
                    (_CodeGeneratorResponse'File'insertionPoint x__)
                    (Control.DeepSeq.deepseq
-                      (_CodeGeneratorResponse'File'content x__) ())))
+                      (_CodeGeneratorResponse'File'content x__)
+                      (Control.DeepSeq.deepseq
+                         (_CodeGeneratorResponse'File'generatedCodeInfo x__) ()))))
 {- | Fields :
      
          * 'Proto.Google.Protobuf.Compiler.Plugin_Fields.major' @:: Lens' Version Data.Int.Int32@
@@ -1085,16 +1247,21 @@ packedFileDescriptor
     \\tparameter\CAN\STX \SOH(\tR\tparameter\DC2C\n\
     \\n\
     \proto_file\CAN\SI \ETX(\v2$.google.protobuf.FileDescriptorProtoR\tprotoFile\DC2L\n\
-    \\DLEcompiler_version\CAN\ETX \SOH(\v2!.google.protobuf.compiler.VersionR\SIcompilerVersion\"\214\SOH\n\
+    \\DLEcompiler_version\CAN\ETX \SOH(\v2!.google.protobuf.compiler.VersionR\SIcompilerVersion\"\148\ETX\n\
     \\NAKCodeGeneratorResponse\DC2\DC4\n\
-    \\ENQerror\CAN\SOH \SOH(\tR\ENQerror\DC2H\n\
-    \\EOTfile\CAN\SI \ETX(\v24.google.protobuf.compiler.CodeGeneratorResponse.FileR\EOTfile\SUB]\n\
+    \\ENQerror\CAN\SOH \SOH(\tR\ENQerror\DC2-\n\
+    \\DC2supported_features\CAN\STX \SOH(\EOTR\DC1supportedFeatures\DC2H\n\
+    \\EOTfile\CAN\SI \ETX(\v24.google.protobuf.compiler.CodeGeneratorResponse.FileR\EOTfile\SUB\177\SOH\n\
     \\EOTFile\DC2\DC2\n\
     \\EOTname\CAN\SOH \SOH(\tR\EOTname\DC2'\n\
     \\SIinsertion_point\CAN\STX \SOH(\tR\SOinsertionPoint\DC2\CAN\n\
-    \\acontent\CAN\SI \SOH(\tR\acontentBg\n\
-    \\FScom.google.protobuf.compilerB\fPluginProtosZ9github.com/golang/protobuf/protoc-gen-go/plugin;plugin_goJ\166@\n\
-    \\a\DC2\ENQ.\NUL\166\SOH\SOH\n\
+    \\acontent\CAN\SI \SOH(\tR\acontent\DC2R\n\
+    \\DC3generated_code_info\CAN\DLE \SOH(\v2\".google.protobuf.GeneratedCodeInfoR\DC1generatedCodeInfo\"8\n\
+    \\aFeature\DC2\DLE\n\
+    \\fFEATURE_NONE\DLE\NUL\DC2\ESC\n\
+    \\ETBFEATURE_PROTO3_OPTIONAL\DLE\SOHBW\n\
+    \\FScom.google.protobuf.compilerB\fPluginProtosZ)google.golang.org/protobuf/types/pluginpbJ\249C\n\
+    \\a\DC2\ENQ.\NUL\182\SOH\SOH\n\
     \\202\DC1\n\
     \\SOH\f\DC2\ETX.\NUL\DC22\193\f Protocol Buffers - Google's data interchange format\n\
     \ Copyright 2008 Google Inc.  All rights reserved.\n\
@@ -1142,131 +1309,107 @@ packedFileDescriptor
     \ flag \"--${NAME}_out\" is passed to protoc.\n\
     \\n\
     \\b\n\
-    \\SOH\STX\DC2\ETX/\b \n\
+    \\SOH\STX\DC2\ETX0\NUL!\n\
     \\b\n\
-    \\SOH\b\DC2\ETX0\NUL5\n\
-    \\v\n\
-    \\EOT\b\231\a\NUL\DC2\ETX0\NUL5\n\
-    \\f\n\
-    \\ENQ\b\231\a\NUL\STX\DC2\ETX0\a\DC3\n\
-    \\r\n\
-    \\ACK\b\231\a\NUL\STX\NUL\DC2\ETX0\a\DC3\n\
-    \\SO\n\
-    \\a\b\231\a\NUL\STX\NUL\SOH\DC2\ETX0\a\DC3\n\
-    \\f\n\
-    \\ENQ\b\231\a\NUL\a\DC2\ETX0\SYN4\n\
-    \\b\n\
-    \\SOH\b\DC2\ETX1\NUL-\n\
-    \\v\n\
-    \\EOT\b\231\a\SOH\DC2\ETX1\NUL-\n\
-    \\f\n\
-    \\ENQ\b\231\a\SOH\STX\DC2\ETX1\a\ESC\n\
-    \\r\n\
-    \\ACK\b\231\a\SOH\STX\NUL\DC2\ETX1\a\ESC\n\
-    \\SO\n\
-    \\a\b\231\a\SOH\STX\NUL\SOH\DC2\ETX1\a\ESC\n\
-    \\f\n\
-    \\ENQ\b\231\a\SOH\a\DC2\ETX1\RS,\n\
-    \\b\n\
-    \\SOH\b\DC2\ETX3\NULP\n\
-    \\v\n\
-    \\EOT\b\231\a\STX\DC2\ETX3\NULP\n\
-    \\f\n\
-    \\ENQ\b\231\a\STX\STX\DC2\ETX3\a\DC1\n\
-    \\r\n\
-    \\ACK\b\231\a\STX\STX\NUL\DC2\ETX3\a\DC1\n\
-    \\SO\n\
-    \\a\b\231\a\STX\STX\NUL\SOH\DC2\ETX3\a\DC1\n\
-    \\f\n\
-    \\ENQ\b\231\a\STX\a\DC2\ETX3\DC4O\n\
+    \\SOH\b\DC2\ETX1\NUL5\n\
     \\t\n\
-    \\STX\ETX\NUL\DC2\ETX5\a)\n\
+    \\STX\b\SOH\DC2\ETX1\NUL5\n\
+    \\b\n\
+    \\SOH\b\DC2\ETX2\NUL-\n\
+    \\t\n\
+    \\STX\b\b\DC2\ETX2\NUL-\n\
+    \\b\n\
+    \\SOH\b\DC2\ETX4\NUL@\n\
+    \\t\n\
+    \\STX\b\v\DC2\ETX4\NUL@\n\
+    \\t\n\
+    \\STX\ETX\NUL\DC2\ETX6\NUL*\n\
     \6\n\
-    \\STX\EOT\NUL\DC2\EOT8\NUL?\SOH\SUB* The version number of protocol compiler.\n\
+    \\STX\EOT\NUL\DC2\EOT9\NUL@\SOH\SUB* The version number of protocol compiler.\n\
     \\n\
     \\n\
     \\n\
-    \\ETX\EOT\NUL\SOH\DC2\ETX8\b\SI\n\
+    \\ETX\EOT\NUL\SOH\DC2\ETX9\b\SI\n\
     \\v\n\
-    \\EOT\EOT\NUL\STX\NUL\DC2\ETX9\STX\ESC\n\
+    \\EOT\EOT\NUL\STX\NUL\DC2\ETX:\STX\ESC\n\
     \\f\n\
-    \\ENQ\EOT\NUL\STX\NUL\EOT\DC2\ETX9\STX\n\
+    \\ENQ\EOT\NUL\STX\NUL\EOT\DC2\ETX:\STX\n\
     \\n\
     \\f\n\
-    \\ENQ\EOT\NUL\STX\NUL\ENQ\DC2\ETX9\v\DLE\n\
+    \\ENQ\EOT\NUL\STX\NUL\ENQ\DC2\ETX:\v\DLE\n\
     \\f\n\
-    \\ENQ\EOT\NUL\STX\NUL\SOH\DC2\ETX9\DC1\SYN\n\
+    \\ENQ\EOT\NUL\STX\NUL\SOH\DC2\ETX:\DC1\SYN\n\
     \\f\n\
-    \\ENQ\EOT\NUL\STX\NUL\ETX\DC2\ETX9\EM\SUB\n\
+    \\ENQ\EOT\NUL\STX\NUL\ETX\DC2\ETX:\EM\SUB\n\
     \\v\n\
-    \\EOT\EOT\NUL\STX\SOH\DC2\ETX:\STX\ESC\n\
+    \\EOT\EOT\NUL\STX\SOH\DC2\ETX;\STX\ESC\n\
     \\f\n\
-    \\ENQ\EOT\NUL\STX\SOH\EOT\DC2\ETX:\STX\n\
+    \\ENQ\EOT\NUL\STX\SOH\EOT\DC2\ETX;\STX\n\
     \\n\
     \\f\n\
-    \\ENQ\EOT\NUL\STX\SOH\ENQ\DC2\ETX:\v\DLE\n\
+    \\ENQ\EOT\NUL\STX\SOH\ENQ\DC2\ETX;\v\DLE\n\
     \\f\n\
-    \\ENQ\EOT\NUL\STX\SOH\SOH\DC2\ETX:\DC1\SYN\n\
+    \\ENQ\EOT\NUL\STX\SOH\SOH\DC2\ETX;\DC1\SYN\n\
     \\f\n\
-    \\ENQ\EOT\NUL\STX\SOH\ETX\DC2\ETX:\EM\SUB\n\
+    \\ENQ\EOT\NUL\STX\SOH\ETX\DC2\ETX;\EM\SUB\n\
     \\v\n\
-    \\EOT\EOT\NUL\STX\STX\DC2\ETX;\STX\ESC\n\
+    \\EOT\EOT\NUL\STX\STX\DC2\ETX<\STX\ESC\n\
     \\f\n\
-    \\ENQ\EOT\NUL\STX\STX\EOT\DC2\ETX;\STX\n\
+    \\ENQ\EOT\NUL\STX\STX\EOT\DC2\ETX<\STX\n\
     \\n\
     \\f\n\
-    \\ENQ\EOT\NUL\STX\STX\ENQ\DC2\ETX;\v\DLE\n\
+    \\ENQ\EOT\NUL\STX\STX\ENQ\DC2\ETX<\v\DLE\n\
     \\f\n\
-    \\ENQ\EOT\NUL\STX\STX\SOH\DC2\ETX;\DC1\SYN\n\
+    \\ENQ\EOT\NUL\STX\STX\SOH\DC2\ETX<\DC1\SYN\n\
     \\f\n\
-    \\ENQ\EOT\NUL\STX\STX\ETX\DC2\ETX;\EM\SUB\n\
+    \\ENQ\EOT\NUL\STX\STX\ETX\DC2\ETX<\EM\SUB\n\
     \\128\SOH\n\
-    \\EOT\EOT\NUL\STX\ETX\DC2\ETX>\STX\GS\SUBs A suffix for alpha, beta or rc release, e.g., \"alpha-1\", \"rc2\". It should\n\
+    \\EOT\EOT\NUL\STX\ETX\DC2\ETX?\STX\GS\SUBs A suffix for alpha, beta or rc release, e.g., \"alpha-1\", \"rc2\". It should\n\
     \ be empty for mainline stable releases.\n\
     \\n\
     \\f\n\
-    \\ENQ\EOT\NUL\STX\ETX\EOT\DC2\ETX>\STX\n\
+    \\ENQ\EOT\NUL\STX\ETX\EOT\DC2\ETX?\STX\n\
     \\n\
     \\f\n\
-    \\ENQ\EOT\NUL\STX\ETX\ENQ\DC2\ETX>\v\DC1\n\
+    \\ENQ\EOT\NUL\STX\ETX\ENQ\DC2\ETX?\v\DC1\n\
     \\f\n\
-    \\ENQ\EOT\NUL\STX\ETX\SOH\DC2\ETX>\DC2\CAN\n\
+    \\ENQ\EOT\NUL\STX\ETX\SOH\DC2\ETX?\DC2\CAN\n\
     \\f\n\
-    \\ENQ\EOT\NUL\STX\ETX\ETX\DC2\ETX>\ESC\FS\n\
+    \\ENQ\EOT\NUL\STX\ETX\ETX\DC2\ETX?\ESC\FS\n\
     \O\n\
-    \\STX\EOT\SOH\DC2\EOTB\NUL^\SOH\SUBC An encoded CodeGeneratorRequest is written to the plugin's stdin.\n\
+    \\STX\EOT\SOH\DC2\EOTC\NUL_\SOH\SUBC An encoded CodeGeneratorRequest is written to the plugin's stdin.\n\
     \\n\
     \\n\
     \\n\
-    \\ETX\EOT\SOH\SOH\DC2\ETXB\b\FS\n\
+    \\ETX\EOT\SOH\SOH\DC2\ETXC\b\FS\n\
     \\209\SOH\n\
-    \\EOT\EOT\SOH\STX\NUL\DC2\ETXF\STX'\SUB\195\SOH The .proto files that were explicitly listed on the command-line.  The\n\
+    \\EOT\EOT\SOH\STX\NUL\DC2\ETXG\STX'\SUB\195\SOH The .proto files that were explicitly listed on the command-line.  The\n\
     \ code generator should generate code only for these files.  Each file's\n\
     \ descriptor will be included in proto_file, below.\n\
     \\n\
     \\f\n\
-    \\ENQ\EOT\SOH\STX\NUL\EOT\DC2\ETXF\STX\n\
+    \\ENQ\EOT\SOH\STX\NUL\EOT\DC2\ETXG\STX\n\
     \\n\
     \\f\n\
-    \\ENQ\EOT\SOH\STX\NUL\ENQ\DC2\ETXF\v\DC1\n\
+    \\ENQ\EOT\SOH\STX\NUL\ENQ\DC2\ETXG\v\DC1\n\
     \\f\n\
-    \\ENQ\EOT\SOH\STX\NUL\SOH\DC2\ETXF\DC2\"\n\
+    \\ENQ\EOT\SOH\STX\NUL\SOH\DC2\ETXG\DC2\"\n\
     \\f\n\
-    \\ENQ\EOT\SOH\STX\NUL\ETX\DC2\ETXF%&\n\
+    \\ENQ\EOT\SOH\STX\NUL\ETX\DC2\ETXG%&\n\
     \B\n\
-    \\EOT\EOT\SOH\STX\SOH\DC2\ETXI\STX \SUB5 The generator parameter passed on the command-line.\n\
+    \\EOT\EOT\SOH\STX\SOH\DC2\ETXJ\STX \SUB5 The generator parameter passed on the command-line.\n\
     \\n\
     \\f\n\
-    \\ENQ\EOT\SOH\STX\SOH\EOT\DC2\ETXI\STX\n\
+    \\ENQ\EOT\SOH\STX\SOH\EOT\DC2\ETXJ\STX\n\
     \\n\
     \\f\n\
-    \\ENQ\EOT\SOH\STX\SOH\ENQ\DC2\ETXI\v\DC1\n\
+    \\ENQ\EOT\SOH\STX\SOH\ENQ\DC2\ETXJ\v\DC1\n\
     \\f\n\
-    \\ENQ\EOT\SOH\STX\SOH\SOH\DC2\ETXI\DC2\ESC\n\
+    \\ENQ\EOT\SOH\STX\SOH\SOH\DC2\ETXJ\DC2\ESC\n\
     \\f\n\
-    \\ENQ\EOT\SOH\STX\SOH\ETX\DC2\ETXI\RS\US\n\
+    \\ENQ\EOT\SOH\STX\SOH\ETX\DC2\ETXJ\RS\US\n\
     \\135\ACK\n\
-    \\EOT\EOT\SOH\STX\STX\DC2\ETXY\STX/\SUB\249\ENQ FileDescriptorProtos for all files in files_to_generate and everything\n\
+    \\EOT\EOT\SOH\STX\STX\DC2\ETXZ\STX/\SUB\249\ENQ FileDescriptorProtos for all files in files_to_generate and everything\n\
     \ they import.  The files will appear in topological order, so each file\n\
     \ appears before any file that imports it.\n\
     \\n\
@@ -1282,34 +1425,34 @@ packedFileDescriptor
     \ fully qualified.\n\
     \\n\
     \\f\n\
-    \\ENQ\EOT\SOH\STX\STX\EOT\DC2\ETXY\STX\n\
+    \\ENQ\EOT\SOH\STX\STX\EOT\DC2\ETXZ\STX\n\
     \\n\
     \\f\n\
-    \\ENQ\EOT\SOH\STX\STX\ACK\DC2\ETXY\v\RS\n\
+    \\ENQ\EOT\SOH\STX\STX\ACK\DC2\ETXZ\v\RS\n\
     \\f\n\
-    \\ENQ\EOT\SOH\STX\STX\SOH\DC2\ETXY\US)\n\
+    \\ENQ\EOT\SOH\STX\STX\SOH\DC2\ETXZ\US)\n\
     \\f\n\
-    \\ENQ\EOT\SOH\STX\STX\ETX\DC2\ETXY,.\n\
+    \\ENQ\EOT\SOH\STX\STX\ETX\DC2\ETXZ,.\n\
     \7\n\
-    \\EOT\EOT\SOH\STX\ETX\DC2\ETX\\\STX(\SUB* The version number of protocol compiler.\n\
+    \\EOT\EOT\SOH\STX\ETX\DC2\ETX]\STX(\SUB* The version number of protocol compiler.\n\
     \\n\
     \\f\n\
-    \\ENQ\EOT\SOH\STX\ETX\EOT\DC2\ETX\\\STX\n\
+    \\ENQ\EOT\SOH\STX\ETX\EOT\DC2\ETX]\STX\n\
     \\n\
     \\f\n\
-    \\ENQ\EOT\SOH\STX\ETX\ACK\DC2\ETX\\\v\DC2\n\
+    \\ENQ\EOT\SOH\STX\ETX\ACK\DC2\ETX]\v\DC2\n\
     \\f\n\
-    \\ENQ\EOT\SOH\STX\ETX\SOH\DC2\ETX\\\DC3#\n\
+    \\ENQ\EOT\SOH\STX\ETX\SOH\DC2\ETX]\DC3#\n\
     \\f\n\
-    \\ENQ\EOT\SOH\STX\ETX\ETX\DC2\ETX\\&'\n\
+    \\ENQ\EOT\SOH\STX\ETX\ETX\DC2\ETX]&'\n\
     \L\n\
-    \\STX\EOT\STX\DC2\ENQa\NUL\166\SOH\SOH\SUB? The plugin writes an encoded CodeGeneratorResponse to stdout.\n\
+    \\STX\EOT\STX\DC2\ENQb\NUL\182\SOH\SOH\SUB? The plugin writes an encoded CodeGeneratorResponse to stdout.\n\
     \\n\
     \\n\
     \\n\
-    \\ETX\EOT\STX\SOH\DC2\ETXa\b\GS\n\
+    \\ETX\EOT\STX\SOH\DC2\ETXb\b\GS\n\
     \\237\ETX\n\
-    \\EOT\EOT\STX\STX\NUL\DC2\ETXj\STX\FS\SUB\223\ETX Error message.  If non-empty, code generation failed.  The plugin process\n\
+    \\EOT\EOT\STX\STX\NUL\DC2\ETXk\STX\FS\SUB\223\ETX Error message.  If non-empty, code generation failed.  The plugin process\n\
     \ should exit with status code zero even if it reports an error in this way.\n\
     \\n\
     \ This should be used to indicate errors in .proto files which prevent the\n\
@@ -1319,22 +1462,52 @@ packedFileDescriptor
     \ exiting with a non-zero status code.\n\
     \\n\
     \\f\n\
-    \\ENQ\EOT\STX\STX\NUL\EOT\DC2\ETXj\STX\n\
+    \\ENQ\EOT\STX\STX\NUL\EOT\DC2\ETXk\STX\n\
     \\n\
     \\f\n\
-    \\ENQ\EOT\STX\STX\NUL\ENQ\DC2\ETXj\v\DC1\n\
+    \\ENQ\EOT\STX\STX\NUL\ENQ\DC2\ETXk\v\DC1\n\
     \\f\n\
-    \\ENQ\EOT\STX\STX\NUL\SOH\DC2\ETXj\DC2\ETB\n\
+    \\ENQ\EOT\STX\STX\NUL\SOH\DC2\ETXk\DC2\ETB\n\
     \\f\n\
-    \\ENQ\EOT\STX\STX\NUL\ETX\DC2\ETXj\SUB\ESC\n\
-    \4\n\
-    \\EOT\EOT\STX\ETX\NUL\DC2\ENQm\STX\164\SOH\ETX\SUB% Represents a single generated file.\n\
+    \\ENQ\EOT\STX\STX\NUL\ETX\DC2\ETXk\SUB\ESC\n\
+    \\137\SOH\n\
+    \\EOT\EOT\STX\STX\SOH\DC2\ETXo\STX)\SUB| A bitmask of supported features that the code generator supports.\n\
+    \ This is a bitwise \"or\" of values from the Feature enum.\n\
     \\n\
     \\f\n\
-    \\ENQ\EOT\STX\ETX\NUL\SOH\DC2\ETXm\n\
+    \\ENQ\EOT\STX\STX\SOH\EOT\DC2\ETXo\STX\n\
+    \\n\
+    \\f\n\
+    \\ENQ\EOT\STX\STX\SOH\ENQ\DC2\ETXo\v\DC1\n\
+    \\f\n\
+    \\ENQ\EOT\STX\STX\SOH\SOH\DC2\ETXo\DC2$\n\
+    \\f\n\
+    \\ENQ\EOT\STX\STX\SOH\ETX\DC2\ETXo'(\n\
+    \+\n\
+    \\EOT\EOT\STX\EOT\NUL\DC2\EOTr\STXu\ETX\SUB\GS Sync with code_generator.h.\n\
+    \\n\
+    \\f\n\
+    \\ENQ\EOT\STX\EOT\NUL\SOH\DC2\ETXr\a\SO\n\
+    \\r\n\
+    \\ACK\EOT\STX\EOT\NUL\STX\NUL\DC2\ETXs\EOT\NAK\n\
     \\SO\n\
-    \\173\ENQ\n\
-    \\ACK\EOT\STX\ETX\NUL\STX\NUL\DC2\ETXy\EOT\GS\SUB\157\ENQ The file name, relative to the output directory.  The name must not\n\
+    \\a\EOT\STX\EOT\NUL\STX\NUL\SOH\DC2\ETXs\EOT\DLE\n\
+    \\SO\n\
+    \\a\EOT\STX\EOT\NUL\STX\NUL\STX\DC2\ETXs\DC3\DC4\n\
+    \\r\n\
+    \\ACK\EOT\STX\EOT\NUL\STX\SOH\DC2\ETXt\EOT \n\
+    \\SO\n\
+    \\a\EOT\STX\EOT\NUL\STX\SOH\SOH\DC2\ETXt\EOT\ESC\n\
+    \\SO\n\
+    \\a\EOT\STX\EOT\NUL\STX\SOH\STX\DC2\ETXt\RS\US\n\
+    \4\n\
+    \\EOT\EOT\STX\ETX\NUL\DC2\ENQx\STX\180\SOH\ETX\SUB% Represents a single generated file.\n\
+    \\n\
+    \\f\n\
+    \\ENQ\EOT\STX\ETX\NUL\SOH\DC2\ETXx\n\
+    \\SO\n\
+    \\174\ENQ\n\
+    \\ACK\EOT\STX\ETX\NUL\STX\NUL\DC2\EOT\132\SOH\EOT\GS\SUB\157\ENQ The file name, relative to the output directory.  The name must not\n\
     \ contain \".\" or \"..\" components and must be relative, not be absolute (so,\n\
     \ the file cannot lie outside the output directory).  \"/\" must be used as\n\
     \ the path separator, not \"\\\".\n\
@@ -1346,16 +1519,16 @@ packedFileDescriptor
     \ this writing protoc does not optimize for this -- it will read the entire\n\
     \ CodeGeneratorResponse before writing files to disk.\n\
     \\n\
-    \\SO\n\
-    \\a\EOT\STX\ETX\NUL\STX\NUL\EOT\DC2\ETXy\EOT\f\n\
-    \\SO\n\
-    \\a\EOT\STX\ETX\NUL\STX\NUL\ENQ\DC2\ETXy\r\DC3\n\
-    \\SO\n\
-    \\a\EOT\STX\ETX\NUL\STX\NUL\SOH\DC2\ETXy\DC4\CAN\n\
-    \\SO\n\
-    \\a\EOT\STX\ETX\NUL\STX\NUL\ETX\DC2\ETXy\ESC\FS\n\
+    \\SI\n\
+    \\a\EOT\STX\ETX\NUL\STX\NUL\EOT\DC2\EOT\132\SOH\EOT\f\n\
+    \\SI\n\
+    \\a\EOT\STX\ETX\NUL\STX\NUL\ENQ\DC2\EOT\132\SOH\r\DC3\n\
+    \\SI\n\
+    \\a\EOT\STX\ETX\NUL\STX\NUL\SOH\DC2\EOT\132\SOH\DC4\CAN\n\
+    \\SI\n\
+    \\a\EOT\STX\ETX\NUL\STX\NUL\ETX\DC2\EOT\132\SOH\ESC\FS\n\
     \\174\DLE\n\
-    \\ACK\EOT\STX\ETX\NUL\STX\SOH\DC2\EOT\160\SOH\EOT(\SUB\157\DLE If non-empty, indicates that the named file should already exist, and the\n\
+    \\ACK\EOT\STX\ETX\NUL\STX\SOH\DC2\EOT\171\SOH\EOT(\SUB\157\DLE If non-empty, indicates that the named file should already exist, and the\n\
     \ content here is to be inserted into that file at a defined insertion\n\
     \ point.  This feature allows a code generator to extend the output\n\
     \ produced by another code generator.  The original generator may provide\n\
@@ -1394,32 +1567,45 @@ packedFileDescriptor
     \ If |insertion_point| is present, |name| must also be present.\n\
     \\n\
     \\SI\n\
-    \\a\EOT\STX\ETX\NUL\STX\SOH\EOT\DC2\EOT\160\SOH\EOT\f\n\
+    \\a\EOT\STX\ETX\NUL\STX\SOH\EOT\DC2\EOT\171\SOH\EOT\f\n\
     \\SI\n\
-    \\a\EOT\STX\ETX\NUL\STX\SOH\ENQ\DC2\EOT\160\SOH\r\DC3\n\
+    \\a\EOT\STX\ETX\NUL\STX\SOH\ENQ\DC2\EOT\171\SOH\r\DC3\n\
     \\SI\n\
-    \\a\EOT\STX\ETX\NUL\STX\SOH\SOH\DC2\EOT\160\SOH\DC4#\n\
+    \\a\EOT\STX\ETX\NUL\STX\SOH\SOH\DC2\EOT\171\SOH\DC4#\n\
     \\SI\n\
-    \\a\EOT\STX\ETX\NUL\STX\SOH\ETX\DC2\EOT\160\SOH&'\n\
+    \\a\EOT\STX\ETX\NUL\STX\SOH\ETX\DC2\EOT\171\SOH&'\n\
     \$\n\
-    \\ACK\EOT\STX\ETX\NUL\STX\STX\DC2\EOT\163\SOH\EOT!\SUB\DC4 The file contents.\n\
+    \\ACK\EOT\STX\ETX\NUL\STX\STX\DC2\EOT\174\SOH\EOT!\SUB\DC4 The file contents.\n\
     \\n\
     \\SI\n\
-    \\a\EOT\STX\ETX\NUL\STX\STX\EOT\DC2\EOT\163\SOH\EOT\f\n\
+    \\a\EOT\STX\ETX\NUL\STX\STX\EOT\DC2\EOT\174\SOH\EOT\f\n\
     \\SI\n\
-    \\a\EOT\STX\ETX\NUL\STX\STX\ENQ\DC2\EOT\163\SOH\r\DC3\n\
+    \\a\EOT\STX\ETX\NUL\STX\STX\ENQ\DC2\EOT\174\SOH\r\DC3\n\
     \\SI\n\
-    \\a\EOT\STX\ETX\NUL\STX\STX\SOH\DC2\EOT\163\SOH\DC4\ESC\n\
+    \\a\EOT\STX\ETX\NUL\STX\STX\SOH\DC2\EOT\174\SOH\DC4\ESC\n\
     \\SI\n\
-    \\a\EOT\STX\ETX\NUL\STX\STX\ETX\DC2\EOT\163\SOH\RS \n\
+    \\a\EOT\STX\ETX\NUL\STX\STX\ETX\DC2\EOT\174\SOH\RS \n\
+    \\225\SOH\n\
+    \\ACK\EOT\STX\ETX\NUL\STX\ETX\DC2\EOT\179\SOH\EOT8\SUB\208\SOH Information describing the file content being inserted. If an insertion\n\
+    \ point is used, this information will be appropriately offset and inserted\n\
+    \ into the code generation metadata for the generated files.\n\
+    \\n\
+    \\SI\n\
+    \\a\EOT\STX\ETX\NUL\STX\ETX\EOT\DC2\EOT\179\SOH\EOT\f\n\
+    \\SI\n\
+    \\a\EOT\STX\ETX\NUL\STX\ETX\ACK\DC2\EOT\179\SOH\r\RS\n\
+    \\SI\n\
+    \\a\EOT\STX\ETX\NUL\STX\ETX\SOH\DC2\EOT\179\SOH\US2\n\
+    \\SI\n\
+    \\a\EOT\STX\ETX\NUL\STX\ETX\ETX\DC2\EOT\179\SOH57\n\
     \\f\n\
-    \\EOT\EOT\STX\STX\SOH\DC2\EOT\165\SOH\STX\SUB\n\
+    \\EOT\EOT\STX\STX\STX\DC2\EOT\181\SOH\STX\SUB\n\
     \\r\n\
-    \\ENQ\EOT\STX\STX\SOH\EOT\DC2\EOT\165\SOH\STX\n\
+    \\ENQ\EOT\STX\STX\STX\EOT\DC2\EOT\181\SOH\STX\n\
     \\n\
     \\r\n\
-    \\ENQ\EOT\STX\STX\SOH\ACK\DC2\EOT\165\SOH\v\SI\n\
+    \\ENQ\EOT\STX\STX\STX\ACK\DC2\EOT\181\SOH\v\SI\n\
     \\r\n\
-    \\ENQ\EOT\STX\STX\SOH\SOH\DC2\EOT\165\SOH\DLE\DC4\n\
+    \\ENQ\EOT\STX\STX\STX\SOH\DC2\EOT\181\SOH\DLE\DC4\n\
     \\r\n\
-    \\ENQ\EOT\STX\STX\SOH\ETX\DC2\EOT\165\SOH\ETB\EM"
+    \\ENQ\EOT\STX\STX\STX\ETX\DC2\EOT\181\SOH\ETB\EM"
