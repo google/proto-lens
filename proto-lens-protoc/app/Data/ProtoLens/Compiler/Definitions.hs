@@ -47,7 +47,7 @@ import Data.Char (isUpper, toUpper)
 import Data.Int (Int32)
 import Data.List (mapAccumL)
 import qualified Data.Map as Map
-import Data.Maybe (fromMaybe)
+import Data.Maybe (catMaybes, fromMaybe)
 #if !MIN_VERSION_base(4,11,0)
 import Data.Monoid ((<>))
 #endif
@@ -112,10 +112,14 @@ data MessageInfo n = MessageInfo
     { messageName :: n  -- ^ Haskell type name
     , messageConstructorName :: n  -- ^ Haskell constructor name
     , messageDescriptor :: DescriptorProto
-    , messageFields :: [PlainFieldInfo] -- ^ Fields not belonging to a oneof.
+    , messageFields :: [PlainFieldInfo]
+      -- ^ Fields not belonging to a oneof. This includes proto3
+      -- optional fields even though they are part of a synthetic
+      -- oneof.
     , messageOneofFields :: [OneofInfo]
       -- ^ The oneofs in this message, associated with the fields that
-      --   belong to them.
+      -- belong to them. Does not include synthetic oneofs generated
+      -- for proto3 optional fields.
     , messageUnknownFields :: OccNameStr
       -- ^ The name of the Haskell field in this message that holds the
       -- unknown fields.
@@ -156,13 +160,13 @@ data FieldKind
     = RequiredField
         -- ^ A proto2 required field.  Stored internally as a value.
     | OptionalValueField
-        -- ^ A proto3 optional scalar field.  Stored internally as a
-        -- value, and defaults to corresponding instance of fieldDefault.
+        -- ^ A proto3 scalar field.  Stored internally as a value, and
+        -- defaults to corresponding instance of fieldDefault.
     | OptionalMaybeField
-        -- ^ An optional field where the "unset" and "defaulT" values
+        -- ^ An optional field where the "unset" and "default" values
         -- are distinguishable.  Stored internally as a Maybe.
         -- In particular: proto2 optional fields, proto3 messages,
-        -- and "oneof" fields.
+        -- proto3 explicitly optional fields and "oneof" fields.
     | RepeatedField FieldPacking
         -- ^ A field containing a sequence of values.
         -- Stored internally as either a list or a map, depending on
@@ -427,6 +431,7 @@ fieldKind syntaxType mapEntries f = case f ^. #label of
             FieldDescriptorProto'LABEL_OPTIONAL
                 | syntaxType == Proto3
                     && f ^. #type' /= FieldDescriptorProto'TYPE_MESSAGE
+                    && not (f ^. #proto3Optional)
                     -> OptionalValueField
                 | otherwise -> OptionalMaybeField
             FieldDescriptorProto'LABEL_REQUIRED -> RequiredField
@@ -454,15 +459,22 @@ collectOneofFields
     :: String -> DescriptorProto -> Map.Map (Maybe Int32) [FieldDescriptorProto]
     -> [OneofInfo]
 collectOneofFields hsPrefix d allFields
-    = zipWith oneofInfo [0..] $ d ^.. #oneofDecl . traverse . #name
+    = catMaybes $ zipWith oneofMaybe [0..] $ d ^.. #oneofDecl . traverse . #name
   where
-    oneofInfo idx n = OneofInfo
+    oneofMaybe idx n =
+      let fields = Map.findWithDefault [] (Just idx) allFields
+      in if isSynthetic fields
+         then Nothing
+         else Just $ oneofInfo n fields
+    oneofInfo n fields = OneofInfo
         { oneofFieldName = mkFieldName hsPrefix n
         , oneofTypeName = fromString $ hsPrefix ++ hsNameUnique subdefTypes n
-        , oneofCases = map oneofCase
-                          $ Map.findWithDefault [] (Just idx)
-                              allFields
+        , oneofCases = map oneofCase fields
         }
+    -- The oneof is synthetic if it contains a single proto3_optional field.
+    isSynthetic :: [FieldDescriptorProto] -> Bool
+    isSynthetic [f] = f ^. #proto3Optional
+    isSynthetic _ = False
     oneofCase f =
         let consName = hsPrefix ++ hsNameUnique subdefCons (f ^. #name)
         in OneofCase
@@ -492,13 +504,24 @@ collectOneofFields hsPrefix d allFields
                     ++ toListOf (#enumType . traverse . #value . traverse . #name) d
 
 -- | Group fields by the index of the oneof field that they belong to.
--- (Or 'Nothing' if they don't belong to a oneof.)
+-- Or 'Nothing' if they don't belong to a oneof. Proto3 optional
+-- fields are included twice, both as members of their synthetic oneof
+-- (so that collectOneofFields can use them to recognize synthetic
+-- oneofs) and as stand-alone fields for which we generate bindings.
 groupFieldsByOneofIndex
     :: [FieldDescriptorProto] -> Map.Map (Maybe Int32) [FieldDescriptorProto]
 groupFieldsByOneofIndex =
     fmap reverse
     . Map.fromListWith (++)
-    . fmap (\f -> (f ^. #maybe'oneofIndex, [f]))
+    . concatMap mapElementsForField
+  where
+    mapElementsForField
+      :: FieldDescriptorProto -> [(Maybe Int32, [FieldDescriptorProto])]
+    mapElementsForField f = case f ^. #maybe'oneofIndex of
+      Nothing -> [(Nothing, [f])]
+      Just idx -> if f ^. #proto3Optional
+                  then [(Nothing, [f]), (Just idx, [f])]
+                  else [(Just idx, [f])]
 
 hsName :: Text -> String
 hsName = unpack . capitalize

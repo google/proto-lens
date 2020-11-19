@@ -18,6 +18,7 @@ import Data.Semigroup ((<>))
 import qualified Data.Set as Set
 import qualified Data.Text as T
 import Data.Text (Text, pack)
+import Data.Bits
 import Data.ProtoLens (defMessage, decodeMessage, encodeMessage)
 -- Force the use of the Reflected API when decoding DescriptorProto
 -- so that we can run the test suite against the Generated API.
@@ -27,6 +28,7 @@ import Lens.Family2
 import Proto.Google.Protobuf.Compiler.Plugin
     ( CodeGeneratorRequest
     , CodeGeneratorResponse
+    , CodeGeneratorResponse'Feature(..)
     )
 import Proto.Google.Protobuf.Descriptor (FileDescriptorProto)
 import System.Environment (getProgName)
@@ -63,7 +65,10 @@ makeResponse dflags prog request = let
     header f = "{- This file was auto-generated from "
                 <> (f ^. #name)
                 <> " by the " <> pack prog <> " program. -}\n"
+    features = [CodeGeneratorResponse'FEATURE_PROTO3_OPTIONAL]
     in defMessage
+           & #supportedFeatures .~
+               (foldl (.|.) zeroBits $ fmap (toEnum . fromEnum) features)
            & #file .~ [ defMessage
                             & #name .~ outputName
                             & #content .~ outputContent

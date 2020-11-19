@@ -969,6 +969,9 @@ messageInstance env protoName m =
     fields = messageFields m
                 ++ (messageOneofFields m >>= fmap casePlainField . oneofCases)
     -- The cases of an optional are always treated like proto2 "maybe" fields.
+    -- This code here does not apply to proto3 optional fields which
+    -- are absent from messageOneofFields, but those get treated as
+    -- OptionalMaybeField by fieldKind so they behave the same.
     casePlainField = PlainFieldInfo OptionalMaybeField . caseField
 
 -- | Get the name of the field when used in a text format proto. Groups are
