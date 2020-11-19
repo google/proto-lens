@@ -105,6 +105,7 @@ tests:
     main: proto3_optional_test.hs
     source-dirs: tests
     dependencies:
+      - proto-lens-protobuf-types
       - proto-lens-tests
     generated-other-modules:
       - Proto.TestProto3Optional
