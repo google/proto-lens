@@ -101,6 +101,16 @@ tests:
       - Proto.Proto3
       - Proto.Proto3_Fields
 
+  proto3_optional_test:
+    main: proto3_optional_test.hs
+    source-dirs: tests
+    dependencies:
+      - proto-lens-protobuf-types
+      - proto-lens-tests
+    generated-other-modules:
+      - Proto.TestProto3Optional
+      - Proto.TestProto3Optional_Fields
+
   repeated_test:
     main: repeated_test.hs
     source-dirs: tests

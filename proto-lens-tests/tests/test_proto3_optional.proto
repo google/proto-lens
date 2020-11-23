@@ -1,0 +1,11 @@
+syntax = "proto3";
+
+package proto3_optional;
+
+message Foo {
+  int32 untracked = 1;
+  optional int32 tracked = 2;
+  oneof _nonsynth {
+    int32 alternative = 3;
+  }
+}
