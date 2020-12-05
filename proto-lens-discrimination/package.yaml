@@ -23,7 +23,7 @@ build-tools: proto-lens-protoc:proto-lens-protoc
 
 dependencies:
   - base >= 4.11 && < 4.15
-  - bytestring == 0.10.*
+  - bytestring >= 0.10 && < 0.12
   - contravariant >= 1.3 && < 1.6
   - containers >= 0.5 && < 0.7
   - discrimination >= 0.3 && < 0.5
@@ -46,7 +46,7 @@ tests:
     source-dirs: tests
     dependencies:
       - HUnit >= 1.3 && < 1.7
-      - QuickCheck >= 2.8 && < 2.14
+      - QuickCheck >= 2.8 && < 2.15
       - proto-lens-arbitrary >= 0.1 && < 0.2
       - proto-lens-discrimination
       - proto-lens-runtime >= 0.6 && < 0.8
