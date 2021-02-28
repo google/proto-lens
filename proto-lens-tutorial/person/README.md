@@ -123,7 +123,7 @@ Then, we'll put it in an `executable` section to `package.yaml` that specifies i
 executables:
   person:
     main: Main.hs
-    source-dirs: '.'
+    source-dirs: 'src'
     dependencies:
       - base
       - person
