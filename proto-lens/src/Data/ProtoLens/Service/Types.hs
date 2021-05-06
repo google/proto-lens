@@ -23,8 +23,10 @@ module Data.ProtoLens.Service.Types
   , StreamingType (..)
   ) where
 
+import qualified Data.ByteString as B
 import Data.Kind (Constraint)
 import Data.ProtoLens.Message (Message)
+import Data.Proxy (Proxy(..))
 import GHC.TypeLits
 
 
@@ -53,6 +55,7 @@ class ( KnownSymbol (ServiceName s)
   type ServicePackage s :: Symbol
   type ServiceMethods s :: [Symbol]
 
+  packedServiceDescriptor :: Proxy s -> B.ByteString
 
 ------------------------------------------------------------------------------
 -- | Data type to be used as a promoted type for 'MethodStreamingType'.
