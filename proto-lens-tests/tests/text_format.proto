@@ -24,3 +24,7 @@ message AnyHolder {
   }
   optional Sub sub = 2;
 }
+
+message Booleans {
+  repeated bool a_bool = 1;
+}
