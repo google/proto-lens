@@ -33,6 +33,9 @@ def2 = defMessage
 def3 :: AnyHolder
 def3 = defMessage
 
+defBooleans :: Booleans
+defBooleans = defMessage
+
 failed1 :: Maybe Test1
 failed1 = Nothing
 
@@ -53,6 +56,19 @@ main = testMain
     , readFrom "bracesColon" (Just $ def2 & c.a .~ 5) "c: {  a: 5\n}"
     , readFrom "angles" (Just $ def2 & c.a .~ 5) "c < a: 5 >"
     , readFrom "anglesMultiLine" (Just $ def2 & c.a .~ 5) "c \n<  a: 5\n>"
+    , readFrom "booleans"
+               (Just $ defBooleans & aBool .~
+                 [True, True, True, True, False, False, False, False])
+               (Data.Text.Lazy.unlines
+                 [ "a_bool: 1"
+                 , "a_bool: true"
+                 , "a_bool: True"
+                 , "a_bool: t"
+                 , "a_bool: 0"
+                 , "a_bool: false"
+                 , "a_bool: False"
+                 , "a_bool: f"
+                 ])
     -- TODO: Note that this test currently fails either way since
     -- extensions aren't implemented yet.  Keeping it around to make
     -- sure the test case still fails when they are.

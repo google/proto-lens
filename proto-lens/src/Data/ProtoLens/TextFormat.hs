@@ -317,8 +317,8 @@ makeScalarValue BoolField (Parser.IntValue x)
 makeScalarValue DoubleField (Parser.DoubleValue x) = Right x
 makeScalarValue FloatField (Parser.DoubleValue x) = Right (realToFrac x)
 makeScalarValue BoolField (Parser.EnumValue x)
-    | x == "true" = Right True
-    | x == "false" = Right False
+    | x `elem` ["true", "True", "t"] = Right True
+    | x `elem` ["false", "False", "f"] = Right False
     | otherwise = Left $ "Unrecognized bool value " ++ show x
 makeScalarValue StringField (Parser.ByteStringValue x) = Right (Text.decodeUtf8 x)
 makeScalarValue BytesField (Parser.ByteStringValue x) = Right x
