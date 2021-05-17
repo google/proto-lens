@@ -51,7 +51,7 @@ import Control.Monad.IO.Class (liftIO)
 import Control.Monad.Trans.Except (throwE, ExceptT)
 import Data.Bits
 import Data.ByteString (ByteString)
-import Data.ByteString.Lazy.Builder as Builder
+import Data.ByteString.Builder as Builder
 import qualified Data.ByteString.Builder.Internal as Internal
 import qualified Data.ByteString.Lazy as L
 import Data.Int (Int32, Int64)
