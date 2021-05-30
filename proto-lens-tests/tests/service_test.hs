@@ -3,6 +3,7 @@
 {-# LANGUAGE OverloadedStrings   #-}
 {-# LANGUAGE ScopedTypeVariables #-}
 {-# LANGUAGE TypeFamilies        #-}
+{-# LANGUAGE TypeApplications    #-}
 {-# OPTIONS_GHC -fno-warn-redundant-constraints #-}
 
 module Main (main) where
@@ -12,9 +13,8 @@ import Control.Monad (void)
 import Data.Proxy (Proxy (..))
 import Lens.Family2 (view, toListOf)
 import Test.Tasty.HUnit (testCase, (@=?))
-import Proto.Google.Protobuf.Descriptor (ServiceDescriptorProto)
 import Proto.Service
-import Data.ProtoLens (decodeMessageOrDie)
+import Data.ProtoLens.Descriptor
 import Data.ProtoLens.Labels ()
 import Data.ProtoLens.Service.Types
 import Data.ProtoLens.TestUtil (TestTree, testMain)
@@ -110,6 +110,5 @@ testServiceDescriptor = testCase "testServiceDescriptor" $ do
   ["Normal", "RevMessages", "ClientStreaming", "ServerStreaming", "BiDiStreaming"] @=?
     toListOf (#method . traverse . #name) d
   where
-    d :: ServiceDescriptorProto
-    d = (decodeMessageOrDie . packedServiceDescriptor) (Proxy :: Proxy TestService)
+    d = serviceDescriptor @TestService
 
