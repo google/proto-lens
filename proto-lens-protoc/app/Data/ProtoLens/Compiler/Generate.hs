@@ -234,6 +234,7 @@ generateServiceDecls env si =
     --     type ServiceName    MyService = "myService"
     --     type ServicePackage MyService = "some.package"
     --     type ServiceMethods MyService = '["normalMethod", "streamingMethod"]
+    --     packedServiceDescriptor _ = ...
     [ instance' (var "Data.ProtoLens.Service.Types.Service" @@ serverRecordType)
         [ tyFamInst "ServiceName" [serverRecordType]
                  . stringTy . T.unpack $ serviceName si
@@ -244,6 +245,7 @@ generateServiceDecls env si =
                       [ stringTy . T.unpack $ methodIdent m
                       | m <- List.sortBy (comparing methodIdent) $ serviceMethods si
                       ]
+        , funBind "packedServiceDescriptor" $ match [wildP] $ string svcDescriptor
         ]
     ] ++
     -- instance Data.ProtoLens.Service.Types.HasMethodImpl MyService "normalMethod" where
@@ -270,6 +272,7 @@ generateServiceDecls env si =
     , let instanceHead = stringTy (T.unpack $ methodIdent m)
     ]
   where
+    svcDescriptor = fmap (toEnum . fromEnum) . BS.unpack . encodeMessage $ serviceDescriptor si
     serverDataName = fromString . T.unpack $ serviceName si
     serverRecordType = var $ unqual serverDataName
 

@@ -131,6 +131,7 @@ data ServiceInfo = ServiceInfo
     { serviceName    :: Text
     , servicePackage :: Text
     , serviceMethods :: [MethodInfo]
+    , serviceDescriptor :: ServiceDescriptorProto
     }
 
 data MethodInfo = MethodInfo
@@ -321,6 +322,7 @@ collectServices fd = fmap (toServiceInfo $ fd ^. #package) $ fd ^. #service
             { serviceName    = sd ^. #name
             , servicePackage = pkg
             , serviceMethods = fmap toMethodInfo $ sd ^. #method
+            , serviceDescriptor = sd
             }
 
     toMethodInfo :: MethodDescriptorProto -> MethodInfo

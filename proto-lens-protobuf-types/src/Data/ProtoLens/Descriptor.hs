@@ -5,10 +5,12 @@
 module Data.ProtoLens.Descriptor
     ( DescriptorProto
     , messageDescriptor
+    , serviceDescriptor
     , fileDescriptor
     ) where
 
 import Data.ProtoLens
+import Data.ProtoLens.Service.Types
 import Data.Proxy (Proxy(..))
 import Proto.Google.Protobuf.Descriptor
 
@@ -23,6 +25,14 @@ messageDescriptor :: forall a . Message a => DescriptorProto
 -- in proto-lens-protoc; and furthermore proto decoding is robust
 -- to unknown/missing fields.
 messageDescriptor = decodeMessageOrDie $ packedMessageDescriptor (Proxy @a)
+
+-- | The protocol buffer service descriptor for a given service.
+--
+-- This function should be used with @TypeApplications@, e.g.:
+--
+-- > serviceDescriptor @SomeService
+serviceDescriptor :: forall a . Service a => ServiceDescriptorProto
+serviceDescriptor = decodeMessageOrDie $ packedServiceDescriptor (Proxy @a)
 
 -- | The protocol buffer file descriptor containing a given type.
 --

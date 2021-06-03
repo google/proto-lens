@@ -1,7 +1,9 @@
 {-# LANGUAGE DataKinds           #-}
+{-# LANGUAGE OverloadedLabels    #-}
 {-# LANGUAGE OverloadedStrings   #-}
 {-# LANGUAGE ScopedTypeVariables #-}
 {-# LANGUAGE TypeFamilies        #-}
+{-# LANGUAGE TypeApplications    #-}
 {-# OPTIONS_GHC -fno-warn-redundant-constraints #-}
 
 module Main (main) where
@@ -9,10 +11,13 @@ module Main (main) where
 import Control.Exception (evaluate)
 import Control.Monad (void)
 import Data.Proxy (Proxy (..))
-import Test.Tasty.HUnit (testCase)
+import Lens.Family2 (view, toListOf)
+import Test.Tasty.HUnit (testCase, (@=?))
 import Proto.Service
+import Data.ProtoLens.Descriptor
+import Data.ProtoLens.Labels ()
 import Data.ProtoLens.Service.Types
-import Data.ProtoLens.TestUtil (testMain)
+import Data.ProtoLens.TestUtil (TestTree, testMain)
 
 
 main :: IO ()
@@ -26,6 +31,7 @@ main = testMain
         void $ evaluate serverStreamingMethodMetadataTest
         void $ evaluate bidiStreamingMethodMetadataTest
         void $ evaluate revMessagesMetadataTest
+    , testServiceDescriptor
     ]
 
 
@@ -97,4 +103,12 @@ revMessagesMetadataTest
        , MethodStreamingType s m ~ 'NonStreaming
        ) => Proxy m
 revMessagesMetadataTest = Proxy
+
+testServiceDescriptor :: TestTree
+testServiceDescriptor = testCase "testServiceDescriptor" $ do
+  "TestService" @=? view #name d
+  ["Normal", "RevMessages", "ClientStreaming", "ServerStreaming", "BiDiStreaming"] @=?
+    toListOf (#method . traverse . #name) d
+  where
+    d = serviceDescriptor @TestService
 
