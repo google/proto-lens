@@ -24,7 +24,7 @@ module Data.ProtoLens.Service.Types
   ) where
 
 import qualified Data.ByteString as B
-import Data.Kind (Constraint)
+import Data.Kind (Constraint, Type)
 import Data.ProtoLens.Message (Message)
 import Data.Proxy (Proxy(..))
 import GHC.TypeLits
@@ -85,8 +85,8 @@ class ( KnownSymbol m
       , Message (MethodOutput s m)
       ) => HasMethodImpl s (m :: Symbol) where
   type MethodName          s m :: Symbol
-  type MethodInput         s m :: *
-  type MethodOutput        s m :: *
+  type MethodInput         s m :: Type
+  type MethodOutput        s m :: Type
   type MethodStreamingType s m :: StreamingType
 
 
