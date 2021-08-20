@@ -1,0 +1,48 @@
+cabal-version: 2.0
+
+-- This file has been generated from package.yaml by hpack version 0.34.4.
+--
+-- see: https://github.com/sol/hpack
+
+name:           proto-lens-tests-dep
+version:        0.1.0.1
+synopsis:       Test package dependency.
+description:    This package exports a .proto file which is used by proto-lens-tests to test interpackage dependencies. . NOTE: The test needs a new package with its own .proto files, rather than using the ones in proto-lens-protobuf-types (google/protobuf/*.proto), since on some systems protoc has special logic and can resolve imports of those files automatically.
+category:       Data
+homepage:       https://github.com/google/proto-lens#readme
+bug-reports:    https://github.com/google/proto-lens/issues
+author:         Judah Jacobson
+maintainer:     proto-lens@googlegroups.com
+copyright:      Google Inc.
+license:        BSD3
+license-file:   LICENSE
+build-type:     Custom
+extra-source-files:
+    protos/test-dep/foo.proto
+
+source-repository head
+  type: git
+  location: https://github.com/google/proto-lens
+  subdir: proto-lens-tests-dep
+
+custom-setup
+  setup-depends:
+      Cabal
+    , base
+    , proto-lens-setup
+
+library
+  exposed-modules:
+      Proto.TestDep.Foo
+      Proto.TestDep.Foo_Fields
+  other-modules:
+      Paths_proto_lens_tests_dep
+  autogen-modules:
+      Proto.TestDep.Foo
+      Proto.TestDep.Foo_Fields
+  build-tool-depends:
+      proto-lens-protoc:proto-lens-protoc
+  build-depends:
+      base
+    , proto-lens-runtime
+  default-language: Haskell2010
