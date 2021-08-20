@@ -23,6 +23,8 @@ There is also a [reference document](docs/types.md) showing the protobuf scalar 
 First, install the "protoc" binary somewhere in your PATH.  You can get it by
 following [these instructions](docs/installing-protoc.md).
 
+This project requires at least `protoc` version 3.12.0.
+
 ## Building from HEAD
 
 To build and test this repository from HEAD, run:
