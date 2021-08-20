@@ -10,6 +10,7 @@
 {-# LANGUAGE PatternSynonyms #-}
 module Main where
 
+import Control.Monad.IO.Class (liftIO)
 import qualified Data.ByteString as B
 import Data.Map.Strict ((!))
 #if !MIN_VERSION_base(4,11,0)
@@ -39,9 +40,12 @@ import Data.ProtoLens.Compiler.Generate.Commented (CommentedModule, getModuleNam
 import Data.ProtoLens.Compiler.Generate
 import Data.ProtoLens.Compiler.Plugin
 
+#if MIN_VERSION_ghc(9,0,0)
+import GHC.Driver.Session (DynFlags, getDynFlags)
+#else
 import DynFlags (DynFlags, getDynFlags)
+#endif
 import GHC (runGhc)
-import GhcMonad (liftIO)
 import GHC.Paths (libdir)
 import GHC.SourceGen.Pretty (showPpr)
 
