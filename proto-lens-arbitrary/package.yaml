@@ -15,12 +15,12 @@ extra-source-files:
 
 dependencies:
   - proto-lens >= 0.4 && < 0.8
-  - base >= 4.10 && < 4.15
+  - base >= 4.10 && < 4.16
   - bytestring == 0.10.*
   - containers >= 0.5 && < 0.7
   - text == 1.2.*
-  - lens-family >= 1.2 && < 2.1
-  - QuickCheck >= 2.8 && < 2.14
+  - lens-family >= 1.2 && < 2.2
+  - QuickCheck >= 2.8 && < 2.15
 
 library:
   source-dirs: src

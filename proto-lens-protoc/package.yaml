@@ -17,7 +17,7 @@ extra-source-files:
   - Changelog.md
 
 dependencies:
-  - base >= 4.9 && < 4.15
+  - base >= 4.9 && < 4.16
   - filepath >= 1.4 && < 1.6
 
 library:
@@ -32,10 +32,10 @@ executables:
     dependencies:
       - bytestring == 0.10.*
       - containers >= 0.5 && < 0.7
-      - ghc >= 8.2 && < 8.11
+      - ghc >= 8.2 && < 9.1
       - ghc-paths == 0.1.*
       - ghc-source-gen >= 0.4 && < 0.5
-      - lens-family >= 1.2 && < 2.1
+      - lens-family >= 1.2 && < 2.2
       - pretty == 1.1.*
       - proto-lens == 0.7.*
       - proto-lens-protoc
