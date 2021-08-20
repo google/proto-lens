@@ -35,9 +35,15 @@ import GHC.Hs (ideclName, ideclAs)
 #else
 import HsSyn (ideclName, ideclAs)
 #endif
+#if MIN_VERSION_ghc(9,0,0)
+import GHC.Unit.Module.Name (moduleNameString, mkModuleName)
+import qualified GHC.Utils.Outputable as Outputable
+import GHC.Types.SrcLoc (unLoc, noLoc)
+#else
 import Module (moduleNameString, mkModuleName)
 import qualified Outputable
 import SrcLoc (unLoc, noLoc)
+#endif
 import Lens.Family2 ((^.))
 import Text.Printf (printf)
 

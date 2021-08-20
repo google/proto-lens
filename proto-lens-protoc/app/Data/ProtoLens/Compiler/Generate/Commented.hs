@@ -4,14 +4,22 @@ module Data.ProtoLens.Compiler.Generate.Commented where
 
 import Data.Maybe (fromMaybe)
 import GHC.SourceGen
+#if MIN_VERSION_ghc(9,0,0)
+import GHC.Utils.Outputable (Outputable(..), SDoc, (<+>), ($+$), vcat, empty, text)
+#else
 import Outputable (Outputable(..), SDoc, (<+>), ($+$), vcat, empty, text)
+#endif
 #if MIN_VERSION_ghc(8,10,0)
 import GHC.Hs (hsmodName)
 #else
 import HsSyn (hsmodName)
 #endif
 import GHC (ModuleName)
+#if MIN_VERSION_ghc(9,0,0)
+import GHC.Types.SrcLoc (unLoc)
+#else
 import SrcLoc (unLoc)
+#endif
 
 -- | A declaration, along with an optional comment.
 --
