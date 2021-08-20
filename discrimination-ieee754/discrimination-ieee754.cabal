@@ -1,0 +1,56 @@
+cabal-version: 1.12
+
+-- This file has been generated from package.yaml by hpack version 0.34.4.
+--
+-- see: https://github.com/sol/hpack
+
+name:           discrimination-ieee754
+version:        0.1.0.0
+synopsis:       Discrimination of floating-point numbers via their IEEE754 representation.
+description:    Support for sorting/grouping by floating-point numbers. Uses the technique described by http://stereopsis.com/radix.html.
+category:       Data
+homepage:       https://github.com/google/proto-lens#readme
+bug-reports:    https://github.com/google/proto-lens/issues
+author:         Andrew Pritchard
+maintainer:     awpr+protolens@google.com
+copyright:      Google Inc.
+license:        BSD3
+license-file:   LICENSE
+build-type:     Simple
+
+source-repository head
+  type: git
+  location: https://github.com/google/proto-lens
+  subdir: discrimination-ieee754
+
+library
+  exposed-modules:
+      Data.Discrimination.IEEE754
+  other-modules:
+      Paths_discrimination_ieee754
+  hs-source-dirs:
+      src
+  build-depends:
+      base >=4.10 && <4.16
+    , contravariant >=1.3 && <1.6
+    , data-binary-ieee754 ==0.4.*
+    , discrimination >=0.3 && <0.5
+  default-language: Haskell2010
+
+test-suite test
+  type: exitcode-stdio-1.0
+  main-is: test.hs
+  other-modules:
+      Paths_discrimination_ieee754
+  hs-source-dirs:
+      test
+  build-depends:
+      QuickCheck
+    , base >=4.10 && <4.16
+    , contravariant >=1.3 && <1.6
+    , data-binary-ieee754 ==0.4.*
+    , discrimination >=0.3 && <0.5
+    , discrimination-ieee754
+    , test-framework
+    , test-framework-quickcheck2 ==0.3.*
+  default-language: Haskell2010

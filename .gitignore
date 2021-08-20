@@ -1,7 +1,5 @@
 .stack-work/
 dist/
-# Generated automatically by hpack:
-*.cabal
 # Generated automatically by stack:
 *.yaml.lock
 # For "cabal sandbox"

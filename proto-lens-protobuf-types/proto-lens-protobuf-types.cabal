@@ -1,0 +1,84 @@
+cabal-version: 2.0
+
+-- This file has been generated from package.yaml by hpack version 0.34.4.
+--
+-- see: https://github.com/sol/hpack
+
+name:           proto-lens-protobuf-types
+version:        0.7.0.0
+synopsis:       Basic protocol buffer message types.
+description:    This package provides bindings standard protocol message types, for use with the proto-lens library.
+category:       Data
+homepage:       https://github.com/google/proto-lens#readme
+bug-reports:    https://github.com/google/proto-lens/issues
+author:         Judah Jacobson
+maintainer:     proto-lens@googlegroups.com
+copyright:      Google Inc.
+license:        BSD3
+license-file:   LICENSE
+build-type:     Custom
+extra-source-files:
+    Changelog.md
+    proto-src/google/protobuf/any.proto
+    proto-src/google/protobuf/compiler/plugin.proto
+    proto-src/google/protobuf/descriptor.proto
+    proto-src/google/protobuf/duration.proto
+    proto-src/google/protobuf/empty.proto
+    proto-src/google/protobuf/wrappers.proto
+    proto-src/google/protobuf/timestamp.proto
+
+source-repository head
+  type: git
+  location: https://github.com/google/proto-lens
+  subdir: proto-lens-protobuf-types
+
+custom-setup
+  setup-depends:
+      Cabal
+    , base >=4.10 && <4.16
+    , proto-lens-setup ==0.4.*
+
+library
+  exposed-modules:
+      Data.ProtoLens.Any
+      Data.ProtoLens.Descriptor
+      Proto.Google.Protobuf.Any
+      Proto.Google.Protobuf.Any_Fields
+      Proto.Google.Protobuf.Compiler.Plugin
+      Proto.Google.Protobuf.Compiler.Plugin_Fields
+      Proto.Google.Protobuf.Descriptor
+      Proto.Google.Protobuf.Descriptor_Fields
+      Proto.Google.Protobuf.Duration
+      Proto.Google.Protobuf.Duration_Fields
+      Proto.Google.Protobuf.Empty
+      Proto.Google.Protobuf.Empty_Fields
+      Proto.Google.Protobuf.Wrappers
+      Proto.Google.Protobuf.Wrappers_Fields
+      Proto.Google.Protobuf.Timestamp
+      Proto.Google.Protobuf.Timestamp_Fields
+  autogen-modules:
+      Proto.Google.Protobuf.Any
+      Proto.Google.Protobuf.Any_Fields
+      Proto.Google.Protobuf.Compiler.Plugin
+      Proto.Google.Protobuf.Compiler.Plugin_Fields
+      Proto.Google.Protobuf.Descriptor
+      Proto.Google.Protobuf.Descriptor_Fields
+      Proto.Google.Protobuf.Duration
+      Proto.Google.Protobuf.Duration_Fields
+      Proto.Google.Protobuf.Empty
+      Proto.Google.Protobuf.Empty_Fields
+      Proto.Google.Protobuf.Wrappers
+      Proto.Google.Protobuf.Wrappers_Fields
+      Proto.Google.Protobuf.Timestamp
+      Proto.Google.Protobuf.Timestamp_Fields
+  hs-source-dirs:
+      src
+  build-tool-depends:
+      proto-lens-protoc:proto-lens-protoc
+  build-depends:
+      base >=4.10 && <4.16
+    , lens-family >=1.2 && <2.2
+    , proto-lens ==0.7.*
+    , proto-lens-runtime ==0.7.*
+    , text ==1.2.*
+  default-language: Haskell2010

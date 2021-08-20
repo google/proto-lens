@@ -1,0 +1,878 @@
+cabal-version: 2.0
+
+-- This file has been generated from package.yaml by hpack version 0.34.4.
+--
+-- see: https://github.com/sol/hpack
+
+name:           proto-lens-tests
+version:        0.1.0.1
+synopsis:       Unit tests for proto-lens
+description:    This package contains a set of test suites for proto-lens.
+category:       Data
+author:         Judah Jacobson
+maintainer:     proto-lens@googlegroups.com
+copyright:      Google Inc.
+license:        BSD3
+license-file:   LICENSE
+build-type:     Custom
+extra-source-files: tests/*.proto
+
+custom-setup
+  setup-depends:
+      Cabal
+    , base
+    , proto-lens-setup
+
+library
+  exposed-modules:
+      Data.ProtoLens.TestUtil
+      Proto.Lib
+  other-modules:
+      Paths_proto_lens_tests
+  autogen-modules:
+      Proto.Lib
+  hs-source-dirs:
+      src
+  build-tool-depends:
+      proto-lens-protoc:proto-lens-protoc
+  build-depends:
+      QuickCheck
+    , base
+    , bytestring
+    , lens-family
+    , pretty
+    , proto-lens
+    , proto-lens-arbitrary
+    , proto-lens-runtime
+    , tasty
+    , tasty-hunit
+    , tasty-quickcheck
+    , text
+  default-language: Haskell2010
+
+test-suite any_test
+  type: exitcode-stdio-1.0
+  main-is: any_test.hs
+  other-modules:
+      Paths_proto_lens_tests
+      Proto.Any
+      Proto.Any_Fields
+  autogen-modules:
+      Proto.Any
+      Proto.Any_Fields
+  hs-source-dirs:
+      tests
+  build-tool-depends:
+      proto-lens-protoc:proto-lens-protoc
+  build-depends:
+      QuickCheck
+    , base
+    , bytestring
+    , lens-family
+    , pretty
+    , proto-lens
+    , proto-lens-arbitrary
+    , proto-lens-protobuf-types
+    , proto-lens-runtime
+    , proto-lens-tests
+    , tasty
+    , tasty-hunit
+    , tasty-quickcheck
+    , text
+  default-language: Haskell2010
+
+test-suite canonical_test
+  type: exitcode-stdio-1.0
+  main-is: canonical_test.hs
+  other-modules:
+      Paths_proto_lens_tests
+      Proto.Canonical
+      Proto.Canonical_Fields
+  autogen-modules:
+      Proto.Canonical
+      Proto.Canonical_Fields
+  hs-source-dirs:
+      tests
+  build-tool-depends:
+      proto-lens-protoc:proto-lens-protoc
+  build-depends:
+      QuickCheck
+    , base
+    , bytestring
+    , lens-family
+    , pretty
+    , proto-lens
+    , proto-lens-arbitrary
+    , proto-lens-runtime
+    , proto-lens-tests
+    , tasty
+    , tasty-hunit
+    , tasty-quickcheck
+    , text
+  default-language: Haskell2010
+
+test-suite combinators_test
+  type: exitcode-stdio-1.0
+  main-is: combinators_test.hs
+  other-modules:
+      Paths_proto_lens_tests
+      Proto.Combinators Proto.Combinators_Fields
+  autogen-modules:
+      Proto.Combinators Proto.Combinators_Fields
+  hs-source-dirs:
+      tests
+  build-tool-depends:
+      proto-lens-protoc:proto-lens-protoc
+  build-depends:
+      QuickCheck
+    , base
+    , bytestring
+    , lens-family
+    , pretty
+    , proto-lens
+    , proto-lens-arbitrary
+    , proto-lens-runtime
+    , tasty
+    , tasty-hunit
+    , tasty-quickcheck
+    , text
+  default-language: Haskell2010
+
+test-suite decode_delimited_test
+  type: exitcode-stdio-1.0
+  main-is: decode_delimited_test.hs
+  other-modules:
+      Paths_proto_lens_tests
+      Proto.DecodeDelimited
+      Proto.DecodeDelimited_Fields
+  autogen-modules:
+      Proto.DecodeDelimited
+      Proto.DecodeDelimited_Fields
+  hs-source-dirs:
+      tests
+  build-tool-depends:
+      proto-lens-protoc:proto-lens-protoc
+  build-depends:
+      QuickCheck
+    , base
+    , bytestring
+    , lens-family
+    , pretty
+    , proto-lens
+    , proto-lens-arbitrary
+    , proto-lens-protobuf-types
+    , proto-lens-runtime
+    , proto-lens-tests
+    , tasty
+    , tasty-hunit
+    , tasty-quickcheck
+    , temporary
+    , text
+  default-language: Haskell2010
+
+test-suite dependent_test
+  type: exitcode-stdio-1.0
+  main-is: dependent_test.hs
+  other-modules:
+      Paths_proto_lens_tests
+      Proto.Dependent
+  autogen-modules:
+      Proto.Dependent
+  hs-source-dirs:
+      tests
+  build-tool-depends:
+      proto-lens-protoc:proto-lens-protoc
+  build-depends:
+      QuickCheck
+    , base
+    , bytestring
+    , lens-family
+    , pretty
+    , proto-lens
+    , proto-lens-arbitrary
+    , proto-lens-runtime
+    , proto-lens-tests
+    , tasty
+    , tasty-hunit
+    , tasty-quickcheck
+    , text
+  default-language: Haskell2010
+
+test-suite descriptor_test
+  type: exitcode-stdio-1.0
+  main-is: descriptor_test.hs
+  other-modules:
+      Paths_proto_lens_tests
+      Proto.Descriptor
+  autogen-modules:
+      Proto.Descriptor
+  hs-source-dirs:
+      tests
+  build-tool-depends:
+      proto-lens-protoc:proto-lens-protoc
+  build-depends:
+      QuickCheck
+    , base
+    , bytestring
+    , lens-family
+    , pretty
+    , proto-lens
+    , proto-lens-arbitrary
+    , proto-lens-protobuf-types
+    , proto-lens-runtime
+    , proto-lens-tests
+    , tasty
+    , tasty-hunit
+    , tasty-quickcheck
+    , text
+  default-language: Haskell2010
+
+test-suite enum_test
+  type: exitcode-stdio-1.0
+  main-is: enum_test.hs
+  other-modules:
+      Paths_proto_lens_tests
+      Proto.Enum
+      Proto.Enum_Fields
+      Proto.EnumOnly
+  autogen-modules:
+      Proto.Enum
+      Proto.Enum_Fields
+      Proto.EnumOnly
+  hs-source-dirs:
+      tests
+  ghc-options: -fwarn-overlapping-patterns -fwarn-incomplete-patterns -Werror
+  build-tool-depends:
+      proto-lens-protoc:proto-lens-protoc
+  build-depends:
+      QuickCheck
+    , base
+    , bytestring
+    , lens-family
+    , pretty
+    , proto-lens
+    , proto-lens-arbitrary
+    , proto-lens-runtime
+    , proto-lens-tests
+    , tasty
+    , tasty-hunit
+    , tasty-quickcheck
+    , text
+  default-language: Haskell2010
+
+test-suite group_test
+  type: exitcode-stdio-1.0
+  main-is: group_test.hs
+  other-modules:
+      Paths_proto_lens_tests
+      Proto.Group
+      Proto.Group_Fields
+  autogen-modules:
+      Proto.Group
+      Proto.Group_Fields
+  hs-source-dirs:
+      tests
+  build-tool-depends:
+      proto-lens-protoc:proto-lens-protoc
+  build-depends:
+      QuickCheck
+    , base
+    , bytestring
+    , lens-family
+    , pretty
+    , proto-lens
+    , proto-lens-arbitrary
+    , proto-lens-runtime
+    , proto-lens-tests
+    , tasty
+    , tasty-hunit
+    , tasty-quickcheck
+    , text
+  default-language: Haskell2010
+
+test-suite imports_test
+  type: exitcode-stdio-1.0
+  main-is: imports_test.hs
+  other-modules:
+      Paths_proto_lens_tests
+      Proto.Empty
+      Proto.Enum
+      Proto.Imports
+      Proto.ImportsDep
+      Proto.ImportsTransitive
+      Proto.ImportsTransitive2
+      Proto.Nested
+  autogen-modules:
+      Proto.Empty
+      Proto.Enum
+      Proto.Imports
+      Proto.ImportsDep
+      Proto.ImportsTransitive
+      Proto.ImportsTransitive2
+      Proto.Nested
+  hs-source-dirs:
+      tests
+  build-tool-depends:
+      proto-lens-protoc:proto-lens-protoc
+  build-depends:
+      QuickCheck
+    , base
+    , bytestring
+    , lens-family
+    , pretty
+    , proto-lens
+    , proto-lens-arbitrary
+    , proto-lens-protobuf-types
+    , proto-lens-runtime
+    , proto-lens-tests
+    , tasty
+    , tasty-hunit
+    , tasty-quickcheck
+    , text
+  default-language: Haskell2010
+
+test-suite labels_test
+  type: exitcode-stdio-1.0
+  main-is: labels_test.hs
+  other-modules:
+      Paths_proto_lens_tests
+      Proto.Canonical
+      Proto.Canonical_Fields
+  autogen-modules:
+      Proto.Canonical
+      Proto.Canonical_Fields
+  hs-source-dirs:
+      tests
+  build-tool-depends:
+      proto-lens-protoc:proto-lens-protoc
+  build-depends:
+      QuickCheck
+    , base
+    , bytestring
+    , lens-family
+    , lens-family-core
+    , pretty
+    , proto-lens
+    , proto-lens-arbitrary
+    , proto-lens-runtime
+    , proto-lens-tests
+    , tasty
+    , tasty-hunit
+    , tasty-quickcheck
+    , text
+  default-language: Haskell2010
+
+test-suite map_test
+  type: exitcode-stdio-1.0
+  main-is: map_test.hs
+  other-modules:
+      Paths_proto_lens_tests
+      Proto.Map
+      Proto.Map_Fields
+  autogen-modules:
+      Proto.Map
+      Proto.Map_Fields
+  hs-source-dirs:
+      tests
+  build-tool-depends:
+      proto-lens-protoc:proto-lens-protoc
+  build-depends:
+      QuickCheck
+    , base
+    , bytestring
+    , lens-family
+    , pretty
+    , proto-lens
+    , proto-lens-arbitrary
+    , proto-lens-runtime
+    , proto-lens-tests
+    , tasty
+    , tasty-hunit
+    , tasty-quickcheck
+    , text
+  default-language: Haskell2010
+
+test-suite message_set_test
+  type: exitcode-stdio-1.0
+  main-is: message_set_test.hs
+  other-modules:
+      Paths_proto_lens_tests
+      Proto.MessageSet
+      Proto.MessageSet_Fields
+  autogen-modules:
+      Proto.MessageSet
+      Proto.MessageSet_Fields
+  hs-source-dirs:
+      tests
+  build-tool-depends:
+      proto-lens-protoc:proto-lens-protoc
+  build-depends:
+      QuickCheck
+    , base
+    , bytestring
+    , lens-family
+    , pretty
+    , proto-lens
+    , proto-lens-arbitrary
+    , proto-lens-runtime
+    , proto-lens-tests
+    , tasty
+    , tasty-hunit
+    , tasty-quickcheck
+    , text
+  default-language: Haskell2010
+
+test-suite names_test
+  type: exitcode-stdio-1.0
+  main-is: names_test.hs
+  other-modules:
+      Paths_proto_lens_tests
+      Proto.Names
+      Proto.Names_Fields
+  autogen-modules:
+      Proto.Names
+      Proto.Names_Fields
+  hs-source-dirs:
+      tests
+  build-tool-depends:
+      proto-lens-protoc:proto-lens-protoc
+  build-depends:
+      QuickCheck
+    , base
+    , bytestring
+    , lens-family
+    , pretty
+    , proto-lens
+    , proto-lens-arbitrary
+    , proto-lens-runtime
+    , proto-lens-tests
+    , tasty
+    , tasty-hunit
+    , tasty-quickcheck
+    , text
+  default-language: Haskell2010
+
+test-suite no_package_test
+  type: exitcode-stdio-1.0
+  main-is: no_package_test.hs
+  other-modules:
+      Paths_proto_lens_tests
+      Proto.NoPackage
+      Proto.NoPackage_Fields
+  autogen-modules:
+      Proto.NoPackage
+      Proto.NoPackage_Fields
+  hs-source-dirs:
+      tests
+  build-tool-depends:
+      proto-lens-protoc:proto-lens-protoc
+  build-depends:
+      QuickCheck
+    , base
+    , bytestring
+    , lens-family
+    , pretty
+    , proto-lens
+    , proto-lens-arbitrary
+    , proto-lens-runtime
+    , proto-lens-tests
+    , tasty
+    , tasty-hunit
+    , tasty-quickcheck
+    , text
+  default-language: Haskell2010
+
+test-suite oneof_test
+  type: exitcode-stdio-1.0
+  main-is: oneof_test.hs
+  other-modules:
+      Paths_proto_lens_tests
+      Proto.Oneof
+      Proto.Oneof_Fields
+  autogen-modules:
+      Proto.Oneof
+      Proto.Oneof_Fields
+  hs-source-dirs:
+      tests
+  build-tool-depends:
+      proto-lens-protoc:proto-lens-protoc
+  build-depends:
+      QuickCheck
+    , base
+    , bytestring
+    , lens-family
+    , pretty
+    , proto-lens
+    , proto-lens-arbitrary
+    , proto-lens-runtime
+    , proto-lens-tests
+    , tasty
+    , tasty-hunit
+    , tasty-quickcheck
+    , text
+  default-language: Haskell2010
+
+test-suite optional_test
+  type: exitcode-stdio-1.0
+  main-is: optional_test.hs
+  other-modules:
+      Paths_proto_lens_tests
+      Proto.Optional
+      Proto.Optional_Fields
+  autogen-modules:
+      Proto.Optional
+      Proto.Optional_Fields
+  hs-source-dirs:
+      tests
+  build-tool-depends:
+      proto-lens-protoc:proto-lens-protoc
+  build-depends:
+      QuickCheck
+    , base
+    , bytestring
+    , lens-family
+    , pretty
+    , proto-lens
+    , proto-lens-arbitrary
+    , proto-lens-runtime
+    , proto-lens-tests
+    , tasty
+    , tasty-hunit
+    , tasty-quickcheck
+    , text
+  default-language: Haskell2010
+
+test-suite package-deps_test
+  type: exitcode-stdio-1.0
+  main-is: package-deps_test.hs
+  other-modules:
+      Paths_proto_lens_tests
+      Proto.PackageDeps
+      Proto.PackageDeps_Fields
+  autogen-modules:
+      Proto.PackageDeps
+      Proto.PackageDeps_Fields
+  hs-source-dirs:
+      tests
+  build-tool-depends:
+      proto-lens-protoc:proto-lens-protoc
+  build-depends:
+      QuickCheck
+    , base
+    , bytestring
+    , lens-family
+    , pretty
+    , proto-lens
+    , proto-lens-arbitrary
+    , proto-lens-runtime
+    , proto-lens-tests
+    , proto-lens-tests-dep
+    , tasty
+    , tasty-hunit
+    , tasty-quickcheck
+    , text
+  default-language: Haskell2010
+
+test-suite packed_test
+  type: exitcode-stdio-1.0
+  main-is: packed_test.hs
+  other-modules:
+      Paths_proto_lens_tests
+      Proto.Packed
+      Proto.Packed_Fields
+  autogen-modules:
+      Proto.Packed
+      Proto.Packed_Fields
+  hs-source-dirs:
+      tests
+  build-tool-depends:
+      proto-lens-protoc:proto-lens-protoc
+  build-depends:
+      QuickCheck
+    , base
+    , bytestring
+    , lens-family
+    , pretty
+    , proto-lens
+    , proto-lens-arbitrary
+    , proto-lens-runtime
+    , proto-lens-tests
+    , tasty
+    , tasty-hunit
+    , tasty-quickcheck
+    , text
+  default-language: Haskell2010
+
+test-suite pathological_test
+  type: exitcode-stdio-1.0
+  main-is: pathological_test.hs
+  other-modules:
+      Paths_proto_lens_tests
+      Proto.Pathological
+  autogen-modules:
+      Proto.Pathological
+  hs-source-dirs:
+      tests
+  build-tool-depends:
+      proto-lens-protoc:proto-lens-protoc
+  build-depends:
+      QuickCheck
+    , base
+    , bytestring
+    , lens-family
+    , pretty
+    , proto-lens
+    , proto-lens-arbitrary
+    , proto-lens-runtime
+    , proto-lens-tests
+    , tasty
+    , tasty-hunit
+    , tasty-quickcheck
+    , text
+  default-language: Haskell2010
+
+test-suite proto3_optional_test
+  type: exitcode-stdio-1.0
+  main-is: proto3_optional_test.hs
+  other-modules:
+      Paths_proto_lens_tests
+      Proto.TestProto3Optional
+      Proto.TestProto3Optional_Fields
+  autogen-modules:
+      Proto.TestProto3Optional
+      Proto.TestProto3Optional_Fields
+  hs-source-dirs:
+      tests
+  build-tool-depends:
+      proto-lens-protoc:proto-lens-protoc
+  build-depends:
+      QuickCheck
+    , base
+    , bytestring
+    , lens-family
+    , pretty
+    , proto-lens
+    , proto-lens-arbitrary
+    , proto-lens-protobuf-types
+    , proto-lens-runtime
+    , proto-lens-tests
+    , tasty
+    , tasty-hunit
+    , tasty-quickcheck
+    , text
+  default-language: Haskell2010
+
+test-suite proto3_test
+  type: exitcode-stdio-1.0
+  main-is: proto3_test.hs
+  other-modules:
+      Paths_proto_lens_tests
+      Proto.Proto3
+      Proto.Proto3_Fields
+  autogen-modules:
+      Proto.Proto3
+      Proto.Proto3_Fields
+  hs-source-dirs:
+      tests
+  build-tool-depends:
+      proto-lens-protoc:proto-lens-protoc
+  build-depends:
+      QuickCheck
+    , base
+    , bytestring
+    , lens-family
+    , pretty
+    , proto-lens
+    , proto-lens-arbitrary
+    , proto-lens-runtime
+    , proto-lens-tests
+    , tasty
+    , tasty-hunit
+    , tasty-quickcheck
+    , text
+  default-language: Haskell2010
+
+test-suite raw_fields_test
+  type: exitcode-stdio-1.0
+  main-is: raw_fields_test.hs
+  other-modules:
+      Paths_proto_lens_tests
+      Proto.RawFields
+      Proto.RawFields_Fields
+  autogen-modules:
+      Proto.RawFields
+      Proto.RawFields_Fields
+  hs-source-dirs:
+      tests
+  build-tool-depends:
+      proto-lens-protoc:proto-lens-protoc
+  build-depends:
+      QuickCheck
+    , base
+    , bytestring
+    , lens-family
+    , pretty
+    , proto-lens
+    , proto-lens-arbitrary
+    , proto-lens-runtime
+    , proto-lens-tests
+    , tasty
+    , tasty-hunit
+    , tasty-quickcheck
+    , text
+  default-language: Haskell2010
+
+test-suite repeated_test
+  type: exitcode-stdio-1.0
+  main-is: repeated_test.hs
+  other-modules:
+      Paths_proto_lens_tests
+      Proto.Repeated
+      Proto.Repeated_Fields
+  autogen-modules:
+      Proto.Repeated
+      Proto.Repeated_Fields
+  hs-source-dirs:
+      tests
+  build-tool-depends:
+      proto-lens-protoc:proto-lens-protoc
+  build-depends:
+      QuickCheck
+    , base
+    , bytestring
+    , lens-family
+    , pretty
+    , proto-lens
+    , proto-lens-arbitrary
+    , proto-lens-runtime
+    , proto-lens-tests
+    , tasty
+    , tasty-hunit
+    , tasty-quickcheck
+    , text
+    , vector
+  default-language: Haskell2010
+
+test-suite required_test
+  type: exitcode-stdio-1.0
+  main-is: required_test.hs
+  other-modules:
+      Paths_proto_lens_tests
+      Proto.Required
+      Proto.Required_Fields
+  autogen-modules:
+      Proto.Required
+      Proto.Required_Fields
+  hs-source-dirs:
+      tests
+  build-tool-depends:
+      proto-lens-protoc:proto-lens-protoc
+  build-depends:
+      QuickCheck
+    , base
+    , bytestring
+    , lens-family
+    , lens-family-core
+    , pretty
+    , proto-lens
+    , proto-lens-arbitrary
+    , proto-lens-runtime
+    , proto-lens-tests
+    , tasty
+    , tasty-hunit
+    , tasty-quickcheck
+    , text
+  default-language: Haskell2010
+
+test-suite service_test
+  type: exitcode-stdio-1.0
+  main-is: service_test.hs
+  other-modules:
+      Paths_proto_lens_tests
+      Proto.Service
+      Proto.Service_Fields
+  autogen-modules:
+      Proto.Service
+      Proto.Service_Fields
+  hs-source-dirs:
+      tests
+  ghc-options: -fwarn-overlapping-patterns -Werror
+  build-tool-depends:
+      proto-lens-protoc:proto-lens-protoc
+  build-depends:
+      QuickCheck
+    , base
+    , bytestring
+    , lens-family
+    , pretty
+    , proto-lens
+    , proto-lens-arbitrary
+    , proto-lens-protobuf-types
+    , proto-lens-runtime
+    , proto-lens-tests
+    , tasty
+    , tasty-hunit
+    , tasty-quickcheck
+    , text
+  default-language: Haskell2010
+
+test-suite text-format_test
+  type: exitcode-stdio-1.0
+  main-is: text_format_test.hs
+  other-modules:
+      Paths_proto_lens_tests
+      Proto.TextFormat
+      Proto.TextFormat_Fields
+  autogen-modules:
+      Proto.TextFormat
+      Proto.TextFormat_Fields
+  hs-source-dirs:
+      tests
+  build-tool-depends:
+      proto-lens-protoc:proto-lens-protoc
+  build-depends:
+      QuickCheck
+    , base
+    , bytestring
+    , lens-family
+    , pretty
+    , proto-lens
+    , proto-lens-arbitrary
+    , proto-lens-protobuf-types
+    , proto-lens-runtime
+    , proto-lens-tests
+    , tasty
+    , tasty-hunit
+    , tasty-quickcheck
+    , text
+  default-language: Haskell2010
+
+test-suite unknown_fields_test
+  type: exitcode-stdio-1.0
+  main-is: unknown_fields_test.hs
+  other-modules:
+      Paths_proto_lens_tests
+      Proto.UnknownFields
+      Proto.UnknownFields_Fields
+  autogen-modules:
+      Proto.UnknownFields
+      Proto.UnknownFields_Fields
+  hs-source-dirs:
+      tests
+  build-tool-depends:
+      proto-lens-protoc:proto-lens-protoc
+  build-depends:
+      QuickCheck
+    , base
+    , bytestring
+    , lens-family
+    , pretty
+    , proto-lens
+    , proto-lens-arbitrary
+    , proto-lens-runtime
+    , proto-lens-tests
+    , tasty
+    , tasty-hunit
+    , tasty-quickcheck
+    , text
+  default-language: Haskell2010
