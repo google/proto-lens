@@ -16,27 +16,23 @@ module Data.ProtoLens.TextFormat.Parser
     , parser
     ) where
 
-import Control.Monad (unless)
-import Data.ByteString (ByteString, pack)
-import Data.ByteString.Lazy (toStrict)
+import Control.Applicative ((<|>), many)
+import Control.Monad (liftM, liftM2, mzero, unless)
+import Data.ByteString (ByteString)
 import Data.ByteString.Builder (Builder, char8, charUtf8, toLazyByteString, word8)
+import Data.ByteString.Lazy (toStrict)
 import Data.Char (digitToInt, isSpace)
 import Data.Functor (($>))
 import Data.Functor.Identity (Identity)
 import Data.List (intercalate)
-import Data.Maybe (catMaybes)
-import Data.Text.Lazy (Text)
 import qualified Data.Text as StrictText
-import Data.Word (Word8)
-import Numeric (readOct, readHex)
+import Data.Text.Lazy (Text)
 import Text.Parsec ((<?>))
 import Text.Parsec.Char
   (alphaNum, char, hexDigit, letter, octDigit, oneOf, satisfy)
 import Text.Parsec.Text.Lazy (Parser)
-import Text.Parsec.Combinator (choice, eof, many1, optionMaybe, sepBy1)
+import Text.Parsec.Combinator (choice, eof, many1, sepBy1)
 import Text.Parsec.Token hiding (octal)
-import Control.Applicative ((<|>), many)
-import Control.Monad (liftM, liftM2, mzero)
 
 -- | A 'TokenParser' for the protobuf text format.
 ptp :: GenTokenParser Text () Identity
@@ -147,22 +143,28 @@ protoStringLiteral = do
             , char '\\'  $> char8 '\\'
             , char '\''  $> char8 '\''
             , char '\"'  $> char8 '\"'
-            , oneOf "xX" *> parseNum hexDigit 16 1 2
+            , oneOf "xX" *> parse8BitToBuilder hexDigit 16 (1, 2)
             , oneOf "uU" *> fail "Unicode in string literals not yet supported"
-            ,               parseNum octDigit 8 1 3
+            ,               parse8BitToBuilder octDigit 8 (1, 3)
             ]
         unquoted = charUtf8 <$> satisfy (/= initialQuoteChar)
     builders <- many $ quoted <|> unquoted
     _ <- char initialQuoteChar
     return $ toStrict $ toLazyByteString $ mconcat builders
   where
-    manyN :: Parser a -> Int -> Int -> Parser [a]
-    manyN _ _ 0 = return []
-    manyN p 0 max = (do x <- p; xs <- manyN p 0 (max - 1); return (x : xs)) <|> return []
-    manyN p min max = do x <- p; xs <- manyN p (min - 1) (max - 1); return (x : xs)
-    parseNum :: Parser Char -> Int -> Int -> Int -> Parser Builder
-    parseNum parser base min max = do
-      digits <- manyN parser min max
-      let value = foldl (\a d -> a * base + d) 0 $ map digitToInt digits
+    -- | Apply a parser between 'min' and 'max' times, failing otherwise.
+    manyN :: Parser a -> (Int, Int) -> Parser [a]
+    manyN _ (_, 0) = return []
+    manyN p (0, max) = ((:) <$> p <*> manyN p (0, max - 1)) <|> pure []
+    manyN p (min, max) = (:) <$> p <*> manyN p (min - 1, max - 1)
+    -- | Parse a number in 'base' with between 'min' and 'max' digits.
+    parseNum :: Parser Char -> Int -> (Int, Int) -> Parser Int
+    parseNum p base range = do
+      digits <- map digitToInt <$> manyN p range
+      return $ foldl (\a d -> a * base + d) 0 digits
+    -- | Parse a number and return a builder for the 8-bit char it represents.
+    parse8BitToBuilder :: Parser Char -> Int -> (Int, Int) -> Parser Builder
+    parse8BitToBuilder p base range = do
+      value <- parseNum p base range
       unless (value < 256) $ fail "Escaped number is not 8-bit"
       return $ word8 $ fromIntegral value
