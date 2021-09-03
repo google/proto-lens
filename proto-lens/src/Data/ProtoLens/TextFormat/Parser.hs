@@ -16,8 +16,12 @@ module Data.ProtoLens.TextFormat.Parser
     , parser
     ) where
 
+import Control.Monad (unless)
 import Data.ByteString (ByteString, pack)
-import Data.Char (ord, isSpace)
+import Data.ByteString.Lazy (toStrict)
+import Data.ByteString.Builder (Builder, char8, charUtf8, toLazyByteString, word8)
+import Data.Char (digitToInt, isSpace)
+import Data.Functor (($>))
 import Data.Functor.Identity (Identity)
 import Data.List (intercalate)
 import Data.Maybe (catMaybes)
@@ -54,7 +58,6 @@ protobufLangDef = LanguageDef
   , reservedOpNames = []
   , caseSensitive = True
   }
-
 
 type Message = [Field]
 
@@ -131,39 +134,35 @@ parser = whiteSpace ptp *> parseMessage <* eof
 protoStringLiteral :: Parser ByteString
 protoStringLiteral = do
     initialQuoteChar <- char '\'' <|> char '\"'
-    word8s <- many $ stringChar initialQuoteChar
+    let quoted = do
+          _ <- char '\\'
+          choice
+            [ char 'a'   $> char8 '\a'
+            , char 'b'   $> char8 '\b'
+            , char 'f'   $> char8 '\f'
+            , char 'n'   $> char8 '\n'
+            , char 'r'   $> char8 '\r'
+            , char 't'   $> char8 '\t'
+            , char 'v'   $> char8 '\v'
+            , char '\\'  $> char8 '\\'
+            , char '\''  $> char8 '\''
+            , char '\"'  $> char8 '\"'
+            , oneOf "xX" *> parseNum hexDigit 16 1 2
+            , oneOf "uU" *> fail "Unicode in string literals not yet supported"
+            ,               parseNum octDigit 8 1 3
+            ]
+        unquoted = charUtf8 <$> satisfy (/= initialQuoteChar)
+    builders <- many $ quoted <|> unquoted
     _ <- char initialQuoteChar
-    return $ pack word8s
+    return $ toStrict $ toLazyByteString $ mconcat builders
   where
-    stringChar :: Char -> Parser Word8
-    stringChar quote = (nonEscape quote) <|> stringEscape
-    nonEscape quote = fmap (fromIntegral . ord)
-        $ satisfy (\c -> c `notElem` "\\" ++ [quote] && ord c < 256)
-    stringEscape = char '\\' >> (octal <|> hex <|> unicode <|> simple)
-    octal = do d0 <- octDigit
-               d1 <- optionMaybe octDigit
-               d2 <- optionMaybe octDigit
-               readMaybeDigits readOct [Just d0, d1, d2]
-    readMaybeDigits :: ReadS Word8 -> [Maybe Char] -> Parser Word8
-    readMaybeDigits reader
-        = return . (\str -> let [(v, "")] = reader str in v) . catMaybes
-    hex = do _ <- oneOf "xX"
-             d0 <- hexDigit
-             d1 <- optionMaybe hexDigit
-             readMaybeDigits readHex [Just d0, d1]
-    unicode = oneOf "uU" >> fail "Unicode in string literals not yet supported"
-    simple = choice $ map charRet [ ('a', '\a')
-                                  , ('b', '\b')
-                                  , ('f', '\f')
-                                  , ('n', '\n')
-                                  , ('r', '\r')
-                                  , ('t', '\t')
-                                  , ('v', '\v')
-                                  , ('\\', '\\')
-                                  , ('\'', '\'')
-                                  , ('\"', '\"')
-                                  ]
-      where
-        charRet :: (Char, Char) -> Parser Word8
-        charRet (escapeCh, ch) = do _ <- char escapeCh
-                                    return $ fromIntegral $ ord ch
+    manyN :: Parser a -> Int -> Int -> Parser [a]
+    manyN _ _ 0 = return []
+    manyN p 0 max = (do x <- p; xs <- manyN p 0 (max - 1); return (x : xs)) <|> return []
+    manyN p min max = do x <- p; xs <- manyN p (min - 1) (max - 1); return (x : xs)
+    parseNum :: Parser Char -> Int -> Int -> Int -> Parser Builder
+    parseNum parser base min max = do
+      digits <- manyN parser min max
+      let value = foldl (\a d -> a * base + d) 0 $ map digitToInt digits
+      unless (value < 256) $ fail "Escaped number is not 8-bit"
+      return $ word8 $ fromIntegral value
