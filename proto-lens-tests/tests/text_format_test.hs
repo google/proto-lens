@@ -47,6 +47,7 @@ main = testMain
     [ readFrom "spaces" (Just $ def1 & a .~ 5) "  a: \n5  "
     , readFrom "string concat" (Just $ def1 & b .~ "abcdef")
           "b: \"a\"\"bcd\" \n   \"ef\""
+    , readFrom "unicode" (Just $ def1 & b .~ "** † **") "b: \"** † **\""
     , readFrom "bad char" failed1 "a: 5="
     , readFrom "same line" (Just $ def1 & d .~ [1, 2, 3])
           "d: 1 d: 2    d: 3   "
