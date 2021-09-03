@@ -157,11 +157,13 @@ protoStringLiteral = do
     manyN _ (_, 0) = return []
     manyN p (0, max) = ((:) <$> p <*> manyN p (0, max - 1)) <|> pure []
     manyN p (min, max) = (:) <$> p <*> manyN p (min - 1, max - 1)
+
     -- | Parse a number in 'base' with between 'min' and 'max' digits.
     parseNum :: Parser Char -> Int -> (Int, Int) -> Parser Int
     parseNum p base range = do
       digits <- map digitToInt <$> manyN p range
       return $ foldl (\a d -> a * base + d) 0 digits
+
     -- | Parse a number and return a builder for the 8-bit char it represents.
     parse8BitToBuilder :: Parser Char -> Int -> (Int, Int) -> Parser Builder
     parse8BitToBuilder p base range = do
