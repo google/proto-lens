@@ -135,7 +135,8 @@ jobs:
       - name: Determine Build Plan
         run: |
           $STACK build --test --dry-run
-          echo "\n" stack*.lock ${{ hashFiles('stack*.lock') }}
+          echo Lock files:
+          echo stack*.lock ${{ hashFiles('stack*.lock') }}
 
       # Cache pre-built dependencies from the same lock file; restore from
       # other builds with the same GHC version to benefit from any packages in
