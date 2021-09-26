@@ -4,7 +4,7 @@
 # license that can be found in the LICENSE file or at
 # https://developers.google.com/open-source/licenses/bsd
 
-resolver: ghc-8.10.1
+resolver: lts-18.10
 packages:
 - discrimination-ieee754
 - proto-lens
