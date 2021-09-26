@@ -135,7 +135,7 @@ jobs:
       - name: Determine Build Plan
         run: |
           $STACK build --test --dry-run
-          echo '\n' ${{ matrix.build.stackyaml }}.lock ${{ hashFiles('${{ matrix.build.stackyaml }}.lock') }}
+          echo "\n" stack*.lock ${{ hashFiles('stack*.lock') }}
 
       # Cache pre-built dependencies from the same lock file; restore from
       # other builds with the same GHC version to benefit from any packages in
@@ -154,7 +154,7 @@ jobs:
             ${{ steps.setup-stack.outputs.stack-root }}/*
             !${{ steps.setup-stack.outputs.stack-root }}/programs
             !${{ steps.setup-stack.outputs.stack-root }}/pantry
-          key: ${{ env.dep-cache-ver }}-${{ runner.os }}-${{ matrix.build.compiler }}-${{ hashFiles('${{ matrix.build.stackyaml }}.lock') }}
+          key: ${{ env.dep-cache-ver }}-${{ runner.os }}-${{ matrix.build.compiler }}-${{ hashFiles('stack*.lock') }}
           restore-keys: |
             ${{ env.dep-cache-ver }}-${{ runner.os }}-${{ matrix.build.compiler }}-
 
@@ -181,9 +181,9 @@ jobs:
         with:
           path: "**/.stack-work"
           key: |
-            ${{ env.mod-cache-ver }}-${{ runner.os }}-${{ matrix.build.compiler }}-${{ hashFiles('${{ matrix.build.stackyaml }}.lock') }}-${{hashFiles('**/*.hs', '**/package.yaml') }}
+            ${{ env.mod-cache-ver }}-${{ runner.os }}-${{ matrix.build.compiler }}-${{ hashFiles('stack*.lock') }}-${{hashFiles('**/*.hs', '**/package.yaml') }}
           restore-keys: |
-            ${{ env.mod-cache-ver }}-${{ runner.os }}-${{ matrix.build.compiler }}-${{ hashFiles('${{ matrix.build.stackyaml }}.lock') }}-
+            ${{ env.mod-cache-ver }}-${{ runner.os }}-${{ matrix.build.compiler }}-${{ hashFiles('stack*.lock') }}-
             ${{ env.mod-cache-ver }}-${{ runner.os }}-${{ matrix.build.compiler }}-
 
       # Build, Haddock, and test, taking care to build in only one
