@@ -60,7 +60,7 @@ jobs:
       matrix: ${{ fromJson(needs.prepare.outputs.ci-builds) }}
 
     env:
-      STACK: "stack --lock-file read-write --resolver ${{ matrix.build.resolver }} --compiler ${{ matrix.build.compiler }}"
+      STACK: "stack --stack-yaml ${{ matrix.build.stackyaml }} --lock-file read-write --resolver ${{ matrix.build.resolver }} --compiler ${{ matrix.build.compiler }}"
 
       ghc-cache-ver: v1
       dep-cache-ver: v1
@@ -69,6 +69,12 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@5a4ac9002d0be2fb38bd78e4b4dbde5606d7042f
+
+      # Installs the recent protoc, for now unpinned to gain some experience
+      - name: Install Protoc
+        uses: arduino/setup-protoc@v1
+        with:
+          version: '3.x'
 
       # Install Stack without GHC first, so we have an opportunity to cache the
       # Pantry package index.
@@ -125,7 +131,7 @@ jobs:
       - name: Determine Build Plan
         run: |
           $STACK build --test --dry-run
-          echo '\n' stack.yaml.lock ${{ hashFiles('stack.yaml.lock') }}
+          echo '\n' ${{ matrix.build.stackyaml }}.lock ${{ hashFiles('${{ matrix.build.stackyaml }}.lock') }}
 
       # Cache pre-built dependencies from the same lock file; restore from
       # other builds with the same GHC version to benefit from any packages in
@@ -144,7 +150,7 @@ jobs:
             ${{ steps.setup-stack.outputs.stack-root }}/*
             !${{ steps.setup-stack.outputs.stack-root }}/programs
             !${{ steps.setup-stack.outputs.stack-root }}/pantry
-          key: ${{ env.dep-cache-ver }}-${{ runner.os }}-${{ matrix.build.compiler }}-${{ hashFiles('stack.yaml.lock') }}
+          key: ${{ env.dep-cache-ver }}-${{ runner.os }}-${{ matrix.build.compiler }}-${{ hashFiles('${{ matrix.build.stackyaml }}.lock') }}
           restore-keys: |
             ${{ env.dep-cache-ver }}-${{ runner.os }}-${{ matrix.build.compiler }}-
 
@@ -171,9 +177,9 @@ jobs:
         with:
           path: "**/.stack-work"
           key: |
-            ${{ env.mod-cache-ver }}-${{ runner.os }}-${{ matrix.build.compiler }}-${{ hashFiles('stack.yaml.lock') }}-${{hashFiles('**/*.hs', '**/package.yaml') }}
+            ${{ env.mod-cache-ver }}-${{ runner.os }}-${{ matrix.build.compiler }}-${{ hashFiles('${{ matrix.build.stackyaml }}.lock') }}-${{hashFiles('**/*.hs', '**/package.yaml') }}
           restore-keys: |
-            ${{ env.mod-cache-ver }}-${{ runner.os }}-${{ matrix.build.compiler }}-${{ hashFiles('stack.yaml.lock') }}-
+            ${{ env.mod-cache-ver }}-${{ runner.os }}-${{ matrix.build.compiler }}-${{ hashFiles('${{ matrix.build.stackyaml }}.lock') }}-
             ${{ env.mod-cache-ver }}-${{ runner.os }}-${{ matrix.build.compiler }}-
 
       # Build, Haddock, and test, taking care to build in only one
