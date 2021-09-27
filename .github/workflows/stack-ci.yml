@@ -1,0 +1,208 @@
+# Copyright 2021 Google LLC
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#      http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+name: Stack CI
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    types:
+      - opened
+      - reopened
+      - synchronize
+
+# Cancel earlier runs for pushes to the same branch or updates to the same PR.
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  prepare:
+    name: Determine Build Matrix
+    runs-on: ubuntu-latest
+    timeout-minutes: 2
+
+    outputs:
+      ci-builds: ${{ steps.read-builds.outputs.ci-builds }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@5a4ac9002d0be2fb38bd78e4b4dbde5606d7042f
+        with:
+          submodules: true
+
+      - name: Read matrix.yaml
+        id: read-builds
+        run: |
+          cat matrix.yaml
+          CI_BUILDS=$(yq eval -o json -I 0 matrix.yaml)
+          echo "::set-output name=ci-builds::$CI_BUILDS"
+
+  build:
+    name: Build and Test
+    runs-on: ubuntu-latest
+    needs: prepare
+    timeout-minutes: 45
+
+    strategy:
+      fail-fast: false
+      matrix: ${{ fromJson(needs.prepare.outputs.ci-builds) }}
+
+    env:
+      STACK: "stack --stack-yaml ${{ matrix.build.stackyaml }} --lock-file read-write --resolver ${{ matrix.build.resolver }} --compiler ${{ matrix.build.compiler }}"
+
+      ghc-cache-ver: v1
+      dep-cache-ver: v1
+      mod-cache-ver: v1
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@5a4ac9002d0be2fb38bd78e4b4dbde5606d7042f
+        with:
+          submodules: true
+
+      # Installs the recent protoc, for now unpinned to gain some experience
+      - name: Install Protoc
+        uses: arduino/setup-protoc@v1
+        with:
+          version: '3.x'
+
+      # Install Stack without GHC first, so we have an opportunity to cache the
+      # Pantry package index.
+      - name: Install Stack
+        uses: haskell/actions/setup@eb3073b623d53d0cdd38e4d4c2408f14e3fc71c5
+        id: setup-stack
+        with:
+          enable-stack: true
+          stack-no-global: true
+
+      # The cache key for the Pantry package index.
+      - name: Fetch Hackage Stamp
+        run: curl -O https://hackage.haskell.org/timestamp.json
+
+      # Try to avoid rebuilding the whole Pantry index, since it takes over a
+      # minute to parse and index all the Cabal files on Hackage from scratch.
+      #
+      # Pantry will try to incrementally extend its index if it gets an
+      # out-of-date one, so we benefit from using restore-keys to bootstrap it
+      # with a previous index.
+      - name: Cache Pantry Package Index
+        uses: actions/cache@c64c572235d810460d0d6876e9c705ad5002b353
+        with:
+          # Everything except the decompressed Hackage index tarball.  Why is
+          # that even materialized to disk?
+          path: |
+            ${{ steps.setup-stack.outputs.stack-root }}/pantry/pantry*
+            ${{ steps.setup-stack.outputs.stack-root }}/pantry/hackage/*
+            !${{ steps.setup-stack.outputs.stack-root }}/pantry/hackage/*.tar
+            !${{ steps.setup-stack.outputs.stack-root }}/pantry/hackage/*.tar.gz
+          key: ${{ runner.os }}-${{ matrix.build.compiler }}-${{ hashFiles('timestamp.json') }}
+          restore-keys: |
+            ${{ runner.os }}-${{ matrix.build.compiler }}-
+            ${{ runner.os }}-
+
+      # GHC takes a while to gunzip and configure; let's try caching it
+      # pre-configured with zstd.
+      - name: Cache Configured GHC
+        uses: actions/cache@c64c572235d810460d0d6876e9c705ad5002b353
+        with:
+          # Omit the tarball itself; it'll double the cache size assuming
+          # similar compression ratios.
+          path: |
+            ${{ steps.setup-stack.outputs.stack-root }}/programs/*/*
+            !${{ steps.setup-stack.outputs.stack-root }}/programs/*/*.tar.xz
+          key: ${{ env.ghc-cache-ver}}-${{ runner.os }}-${{ matrix.build.compiler }}
+
+      # Now do stack setup, which should do as little cabal-file-indexing work
+      # as possible.
+      - name: Pre-install GHC with Stack
+        run: $STACK setup
+
+      # Have stack construct a build plan and lock file for use as a cache key.
+      - name: Determine Build Plan
+        run: |
+          $STACK build --test --dry-run
+          echo Lock files:
+          echo stack*.lock ${{ hashFiles('stack*.lock') }}
+
+      # Cache pre-built dependencies from the same lock file; restore from
+      # other builds with the same GHC version to benefit from any packages in
+      # common between two lockfiles.
+      - name: Cache Dependencies
+        uses: actions/cache@c64c572235d810460d0d6876e9c705ad5002b353
+        with:
+          # The Stack global work directory, minus GHC installations (already
+          # extracted from a tarball) and the Pantry package index (already
+          # cached).
+          #
+          # Excluding subdirectories of an included directory doesn't work, so
+          # glob everything inside $STACK_ROOT and then exclude the
+          # subdirectories we don't want.
+          path: |
+            ${{ steps.setup-stack.outputs.stack-root }}/*
+            !${{ steps.setup-stack.outputs.stack-root }}/programs
+            !${{ steps.setup-stack.outputs.stack-root }}/pantry
+          key: ${{ env.dep-cache-ver }}-${{ runner.os }}-${{ matrix.build.compiler }}-${{ hashFiles('stack*.lock') }}
+          restore-keys: |
+            ${{ env.dep-cache-ver }}-${{ runner.os }}-${{ matrix.build.compiler }}-
+
+      # We just overwrote some Stack internal files with a cached version that
+      # has an older timestamp for the GHC binary, which will confuse it on the
+      # next command.  Quarantine the warnings in their own step for
+      # aesthetics, even though they wouldn't be harmful if we just let them
+      # happen in the next build step.
+      - name: Refresh GHC Metadata
+        run: |
+          echo "Re-running setup to let Stack update GHC's timestamp."
+          echo "A warning about mismatched GHC metadata is expected."
+          echo
+          $STACK setup
+
+      # Build the dependencies, hopefully doing little to no work.
+      - name: Build Dependencies
+        run: $STACK build --test --only-dependencies
+
+      # Cache pre-built modules for incremental builds, making sure to keep
+      # builds with different dependencies separate.
+      - name: Cache Modules
+        uses: actions/cache@c64c572235d810460d0d6876e9c705ad5002b353
+        with:
+          path: "**/.stack-work"
+          key: |
+            ${{ env.mod-cache-ver }}-${{ runner.os }}-${{ matrix.build.compiler }}-${{ hashFiles('stack*.lock') }}-${{hashFiles('**/*.hs', '**/package.yaml') }}
+          restore-keys: |
+            ${{ env.mod-cache-ver }}-${{ runner.os }}-${{ matrix.build.compiler }}-${{ hashFiles('stack*.lock') }}-
+            ${{ env.mod-cache-ver }}-${{ runner.os }}-${{ matrix.build.compiler }}-
+
+      # Build, Haddock, and test, taking care to build in only one
+      # configuration to make caching work as well as possible.  In practice,
+      # this means building modules, tests, and documentation all at once, then
+      # running tests under the same configuration afterwards.  Separating them
+      # isn't crucial; it's just to make the CI results easier to understand.
+      #
+      # Using --no-haddock-deps somehow forces it to rebuild from scratch every
+      # time, so leave that out -- rebuilding unconditionally seems worse than
+      # building (and caching) dependencies' haddock.
+      - name: Build
+        run: $STACK build --test --no-run-tests
+
+      # Run tests with concurrency disabled; see
+      # https://github.com/commercialhaskell/stack/issues/5024.
+      - name: Test
+        run: $STACK build --test -j 1
+
+      - name: Haddock
+        run: $STACK build --haddock --test --no-run-tests

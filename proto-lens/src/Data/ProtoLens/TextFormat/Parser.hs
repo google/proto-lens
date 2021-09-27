@@ -155,8 +155,8 @@ protoStringLiteral = do
     -- | Apply a parser between 'min' and 'max' times, failing otherwise.
     manyN :: Parser a -> (Int, Int) -> Parser [a]
     manyN _ (_, 0) = return []
-    manyN p (0, max) = ((:) <$> p <*> manyN p (0, max - 1)) <|> pure []
-    manyN p (min, max) = (:) <$> p <*> manyN p (min - 1, max - 1)
+    manyN p (0, maX) = ((:) <$> p <*> manyN p (0, maX - 1)) <|> pure []
+    manyN p (miN, maX) = (:) <$> p <*> manyN p (miN - 1, maX - 1)
 
     -- | Parse a number in 'base' with between 'min' and 'max' digits.
     parseNum :: Parser Char -> Int -> (Int, Int) -> Parser Int

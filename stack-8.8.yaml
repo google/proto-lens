@@ -1,4 +1,4 @@
-resolver: lts-15.15
+resolver: lts-16.31
 packages:
 - proto-lens
 - proto-lens-arbitrary
