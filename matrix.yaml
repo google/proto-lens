@@ -16,3 +16,11 @@ build:
   - resolver: lts-18.10
     compiler: ghc-8.10.7
     stackyaml: stack-8.10.yaml
+
+  - resolver: lts-16.31
+    compiler: ghc-8.8.4
+    stackyaml: stack-8.8.yaml
+
+  - resolver: nightly
+    compiler: ghc-9.0.1
+    stackyaml: stack-9.0.yaml
