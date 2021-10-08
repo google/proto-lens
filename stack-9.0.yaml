@@ -23,10 +23,6 @@ flags:
   cassava:
     bytestring--lt-0_10_4: false
 
-extra-deps:
-  - github: google/ghc-source-gen
-    commit: c0a451bddf2f467e5d6598563d11abbf890e9034
-
 ghc-options:
   "$locals": -Wall -Werror
 
