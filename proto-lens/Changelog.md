@@ -1,5 +1,11 @@
 # Changelog for `proto-lens`
 
+## v0.7.1.0
+- Support GHC 9.0.
+- Fixed parsing of UTF8 chars in text format proto string literals.
+- Support all valid text format boolean field values
+- Remove redundant (.&. 127) from putVarInt (#396)
+
 ## v0.7.0.0
 - Support GHC 8.10.
 - Add a method to `Data.ProtoLens.Message` for getting the `DescriptorProto`

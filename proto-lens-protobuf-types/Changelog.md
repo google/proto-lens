@@ -1,5 +1,9 @@
 # Changelog for `proto-lens-protobuf-types`
 
+## v0.7.1.0
+- Support GHC 9.0.
+- Add ServiceDescriptor to generated services (#409)
+
 ## v0.7.0.0
 - Add the module `Data.ProtoLens.Descriptor`.  It exposes `messageDescriptor`,
   which makes it easier to get the descriptor proto for a given message type.
