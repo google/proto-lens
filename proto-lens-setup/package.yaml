@@ -1,5 +1,5 @@
 name: proto-lens-setup
-version: '0.4.0.4'
+version: '0.4.0.5'
 synopsis: 'Cabal support for codegen with proto-lens.'
 description: |
   This package provides Cabal support for the @proto-lens@ package.

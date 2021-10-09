@@ -1,5 +1,5 @@
 name: proto-lens-protobuf-types
-version: '0.7.0.0'
+version: '0.7.1.0'
 synopsis: Basic protocol buffer message types.
 description: >
   This package provides bindings standard protocol message types,
