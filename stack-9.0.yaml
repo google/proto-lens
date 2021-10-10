@@ -4,7 +4,7 @@
 # license that can be found in the LICENSE file or at
 # https://developers.google.com/open-source/licenses/bsd
 
-resolver: nightly
+resolver: nightly-2021-10-07
 packages:
 - discrimination-ieee754
 - proto-lens
@@ -19,15 +19,5 @@ packages:
 - proto-lens-tests
 - proto-lens-tests-dep
 
-flags:
-  cassava:
-    bytestring--lt-0_10_4: false
-
-extra-deps:
-  - github: google/ghc-source-gen
-    commit: c0a451bddf2f467e5d6598563d11abbf890e9034
-
 ghc-options:
   "$locals": -Wall -Werror
-
-allow-newer: true
