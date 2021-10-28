@@ -47,6 +47,7 @@ import SrcLoc (unLoc, noLoc)
 import Lens.Family2 ((^.))
 import Text.Printf (printf)
 
+import qualified Data.ProtoLens.Compiler.Parameter as Parameter
 import Proto.Google.Protobuf.Descriptor
     ( EnumValueDescriptorProto
     , FileDescriptorProto
@@ -79,14 +80,15 @@ generateModule :: ModuleNameStr
                -> Env OccNameStr      -- ^ Definitions in this file
                -> Env RdrNameStr     -- ^ Definitions in the imported modules
                -> [ServiceInfo]
+               -> Parameter.Options
                -> [CommentedModule]
-generateModule modName fdesc imports publicImports definitions importedEnv services
+generateModule modName fdesc imports publicImports definitions importedEnv services opts
     = [ CommentedModule pragmas
             (module' (Just modName)
                 (Just $ serviceExports
                         ++ concatMap generateExports (Map.elems definitions)
                         ++ map moduleContents publicImports)
-                (mainImports ++ sharedImports
+                (mainImports ++ parameterImports ++ sharedImports
                     ++ map importQualified (imports List.\\ publicImports)
                     ++ map import' publicImports)
                 [])
@@ -120,6 +122,7 @@ generateModule modName fdesc imports publicImports definitions importedEnv servi
           ]
     mainImports = map (reexported . importQualified)
                     [ "Control.DeepSeq", "Data.ProtoLens.Prism" ]
+    parameterImports = map importQualified $ Parameter.import' opts
     sharedImports = map (reexported . importQualified)
               [ "Prelude", "Data.Int", "Data.Monoid", "Data.Word"
               , "Data.ProtoLens"
@@ -140,9 +143,9 @@ generateModule modName fdesc imports publicImports definitions importedEnv servi
               ]
     env = Map.union (unqualifyEnv definitions) importedEnv
     generateDecls (protoName, Message m)
-        = generateMessageDecls fieldModName env (stripDotPrefix protoName) m
+        = generateMessageDecls fieldModName env (stripDotPrefix protoName) m opts
        ++ map uncommented (concatMap (generatePrisms env) (messageOneofFields m))
-    generateDecls (_, Enum e) = map uncommented $ generateEnumDecls e
+    generateDecls (_, Enum e) = map uncommented $ generateEnumDecls e opts
     generateExports (Message m) = generateMessageExports m
                                ++ concatMap generatePrismExports (messageOneofFields m)
     generateExports (Enum e) = generateEnumExports e
@@ -287,8 +290,10 @@ generateServiceDecls env si =
                        Enum _ -> error "Service must have a message type"
 
 
-generateMessageDecls :: ModuleNameStr -> Env RdrNameStr -> T.Text -> MessageInfo OccNameStr -> [CommentedDecl]
-generateMessageDecls fieldModName env protoName info =
+generateMessageDecls :: ModuleNameStr -> Env RdrNameStr -> T.Text
+                        -> MessageInfo OccNameStr -> Parameter.Options
+                        -> [CommentedDecl]
+generateMessageDecls fieldModName env protoName info opts =
     -- data Bar = Bar {
     --    foo :: Baz
     -- }
@@ -300,7 +305,10 @@ generateMessageDecls fieldModName env protoName info =
                 ]
                 ++ [(messageUnknownFields info, strict $ field $ var "Data.ProtoLens.FieldSet")]
             ]
-            [derivingStock [var "Prelude.Eq", var "Prelude.Ord"]]
+            [derivingStock $
+               [var "Prelude.Eq", var "Prelude.Ord"]
+               ++ Parameter.derivingStock' opts
+            ]
     -- instance Show Bar where
     --   showsPrec __x __s = showChar '{' (showString (showMessageShort __x) (showChar '}' s))
     , uncommented $
@@ -326,7 +334,10 @@ generateMessageDecls fieldModName env protoName info =
       , let f = caseField c
       , let consName = caseConstructorName c
       ]
-      [derivingStock [var "Prelude.Show", var "Prelude.Eq", var "Prelude.Ord"]]
+      [derivingStock $
+         [var "Prelude.Show", var "Prelude.Eq", var "Prelude.Ord"]
+         ++ Parameter.derivingStock' opts
+      ]
     | oneofInfo <- messageOneofFields info
     ] ++
     -- instance HasField Foo "foo" Bar
@@ -441,14 +452,17 @@ generateEnumExports e = [thingAll n, thingWith n aliases] ++ proto3NewType
 generateServiceExports :: ServiceInfo -> IE'
 generateServiceExports si = thingAll $ unqual $ fromString $ T.unpack $ serviceName si
 
-generateEnumDecls :: EnumInfo OccNameStr -> [HsDecl']
-generateEnumDecls info =
+generateEnumDecls :: EnumInfo OccNameStr -> Parameter.Options -> [HsDecl']
+generateEnumDecls info opts =
     -- Proto3-only:
     -- newtype FooEnum'UnrecognizedValue = FooEnum'UnrecognizedValue Data.Int.Int32
     --   deriving (Prelude.Eq, Prelude.Ord, Prelude.Show, Prelude.Read)
     [ newtype' (unrecognizedValueName u) []
        (prefixCon (unrecognizedValueName u) [field $ var "Data.Int.Int32"])
-       [derivingStock [var "Prelude.Eq", var "Prelude.Ord", var "Prelude.Show"]]
+       [derivingStock $
+          [var "Prelude.Eq", var "Prelude.Ord", var "Prelude.Show"]
+          ++ Parameter.derivingStock' opts
+       ]
     | Just u <- [unrecognized]
     ]
     ++
@@ -465,7 +479,10 @@ generateEnumDecls info =
            | Just u <- [unrecognized]
            ]
         )
-        [derivingStock [var "Prelude.Show", var "Prelude.Eq", var "Prelude.Ord"]]
+        [derivingStock $
+           [var "Prelude.Show", var "Prelude.Eq", var "Prelude.Ord"]
+           ++ Parameter.derivingStock' opts
+        ]
 
     -- instance Data.ProtoLens.MessageEnum FooEnum where
     --       maybeToEnum 0 = Prelude.Just Enum1
