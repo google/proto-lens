@@ -18,9 +18,12 @@ with pkgs;
 
 let defaultShellHook = ''
 
-      (cd /app/nix/ && cabal2nix ./../proto-lens > ./pkg.nix)
       (cd /app/ && gen-hie > ./hie.yaml)
       (cd /app/ && git submodule init && git submodule update)
+
+      for PKG in "proto-lens" "proto-lens-runtime" "proto-lens-protoc"; do
+        (cd /app/nix/ && cabal2nix ./../$PKG > ./$PKG-pkg.nix)
+      done
 
     '';
     dockerShellHook = ''
@@ -36,8 +39,9 @@ in
 stdenv.mkDerivation {
   name = "haskell-shell";
   buildInputs = [
-    protobuf
     haskell-ide
+    cabal2nix
+    protobuf
   ];
   TERM="xterm-256color";
   LC_ALL="C.UTF-8";

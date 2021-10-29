@@ -15,9 +15,9 @@
             formatter = "none";
             inherit vimBackground vimColorScheme;
           };
-        haskellPackages = super.haskell.packages.ghc901.extend(
+        haskellPackages = super.haskell.packages.ghc865.extend(
           self': super': {
-
+            Cabal = super'.Cabal_3_2_0_0;
           }
         );
       }
