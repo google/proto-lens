@@ -14,6 +14,7 @@
 module Data.ProtoLens.Compiler.Parameter
   ( Options (..),
     newOptions,
+    deriveStandalone,
   )
 where
 
@@ -26,21 +27,33 @@ import Module (mkModuleName)
 import qualified Data.List as List
 import qualified Data.String as String
 import qualified Data.Text as T
-import GHC.SourceGen (HsType', ModuleNameStr (..), var)
+import qualified GHC.SourceGen as GHC
 import qualified Text.Read as T
 
 data Options = Options
-  { import' :: [ModuleNameStr],
+  { import' :: [GHC.ModuleNameStr],
     pragma' :: [String],
-    derivingStock' :: [HsType'],
-    derivingAlone' :: [HsType']
+    derivingStock' :: [GHC.HsType'],
+    derivingAlone' :: [GHC.HsType']
   }
 
 data Opt = Opt
-  { derivingStock :: [T.Text],
+  { pragma :: [String],
+    derivingStock :: [T.Text],
     derivingAlone :: [T.Text]
   }
   deriving (Read)
+
+deriveStandalone ::
+  GHC.HsType' ->
+  Options ->
+  [GHC.HsDecl']
+deriveStandalone dataType opts =
+  ( \class' ->
+      GHC.standaloneDeriving $
+        class' GHC.@@ dataType
+  )
+    <$> derivingAlone' opts
 
 newOptions :: T.Text -> Options
 newOptions "" = Options [] [] [] []
@@ -49,35 +62,31 @@ newOptions rawTxt =
     Nothing ->
       error $ "Can not read options from " ++ show rawStr
     Just opts ->
-      let stock = derivingStock opts
-          alone = derivingAlone opts
-          derivations = stock ++ alone
+      let stock = List.nub $ derivingStock opts
+          alone = List.nub $ derivingAlone opts
        in Options
             { import' =
-                List.nub $ newModuleName <$> derivations,
-              pragma' =
-                derivations >>= requiredPragmas,
+                List.nub $
+                  newModuleName
+                    <$> (List.nub $ stock ++ alone),
+              pragma' = List.nub $ pragma opts,
               derivingStock' = newTy <$> stock,
               derivingAlone' = newTy <$> alone
             }
   where
     rawStr = T.unpack rawTxt
-    newTy = var . String.fromString . T.unpack
+    newTy = GHC.var . String.fromString . T.unpack
 
-newModuleName :: T.Text -> ModuleNameStr
+newModuleName :: T.Text -> GHC.ModuleNameStr
 newModuleName rawTxt =
   case reverse $ T.splitOn sep rawTxt of
     [] ->
-      error $ "Can not create ModuleNameStr from " ++ show rawTxt
+      error $ "Can not create GHC.ModuleNameStr from " ++ show rawTxt
     (_ : xs) ->
-      ModuleNameStr
+      GHC.ModuleNameStr
         . mkModuleName
         . T.unpack
         . T.intercalate sep
         $ reverse xs
   where
     sep = "."
-
-requiredPragmas :: T.Text -> [String]
-requiredPragmas "GHC.Generics.Generic" = ["DeriveGeneric"]
-requiredPragmas _ = []

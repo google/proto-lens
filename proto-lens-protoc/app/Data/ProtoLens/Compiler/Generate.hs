@@ -320,6 +320,8 @@ generateMessageDecls fieldModName env protoName info opts =
                             @@ (var "Data.ProtoLens.showMessageShort" @@ var "__x")
                         @@ (var "Prelude.showChar" @@ char '}' @@ var "__s"))]
     ] ++
+    -- instance CustomClass Bar
+    (uncommented <$> Parameter.deriveStandalone dataType opts) ++
     -- oneof field data type declarations
     -- proto: message Foo {
     --          oneof bar {
@@ -341,6 +343,16 @@ generateMessageDecls fieldModName env protoName info opts =
       ]
     | oneofInfo <- messageOneofFields info
     ] ++
+    -- instance CustomClass Foo'Bar
+    (
+      messageOneofFields info >>=
+        (\oneofInfo ->
+            uncommented
+              <$> Parameter.deriveStandalone
+                    (var . unqual $ oneofTypeName oneofInfo)
+                    opts
+        )
+    ) ++
     -- instance HasField Foo "foo" Bar
     --   fieldOf _ = ...
     -- Note: for optional fields, this generates an instance both for "foo" and
@@ -467,7 +479,15 @@ generateEnumDecls info opts =
     | Just u <- [unrecognized]
     ]
     ++
-
+    -- instance CustomClass FooEnum'UnrecognizedValue
+    (
+      case unrecognized of
+        Nothing -> []
+        Just u ->
+          Parameter.deriveStandalone
+            (var . unqual $ unrecognizedValueName u)
+            opts
+    ) ++
     -- data FooEnum
     --     = Enum1
     --     | Enum2
@@ -609,7 +629,8 @@ generateEnumDecls info opts =
         [ funBind "rnf" $ match [bvar "x__"]
             $ var "Prelude.seq" @@ var "x__" @@ var "()" ]
     ] ++
-
+    -- instance CustomClass FooEnum
+    Parameter.deriveStandalone dataType opts ++
     -- pattern Enum2a :: FooEnum
     -- pattern Enum2a = Enum2
     concat
