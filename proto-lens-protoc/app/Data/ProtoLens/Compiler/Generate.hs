@@ -104,13 +104,14 @@ generateModule modName fdesc imports publicImports definitions importedEnv servi
   where
     fieldModName = fromString $ moduleNameString (unModuleNameStr modName) ++ "_Fields"
     pragmas =
-          [ languagePragma $ List.intercalate ", " $ map fromString
+          [ languagePragma . List.intercalate ", " . map fromString $ List.nub
               ["ScopedTypeVariables", "DataKinds", "TypeFamilies",
                "UndecidableInstances", "GeneralizedNewtypeDeriving",
                "MultiParamTypeClasses", "FlexibleContexts", "FlexibleInstances",
                "PatternSynonyms", "MagicHash", "NoImplicitPrelude",
                "DataKinds", "BangPatterns", "TypeApplications",
                "OverloadedStrings", "DerivingStrategies"]
+              ++ Parameter.pragma' opts
               -- Allow unused imports in case we don't import anything from
               -- Data.Text, Data.Int, etc.
           , optionsGhcPragma "-Wno-unused-imports"

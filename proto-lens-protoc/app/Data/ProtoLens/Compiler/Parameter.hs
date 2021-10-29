@@ -31,18 +31,19 @@ import qualified Text.Read as T
 
 data Options = Options
   { import' :: [ModuleNameStr],
+    pragma' :: [String],
     derivingStock' :: [HsType'],
     derivingAlone' :: [HsType']
   }
 
-data Opts = Opts
+data Opt = Opt
   { derivingStock :: [T.Text],
     derivingAlone :: [T.Text]
   }
   deriving (Read)
 
 newOptions :: T.Text -> Options
-newOptions "" = Options [] [] []
+newOptions "" = Options [] [] [] []
 newOptions rawTxt =
   case T.readMaybe rawStr of
     Nothing ->
@@ -50,9 +51,12 @@ newOptions rawTxt =
     Just opts ->
       let stock = derivingStock opts
           alone = derivingAlone opts
+          derivations = stock ++ alone
        in Options
             { import' =
-                List.nub $ newModuleName <$> stock ++ alone,
+                List.nub $ newModuleName <$> derivations,
+              pragma' =
+                derivations >>= requiredPragmas,
               derivingStock' = newTy <$> stock,
               derivingAlone' = newTy <$> alone
             }
@@ -73,3 +77,7 @@ newModuleName rawTxt =
         $ reverse xs
   where
     sep = "."
+
+requiredPragmas :: T.Text -> [String]
+requiredPragmas "GHC.Generics.Generic" = ["DeriveGeneric"]
+requiredPragmas _ = []
