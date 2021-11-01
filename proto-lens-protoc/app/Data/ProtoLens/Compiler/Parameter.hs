@@ -50,8 +50,9 @@ deriveStandalone ::
   [GHC.HsDecl']
 deriveStandalone dataType opts =
   ( \class' ->
-      GHC.standaloneDeriving $
-        class' GHC.@@ dataType
+      GHC.instance'
+        (class' GHC.@@ dataType)
+        []
   )
     <$> derivingAlone' opts
 
