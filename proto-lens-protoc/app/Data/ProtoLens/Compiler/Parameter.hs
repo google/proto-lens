@@ -39,6 +39,7 @@ data Options = Options
 
 data Opt = Opt
   { pragma :: [String],
+    imports :: [String],
     derivingStock :: [T.Text],
     derivingAlone :: [T.Text]
   }
@@ -68,8 +69,8 @@ newOptions rawTxt =
        in Options
             { import' =
                 List.nub $
-                  newModuleName
-                    <$> (List.nub $ stock ++ alone),
+                  (GHC.ModuleNameStr . mkModuleName <$> imports opts)
+                    ++ (newModuleName <$> (List.nub $ stock ++ alone)),
               pragma' = List.nub $ pragma opts,
               derivingStock' = newTy <$> stock,
               derivingAlone' = newTy <$> alone
