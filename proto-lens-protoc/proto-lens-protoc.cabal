@@ -62,7 +62,7 @@ executable proto-lens-protoc
     , filepath >=1.4 && <1.6
     , ghc >=8.2 && <9.1
     , ghc-paths ==0.1.*
-    , ghc-source-gen >=0.4.2 && <0.5
+    , ghc-source-gen ==0.4.*
     , lens-family >=1.2 && <2.2
     , pretty ==1.1.*
     , proto-lens ==0.7.*

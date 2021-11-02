@@ -18,9 +18,6 @@
         haskellPackages = super.haskell.packages.ghc865.extend(
           self': super': {
             Cabal = super'.Cabal_3_2_0_0;
-            ghc-source-gen = callPackage ./overlay/ghc-source-gen.nix {
-              stdenv = super.stdenv;
-            };
           }
         );
       }
