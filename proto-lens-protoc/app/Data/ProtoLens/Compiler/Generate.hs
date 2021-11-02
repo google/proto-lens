@@ -111,7 +111,7 @@ generateModule modName fdesc imports publicImports definitions importedEnv servi
                "PatternSynonyms", "MagicHash", "NoImplicitPrelude",
                "DataKinds", "BangPatterns", "TypeApplications",
                "OverloadedStrings", "DerivingStrategies"]
-              ++ Parameter.pragma' opts
+              ++ Parameter.pragmas' opts
               -- Allow unused imports in case we don't import anything from
               -- Data.Text, Data.Int, etc.
           , optionsGhcPragma "-Wno-unused-imports"
@@ -123,7 +123,7 @@ generateModule modName fdesc imports publicImports definitions importedEnv servi
           ]
     mainImports = map (reexported . importQualified)
                     [ "Control.DeepSeq", "Data.ProtoLens.Prism" ]
-    parameterImports = map importQualified $ Parameter.import' opts
+    parameterImports = map importQualified $ Parameter.imports' opts
     sharedImports = map (reexported . importQualified)
               [ "Prelude", "Data.Int", "Data.Monoid", "Data.Word"
               , "Data.ProtoLens"
@@ -308,7 +308,7 @@ generateMessageDecls fieldModName env protoName info opts =
             ]
             [derivingStock $
                [var "Prelude.Eq", var "Prelude.Ord"]
-               ++ Parameter.derivingStock' opts
+               ++ Parameter.stockInstances' opts
             ]
     -- instance Show Bar where
     --   showsPrec __x __s = showChar '{' (showString (showMessageShort __x) (showChar '}' s))
@@ -321,7 +321,7 @@ generateMessageDecls fieldModName env protoName info opts =
                         @@ (var "Prelude.showChar" @@ char '}' @@ var "__s"))]
     ] ++
     -- instance CustomClass Bar
-    (uncommented <$> Parameter.deriveStandalone dataType opts) ++
+    (uncommented <$> Parameter.newDefaultInstances dataType opts) ++
     -- oneof field data type declarations
     -- proto: message Foo {
     --          oneof bar {
@@ -339,7 +339,7 @@ generateMessageDecls fieldModName env protoName info opts =
       ]
       [derivingStock $
          [var "Prelude.Show", var "Prelude.Eq", var "Prelude.Ord"]
-         ++ Parameter.derivingStock' opts
+         ++ Parameter.stockInstances' opts
       ]
     | oneofInfo <- messageOneofFields info
     ] ++
@@ -348,7 +348,7 @@ generateMessageDecls fieldModName env protoName info opts =
       messageOneofFields info >>=
         (\oneofInfo ->
             uncommented
-              <$> Parameter.deriveStandalone
+              <$> Parameter.newDefaultInstances
                     (var . unqual $ oneofTypeName oneofInfo)
                     opts
         )
@@ -474,7 +474,7 @@ generateEnumDecls info opts =
        (prefixCon (unrecognizedValueName u) [field $ var "Data.Int.Int32"])
        [derivingStock $
           [var "Prelude.Eq", var "Prelude.Ord", var "Prelude.Show"]
-          ++ Parameter.derivingStock' opts
+          ++ Parameter.stockInstances' opts
        ]
     | Just u <- [unrecognized]
     ]
@@ -484,7 +484,7 @@ generateEnumDecls info opts =
       case unrecognized of
         Nothing -> []
         Just u ->
-          Parameter.deriveStandalone
+          Parameter.newDefaultInstances
             (var . unqual $ unrecognizedValueName u)
             opts
     ) ++
@@ -502,7 +502,7 @@ generateEnumDecls info opts =
         )
         [derivingStock $
            [var "Prelude.Show", var "Prelude.Eq", var "Prelude.Ord"]
-           ++ Parameter.derivingStock' opts
+           ++ Parameter.stockInstances' opts
         ]
 
     -- instance Data.ProtoLens.MessageEnum FooEnum where
@@ -630,7 +630,7 @@ generateEnumDecls info opts =
             $ var "Prelude.seq" @@ var "x__" @@ var "()" ]
     ] ++
     -- instance CustomClass FooEnum
-    Parameter.deriveStandalone dataType opts ++
+    Parameter.newDefaultInstances dataType opts ++
     -- pattern Enum2a :: FooEnum
     -- pattern Enum2a = Enum2
     concat

@@ -1,20 +1,20 @@
-{-# LANGUAGE CPP #-}
 -- Copyright 2016 Google Inc. All Rights Reserved.
 --
 -- Use of this source code is governed by a BSD-style
 -- license that can be found in the LICENSE file or at
 -- https://developers.google.com/open-source/licenses/bsd
 --
--- Protoc plugin command-line argument aka "parameter" from
--- plugin.proto document. Example which enables stock deriving
--- of GHC.Generics.Generic class in generated haskell sources:
--- --haskell_opt='Opts{derivingStock=["GHC.Generics.Generic"], derivingAlone=[]}'
+{-# LANGUAGE CPP #-}
 {-# LANGUAGE OverloadedStrings #-}
 
+-- | Protoc plugin command-line argument aka "parameter" from
+-- plugin.proto document. Example which enables stock deriving
+-- of 'GHC.Generics.Generic' class for all generated haskell types:
+-- --haskell_opt='Opt{ imports = [], pragmas = ["DeriveGeneric"], stockInstances = ["GHC.Generics.Generic"], defaultInstances = [] }'
 module Data.ProtoLens.Compiler.Parameter
   ( Options (..),
     newOptions,
-    deriveStandalone,
+    newDefaultInstances,
   )
 where
 
@@ -31,31 +31,31 @@ import qualified GHC.SourceGen as GHC
 import qualified Text.Read as T
 
 data Options = Options
-  { import' :: [GHC.ModuleNameStr],
-    pragma' :: [String],
-    derivingStock' :: [GHC.HsType'],
-    derivingAlone' :: [GHC.HsType']
+  { imports' :: [GHC.ModuleNameStr],
+    pragmas' :: [String],
+    stockInstances' :: [GHC.HsType'],
+    deafultInstances' :: [GHC.HsType']
   }
 
 data Opt = Opt
-  { pragma :: [String],
-    imports :: [String],
-    derivingStock :: [T.Text],
-    derivingAlone :: [T.Text]
+  { imports :: [String],
+    pragmas :: [String],
+    stockInstances :: [T.Text],
+    defaultInstances :: [T.Text]
   }
   deriving (Read)
 
-deriveStandalone ::
+newDefaultInstances ::
   GHC.HsType' ->
   Options ->
   [GHC.HsDecl']
-deriveStandalone dataType opts =
+newDefaultInstances dataType opts =
   ( \class' ->
       GHC.instance'
         (class' GHC.@@ dataType)
         []
   )
-    <$> derivingAlone' opts
+    <$> deafultInstances' opts
 
 newOptions :: T.Text -> Options
 newOptions "" = Options [] [] [] []
@@ -64,16 +64,16 @@ newOptions rawTxt =
     Nothing ->
       error $ "Can not read options from " ++ show rawStr
     Just opts ->
-      let stock = List.nub $ derivingStock opts
-          alone = List.nub $ derivingAlone opts
+      let stock = List.nub $ stockInstances opts
+          alone = List.nub $ defaultInstances opts
        in Options
-            { import' =
+            { imports' =
                 List.nub $
                   (GHC.ModuleNameStr . mkModuleName <$> imports opts)
                     ++ (newModuleName <$> (List.nub $ stock ++ alone)),
-              pragma' = List.nub $ pragma opts,
-              derivingStock' = newTy <$> stock,
-              derivingAlone' = newTy <$> alone
+              pragmas' = List.nub $ pragmas opts,
+              stockInstances' = newTy <$> stock,
+              deafultInstances' = newTy <$> alone
             }
   where
     rawStr = T.unpack rawTxt
