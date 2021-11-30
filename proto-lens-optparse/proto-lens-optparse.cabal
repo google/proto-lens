@@ -33,7 +33,7 @@ library
   hs-source-dirs:
       src
   build-depends:
-      base >=4.10 && <4.16
+      base >=4.10 && <4.17
     , optparse-applicative >=0.13 && <0.17
     , proto-lens >=0.1 && <0.8
     , text ==1.2.*
