@@ -35,14 +35,19 @@ import GHC.Hs (ideclName, ideclAs)
 #else
 import HsSyn (ideclName, ideclAs)
 #endif
+#if MIN_VERSION_ghc(9,2,0)
+import GHC.Parser.Annotation (EpAnn(EpAnnNotUsed), SrcSpanAnn'(SrcSpanAnn))
+#endif
 #if MIN_VERSION_ghc(9,0,0)
 import GHC.Unit.Module.Name (moduleNameString, mkModuleName)
 import qualified GHC.Utils.Outputable as Outputable
-import GHC.Types.SrcLoc (unLoc, noLoc)
+import GHC.Types.SrcLoc (unLoc)
+import qualified GHC.Types.SrcLoc as SrcLoc
 #else
 import Module (moduleNameString, mkModuleName)
 import qualified Outputable
-import SrcLoc (unLoc, noLoc)
+import SrcLoc (unLoc)
+import qualified SrcLoc
 #endif
 import Lens.Family2 ((^.))
 import Text.Printf (printf)
@@ -203,6 +208,11 @@ type ModifyImports = ImportDecl' -> ImportDecl'
 reexported :: ModifyImports
 reexported imp = imp { ideclName = noLoc m', ideclAs = Just m }
   where
+#if MIN_VERSION_ghc(9,2,0)
+    noLoc = SrcLoc.L (SrcSpanAnn EpAnnNotUsed SrcLoc.noSrcSpan)
+#else
+    noLoc = SrcLoc.noLoc
+#endif
     m' = mkModuleName $ "Data.ProtoLens.Runtime." ++ moduleNameString (unLoc m)
     m = ideclName imp
 

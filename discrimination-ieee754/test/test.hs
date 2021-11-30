@@ -122,7 +122,7 @@ comparisonsTestGroup nm s toWord makeNaN makePayload = testGroup nm
     , testProperty "INF > x" $
         propInfGTNumbers s
 
-    , testGroup "agrees with Ord" $ ($propAgreesWithOrd s) <$>
+    , testGroup "agrees with Ord" $ ($ propAgreesWithOrd s) <$>
         [ testProperty "l = 0" . (. (0,))
         , testProperty "r = 0" . (. (,0))
         , testProperty "l = -INF" . (. (negInf,))

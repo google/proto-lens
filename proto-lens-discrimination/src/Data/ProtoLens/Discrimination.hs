@@ -96,7 +96,7 @@ discFieldSet discList disc32 disc64 discBS discInt =
     discList (divided discInt (discList discWireValue))
   where
     toIntMap =
-        fmap ($[]) . IM.fromListWith (flip (.)) .
+        fmap ($ []) . IM.fromListWith (flip (.)) .
         fmap (\ (TaggedValue (Tag t) v) -> (t, (v:)))
 
     discWireValue = contramap toEithers $ chosen
