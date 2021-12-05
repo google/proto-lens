@@ -24,3 +24,7 @@ build:
   - resolver: nightly
     compiler: ghc-9.0.1
     stackyaml: stack-9.0.yaml
+
+  - resolver: nightly
+    compiler: ghc-9.2.1
+    stackyaml: stack-9.2.yaml

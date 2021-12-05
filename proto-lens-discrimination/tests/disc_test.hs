@@ -124,7 +124,10 @@ messageSortTest = testGroup "Message"
             (GT == sortCompare s msg2 msg1)
     , testProperty "transitivity" $
         \(ArbitraryMessage m1) (ArbitraryMessage m2) (ArbitraryMessage m3) ->
-            let [low, mid, high] = sortBy (sortCompare s) [m1, m2, m3]
+            let (low, mid, high) =
+                  case sortBy (sortCompare s) [m1, m2, m3] of
+                    [l, m, h] -> (l, m, h)
+                    res -> error $ "Expected 3 elements, got: " ++ show res
             in  LT === sortCompare s low high .||.
                 (EQ, EQ) === (sortCompare s low mid, sortCompare s mid high)
     ]

@@ -1,0 +1,33 @@
+# Copyright 2019 Google LLC
+#
+# Use of this source code is governed by a BSD-style
+# license that can be found in the LICENSE file or at
+# https://developers.google.com/open-source/licenses/bsd
+
+resolver: nightly-2021-11-28
+compiler: ghc-9.2.1
+
+packages:
+- discrimination-ieee754
+- proto-lens
+- proto-lens-arbitrary
+- proto-lens-benchmarks
+- proto-lens-discrimination
+- proto-lens-optparse
+- proto-lens-protobuf-types
+- proto-lens-protoc
+- proto-lens-runtime
+- proto-lens-setup
+- proto-lens-tests
+- proto-lens-tests-dep
+
+extra-deps:
+- aeson-2.0.2.0
+- attoparsec-0.14.2
+- base-compat-0.12.1
+- base-compat-batteries-0.12.1
+- github: google/ghc-source-gen
+  commit: f6b9130d8f384be0ef7a02b371870d532090ccb6
+
+ghc-options:
+  "$locals": -Wall -Werror
