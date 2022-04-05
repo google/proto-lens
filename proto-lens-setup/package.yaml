@@ -63,7 +63,7 @@ library:
     # make this a build-tool dependency.
     - proto-lens-protoc >= 0.4 && < 0.8
     - temporary >= 1.2 && < 1.4
-    - text == 1.2.*
+    - text >= 1.2 && < 2.1
   exposed-modules:
     - Data.ProtoLens.Setup
 

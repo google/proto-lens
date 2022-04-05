@@ -1,5 +1,8 @@
 # Changelog for `proto-lens-protoc`
 
+## v0.7.1.1
+- Relax upper bounds for ghc-9.2
+
 ## v0.7.1.0
 - Support GHC 9.0.
 - Add ServiceDescriptor to generated services. (#409)

@@ -1,5 +1,8 @@
 # Changelog for `proto-lens-runtime`
 
+## v0.7.0.1
+- Relax upper bounds for ghc-9.2
+
 ## v0.7.0.0
 - Bump upper bound to allow base-4.14.
 
