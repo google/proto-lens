@@ -4,7 +4,7 @@
 # license that can be found in the LICENSE file or at
 # https://developers.google.com/open-source/licenses/bsd
 
-resolver: nightly-2021-10-07
+resolver: lts-19.2
 packages:
 - discrimination-ieee754
 - proto-lens
