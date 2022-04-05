@@ -1,5 +1,8 @@
 # Changelog for `proto-lens-optparse`
 
+## v0.1.1.8
+- Bump some bounds for ghc-9.2.2 compatibility.
+
 ## v0.1.1.7
 - Bump upper bound to allow base-4.14.
 

@@ -4,8 +4,8 @@
 # license that can be found in the LICENSE file or at
 # https://developers.google.com/open-source/licenses/bsd
 
-resolver: nightly-2021-11-28
-compiler: ghc-9.2.1
+resolver: nightly-2022-04-04
+compiler: ghc-9.2.2
 
 packages:
 - discrimination-ieee754
@@ -20,14 +20,6 @@ packages:
 - proto-lens-setup
 - proto-lens-tests
 - proto-lens-tests-dep
-
-extra-deps:
-- aeson-2.0.2.0
-- attoparsec-0.14.2
-- base-compat-0.12.1
-- base-compat-batteries-0.12.1
-- github: google/ghc-source-gen
-  commit: f6b9130d8f384be0ef7a02b371870d532090ccb6
 
 ghc-options:
   "$locals": -Wall -Werror
