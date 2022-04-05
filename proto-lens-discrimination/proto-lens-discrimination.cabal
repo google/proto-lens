@@ -52,7 +52,7 @@ library
     , discrimination-ieee754 ==0.1.*
     , lens-family >=1.2 && <2.2
     , proto-lens >=0.6 && <0.8
-    , text ==1.2.*
+    , text >=1.2 && <2.1
   default-language: Haskell2010
 
 test-suite discrimination_test
@@ -90,5 +90,5 @@ test-suite discrimination_test
     , test-framework ==0.8.*
     , test-framework-hunit ==0.3.*
     , test-framework-quickcheck2 ==0.3.*
-    , text ==1.2.*
+    , text >=1.2 && <2.1
   default-language: Haskell2010

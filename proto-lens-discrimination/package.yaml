@@ -30,7 +30,7 @@ dependencies:
   - discrimination-ieee754 == 0.1.*
   - lens-family >= 1.2 && < 2.2
   - proto-lens >= 0.6 && < 0.8
-  - text == 1.2.*
+  - text >= 1.2 && < 2.1
 
 library:
   source-dirs: src
