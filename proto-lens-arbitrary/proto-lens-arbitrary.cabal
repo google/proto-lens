@@ -5,7 +5,7 @@ cabal-version: 1.12
 -- see: https://github.com/sol/hpack
 
 name:           proto-lens-arbitrary
-version:        0.1.2.10
+version:        0.1.2.11
 synopsis:       Arbitrary instances for proto-lens.
 description:    The proto-lens-arbitrary allows generating arbitrary messages for use with QuickCheck.
 category:       Data

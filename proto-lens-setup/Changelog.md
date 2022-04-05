@@ -1,6 +1,6 @@
 # Changelog for `proto-lens-setup`
 
-## v0.4.0.5
+## v0.4.0.6
 - Relax upper bounds for ghc-9.2
 
 ## v0.4.0.4
