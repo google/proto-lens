@@ -50,13 +50,14 @@ import Data.ProtoLens.Discrimination
 -- Used internally to adapt 'groupingEq' to protobuf types without adding an
 -- orphan instance for Grouping.
 newtype MessageGrouping a = MessageGrouping { getMessageGrouping :: a }
-instance Message a => Grouping (MessageGrouping a) where
+    deriving Eq
+instance (Message a, Eq a) => Grouping (MessageGrouping a) where
     grouping = getMessageGrouping >$< groupingMessage
 
 -- | Check whether two protobufs are equal according to their Message instance.
 --
 -- This should be equivalent to the generated @Eq@ instances.
-eqMessage :: Message a => a -> a -> Bool
+eqMessage :: (Message a, Eq a) => a -> a -> Bool
 eqMessage x y = groupingEq (MessageGrouping x) (MessageGrouping y)
 
 -- | Group protobuf message values according to their Message instance.

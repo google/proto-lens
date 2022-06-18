@@ -54,13 +54,14 @@ import Data.ProtoLens.Group (groupingMessage)
 -- Used to adapt 'sortingCompare' to protobuf types without adding an orphan
 -- instance for Sorting.
 newtype MessageSorting a = MessageSorting { getMessageSorting :: a }
-instance Message a => Grouping (MessageSorting a) where
+    deriving (Eq, Ord)
+instance (Message a, Eq a) => Grouping (MessageSorting a) where
     grouping = getMessageSorting >$< groupingMessage
-instance Message a => Sorting (MessageSorting a) where
+instance (Message a, Ord a) => Sorting (MessageSorting a) where
     sorting = getMessageSorting >$< sortingMessage
 
 -- | Compare protobuf message values according to their Message instance.
-compareMessage :: Message a => a -> a -> Ordering
+compareMessage :: (Message a, Ord a) => a -> a -> Ordering
 compareMessage x y = sortingCompare (MessageSorting x) (MessageSorting y)
 
 -- | Sort protobuf message values according to their Message instance.
