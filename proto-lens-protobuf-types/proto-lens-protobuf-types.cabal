@@ -25,6 +25,7 @@ extra-source-files:
     proto-src/google/protobuf/duration.proto
     proto-src/google/protobuf/empty.proto
     proto-src/google/protobuf/wrappers.proto
+    proto-src/google/protobuf/struct.proto
     proto-src/google/protobuf/timestamp.proto
 
 source-repository head
@@ -54,6 +55,8 @@ library
       Proto.Google.Protobuf.Empty_Fields
       Proto.Google.Protobuf.Wrappers
       Proto.Google.Protobuf.Wrappers_Fields
+      Proto.Google.Protobuf.Struct
+      Proto.Google.Protobuf.Struct_Fields
       Proto.Google.Protobuf.Timestamp
       Proto.Google.Protobuf.Timestamp_Fields
   autogen-modules:
@@ -69,6 +72,8 @@ library
       Proto.Google.Protobuf.Empty_Fields
       Proto.Google.Protobuf.Wrappers
       Proto.Google.Protobuf.Wrappers_Fields
+      Proto.Google.Protobuf.Struct
+      Proto.Google.Protobuf.Struct_Fields
       Proto.Google.Protobuf.Timestamp
       Proto.Google.Protobuf.Timestamp_Fields
   hs-source-dirs:
