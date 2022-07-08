@@ -1,5 +1,5 @@
 name: proto-lens-protobuf-types
-version: '0.7.1.1'
+version: '0.7.1.2'
 synopsis: Basic protocol buffer message types.
 description: >
   This package provides bindings standard protocol message types,
@@ -62,5 +62,6 @@ library:
   # Otherwise, "cabal check" complains (preventing upload to Hackage)
   # because it expects it to be listed in autogen-modules.
   # For details, see https://github.com/sol/hpack/issues/303.
-  verbatim:
-    other-modules:
+  when:
+  - condition: false
+    other-modules: Paths_proto_lens_protobuf_types
