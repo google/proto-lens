@@ -1,11 +1,11 @@
 cabal-version: 2.0
 
--- This file has been generated from package.yaml by hpack version 0.34.4.
+-- This file has been generated from package.yaml by hpack version 0.35.0.
 --
 -- see: https://github.com/sol/hpack
 
 name:           proto-lens-protobuf-types
-version:        0.7.1.1
+version:        0.7.1.2
 synopsis:       Basic protocol buffer message types.
 description:    This package provides bindings standard protocol message types, for use with the proto-lens library.
 category:       Data

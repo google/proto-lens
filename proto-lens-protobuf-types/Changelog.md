@@ -1,5 +1,8 @@
 # Changelog for `proto-lens-protobuf-types`
 
+## v0.7.1.2
+- Add protobuf struct types (#438)
+
 ## v0.7.1.1
 - Relax upper bounds for ghc-9.2
 
