@@ -4,8 +4,8 @@
 # license that can be found in the LICENSE file or at
 # https://developers.google.com/open-source/licenses/bsd
 
-resolver: nightly-2022-06-18
-compiler: ghc-9.2.2
+resolver: nightly-2022-08-19
+compiler: ghc-9.2.4
 
 packages:
 - discrimination-ieee754

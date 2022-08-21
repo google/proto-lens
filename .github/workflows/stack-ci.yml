@@ -83,7 +83,7 @@ jobs:
       # Install Stack without GHC first, so we have an opportunity to cache the
       # Pantry package index.
       - name: Install Stack
-        uses: haskell/actions/setup@eb3073b623d53d0cdd38e4d4c2408f14e3fc71c5
+        uses: haskell/actions/setup@b9d18eaf11de66db1ef1be9ae11830120e7810a0
         id: setup-stack
         with:
           enable-stack: true
