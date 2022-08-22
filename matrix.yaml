@@ -13,7 +13,7 @@
 # limitations under the License.
 
 build:
-  - resolver: lts-18.10
+  - resolver: lts-18.28
     compiler: ghc-8.10.7
     stackyaml: stack-8.10.yaml
 
@@ -21,10 +21,10 @@ build:
     compiler: ghc-8.8.4
     stackyaml: stack-8.8.yaml
 
-  - resolver: lts-19.2
+  - resolver: lts-19.20
     compiler: ghc-9.0.2
     stackyaml: stack-9.0.yaml
 
   - resolver: nightly
-    compiler: ghc-9.2.2
+    compiler: ghc-9.2.4
     stackyaml: stack-9.2.yaml
