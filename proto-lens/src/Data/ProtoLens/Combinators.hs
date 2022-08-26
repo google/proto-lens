@@ -29,7 +29,7 @@ has = (. to isJust)
 
 -- | Sets the provided lens in @a@ to @Nothing@.
 clear :: Setter a a' b (Maybe b') -> a -> a'
-clear = (.~ Nothing)
+clear setter = setter .~ Nothing
 
 -- | Creates a 'Default' and then applies the provided `State` to it.  This is
 -- convenient for creating complicated structures.

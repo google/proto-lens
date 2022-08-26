@@ -1,0 +1,19 @@
+on:
+  - push
+  - pull_request
+name: cabal build with ghc 9.4
+jobs:
+  runhaskell:
+    name: cabal test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          submodules: true
+      - uses: haskell/actions/setup@v2
+        with:
+          ghc-version: '9.4.2'
+          cabal-version: '3.8.1.0'
+      - run: cabal build --dependencies-only --project-file ghc94.cabal.project all
+      - run: cabal build                     --project-file ghc94.cabal.project all
+      - run: cabal test                      --project-file ghc94.cabal.project all
