@@ -11,6 +11,7 @@ module Data.ProtoLens.Encoding.Parser
     , getWord8
     , getWord32le
     , getBytes
+    , getText
     , (<?>)
     ) where
 
@@ -18,6 +19,8 @@ import Data.Bits (shiftL, (.|.))
 import Data.Word (Word8, Word32)
 import Data.ByteString (ByteString, packCStringLen)
 import qualified Data.ByteString.Unsafe as B
+import Data.Text (Text)
+import Data.Text.Encoding (decodeUtf8')
 import Foreign.Ptr
 import Foreign.Storable
 import System.IO.Unsafe (unsafePerformIO)
@@ -68,6 +71,12 @@ getBytes :: Int -> Parser ByteString
 getBytes n = withSized n "getBytes: Unexpected end of input"
                     $ \pos -> packCStringLen (castPtr pos, n)
 
+getText :: Int -> Parser Text
+getText n = do
+  r <- withSized n "getText: Unexpected end of input" $ \pos ->
+          decodeUtf8' <$> B.unsafePackCStringLen (castPtr pos, n)
+  either (fail . show) pure r
+
 -- | Helper function for reading bytes from the current position and
 -- advancing the pointer.
 --
@@ -86,7 +95,7 @@ withSized len message f
     | otherwise = fail "withSized: negative length"
 {-# INLINE withSized #-}
 
--- | Run the given parsing action as if there are only 
+-- | Run the given parsing action as if there are only
 -- @len@ bytes remaining.  That is, once @len@ bytes have been
 -- consumed, 'atEnd' will return 'True' and other actions
 -- like 'getWord8' will act like there is no input remaining.
