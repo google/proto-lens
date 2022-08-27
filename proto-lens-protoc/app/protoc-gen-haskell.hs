@@ -39,6 +39,7 @@ import System.IO as IO
 import Data.ProtoLens.Compiler.Generate.Commented (CommentedModule, getModuleName)
 import Data.ProtoLens.Compiler.Generate
 import Data.ProtoLens.Compiler.Plugin
+import qualified Data.ProtoLens.Compiler.Parameter as Parameter
 
 #if MIN_VERSION_ghc(9,0,0)
 import GHC.Driver.Session (DynFlags, getDynFlags)
@@ -65,6 +66,7 @@ makeResponse dflags prog request = let
     outputFiles = generateFiles dflags header
                       (request ^. #protoFile)
                       (request ^. #fileToGenerate)
+                      (Parameter.newOptions $ request ^. #parameter)
     header :: FileDescriptorProto -> Text
     header f = "{- This file was auto-generated from "
                 <> (f ^. #name)
@@ -81,8 +83,9 @@ makeResponse dflags prog request = let
 
 
 generateFiles :: DynFlags -> (FileDescriptorProto -> Text)
-              -> [FileDescriptorProto] -> [ProtoFileName] -> [(Text, Text)]
-generateFiles dflags header files toGenerate = let
+              -> [FileDescriptorProto] -> [ProtoFileName]
+              -> Parameter.Options -> [(Text, Text)]
+generateFiles dflags header files toGenerate opts = let
   filesByName = analyzeProtoFiles files
   -- The contents of the generated Haskell file for a given .proto file.
   modulesToBuild :: ProtoFile -> [CommentedModule]
@@ -95,6 +98,7 @@ generateFiles dflags header files toGenerate = let
              (definitions f)
              (collectEnvFromDeps deps filesByName)
              (services f)
+             opts
   in [ ( moduleFilePath $ pack $ showPpr dflags (getModuleName modul)
        , header (descriptor f) <> pack (showPpr dflags modul)
        )

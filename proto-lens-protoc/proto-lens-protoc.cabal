@@ -46,6 +46,7 @@ executable proto-lens-protoc
       Data.ProtoLens.Compiler.Generate.Commented
       Data.ProtoLens.Compiler.Generate.Encoding
       Data.ProtoLens.Compiler.Generate.Field
+      Data.ProtoLens.Compiler.Parameter
       Data.ProtoLens.Compiler.Plugin
       Proto.Google.Protobuf.Compiler.Plugin
       Proto.Google.Protobuf.Compiler.Plugin_Fields
