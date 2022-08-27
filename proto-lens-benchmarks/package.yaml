@@ -45,7 +45,8 @@ benchmarks:
     source-dirs: benchmarks
     dependencies:
       - proto-lens-benchmarks
-    other-modules:
+    other-modules: []
+    generated-other-modules:
       - Proto.Nested
       - Proto.Nested_Fields
 
@@ -54,7 +55,8 @@ benchmarks:
     source-dirs: benchmarks
     dependencies:
       - proto-lens-benchmarks
-    other-modules:
+    other-modules: []
+    generated-other-modules:
       - Proto.UnusedFields
       - Proto.UnusedFields_Fields
 
@@ -63,6 +65,17 @@ benchmarks:
     source-dirs: benchmarks
     dependencies:
       - proto-lens-benchmarks
-    other-modules:
+    other-modules: []
+    generated-other-modules:
       - Proto.Packing
       - Proto.Packing_Fields
+
+  large-fields:
+    main: LargeFields.hs
+    source-dirs: benchmarks
+    dependencies:
+      - proto-lens-benchmarks
+    other-modules: []
+    generated-other-modules:
+      - Proto.LargeFields
+      - Proto.LargeFields_Fields
