@@ -148,23 +148,6 @@ bijectField buildF parseF f = FieldEncoding
     , wireType = wireType f
     }
 
--- | Wrap a field encoding with Haskell functions that may fail during parsing.
-partialField :: HsExpr' -> (HsExpr' -> HsExpr') -> FieldEncoding -> FieldEncoding
-partialField buildF parseF f = FieldEncoding
-    { buildFieldType = var "Prelude.." @@ buildFieldType f @@ buildF
-    -- do
-    --  value <- ...
-    --  runEither $ {parseF} value
-    , parseFieldType = do'
-        [ value <-- parseFieldType f
-        , stmt $ runEither @@ parseF value
-        ]
-    , wireType = wireType f
-    }
-  where
-    value = bvar "value"
-    runEither = var "Data.ProtoLens.Encoding.Bytes.runEither"
-
 -- | Convert a field of one integral type to another.
 integralField :: FieldEncoding -> FieldEncoding
 integralField = bijectField fromIntegral' fromIntegral'
@@ -215,23 +198,21 @@ fieldEncoding = \case
 
 -- | A string, represented as Data.Text.Text.
 stringField :: FieldEncoding
-stringField = partialField (var "Data.Text.Encoding.encodeUtf8") decodeUtf8P lengthy
+stringField =
+  FieldEncoding
+    { wireType = 2
+    , buildFieldType = buildString
+    , parseFieldType = parseString
+    }
   where
-    {- Translates to:
-        case decodeUtf8' bytes of
-            Left err -> Left (show err)
-            Right r -> r
-    Equivalently:
-        first show $ decodeUtf8' bytes
-    but avoids dragging in Data.Bifunctors.
-    -}
-    decodeUtf8P bytes =
-        case' (var "Data.Text.Encoding.decodeUtf8'" @@ bytes)
-            [ match ["Prelude.Left" `conP` [bvar "err"]]
-                $ var "Prelude.Left" @@ (var "Prelude.show" @@ var "err")
-            , match ["Prelude.Right" `conP` [bvar "r"]]
-                $ var "Prelude.Right" @@ var "r"
-            ]
+    len = bvar "len"
+    buildString = var "Prelude.." @@ buildFieldType lengthy
+                                  @@ var "Data.Text.Encoding.encodeUtf8"
+    parseString = do'
+        [ len <-- getVarInt'
+        , stmt $ var "Data.ProtoLens.Encoding.Bytes.getText"
+                    @@ (fromIntegral' @@ len)
+        ]
 
 -- | A protobuf message type.
 message :: FieldEncoding

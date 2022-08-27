@@ -22,6 +22,8 @@ module Data.ProtoLens.Encoding.Bytes(
     -- * Bytestrings
     getBytes,
     putBytes,
+    -- * Text
+    getText,
     -- * Integral types
     getVarInt,
     getVarIntH,
