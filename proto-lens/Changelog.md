@@ -1,6 +1,9 @@
 # Changelog for `proto-lens`
 
 
+## v0.7.1.2
+- Support GHC 9.4
+
 ## v0.7.1.1
 - Relax upper bounds for ghc-9.2
 
