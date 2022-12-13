@@ -1,6 +1,6 @@
 cabal-version: 1.12
 
--- This file has been generated from package.yaml by hpack version 0.34.4.
+-- This file has been generated from package.yaml by hpack version 0.35.1.
 --
 -- see: https://github.com/sol/hpack
 
@@ -70,7 +70,7 @@ library
     , profunctors >=5.2 && <6.0
     , tagged ==0.8.*
     , text >=1.2 && <2.1
-    , transformers >=0.4 && <0.6
+    , transformers >=0.4 && <0.7
     , vector >=0.11 && <0.14
   default-language: Haskell2010
 
