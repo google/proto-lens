@@ -17,14 +17,14 @@ build:
     compiler: ghc-8.10.7
     stackyaml: stack-8.10.yaml
 
-  - resolver: lts-16.31
-    compiler: ghc-8.8.4
-    stackyaml: stack-8.8.yaml
-
   - resolver: lts-19.20
     compiler: ghc-9.0.2
-    stackyaml: stack-9.0.yaml
+    stackyaml: stack.yaml
+
+  - resolver: lts-20.0
+    compiler: ghc-9.2.5
+    stackyaml: stack.yaml
 
   - resolver: nightly
-    compiler: ghc-9.2.4
-    stackyaml: stack-9.2.yaml
+    compiler: ghc-9.4.4
+    stackyaml: stack.yaml  # or a separate file if necessary
