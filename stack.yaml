@@ -1,4 +1,11 @@
-resolver: lts-14.4
+# Copyright 2019 Google LLC
+#
+# Use of this source code is governed by a BSD-style
+# license that can be found in the LICENSE file or at
+# https://developers.google.com/open-source/licenses/bsd
+
+resolver: lts-20.0
+
 packages:
 - discrimination-ieee754
 - proto-lens
@@ -12,11 +19,6 @@ packages:
 - proto-lens-setup
 - proto-lens-tests
 - proto-lens-tests-dep
-extra-deps:
-- ghc-source-gen-0.4.0.0
-- discrimination-0.4
-- promises-0.3
-- primitive-0.6.4.0  # For discrimination-0.4 on older LTSes
 
 ghc-options:
   "$locals": -Wall -Werror
