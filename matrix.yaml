@@ -21,7 +21,7 @@ build:
     compiler: ghc-9.0.2
     stackyaml: stack.yaml
 
-  - resolver: lts-20.0
+  - resolver: lts-20.6
     compiler: ghc-9.2.5
     stackyaml: stack.yaml
 
