@@ -1,6 +1,6 @@
 cabal-version: 1.12
 
--- This file has been generated from package.yaml by hpack version 0.34.4.
+-- This file has been generated from package.yaml by hpack version 0.35.2.
 --
 -- see: https://github.com/sol/hpack
 
@@ -33,7 +33,7 @@ library
   hs-source-dirs:
       src
   build-depends:
-      base >=4.10 && <4.17
+      base >=4.10 && <4.19
     , optparse-applicative >=0.13 && <0.18
     , proto-lens >=0.1 && <0.8
     , text >=1.2 && <2.1
