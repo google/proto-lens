@@ -1,0 +1,30 @@
+name: proto-lens-json
+version: "0.0.1.0"
+synopsis: JSON instances for proto-lens.
+description: >
+  The proto-lens-json allows generating arbitrary messages for
+  use with Aeson.
+category: Data
+author: Ian Duncan
+maintainer: ian@iankduncan.com
+copyright: Google Inc.
+license: BSD3
+github: google/proto-lens/proto-lens-json
+extra-source-files:
+  - Changelog.md
+
+dependencies:
+  - proto-lens >= 0.4 && < 0.9
+  - base >= 4.10 && < 4.19
+  - bytestring >= 0.10 && < 0.13
+  - containers >= 0.5 && < 0.7
+  - text >= 1.2 && < 2.2
+  - lens-family >= 1.2 && < 2.2
+  - aeson >= 2.0 && < 2.3
+  - base64 >= 0.4.2 && < 0.5
+  - proto-lens-protobuf-types >= 0.7 && < 0.9
+  - time
+library:
+  source-dirs: src
+  exposed-modules:
+    - Data.ProtoLens.Json

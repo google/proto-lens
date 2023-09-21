@@ -4,15 +4,15 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 
-name:           proto-lens-arbitrary
-version:        0.1.2.11
-synopsis:       Arbitrary instances for proto-lens.
-description:    The proto-lens-arbitrary allows generating arbitrary messages for use with QuickCheck.
+name:           proto-lens-json
+version:        0.0.1.0
+synopsis:       JSON instances for proto-lens.
+description:    The proto-lens-json allows generating arbitrary messages for use with Aeson.
 category:       Data
 homepage:       https://github.com/google/proto-lens#readme
 bug-reports:    https://github.com/google/proto-lens/issues
-author:         Aden Grue
-maintainer:     agrue+protolens@google.com
+author:         Ian Duncan
+maintainer:     ian@iankduncan.com
 copyright:      Google Inc.
 license:        BSD3
 license-file:   LICENSE
@@ -23,21 +23,24 @@ extra-source-files:
 source-repository head
   type: git
   location: https://github.com/google/proto-lens
-  subdir: proto-lens-arbitrary
+  subdir: proto-lens-json
 
 library
   exposed-modules:
-      Data.ProtoLens.Arbitrary
+      Data.ProtoLens.Json
   other-modules:
-      Paths_proto_lens_arbitrary
+      Paths_proto_lens_json
   hs-source-dirs:
       src
   build-depends:
-      QuickCheck >=2.8 && <2.15
+      aeson >=2.0 && <2.3
     , base >=4.10 && <4.19
+    , base64 >=0.4.2 && <0.5
     , bytestring >=0.10 && <0.13
     , containers >=0.5 && <0.7
     , lens-family >=1.2 && <2.2
-    , proto-lens >=0.4 && <0.8
+    , proto-lens >=0.4 && <0.9
+    , proto-lens-protobuf-types >=0.7 && <0.9
     , text >=1.2 && <2.2
+    , time
   default-language: Haskell2010

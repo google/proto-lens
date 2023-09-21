@@ -105,7 +105,7 @@ pprintField reg msg (FieldDescriptor name typeDescr accessor)
         OptionalField f -> catMaybes [msg ^. f]
         -- TODO: better printing for packed fields
         RepeatedField _ f -> msg ^. f
-        MapField k v f -> pairToMsg <$> Map.assocs (msg ^. f)
+        MapField _ _ k v f -> pairToMsg <$> Map.assocs (msg ^. f)
           where pairToMsg (x,y) = defMessage
                                     & k .~ x
                                     & v .~ y
@@ -265,7 +265,7 @@ modifyField :: FieldAccessor msg value -> value -> msg -> msg
 modifyField (PlainField _ f) value = set f value
 modifyField (OptionalField f) value = set f (Just value)
 modifyField (RepeatedField _ f) value = over f (value :)
-modifyField (MapField key value f) mapElem
+modifyField (MapField _ _ key value f) mapElem
     = over f (Map.insert (mapElem ^. key) (mapElem ^. value))
 
 makeValue
