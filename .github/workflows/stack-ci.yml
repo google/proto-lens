@@ -49,7 +49,7 @@ jobs:
         run: |
           cat matrix.yaml
           CI_BUILDS=$(yq eval -o json -I 0 matrix.yaml)
-          echo "::set-output name=ci-builds::$CI_BUILDS"
+          echo "ci-builds=$CI_BUILDS" >> $GITHUB_OUTPUT
 
   build:
     name: Build and Test
