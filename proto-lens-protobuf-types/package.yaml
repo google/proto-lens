@@ -21,14 +21,6 @@ extra-source-files:
   - proto-src/google/protobuf/struct.proto
   - proto-src/google/protobuf/timestamp.proto
 
-custom-setup:
-  dependencies:
-    - base >= 4.10 && < 4.19
-    - Cabal
-    - proto-lens-setup == 0.4.*
-
-build-tools: proto-lens-protoc:proto-lens-protoc
-
 dependencies:
   - base >= 4.10 && < 4.19
   - lens-family >= 1.2 && < 2.2

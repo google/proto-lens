@@ -16,7 +16,7 @@ maintainer:     proto-lens@googlegroups.com
 copyright:      Google Inc.
 license:        BSD3
 license-file:   LICENSE
-build-type:     Custom
+build-type:     Simple
 extra-source-files:
     Changelog.md
     proto-src/google/protobuf/any.proto
@@ -32,12 +32,6 @@ source-repository head
   type: git
   location: https://github.com/google/proto-lens
   subdir: proto-lens-protobuf-types
-
-custom-setup
-  setup-depends:
-      Cabal
-    , base >=4.10 && <4.19
-    , proto-lens-setup ==0.4.*
 
 library
   exposed-modules:
@@ -59,6 +53,15 @@ library
       Proto.Google.Protobuf.Struct_Fields
       Proto.Google.Protobuf.Timestamp
       Proto.Google.Protobuf.Timestamp_Fields
+  other-modules:
+      Proto.Google.Protobuf.Api
+      Proto.Google.Protobuf.Api_Fields
+      Proto.Google.Protobuf.FieldMask
+      Proto.Google.Protobuf.FieldMask_Fields
+      Proto.Google.Protobuf.SourceContext
+      Proto.Google.Protobuf.SourceContext_Fields
+      Proto.Google.Protobuf.Type
+      Proto.Google.Protobuf.Type_Fields
   autogen-modules:
       Proto.Google.Protobuf.Any
       Proto.Google.Protobuf.Any_Fields
@@ -78,8 +81,6 @@ library
       Proto.Google.Protobuf.Timestamp_Fields
   hs-source-dirs:
       src
-  build-tool-depends:
-      proto-lens-protoc:proto-lens-protoc
   build-depends:
       base >=4.10 && <4.19
     , lens-family >=1.2 && <2.2
