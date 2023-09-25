@@ -41,6 +41,11 @@ defaultValue ::
    Data.ProtoLens.Field.HasField s "defaultValue" a) =>
   Lens.Family2.LensLike' f s a
 defaultValue = Data.ProtoLens.Field.field @"defaultValue"
+edition ::
+  forall f s a.
+  (Prelude.Functor f, Data.ProtoLens.Field.HasField s "edition" a) =>
+  Lens.Family2.LensLike' f s a
+edition = Data.ProtoLens.Field.field @"edition"
 enumvalue ::
   forall f s a.
   (Prelude.Functor f,

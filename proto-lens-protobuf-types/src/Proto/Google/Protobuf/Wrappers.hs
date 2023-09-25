@@ -1008,10 +1008,10 @@ packedFileDescriptor
     \\n\
     \BytesValue\DC2\DC4\n\
     \\ENQvalue\CAN\SOH \SOH(\fR\ENQvalueB\131\SOH\n\
-    \\DC3com.google.protobufB\rWrappersProtoP\SOHZ1google.golang.org/protobuf/types/known/wrapperspb\248\SOH\SOH\162\STX\ETXGPB\170\STX\RSGoogle.Protobuf.WellKnownTypesJ\198\US\n\
+    \\DC3com.google.protobufB\rWrappersProtoP\SOHZ1google.golang.org/protobuf/types/known/wrapperspb\248\SOH\SOH\162\STX\ETXGPB\170\STX\RSGoogle.Protobuf.WellKnownTypesJ\196\US\n\
     \\ACK\DC2\EOT(\NULz\SOH\n\
-    \\219\DLE\n\
-    \\SOH\f\DC2\ETX(\NUL\DC22\193\f Protocol Buffers - Google's data interchange format\n\
+    \\217\DLE\n\
+    \\SOH\f\DC2\ETX(\NUL\DC22\206\DLE Protocol Buffers - Google's data interchange format\n\
     \ Copyright 2008 Google Inc.  All rights reserved.\n\
     \ https://developers.google.com/protocol-buffers/\n\
     \\n\
@@ -1040,7 +1040,8 @@ packedFileDescriptor
     \ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT\n\
     \ (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE\n\
     \ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.\n\
-    \2\140\EOT Wrappers for primitive (non-message) types. These types are useful\n\
+    \\n\
+    \ Wrappers for primitive (non-message) types. These types are useful\n\
     \ for embedding primitives in the `google.protobuf.Any` type and for places\n\
     \ where we need to distinguish between the absence of a primitive\n\
     \ typed field and its default value.\n\
@@ -1053,34 +1054,34 @@ packedFileDescriptor
     \\b\n\
     \\SOH\STX\DC2\ETX*\NUL\CAN\n\
     \\b\n\
-    \\SOH\b\DC2\ETX,\NUL;\n\
+    \\SOH\b\DC2\ETX,\NUL\US\n\
     \\t\n\
-    \\STX\b%\DC2\ETX,\NUL;\n\
+    \\STX\b\US\DC2\ETX,\NUL\US\n\
     \\b\n\
-    \\SOH\b\DC2\ETX-\NUL\US\n\
+    \\SOH\b\DC2\ETX-\NULH\n\
     \\t\n\
-    \\STX\b\US\DC2\ETX-\NUL\US\n\
+    \\STX\b\v\DC2\ETX-\NULH\n\
     \\b\n\
-    \\SOH\b\DC2\ETX.\NULH\n\
+    \\SOH\b\DC2\ETX.\NUL,\n\
     \\t\n\
-    \\STX\b\v\DC2\ETX.\NULH\n\
+    \\STX\b\SOH\DC2\ETX.\NUL,\n\
     \\b\n\
-    \\SOH\b\DC2\ETX/\NUL,\n\
+    \\SOH\b\DC2\ETX/\NUL.\n\
     \\t\n\
-    \\STX\b\SOH\DC2\ETX/\NUL,\n\
+    \\STX\b\b\DC2\ETX/\NUL.\n\
     \\b\n\
-    \\SOH\b\DC2\ETX0\NUL.\n\
-    \\t\n\
-    \\STX\b\b\DC2\ETX0\NUL.\n\
-    \\b\n\
-    \\SOH\b\DC2\ETX1\NUL\"\n\
+    \\SOH\b\DC2\ETX0\NUL\"\n\
     \\t\n\
     \\STX\b\n\
-    \\DC2\ETX1\NUL\"\n\
+    \\DC2\ETX0\NUL\"\n\
     \\b\n\
-    \\SOH\b\DC2\ETX2\NUL!\n\
+    \\SOH\b\DC2\ETX1\NUL!\n\
     \\t\n\
-    \\STX\b$\DC2\ETX2\NUL!\n\
+    \\STX\b$\DC2\ETX1\NUL!\n\
+    \\b\n\
+    \\SOH\b\DC2\ETX2\NUL;\n\
+    \\t\n\
+    \\STX\b%\DC2\ETX2\NUL;\n\
     \g\n\
     \\STX\EOT\NUL\DC2\EOT7\NUL:\SOH\SUB[ Wrapper message for `double`.\n\
     \\n\

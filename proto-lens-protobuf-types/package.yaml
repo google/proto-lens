@@ -12,14 +12,14 @@ license: BSD3
 github: google/proto-lens/proto-lens-protobuf-types
 extra-source-files:
   - Changelog.md
-  - proto-src/google/protobuf/any.proto
-  - proto-src/google/protobuf/compiler/plugin.proto
-  - proto-src/google/protobuf/descriptor.proto
-  - proto-src/google/protobuf/duration.proto
-  - proto-src/google/protobuf/empty.proto
-  - proto-src/google/protobuf/wrappers.proto
-  - proto-src/google/protobuf/struct.proto
-  - proto-src/google/protobuf/timestamp.proto
+  - proto-src/src/google/protobuf/any.proto
+  - proto-src/src/google/protobuf/compiler/plugin.proto
+  - proto-src/src/google/protobuf/descriptor.proto
+  - proto-src/src/google/protobuf/duration.proto
+  - proto-src/src/google/protobuf/empty.proto
+  - proto-src/src/google/protobuf/wrappers.proto
+  - proto-src/src/google/protobuf/struct.proto
+  - proto-src/src/google/protobuf/timestamp.proto
 
 dependencies:
   - base >= 4.10 && < 4.19

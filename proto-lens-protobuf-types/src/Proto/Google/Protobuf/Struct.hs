@@ -1037,34 +1037,34 @@ packedFileDescriptor
     \\b\n\
     \\SOH\STX\DC2\ETX \NUL\CAN\n\
     \\b\n\
-    \\SOH\b\DC2\ETX\"\NUL;\n\
+    \\SOH\b\DC2\ETX\"\NUL\US\n\
     \\t\n\
-    \\STX\b%\DC2\ETX\"\NUL;\n\
+    \\STX\b\US\DC2\ETX\"\NUL\US\n\
     \\b\n\
-    \\SOH\b\DC2\ETX#\NUL\US\n\
+    \\SOH\b\DC2\ETX#\NULF\n\
     \\t\n\
-    \\STX\b\US\DC2\ETX#\NUL\US\n\
+    \\STX\b\v\DC2\ETX#\NULF\n\
     \\b\n\
-    \\SOH\b\DC2\ETX$\NULF\n\
+    \\SOH\b\DC2\ETX$\NUL,\n\
     \\t\n\
-    \\STX\b\v\DC2\ETX$\NULF\n\
+    \\STX\b\SOH\DC2\ETX$\NUL,\n\
     \\b\n\
     \\SOH\b\DC2\ETX%\NUL,\n\
     \\t\n\
-    \\STX\b\SOH\DC2\ETX%\NUL,\n\
+    \\STX\b\b\DC2\ETX%\NUL,\n\
     \\b\n\
-    \\SOH\b\DC2\ETX&\NUL,\n\
-    \\t\n\
-    \\STX\b\b\DC2\ETX&\NUL,\n\
-    \\b\n\
-    \\SOH\b\DC2\ETX'\NUL\"\n\
+    \\SOH\b\DC2\ETX&\NUL\"\n\
     \\t\n\
     \\STX\b\n\
-    \\DC2\ETX'\NUL\"\n\
+    \\DC2\ETX&\NUL\"\n\
     \\b\n\
-    \\SOH\b\DC2\ETX(\NUL!\n\
+    \\SOH\b\DC2\ETX'\NUL!\n\
     \\t\n\
-    \\STX\b$\DC2\ETX(\NUL!\n\
+    \\STX\b$\DC2\ETX'\NUL!\n\
+    \\b\n\
+    \\SOH\b\DC2\ETX(\NUL;\n\
+    \\t\n\
+    \\STX\b%\DC2\ETX(\NUL;\n\
     \\179\ETX\n\
     \\STX\EOT\NUL\DC2\EOT2\NUL5\SOH\SUB\166\ETX `Struct` represents a structured data value, consisting of fields\n\
     \ which map to dynamically typed values. In some languages, `Struct`\n\
@@ -1087,11 +1087,11 @@ packedFileDescriptor
     \\ENQ\EOT\NUL\STX\NUL\SOH\DC2\ETX4\NAK\ESC\n\
     \\f\n\
     \\ENQ\EOT\NUL\STX\NUL\ETX\DC2\ETX4\RS\US\n\
-    \\195\STX\n\
-    \\STX\EOT\SOH\DC2\EOT=\NULM\SOH\SUB\182\STX `Value` represents a dynamically typed value which can be either\n\
+    \\196\STX\n\
+    \\STX\EOT\SOH\DC2\EOT=\NULM\SOH\SUB\183\STX `Value` represents a dynamically typed value which can be either\n\
     \ null, a number, a string, a boolean, a recursive struct value, or a\n\
-    \ list of values. A producer of value is expected to set one of that\n\
-    \ variants, absence of any variant indicates an error.\n\
+    \ list of values. A producer of value is expected to set one of these\n\
+    \ variants. Absence of any variant indicates an error.\n\
     \\n\
     \ The JSON representation for `Value` is JSON value.\n\
     \\n\
@@ -1160,11 +1160,11 @@ packedFileDescriptor
     \\ENQ\EOT\SOH\STX\ENQ\SOH\DC2\ETXK\SO\CAN\n\
     \\f\n\
     \\ENQ\EOT\SOH\STX\ENQ\ETX\DC2\ETXK\ESC\FS\n\
-    \\169\SOH\n\
-    \\STX\ENQ\NUL\DC2\EOTS\NULV\SOH\SUB\156\SOH `NullValue` is a singleton enumeration to represent the null value for the\n\
+    \\168\SOH\n\
+    \\STX\ENQ\NUL\DC2\EOTS\NULV\SOH\SUB\155\SOH `NullValue` is a singleton enumeration to represent the null value for the\n\
     \ `Value` type union.\n\
     \\n\
-    \  The JSON representation for `NullValue` is JSON `null`.\n\
+    \ The JSON representation for `NullValue` is JSON `null`.\n\
     \\n\
     \\n\
     \\n\

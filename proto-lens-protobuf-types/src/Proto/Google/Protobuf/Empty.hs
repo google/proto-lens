@@ -97,8 +97,8 @@ packedFileDescriptor
     \\ESCgoogle/protobuf/empty.proto\DC2\SIgoogle.protobuf\"\a\n\
     \\ENQEmptyB}\n\
     \\DC3com.google.protobufB\n\
-    \EmptyProtoP\SOHZ.google.golang.org/protobuf/types/known/emptypb\248\SOH\SOH\162\STX\ETXGPB\170\STX\RSGoogle.Protobuf.WellKnownTypesJ\254\DLE\n\
-    \\ACK\DC2\EOT\RS\NUL3\DLE\n\
+    \EmptyProtoP\SOHZ.google.golang.org/protobuf/types/known/emptypb\248\SOH\SOH\162\STX\ETXGPB\170\STX\RSGoogle.Protobuf.WellKnownTypesJ\190\DLE\n\
+    \\ACK\DC2\EOT\RS\NUL2\DLE\n\
     \\204\f\n\
     \\SOH\f\DC2\ETX\RS\NUL\DC22\193\f Protocol Buffers - Google's data interchange format\n\
     \ Copyright 2008 Google Inc.  All rights reserved.\n\
@@ -133,36 +133,36 @@ packedFileDescriptor
     \\b\n\
     \\SOH\STX\DC2\ETX \NUL\CAN\n\
     \\b\n\
-    \\SOH\b\DC2\ETX\"\NUL;\n\
+    \\SOH\b\DC2\ETX\"\NULE\n\
     \\t\n\
-    \\STX\b%\DC2\ETX\"\NUL;\n\
+    \\STX\b\v\DC2\ETX\"\NULE\n\
     \\b\n\
-    \\SOH\b\DC2\ETX#\NULE\n\
+    \\SOH\b\DC2\ETX#\NUL,\n\
     \\t\n\
-    \\STX\b\v\DC2\ETX#\NULE\n\
+    \\STX\b\SOH\DC2\ETX#\NUL,\n\
     \\b\n\
-    \\SOH\b\DC2\ETX$\NUL,\n\
+    \\SOH\b\DC2\ETX$\NUL+\n\
     \\t\n\
-    \\STX\b\SOH\DC2\ETX$\NUL,\n\
+    \\STX\b\b\DC2\ETX$\NUL+\n\
     \\b\n\
-    \\SOH\b\DC2\ETX%\NUL+\n\
-    \\t\n\
-    \\STX\b\b\DC2\ETX%\NUL+\n\
-    \\b\n\
-    \\SOH\b\DC2\ETX&\NUL\"\n\
+    \\SOH\b\DC2\ETX%\NUL\"\n\
     \\t\n\
     \\STX\b\n\
-    \\DC2\ETX&\NUL\"\n\
+    \\DC2\ETX%\NUL\"\n\
     \\b\n\
-    \\SOH\b\DC2\ETX'\NUL!\n\
+    \\SOH\b\DC2\ETX&\NUL!\n\
     \\t\n\
-    \\STX\b$\DC2\ETX'\NUL!\n\
+    \\STX\b$\DC2\ETX&\NUL!\n\
+    \\b\n\
+    \\SOH\b\DC2\ETX'\NUL;\n\
+    \\t\n\
+    \\STX\b%\DC2\ETX'\NUL;\n\
     \\b\n\
     \\SOH\b\DC2\ETX(\NUL\US\n\
     \\t\n\
     \\STX\b\US\DC2\ETX(\NUL\US\n\
-    \\251\STX\n\
-    \\STX\EOT\NUL\DC2\ETX3\NUL\DLE\SUB\239\STX A generic empty message that you can re-use to avoid defining duplicated\n\
+    \\187\STX\n\
+    \\STX\EOT\NUL\DC2\ETX2\NUL\DLE\SUB\175\STX A generic empty message that you can re-use to avoid defining duplicated\n\
     \ empty messages in your APIs. A typical example is to use it as the request\n\
     \ or the response type of an API method. For instance:\n\
     \\n\
@@ -170,8 +170,7 @@ packedFileDescriptor
     \       rpc Bar(google.protobuf.Empty) returns (google.protobuf.Empty);\n\
     \     }\n\
     \\n\
-    \ The JSON representation for `Empty` is empty JSON object `{}`.\n\
     \\n\
     \\n\
     \\n\
-    \\ETX\EOT\NUL\SOH\DC2\ETX3\b\rb\ACKproto3"
+    \\ETX\EOT\NUL\SOH\DC2\ETX2\b\rb\ACKproto3"

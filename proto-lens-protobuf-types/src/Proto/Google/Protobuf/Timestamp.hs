@@ -181,8 +181,8 @@ packedFileDescriptor
     \\tTimestamp\DC2\CAN\n\
     \\aseconds\CAN\SOH \SOH(\ETXR\aseconds\DC2\DC4\n\
     \\ENQnanos\CAN\STX \SOH(\ENQR\ENQnanosB\133\SOH\n\
-    \\DC3com.google.protobufB\SOTimestampProtoP\SOHZ2google.golang.org/protobuf/types/known/timestamppb\248\SOH\SOH\162\STX\ETXGPB\170\STX\RSGoogle.Protobuf.WellKnownTypesJ\197/\n\
-    \\a\DC2\ENQ\RS\NUL\146\SOH\SOH\n\
+    \\DC3com.google.protobufB\SOTimestampProtoP\SOHZ2google.golang.org/protobuf/types/known/timestamppb\248\SOH\SOH\162\STX\ETXGPB\170\STX\RSGoogle.Protobuf.WellKnownTypesJ\193/\n\
+    \\a\DC2\ENQ\RS\NUL\143\SOH\SOH\n\
     \\204\f\n\
     \\SOH\f\DC2\ETX\RS\NUL\DC22\193\f Protocol Buffers - Google's data interchange format\n\
     \ Copyright 2008 Google Inc.  All rights reserved.\n\
@@ -217,36 +217,36 @@ packedFileDescriptor
     \\b\n\
     \\SOH\STX\DC2\ETX \NUL\CAN\n\
     \\b\n\
-    \\SOH\b\DC2\ETX\"\NUL;\n\
+    \\SOH\b\DC2\ETX\"\NUL\US\n\
     \\t\n\
-    \\STX\b%\DC2\ETX\"\NUL;\n\
+    \\STX\b\US\DC2\ETX\"\NUL\US\n\
     \\b\n\
-    \\SOH\b\DC2\ETX#\NUL\US\n\
+    \\SOH\b\DC2\ETX#\NULI\n\
     \\t\n\
-    \\STX\b\US\DC2\ETX#\NUL\US\n\
+    \\STX\b\v\DC2\ETX#\NULI\n\
     \\b\n\
-    \\SOH\b\DC2\ETX$\NULI\n\
+    \\SOH\b\DC2\ETX$\NUL,\n\
     \\t\n\
-    \\STX\b\v\DC2\ETX$\NULI\n\
+    \\STX\b\SOH\DC2\ETX$\NUL,\n\
     \\b\n\
-    \\SOH\b\DC2\ETX%\NUL,\n\
+    \\SOH\b\DC2\ETX%\NUL/\n\
     \\t\n\
-    \\STX\b\SOH\DC2\ETX%\NUL,\n\
+    \\STX\b\b\DC2\ETX%\NUL/\n\
     \\b\n\
-    \\SOH\b\DC2\ETX&\NUL/\n\
-    \\t\n\
-    \\STX\b\b\DC2\ETX&\NUL/\n\
-    \\b\n\
-    \\SOH\b\DC2\ETX'\NUL\"\n\
+    \\SOH\b\DC2\ETX&\NUL\"\n\
     \\t\n\
     \\STX\b\n\
-    \\DC2\ETX'\NUL\"\n\
+    \\DC2\ETX&\NUL\"\n\
     \\b\n\
-    \\SOH\b\DC2\ETX(\NUL!\n\
+    \\SOH\b\DC2\ETX'\NUL!\n\
     \\t\n\
-    \\STX\b$\DC2\ETX(\NUL!\n\
-    \\222\GS\n\
-    \\STX\EOT\NUL\DC2\ACK\135\SOH\NUL\146\SOH\SOH\SUB\207\GS A Timestamp represents a point in time independent of any time zone or local\n\
+    \\STX\b$\DC2\ETX'\NUL!\n\
+    \\b\n\
+    \\SOH\b\DC2\ETX(\NUL;\n\
+    \\t\n\
+    \\STX\b%\DC2\ETX(\NUL;\n\
+    \\218\GS\n\
+    \\STX\EOT\NUL\DC2\ACK\132\SOH\NUL\143\SOH\SOH\SUB\203\GS A Timestamp represents a point in time independent of any time zone or local\n\
     \ calendar, encoded as a count of seconds and fractions of seconds at\n\
     \ nanosecond resolution. The count is relative to an epoch at UTC midnight on\n\
     \ January 1, 1970, in the proleptic Gregorian calendar which extends the\n\
@@ -296,7 +296,6 @@ packedFileDescriptor
     \     Timestamp timestamp = Timestamp.newBuilder().setSeconds(millis / 1000)\n\
     \         .setNanos((int) ((millis % 1000) * 1000000)).build();\n\
     \\n\
-    \\n\
     \ Example 5: Compute Timestamp from Java `Instant.now()`.\n\
     \\n\
     \     Instant now = Instant.now();\n\
@@ -304,7 +303,6 @@ packedFileDescriptor
     \     Timestamp timestamp =\n\
     \         Timestamp.newBuilder().setSeconds(now.getEpochSecond())\n\
     \             .setNanos(now.getNano()).build();\n\
-    \\n\
     \\n\
     \ Example 6: Compute Timestamp from current time in Python.\n\
     \\n\
@@ -335,33 +333,32 @@ packedFileDescriptor
     \ [`strftime`](https://docs.python.org/2/library/time.html#time.strftime) with\n\
     \ the time format spec '%Y-%m-%dT%H:%M:%S.%fZ'. Likewise, in Java, one can use\n\
     \ the Joda Time's [`ISODateTimeFormat.dateTime()`](\n\
-    \ http://www.joda.org/joda-time/apidocs/org/joda/time/format/ISODateTimeFormat.html#dateTime%2D%2D\n\
+    \ http://joda-time.sourceforge.net/apidocs/org/joda/time/format/ISODateTimeFormat.html#dateTime()\n\
     \ ) to obtain a formatter capable of generating timestamps in this format.\n\
     \\n\
     \\n\
-    \\n\
     \\v\n\
-    \\ETX\EOT\NUL\SOH\DC2\EOT\135\SOH\b\DC1\n\
+    \\ETX\EOT\NUL\SOH\DC2\EOT\132\SOH\b\DC1\n\
     \\157\SOH\n\
-    \\EOT\EOT\NUL\STX\NUL\DC2\EOT\139\SOH\STX\DC4\SUB\142\SOH Represents seconds of UTC time since Unix epoch\n\
+    \\EOT\EOT\NUL\STX\NUL\DC2\EOT\136\SOH\STX\DC4\SUB\142\SOH Represents seconds of UTC time since Unix epoch\n\
     \ 1970-01-01T00:00:00Z. Must be from 0001-01-01T00:00:00Z to\n\
     \ 9999-12-31T23:59:59Z inclusive.\n\
     \\n\
     \\r\n\
-    \\ENQ\EOT\NUL\STX\NUL\ENQ\DC2\EOT\139\SOH\STX\a\n\
+    \\ENQ\EOT\NUL\STX\NUL\ENQ\DC2\EOT\136\SOH\STX\a\n\
     \\r\n\
-    \\ENQ\EOT\NUL\STX\NUL\SOH\DC2\EOT\139\SOH\b\SI\n\
+    \\ENQ\EOT\NUL\STX\NUL\SOH\DC2\EOT\136\SOH\b\SI\n\
     \\r\n\
-    \\ENQ\EOT\NUL\STX\NUL\ETX\DC2\EOT\139\SOH\DC2\DC3\n\
+    \\ENQ\EOT\NUL\STX\NUL\ETX\DC2\EOT\136\SOH\DC2\DC3\n\
     \\229\SOH\n\
-    \\EOT\EOT\NUL\STX\SOH\DC2\EOT\145\SOH\STX\DC2\SUB\214\SOH Non-negative fractions of a second at nanosecond resolution. Negative\n\
+    \\EOT\EOT\NUL\STX\SOH\DC2\EOT\142\SOH\STX\DC2\SUB\214\SOH Non-negative fractions of a second at nanosecond resolution. Negative\n\
     \ second values with fractions must still have non-negative nanos values\n\
     \ that count forward in time. Must be from 0 to 999,999,999\n\
     \ inclusive.\n\
     \\n\
     \\r\n\
-    \\ENQ\EOT\NUL\STX\SOH\ENQ\DC2\EOT\145\SOH\STX\a\n\
+    \\ENQ\EOT\NUL\STX\SOH\ENQ\DC2\EOT\142\SOH\STX\a\n\
     \\r\n\
-    \\ENQ\EOT\NUL\STX\SOH\SOH\DC2\EOT\145\SOH\b\r\n\
+    \\ENQ\EOT\NUL\STX\SOH\SOH\DC2\EOT\142\SOH\b\r\n\
     \\r\n\
-    \\ENQ\EOT\NUL\STX\SOH\ETX\DC2\EOT\145\SOH\DLE\DC1b\ACKproto3"
+    \\ENQ\EOT\NUL\STX\SOH\ETX\DC2\EOT\142\SOH\DLE\DC1b\ACKproto3"

@@ -1070,8 +1070,8 @@ packedFileDescriptor
     \\ENQMixin\DC2\DC2\n\
     \\EOTname\CAN\SOH \SOH(\tR\EOTname\DC2\DC2\n\
     \\EOTroot\CAN\STX \SOH(\tR\EOTrootBv\n\
-    \\DC3com.google.protobufB\bApiProtoP\SOHZ,google.golang.org/protobuf/types/known/apipb\162\STX\ETXGPB\170\STX\RSGoogle.Protobuf.WellKnownTypesJ\129<\n\
-    \\a\DC2\ENQ\RS\NUL\207\SOH\SOH\n\
+    \\DC3com.google.protobufB\bApiProtoP\SOHZ,google.golang.org/protobuf/types/known/apipb\162\STX\ETXGPB\170\STX\RSGoogle.Protobuf.WellKnownTypesJ\255;\n\
+    \\a\DC2\ENQ\RS\NUL\206\SOH\SOH\n\
     \\204\f\n\
     \\SOH\f\DC2\ETX\RS\NUL\DC22\193\f Protocol Buffers - Google's data interchange format\n\
     \ Copyright 2008 Google Inc.  All rights reserved.\n\
@@ -1110,32 +1110,32 @@ packedFileDescriptor
     \\t\n\
     \\STX\ETX\SOH\DC2\ETX#\NUL$\n\
     \\b\n\
-    \\SOH\b\DC2\ETX%\NUL;\n\
+    \\SOH\b\DC2\ETX%\NUL,\n\
     \\t\n\
-    \\STX\b%\DC2\ETX%\NUL;\n\
+    \\STX\b\SOH\DC2\ETX%\NUL,\n\
     \\b\n\
-    \\SOH\b\DC2\ETX&\NUL,\n\
+    \\SOH\b\DC2\ETX&\NUL)\n\
     \\t\n\
-    \\STX\b\SOH\DC2\ETX&\NUL,\n\
+    \\STX\b\b\DC2\ETX&\NUL)\n\
     \\b\n\
-    \\SOH\b\DC2\ETX'\NUL)\n\
-    \\t\n\
-    \\STX\b\b\DC2\ETX'\NUL)\n\
-    \\b\n\
-    \\SOH\b\DC2\ETX(\NUL\"\n\
+    \\SOH\b\DC2\ETX'\NUL\"\n\
     \\t\n\
     \\STX\b\n\
-    \\DC2\ETX(\NUL\"\n\
+    \\DC2\ETX'\NUL\"\n\
     \\b\n\
-    \\SOH\b\DC2\ETX)\NUL!\n\
+    \\SOH\b\DC2\ETX(\NUL!\n\
     \\t\n\
-    \\STX\b$\DC2\ETX)\NUL!\n\
+    \\STX\b$\DC2\ETX(\NUL!\n\
+    \\b\n\
+    \\SOH\b\DC2\ETX)\NUL;\n\
+    \\t\n\
+    \\STX\b%\DC2\ETX)\NUL;\n\
     \\b\n\
     \\SOH\b\DC2\ETX*\NULC\n\
     \\t\n\
     \\STX\b\v\DC2\ETX*\NULC\n\
     \\171\EOT\n\
-    \\STX\EOT\NUL\DC2\EOT5\NUL`\SOH\SUB\158\EOT Api is a light-weight descriptor for an API Interface.\n\
+    \\STX\EOT\NUL\DC2\EOT5\NUL_\SOH\SUB\158\EOT Api is a light-weight descriptor for an API Interface.\n\
     \\n\
     \ Interfaces are also described as \"protocol buffer services\" in some contexts,\n\
     \ such as by the \"service\" keyword in a .proto file, but they are different\n\
@@ -1182,8 +1182,8 @@ packedFileDescriptor
     \\ENQ\EOT\NUL\STX\STX\SOH\DC2\ETX>\DC2\EM\n\
     \\f\n\
     \\ENQ\EOT\NUL\STX\STX\ETX\DC2\ETX>\FS\GS\n\
-    \\130\b\n\
-    \\EOT\EOT\NUL\STX\ETX\DC2\ETXU\STX\NAK\SUB\244\a A version string for this interface. If specified, must have the form\n\
+    \\129\b\n\
+    \\EOT\EOT\NUL\STX\ETX\DC2\ETXT\STX\NAK\SUB\243\a A version string for this interface. If specified, must have the form\n\
     \ `major-version.minor-version`, as in `1.10`. If the minor version is\n\
     \ omitted, it defaults to zero. If the entire version field is empty, the\n\
     \ major version is derived from the package name, as outlined below. If the\n\
@@ -1204,118 +1204,117 @@ packedFileDescriptor
     \ experimental, non-GA interfaces.\n\
     \\n\
     \\n\
-    \\n\
     \\f\n\
-    \\ENQ\EOT\NUL\STX\ETX\ENQ\DC2\ETXU\STX\b\n\
+    \\ENQ\EOT\NUL\STX\ETX\ENQ\DC2\ETXT\STX\b\n\
     \\f\n\
-    \\ENQ\EOT\NUL\STX\ETX\SOH\DC2\ETXU\t\DLE\n\
+    \\ENQ\EOT\NUL\STX\ETX\SOH\DC2\ETXT\t\DLE\n\
     \\f\n\
-    \\ENQ\EOT\NUL\STX\ETX\ETX\DC2\ETXU\DC3\DC4\n\
+    \\ENQ\EOT\NUL\STX\ETX\ETX\DC2\ETXT\DC3\DC4\n\
     \[\n\
-    \\EOT\EOT\NUL\STX\EOT\DC2\ETXY\STX#\SUBN Source context for the protocol buffer service represented by this\n\
+    \\EOT\EOT\NUL\STX\EOT\DC2\ETXX\STX#\SUBN Source context for the protocol buffer service represented by this\n\
     \ message.\n\
     \\n\
     \\f\n\
-    \\ENQ\EOT\NUL\STX\EOT\ACK\DC2\ETXY\STX\SI\n\
+    \\ENQ\EOT\NUL\STX\EOT\ACK\DC2\ETXX\STX\SI\n\
     \\f\n\
-    \\ENQ\EOT\NUL\STX\EOT\SOH\DC2\ETXY\DLE\RS\n\
+    \\ENQ\EOT\NUL\STX\EOT\SOH\DC2\ETXX\DLE\RS\n\
     \\f\n\
-    \\ENQ\EOT\NUL\STX\EOT\ETX\DC2\ETXY!\"\n\
+    \\ENQ\EOT\NUL\STX\EOT\ETX\DC2\ETXX!\"\n\
     \2\n\
-    \\EOT\EOT\NUL\STX\ENQ\DC2\ETX\\\STX\FS\SUB% Included interfaces. See [Mixin][].\n\
+    \\EOT\EOT\NUL\STX\ENQ\DC2\ETX[\STX\FS\SUB% Included interfaces. See [Mixin][].\n\
     \\n\
     \\f\n\
-    \\ENQ\EOT\NUL\STX\ENQ\EOT\DC2\ETX\\\STX\n\
+    \\ENQ\EOT\NUL\STX\ENQ\EOT\DC2\ETX[\STX\n\
     \\n\
     \\f\n\
-    \\ENQ\EOT\NUL\STX\ENQ\ACK\DC2\ETX\\\v\DLE\n\
+    \\ENQ\EOT\NUL\STX\ENQ\ACK\DC2\ETX[\v\DLE\n\
     \\f\n\
-    \\ENQ\EOT\NUL\STX\ENQ\SOH\DC2\ETX\\\DC1\ETB\n\
+    \\ENQ\EOT\NUL\STX\ENQ\SOH\DC2\ETX[\DC1\ETB\n\
     \\f\n\
-    \\ENQ\EOT\NUL\STX\ENQ\ETX\DC2\ETX\\\SUB\ESC\n\
+    \\ENQ\EOT\NUL\STX\ENQ\ETX\DC2\ETX[\SUB\ESC\n\
     \0\n\
-    \\EOT\EOT\NUL\STX\ACK\DC2\ETX_\STX\DC4\SUB# The source syntax of the service.\n\
+    \\EOT\EOT\NUL\STX\ACK\DC2\ETX^\STX\DC4\SUB# The source syntax of the service.\n\
     \\n\
     \\f\n\
-    \\ENQ\EOT\NUL\STX\ACK\ACK\DC2\ETX_\STX\b\n\
+    \\ENQ\EOT\NUL\STX\ACK\ACK\DC2\ETX^\STX\b\n\
     \\f\n\
-    \\ENQ\EOT\NUL\STX\ACK\SOH\DC2\ETX_\t\SI\n\
+    \\ENQ\EOT\NUL\STX\ACK\SOH\DC2\ETX^\t\SI\n\
     \\f\n\
-    \\ENQ\EOT\NUL\STX\ACK\ETX\DC2\ETX_\DC2\DC3\n\
+    \\ENQ\EOT\NUL\STX\ACK\ETX\DC2\ETX^\DC2\DC3\n\
     \=\n\
-    \\STX\EOT\SOH\DC2\EOTc\NULx\SOH\SUB1 Method represents a method of an API interface.\n\
+    \\STX\EOT\SOH\DC2\EOTb\NULw\SOH\SUB1 Method represents a method of an API interface.\n\
     \\n\
     \\n\
     \\n\
-    \\ETX\EOT\SOH\SOH\DC2\ETXc\b\SO\n\
+    \\ETX\EOT\SOH\SOH\DC2\ETXb\b\SO\n\
     \.\n\
-    \\EOT\EOT\SOH\STX\NUL\DC2\ETXe\STX\DC2\SUB! The simple name of this method.\n\
+    \\EOT\EOT\SOH\STX\NUL\DC2\ETXd\STX\DC2\SUB! The simple name of this method.\n\
     \\n\
     \\f\n\
-    \\ENQ\EOT\SOH\STX\NUL\ENQ\DC2\ETXe\STX\b\n\
+    \\ENQ\EOT\SOH\STX\NUL\ENQ\DC2\ETXd\STX\b\n\
     \\f\n\
-    \\ENQ\EOT\SOH\STX\NUL\SOH\DC2\ETXe\t\r\n\
+    \\ENQ\EOT\SOH\STX\NUL\SOH\DC2\ETXd\t\r\n\
     \\f\n\
-    \\ENQ\EOT\SOH\STX\NUL\ETX\DC2\ETXe\DLE\DC1\n\
+    \\ENQ\EOT\SOH\STX\NUL\ETX\DC2\ETXd\DLE\DC1\n\
     \/\n\
-    \\EOT\EOT\SOH\STX\SOH\DC2\ETXh\STX\RS\SUB\" A URL of the input message type.\n\
+    \\EOT\EOT\SOH\STX\SOH\DC2\ETXg\STX\RS\SUB\" A URL of the input message type.\n\
     \\n\
     \\f\n\
-    \\ENQ\EOT\SOH\STX\SOH\ENQ\DC2\ETXh\STX\b\n\
+    \\ENQ\EOT\SOH\STX\SOH\ENQ\DC2\ETXg\STX\b\n\
     \\f\n\
-    \\ENQ\EOT\SOH\STX\SOH\SOH\DC2\ETXh\t\EM\n\
+    \\ENQ\EOT\SOH\STX\SOH\SOH\DC2\ETXg\t\EM\n\
     \\f\n\
-    \\ENQ\EOT\SOH\STX\SOH\ETX\DC2\ETXh\FS\GS\n\
+    \\ENQ\EOT\SOH\STX\SOH\ETX\DC2\ETXg\FS\GS\n\
     \0\n\
-    \\EOT\EOT\SOH\STX\STX\DC2\ETXk\STX\GS\SUB# If true, the request is streamed.\n\
+    \\EOT\EOT\SOH\STX\STX\DC2\ETXj\STX\GS\SUB# If true, the request is streamed.\n\
     \\n\
     \\f\n\
-    \\ENQ\EOT\SOH\STX\STX\ENQ\DC2\ETXk\STX\ACK\n\
+    \\ENQ\EOT\SOH\STX\STX\ENQ\DC2\ETXj\STX\ACK\n\
     \\f\n\
-    \\ENQ\EOT\SOH\STX\STX\SOH\DC2\ETXk\a\CAN\n\
+    \\ENQ\EOT\SOH\STX\STX\SOH\DC2\ETXj\a\CAN\n\
     \\f\n\
-    \\ENQ\EOT\SOH\STX\STX\ETX\DC2\ETXk\ESC\FS\n\
+    \\ENQ\EOT\SOH\STX\STX\ETX\DC2\ETXj\ESC\FS\n\
     \2\n\
-    \\EOT\EOT\SOH\STX\ETX\DC2\ETXn\STX\US\SUB% The URL of the output message type.\n\
+    \\EOT\EOT\SOH\STX\ETX\DC2\ETXm\STX\US\SUB% The URL of the output message type.\n\
     \\n\
     \\f\n\
-    \\ENQ\EOT\SOH\STX\ETX\ENQ\DC2\ETXn\STX\b\n\
+    \\ENQ\EOT\SOH\STX\ETX\ENQ\DC2\ETXm\STX\b\n\
     \\f\n\
-    \\ENQ\EOT\SOH\STX\ETX\SOH\DC2\ETXn\t\SUB\n\
+    \\ENQ\EOT\SOH\STX\ETX\SOH\DC2\ETXm\t\SUB\n\
     \\f\n\
-    \\ENQ\EOT\SOH\STX\ETX\ETX\DC2\ETXn\GS\RS\n\
+    \\ENQ\EOT\SOH\STX\ETX\ETX\DC2\ETXm\GS\RS\n\
     \1\n\
-    \\EOT\EOT\SOH\STX\EOT\DC2\ETXq\STX\RS\SUB$ If true, the response is streamed.\n\
+    \\EOT\EOT\SOH\STX\EOT\DC2\ETXp\STX\RS\SUB$ If true, the response is streamed.\n\
     \\n\
     \\f\n\
-    \\ENQ\EOT\SOH\STX\EOT\ENQ\DC2\ETXq\STX\ACK\n\
+    \\ENQ\EOT\SOH\STX\EOT\ENQ\DC2\ETXp\STX\ACK\n\
     \\f\n\
-    \\ENQ\EOT\SOH\STX\EOT\SOH\DC2\ETXq\a\EM\n\
+    \\ENQ\EOT\SOH\STX\EOT\SOH\DC2\ETXp\a\EM\n\
     \\f\n\
-    \\ENQ\EOT\SOH\STX\EOT\ETX\DC2\ETXq\FS\GS\n\
+    \\ENQ\EOT\SOH\STX\EOT\ETX\DC2\ETXp\FS\GS\n\
     \3\n\
-    \\EOT\EOT\SOH\STX\ENQ\DC2\ETXt\STX\RS\SUB& Any metadata attached to the method.\n\
+    \\EOT\EOT\SOH\STX\ENQ\DC2\ETXs\STX\RS\SUB& Any metadata attached to the method.\n\
     \\n\
     \\f\n\
-    \\ENQ\EOT\SOH\STX\ENQ\EOT\DC2\ETXt\STX\n\
+    \\ENQ\EOT\SOH\STX\ENQ\EOT\DC2\ETXs\STX\n\
     \\n\
     \\f\n\
-    \\ENQ\EOT\SOH\STX\ENQ\ACK\DC2\ETXt\v\DC1\n\
+    \\ENQ\EOT\SOH\STX\ENQ\ACK\DC2\ETXs\v\DC1\n\
     \\f\n\
-    \\ENQ\EOT\SOH\STX\ENQ\SOH\DC2\ETXt\DC2\EM\n\
+    \\ENQ\EOT\SOH\STX\ENQ\SOH\DC2\ETXs\DC2\EM\n\
     \\f\n\
-    \\ENQ\EOT\SOH\STX\ENQ\ETX\DC2\ETXt\FS\GS\n\
+    \\ENQ\EOT\SOH\STX\ENQ\ETX\DC2\ETXs\FS\GS\n\
     \0\n\
-    \\EOT\EOT\SOH\STX\ACK\DC2\ETXw\STX\DC4\SUB# The source syntax of this method.\n\
+    \\EOT\EOT\SOH\STX\ACK\DC2\ETXv\STX\DC4\SUB# The source syntax of this method.\n\
     \\n\
     \\f\n\
-    \\ENQ\EOT\SOH\STX\ACK\ACK\DC2\ETXw\STX\b\n\
+    \\ENQ\EOT\SOH\STX\ACK\ACK\DC2\ETXv\STX\b\n\
     \\f\n\
-    \\ENQ\EOT\SOH\STX\ACK\SOH\DC2\ETXw\t\SI\n\
+    \\ENQ\EOT\SOH\STX\ACK\SOH\DC2\ETXv\t\SI\n\
     \\f\n\
-    \\ENQ\EOT\SOH\STX\ACK\ETX\DC2\ETXw\DC2\DC3\n\
-    \\202\DC3\n\
-    \\STX\EOT\STX\DC2\ACK\200\SOH\NUL\207\SOH\SOH\SUB\187\DC3 Declares an API Interface to be included in this interface. The including\n\
+    \\ENQ\EOT\SOH\STX\ACK\ETX\DC2\ETXv\DC2\DC3\n\
+    \\201\DC3\n\
+    \\STX\EOT\STX\DC2\ACK\199\SOH\NUL\206\SOH\SOH\SUB\186\DC3 Declares an API Interface to be included in this interface. The including\n\
     \ interface must redeclare all the methods from the included interface, but\n\
     \ documentation and options are inherited as follows:\n\
     \\n\
@@ -1362,7 +1361,7 @@ packedFileDescriptor
     \ The mixin construct implies that all methods in `AccessControl` are\n\
     \ also declared with same name and request/response types in\n\
     \ `Storage`. A documentation generator or annotation processor will\n\
-    \ see the effective `Storage.GetAcl` method after inheriting\n\
+    \ see the effective `Storage.GetAcl` method after inherting\n\
     \ documentation and annotations as follows:\n\
     \\n\
     \     service Storage {\n\
@@ -1395,23 +1394,23 @@ packedFileDescriptor
     \     }\n\
     \\n\
     \\v\n\
-    \\ETX\EOT\STX\SOH\DC2\EOT\200\SOH\b\r\n\
+    \\ETX\EOT\STX\SOH\DC2\EOT\199\SOH\b\r\n\
     \L\n\
-    \\EOT\EOT\STX\STX\NUL\DC2\EOT\202\SOH\STX\DC2\SUB> The fully qualified name of the interface which is included.\n\
+    \\EOT\EOT\STX\STX\NUL\DC2\EOT\201\SOH\STX\DC2\SUB> The fully qualified name of the interface which is included.\n\
     \\n\
     \\r\n\
-    \\ENQ\EOT\STX\STX\NUL\ENQ\DC2\EOT\202\SOH\STX\b\n\
+    \\ENQ\EOT\STX\STX\NUL\ENQ\DC2\EOT\201\SOH\STX\b\n\
     \\r\n\
-    \\ENQ\EOT\STX\STX\NUL\SOH\DC2\EOT\202\SOH\t\r\n\
+    \\ENQ\EOT\STX\STX\NUL\SOH\DC2\EOT\201\SOH\t\r\n\
     \\r\n\
-    \\ENQ\EOT\STX\STX\NUL\ETX\DC2\EOT\202\SOH\DLE\DC1\n\
+    \\ENQ\EOT\STX\STX\NUL\ETX\DC2\EOT\201\SOH\DLE\DC1\n\
     \[\n\
-    \\EOT\EOT\STX\STX\SOH\DC2\EOT\206\SOH\STX\DC2\SUBM If non-empty specifies a path under which inherited HTTP paths\n\
+    \\EOT\EOT\STX\STX\SOH\DC2\EOT\205\SOH\STX\DC2\SUBM If non-empty specifies a path under which inherited HTTP paths\n\
     \ are rooted.\n\
     \\n\
     \\r\n\
-    \\ENQ\EOT\STX\STX\SOH\ENQ\DC2\EOT\206\SOH\STX\b\n\
+    \\ENQ\EOT\STX\STX\SOH\ENQ\DC2\EOT\205\SOH\STX\b\n\
     \\r\n\
-    \\ENQ\EOT\STX\STX\SOH\SOH\DC2\EOT\206\SOH\t\r\n\
+    \\ENQ\EOT\STX\STX\SOH\SOH\DC2\EOT\205\SOH\t\r\n\
     \\r\n\
-    \\ENQ\EOT\STX\STX\SOH\ETX\DC2\EOT\206\SOH\DLE\DC1b\ACKproto3"
+    \\ENQ\EOT\STX\STX\SOH\ETX\DC2\EOT\205\SOH\DLE\DC1b\ACKproto3"

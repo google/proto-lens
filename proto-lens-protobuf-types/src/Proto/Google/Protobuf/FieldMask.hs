@@ -201,26 +201,26 @@ packedFileDescriptor
     \\b\n\
     \\SOH\STX\DC2\ETX \NUL\CAN\n\
     \\b\n\
-    \\SOH\b\DC2\ETX\"\NUL;\n\
+    \\SOH\b\DC2\ETX\"\NUL,\n\
     \\t\n\
-    \\STX\b%\DC2\ETX\"\NUL;\n\
+    \\STX\b\SOH\DC2\ETX\"\NUL,\n\
     \\b\n\
-    \\SOH\b\DC2\ETX#\NUL,\n\
+    \\SOH\b\DC2\ETX#\NUL/\n\
     \\t\n\
-    \\STX\b\SOH\DC2\ETX#\NUL,\n\
+    \\STX\b\b\DC2\ETX#\NUL/\n\
     \\b\n\
-    \\SOH\b\DC2\ETX$\NUL/\n\
-    \\t\n\
-    \\STX\b\b\DC2\ETX$\NUL/\n\
-    \\b\n\
-    \\SOH\b\DC2\ETX%\NUL\"\n\
+    \\SOH\b\DC2\ETX$\NUL\"\n\
     \\t\n\
     \\STX\b\n\
-    \\DC2\ETX%\NUL\"\n\
+    \\DC2\ETX$\NUL\"\n\
     \\b\n\
-    \\SOH\b\DC2\ETX&\NUL!\n\
+    \\SOH\b\DC2\ETX%\NUL!\n\
     \\t\n\
-    \\STX\b$\DC2\ETX&\NUL!\n\
+    \\STX\b$\DC2\ETX%\NUL!\n\
+    \\b\n\
+    \\SOH\b\DC2\ETX&\NUL;\n\
+    \\t\n\
+    \\STX\b%\DC2\ETX&\NUL;\n\
     \\b\n\
     \\SOH\b\DC2\ETX'\NULI\n\
     \\t\n\

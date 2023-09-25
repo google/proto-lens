@@ -45,13 +45,15 @@ import qualified Proto.Google.Protobuf.SourceContext
          * 'Proto.Google.Protobuf.Type_Fields.vec'options' @:: Lens' Enum (Data.Vector.Vector Option)@
          * 'Proto.Google.Protobuf.Type_Fields.sourceContext' @:: Lens' Enum Proto.Google.Protobuf.SourceContext.SourceContext@
          * 'Proto.Google.Protobuf.Type_Fields.maybe'sourceContext' @:: Lens' Enum (Prelude.Maybe Proto.Google.Protobuf.SourceContext.SourceContext)@
-         * 'Proto.Google.Protobuf.Type_Fields.syntax' @:: Lens' Enum Syntax@ -}
+         * 'Proto.Google.Protobuf.Type_Fields.syntax' @:: Lens' Enum Syntax@
+         * 'Proto.Google.Protobuf.Type_Fields.edition' @:: Lens' Enum Data.Text.Text@ -}
 data Enum
   = Enum'_constructor {_Enum'name :: !Data.Text.Text,
                        _Enum'enumvalue :: !(Data.Vector.Vector EnumValue),
                        _Enum'options :: !(Data.Vector.Vector Option),
                        _Enum'sourceContext :: !(Prelude.Maybe Proto.Google.Protobuf.SourceContext.SourceContext),
                        _Enum'syntax :: !Syntax,
+                       _Enum'edition :: !Data.Text.Text,
                        _Enum'_unknownFields :: !Data.ProtoLens.FieldSet}
   deriving stock (Prelude.Eq, Prelude.Ord)
 instance Prelude.Show Enum where
@@ -112,6 +114,12 @@ instance Data.ProtoLens.Field.HasField Enum "syntax" Syntax where
         (Lens.Family2.Unchecked.lens
            _Enum'syntax (\ x__ y__ -> x__ {_Enum'syntax = y__}))
         Prelude.id
+instance Data.ProtoLens.Field.HasField Enum "edition" Data.Text.Text where
+  fieldOf _
+    = (Prelude..)
+        (Lens.Family2.Unchecked.lens
+           _Enum'edition (\ x__ y__ -> x__ {_Enum'edition = y__}))
+        Prelude.id
 instance Data.ProtoLens.Message Enum where
   messageName _ = Data.Text.pack "google.protobuf.Enum"
   packedMessageDescriptor _
@@ -121,7 +129,8 @@ instance Data.ProtoLens.Message Enum where
       \\tenumvalue\CAN\STX \ETX(\v2\SUB.google.protobuf.EnumValueR\tenumvalue\DC21\n\
       \\aoptions\CAN\ETX \ETX(\v2\ETB.google.protobuf.OptionR\aoptions\DC2E\n\
       \\SOsource_context\CAN\EOT \SOH(\v2\RS.google.protobuf.SourceContextR\rsourceContext\DC2/\n\
-      \\ACKsyntax\CAN\ENQ \SOH(\SO2\ETB.google.protobuf.SyntaxR\ACKsyntax"
+      \\ACKsyntax\CAN\ENQ \SOH(\SO2\ETB.google.protobuf.SyntaxR\ACKsyntax\DC2\CAN\n\
+      \\aedition\CAN\ACK \SOH(\tR\aedition"
   packedFileDescriptor _ = packedFileDescriptor
   fieldsByTag
     = let
@@ -166,13 +175,22 @@ instance Data.ProtoLens.Message Enum where
               (Data.ProtoLens.PlainField
                  Data.ProtoLens.Optional (Data.ProtoLens.Field.field @"syntax")) ::
               Data.ProtoLens.FieldDescriptor Enum
+        edition__field_descriptor
+          = Data.ProtoLens.FieldDescriptor
+              "edition"
+              (Data.ProtoLens.ScalarField Data.ProtoLens.StringField ::
+                 Data.ProtoLens.FieldTypeDescriptor Data.Text.Text)
+              (Data.ProtoLens.PlainField
+                 Data.ProtoLens.Optional (Data.ProtoLens.Field.field @"edition")) ::
+              Data.ProtoLens.FieldDescriptor Enum
       in
         Data.Map.fromList
           [(Data.ProtoLens.Tag 1, name__field_descriptor),
            (Data.ProtoLens.Tag 2, enumvalue__field_descriptor),
            (Data.ProtoLens.Tag 3, options__field_descriptor),
            (Data.ProtoLens.Tag 4, sourceContext__field_descriptor),
-           (Data.ProtoLens.Tag 5, syntax__field_descriptor)]
+           (Data.ProtoLens.Tag 5, syntax__field_descriptor),
+           (Data.ProtoLens.Tag 6, edition__field_descriptor)]
   unknownFields
     = Lens.Family2.Unchecked.lens
         _Enum'_unknownFields
@@ -184,6 +202,7 @@ instance Data.ProtoLens.Message Enum where
          _Enum'options = Data.Vector.Generic.empty,
          _Enum'sourceContext = Prelude.Nothing,
          _Enum'syntax = Data.ProtoLens.fieldDefault,
+         _Enum'edition = Data.ProtoLens.fieldDefault,
          _Enum'_unknownFields = []}
   parseMessage
     = let
@@ -269,6 +288,15 @@ instance Data.ProtoLens.Message Enum where
                                        "syntax"
                                 loop
                                   (Lens.Family2.set (Data.ProtoLens.Field.field @"syntax") y x)
+                                  mutable'enumvalue mutable'options
+                        50
+                          -> do y <- (Data.ProtoLens.Encoding.Bytes.<?>)
+                                       (do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
+                                           Data.ProtoLens.Encoding.Bytes.getText
+                                             (Prelude.fromIntegral len))
+                                       "edition"
+                                loop
+                                  (Lens.Family2.set (Data.ProtoLens.Field.field @"edition") y x)
                                   mutable'enumvalue mutable'options
                         wire
                           -> do !y <- Data.ProtoLens.Encoding.Wire.parseTaggedValueFromWire
@@ -359,8 +387,25 @@ instance Data.ProtoLens.Message Enum where
                                         Data.ProtoLens.Encoding.Bytes.putVarInt
                                         Prelude.fromIntegral)
                                      Prelude.fromEnum _v))
-                         (Data.ProtoLens.Encoding.Wire.buildFieldSet
-                            (Lens.Family2.view Data.ProtoLens.unknownFields _x))))))
+                         ((Data.Monoid.<>)
+                            (let
+                               _v = Lens.Family2.view (Data.ProtoLens.Field.field @"edition") _x
+                             in
+                               if (Prelude.==) _v Data.ProtoLens.fieldDefault then
+                                   Data.Monoid.mempty
+                               else
+                                   (Data.Monoid.<>)
+                                     (Data.ProtoLens.Encoding.Bytes.putVarInt 50)
+                                     ((Prelude..)
+                                        (\ bs
+                                           -> (Data.Monoid.<>)
+                                                (Data.ProtoLens.Encoding.Bytes.putVarInt
+                                                   (Prelude.fromIntegral
+                                                      (Data.ByteString.length bs)))
+                                                (Data.ProtoLens.Encoding.Bytes.putBytes bs))
+                                        Data.Text.Encoding.encodeUtf8 _v))
+                            (Data.ProtoLens.Encoding.Wire.buildFieldSet
+                               (Lens.Family2.view Data.ProtoLens.unknownFields _x)))))))
 instance Control.DeepSeq.NFData Enum where
   rnf
     = \ x__
@@ -374,7 +419,9 @@ instance Control.DeepSeq.NFData Enum where
                       (_Enum'options x__)
                       (Control.DeepSeq.deepseq
                          (_Enum'sourceContext x__)
-                         (Control.DeepSeq.deepseq (_Enum'syntax x__) ())))))
+                         (Control.DeepSeq.deepseq
+                            (_Enum'syntax x__)
+                            (Control.DeepSeq.deepseq (_Enum'edition x__) ()))))))
 {- | Fields :
      
          * 'Proto.Google.Protobuf.Type_Fields.name' @:: Lens' EnumValue Data.Text.Text@
@@ -1591,27 +1638,31 @@ newtype Syntax'UnrecognizedValue
 data Syntax
   = SYNTAX_PROTO2 |
     SYNTAX_PROTO3 |
+    SYNTAX_EDITIONS |
     Syntax'Unrecognized !Syntax'UnrecognizedValue
   deriving stock (Prelude.Show, Prelude.Eq, Prelude.Ord)
 instance Data.ProtoLens.MessageEnum Syntax where
   maybeToEnum 0 = Prelude.Just SYNTAX_PROTO2
   maybeToEnum 1 = Prelude.Just SYNTAX_PROTO3
+  maybeToEnum 2 = Prelude.Just SYNTAX_EDITIONS
   maybeToEnum k
     = Prelude.Just
         (Syntax'Unrecognized
            (Syntax'UnrecognizedValue (Prelude.fromIntegral k)))
   showEnum SYNTAX_PROTO2 = "SYNTAX_PROTO2"
   showEnum SYNTAX_PROTO3 = "SYNTAX_PROTO3"
+  showEnum SYNTAX_EDITIONS = "SYNTAX_EDITIONS"
   showEnum (Syntax'Unrecognized (Syntax'UnrecognizedValue k))
     = Prelude.show k
   readEnum k
     | (Prelude.==) k "SYNTAX_PROTO2" = Prelude.Just SYNTAX_PROTO2
     | (Prelude.==) k "SYNTAX_PROTO3" = Prelude.Just SYNTAX_PROTO3
+    | (Prelude.==) k "SYNTAX_EDITIONS" = Prelude.Just SYNTAX_EDITIONS
     | Prelude.otherwise
     = (Prelude.>>=) (Text.Read.readMaybe k) Data.ProtoLens.maybeToEnum
 instance Prelude.Bounded Syntax where
   minBound = SYNTAX_PROTO2
-  maxBound = SYNTAX_PROTO3
+  maxBound = SYNTAX_EDITIONS
 instance Prelude.Enum Syntax where
   toEnum k__
     = Prelude.maybe
@@ -1621,18 +1672,21 @@ instance Prelude.Enum Syntax where
         Prelude.id (Data.ProtoLens.maybeToEnum k__)
   fromEnum SYNTAX_PROTO2 = 0
   fromEnum SYNTAX_PROTO3 = 1
+  fromEnum SYNTAX_EDITIONS = 2
   fromEnum (Syntax'Unrecognized (Syntax'UnrecognizedValue k))
     = Prelude.fromIntegral k
-  succ SYNTAX_PROTO3
+  succ SYNTAX_EDITIONS
     = Prelude.error
-        "Syntax.succ: bad argument SYNTAX_PROTO3. This value would be out of bounds."
+        "Syntax.succ: bad argument SYNTAX_EDITIONS. This value would be out of bounds."
   succ SYNTAX_PROTO2 = SYNTAX_PROTO3
+  succ SYNTAX_PROTO3 = SYNTAX_EDITIONS
   succ (Syntax'Unrecognized _)
     = Prelude.error "Syntax.succ: bad argument: unrecognized value"
   pred SYNTAX_PROTO2
     = Prelude.error
         "Syntax.pred: bad argument SYNTAX_PROTO2. This value would be out of bounds."
   pred SYNTAX_PROTO3 = SYNTAX_PROTO2
+  pred SYNTAX_EDITIONS = SYNTAX_PROTO3
   pred (Syntax'Unrecognized _)
     = Prelude.error "Syntax.pred: bad argument: unrecognized value"
   enumFrom = Data.ProtoLens.Message.Enum.messageEnumFrom
@@ -1654,7 +1708,8 @@ instance Control.DeepSeq.NFData Syntax where
          * 'Proto.Google.Protobuf.Type_Fields.vec'options' @:: Lens' Type (Data.Vector.Vector Option)@
          * 'Proto.Google.Protobuf.Type_Fields.sourceContext' @:: Lens' Type Proto.Google.Protobuf.SourceContext.SourceContext@
          * 'Proto.Google.Protobuf.Type_Fields.maybe'sourceContext' @:: Lens' Type (Prelude.Maybe Proto.Google.Protobuf.SourceContext.SourceContext)@
-         * 'Proto.Google.Protobuf.Type_Fields.syntax' @:: Lens' Type Syntax@ -}
+         * 'Proto.Google.Protobuf.Type_Fields.syntax' @:: Lens' Type Syntax@
+         * 'Proto.Google.Protobuf.Type_Fields.edition' @:: Lens' Type Data.Text.Text@ -}
 data Type
   = Type'_constructor {_Type'name :: !Data.Text.Text,
                        _Type'fields :: !(Data.Vector.Vector Field),
@@ -1662,6 +1717,7 @@ data Type
                        _Type'options :: !(Data.Vector.Vector Option),
                        _Type'sourceContext :: !(Prelude.Maybe Proto.Google.Protobuf.SourceContext.SourceContext),
                        _Type'syntax :: !Syntax,
+                       _Type'edition :: !Data.Text.Text,
                        _Type'_unknownFields :: !Data.ProtoLens.FieldSet}
   deriving stock (Prelude.Eq, Prelude.Ord)
 instance Prelude.Show Type where
@@ -1736,6 +1792,12 @@ instance Data.ProtoLens.Field.HasField Type "syntax" Syntax where
         (Lens.Family2.Unchecked.lens
            _Type'syntax (\ x__ y__ -> x__ {_Type'syntax = y__}))
         Prelude.id
+instance Data.ProtoLens.Field.HasField Type "edition" Data.Text.Text where
+  fieldOf _
+    = (Prelude..)
+        (Lens.Family2.Unchecked.lens
+           _Type'edition (\ x__ y__ -> x__ {_Type'edition = y__}))
+        Prelude.id
 instance Data.ProtoLens.Message Type where
   messageName _ = Data.Text.pack "google.protobuf.Type"
   packedMessageDescriptor _
@@ -1746,7 +1808,8 @@ instance Data.ProtoLens.Message Type where
       \\ACKoneofs\CAN\ETX \ETX(\tR\ACKoneofs\DC21\n\
       \\aoptions\CAN\EOT \ETX(\v2\ETB.google.protobuf.OptionR\aoptions\DC2E\n\
       \\SOsource_context\CAN\ENQ \SOH(\v2\RS.google.protobuf.SourceContextR\rsourceContext\DC2/\n\
-      \\ACKsyntax\CAN\ACK \SOH(\SO2\ETB.google.protobuf.SyntaxR\ACKsyntax"
+      \\ACKsyntax\CAN\ACK \SOH(\SO2\ETB.google.protobuf.SyntaxR\ACKsyntax\DC2\CAN\n\
+      \\aedition\CAN\a \SOH(\tR\aedition"
   packedFileDescriptor _ = packedFileDescriptor
   fieldsByTag
     = let
@@ -1798,6 +1861,14 @@ instance Data.ProtoLens.Message Type where
               (Data.ProtoLens.PlainField
                  Data.ProtoLens.Optional (Data.ProtoLens.Field.field @"syntax")) ::
               Data.ProtoLens.FieldDescriptor Type
+        edition__field_descriptor
+          = Data.ProtoLens.FieldDescriptor
+              "edition"
+              (Data.ProtoLens.ScalarField Data.ProtoLens.StringField ::
+                 Data.ProtoLens.FieldTypeDescriptor Data.Text.Text)
+              (Data.ProtoLens.PlainField
+                 Data.ProtoLens.Optional (Data.ProtoLens.Field.field @"edition")) ::
+              Data.ProtoLens.FieldDescriptor Type
       in
         Data.Map.fromList
           [(Data.ProtoLens.Tag 1, name__field_descriptor),
@@ -1805,7 +1876,8 @@ instance Data.ProtoLens.Message Type where
            (Data.ProtoLens.Tag 3, oneofs__field_descriptor),
            (Data.ProtoLens.Tag 4, options__field_descriptor),
            (Data.ProtoLens.Tag 5, sourceContext__field_descriptor),
-           (Data.ProtoLens.Tag 6, syntax__field_descriptor)]
+           (Data.ProtoLens.Tag 6, syntax__field_descriptor),
+           (Data.ProtoLens.Tag 7, edition__field_descriptor)]
   unknownFields
     = Lens.Family2.Unchecked.lens
         _Type'_unknownFields
@@ -1818,6 +1890,7 @@ instance Data.ProtoLens.Message Type where
          _Type'options = Data.Vector.Generic.empty,
          _Type'sourceContext = Prelude.Nothing,
          _Type'syntax = Data.ProtoLens.fieldDefault,
+         _Type'edition = Data.ProtoLens.fieldDefault,
          _Type'_unknownFields = []}
   parseMessage
     = let
@@ -1918,6 +1991,15 @@ instance Data.ProtoLens.Message Type where
                                        "syntax"
                                 loop
                                   (Lens.Family2.set (Data.ProtoLens.Field.field @"syntax") y x)
+                                  mutable'fields mutable'oneofs mutable'options
+                        58
+                          -> do y <- (Data.ProtoLens.Encoding.Bytes.<?>)
+                                       (do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
+                                           Data.ProtoLens.Encoding.Bytes.getText
+                                             (Prelude.fromIntegral len))
+                                       "edition"
+                                loop
+                                  (Lens.Family2.set (Data.ProtoLens.Field.field @"edition") y x)
                                   mutable'fields mutable'oneofs mutable'options
                         wire
                           -> do !y <- Data.ProtoLens.Encoding.Wire.parseTaggedValueFromWire
@@ -2024,8 +2106,25 @@ instance Data.ProtoLens.Message Type where
                                            Data.ProtoLens.Encoding.Bytes.putVarInt
                                            Prelude.fromIntegral)
                                         Prelude.fromEnum _v))
-                            (Data.ProtoLens.Encoding.Wire.buildFieldSet
-                               (Lens.Family2.view Data.ProtoLens.unknownFields _x)))))))
+                            ((Data.Monoid.<>)
+                               (let
+                                  _v = Lens.Family2.view (Data.ProtoLens.Field.field @"edition") _x
+                                in
+                                  if (Prelude.==) _v Data.ProtoLens.fieldDefault then
+                                      Data.Monoid.mempty
+                                  else
+                                      (Data.Monoid.<>)
+                                        (Data.ProtoLens.Encoding.Bytes.putVarInt 58)
+                                        ((Prelude..)
+                                           (\ bs
+                                              -> (Data.Monoid.<>)
+                                                   (Data.ProtoLens.Encoding.Bytes.putVarInt
+                                                      (Prelude.fromIntegral
+                                                         (Data.ByteString.length bs)))
+                                                   (Data.ProtoLens.Encoding.Bytes.putBytes bs))
+                                           Data.Text.Encoding.encodeUtf8 _v))
+                               (Data.ProtoLens.Encoding.Wire.buildFieldSet
+                                  (Lens.Family2.view Data.ProtoLens.unknownFields _x))))))))
 instance Control.DeepSeq.NFData Type where
   rnf
     = \ x__
@@ -2041,18 +2140,21 @@ instance Control.DeepSeq.NFData Type where
                          (_Type'options x__)
                          (Control.DeepSeq.deepseq
                             (_Type'sourceContext x__)
-                            (Control.DeepSeq.deepseq (_Type'syntax x__) ()))))))
+                            (Control.DeepSeq.deepseq
+                               (_Type'syntax x__)
+                               (Control.DeepSeq.deepseq (_Type'edition x__) ())))))))
 packedFileDescriptor :: Data.ByteString.ByteString
 packedFileDescriptor
   = "\n\
-    \\SUBgoogle/protobuf/type.proto\DC2\SIgoogle.protobuf\SUB\EMgoogle/protobuf/any.proto\SUB$google/protobuf/source_context.proto\"\141\STX\n\
+    \\SUBgoogle/protobuf/type.proto\DC2\SIgoogle.protobuf\SUB\EMgoogle/protobuf/any.proto\SUB$google/protobuf/source_context.proto\"\167\STX\n\
     \\EOTType\DC2\DC2\n\
     \\EOTname\CAN\SOH \SOH(\tR\EOTname\DC2.\n\
     \\ACKfields\CAN\STX \ETX(\v2\SYN.google.protobuf.FieldR\ACKfields\DC2\SYN\n\
     \\ACKoneofs\CAN\ETX \ETX(\tR\ACKoneofs\DC21\n\
     \\aoptions\CAN\EOT \ETX(\v2\ETB.google.protobuf.OptionR\aoptions\DC2E\n\
     \\SOsource_context\CAN\ENQ \SOH(\v2\RS.google.protobuf.SourceContextR\rsourceContext\DC2/\n\
-    \\ACKsyntax\CAN\ACK \SOH(\SO2\ETB.google.protobuf.SyntaxR\ACKsyntax\"\180\ACK\n\
+    \\ACKsyntax\CAN\ACK \SOH(\SO2\ETB.google.protobuf.SyntaxR\ACKsyntax\DC2\CAN\n\
+    \\aedition\CAN\a \SOH(\tR\aedition\"\180\ACK\n\
     \\ENQField\DC2/\n\
     \\EOTkind\CAN\SOH \SOH(\SO2\ESC.google.protobuf.Field.KindR\EOTkind\DC2D\n\
     \\vcardinality\CAN\STX \SOH(\SO2\".google.protobuf.Field.CardinalityR\vcardinality\DC2\SYN\n\
@@ -2096,25 +2198,27 @@ packedFileDescriptor
     \\DC3CARDINALITY_UNKNOWN\DLE\NUL\DC2\CAN\n\
     \\DC4CARDINALITY_OPTIONAL\DLE\SOH\DC2\CAN\n\
     \\DC4CARDINALITY_REQUIRED\DLE\STX\DC2\CAN\n\
-    \\DC4CARDINALITY_REPEATED\DLE\ETX\"\255\SOH\n\
+    \\DC4CARDINALITY_REPEATED\DLE\ETX\"\153\STX\n\
     \\EOTEnum\DC2\DC2\n\
     \\EOTname\CAN\SOH \SOH(\tR\EOTname\DC28\n\
     \\tenumvalue\CAN\STX \ETX(\v2\SUB.google.protobuf.EnumValueR\tenumvalue\DC21\n\
     \\aoptions\CAN\ETX \ETX(\v2\ETB.google.protobuf.OptionR\aoptions\DC2E\n\
     \\SOsource_context\CAN\EOT \SOH(\v2\RS.google.protobuf.SourceContextR\rsourceContext\DC2/\n\
-    \\ACKsyntax\CAN\ENQ \SOH(\SO2\ETB.google.protobuf.SyntaxR\ACKsyntax\"j\n\
+    \\ACKsyntax\CAN\ENQ \SOH(\SO2\ETB.google.protobuf.SyntaxR\ACKsyntax\DC2\CAN\n\
+    \\aedition\CAN\ACK \SOH(\tR\aedition\"j\n\
     \\tEnumValue\DC2\DC2\n\
     \\EOTname\CAN\SOH \SOH(\tR\EOTname\DC2\SYN\n\
     \\ACKnumber\CAN\STX \SOH(\ENQR\ACKnumber\DC21\n\
     \\aoptions\CAN\ETX \ETX(\v2\ETB.google.protobuf.OptionR\aoptions\"H\n\
     \\ACKOption\DC2\DC2\n\
     \\EOTname\CAN\SOH \SOH(\tR\EOTname\DC2*\n\
-    \\ENQvalue\CAN\STX \SOH(\v2\DC4.google.protobuf.AnyR\ENQvalue*.\n\
+    \\ENQvalue\CAN\STX \SOH(\v2\DC4.google.protobuf.AnyR\ENQvalue*C\n\
     \\ACKSyntax\DC2\DC1\n\
     \\rSYNTAX_PROTO2\DLE\NUL\DC2\DC1\n\
-    \\rSYNTAX_PROTO3\DLE\SOHB{\n\
-    \\DC3com.google.protobufB\tTypeProtoP\SOHZ-google.golang.org/protobuf/types/known/typepb\248\SOH\SOH\162\STX\ETXGPB\170\STX\RSGoogle.Protobuf.WellKnownTypesJ\195\&8\n\
-    \\a\DC2\ENQ\RS\NUL\186\SOH\SOH\n\
+    \\rSYNTAX_PROTO3\DLE\SOH\DC2\DC3\n\
+    \\SISYNTAX_EDITIONS\DLE\STXB{\n\
+    \\DC3com.google.protobufB\tTypeProtoP\SOHZ-google.golang.org/protobuf/types/known/typepb\248\SOH\SOH\162\STX\ETXGPB\170\STX\RSGoogle.Protobuf.WellKnownTypesJ\141;\n\
+    \\a\DC2\ENQ\RS\NUL\192\SOH\SOH\n\
     \\204\f\n\
     \\SOH\f\DC2\ETX\RS\NUL\DC22\193\f Protocol Buffers - Google's data interchange format\n\
     \ Copyright 2008 Google Inc.  All rights reserved.\n\
@@ -2153,36 +2257,36 @@ packedFileDescriptor
     \\t\n\
     \\STX\ETX\SOH\DC2\ETX#\NUL.\n\
     \\b\n\
-    \\SOH\b\DC2\ETX%\NUL;\n\
+    \\SOH\b\DC2\ETX%\NUL\US\n\
     \\t\n\
-    \\STX\b%\DC2\ETX%\NUL;\n\
+    \\STX\b\US\DC2\ETX%\NUL\US\n\
     \\b\n\
-    \\SOH\b\DC2\ETX&\NUL\US\n\
+    \\SOH\b\DC2\ETX&\NUL,\n\
     \\t\n\
-    \\STX\b\US\DC2\ETX&\NUL\US\n\
+    \\STX\b\SOH\DC2\ETX&\NUL,\n\
     \\b\n\
-    \\SOH\b\DC2\ETX'\NUL,\n\
+    \\SOH\b\DC2\ETX'\NUL*\n\
     \\t\n\
-    \\STX\b\SOH\DC2\ETX'\NUL,\n\
+    \\STX\b\b\DC2\ETX'\NUL*\n\
     \\b\n\
-    \\SOH\b\DC2\ETX(\NUL*\n\
-    \\t\n\
-    \\STX\b\b\DC2\ETX(\NUL*\n\
-    \\b\n\
-    \\SOH\b\DC2\ETX)\NUL\"\n\
+    \\SOH\b\DC2\ETX(\NUL\"\n\
     \\t\n\
     \\STX\b\n\
-    \\DC2\ETX)\NUL\"\n\
+    \\DC2\ETX(\NUL\"\n\
     \\b\n\
-    \\SOH\b\DC2\ETX*\NUL!\n\
+    \\SOH\b\DC2\ETX)\NUL!\n\
     \\t\n\
-    \\STX\b$\DC2\ETX*\NUL!\n\
+    \\STX\b$\DC2\ETX)\NUL!\n\
+    \\b\n\
+    \\SOH\b\DC2\ETX*\NUL;\n\
+    \\t\n\
+    \\STX\b%\DC2\ETX*\NUL;\n\
     \\b\n\
     \\SOH\b\DC2\ETX+\NULD\n\
     \\t\n\
     \\STX\b\v\DC2\ETX+\NULD\n\
     \-\n\
-    \\STX\EOT\NUL\DC2\EOT.\NUL;\SOH\SUB! A protocol buffer message type.\n\
+    \\STX\EOT\NUL\DC2\EOT.\NUL=\SOH\SUB! A protocol buffer message type.\n\
     \\n\
     \\n\
     \\n\
@@ -2250,418 +2354,443 @@ packedFileDescriptor
     \\ENQ\EOT\NUL\STX\ENQ\SOH\DC2\ETX:\t\SI\n\
     \\f\n\
     \\ENQ\EOT\NUL\STX\ENQ\ETX\DC2\ETX:\DC2\DC3\n\
-    \0\n\
-    \\STX\EOT\SOH\DC2\ENQ>\NUL\139\SOH\SOH\SUB# A single field of a message type.\n\
-    \\n\
-    \\n\
-    \\n\
-    \\ETX\EOT\SOH\SOH\DC2\ETX>\b\r\n\
-    \\"\n\
-    \\EOT\EOT\SOH\EOT\NUL\DC2\EOT@\STXg\ETX\SUB\DC4 Basic field types.\n\
+    \T\n\
+    \\EOT\EOT\NUL\STX\ACK\DC2\ETX<\STX\NAK\SUBG The source edition string, only valid when syntax is SYNTAX_EDITIONS.\n\
     \\n\
     \\f\n\
-    \\ENQ\EOT\SOH\EOT\NUL\SOH\DC2\ETX@\a\v\n\
+    \\ENQ\EOT\NUL\STX\ACK\ENQ\DC2\ETX<\STX\b\n\
+    \\f\n\
+    \\ENQ\EOT\NUL\STX\ACK\SOH\DC2\ETX<\t\DLE\n\
+    \\f\n\
+    \\ENQ\EOT\NUL\STX\ACK\ETX\DC2\ETX<\DC3\DC4\n\
+    \0\n\
+    \\STX\EOT\SOH\DC2\ENQ@\NUL\141\SOH\SOH\SUB# A single field of a message type.\n\
+    \\n\
+    \\n\
+    \\n\
+    \\ETX\EOT\SOH\SOH\DC2\ETX@\b\r\n\
+    \\"\n\
+    \\EOT\EOT\SOH\EOT\NUL\DC2\EOTB\STXi\ETX\SUB\DC4 Basic field types.\n\
+    \\n\
+    \\f\n\
+    \\ENQ\EOT\SOH\EOT\NUL\SOH\DC2\ETXB\a\v\n\
     \$\n\
-    \\ACK\EOT\SOH\EOT\NUL\STX\NUL\DC2\ETXB\EOT\NAK\SUB\NAK Field type unknown.\n\
+    \\ACK\EOT\SOH\EOT\NUL\STX\NUL\DC2\ETXD\EOT\NAK\SUB\NAK Field type unknown.\n\
     \\n\
     \\SO\n\
-    \\a\EOT\SOH\EOT\NUL\STX\NUL\SOH\DC2\ETXB\EOT\DLE\n\
+    \\a\EOT\SOH\EOT\NUL\STX\NUL\SOH\DC2\ETXD\EOT\DLE\n\
     \\SO\n\
-    \\a\EOT\SOH\EOT\NUL\STX\NUL\STX\DC2\ETXB\DC3\DC4\n\
+    \\a\EOT\SOH\EOT\NUL\STX\NUL\STX\DC2\ETXD\DC3\DC4\n\
     \#\n\
-    \\ACK\EOT\SOH\EOT\NUL\STX\SOH\DC2\ETXD\EOT\DC4\SUB\DC4 Field type double.\n\
+    \\ACK\EOT\SOH\EOT\NUL\STX\SOH\DC2\ETXF\EOT\DC4\SUB\DC4 Field type double.\n\
     \\n\
     \\SO\n\
-    \\a\EOT\SOH\EOT\NUL\STX\SOH\SOH\DC2\ETXD\EOT\SI\n\
+    \\a\EOT\SOH\EOT\NUL\STX\SOH\SOH\DC2\ETXF\EOT\SI\n\
     \\SO\n\
-    \\a\EOT\SOH\EOT\NUL\STX\SOH\STX\DC2\ETXD\DC2\DC3\n\
+    \\a\EOT\SOH\EOT\NUL\STX\SOH\STX\DC2\ETXF\DC2\DC3\n\
     \\"\n\
-    \\ACK\EOT\SOH\EOT\NUL\STX\STX\DC2\ETXF\EOT\DC3\SUB\DC3 Field type float.\n\
+    \\ACK\EOT\SOH\EOT\NUL\STX\STX\DC2\ETXH\EOT\DC3\SUB\DC3 Field type float.\n\
     \\n\
     \\SO\n\
-    \\a\EOT\SOH\EOT\NUL\STX\STX\SOH\DC2\ETXF\EOT\SO\n\
+    \\a\EOT\SOH\EOT\NUL\STX\STX\SOH\DC2\ETXH\EOT\SO\n\
     \\SO\n\
-    \\a\EOT\SOH\EOT\NUL\STX\STX\STX\DC2\ETXF\DC1\DC2\n\
+    \\a\EOT\SOH\EOT\NUL\STX\STX\STX\DC2\ETXH\DC1\DC2\n\
     \\"\n\
-    \\ACK\EOT\SOH\EOT\NUL\STX\ETX\DC2\ETXH\EOT\DC3\SUB\DC3 Field type int64.\n\
+    \\ACK\EOT\SOH\EOT\NUL\STX\ETX\DC2\ETXJ\EOT\DC3\SUB\DC3 Field type int64.\n\
     \\n\
     \\SO\n\
-    \\a\EOT\SOH\EOT\NUL\STX\ETX\SOH\DC2\ETXH\EOT\SO\n\
+    \\a\EOT\SOH\EOT\NUL\STX\ETX\SOH\DC2\ETXJ\EOT\SO\n\
     \\SO\n\
-    \\a\EOT\SOH\EOT\NUL\STX\ETX\STX\DC2\ETXH\DC1\DC2\n\
+    \\a\EOT\SOH\EOT\NUL\STX\ETX\STX\DC2\ETXJ\DC1\DC2\n\
     \#\n\
-    \\ACK\EOT\SOH\EOT\NUL\STX\EOT\DC2\ETXJ\EOT\DC4\SUB\DC4 Field type uint64.\n\
+    \\ACK\EOT\SOH\EOT\NUL\STX\EOT\DC2\ETXL\EOT\DC4\SUB\DC4 Field type uint64.\n\
     \\n\
     \\SO\n\
-    \\a\EOT\SOH\EOT\NUL\STX\EOT\SOH\DC2\ETXJ\EOT\SI\n\
+    \\a\EOT\SOH\EOT\NUL\STX\EOT\SOH\DC2\ETXL\EOT\SI\n\
     \\SO\n\
-    \\a\EOT\SOH\EOT\NUL\STX\EOT\STX\DC2\ETXJ\DC2\DC3\n\
+    \\a\EOT\SOH\EOT\NUL\STX\EOT\STX\DC2\ETXL\DC2\DC3\n\
     \\"\n\
-    \\ACK\EOT\SOH\EOT\NUL\STX\ENQ\DC2\ETXL\EOT\DC3\SUB\DC3 Field type int32.\n\
+    \\ACK\EOT\SOH\EOT\NUL\STX\ENQ\DC2\ETXN\EOT\DC3\SUB\DC3 Field type int32.\n\
     \\n\
     \\SO\n\
-    \\a\EOT\SOH\EOT\NUL\STX\ENQ\SOH\DC2\ETXL\EOT\SO\n\
+    \\a\EOT\SOH\EOT\NUL\STX\ENQ\SOH\DC2\ETXN\EOT\SO\n\
     \\SO\n\
-    \\a\EOT\SOH\EOT\NUL\STX\ENQ\STX\DC2\ETXL\DC1\DC2\n\
+    \\a\EOT\SOH\EOT\NUL\STX\ENQ\STX\DC2\ETXN\DC1\DC2\n\
     \$\n\
-    \\ACK\EOT\SOH\EOT\NUL\STX\ACK\DC2\ETXN\EOT\NAK\SUB\NAK Field type fixed64.\n\
+    \\ACK\EOT\SOH\EOT\NUL\STX\ACK\DC2\ETXP\EOT\NAK\SUB\NAK Field type fixed64.\n\
     \\n\
     \\SO\n\
-    \\a\EOT\SOH\EOT\NUL\STX\ACK\SOH\DC2\ETXN\EOT\DLE\n\
+    \\a\EOT\SOH\EOT\NUL\STX\ACK\SOH\DC2\ETXP\EOT\DLE\n\
     \\SO\n\
-    \\a\EOT\SOH\EOT\NUL\STX\ACK\STX\DC2\ETXN\DC3\DC4\n\
+    \\a\EOT\SOH\EOT\NUL\STX\ACK\STX\DC2\ETXP\DC3\DC4\n\
     \$\n\
-    \\ACK\EOT\SOH\EOT\NUL\STX\a\DC2\ETXP\EOT\NAK\SUB\NAK Field type fixed32.\n\
+    \\ACK\EOT\SOH\EOT\NUL\STX\a\DC2\ETXR\EOT\NAK\SUB\NAK Field type fixed32.\n\
     \\n\
     \\SO\n\
-    \\a\EOT\SOH\EOT\NUL\STX\a\SOH\DC2\ETXP\EOT\DLE\n\
+    \\a\EOT\SOH\EOT\NUL\STX\a\SOH\DC2\ETXR\EOT\DLE\n\
     \\SO\n\
-    \\a\EOT\SOH\EOT\NUL\STX\a\STX\DC2\ETXP\DC3\DC4\n\
+    \\a\EOT\SOH\EOT\NUL\STX\a\STX\DC2\ETXR\DC3\DC4\n\
     \!\n\
-    \\ACK\EOT\SOH\EOT\NUL\STX\b\DC2\ETXR\EOT\DC2\SUB\DC2 Field type bool.\n\
+    \\ACK\EOT\SOH\EOT\NUL\STX\b\DC2\ETXT\EOT\DC2\SUB\DC2 Field type bool.\n\
     \\n\
     \\SO\n\
-    \\a\EOT\SOH\EOT\NUL\STX\b\SOH\DC2\ETXR\EOT\r\n\
+    \\a\EOT\SOH\EOT\NUL\STX\b\SOH\DC2\ETXT\EOT\r\n\
     \\SO\n\
-    \\a\EOT\SOH\EOT\NUL\STX\b\STX\DC2\ETXR\DLE\DC1\n\
+    \\a\EOT\SOH\EOT\NUL\STX\b\STX\DC2\ETXT\DLE\DC1\n\
     \#\n\
-    \\ACK\EOT\SOH\EOT\NUL\STX\t\DC2\ETXT\EOT\DC4\SUB\DC4 Field type string.\n\
+    \\ACK\EOT\SOH\EOT\NUL\STX\t\DC2\ETXV\EOT\DC4\SUB\DC4 Field type string.\n\
     \\n\
     \\SO\n\
-    \\a\EOT\SOH\EOT\NUL\STX\t\SOH\DC2\ETXT\EOT\SI\n\
+    \\a\EOT\SOH\EOT\NUL\STX\t\SOH\DC2\ETXV\EOT\SI\n\
     \\SO\n\
-    \\a\EOT\SOH\EOT\NUL\STX\t\STX\DC2\ETXT\DC2\DC3\n\
+    \\a\EOT\SOH\EOT\NUL\STX\t\STX\DC2\ETXV\DC2\DC3\n\
     \F\n\
     \\ACK\EOT\SOH\EOT\NUL\STX\n\
-    \\DC2\ETXV\EOT\DC4\SUB7 Field type group. Proto2 syntax only, and deprecated.\n\
+    \\DC2\ETXX\EOT\DC4\SUB7 Field type group. Proto2 syntax only, and deprecated.\n\
     \\n\
     \\SO\n\
     \\a\EOT\SOH\EOT\NUL\STX\n\
-    \\SOH\DC2\ETXV\EOT\SO\n\
+    \\SOH\DC2\ETXX\EOT\SO\n\
     \\SO\n\
     \\a\EOT\SOH\EOT\NUL\STX\n\
-    \\STX\DC2\ETXV\DC1\DC3\n\
+    \\STX\DC2\ETXX\DC1\DC3\n\
     \$\n\
-    \\ACK\EOT\SOH\EOT\NUL\STX\v\DC2\ETXX\EOT\SYN\SUB\NAK Field type message.\n\
+    \\ACK\EOT\SOH\EOT\NUL\STX\v\DC2\ETXZ\EOT\SYN\SUB\NAK Field type message.\n\
     \\n\
     \\SO\n\
-    \\a\EOT\SOH\EOT\NUL\STX\v\SOH\DC2\ETXX\EOT\DLE\n\
+    \\a\EOT\SOH\EOT\NUL\STX\v\SOH\DC2\ETXZ\EOT\DLE\n\
     \\SO\n\
-    \\a\EOT\SOH\EOT\NUL\STX\v\STX\DC2\ETXX\DC3\NAK\n\
+    \\a\EOT\SOH\EOT\NUL\STX\v\STX\DC2\ETXZ\DC3\NAK\n\
     \\"\n\
-    \\ACK\EOT\SOH\EOT\NUL\STX\f\DC2\ETXZ\EOT\DC4\SUB\DC3 Field type bytes.\n\
+    \\ACK\EOT\SOH\EOT\NUL\STX\f\DC2\ETX\\\EOT\DC4\SUB\DC3 Field type bytes.\n\
     \\n\
     \\SO\n\
-    \\a\EOT\SOH\EOT\NUL\STX\f\SOH\DC2\ETXZ\EOT\SO\n\
+    \\a\EOT\SOH\EOT\NUL\STX\f\SOH\DC2\ETX\\\EOT\SO\n\
     \\SO\n\
-    \\a\EOT\SOH\EOT\NUL\STX\f\STX\DC2\ETXZ\DC1\DC3\n\
+    \\a\EOT\SOH\EOT\NUL\STX\f\STX\DC2\ETX\\\DC1\DC3\n\
     \#\n\
-    \\ACK\EOT\SOH\EOT\NUL\STX\r\DC2\ETX\\\EOT\NAK\SUB\DC4 Field type uint32.\n\
+    \\ACK\EOT\SOH\EOT\NUL\STX\r\DC2\ETX^\EOT\NAK\SUB\DC4 Field type uint32.\n\
     \\n\
     \\SO\n\
-    \\a\EOT\SOH\EOT\NUL\STX\r\SOH\DC2\ETX\\\EOT\SI\n\
+    \\a\EOT\SOH\EOT\NUL\STX\r\SOH\DC2\ETX^\EOT\SI\n\
     \\SO\n\
-    \\a\EOT\SOH\EOT\NUL\STX\r\STX\DC2\ETX\\\DC2\DC4\n\
+    \\a\EOT\SOH\EOT\NUL\STX\r\STX\DC2\ETX^\DC2\DC4\n\
     \!\n\
-    \\ACK\EOT\SOH\EOT\NUL\STX\SO\DC2\ETX^\EOT\DC3\SUB\DC2 Field type enum.\n\
+    \\ACK\EOT\SOH\EOT\NUL\STX\SO\DC2\ETX`\EOT\DC3\SUB\DC2 Field type enum.\n\
     \\n\
     \\SO\n\
-    \\a\EOT\SOH\EOT\NUL\STX\SO\SOH\DC2\ETX^\EOT\r\n\
+    \\a\EOT\SOH\EOT\NUL\STX\SO\SOH\DC2\ETX`\EOT\r\n\
     \\SO\n\
-    \\a\EOT\SOH\EOT\NUL\STX\SO\STX\DC2\ETX^\DLE\DC2\n\
+    \\a\EOT\SOH\EOT\NUL\STX\SO\STX\DC2\ETX`\DLE\DC2\n\
     \%\n\
-    \\ACK\EOT\SOH\EOT\NUL\STX\SI\DC2\ETX`\EOT\ETB\SUB\SYN Field type sfixed32.\n\
+    \\ACK\EOT\SOH\EOT\NUL\STX\SI\DC2\ETXb\EOT\ETB\SUB\SYN Field type sfixed32.\n\
     \\n\
     \\SO\n\
-    \\a\EOT\SOH\EOT\NUL\STX\SI\SOH\DC2\ETX`\EOT\DC1\n\
+    \\a\EOT\SOH\EOT\NUL\STX\SI\SOH\DC2\ETXb\EOT\DC1\n\
     \\SO\n\
-    \\a\EOT\SOH\EOT\NUL\STX\SI\STX\DC2\ETX`\DC4\SYN\n\
+    \\a\EOT\SOH\EOT\NUL\STX\SI\STX\DC2\ETXb\DC4\SYN\n\
     \%\n\
-    \\ACK\EOT\SOH\EOT\NUL\STX\DLE\DC2\ETXb\EOT\ETB\SUB\SYN Field type sfixed64.\n\
+    \\ACK\EOT\SOH\EOT\NUL\STX\DLE\DC2\ETXd\EOT\ETB\SUB\SYN Field type sfixed64.\n\
     \\n\
     \\SO\n\
-    \\a\EOT\SOH\EOT\NUL\STX\DLE\SOH\DC2\ETXb\EOT\DC1\n\
+    \\a\EOT\SOH\EOT\NUL\STX\DLE\SOH\DC2\ETXd\EOT\DC1\n\
     \\SO\n\
-    \\a\EOT\SOH\EOT\NUL\STX\DLE\STX\DC2\ETXb\DC4\SYN\n\
+    \\a\EOT\SOH\EOT\NUL\STX\DLE\STX\DC2\ETXd\DC4\SYN\n\
     \#\n\
-    \\ACK\EOT\SOH\EOT\NUL\STX\DC1\DC2\ETXd\EOT\NAK\SUB\DC4 Field type sint32.\n\
+    \\ACK\EOT\SOH\EOT\NUL\STX\DC1\DC2\ETXf\EOT\NAK\SUB\DC4 Field type sint32.\n\
     \\n\
     \\SO\n\
-    \\a\EOT\SOH\EOT\NUL\STX\DC1\SOH\DC2\ETXd\EOT\SI\n\
+    \\a\EOT\SOH\EOT\NUL\STX\DC1\SOH\DC2\ETXf\EOT\SI\n\
     \\SO\n\
-    \\a\EOT\SOH\EOT\NUL\STX\DC1\STX\DC2\ETXd\DC2\DC4\n\
+    \\a\EOT\SOH\EOT\NUL\STX\DC1\STX\DC2\ETXf\DC2\DC4\n\
     \#\n\
-    \\ACK\EOT\SOH\EOT\NUL\STX\DC2\DC2\ETXf\EOT\NAK\SUB\DC4 Field type sint64.\n\
+    \\ACK\EOT\SOH\EOT\NUL\STX\DC2\DC2\ETXh\EOT\NAK\SUB\DC4 Field type sint64.\n\
     \\n\
     \\SO\n\
-    \\a\EOT\SOH\EOT\NUL\STX\DC2\SOH\DC2\ETXf\EOT\SI\n\
+    \\a\EOT\SOH\EOT\NUL\STX\DC2\SOH\DC2\ETXh\EOT\SI\n\
     \\SO\n\
-    \\a\EOT\SOH\EOT\NUL\STX\DC2\STX\DC2\ETXf\DC2\DC4\n\
+    \\a\EOT\SOH\EOT\NUL\STX\DC2\STX\DC2\ETXh\DC2\DC4\n\
     \C\n\
-    \\EOT\EOT\SOH\EOT\SOH\DC2\EOTj\STXs\ETX\SUB5 Whether a field is optional, required, or repeated.\n\
+    \\EOT\EOT\SOH\EOT\SOH\DC2\EOTl\STXu\ETX\SUB5 Whether a field is optional, required, or repeated.\n\
     \\n\
     \\f\n\
-    \\ENQ\EOT\SOH\EOT\SOH\SOH\DC2\ETXj\a\DC2\n\
+    \\ENQ\EOT\SOH\EOT\SOH\SOH\DC2\ETXl\a\DC2\n\
     \5\n\
-    \\ACK\EOT\SOH\EOT\SOH\STX\NUL\DC2\ETXl\EOT\FS\SUB& For fields with unknown cardinality.\n\
+    \\ACK\EOT\SOH\EOT\SOH\STX\NUL\DC2\ETXn\EOT\FS\SUB& For fields with unknown cardinality.\n\
     \\n\
     \\SO\n\
-    \\a\EOT\SOH\EOT\SOH\STX\NUL\SOH\DC2\ETXl\EOT\ETB\n\
+    \\a\EOT\SOH\EOT\SOH\STX\NUL\SOH\DC2\ETXn\EOT\ETB\n\
     \\SO\n\
-    \\a\EOT\SOH\EOT\SOH\STX\NUL\STX\DC2\ETXl\SUB\ESC\n\
+    \\a\EOT\SOH\EOT\SOH\STX\NUL\STX\DC2\ETXn\SUB\ESC\n\
     \%\n\
-    \\ACK\EOT\SOH\EOT\SOH\STX\SOH\DC2\ETXn\EOT\GS\SUB\SYN For optional fields.\n\
+    \\ACK\EOT\SOH\EOT\SOH\STX\SOH\DC2\ETXp\EOT\GS\SUB\SYN For optional fields.\n\
     \\n\
     \\SO\n\
-    \\a\EOT\SOH\EOT\SOH\STX\SOH\SOH\DC2\ETXn\EOT\CAN\n\
+    \\a\EOT\SOH\EOT\SOH\STX\SOH\SOH\DC2\ETXp\EOT\CAN\n\
     \\SO\n\
-    \\a\EOT\SOH\EOT\SOH\STX\SOH\STX\DC2\ETXn\ESC\FS\n\
+    \\a\EOT\SOH\EOT\SOH\STX\SOH\STX\DC2\ETXp\ESC\FS\n\
     \9\n\
-    \\ACK\EOT\SOH\EOT\SOH\STX\STX\DC2\ETXp\EOT\GS\SUB* For required fields. Proto2 syntax only.\n\
+    \\ACK\EOT\SOH\EOT\SOH\STX\STX\DC2\ETXr\EOT\GS\SUB* For required fields. Proto2 syntax only.\n\
     \\n\
     \\SO\n\
-    \\a\EOT\SOH\EOT\SOH\STX\STX\SOH\DC2\ETXp\EOT\CAN\n\
+    \\a\EOT\SOH\EOT\SOH\STX\STX\SOH\DC2\ETXr\EOT\CAN\n\
     \\SO\n\
-    \\a\EOT\SOH\EOT\SOH\STX\STX\STX\DC2\ETXp\ESC\FS\n\
+    \\a\EOT\SOH\EOT\SOH\STX\STX\STX\DC2\ETXr\ESC\FS\n\
     \%\n\
-    \\ACK\EOT\SOH\EOT\SOH\STX\ETX\DC2\ETXr\EOT\GS\SUB\SYN For repeated fields.\n\
+    \\ACK\EOT\SOH\EOT\SOH\STX\ETX\DC2\ETXt\EOT\GS\SUB\SYN For repeated fields.\n\
     \\n\
     \\SO\n\
-    \\a\EOT\SOH\EOT\SOH\STX\ETX\SOH\DC2\ETXr\EOT\CAN\n\
+    \\a\EOT\SOH\EOT\SOH\STX\ETX\SOH\DC2\ETXt\EOT\CAN\n\
     \\SO\n\
-    \\a\EOT\SOH\EOT\SOH\STX\ETX\STX\DC2\ETXr\ESC\FS\n\
+    \\a\EOT\SOH\EOT\SOH\STX\ETX\STX\DC2\ETXt\ESC\FS\n\
     \\RS\n\
-    \\EOT\EOT\SOH\STX\NUL\DC2\ETXv\STX\DLE\SUB\DC1 The field type.\n\
+    \\EOT\EOT\SOH\STX\NUL\DC2\ETXx\STX\DLE\SUB\DC1 The field type.\n\
     \\n\
     \\f\n\
-    \\ENQ\EOT\SOH\STX\NUL\ACK\DC2\ETXv\STX\ACK\n\
+    \\ENQ\EOT\SOH\STX\NUL\ACK\DC2\ETXx\STX\ACK\n\
     \\f\n\
-    \\ENQ\EOT\SOH\STX\NUL\SOH\DC2\ETXv\a\v\n\
+    \\ENQ\EOT\SOH\STX\NUL\SOH\DC2\ETXx\a\v\n\
     \\f\n\
-    \\ENQ\EOT\SOH\STX\NUL\ETX\DC2\ETXv\SO\SI\n\
+    \\ENQ\EOT\SOH\STX\NUL\ETX\DC2\ETXx\SO\SI\n\
     \%\n\
-    \\EOT\EOT\SOH\STX\SOH\DC2\ETXx\STX\RS\SUB\CAN The field cardinality.\n\
+    \\EOT\EOT\SOH\STX\SOH\DC2\ETXz\STX\RS\SUB\CAN The field cardinality.\n\
     \\n\
     \\f\n\
-    \\ENQ\EOT\SOH\STX\SOH\ACK\DC2\ETXx\STX\r\n\
+    \\ENQ\EOT\SOH\STX\SOH\ACK\DC2\ETXz\STX\r\n\
     \\f\n\
-    \\ENQ\EOT\SOH\STX\SOH\SOH\DC2\ETXx\SO\EM\n\
+    \\ENQ\EOT\SOH\STX\SOH\SOH\DC2\ETXz\SO\EM\n\
     \\f\n\
-    \\ENQ\EOT\SOH\STX\SOH\ETX\DC2\ETXx\FS\GS\n\
+    \\ENQ\EOT\SOH\STX\SOH\ETX\DC2\ETXz\FS\GS\n\
     \ \n\
-    \\EOT\EOT\SOH\STX\STX\DC2\ETXz\STX\DC3\SUB\DC3 The field number.\n\
+    \\EOT\EOT\SOH\STX\STX\DC2\ETX|\STX\DC3\SUB\DC3 The field number.\n\
     \\n\
     \\f\n\
-    \\ENQ\EOT\SOH\STX\STX\ENQ\DC2\ETXz\STX\a\n\
+    \\ENQ\EOT\SOH\STX\STX\ENQ\DC2\ETX|\STX\a\n\
     \\f\n\
-    \\ENQ\EOT\SOH\STX\STX\SOH\DC2\ETXz\b\SO\n\
+    \\ENQ\EOT\SOH\STX\STX\SOH\DC2\ETX|\b\SO\n\
     \\f\n\
-    \\ENQ\EOT\SOH\STX\STX\ETX\DC2\ETXz\DC1\DC2\n\
+    \\ENQ\EOT\SOH\STX\STX\ETX\DC2\ETX|\DC1\DC2\n\
     \\RS\n\
-    \\EOT\EOT\SOH\STX\ETX\DC2\ETX|\STX\DC2\SUB\DC1 The field name.\n\
+    \\EOT\EOT\SOH\STX\ETX\DC2\ETX~\STX\DC2\SUB\DC1 The field name.\n\
     \\n\
     \\f\n\
-    \\ENQ\EOT\SOH\STX\ETX\ENQ\DC2\ETX|\STX\b\n\
+    \\ENQ\EOT\SOH\STX\ETX\ENQ\DC2\ETX~\STX\b\n\
     \\f\n\
-    \\ENQ\EOT\SOH\STX\ETX\SOH\DC2\ETX|\t\r\n\
+    \\ENQ\EOT\SOH\STX\ETX\SOH\DC2\ETX~\t\r\n\
     \\f\n\
-    \\ENQ\EOT\SOH\STX\ETX\ETX\DC2\ETX|\DLE\DC1\n\
-    \\150\SOH\n\
-    \\EOT\EOT\SOH\STX\EOT\DC2\ETX\DEL\STX\SYN\SUB\136\SOH The field type URL, without the scheme, for message or enumeration\n\
+    \\ENQ\EOT\SOH\STX\ETX\ETX\DC2\ETX~\DLE\DC1\n\
+    \\151\SOH\n\
+    \\EOT\EOT\SOH\STX\EOT\DC2\EOT\129\SOH\STX\SYN\SUB\136\SOH The field type URL, without the scheme, for message or enumeration\n\
     \ types. Example: `\"type.googleapis.com/google.protobuf.Timestamp\"`.\n\
     \\n\
-    \\f\n\
-    \\ENQ\EOT\SOH\STX\EOT\ENQ\DC2\ETX\DEL\STX\b\n\
-    \\f\n\
-    \\ENQ\EOT\SOH\STX\EOT\SOH\DC2\ETX\DEL\t\DC1\n\
-    \\f\n\
-    \\ENQ\EOT\SOH\STX\EOT\ETX\DC2\ETX\DEL\DC4\NAK\n\
+    \\r\n\
+    \\ENQ\EOT\SOH\STX\EOT\ENQ\DC2\EOT\129\SOH\STX\b\n\
+    \\r\n\
+    \\ENQ\EOT\SOH\STX\EOT\SOH\DC2\EOT\129\SOH\t\DC1\n\
+    \\r\n\
+    \\ENQ\EOT\SOH\STX\EOT\ETX\DC2\EOT\129\SOH\DC4\NAK\n\
     \\165\SOH\n\
-    \\EOT\EOT\SOH\STX\ENQ\DC2\EOT\130\SOH\STX\CAN\SUB\150\SOH The index of the field type in `Type.oneofs`, for message or enumeration\n\
+    \\EOT\EOT\SOH\STX\ENQ\DC2\EOT\132\SOH\STX\CAN\SUB\150\SOH The index of the field type in `Type.oneofs`, for message or enumeration\n\
     \ types. The first type has index 1; zero means the type is not in the list.\n\
     \\n\
     \\r\n\
-    \\ENQ\EOT\SOH\STX\ENQ\ENQ\DC2\EOT\130\SOH\STX\a\n\
+    \\ENQ\EOT\SOH\STX\ENQ\ENQ\DC2\EOT\132\SOH\STX\a\n\
     \\r\n\
-    \\ENQ\EOT\SOH\STX\ENQ\SOH\DC2\EOT\130\SOH\b\DC3\n\
+    \\ENQ\EOT\SOH\STX\ENQ\SOH\DC2\EOT\132\SOH\b\DC3\n\
     \\r\n\
-    \\ENQ\EOT\SOH\STX\ENQ\ETX\DC2\EOT\130\SOH\SYN\ETB\n\
+    \\ENQ\EOT\SOH\STX\ENQ\ETX\DC2\EOT\132\SOH\SYN\ETB\n\
     \F\n\
-    \\EOT\EOT\SOH\STX\ACK\DC2\EOT\132\SOH\STX\DC2\SUB8 Whether to use alternative packed wire representation.\n\
+    \\EOT\EOT\SOH\STX\ACK\DC2\EOT\134\SOH\STX\DC2\SUB8 Whether to use alternative packed wire representation.\n\
     \\n\
     \\r\n\
-    \\ENQ\EOT\SOH\STX\ACK\ENQ\DC2\EOT\132\SOH\STX\ACK\n\
+    \\ENQ\EOT\SOH\STX\ACK\ENQ\DC2\EOT\134\SOH\STX\ACK\n\
     \\r\n\
-    \\ENQ\EOT\SOH\STX\ACK\SOH\DC2\EOT\132\SOH\a\r\n\
+    \\ENQ\EOT\SOH\STX\ACK\SOH\DC2\EOT\134\SOH\a\r\n\
     \\r\n\
-    \\ENQ\EOT\SOH\STX\ACK\ETX\DC2\EOT\132\SOH\DLE\DC1\n\
+    \\ENQ\EOT\SOH\STX\ACK\ETX\DC2\EOT\134\SOH\DLE\DC1\n\
     \,\n\
-    \\EOT\EOT\SOH\STX\a\DC2\EOT\134\SOH\STX\RS\SUB\RS The protocol buffer options.\n\
+    \\EOT\EOT\SOH\STX\a\DC2\EOT\136\SOH\STX\RS\SUB\RS The protocol buffer options.\n\
     \\n\
     \\r\n\
-    \\ENQ\EOT\SOH\STX\a\EOT\DC2\EOT\134\SOH\STX\n\
+    \\ENQ\EOT\SOH\STX\a\EOT\DC2\EOT\136\SOH\STX\n\
     \\n\
     \\r\n\
-    \\ENQ\EOT\SOH\STX\a\ACK\DC2\EOT\134\SOH\v\DC1\n\
+    \\ENQ\EOT\SOH\STX\a\ACK\DC2\EOT\136\SOH\v\DC1\n\
     \\r\n\
-    \\ENQ\EOT\SOH\STX\a\SOH\DC2\EOT\134\SOH\DC2\EM\n\
+    \\ENQ\EOT\SOH\STX\a\SOH\DC2\EOT\136\SOH\DC2\EM\n\
     \\r\n\
-    \\ENQ\EOT\SOH\STX\a\ETX\DC2\EOT\134\SOH\FS\GS\n\
+    \\ENQ\EOT\SOH\STX\a\ETX\DC2\EOT\136\SOH\FS\GS\n\
     \$\n\
-    \\EOT\EOT\SOH\STX\b\DC2\EOT\136\SOH\STX\CAN\SUB\SYN The field JSON name.\n\
+    \\EOT\EOT\SOH\STX\b\DC2\EOT\138\SOH\STX\CAN\SUB\SYN The field JSON name.\n\
     \\n\
     \\r\n\
-    \\ENQ\EOT\SOH\STX\b\ENQ\DC2\EOT\136\SOH\STX\b\n\
+    \\ENQ\EOT\SOH\STX\b\ENQ\DC2\EOT\138\SOH\STX\b\n\
     \\r\n\
-    \\ENQ\EOT\SOH\STX\b\SOH\DC2\EOT\136\SOH\t\DC2\n\
+    \\ENQ\EOT\SOH\STX\b\SOH\DC2\EOT\138\SOH\t\DC2\n\
     \\r\n\
-    \\ENQ\EOT\SOH\STX\b\ETX\DC2\EOT\136\SOH\NAK\ETB\n\
+    \\ENQ\EOT\SOH\STX\b\ETX\DC2\EOT\138\SOH\NAK\ETB\n\
     \X\n\
-    \\EOT\EOT\SOH\STX\t\DC2\EOT\138\SOH\STX\FS\SUBJ The string value of the default value of this field. Proto2 syntax only.\n\
+    \\EOT\EOT\SOH\STX\t\DC2\EOT\140\SOH\STX\FS\SUBJ The string value of the default value of this field. Proto2 syntax only.\n\
     \\n\
     \\r\n\
-    \\ENQ\EOT\SOH\STX\t\ENQ\DC2\EOT\138\SOH\STX\b\n\
+    \\ENQ\EOT\SOH\STX\t\ENQ\DC2\EOT\140\SOH\STX\b\n\
     \\r\n\
-    \\ENQ\EOT\SOH\STX\t\SOH\DC2\EOT\138\SOH\t\SYN\n\
+    \\ENQ\EOT\SOH\STX\t\SOH\DC2\EOT\140\SOH\t\SYN\n\
     \\r\n\
-    \\ENQ\EOT\SOH\STX\t\ETX\DC2\EOT\138\SOH\EM\ESC\n\
+    \\ENQ\EOT\SOH\STX\t\ETX\DC2\EOT\140\SOH\EM\ESC\n\
     \%\n\
-    \\STX\EOT\STX\DC2\ACK\142\SOH\NUL\153\SOH\SOH\SUB\ETB Enum type definition.\n\
+    \\STX\EOT\STX\DC2\ACK\144\SOH\NUL\157\SOH\SOH\SUB\ETB Enum type definition.\n\
     \\n\
     \\v\n\
-    \\ETX\EOT\STX\SOH\DC2\EOT\142\SOH\b\f\n\
+    \\ETX\EOT\STX\SOH\DC2\EOT\144\SOH\b\f\n\
     \\US\n\
-    \\EOT\EOT\STX\STX\NUL\DC2\EOT\144\SOH\STX\DC2\SUB\DC1 Enum type name.\n\
+    \\EOT\EOT\STX\STX\NUL\DC2\EOT\146\SOH\STX\DC2\SUB\DC1 Enum type name.\n\
     \\n\
     \\r\n\
-    \\ENQ\EOT\STX\STX\NUL\ENQ\DC2\EOT\144\SOH\STX\b\n\
+    \\ENQ\EOT\STX\STX\NUL\ENQ\DC2\EOT\146\SOH\STX\b\n\
     \\r\n\
-    \\ENQ\EOT\STX\STX\NUL\SOH\DC2\EOT\144\SOH\t\r\n\
+    \\ENQ\EOT\STX\STX\NUL\SOH\DC2\EOT\146\SOH\t\r\n\
     \\r\n\
-    \\ENQ\EOT\STX\STX\NUL\ETX\DC2\EOT\144\SOH\DLE\DC1\n\
+    \\ENQ\EOT\STX\STX\NUL\ETX\DC2\EOT\146\SOH\DLE\DC1\n\
     \'\n\
-    \\EOT\EOT\STX\STX\SOH\DC2\EOT\146\SOH\STX#\SUB\EM Enum value definitions.\n\
+    \\EOT\EOT\STX\STX\SOH\DC2\EOT\148\SOH\STX#\SUB\EM Enum value definitions.\n\
     \\n\
     \\r\n\
-    \\ENQ\EOT\STX\STX\SOH\EOT\DC2\EOT\146\SOH\STX\n\
+    \\ENQ\EOT\STX\STX\SOH\EOT\DC2\EOT\148\SOH\STX\n\
     \\n\
     \\r\n\
-    \\ENQ\EOT\STX\STX\SOH\ACK\DC2\EOT\146\SOH\v\DC4\n\
+    \\ENQ\EOT\STX\STX\SOH\ACK\DC2\EOT\148\SOH\v\DC4\n\
     \\r\n\
-    \\ENQ\EOT\STX\STX\SOH\SOH\DC2\EOT\146\SOH\NAK\RS\n\
+    \\ENQ\EOT\STX\STX\SOH\SOH\DC2\EOT\148\SOH\NAK\RS\n\
     \\r\n\
-    \\ENQ\EOT\STX\STX\SOH\ETX\DC2\EOT\146\SOH!\"\n\
+    \\ENQ\EOT\STX\STX\SOH\ETX\DC2\EOT\148\SOH!\"\n\
     \(\n\
-    \\EOT\EOT\STX\STX\STX\DC2\EOT\148\SOH\STX\RS\SUB\SUB Protocol buffer options.\n\
+    \\EOT\EOT\STX\STX\STX\DC2\EOT\150\SOH\STX\RS\SUB\SUB Protocol buffer options.\n\
     \\n\
     \\r\n\
-    \\ENQ\EOT\STX\STX\STX\EOT\DC2\EOT\148\SOH\STX\n\
+    \\ENQ\EOT\STX\STX\STX\EOT\DC2\EOT\150\SOH\STX\n\
     \\n\
     \\r\n\
-    \\ENQ\EOT\STX\STX\STX\ACK\DC2\EOT\148\SOH\v\DC1\n\
+    \\ENQ\EOT\STX\STX\STX\ACK\DC2\EOT\150\SOH\v\DC1\n\
     \\r\n\
-    \\ENQ\EOT\STX\STX\STX\SOH\DC2\EOT\148\SOH\DC2\EM\n\
+    \\ENQ\EOT\STX\STX\STX\SOH\DC2\EOT\150\SOH\DC2\EM\n\
     \\r\n\
-    \\ENQ\EOT\STX\STX\STX\ETX\DC2\EOT\148\SOH\FS\GS\n\
+    \\ENQ\EOT\STX\STX\STX\ETX\DC2\EOT\150\SOH\FS\GS\n\
     \#\n\
-    \\EOT\EOT\STX\STX\ETX\DC2\EOT\150\SOH\STX#\SUB\NAK The source context.\n\
+    \\EOT\EOT\STX\STX\ETX\DC2\EOT\152\SOH\STX#\SUB\NAK The source context.\n\
     \\n\
     \\r\n\
-    \\ENQ\EOT\STX\STX\ETX\ACK\DC2\EOT\150\SOH\STX\SI\n\
+    \\ENQ\EOT\STX\STX\ETX\ACK\DC2\EOT\152\SOH\STX\SI\n\
     \\r\n\
-    \\ENQ\EOT\STX\STX\ETX\SOH\DC2\EOT\150\SOH\DLE\RS\n\
+    \\ENQ\EOT\STX\STX\ETX\SOH\DC2\EOT\152\SOH\DLE\RS\n\
     \\r\n\
-    \\ENQ\EOT\STX\STX\ETX\ETX\DC2\EOT\150\SOH!\"\n\
+    \\ENQ\EOT\STX\STX\ETX\ETX\DC2\EOT\152\SOH!\"\n\
     \\"\n\
-    \\EOT\EOT\STX\STX\EOT\DC2\EOT\152\SOH\STX\DC4\SUB\DC4 The source syntax.\n\
+    \\EOT\EOT\STX\STX\EOT\DC2\EOT\154\SOH\STX\DC4\SUB\DC4 The source syntax.\n\
     \\n\
     \\r\n\
-    \\ENQ\EOT\STX\STX\EOT\ACK\DC2\EOT\152\SOH\STX\b\n\
+    \\ENQ\EOT\STX\STX\EOT\ACK\DC2\EOT\154\SOH\STX\b\n\
     \\r\n\
-    \\ENQ\EOT\STX\STX\EOT\SOH\DC2\EOT\152\SOH\t\SI\n\
+    \\ENQ\EOT\STX\STX\EOT\SOH\DC2\EOT\154\SOH\t\SI\n\
     \\r\n\
-    \\ENQ\EOT\STX\STX\EOT\ETX\DC2\EOT\152\SOH\DC2\DC3\n\
+    \\ENQ\EOT\STX\STX\EOT\ETX\DC2\EOT\154\SOH\DC2\DC3\n\
+    \U\n\
+    \\EOT\EOT\STX\STX\ENQ\DC2\EOT\156\SOH\STX\NAK\SUBG The source edition string, only valid when syntax is SYNTAX_EDITIONS.\n\
+    \\n\
+    \\r\n\
+    \\ENQ\EOT\STX\STX\ENQ\ENQ\DC2\EOT\156\SOH\STX\b\n\
+    \\r\n\
+    \\ENQ\EOT\STX\STX\ENQ\SOH\DC2\EOT\156\SOH\t\DLE\n\
+    \\r\n\
+    \\ENQ\EOT\STX\STX\ENQ\ETX\DC2\EOT\156\SOH\DC3\DC4\n\
     \&\n\
-    \\STX\EOT\ETX\DC2\ACK\156\SOH\NUL\163\SOH\SOH\SUB\CAN Enum value definition.\n\
+    \\STX\EOT\ETX\DC2\ACK\160\SOH\NUL\167\SOH\SOH\SUB\CAN Enum value definition.\n\
     \\n\
     \\v\n\
-    \\ETX\EOT\ETX\SOH\DC2\EOT\156\SOH\b\DC1\n\
+    \\ETX\EOT\ETX\SOH\DC2\EOT\160\SOH\b\DC1\n\
     \ \n\
-    \\EOT\EOT\ETX\STX\NUL\DC2\EOT\158\SOH\STX\DC2\SUB\DC2 Enum value name.\n\
+    \\EOT\EOT\ETX\STX\NUL\DC2\EOT\162\SOH\STX\DC2\SUB\DC2 Enum value name.\n\
     \\n\
     \\r\n\
-    \\ENQ\EOT\ETX\STX\NUL\ENQ\DC2\EOT\158\SOH\STX\b\n\
+    \\ENQ\EOT\ETX\STX\NUL\ENQ\DC2\EOT\162\SOH\STX\b\n\
     \\r\n\
-    \\ENQ\EOT\ETX\STX\NUL\SOH\DC2\EOT\158\SOH\t\r\n\
+    \\ENQ\EOT\ETX\STX\NUL\SOH\DC2\EOT\162\SOH\t\r\n\
     \\r\n\
-    \\ENQ\EOT\ETX\STX\NUL\ETX\DC2\EOT\158\SOH\DLE\DC1\n\
+    \\ENQ\EOT\ETX\STX\NUL\ETX\DC2\EOT\162\SOH\DLE\DC1\n\
     \\"\n\
-    \\EOT\EOT\ETX\STX\SOH\DC2\EOT\160\SOH\STX\DC3\SUB\DC4 Enum value number.\n\
+    \\EOT\EOT\ETX\STX\SOH\DC2\EOT\164\SOH\STX\DC3\SUB\DC4 Enum value number.\n\
     \\n\
     \\r\n\
-    \\ENQ\EOT\ETX\STX\SOH\ENQ\DC2\EOT\160\SOH\STX\a\n\
+    \\ENQ\EOT\ETX\STX\SOH\ENQ\DC2\EOT\164\SOH\STX\a\n\
     \\r\n\
-    \\ENQ\EOT\ETX\STX\SOH\SOH\DC2\EOT\160\SOH\b\SO\n\
+    \\ENQ\EOT\ETX\STX\SOH\SOH\DC2\EOT\164\SOH\b\SO\n\
     \\r\n\
-    \\ENQ\EOT\ETX\STX\SOH\ETX\DC2\EOT\160\SOH\DC1\DC2\n\
+    \\ENQ\EOT\ETX\STX\SOH\ETX\DC2\EOT\164\SOH\DC1\DC2\n\
     \(\n\
-    \\EOT\EOT\ETX\STX\STX\DC2\EOT\162\SOH\STX\RS\SUB\SUB Protocol buffer options.\n\
+    \\EOT\EOT\ETX\STX\STX\DC2\EOT\166\SOH\STX\RS\SUB\SUB Protocol buffer options.\n\
     \\n\
     \\r\n\
-    \\ENQ\EOT\ETX\STX\STX\EOT\DC2\EOT\162\SOH\STX\n\
+    \\ENQ\EOT\ETX\STX\STX\EOT\DC2\EOT\166\SOH\STX\n\
     \\n\
     \\r\n\
-    \\ENQ\EOT\ETX\STX\STX\ACK\DC2\EOT\162\SOH\v\DC1\n\
+    \\ENQ\EOT\ETX\STX\STX\ACK\DC2\EOT\166\SOH\v\DC1\n\
     \\r\n\
-    \\ENQ\EOT\ETX\STX\STX\SOH\DC2\EOT\162\SOH\DC2\EM\n\
+    \\ENQ\EOT\ETX\STX\STX\SOH\DC2\EOT\166\SOH\DC2\EM\n\
     \\r\n\
-    \\ENQ\EOT\ETX\STX\STX\ETX\DC2\EOT\162\SOH\FS\GS\n\
+    \\ENQ\EOT\ETX\STX\STX\ETX\DC2\EOT\166\SOH\FS\GS\n\
     \g\n\
-    \\STX\EOT\EOT\DC2\ACK\167\SOH\NUL\178\SOH\SOH\SUBY A protocol buffer option, which can be attached to a message, field,\n\
+    \\STX\EOT\EOT\DC2\ACK\171\SOH\NUL\182\SOH\SOH\SUBY A protocol buffer option, which can be attached to a message, field,\n\
     \ enumeration, etc.\n\
     \\n\
     \\v\n\
-    \\ETX\EOT\EOT\SOH\DC2\EOT\167\SOH\b\SO\n\
+    \\ETX\EOT\EOT\SOH\DC2\EOT\171\SOH\b\SO\n\
     \\252\SOH\n\
-    \\EOT\EOT\EOT\STX\NUL\DC2\EOT\172\SOH\STX\DC2\SUB\237\SOH The option's name. For protobuf built-in options (options defined in\n\
+    \\EOT\EOT\EOT\STX\NUL\DC2\EOT\176\SOH\STX\DC2\SUB\237\SOH The option's name. For protobuf built-in options (options defined in\n\
     \ descriptor.proto), this is the short name. For example, `\"map_entry\"`.\n\
     \ For custom options, it should be the fully-qualified name. For example,\n\
     \ `\"google.api.http\"`.\n\
     \\n\
     \\r\n\
-    \\ENQ\EOT\EOT\STX\NUL\ENQ\DC2\EOT\172\SOH\STX\b\n\
+    \\ENQ\EOT\EOT\STX\NUL\ENQ\DC2\EOT\176\SOH\STX\b\n\
     \\r\n\
-    \\ENQ\EOT\EOT\STX\NUL\SOH\DC2\EOT\172\SOH\t\r\n\
+    \\ENQ\EOT\EOT\STX\NUL\SOH\DC2\EOT\176\SOH\t\r\n\
     \\r\n\
-    \\ENQ\EOT\EOT\STX\NUL\ETX\DC2\EOT\172\SOH\DLE\DC1\n\
+    \\ENQ\EOT\EOT\STX\NUL\ETX\DC2\EOT\176\SOH\DLE\DC1\n\
     \\160\STX\n\
-    \\EOT\EOT\EOT\STX\SOH\DC2\EOT\177\SOH\STX\DLE\SUB\145\STX The option's value packed in an Any message. If the value is a primitive,\n\
+    \\EOT\EOT\EOT\STX\SOH\DC2\EOT\181\SOH\STX\DLE\SUB\145\STX The option's value packed in an Any message. If the value is a primitive,\n\
     \ the corresponding wrapper type defined in google/protobuf/wrappers.proto\n\
     \ should be used. If the value is an enum, it should be stored as an int32\n\
     \ value using the google.protobuf.Int32Value type.\n\
     \\n\
     \\r\n\
-    \\ENQ\EOT\EOT\STX\SOH\ACK\DC2\EOT\177\SOH\STX\ENQ\n\
+    \\ENQ\EOT\EOT\STX\SOH\ACK\DC2\EOT\181\SOH\STX\ENQ\n\
     \\r\n\
-    \\ENQ\EOT\EOT\STX\SOH\SOH\DC2\EOT\177\SOH\ACK\v\n\
+    \\ENQ\EOT\EOT\STX\SOH\SOH\DC2\EOT\181\SOH\ACK\v\n\
     \\r\n\
-    \\ENQ\EOT\EOT\STX\SOH\ETX\DC2\EOT\177\SOH\SO\SI\n\
+    \\ENQ\EOT\EOT\STX\SOH\ETX\DC2\EOT\181\SOH\SO\SI\n\
     \I\n\
-    \\STX\ENQ\NUL\DC2\ACK\181\SOH\NUL\186\SOH\SOH\SUB; The syntax in which a protocol buffer element is defined.\n\
+    \\STX\ENQ\NUL\DC2\ACK\185\SOH\NUL\192\SOH\SOH\SUB; The syntax in which a protocol buffer element is defined.\n\
     \\n\
     \\v\n\
-    \\ETX\ENQ\NUL\SOH\DC2\EOT\181\SOH\ENQ\v\n\
+    \\ETX\ENQ\NUL\SOH\DC2\EOT\185\SOH\ENQ\v\n\
     \ \n\
-    \\EOT\ENQ\NUL\STX\NUL\DC2\EOT\183\SOH\STX\DC4\SUB\DC2 Syntax `proto2`.\n\
+    \\EOT\ENQ\NUL\STX\NUL\DC2\EOT\187\SOH\STX\DC4\SUB\DC2 Syntax `proto2`.\n\
     \\n\
     \\r\n\
-    \\ENQ\ENQ\NUL\STX\NUL\SOH\DC2\EOT\183\SOH\STX\SI\n\
+    \\ENQ\ENQ\NUL\STX\NUL\SOH\DC2\EOT\187\SOH\STX\SI\n\
     \\r\n\
-    \\ENQ\ENQ\NUL\STX\NUL\STX\DC2\EOT\183\SOH\DC2\DC3\n\
+    \\ENQ\ENQ\NUL\STX\NUL\STX\DC2\EOT\187\SOH\DC2\DC3\n\
     \ \n\
-    \\EOT\ENQ\NUL\STX\SOH\DC2\EOT\185\SOH\STX\DC4\SUB\DC2 Syntax `proto3`.\n\
+    \\EOT\ENQ\NUL\STX\SOH\DC2\EOT\189\SOH\STX\DC4\SUB\DC2 Syntax `proto3`.\n\
     \\n\
     \\r\n\
-    \\ENQ\ENQ\NUL\STX\SOH\SOH\DC2\EOT\185\SOH\STX\SI\n\
+    \\ENQ\ENQ\NUL\STX\SOH\SOH\DC2\EOT\189\SOH\STX\SI\n\
     \\r\n\
-    \\ENQ\ENQ\NUL\STX\SOH\STX\DC2\EOT\185\SOH\DC2\DC3b\ACKproto3"
+    \\ENQ\ENQ\NUL\STX\SOH\STX\DC2\EOT\189\SOH\DC2\DC3\n\
+    \\"\n\
+    \\EOT\ENQ\NUL\STX\STX\DC2\EOT\191\SOH\STX\SYN\SUB\DC4 Syntax `editions`.\n\
+    \\n\
+    \\r\n\
+    \\ENQ\ENQ\NUL\STX\STX\SOH\DC2\EOT\191\SOH\STX\DC1\n\
+    \\r\n\
+    \\ENQ\ENQ\NUL\STX\STX\STX\DC2\EOT\191\SOH\DC4\NAKb\ACKproto3"

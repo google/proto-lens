@@ -188,8 +188,8 @@ packedFileDescriptor
     \\ETXAny\DC2\EM\n\
     \\btype_url\CAN\SOH \SOH(\tR\atypeUrl\DC2\DC4\n\
     \\ENQvalue\CAN\STX \SOH(\fR\ENQvalueBv\n\
-    \\DC3com.google.protobufB\bAnyProtoP\SOHZ,google.golang.org/protobuf/types/known/anypb\162\STX\ETXGPB\170\STX\RSGoogle.Protobuf.WellKnownTypesJ\249*\n\
-    \\a\DC2\ENQ\RS\NUL\157\SOH\SOH\n\
+    \\DC3com.google.protobufB\bAnyProtoP\SOHZ,google.golang.org/protobuf/types/known/anypb\162\STX\ETXGPB\170\STX\RSGoogle.Protobuf.WellKnownTypesJ\221,\n\
+    \\a\DC2\ENQ\RS\NUL\161\SOH\SOH\n\
     \\204\f\n\
     \\SOH\f\DC2\ETX\RS\NUL\DC22\193\f Protocol Buffers - Google's data interchange format\n\
     \ Copyright 2008 Google Inc.  All rights reserved.\n\
@@ -224,32 +224,32 @@ packedFileDescriptor
     \\b\n\
     \\SOH\STX\DC2\ETX \NUL\CAN\n\
     \\b\n\
-    \\SOH\b\DC2\ETX\"\NUL;\n\
+    \\SOH\b\DC2\ETX\"\NULC\n\
     \\t\n\
-    \\STX\b%\DC2\ETX\"\NUL;\n\
+    \\STX\b\v\DC2\ETX\"\NULC\n\
     \\b\n\
-    \\SOH\b\DC2\ETX#\NULC\n\
+    \\SOH\b\DC2\ETX#\NUL,\n\
     \\t\n\
-    \\STX\b\v\DC2\ETX#\NULC\n\
+    \\STX\b\SOH\DC2\ETX#\NUL,\n\
     \\b\n\
-    \\SOH\b\DC2\ETX$\NUL,\n\
+    \\SOH\b\DC2\ETX$\NUL)\n\
     \\t\n\
-    \\STX\b\SOH\DC2\ETX$\NUL,\n\
+    \\STX\b\b\DC2\ETX$\NUL)\n\
     \\b\n\
-    \\SOH\b\DC2\ETX%\NUL)\n\
-    \\t\n\
-    \\STX\b\b\DC2\ETX%\NUL)\n\
-    \\b\n\
-    \\SOH\b\DC2\ETX&\NUL\"\n\
+    \\SOH\b\DC2\ETX%\NUL\"\n\
     \\t\n\
     \\STX\b\n\
-    \\DC2\ETX&\NUL\"\n\
+    \\DC2\ETX%\NUL\"\n\
     \\b\n\
-    \\SOH\b\DC2\ETX'\NUL!\n\
+    \\SOH\b\DC2\ETX&\NUL!\n\
     \\t\n\
-    \\STX\b$\DC2\ETX'\NUL!\n\
-    \\253\DLE\n\
-    \\STX\EOT\NUL\DC2\ENQ|\NUL\157\SOH\SOH\SUB\239\DLE `Any` contains an arbitrary serialized protocol buffer message along with a\n\
+    \\STX\b$\DC2\ETX&\NUL!\n\
+    \\b\n\
+    \\SOH\b\DC2\ETX'\NUL;\n\
+    \\t\n\
+    \\STX\b%\DC2\ETX'\NUL;\n\
+    \\252\DC1\n\
+    \\STX\EOT\NUL\DC2\ENQ\DEL\NUL\161\SOH\SOH\SUB\238\DC1 `Any` contains an arbitrary serialized protocol buffer message along with a\n\
     \ URL that describes the type of the serialized message.\n\
     \\n\
     \ Protobuf library provides support to pack/unpack Any values in the form\n\
@@ -272,6 +272,10 @@ packedFileDescriptor
     \     ...\n\
     \     if (any.is(Foo.class)) {\n\
     \       foo = any.unpack(Foo.class);\n\
+    \     }\n\
+    \     // or ...\n\
+    \     if (any.isSameTypeAs(Foo.getDefaultInstance())) {\n\
+    \       foo = any.unpack(Foo.getDefaultInstance());\n\
     \     }\n\
     \\n\
     \  Example 3: Pack and unpack a message in Python.\n\
@@ -302,7 +306,6 @@ packedFileDescriptor
     \ methods only use the fully qualified type name after the last '/'\n\
     \ in the type URL, for example \"foo.bar.com/x/y.z\" will yield type\n\
     \ name \"y.z\".\n\
-    \\n\
     \\n\
     \ JSON\n\
     \ ====\n\
@@ -335,11 +338,9 @@ packedFileDescriptor
     \\n\
     \\n\
     \\n\
-    \\ETX\EOT\NUL\SOH\DC2\ETX|\b\v\n\
-    \\215\n\
-    \\n\
-    \\EOT\EOT\NUL\STX\NUL\DC2\EOT\153\SOH\STX\SYN\SUB\200\n\
-    \ A URL/resource name that uniquely identifies the type of the serialized\n\
+    \\ETX\EOT\NUL\SOH\DC2\ETX\DEL\b\v\n\
+    \\188\v\n\
+    \\EOT\EOT\NUL\STX\NUL\DC2\EOT\157\SOH\STX\SYN\SUB\173\v A URL/resource name that uniquely identifies the type of the serialized\n\
     \ protocol buffer message. This string must contain at least\n\
     \ one \"/\" character. The last segment of the URL's path must represent\n\
     \ the fully qualified name of the type (as in\n\
@@ -362,24 +363,25 @@ packedFileDescriptor
     \\n\
     \ Note: this functionality is not currently available in the official\n\
     \ protobuf release, and it is not used for type URLs beginning with\n\
-    \ type.googleapis.com.\n\
+    \ type.googleapis.com. As of May 2023, there are no widely used type server\n\
+    \ implementations and no plans to implement one.\n\
     \\n\
     \ Schemes other than `http`, `https` (or the empty scheme) might be\n\
     \ used with implementation specific semantics.\n\
     \\n\
     \\n\
     \\r\n\
-    \\ENQ\EOT\NUL\STX\NUL\ENQ\DC2\EOT\153\SOH\STX\b\n\
+    \\ENQ\EOT\NUL\STX\NUL\ENQ\DC2\EOT\157\SOH\STX\b\n\
     \\r\n\
-    \\ENQ\EOT\NUL\STX\NUL\SOH\DC2\EOT\153\SOH\t\DC1\n\
+    \\ENQ\EOT\NUL\STX\NUL\SOH\DC2\EOT\157\SOH\t\DC1\n\
     \\r\n\
-    \\ENQ\EOT\NUL\STX\NUL\ETX\DC2\EOT\153\SOH\DC4\NAK\n\
+    \\ENQ\EOT\NUL\STX\NUL\ETX\DC2\EOT\157\SOH\DC4\NAK\n\
     \W\n\
-    \\EOT\EOT\NUL\STX\SOH\DC2\EOT\156\SOH\STX\DC2\SUBI Must be a valid serialized protocol buffer of the above specified type.\n\
+    \\EOT\EOT\NUL\STX\SOH\DC2\EOT\160\SOH\STX\DC2\SUBI Must be a valid serialized protocol buffer of the above specified type.\n\
     \\n\
     \\r\n\
-    \\ENQ\EOT\NUL\STX\SOH\ENQ\DC2\EOT\156\SOH\STX\a\n\
+    \\ENQ\EOT\NUL\STX\SOH\ENQ\DC2\EOT\160\SOH\STX\a\n\
     \\r\n\
-    \\ENQ\EOT\NUL\STX\SOH\SOH\DC2\EOT\156\SOH\b\r\n\
+    \\ENQ\EOT\NUL\STX\SOH\SOH\DC2\EOT\160\SOH\b\r\n\
     \\r\n\
-    \\ENQ\EOT\NUL\STX\SOH\ETX\DC2\EOT\156\SOH\DLE\DC1b\ACKproto3"
+    \\ENQ\EOT\NUL\STX\SOH\ETX\DC2\EOT\160\SOH\DLE\DC1b\ACKproto3"

@@ -181,8 +181,8 @@ packedFileDescriptor
     \\bDuration\DC2\CAN\n\
     \\aseconds\CAN\SOH \SOH(\ETXR\aseconds\DC2\DC4\n\
     \\ENQnanos\CAN\STX \SOH(\ENQR\ENQnanosB\131\SOH\n\
-    \\DC3com.google.protobufB\rDurationProtoP\SOHZ1google.golang.org/protobuf/types/known/durationpb\248\SOH\SOH\162\STX\ETXGPB\170\STX\RSGoogle.Protobuf.WellKnownTypesJ\218#\n\
-    \\ACK\DC2\EOT\RS\NULs\SOH\n\
+    \\DC3com.google.protobufB\rDurationProtoP\SOHZ1google.golang.org/protobuf/types/known/durationpb\248\SOH\SOH\162\STX\ETXGPB\170\STX\RSGoogle.Protobuf.WellKnownTypesJ\217#\n\
+    \\ACK\DC2\EOT\RS\NULr\SOH\n\
     \\204\f\n\
     \\SOH\f\DC2\ETX\RS\NUL\DC22\193\f Protocol Buffers - Google's data interchange format\n\
     \ Copyright 2008 Google Inc.  All rights reserved.\n\
@@ -217,36 +217,36 @@ packedFileDescriptor
     \\b\n\
     \\SOH\STX\DC2\ETX \NUL\CAN\n\
     \\b\n\
-    \\SOH\b\DC2\ETX\"\NUL;\n\
+    \\SOH\b\DC2\ETX\"\NUL\US\n\
     \\t\n\
-    \\STX\b%\DC2\ETX\"\NUL;\n\
+    \\STX\b\US\DC2\ETX\"\NUL\US\n\
     \\b\n\
-    \\SOH\b\DC2\ETX#\NUL\US\n\
+    \\SOH\b\DC2\ETX#\NULH\n\
     \\t\n\
-    \\STX\b\US\DC2\ETX#\NUL\US\n\
+    \\STX\b\v\DC2\ETX#\NULH\n\
     \\b\n\
-    \\SOH\b\DC2\ETX$\NULH\n\
+    \\SOH\b\DC2\ETX$\NUL,\n\
     \\t\n\
-    \\STX\b\v\DC2\ETX$\NULH\n\
+    \\STX\b\SOH\DC2\ETX$\NUL,\n\
     \\b\n\
-    \\SOH\b\DC2\ETX%\NUL,\n\
+    \\SOH\b\DC2\ETX%\NUL.\n\
     \\t\n\
-    \\STX\b\SOH\DC2\ETX%\NUL,\n\
+    \\STX\b\b\DC2\ETX%\NUL.\n\
     \\b\n\
-    \\SOH\b\DC2\ETX&\NUL.\n\
-    \\t\n\
-    \\STX\b\b\DC2\ETX&\NUL.\n\
-    \\b\n\
-    \\SOH\b\DC2\ETX'\NUL\"\n\
+    \\SOH\b\DC2\ETX&\NUL\"\n\
     \\t\n\
     \\STX\b\n\
-    \\DC2\ETX'\NUL\"\n\
+    \\DC2\ETX&\NUL\"\n\
     \\b\n\
-    \\SOH\b\DC2\ETX(\NUL!\n\
+    \\SOH\b\DC2\ETX'\NUL!\n\
     \\t\n\
-    \\STX\b$\DC2\ETX(\NUL!\n\
-    \\158\DLE\n\
-    \\STX\EOT\NUL\DC2\EOTf\NULs\SOH\SUB\145\DLE A Duration represents a signed, fixed-length span of time represented\n\
+    \\STX\b$\DC2\ETX'\NUL!\n\
+    \\b\n\
+    \\SOH\b\DC2\ETX(\NUL;\n\
+    \\t\n\
+    \\STX\b%\DC2\ETX(\NUL;\n\
+    \\157\DLE\n\
+    \\STX\EOT\NUL\DC2\EOTe\NULr\SOH\SUB\144\DLE A Duration represents a signed, fixed-length span of time represented\n\
     \ as a count of seconds and fractions of seconds at nanosecond\n\
     \ resolution. It is independent of any calendar and concepts like \"day\"\n\
     \ or \"month\". It is related to Timestamp in that the difference between\n\
@@ -308,21 +308,20 @@ packedFileDescriptor
     \\n\
     \\n\
     \\n\
-    \\n\
-    \\ETX\EOT\NUL\SOH\DC2\ETXf\b\DLE\n\
+    \\ETX\EOT\NUL\SOH\DC2\ETXe\b\DLE\n\
     \\220\SOH\n\
-    \\EOT\EOT\NUL\STX\NUL\DC2\ETXj\STX\DC4\SUB\206\SOH Signed seconds of the span of time. Must be from -315,576,000,000\n\
+    \\EOT\EOT\NUL\STX\NUL\DC2\ETXi\STX\DC4\SUB\206\SOH Signed seconds of the span of time. Must be from -315,576,000,000\n\
     \ to +315,576,000,000 inclusive. Note: these bounds are computed from:\n\
     \ 60 sec/min * 60 min/hr * 24 hr/day * 365.25 days/year * 10000 years\n\
     \\n\
     \\f\n\
-    \\ENQ\EOT\NUL\STX\NUL\ENQ\DC2\ETXj\STX\a\n\
+    \\ENQ\EOT\NUL\STX\NUL\ENQ\DC2\ETXi\STX\a\n\
     \\f\n\
-    \\ENQ\EOT\NUL\STX\NUL\SOH\DC2\ETXj\b\SI\n\
+    \\ENQ\EOT\NUL\STX\NUL\SOH\DC2\ETXi\b\SI\n\
     \\f\n\
-    \\ENQ\EOT\NUL\STX\NUL\ETX\DC2\ETXj\DC2\DC3\n\
+    \\ENQ\EOT\NUL\STX\NUL\ETX\DC2\ETXi\DC2\DC3\n\
     \\131\ETX\n\
-    \\EOT\EOT\NUL\STX\SOH\DC2\ETXr\STX\DC2\SUB\245\STX Signed fractions of a second at nanosecond resolution of the span\n\
+    \\EOT\EOT\NUL\STX\SOH\DC2\ETXq\STX\DC2\SUB\245\STX Signed fractions of a second at nanosecond resolution of the span\n\
     \ of time. Durations less than one second are represented with a 0\n\
     \ `seconds` field and a positive or negative `nanos` field. For durations\n\
     \ of one second or more, a non-zero value for the `nanos` field must be\n\
@@ -330,8 +329,8 @@ packedFileDescriptor
     \ to +999,999,999 inclusive.\n\
     \\n\
     \\f\n\
-    \\ENQ\EOT\NUL\STX\SOH\ENQ\DC2\ETXr\STX\a\n\
+    \\ENQ\EOT\NUL\STX\SOH\ENQ\DC2\ETXq\STX\a\n\
     \\f\n\
-    \\ENQ\EOT\NUL\STX\SOH\SOH\DC2\ETXr\b\r\n\
+    \\ENQ\EOT\NUL\STX\SOH\SOH\DC2\ETXq\b\r\n\
     \\f\n\
-    \\ENQ\EOT\NUL\STX\SOH\ETX\DC2\ETXr\DLE\DC1b\ACKproto3"
+    \\ENQ\EOT\NUL\STX\SOH\ETX\DC2\ETXq\DLE\DC1b\ACKproto3"
