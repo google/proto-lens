@@ -25,6 +25,7 @@ import Lens.Family2
 import Data.Fixed
 import Data.ProtoLens
 import qualified Data.Text as T
+import qualified Data.Text.Read as T
 import Data.Aeson.Types (Parser)
 import Data.Dynamic
 import Data.Proxy
@@ -139,16 +140,26 @@ jsonFieldValue fdt = case fdt of
         Just parser -> (parser :: Value -> Parser value)
     ScalarField f -> jsonScalarFieldValue f
 
-mapKeyScalarValue :: FromJSON value => MapKey key -> Value -> Parser (Map key value)
+parse64BitNumber :: (Integral a) => Value -> Parser a
+parse64BitNumber val = do
+  x <- parseJSON val
+  case T.decimal x of
+    Left e -> fail e
+    Right (n, remaining) ->
+      if T.null remaining
+        then pure n
+        else fail $ "Invalid number: " <> T.unpack x
+
+mapKeyScalarValue :: forall key value. FromJSON value => MapKey key -> Value -> Parser (Map key value)
 mapKeyScalarValue = \case
   MapInt32Key -> parseJSON
-  MapInt64Key -> parseJSON
+  MapInt64Key -> parseJSON 
   MapUInt32Key -> parseJSON
-  MapUInt64Key -> parseJSON
+  MapUInt64Key -> parseJSON 
   MapSInt32Key -> parseJSON
-  MapSInt64Key -> parseJSON
+  MapSInt64Key -> parseJSON 
   MapFixed32Key -> parseJSON
-  MapFixed64Key -> parseJSON
+  MapFixed64Key -> parseJSON 
   MapSFixed32Key -> parseJSON
   MapSFixed64Key -> parseJSON
   MapBoolKey -> parseJSON
@@ -160,15 +171,15 @@ jsonScalarFieldValue = \case
     Nothing -> fail ("Invalid enum value: " <> str)
     Just val -> pure val
   Int32Field -> parseJSON
-  Int64Field -> parseJSON
+  Int64Field -> parse64BitNumber
   UInt32Field -> parseJSON
-  UInt64Field -> parseJSON
+  UInt64Field -> parse64BitNumber
   SInt32Field -> parseJSON
-  SInt64Field -> parseJSON
+  SInt64Field -> parse64BitNumber
   Fixed32Field -> parseJSON
-  Fixed64Field -> parseJSON
+  Fixed64Field -> parse64BitNumber
   SFixed32Field -> parseJSON
-  SFixed64Field -> parseJSON
+  SFixed64Field -> parse64BitNumber
   FloatField -> parseJSON
   DoubleField -> parseJSON
   BoolField -> parseJSON
