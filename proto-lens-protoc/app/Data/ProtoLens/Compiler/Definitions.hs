@@ -593,6 +593,7 @@ reservedKeywords = Set.fromList $
     , "then"
     , "type"
     , "where"
+    , "forall" -- GHC now warning that this will become reserved in the future
     ]
     ++  -- Nonstandard extensions
     [ "mdo"   -- RecursiveDo

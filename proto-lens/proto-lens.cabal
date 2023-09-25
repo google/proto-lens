@@ -25,9 +25,6 @@ license-file:   LICENSE
 build-type:     Simple
 extra-source-files:
     Changelog.md
-data-files:
-    ../proto-lens-protobuf-types/proto-src/src/google/protobuf/descriptor.proto
-    ../proto-lens-protobuf-types/proto-src/src/google/protobuf/compiler/plugin.proto
 
 source-repository head
   type: git
