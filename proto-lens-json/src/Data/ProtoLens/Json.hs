@@ -18,7 +18,12 @@
 {-# LANGUAGE ScopedTypeVariables #-}
 {-# LANGUAGE TypeApplications #-}
 -- | ToJSON/FromJSON instances for protocol buffer Messages to use with aeson.
-module Data.ProtoLens.Json where
+module Data.ProtoLens.Json 
+  ( JsonMessage(..)
+  , FromJsonMessageOptions(..)
+  , defaultFromJsonMessageOptions
+  , parseJsonMessage
+  ) where
 import Control.Applicative
 import Control.Monad
 import Data.Aeson
