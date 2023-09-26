@@ -5,7 +5,9 @@
 -- https://developers.google.com/open-source/licenses/bsd
 
 {-# LANGUAGE DeriveFunctor #-}
+{-# LANGUAGE DeriveTraversable #-}
 {-# LANGUAGE GADTs #-}
+{-# LANGUAGE GeneralizedNewtypeDeriving #-}
 {-# LANGUAGE LambdaCase #-}
 {-# LANGUAGE RankNTypes #-}
 {-# LANGUAGE FlexibleContexts #-}
@@ -21,6 +23,7 @@ import Control.Applicative
 import Control.Monad
 import Data.Aeson
 import Data.ByteString.Base64 (decodeBase64)
+import Data.Char
 import Lens.Family2
 import Data.Fixed
 import Data.ProtoLens
@@ -32,7 +35,8 @@ import Data.Proxy
 import Data.Aeson.Key (fromText)
 import qualified Data.Map.Strict as M
 import qualified Data.Text.Encoding as T
-import Data.Map.Strict
+import Data.List.Split (wordsBy)
+import Data.Map.Strict (Map)
 import Data.Time.Clock.System
 import Proto.Google.Protobuf.Duration
 import qualified Proto.Google.Protobuf.Duration_Fields as Duration
@@ -52,7 +56,7 @@ instance Applicative JsonMessage where
 
 -- | N.B. if you want to use this instance, make sure that you use the generated
 -- types for Duration, Timestamp, etc. from proto-lens-protobuf-types instead of generating your own.
-instance (Typeable a, Message a) => FromJSON (JsonMessage a) where
+instance (Show a, Typeable a, Message a) => FromJSON (JsonMessage a) where
   parseJSON = fmap JsonMessage . case jsonParseOverrides M.!? messageName (Proxy :: Proxy a) of
     Nothing -> defaultParser
     Just dynParser -> case fromDynamic dynParser of
@@ -60,7 +64,7 @@ instance (Typeable a, Message a) => FromJSON (JsonMessage a) where
       Just parser -> (parser :: Value -> Parser a)
     where
       defaultParser :: Value -> Parser a
-      defaultParser = withObject (T.unpack $ messageName (Proxy :: Proxy a)) $ \o -> parseJsonMessage o
+      defaultParser = withObject (T.unpack $ messageName (Proxy :: Proxy a)) $ \o -> parseJsonMessage defaultFromJsonMessageOptions o
 
 -- These are special cases outlined in the proto3 JSON spec
 jsonParseOverrides :: Map T.Text Dynamic
@@ -97,48 +101,65 @@ parseDuration t = case reads @Nano (T.unpack t) of
       & Duration.seconds .~ fromIntegral secs
       & Duration.nanos .~ fromIntegral nanos
 
-parseJsonMessage :: forall a. Message a => Object -> Parser a
-parseJsonMessage o = foldM (parseField o) defMessage (allFields @a)
+data FromJsonMessageOptions = FromJsonMessageOptions
+  { fromJsonMessageEnumModifier :: forall msg enum. (Message msg, MessageEnum enum) => msg -> Proxy enum -> String -> String
+  }
 
-parseField :: Object -> a -> FieldDescriptor a -> Parser a
-parseField o msg (FieldDescriptor n ftd fa) = case fa of
+defaultFromJsonMessageOptions :: FromJsonMessageOptions
+defaultFromJsonMessageOptions = FromJsonMessageOptions
+  { fromJsonMessageEnumModifier = \_ _ -> id
+  }
+
+parseJsonMessage :: forall a. (Message a) => FromJsonMessageOptions -> Object -> Parser a
+parseJsonMessage opts o = foldM (parseField opts o) defMessage (allFields @a)
+
+parseField :: (Message a) => FromJsonMessageOptions -> Object -> a -> FieldDescriptor a -> Parser a
+parseField opts o msg (FieldDescriptor n ftd fa) = case fa of
   PlainField fieldReq lens_ -> do
     case fieldReq of
-      Required -> (o .: camelK <|> o .: plainK) >>= jsonFieldValue ftd >>= \x -> pure $ msg & lens_ .~ x
+      Required -> do
+        (o .: camelK <|> o .: plainK) >>= jsonFieldValue opts msg ftd >>= \x -> pure $ msg & lens_ .~ x
       Optional -> do
         mVal <- (o .:? camelK <|> o .:? plainK)
         case mVal of
           Nothing -> pure msg
-          Just val -> jsonFieldValue ftd val >>= \x -> pure $ msg & lens_ .~ x
+          Just val -> jsonFieldValue opts msg ftd val >>= \x -> pure $ msg & lens_ .~ x
   OptionalField lens_ -> do
     mVal <- (o .:? camelK <|> o .:? plainK)
     case mVal of
       Nothing -> pure msg
-      Just val -> jsonFieldValue ftd val >>= \x -> pure $ msg & lens_ .~ Just x
+      Just val -> jsonFieldValue opts msg ftd val >>= \x -> pure $ msg & lens_ .~ Just x
   RepeatedField _ lens_ -> do
     arr <- (o .: camelK <|> o .: plainK)
     case arr of
       -- Null is treated as an empty list
       Null -> pure msg
       _ -> do
-        vals <- traverse (jsonFieldValue ftd) =<< parseJSON arr
+        vals <- traverse (jsonFieldValue opts msg ftd) =<< parseJSON arr
         pure $ msg & lens_ .~ vals
   MapField kTy valDetails _entryK _entryVal lens_ -> do
-    m <- (o .: camelK <|> o .: plainK) >>= mapKeyScalarValue kTy
-    m' <- traverse (jsonFieldValue valDetails) m
+    raw <- (o .: camelK <|> o .: plainK <|> pure (Object mempty))
+    m <- mapKeyScalarValue kTy $ case raw of
+      Null -> Object mempty
+      other -> other
+    m' <- traverse (jsonFieldValue opts msg valDetails) m
     pure $ msg & lens_ .~ m'
   where
     plainK = fromText (T.pack n)
-    camelK = fromText (T.pack $ camelTo2 '_' n)
+    camelK = fromText (T.pack $ toCamel $ fromSnake n)
 
-jsonFieldValue :: forall value. (Typeable value) => FieldTypeDescriptor value -> Value -> Parser value
-jsonFieldValue fdt = case fdt of
+jsonFieldValue :: forall value msg. (Message msg, Typeable value) => FromJsonMessageOptions -> msg -> FieldTypeDescriptor value -> Value -> Parser value
+jsonFieldValue opts msg fdt val = case fdt of
     MessageField _ -> case jsonParseOverrides M.!? messageName (Proxy @value) of
-      Nothing -> withObject (T.unpack $ messageName (Proxy @value)) parseJsonMessage
+      Nothing -> withObject (T.unpack $ messageName (Proxy @value)) (parseJsonMessage opts) val'
       Just override -> case fromDynamic override of
-        Nothing -> withObject (T.unpack $ messageName (Proxy @value)) parseJsonMessage
-        Just parser -> (parser :: Value -> Parser value)
-    ScalarField f -> jsonScalarFieldValue f
+        Nothing -> withObject (T.unpack $ messageName (Proxy @value)) (parseJsonMessage opts) val'
+        Just parser -> parser val' :: Parser value
+    ScalarField f -> jsonScalarFieldValue opts msg f val
+  where
+    val' = case val of
+      Null -> Object mempty
+      _ -> val
 
 parse64BitNumber :: (Integral a) => Value -> Parser a
 parse64BitNumber val = do
@@ -165,9 +186,9 @@ mapKeyScalarValue = \case
   MapBoolKey -> parseJSON
   MapStringKey -> parseJSON
 
-jsonScalarFieldValue :: ScalarField value -> Value -> Parser value
-jsonScalarFieldValue = \case
-  EnumField -> \v -> parseJSON v >>= \str -> case readEnum str of
+jsonScalarFieldValue :: forall msg value. Message msg => FromJsonMessageOptions -> msg -> ScalarField value -> Value -> Parser value
+jsonScalarFieldValue opts msg = \case
+  EnumField -> \v -> parseJSON v >>= \str -> case readEnum (fromJsonMessageEnumModifier opts msg (Proxy @value) str) of
     Nothing -> fail ("Invalid enum value: " <> str)
     Just val -> pure val
   Int32Field -> parseJSON
@@ -187,3 +208,18 @@ jsonScalarFieldValue = \case
   BytesField -> withText "bytes" $ \t -> case decodeBase64 (T.encodeUtf8 t) of
     Left e -> fail $ T.unpack e
     Right bs -> pure bs
+
+newtype Identifier a = Identifier { unIdentifier :: [a] }
+    deriving (Monad, Functor, Applicative, Show, Foldable, Traversable, Eq)
+
+toCamel :: Identifier String -> String
+toCamel (Identifier []) = ""
+toCamel (Identifier (x:xs)) = concat $ fmap toLower x:map wordCase xs
+
+-- | Convert from @snake_cased@ (either flavor)
+fromSnake :: String -> Identifier String
+fromSnake = Identifier . wordsBy (== '_')
+
+wordCase :: String -> String
+wordCase "" = ""
+wordCase (x:xs) = toUpper x : fmap toLower xs

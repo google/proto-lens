@@ -24,6 +24,7 @@ dependencies:
   - base64 >= 0.4.2 && < 0.5
   - proto-lens-protobuf-types >= 0.7 && < 0.9
   - time
+  - split
 library:
   source-dirs: src
   exposed-modules:
