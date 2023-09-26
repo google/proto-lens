@@ -499,7 +499,9 @@ generateEnumDecls info =
     --           | k == "Enum1" = Prelude.Just Enum1
     --       readEnum k = Text.Read.readMaybe k >>= maybeToEnum
     , instance' (var "Data.ProtoLens.MessageEnum" @@ dataType)
-        [ funBinds "maybeToEnum" $
+        [ funBind "enumName" $ match [wildP] $
+            var "Data.Text.pack" @@ string (T.unpack $ last $ T.splitOn "'" $ T.pack $ rdrNameStrToString $ unqual $ enumName info)
+        , funBinds "maybeToEnum" $
             [ match [int k] $ var "Prelude.Just" @@ var (unqual c)
             | (c, k) <- constructorNumbers
             ]

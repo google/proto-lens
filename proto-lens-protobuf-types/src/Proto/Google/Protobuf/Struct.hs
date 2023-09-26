@@ -173,6 +173,7 @@ data NullValue
   = NULL_VALUE | NullValue'Unrecognized !NullValue'UnrecognizedValue
   deriving stock (Prelude.Show, Prelude.Eq, Prelude.Ord)
 instance Data.ProtoLens.MessageEnum NullValue where
+  enumName _ = Data.Text.pack "NullValue"
   maybeToEnum 0 = Prelude.Just NULL_VALUE
   maybeToEnum k
     = Prelude.Just

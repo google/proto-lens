@@ -1228,6 +1228,7 @@ data Field'Cardinality
     Field'Cardinality'Unrecognized !Field'Cardinality'UnrecognizedValue
   deriving stock (Prelude.Show, Prelude.Eq, Prelude.Ord)
 instance Data.ProtoLens.MessageEnum Field'Cardinality where
+  enumName _ = Data.Text.pack "Cardinality"
   maybeToEnum 0 = Prelude.Just Field'CARDINALITY_UNKNOWN
   maybeToEnum 1 = Prelude.Just Field'CARDINALITY_OPTIONAL
   maybeToEnum 2 = Prelude.Just Field'CARDINALITY_REQUIRED
@@ -1323,6 +1324,7 @@ data Field'Kind
     Field'Kind'Unrecognized !Field'Kind'UnrecognizedValue
   deriving stock (Prelude.Show, Prelude.Eq, Prelude.Ord)
 instance Data.ProtoLens.MessageEnum Field'Kind where
+  enumName _ = Data.Text.pack "Kind"
   maybeToEnum 0 = Prelude.Just Field'TYPE_UNKNOWN
   maybeToEnum 1 = Prelude.Just Field'TYPE_DOUBLE
   maybeToEnum 2 = Prelude.Just Field'TYPE_FLOAT
@@ -1642,6 +1644,7 @@ data Syntax
     Syntax'Unrecognized !Syntax'UnrecognizedValue
   deriving stock (Prelude.Show, Prelude.Eq, Prelude.Ord)
 instance Data.ProtoLens.MessageEnum Syntax where
+  enumName _ = Data.Text.pack "Syntax"
   maybeToEnum 0 = Prelude.Just SYNTAX_PROTO2
   maybeToEnum 1 = Prelude.Just SYNTAX_PROTO3
   maybeToEnum 2 = Prelude.Just SYNTAX_EDITIONS

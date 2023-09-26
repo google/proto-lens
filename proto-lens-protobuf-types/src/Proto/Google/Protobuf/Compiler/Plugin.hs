@@ -678,6 +678,7 @@ data CodeGeneratorResponse'Feature
     CodeGeneratorResponse'FEATURE_SUPPORTS_EDITIONS
   deriving stock (Prelude.Show, Prelude.Eq, Prelude.Ord)
 instance Data.ProtoLens.MessageEnum CodeGeneratorResponse'Feature where
+  enumName _ = Data.Text.pack "Feature"
   maybeToEnum 0 = Prelude.Just CodeGeneratorResponse'FEATURE_NONE
   maybeToEnum 1
     = Prelude.Just CodeGeneratorResponse'FEATURE_PROTO3_OPTIONAL

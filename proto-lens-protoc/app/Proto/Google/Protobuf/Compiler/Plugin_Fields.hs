@@ -175,6 +175,13 @@ protoFile ::
    Data.ProtoLens.Field.HasField s "protoFile" a) =>
   Lens.Family2.LensLike' f s a
 protoFile = Data.ProtoLens.Field.field @"protoFile"
+sourceFileDescriptors ::
+  forall f s a.
+  (Prelude.Functor f,
+   Data.ProtoLens.Field.HasField s "sourceFileDescriptors" a) =>
+  Lens.Family2.LensLike' f s a
+sourceFileDescriptors
+  = Data.ProtoLens.Field.field @"sourceFileDescriptors"
 suffix ::
   forall f s a.
   (Prelude.Functor f, Data.ProtoLens.Field.HasField s "suffix" a) =>
@@ -205,3 +212,10 @@ vec'protoFile ::
    Data.ProtoLens.Field.HasField s "vec'protoFile" a) =>
   Lens.Family2.LensLike' f s a
 vec'protoFile = Data.ProtoLens.Field.field @"vec'protoFile"
+vec'sourceFileDescriptors ::
+  forall f s a.
+  (Prelude.Functor f,
+   Data.ProtoLens.Field.HasField s "vec'sourceFileDescriptors" a) =>
+  Lens.Family2.LensLike' f s a
+vec'sourceFileDescriptors
+  = Data.ProtoLens.Field.field @"vec'sourceFileDescriptors"

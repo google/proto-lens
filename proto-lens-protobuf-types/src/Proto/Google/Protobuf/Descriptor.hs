@@ -1218,6 +1218,7 @@ data Edition
     EDITION_99999_TEST_ONLY
   deriving stock (Prelude.Show, Prelude.Eq, Prelude.Ord)
 instance Data.ProtoLens.MessageEnum Edition where
+  enumName _ = Data.Text.pack "Edition"
   maybeToEnum 0 = Prelude.Just EDITION_UNKNOWN
   maybeToEnum 1 = Prelude.Just EDITION_1_TEST_ONLY
   maybeToEnum 2 = Prelude.Just EDITION_2_TEST_ONLY
@@ -3374,6 +3375,7 @@ data ExtensionRangeOptions'VerificationState
     ExtensionRangeOptions'UNVERIFIED
   deriving stock (Prelude.Show, Prelude.Eq, Prelude.Ord)
 instance Data.ProtoLens.MessageEnum ExtensionRangeOptions'VerificationState where
+  enumName _ = Data.Text.pack "VerificationState"
   maybeToEnum 0 = Prelude.Just ExtensionRangeOptions'DECLARATION
   maybeToEnum 1 = Prelude.Just ExtensionRangeOptions'UNVERIFIED
   maybeToEnum _ = Prelude.Nothing
@@ -3519,13 +3521,13 @@ instance Data.ProtoLens.Message FeatureSet where
     = "\n\
       \\n\
       \FeatureSet\DC2k\n\
-      \\SOfield_presence\CAN\SOH \SOH(\SO2).google.protobuf.FeatureSet.FieldPresenceR\rfieldPresenceB\EM\136\SOH\SOH\152\SOH\EOT\152\SOH\SOH\162\SOH\r\DC2\bEXPLICIT\CAN\232\a\DC2X\n\
-      \\tenum_type\CAN\STX \SOH(\SO2$.google.protobuf.FeatureSet.EnumTypeR\benumTypeB\NAK\136\SOH\SOH\152\SOH\ACK\152\SOH\SOH\162\SOH\t\DC2\EOTOPEN\CAN\232\a\DC2\130\SOH\n\
-      \\ETBrepeated_field_encoding\CAN\ETX \SOH(\SO21.google.protobuf.FeatureSet.RepeatedFieldEncodingR\NAKrepeatedFieldEncodingB\ETB\136\SOH\SOH\152\SOH\EOT\152\SOH\SOH\162\SOH\v\DC2\ACKPACKED\CAN\232\a\DC2x\n\
-      \\DLEmessage_encoding\CAN\ENQ \SOH(\SO2+.google.protobuf.FeatureSet.MessageEncodingR\SImessageEncodingB \136\SOH\SOH\152\SOH\EOT\152\SOH\SOH\162\SOH\DC4\DC2\SILENGTH_PREFIXED\CAN\232\a\DC2b\n\
+      \\SOfield_presence\CAN\SOH \SOH(\SO2).google.protobuf.FeatureSet.FieldPresenceR\rfieldPresenceB\EM\136\SOH\SOH\152\SOH\EOT\152\SOH\SOH\162\SOH\r\CAN\232\a\DC2\bEXPLICIT\DC2X\n\
+      \\tenum_type\CAN\STX \SOH(\SO2$.google.protobuf.FeatureSet.EnumTypeR\benumTypeB\NAK\136\SOH\SOH\152\SOH\ACK\152\SOH\SOH\162\SOH\t\CAN\232\a\DC2\EOTOPEN\DC2\130\SOH\n\
+      \\ETBrepeated_field_encoding\CAN\ETX \SOH(\SO21.google.protobuf.FeatureSet.RepeatedFieldEncodingR\NAKrepeatedFieldEncodingB\ETB\136\SOH\SOH\152\SOH\EOT\152\SOH\SOH\162\SOH\v\CAN\232\a\DC2\ACKPACKED\DC2x\n\
+      \\DLEmessage_encoding\CAN\ENQ \SOH(\SO2+.google.protobuf.FeatureSet.MessageEncodingR\SImessageEncodingB \136\SOH\SOH\152\SOH\EOT\152\SOH\SOH\162\SOH\DC4\CAN\232\a\DC2\SILENGTH_PREFIXED\DC2b\n\
       \\vjson_format\CAN\ACK \SOH(\SO2&.google.protobuf.FeatureSet.JsonFormatR\n\
       \jsonFormatB\EM\136\SOH\SOH\152\SOH\ETX\152\SOH\ACK\152\SOH\SOH\162\SOH\n\
-      \\DC2\ENQALLOW\CAN\232\a\"\\\n\
+      \\CAN\232\a\DC2\ENQALLOW\"\\\n\
       \\rFieldPresence\DC2\SUB\n\
       \\SYNFIELD_PRESENCE_UNKNOWN\DLE\NUL\DC2\f\n\
       \\bEXPLICIT\DLE\SOH\DC2\f\n\
@@ -3784,6 +3786,7 @@ data FeatureSet'EnumType
     FeatureSet'CLOSED
   deriving stock (Prelude.Show, Prelude.Eq, Prelude.Ord)
 instance Data.ProtoLens.MessageEnum FeatureSet'EnumType where
+  enumName _ = Data.Text.pack "EnumType"
   maybeToEnum 0 = Prelude.Just FeatureSet'ENUM_TYPE_UNKNOWN
   maybeToEnum 1 = Prelude.Just FeatureSet'OPEN
   maybeToEnum 2 = Prelude.Just FeatureSet'CLOSED
@@ -3836,6 +3839,7 @@ data FeatureSet'FieldPresence
     FeatureSet'LEGACY_REQUIRED
   deriving stock (Prelude.Show, Prelude.Eq, Prelude.Ord)
 instance Data.ProtoLens.MessageEnum FeatureSet'FieldPresence where
+  enumName _ = Data.Text.pack "FieldPresence"
   maybeToEnum 0 = Prelude.Just FeatureSet'FIELD_PRESENCE_UNKNOWN
   maybeToEnum 1 = Prelude.Just FeatureSet'EXPLICIT
   maybeToEnum 2 = Prelude.Just FeatureSet'IMPLICIT
@@ -3896,6 +3900,7 @@ data FeatureSet'JsonFormat
     FeatureSet'LEGACY_BEST_EFFORT
   deriving stock (Prelude.Show, Prelude.Eq, Prelude.Ord)
 instance Data.ProtoLens.MessageEnum FeatureSet'JsonFormat where
+  enumName _ = Data.Text.pack "JsonFormat"
   maybeToEnum 0 = Prelude.Just FeatureSet'JSON_FORMAT_UNKNOWN
   maybeToEnum 1 = Prelude.Just FeatureSet'ALLOW
   maybeToEnum 2 = Prelude.Just FeatureSet'LEGACY_BEST_EFFORT
@@ -3948,6 +3953,7 @@ data FeatureSet'MessageEncoding
     FeatureSet'DELIMITED
   deriving stock (Prelude.Show, Prelude.Eq, Prelude.Ord)
 instance Data.ProtoLens.MessageEnum FeatureSet'MessageEncoding where
+  enumName _ = Data.Text.pack "MessageEncoding"
   maybeToEnum 0 = Prelude.Just FeatureSet'MESSAGE_ENCODING_UNKNOWN
   maybeToEnum 1 = Prelude.Just FeatureSet'LENGTH_PREFIXED
   maybeToEnum 2 = Prelude.Just FeatureSet'DELIMITED
@@ -4004,6 +4010,7 @@ data FeatureSet'RepeatedFieldEncoding
     FeatureSet'EXPANDED
   deriving stock (Prelude.Show, Prelude.Eq, Prelude.Ord)
 instance Data.ProtoLens.MessageEnum FeatureSet'RepeatedFieldEncoding where
+  enumName _ = Data.Text.pack "RepeatedFieldEncoding"
   maybeToEnum 0
     = Prelude.Just FeatureSet'REPEATED_FIELD_ENCODING_UNKNOWN
   maybeToEnum 1 = Prelude.Just FeatureSet'PACKED
@@ -5344,6 +5351,7 @@ data FieldDescriptorProto'Label
     FieldDescriptorProto'LABEL_REPEATED
   deriving stock (Prelude.Show, Prelude.Eq, Prelude.Ord)
 instance Data.ProtoLens.MessageEnum FieldDescriptorProto'Label where
+  enumName _ = Data.Text.pack "Label"
   maybeToEnum 1 = Prelude.Just FieldDescriptorProto'LABEL_OPTIONAL
   maybeToEnum 2 = Prelude.Just FieldDescriptorProto'LABEL_REQUIRED
   maybeToEnum 3 = Prelude.Just FieldDescriptorProto'LABEL_REPEATED
@@ -5416,6 +5424,7 @@ data FieldDescriptorProto'Type
     FieldDescriptorProto'TYPE_SINT64
   deriving stock (Prelude.Show, Prelude.Eq, Prelude.Ord)
 instance Data.ProtoLens.MessageEnum FieldDescriptorProto'Type where
+  enumName _ = Data.Text.pack "Type"
   maybeToEnum 1 = Prelude.Just FieldDescriptorProto'TYPE_DOUBLE
   maybeToEnum 2 = Prelude.Just FieldDescriptorProto'TYPE_FLOAT
   maybeToEnum 3 = Prelude.Just FieldDescriptorProto'TYPE_INT64
@@ -6471,6 +6480,7 @@ data FieldOptions'CType
     FieldOptions'STRING_PIECE
   deriving stock (Prelude.Show, Prelude.Eq, Prelude.Ord)
 instance Data.ProtoLens.MessageEnum FieldOptions'CType where
+  enumName _ = Data.Text.pack "CType"
   maybeToEnum 0 = Prelude.Just FieldOptions'STRING
   maybeToEnum 1 = Prelude.Just FieldOptions'CORD
   maybeToEnum 2 = Prelude.Just FieldOptions'STRING_PIECE
@@ -6752,6 +6762,7 @@ data FieldOptions'JSType
     FieldOptions'JS_NUMBER
   deriving stock (Prelude.Show, Prelude.Eq, Prelude.Ord)
 instance Data.ProtoLens.MessageEnum FieldOptions'JSType where
+  enumName _ = Data.Text.pack "JSType"
   maybeToEnum 0 = Prelude.Just FieldOptions'JS_NORMAL
   maybeToEnum 1 = Prelude.Just FieldOptions'JS_STRING
   maybeToEnum 2 = Prelude.Just FieldOptions'JS_NUMBER
@@ -6802,6 +6813,7 @@ data FieldOptions'OptionRetention
     FieldOptions'RETENTION_SOURCE
   deriving stock (Prelude.Show, Prelude.Eq, Prelude.Ord)
 instance Data.ProtoLens.MessageEnum FieldOptions'OptionRetention where
+  enumName _ = Data.Text.pack "OptionRetention"
   maybeToEnum 0 = Prelude.Just FieldOptions'RETENTION_UNKNOWN
   maybeToEnum 1 = Prelude.Just FieldOptions'RETENTION_RUNTIME
   maybeToEnum 2 = Prelude.Just FieldOptions'RETENTION_SOURCE
@@ -6865,6 +6877,7 @@ data FieldOptions'OptionTargetType
     FieldOptions'TARGET_TYPE_METHOD
   deriving stock (Prelude.Show, Prelude.Eq, Prelude.Ord)
 instance Data.ProtoLens.MessageEnum FieldOptions'OptionTargetType where
+  enumName _ = Data.Text.pack "OptionTargetType"
   maybeToEnum 0 = Prelude.Just FieldOptions'TARGET_TYPE_UNKNOWN
   maybeToEnum 1 = Prelude.Just FieldOptions'TARGET_TYPE_FILE
   maybeToEnum 2
@@ -9501,6 +9514,7 @@ data FileOptions'OptimizeMode
     FileOptions'LITE_RUNTIME
   deriving stock (Prelude.Show, Prelude.Eq, Prelude.Ord)
 instance Data.ProtoLens.MessageEnum FileOptions'OptimizeMode where
+  enumName _ = Data.Text.pack "OptimizeMode"
   maybeToEnum 1 = Prelude.Just FileOptions'SPEED
   maybeToEnum 2 = Prelude.Just FileOptions'CODE_SIZE
   maybeToEnum 3 = Prelude.Just FileOptions'LITE_RUNTIME
@@ -10079,6 +10093,7 @@ data GeneratedCodeInfo'Annotation'Semantic
     GeneratedCodeInfo'Annotation'ALIAS
   deriving stock (Prelude.Show, Prelude.Eq, Prelude.Ord)
 instance Data.ProtoLens.MessageEnum GeneratedCodeInfo'Annotation'Semantic where
+  enumName _ = Data.Text.pack "Semantic"
   maybeToEnum 0 = Prelude.Just GeneratedCodeInfo'Annotation'NONE
   maybeToEnum 1 = Prelude.Just GeneratedCodeInfo'Annotation'SET
   maybeToEnum 2 = Prelude.Just GeneratedCodeInfo'Annotation'ALIAS
@@ -11285,6 +11300,7 @@ data MethodOptions'IdempotencyLevel
     MethodOptions'IDEMPOTENT
   deriving stock (Prelude.Show, Prelude.Eq, Prelude.Ord)
 instance Data.ProtoLens.MessageEnum MethodOptions'IdempotencyLevel where
+  enumName _ = Data.Text.pack "IdempotencyLevel"
   maybeToEnum 0 = Prelude.Just MethodOptions'IDEMPOTENCY_UNKNOWN
   maybeToEnum 1 = Prelude.Just MethodOptions'NO_SIDE_EFFECTS
   maybeToEnum 2 = Prelude.Just MethodOptions'IDEMPOTENT
@@ -13649,13 +13665,13 @@ packedFileDescriptor
     \\fis_extension\CAN\STX \STX(\bR\visExtension\"\234\a\n\
     \\n\
     \FeatureSet\DC2k\n\
-    \\SOfield_presence\CAN\SOH \SOH(\SO2).google.protobuf.FeatureSet.FieldPresenceR\rfieldPresenceB\EM\136\SOH\SOH\152\SOH\EOT\152\SOH\SOH\162\SOH\r\DC2\bEXPLICIT\CAN\232\a\DC2X\n\
-    \\tenum_type\CAN\STX \SOH(\SO2$.google.protobuf.FeatureSet.EnumTypeR\benumTypeB\NAK\136\SOH\SOH\152\SOH\ACK\152\SOH\SOH\162\SOH\t\DC2\EOTOPEN\CAN\232\a\DC2\130\SOH\n\
-    \\ETBrepeated_field_encoding\CAN\ETX \SOH(\SO21.google.protobuf.FeatureSet.RepeatedFieldEncodingR\NAKrepeatedFieldEncodingB\ETB\136\SOH\SOH\152\SOH\EOT\152\SOH\SOH\162\SOH\v\DC2\ACKPACKED\CAN\232\a\DC2x\n\
-    \\DLEmessage_encoding\CAN\ENQ \SOH(\SO2+.google.protobuf.FeatureSet.MessageEncodingR\SImessageEncodingB \136\SOH\SOH\152\SOH\EOT\152\SOH\SOH\162\SOH\DC4\DC2\SILENGTH_PREFIXED\CAN\232\a\DC2b\n\
+    \\SOfield_presence\CAN\SOH \SOH(\SO2).google.protobuf.FeatureSet.FieldPresenceR\rfieldPresenceB\EM\136\SOH\SOH\152\SOH\EOT\152\SOH\SOH\162\SOH\r\CAN\232\a\DC2\bEXPLICIT\DC2X\n\
+    \\tenum_type\CAN\STX \SOH(\SO2$.google.protobuf.FeatureSet.EnumTypeR\benumTypeB\NAK\136\SOH\SOH\152\SOH\ACK\152\SOH\SOH\162\SOH\t\CAN\232\a\DC2\EOTOPEN\DC2\130\SOH\n\
+    \\ETBrepeated_field_encoding\CAN\ETX \SOH(\SO21.google.protobuf.FeatureSet.RepeatedFieldEncodingR\NAKrepeatedFieldEncodingB\ETB\136\SOH\SOH\152\SOH\EOT\152\SOH\SOH\162\SOH\v\CAN\232\a\DC2\ACKPACKED\DC2x\n\
+    \\DLEmessage_encoding\CAN\ENQ \SOH(\SO2+.google.protobuf.FeatureSet.MessageEncodingR\SImessageEncodingB \136\SOH\SOH\152\SOH\EOT\152\SOH\SOH\162\SOH\DC4\CAN\232\a\DC2\SILENGTH_PREFIXED\DC2b\n\
     \\vjson_format\CAN\ACK \SOH(\SO2&.google.protobuf.FeatureSet.JsonFormatR\n\
     \jsonFormatB\EM\136\SOH\SOH\152\SOH\ETX\152\SOH\ACK\152\SOH\SOH\162\SOH\n\
-    \\DC2\ENQALLOW\CAN\232\a\"\\\n\
+    \\CAN\232\a\DC2\ENQALLOW\"\\\n\
     \\rFieldPresence\DC2\SUB\n\
     \\SYNFIELD_PRESENCE_UNKNOWN\DLE\NUL\DC2\f\n\
     \\bEXPLICIT\DLE\SOH\DC2\f\n\
