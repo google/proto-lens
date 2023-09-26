@@ -286,6 +286,7 @@ data AnyMessageDescriptor msg
 class (Enum a, Bounded a) => MessageEnum a where
     -- | Get the name of this enum as defined in the .proto file.
     enumName :: Proxy a -> T.Text
+    enumName = const ""
     -- | Convert the given 'Int' to an enum value.  Returns 'Nothing' if
     -- no corresponding value was defined in the .proto file.
     maybeToEnum :: Int -> Maybe a
