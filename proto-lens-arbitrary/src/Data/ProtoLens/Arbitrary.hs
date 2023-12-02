@@ -60,7 +60,7 @@ arbitraryField (FieldDescriptor _ ftd fa) = case fa of
     PlainField _ l -> setGen l fieldGen
     OptionalField l -> setGen l (maybeGen fieldGen)
     RepeatedField _ l -> setGen l (listOf fieldGen)
-    MapField keyLens valueLens mapLens ->
+    MapField _ _ keyLens valueLens mapLens ->
         setGen mapLens (mapGen keyLens valueLens fieldGen)
   where
     fieldGen = arbitraryFieldValue ftd
@@ -131,7 +131,7 @@ shrinkField (FieldDescriptor _ ftd fa) = case fa of
     PlainField _ l -> l fieldShrinker
     OptionalField l -> l (shrinkMaybe fieldShrinker)
     RepeatedField _ l -> l (shrinkList fieldShrinker)
-    MapField keyLens valueLens mapLens ->
+    MapField _ _ keyLens valueLens mapLens ->
         mapLens (shrinkMap keyLens valueLens fieldShrinker)
   where
     fieldShrinker = shrinkFieldValue ftd

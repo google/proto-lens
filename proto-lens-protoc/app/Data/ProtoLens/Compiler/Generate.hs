@@ -499,7 +499,9 @@ generateEnumDecls info =
     --           | k == "Enum1" = Prelude.Just Enum1
     --       readEnum k = Text.Read.readMaybe k >>= maybeToEnum
     , instance' (var "Data.ProtoLens.MessageEnum" @@ dataType)
-        [ funBinds "maybeToEnum" $
+        [ funBind "enumName" $ match [wildP] $
+            var "Data.Text.pack" @@ string (T.unpack $ last $ T.splitOn "'" $ T.pack $ rdrNameStrToString $ unqual $ enumName info)
+        , funBinds "maybeToEnum" $
             [ match [int k] $ var "Prelude.Just" @@ var (unqual c)
             | (c, k) <- constructorNumbers
             ]
@@ -1017,16 +1019,16 @@ fieldDescriptorExpr env n f =
                 @::@
                     (var "Data.ProtoLens.FieldTypeDescriptor"
                         @@ hsFieldType env (plainFieldInfo f)))
-        @@ fieldAccessorExpr f)
+        @@ fieldAccessorExpr env f)
     -- TODO: why is this type sig needed?
     @::@
     (var "Data.ProtoLens.FieldDescriptor" @@ var (unqual n))
   where
     fd = fieldDescriptor $ plainFieldInfo f
 
-fieldAccessorExpr :: PlainFieldInfo -> HsExpr'
+fieldAccessorExpr :: Env RdrNameStr -> PlainFieldInfo -> HsExpr'
 -- (PlainField Required foo), (OptionalField foo), etc...
-fieldAccessorExpr (PlainFieldInfo kind f) = accessorCon @@ fieldOfExp hsFieldName
+fieldAccessorExpr env (PlainFieldInfo kind f) = accessorCon @@ fieldOfExp hsFieldName
 
   where
     accessorCon = case kind of
@@ -1038,6 +1040,11 @@ fieldAccessorExpr (PlainFieldInfo kind f) = accessorCon @@ fieldOfExp hsFieldNam
                 -> var "Data.ProtoLens.OptionalField"
           MapField entry
                   -> var "Data.ProtoLens.MapField"
+                         @@ mapKeyDescriptorExpr (fieldDescriptor (keyField entry) ^. #type')
+                         @@ (fieldTypeDescriptorExpr (fieldDescriptor (valueField entry) ^. #type')
+                                @::@
+                                    (var "Data.ProtoLens.FieldTypeDescriptor"
+                                        @@ hsFieldType env (valueField entry)))
                          @@ fieldOfExp (overloadedField $ keyField entry)
                          @@ fieldOfExp (overloadedField $ valueField entry)
           RepeatedField packed ->
@@ -1079,6 +1086,24 @@ fieldTypeDescriptorExpr = \case
   where
     mk x y = var (fromString ("Data.ProtoLens." ++ x))
               @@ var (fromString ("Data.ProtoLens." ++ y))
+
+mapKeyDescriptorExpr :: FieldDescriptorProto'Type -> HsExpr'
+mapKeyDescriptorExpr = \case
+    FieldDescriptorProto'TYPE_INT64 -> mk "MapInt64Key"
+    FieldDescriptorProto'TYPE_UINT64 -> mk "MapUInt64Key"
+    FieldDescriptorProto'TYPE_INT32 -> mk "MapInt32Key"
+    FieldDescriptorProto'TYPE_FIXED64 -> mk "MapFixed64Key"
+    FieldDescriptorProto'TYPE_FIXED32 -> mk "MapFixed32Key"
+    FieldDescriptorProto'TYPE_BOOL -> mk "MapBoolKey"
+    FieldDescriptorProto'TYPE_STRING -> mk "MapStringKey"
+    FieldDescriptorProto'TYPE_UINT32 -> mk "MapUInt32Key"
+    FieldDescriptorProto'TYPE_SFIXED32 -> mk "MapSFixed32Key"
+    FieldDescriptorProto'TYPE_SFIXED64 -> mk "MapSFixed64Key"
+    FieldDescriptorProto'TYPE_SINT32 -> mk "MapSInt32Key"
+    FieldDescriptorProto'TYPE_SINT64 -> mk "MapSInt64Key"
+    ty -> error ("Unexpected map key type: " ++ show ty)
+  where
+    mk x = var (fromString ("Data.ProtoLens." ++ x))
 
 -- | Generate the implementation of NFData.rnf for the given message.
 --

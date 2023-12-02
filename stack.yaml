@@ -4,7 +4,7 @@
 # license that can be found in the LICENSE file or at
 # https://developers.google.com/open-source/licenses/bsd
 
-resolver: lts-20.0
+resolver: lts-21.12
 
 packages:
 - discrimination-ieee754
@@ -12,6 +12,7 @@ packages:
 - proto-lens-arbitrary
 - proto-lens-benchmarks
 - proto-lens-discrimination
+- proto-lens-json
 - proto-lens-optparse
 - proto-lens-protobuf-types
 - proto-lens-protoc
@@ -22,3 +23,7 @@ packages:
 
 ghc-options:
   "$locals": -Wall -Werror
+
+extra-deps:
+- git: git@github.com:circuithub/ghc-source-gen.git
+  commit: 7a6aac047b706508e85ba2054b5bedbecfd7eb7a

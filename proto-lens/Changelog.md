@@ -1,5 +1,9 @@
 # Changelog for `proto-lens`
 
+## Unreleased
+
+### Breaking Changes
+- Introduce MapField constructor field indicating key type.
 
 ## v0.7.1.2
 - Support GHC 9.4

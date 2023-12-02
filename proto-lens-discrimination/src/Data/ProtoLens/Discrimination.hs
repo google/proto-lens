@@ -150,7 +150,7 @@ discFieldAccessor discList discMaybe c f = case f of
     PlainField _ l    -> view l >$< c
     OptionalField l   -> view l >$< discMaybe c
     RepeatedField _ l -> view l >$< discList c
-    MapField k v l    -> view l >$< discProtoMapAssocs discList c k v
+    MapField _ _ k v l    -> view l >$< discProtoMapAssocs discList c k v
 
 -- Unpack a ByteString into a Word16 and the remainder, or the leftover 0 or 1
 -- bytes at the end.

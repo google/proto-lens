@@ -1,5 +1,11 @@
 # Changelog for `proto-lens-protoc`
 
+## Unreleased
+
+### Breaking Changes
+- Introduce MapField constructor field indicating key type.
+- Support GHC 9.4
+
 ## v0.7.1.1
 - Relax upper bounds for ghc-9.2
 

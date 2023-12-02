@@ -1,5 +1,5 @@
 name: proto-lens-protobuf-types
-version: '0.7.1.2'
+version: '0.8.0.0'
 synopsis: Basic protocol buffer message types.
 description: >
   This package provides bindings standard protocol message types,
@@ -12,29 +12,21 @@ license: BSD3
 github: google/proto-lens/proto-lens-protobuf-types
 extra-source-files:
   - Changelog.md
-  - proto-src/google/protobuf/any.proto
-  - proto-src/google/protobuf/compiler/plugin.proto
-  - proto-src/google/protobuf/descriptor.proto
-  - proto-src/google/protobuf/duration.proto
-  - proto-src/google/protobuf/empty.proto
-  - proto-src/google/protobuf/wrappers.proto
-  - proto-src/google/protobuf/struct.proto
-  - proto-src/google/protobuf/timestamp.proto
-
-custom-setup:
-  dependencies:
-    - base >= 4.10 && < 4.17
-    - Cabal
-    - proto-lens-setup == 0.4.*
-
-build-tools: proto-lens-protoc:proto-lens-protoc
+  - proto-src/src/google/protobuf/any.proto
+  - proto-src/src/google/protobuf/compiler/plugin.proto
+  - proto-src/src/google/protobuf/descriptor.proto
+  - proto-src/src/google/protobuf/duration.proto
+  - proto-src/src/google/protobuf/empty.proto
+  - proto-src/src/google/protobuf/wrappers.proto
+  - proto-src/src/google/protobuf/struct.proto
+  - proto-src/src/google/protobuf/timestamp.proto
 
 dependencies:
-  - base >= 4.10 && < 4.17
+  - base >= 4.10 && < 4.19
   - lens-family >= 1.2 && < 2.2
   - proto-lens == 0.7.*
   - proto-lens-runtime == 0.7.*
-  - text >= 1.2 && < 2.1
+  - text >= 1.2 && < 2.2
 
 library:
   source-dirs: src
