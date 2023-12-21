@@ -569,7 +569,7 @@ reservedKeywords = Set.fromList $
     -- Haskell2010 keywords:
     -- https://www.haskell.org/onlinereport/haskell2010/haskellch2.html#x7-180002.4
     -- We don't include keywords that are allowed to be variable names,
-    -- in particular: "as", "forall", and "hiding".
+    -- in particular: "as" and "hiding".
     [ "case"
     , "class"
     , "data"
@@ -577,6 +577,7 @@ reservedKeywords = Set.fromList $
     , "deriving"
     , "do"
     , "else"
+    , "forall"
     , "foreign"
     , "if"
     , "import"
