@@ -42,7 +42,6 @@ module Data.ProtoLens.Compiler.Definitions
     , overloadedFieldName
     ) where
 
-import Control.Applicative (liftA2)
 import Data.Char (isUpper, toUpper)
 import Data.Int (Int32)
 import Data.List (mapAccumL)
@@ -370,8 +369,8 @@ messageDefs syntaxType protoPrefix hsPrefix groups d
                                 ++ "'_constructor"
             , messageDescriptor = d
             , messageFields =
-                  map (liftA2 PlainFieldInfo
-                              (fieldKind syntaxType mapEntries) (fieldInfo hsPrefix'))
+                  map (PlainFieldInfo <$>
+                              (fieldKind syntaxType mapEntries) <*> (fieldInfo hsPrefix'))
                       $ Map.findWithDefault [] Nothing allFields
             , messageOneofFields = collectOneofFields hsPrefix' d allFields
             , messageUnknownFields =
