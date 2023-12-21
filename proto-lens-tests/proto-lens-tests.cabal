@@ -1,6 +1,6 @@
 cabal-version: 2.0
 
--- This file has been generated from package.yaml by hpack version 0.34.4.
+-- This file has been generated from package.yaml by hpack version 0.36.0.
 --
 -- see: https://github.com/sol/hpack
 
@@ -30,6 +30,7 @@ library
   other-modules:
       Paths_proto_lens_tests
   autogen-modules:
+      Paths_proto_lens_tests
       Proto.Lib
   hs-source-dirs:
       src
@@ -58,6 +59,7 @@ test-suite any_test
       Proto.Any
       Proto.Any_Fields
   autogen-modules:
+      Paths_proto_lens_tests
       Proto.Any
       Proto.Any_Fields
   hs-source-dirs:
@@ -89,6 +91,7 @@ test-suite canonical_test
       Proto.Canonical
       Proto.Canonical_Fields
   autogen-modules:
+      Paths_proto_lens_tests
       Proto.Canonical
       Proto.Canonical_Fields
   hs-source-dirs:
@@ -118,6 +121,7 @@ test-suite combinators_test
       Paths_proto_lens_tests
       Proto.Combinators Proto.Combinators_Fields
   autogen-modules:
+      Paths_proto_lens_tests
       Proto.Combinators Proto.Combinators_Fields
   hs-source-dirs:
       tests
@@ -146,6 +150,7 @@ test-suite decode_delimited_test
       Proto.DecodeDelimited
       Proto.DecodeDelimited_Fields
   autogen-modules:
+      Paths_proto_lens_tests
       Proto.DecodeDelimited
       Proto.DecodeDelimited_Fields
   hs-source-dirs:
@@ -177,6 +182,7 @@ test-suite dependent_test
       Paths_proto_lens_tests
       Proto.Dependent
   autogen-modules:
+      Paths_proto_lens_tests
       Proto.Dependent
   hs-source-dirs:
       tests
@@ -205,6 +211,7 @@ test-suite descriptor_test
       Paths_proto_lens_tests
       Proto.Descriptor
   autogen-modules:
+      Paths_proto_lens_tests
       Proto.Descriptor
   hs-source-dirs:
       tests
@@ -236,6 +243,7 @@ test-suite enum_test
       Proto.Enum_Fields
       Proto.EnumOnly
   autogen-modules:
+      Paths_proto_lens_tests
       Proto.Enum
       Proto.Enum_Fields
       Proto.EnumOnly
@@ -268,6 +276,7 @@ test-suite group_test
       Proto.Group
       Proto.Group_Fields
   autogen-modules:
+      Paths_proto_lens_tests
       Proto.Group
       Proto.Group_Fields
   hs-source-dirs:
@@ -303,6 +312,7 @@ test-suite imports_test
       Proto.ImportsTransitive2
       Proto.Nested
   autogen-modules:
+      Paths_proto_lens_tests
       Proto.Empty
       Proto.Enum
       Proto.Imports
@@ -339,6 +349,7 @@ test-suite labels_test
       Proto.Canonical
       Proto.Canonical_Fields
   autogen-modules:
+      Paths_proto_lens_tests
       Proto.Canonical
       Proto.Canonical_Fields
   hs-source-dirs:
@@ -370,6 +381,7 @@ test-suite map_test
       Proto.Map
       Proto.Map_Fields
   autogen-modules:
+      Paths_proto_lens_tests
       Proto.Map
       Proto.Map_Fields
   hs-source-dirs:
@@ -400,6 +412,7 @@ test-suite message_set_test
       Proto.MessageSet
       Proto.MessageSet_Fields
   autogen-modules:
+      Paths_proto_lens_tests
       Proto.MessageSet
       Proto.MessageSet_Fields
   hs-source-dirs:
@@ -430,6 +443,7 @@ test-suite names_test
       Proto.Names
       Proto.Names_Fields
   autogen-modules:
+      Paths_proto_lens_tests
       Proto.Names
       Proto.Names_Fields
   hs-source-dirs:
@@ -460,6 +474,7 @@ test-suite no_package_test
       Proto.NoPackage
       Proto.NoPackage_Fields
   autogen-modules:
+      Paths_proto_lens_tests
       Proto.NoPackage
       Proto.NoPackage_Fields
   hs-source-dirs:
@@ -490,6 +505,7 @@ test-suite oneof_test
       Proto.Oneof
       Proto.Oneof_Fields
   autogen-modules:
+      Paths_proto_lens_tests
       Proto.Oneof
       Proto.Oneof_Fields
   hs-source-dirs:
@@ -520,6 +536,7 @@ test-suite optional_test
       Proto.Optional
       Proto.Optional_Fields
   autogen-modules:
+      Paths_proto_lens_tests
       Proto.Optional
       Proto.Optional_Fields
   hs-source-dirs:
@@ -550,6 +567,7 @@ test-suite package-deps_test
       Proto.PackageDeps
       Proto.PackageDeps_Fields
   autogen-modules:
+      Paths_proto_lens_tests
       Proto.PackageDeps
       Proto.PackageDeps_Fields
   hs-source-dirs:
@@ -581,6 +599,7 @@ test-suite packed_test
       Proto.Packed
       Proto.Packed_Fields
   autogen-modules:
+      Paths_proto_lens_tests
       Proto.Packed
       Proto.Packed_Fields
   hs-source-dirs:
@@ -610,6 +629,7 @@ test-suite pathological_test
       Paths_proto_lens_tests
       Proto.Pathological
   autogen-modules:
+      Paths_proto_lens_tests
       Proto.Pathological
   hs-source-dirs:
       tests
@@ -639,6 +659,7 @@ test-suite proto3_optional_test
       Proto.TestProto3Optional
       Proto.TestProto3Optional_Fields
   autogen-modules:
+      Paths_proto_lens_tests
       Proto.TestProto3Optional
       Proto.TestProto3Optional_Fields
   hs-source-dirs:
@@ -670,6 +691,7 @@ test-suite proto3_test
       Proto.Proto3
       Proto.Proto3_Fields
   autogen-modules:
+      Paths_proto_lens_tests
       Proto.Proto3
       Proto.Proto3_Fields
   hs-source-dirs:
@@ -700,6 +722,7 @@ test-suite raw_fields_test
       Proto.RawFields
       Proto.RawFields_Fields
   autogen-modules:
+      Paths_proto_lens_tests
       Proto.RawFields
       Proto.RawFields_Fields
   hs-source-dirs:
@@ -730,6 +753,7 @@ test-suite repeated_test
       Proto.Repeated
       Proto.Repeated_Fields
   autogen-modules:
+      Paths_proto_lens_tests
       Proto.Repeated
       Proto.Repeated_Fields
   hs-source-dirs:
@@ -761,6 +785,7 @@ test-suite required_test
       Proto.Required
       Proto.Required_Fields
   autogen-modules:
+      Paths_proto_lens_tests
       Proto.Required
       Proto.Required_Fields
   hs-source-dirs:
@@ -792,6 +817,7 @@ test-suite service_test
       Proto.Service
       Proto.Service_Fields
   autogen-modules:
+      Paths_proto_lens_tests
       Proto.Service
       Proto.Service_Fields
   hs-source-dirs:
@@ -824,6 +850,7 @@ test-suite text-format_test
       Proto.TextFormat
       Proto.TextFormat_Fields
   autogen-modules:
+      Paths_proto_lens_tests
       Proto.TextFormat
       Proto.TextFormat_Fields
   hs-source-dirs:
@@ -855,6 +882,7 @@ test-suite unknown_fields_test
       Proto.UnknownFields
       Proto.UnknownFields_Fields
   autogen-modules:
+      Paths_proto_lens_tests
       Proto.UnknownFields
       Proto.UnknownFields_Fields
   hs-source-dirs:

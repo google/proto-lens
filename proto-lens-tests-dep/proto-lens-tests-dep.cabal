@@ -1,6 +1,6 @@
 cabal-version: 2.0
 
--- This file has been generated from package.yaml by hpack version 0.34.4.
+-- This file has been generated from package.yaml by hpack version 0.36.0.
 --
 -- see: https://github.com/sol/hpack
 
@@ -38,6 +38,7 @@ library
   other-modules:
       Paths_proto_lens_tests_dep
   autogen-modules:
+      Paths_proto_lens_tests_dep
       Proto.TestDep.Foo
       Proto.TestDep.Foo_Fields
   build-tool-depends:
