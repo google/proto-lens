@@ -1,5 +1,11 @@
 # Changelog for `proto-lens-protoc`
 
+
+## v0.8.0.0
+- Relax upper bounds for ghc-9.6
+- Incompatible change: change `forall` to `forall'` in generated code
+  due to GHC warning of the upcoming change.
+
 ## v0.7.1.1
 - Relax upper bounds for ghc-9.2
 

@@ -1,5 +1,5 @@
 name: proto-lens-arbitrary
-version: "0.1.2.11"
+version: "0.1.2.12"
 synopsis: Arbitrary instances for proto-lens.
 description: >
   The proto-lens-arbitrary allows generating arbitrary messages for
@@ -15,10 +15,10 @@ extra-source-files:
 
 dependencies:
   - proto-lens >= 0.4 && < 0.8
-  - base >= 4.10 && < 4.17
+  - base >= 4.10 && < 4.19
   - bytestring >= 0.10 && < 0.12
   - containers >= 0.5 && < 0.7
-  - text >= 1.2 && < 2.1
+  - text >= 1.2 && < 2.2
   - lens-family >= 1.2 && < 2.2
   - QuickCheck >= 2.8 && < 2.15
 

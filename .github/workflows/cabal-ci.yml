@@ -12,8 +12,8 @@ jobs:
           submodules: true
       - uses: haskell/actions/setup@v2
         with:
-          ghc-version: '9.6.1'
-          cabal-version: '3.8.1.0'
+          ghc-version: '9.6.3'
+          cabal-version: '3.10.2.0'
       - run: cabal build --dependencies-only --project-file ghc96.cabal.project all
       - run: cabal build                     --project-file ghc96.cabal.project all
       - run: cabal test                      --project-file ghc96.cabal.project all

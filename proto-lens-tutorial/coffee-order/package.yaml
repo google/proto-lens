@@ -1,5 +1,5 @@
 name:                coffee-order
-version:             0.1.0.0
+version:             0.1.0.1
 homepage:            https://github.com/google/proto-tutorial/coffee-order#readme
 license:             BSD3
 author:              Fintan Halpenny
@@ -19,7 +19,7 @@ custom-setup:
 build-tools: proto-lens-protoc:proto-lens-protoc
 
 dependencies:
-  - base >= 4.7 && < 5
+  - base >= 4.10 && < 5
   - microlens
   - proto-lens
   - proto-lens-runtime

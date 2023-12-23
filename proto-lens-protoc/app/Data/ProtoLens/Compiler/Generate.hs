@@ -39,7 +39,11 @@ import HsSyn (ideclName, ideclAs)
 import GHC.Parser.Annotation (EpAnn(EpAnnNotUsed), SrcSpanAnn'(SrcSpanAnn))
 #endif
 #if MIN_VERSION_ghc(9,0,0)
+#if MIN_VERSION_ghc(9,6,0)
+import Language.Haskell.Syntax.Module.Name (moduleNameString, mkModuleName)
+#else
 import GHC.Unit.Module.Name (moduleNameString, mkModuleName)
+#endif
 import qualified GHC.Utils.Outputable as Outputable
 import GHC.Types.SrcLoc (unLoc)
 import qualified GHC.Types.SrcLoc as SrcLoc

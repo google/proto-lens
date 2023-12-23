@@ -1,5 +1,5 @@
 name: proto-lens-protoc
-version: '0.7.1.1'
+version: '0.8.0.0'
 synopsis: Protocol buffer compiler for the proto-lens library.
 description: >
   Turn protocol buffer files (.proto) into Haskell files (.hs) which
@@ -17,7 +17,7 @@ extra-source-files:
   - Changelog.md
 
 dependencies:
-  - base >= 4.9 && < 4.17
+  - base >= 4.10 && < 4.19
   - filepath >= 1.4 && < 1.6
 
 library:
@@ -32,7 +32,7 @@ executables:
     dependencies:
       - bytestring >= 0.10 && < 0.12
       - containers >= 0.5 && < 0.7
-      - ghc >= 8.2 && < 9.3
+      - ghc >= 8.2 && < 9.8
       - ghc-paths == 0.1.*
       - ghc-source-gen >= 0.4 && < 0.5
       - lens-family >= 1.2 && < 2.2
@@ -40,4 +40,4 @@ executables:
       - proto-lens == 0.7.*
       - proto-lens-protoc
       - proto-lens-runtime == 0.7.*
-      - text >= 1.2 && < 2.1
+      - text >= 1.2 && < 2.2

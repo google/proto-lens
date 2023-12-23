@@ -1,11 +1,11 @@
 cabal-version: 1.12
 
--- This file has been generated from package.yaml by hpack version 0.35.2.
+-- This file has been generated from package.yaml by hpack version 0.36.0.
 --
 -- see: https://github.com/sol/hpack
 
 name:           proto-lens-optparse
-version:        0.1.1.10
+version:        0.1.1.11
 synopsis:       Adapting proto-lens to optparse-applicative ReadMs.
 description:    A package adapting proto-lens to optparse-applicative ReadMs. This gives an easy way to define options and arguments for text-format protobuf types.
 category:       Data
@@ -34,7 +34,7 @@ library
       src
   build-depends:
       base >=4.10 && <4.19
-    , optparse-applicative >=0.13 && <0.18
+    , optparse-applicative >=0.13 && <0.19
     , proto-lens >=0.1 && <0.8
-    , text >=1.2 && <2.1
+    , text >=1.2 && <2.2
   default-language: Haskell2010

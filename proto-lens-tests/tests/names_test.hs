@@ -83,6 +83,7 @@ testHaskellKeywords = testFields "haskellKeywords" (defMessage :: HaskellKeyword
     , SomeLens deriving'
     , SomeLens do'
     , SomeLens else'
+    , SomeLens forall'
     , SomeLens foreign'
     , SomeLens if'
     , SomeLens import'
@@ -104,7 +105,6 @@ testHaskellKeywords = testFields "haskellKeywords" (defMessage :: HaskellKeyword
     -- Haskell keywords that shouldn't get an apostrophe (since they're valid
     -- as variable names):
     , SomeLens as
-    , SomeLens forall
     , SomeLens hiding
     ]
 

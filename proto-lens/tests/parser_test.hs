@@ -1,7 +1,6 @@
 -- | Unit and property tests for our custom parsing monad.
 module Main (main) where
 
-import Control.Applicative (liftA2)
 import qualified Data.ByteString as B
 import Data.Either (isLeft)
 
@@ -74,7 +73,7 @@ testFailure =
 testIsolate :: [TestTree]
 testIsolate =
     [ testProperty "many" $ \bs bs' ->
-        runParser (liftA2 (,) (isolate (length bs) $ manyTillEnd getWord8)
+        runParser ((,) <$> (isolate (length bs) $ manyTillEnd getWord8) <*>
                         (manyTillEnd getWord8))
             (B.pack (bs ++ bs'))
             == Right (bs, bs')
