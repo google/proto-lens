@@ -35,7 +35,7 @@ source-repository head
 
 custom-setup
   setup-depends:
-      Cabal
+      Cabal >=3 && <3.12
     , base >=4.10 && <4.19
     , proto-lens-setup ==0.4.*
 

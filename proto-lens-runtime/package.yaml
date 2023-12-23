@@ -1,5 +1,5 @@
 name: proto-lens-runtime
-version: '0.7.0.4'
+version: '0.7.0.5'
 author: Judah Jacobson
 maintainer: proto-lens@googlegroups.com
 github: google/proto-lens/proto-lens-runtime
