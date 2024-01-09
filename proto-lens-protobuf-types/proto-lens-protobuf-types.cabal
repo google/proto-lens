@@ -20,13 +20,17 @@ build-type:     Custom
 extra-source-files:
     Changelog.md
     proto-src/google/protobuf/any.proto
+    proto-src/google/protobuf/api.proto
     proto-src/google/protobuf/compiler/plugin.proto
     proto-src/google/protobuf/descriptor.proto
     proto-src/google/protobuf/duration.proto
     proto-src/google/protobuf/empty.proto
-    proto-src/google/protobuf/wrappers.proto
+    proto-src/google/protobuf/field_mask.proto
+    proto-src/google/protobuf/source_context.proto
     proto-src/google/protobuf/struct.proto
     proto-src/google/protobuf/timestamp.proto
+    proto-src/google/protobuf/type.proto
+    proto-src/google/protobuf/wrappers.proto
 
 source-repository head
   type: git
@@ -45,6 +49,8 @@ library
       Data.ProtoLens.Descriptor
       Proto.Google.Protobuf.Any
       Proto.Google.Protobuf.Any_Fields
+      Proto.Google.Protobuf.Api
+      Proto.Google.Protobuf.Api_Fields
       Proto.Google.Protobuf.Compiler.Plugin
       Proto.Google.Protobuf.Compiler.Plugin_Fields
       Proto.Google.Protobuf.Descriptor
@@ -53,15 +59,23 @@ library
       Proto.Google.Protobuf.Duration_Fields
       Proto.Google.Protobuf.Empty
       Proto.Google.Protobuf.Empty_Fields
-      Proto.Google.Protobuf.Wrappers
-      Proto.Google.Protobuf.Wrappers_Fields
+      Proto.Google.Protobuf.FieldMask
+      Proto.Google.Protobuf.FieldMask_Fields
+      Proto.Google.Protobuf.SourceContext
+      Proto.Google.Protobuf.SourceContext_Fields
       Proto.Google.Protobuf.Struct
       Proto.Google.Protobuf.Struct_Fields
       Proto.Google.Protobuf.Timestamp
       Proto.Google.Protobuf.Timestamp_Fields
+      Proto.Google.Protobuf.Type
+      Proto.Google.Protobuf.Type_Fields
+      Proto.Google.Protobuf.Wrappers
+      Proto.Google.Protobuf.Wrappers_Fields
   autogen-modules:
       Proto.Google.Protobuf.Any
       Proto.Google.Protobuf.Any_Fields
+      Proto.Google.Protobuf.Api
+      Proto.Google.Protobuf.Api_Fields
       Proto.Google.Protobuf.Compiler.Plugin
       Proto.Google.Protobuf.Compiler.Plugin_Fields
       Proto.Google.Protobuf.Descriptor
@@ -70,12 +84,18 @@ library
       Proto.Google.Protobuf.Duration_Fields
       Proto.Google.Protobuf.Empty
       Proto.Google.Protobuf.Empty_Fields
-      Proto.Google.Protobuf.Wrappers
-      Proto.Google.Protobuf.Wrappers_Fields
+      Proto.Google.Protobuf.FieldMask
+      Proto.Google.Protobuf.FieldMask_Fields
+      Proto.Google.Protobuf.SourceContext
+      Proto.Google.Protobuf.SourceContext_Fields
       Proto.Google.Protobuf.Struct
       Proto.Google.Protobuf.Struct_Fields
       Proto.Google.Protobuf.Timestamp
       Proto.Google.Protobuf.Timestamp_Fields
+      Proto.Google.Protobuf.Type
+      Proto.Google.Protobuf.Type_Fields
+      Proto.Google.Protobuf.Wrappers
+      Proto.Google.Protobuf.Wrappers_Fields
   hs-source-dirs:
       src
   build-tool-depends:
