@@ -1,5 +1,8 @@
 # Changelog for `proto-lens-protobuf-types`
 
+## v0.7.2.0
+- Add support for additional well known types
+
 ## v0.7.1.2
 - Add protobuf struct types (#438)
 
