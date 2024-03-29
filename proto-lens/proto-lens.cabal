@@ -66,7 +66,7 @@ library
     , lens-family >=1.2 && <2.2
     , parsec ==3.1.*
     , pretty ==1.1.*
-    , primitive >=0.6 && <0.9
+    , primitive >=0.6 && <0.10
     , profunctors >=5.2 && <6.0
     , tagged ==0.8.*
     , text >=1.2 && <2.2
