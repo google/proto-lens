@@ -31,7 +31,7 @@ library
   hs-source-dirs:
       src
   build-depends:
-      base >=4.10 && <4.19
+      base >=4.10 && <4.20
     , contravariant >=1.3 && <1.6
     , data-binary-ieee754 ==0.4.*
     , discrimination >=0.3 && <0.6
@@ -46,7 +46,7 @@ test-suite test
       test
   build-depends:
       QuickCheck
-    , base >=4.10 && <4.19
+    , base >=4.10 && <4.20
     , contravariant >=1.3 && <1.6
     , data-binary-ieee754 ==0.4.*
     , discrimination >=0.3 && <0.6
