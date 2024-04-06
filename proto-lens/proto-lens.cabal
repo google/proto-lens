@@ -5,7 +5,7 @@ cabal-version: 1.12
 -- see: https://github.com/sol/hpack
 
 name:           proto-lens
-version:        0.7.1.4
+version:        0.7.1.5
 synopsis:       A lens-based implementation of protocol buffers in Haskell.
 description:    The proto-lens library provides an API for protocol buffers using modern Haskell language and library patterns.  Specifically, it provides:
                 .
@@ -58,11 +58,11 @@ library
   hs-source-dirs:
       src
   build-depends:
-      base >=4.10 && <4.19
-    , bytestring >=0.10 && <0.12
-    , containers >=0.5 && <0.7
-    , deepseq ==1.4.*
-    , ghc-prim >=0.4 && <0.11
+      base >=4.10 && <4.20
+    , bytestring >=0.10 && <0.13
+    , containers >=0.5 && <0.8
+    , deepseq >=1.4 && <1.6
+    , ghc-prim >=0.4 && <0.12
     , lens-family >=1.2 && <2.2
     , parsec ==3.1.*
     , pretty ==1.1.*
