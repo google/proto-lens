@@ -642,14 +642,14 @@ generateEnumDecls info =
                             ]
     constructorNames = map fst constructors
 
-    defaultCon = var $ unqual $ head constructorNames
+    defaultCon = var $ unqual minBoundName
 
-    minBoundName = head constructorNames
-    maxBoundName = last constructorNames
+    (minBoundName, maxBoundName, succPairs) =
+      case constructorNames of
+        (c : cs) -> (c, last constructorNames, zip constructorNames cs)
+        _ -> error $ "Unexpected empty constructors in " <> show (enumName info)
 
     constructorNumbers = map (second (fromIntegral . (^. #number))) constructors
-
-    succPairs = zip constructorNames $ tail constructorNames
 
     succDecl :: OccNameStr -> OccNameStr -> [(OccNameStr, OccNameStr)] -> RawInstDecl
     succDecl funName boundName thePairs = funBinds funName $
