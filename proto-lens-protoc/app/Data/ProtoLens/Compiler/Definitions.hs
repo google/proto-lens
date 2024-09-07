@@ -93,13 +93,14 @@ import GHC.SourceGen
 -- either from this or another file).
 type Env n = Map.Map Text (Definition n)
 
-data SyntaxType = Proto2 | Proto3
+data SyntaxType = Proto2 | Proto3 | Editions
     deriving (Show, Eq)
 
 fileSyntaxType :: FileDescriptorProto -> SyntaxType
 fileSyntaxType f = case f ^. #syntax of
     "proto2" -> Proto2
     "proto3" -> Proto3
+    "editions" -> Editions
     "" -> Proto2  -- The proto compiler doesn't set syntax for proto2 files.
     s -> error $ "Unknown syntax type " ++ show s
 

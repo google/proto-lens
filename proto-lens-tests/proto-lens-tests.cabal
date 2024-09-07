@@ -1,6 +1,6 @@
 cabal-version: 2.0
 
--- This file has been generated from package.yaml by hpack version 0.36.0.
+-- This file has been generated from package.yaml by hpack version 0.37.0.
 --
 -- see: https://github.com/sol/hpack
 
@@ -226,6 +226,37 @@ test-suite descriptor_test
     , proto-lens
     , proto-lens-arbitrary
     , proto-lens-protobuf-types
+    , proto-lens-runtime
+    , proto-lens-tests
+    , tasty
+    , tasty-hunit
+    , tasty-quickcheck
+    , text
+  default-language: Haskell2010
+
+test-suite editions2023_test
+  type: exitcode-stdio-1.0
+  main-is: editions2023_test.hs
+  other-modules:
+      Paths_proto_lens_tests
+      Proto.Editions2023
+      Proto.Editions2023_Fields
+  autogen-modules:
+      Paths_proto_lens_tests
+      Proto.Editions2023
+      Proto.Editions2023_Fields
+  hs-source-dirs:
+      tests
+  build-tool-depends:
+      proto-lens-protoc:proto-lens-protoc
+  build-depends:
+      QuickCheck
+    , base
+    , bytestring
+    , lens-family
+    , pretty
+    , proto-lens
+    , proto-lens-arbitrary
     , proto-lens-runtime
     , proto-lens-tests
     , tasty
