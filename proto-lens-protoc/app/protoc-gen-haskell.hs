@@ -31,7 +31,7 @@ import Proto.Google.Protobuf.Compiler.Plugin
     , CodeGeneratorResponse
     , CodeGeneratorResponse'Feature(..)
     )
-import Proto.Google.Protobuf.Descriptor (FileDescriptorProto)
+import Proto.Google.Protobuf.Descriptor (FileDescriptorProto, Edition(..))
 import System.Environment (getProgName)
 import System.Exit (exitWith, ExitCode(..))
 import System.IO as IO
@@ -69,10 +69,14 @@ makeResponse dflags prog request = let
     header f = "{- This file was auto-generated from "
                 <> (f ^. #name)
                 <> " by the " <> pack prog <> " program. -}\n"
-    features = [CodeGeneratorResponse'FEATURE_PROTO3_OPTIONAL]
+    features = [ CodeGeneratorResponse'FEATURE_PROTO3_OPTIONAL
+               , CodeGeneratorResponse'FEATURE_SUPPORTS_EDITIONS
+               ]
     in defMessage
            & #supportedFeatures .~
                (foldl (.|.) zeroBits $ fmap (toEnum . fromEnum) features)
+           & #minimumEdition .~ fromIntegral (fromEnum EDITION_2023)
+           & #maximumEdition .~ fromIntegral (fromEnum EDITION_2023)
            & #file .~ [ defMessage
                             & #name .~ outputName
                             & #content .~ outputContent
