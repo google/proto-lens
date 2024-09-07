@@ -5,18 +5,34 @@
 {-# OPTIONS_GHC -Wno-dodgy-exports#-}
 module Proto.Google.Protobuf.Descriptor (
         DescriptorProto(), DescriptorProto'ExtensionRange(),
-        DescriptorProto'ReservedRange(), EnumDescriptorProto(),
-        EnumDescriptorProto'EnumReservedRange(), EnumOptions(),
-        EnumValueDescriptorProto(), EnumValueOptions(),
-        ExtensionRangeOptions(), FieldDescriptorProto(),
-        FieldDescriptorProto'Label(..), FieldDescriptorProto'Label(),
-        FieldDescriptorProto'Type(..), FieldDescriptorProto'Type(),
-        FieldOptions(), FieldOptions'CType(..), FieldOptions'CType(),
+        DescriptorProto'ReservedRange(), Edition(..), Edition(),
+        EnumDescriptorProto(), EnumDescriptorProto'EnumReservedRange(),
+        EnumOptions(), EnumValueDescriptorProto(), EnumValueOptions(),
+        ExtensionRangeOptions(), ExtensionRangeOptions'Declaration(),
+        ExtensionRangeOptions'VerificationState(..),
+        ExtensionRangeOptions'VerificationState(), FeatureSet(),
+        FeatureSet'EnumType(..), FeatureSet'EnumType(),
+        FeatureSet'FieldPresence(..), FeatureSet'FieldPresence(),
+        FeatureSet'JsonFormat(..), FeatureSet'JsonFormat(),
+        FeatureSet'MessageEncoding(..), FeatureSet'MessageEncoding(),
+        FeatureSet'RepeatedFieldEncoding(..),
+        FeatureSet'RepeatedFieldEncoding(), FeatureSet'Utf8Validation(..),
+        FeatureSet'Utf8Validation(), FeatureSetDefaults(),
+        FeatureSetDefaults'FeatureSetEditionDefault(),
+        FieldDescriptorProto(), FieldDescriptorProto'Label(..),
+        FieldDescriptorProto'Label(), FieldDescriptorProto'Type(..),
+        FieldDescriptorProto'Type(), FieldOptions(),
+        FieldOptions'CType(..), FieldOptions'CType(),
+        FieldOptions'EditionDefault(), FieldOptions'FeatureSupport(),
         FieldOptions'JSType(..), FieldOptions'JSType(),
+        FieldOptions'OptionRetention(..), FieldOptions'OptionRetention(),
+        FieldOptions'OptionTargetType(..), FieldOptions'OptionTargetType(),
         FileDescriptorProto(), FileDescriptorSet(), FileOptions(),
         FileOptions'OptimizeMode(..), FileOptions'OptimizeMode(),
         GeneratedCodeInfo(), GeneratedCodeInfo'Annotation(),
-        MessageOptions(), MethodDescriptorProto(), MethodOptions(),
+        GeneratedCodeInfo'Annotation'Semantic(..),
+        GeneratedCodeInfo'Annotation'Semantic(), MessageOptions(),
+        MethodDescriptorProto(), MethodOptions(),
         MethodOptions'IdempotencyLevel(..),
         MethodOptions'IdempotencyLevel(), OneofDescriptorProto(),
         OneofOptions(), ServiceDescriptorProto(), ServiceOptions(),
@@ -480,14 +496,9 @@ instance Data.ProtoLens.Message DescriptorProto where
                       case tag of
                         10
                           -> do y <- (Data.ProtoLens.Encoding.Bytes.<?>)
-                                       (do value <- do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
-                                                       Data.ProtoLens.Encoding.Bytes.getBytes
-                                                         (Prelude.fromIntegral len)
-                                           Data.ProtoLens.Encoding.Bytes.runEither
-                                             (case Data.Text.Encoding.decodeUtf8' value of
-                                                (Prelude.Left err)
-                                                  -> Prelude.Left (Prelude.show err)
-                                                (Prelude.Right r) -> Prelude.Right r))
+                                       (do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
+                                           Data.ProtoLens.Encoding.Bytes.getText
+                                             (Prelude.fromIntegral len))
                                        "name"
                                 loop
                                   (Lens.Family2.set (Data.ProtoLens.Field.field @"name") y x)
@@ -652,14 +663,9 @@ instance Data.ProtoLens.Message DescriptorProto where
                                   v
                         82
                           -> do !y <- (Data.ProtoLens.Encoding.Bytes.<?>)
-                                        (do value <- do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
-                                                        Data.ProtoLens.Encoding.Bytes.getBytes
-                                                          (Prelude.fromIntegral len)
-                                            Data.ProtoLens.Encoding.Bytes.runEither
-                                              (case Data.Text.Encoding.decodeUtf8' value of
-                                                 (Prelude.Left err)
-                                                   -> Prelude.Left (Prelude.show err)
-                                                 (Prelude.Right r) -> Prelude.Right r))
+                                        (do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
+                                            Data.ProtoLens.Encoding.Bytes.getText
+                                              (Prelude.fromIntegral len))
                                         "reserved_name"
                                 v <- Data.ProtoLens.Encoding.Parser.Unsafe.unsafeLiftIO
                                        (Data.ProtoLens.Encoding.Growing.append
@@ -1288,6 +1294,125 @@ instance Control.DeepSeq.NFData DescriptorProto'ReservedRange where
                 (_DescriptorProto'ReservedRange'start x__)
                 (Control.DeepSeq.deepseq
                    (_DescriptorProto'ReservedRange'end x__) ()))
+data Edition
+  = EDITION_UNKNOWN |
+    EDITION_1_TEST_ONLY |
+    EDITION_2_TEST_ONLY |
+    EDITION_LEGACY |
+    EDITION_PROTO2 |
+    EDITION_PROTO3 |
+    EDITION_2023 |
+    EDITION_2024 |
+    EDITION_99997_TEST_ONLY |
+    EDITION_99998_TEST_ONLY |
+    EDITION_99999_TEST_ONLY |
+    EDITION_MAX
+  deriving stock (Prelude.Show, Prelude.Eq, Prelude.Ord)
+instance Data.ProtoLens.MessageEnum Edition where
+  maybeToEnum 0 = Prelude.Just EDITION_UNKNOWN
+  maybeToEnum 1 = Prelude.Just EDITION_1_TEST_ONLY
+  maybeToEnum 2 = Prelude.Just EDITION_2_TEST_ONLY
+  maybeToEnum 900 = Prelude.Just EDITION_LEGACY
+  maybeToEnum 998 = Prelude.Just EDITION_PROTO2
+  maybeToEnum 999 = Prelude.Just EDITION_PROTO3
+  maybeToEnum 1000 = Prelude.Just EDITION_2023
+  maybeToEnum 1001 = Prelude.Just EDITION_2024
+  maybeToEnum 99997 = Prelude.Just EDITION_99997_TEST_ONLY
+  maybeToEnum 99998 = Prelude.Just EDITION_99998_TEST_ONLY
+  maybeToEnum 99999 = Prelude.Just EDITION_99999_TEST_ONLY
+  maybeToEnum 2147483647 = Prelude.Just EDITION_MAX
+  maybeToEnum _ = Prelude.Nothing
+  showEnum EDITION_UNKNOWN = "EDITION_UNKNOWN"
+  showEnum EDITION_LEGACY = "EDITION_LEGACY"
+  showEnum EDITION_PROTO2 = "EDITION_PROTO2"
+  showEnum EDITION_PROTO3 = "EDITION_PROTO3"
+  showEnum EDITION_2023 = "EDITION_2023"
+  showEnum EDITION_2024 = "EDITION_2024"
+  showEnum EDITION_1_TEST_ONLY = "EDITION_1_TEST_ONLY"
+  showEnum EDITION_2_TEST_ONLY = "EDITION_2_TEST_ONLY"
+  showEnum EDITION_99997_TEST_ONLY = "EDITION_99997_TEST_ONLY"
+  showEnum EDITION_99998_TEST_ONLY = "EDITION_99998_TEST_ONLY"
+  showEnum EDITION_99999_TEST_ONLY = "EDITION_99999_TEST_ONLY"
+  showEnum EDITION_MAX = "EDITION_MAX"
+  readEnum k
+    | (Prelude.==) k "EDITION_UNKNOWN" = Prelude.Just EDITION_UNKNOWN
+    | (Prelude.==) k "EDITION_LEGACY" = Prelude.Just EDITION_LEGACY
+    | (Prelude.==) k "EDITION_PROTO2" = Prelude.Just EDITION_PROTO2
+    | (Prelude.==) k "EDITION_PROTO3" = Prelude.Just EDITION_PROTO3
+    | (Prelude.==) k "EDITION_2023" = Prelude.Just EDITION_2023
+    | (Prelude.==) k "EDITION_2024" = Prelude.Just EDITION_2024
+    | (Prelude.==) k "EDITION_1_TEST_ONLY"
+    = Prelude.Just EDITION_1_TEST_ONLY
+    | (Prelude.==) k "EDITION_2_TEST_ONLY"
+    = Prelude.Just EDITION_2_TEST_ONLY
+    | (Prelude.==) k "EDITION_99997_TEST_ONLY"
+    = Prelude.Just EDITION_99997_TEST_ONLY
+    | (Prelude.==) k "EDITION_99998_TEST_ONLY"
+    = Prelude.Just EDITION_99998_TEST_ONLY
+    | (Prelude.==) k "EDITION_99999_TEST_ONLY"
+    = Prelude.Just EDITION_99999_TEST_ONLY
+    | (Prelude.==) k "EDITION_MAX" = Prelude.Just EDITION_MAX
+    | Prelude.otherwise
+    = (Prelude.>>=) (Text.Read.readMaybe k) Data.ProtoLens.maybeToEnum
+instance Prelude.Bounded Edition where
+  minBound = EDITION_UNKNOWN
+  maxBound = EDITION_MAX
+instance Prelude.Enum Edition where
+  toEnum k__
+    = Prelude.maybe
+        (Prelude.error
+           ((Prelude.++)
+              "toEnum: unknown value for enum Edition: " (Prelude.show k__)))
+        Prelude.id
+        (Data.ProtoLens.maybeToEnum k__)
+  fromEnum EDITION_UNKNOWN = 0
+  fromEnum EDITION_1_TEST_ONLY = 1
+  fromEnum EDITION_2_TEST_ONLY = 2
+  fromEnum EDITION_LEGACY = 900
+  fromEnum EDITION_PROTO2 = 998
+  fromEnum EDITION_PROTO3 = 999
+  fromEnum EDITION_2023 = 1000
+  fromEnum EDITION_2024 = 1001
+  fromEnum EDITION_99997_TEST_ONLY = 99997
+  fromEnum EDITION_99998_TEST_ONLY = 99998
+  fromEnum EDITION_99999_TEST_ONLY = 99999
+  fromEnum EDITION_MAX = 2147483647
+  succ EDITION_MAX
+    = Prelude.error
+        "Edition.succ: bad argument EDITION_MAX. This value would be out of bounds."
+  succ EDITION_UNKNOWN = EDITION_1_TEST_ONLY
+  succ EDITION_1_TEST_ONLY = EDITION_2_TEST_ONLY
+  succ EDITION_2_TEST_ONLY = EDITION_LEGACY
+  succ EDITION_LEGACY = EDITION_PROTO2
+  succ EDITION_PROTO2 = EDITION_PROTO3
+  succ EDITION_PROTO3 = EDITION_2023
+  succ EDITION_2023 = EDITION_2024
+  succ EDITION_2024 = EDITION_99997_TEST_ONLY
+  succ EDITION_99997_TEST_ONLY = EDITION_99998_TEST_ONLY
+  succ EDITION_99998_TEST_ONLY = EDITION_99999_TEST_ONLY
+  succ EDITION_99999_TEST_ONLY = EDITION_MAX
+  pred EDITION_UNKNOWN
+    = Prelude.error
+        "Edition.pred: bad argument EDITION_UNKNOWN. This value would be out of bounds."
+  pred EDITION_1_TEST_ONLY = EDITION_UNKNOWN
+  pred EDITION_2_TEST_ONLY = EDITION_1_TEST_ONLY
+  pred EDITION_LEGACY = EDITION_2_TEST_ONLY
+  pred EDITION_PROTO2 = EDITION_LEGACY
+  pred EDITION_PROTO3 = EDITION_PROTO2
+  pred EDITION_2023 = EDITION_PROTO3
+  pred EDITION_2024 = EDITION_2023
+  pred EDITION_99997_TEST_ONLY = EDITION_2024
+  pred EDITION_99998_TEST_ONLY = EDITION_99997_TEST_ONLY
+  pred EDITION_99999_TEST_ONLY = EDITION_99998_TEST_ONLY
+  pred EDITION_MAX = EDITION_99999_TEST_ONLY
+  enumFrom = Data.ProtoLens.Message.Enum.messageEnumFrom
+  enumFromTo = Data.ProtoLens.Message.Enum.messageEnumFromTo
+  enumFromThen = Data.ProtoLens.Message.Enum.messageEnumFromThen
+  enumFromThenTo = Data.ProtoLens.Message.Enum.messageEnumFromThenTo
+instance Data.ProtoLens.FieldDefault Edition where
+  fieldDefault = EDITION_UNKNOWN
+instance Control.DeepSeq.NFData Edition where
+  rnf x__ = Prelude.seq x__ ()
 {- | Fields :
      
          * 'Proto.Google.Protobuf.Descriptor_Fields.name' @:: Lens' EnumDescriptorProto Data.Text.Text@
@@ -1513,14 +1638,9 @@ instance Data.ProtoLens.Message EnumDescriptorProto where
                       case tag of
                         10
                           -> do y <- (Data.ProtoLens.Encoding.Bytes.<?>)
-                                       (do value <- do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
-                                                       Data.ProtoLens.Encoding.Bytes.getBytes
-                                                         (Prelude.fromIntegral len)
-                                           Data.ProtoLens.Encoding.Bytes.runEither
-                                             (case Data.Text.Encoding.decodeUtf8' value of
-                                                (Prelude.Left err)
-                                                  -> Prelude.Left (Prelude.show err)
-                                                (Prelude.Right r) -> Prelude.Right r))
+                                       (do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
+                                           Data.ProtoLens.Encoding.Bytes.getText
+                                             (Prelude.fromIntegral len))
                                        "name"
                                 loop
                                   (Lens.Family2.set (Data.ProtoLens.Field.field @"name") y x)
@@ -1561,14 +1681,9 @@ instance Data.ProtoLens.Message EnumDescriptorProto where
                                 loop x mutable'reservedName v mutable'value
                         42
                           -> do !y <- (Data.ProtoLens.Encoding.Bytes.<?>)
-                                        (do value <- do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
-                                                        Data.ProtoLens.Encoding.Bytes.getBytes
-                                                          (Prelude.fromIntegral len)
-                                            Data.ProtoLens.Encoding.Bytes.runEither
-                                              (case Data.Text.Encoding.decodeUtf8' value of
-                                                 (Prelude.Left err)
-                                                   -> Prelude.Left (Prelude.show err)
-                                                 (Prelude.Right r) -> Prelude.Right r))
+                                        (do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
+                                            Data.ProtoLens.Encoding.Bytes.getText
+                                              (Prelude.fromIntegral len))
                                         "reserved_name"
                                 v <- Data.ProtoLens.Encoding.Parser.Unsafe.unsafeLiftIO
                                        (Data.ProtoLens.Encoding.Growing.append
@@ -1869,11 +1984,17 @@ instance Control.DeepSeq.NFData EnumDescriptorProto'EnumReservedRange where
          * 'Proto.Google.Protobuf.Descriptor_Fields.maybe'allowAlias' @:: Lens' EnumOptions (Prelude.Maybe Prelude.Bool)@
          * 'Proto.Google.Protobuf.Descriptor_Fields.deprecated' @:: Lens' EnumOptions Prelude.Bool@
          * 'Proto.Google.Protobuf.Descriptor_Fields.maybe'deprecated' @:: Lens' EnumOptions (Prelude.Maybe Prelude.Bool)@
+         * 'Proto.Google.Protobuf.Descriptor_Fields.deprecatedLegacyJsonFieldConflicts' @:: Lens' EnumOptions Prelude.Bool@
+         * 'Proto.Google.Protobuf.Descriptor_Fields.maybe'deprecatedLegacyJsonFieldConflicts' @:: Lens' EnumOptions (Prelude.Maybe Prelude.Bool)@
+         * 'Proto.Google.Protobuf.Descriptor_Fields.features' @:: Lens' EnumOptions FeatureSet@
+         * 'Proto.Google.Protobuf.Descriptor_Fields.maybe'features' @:: Lens' EnumOptions (Prelude.Maybe FeatureSet)@
          * 'Proto.Google.Protobuf.Descriptor_Fields.uninterpretedOption' @:: Lens' EnumOptions [UninterpretedOption]@
          * 'Proto.Google.Protobuf.Descriptor_Fields.vec'uninterpretedOption' @:: Lens' EnumOptions (Data.Vector.Vector UninterpretedOption)@ -}
 data EnumOptions
   = EnumOptions'_constructor {_EnumOptions'allowAlias :: !(Prelude.Maybe Prelude.Bool),
                               _EnumOptions'deprecated :: !(Prelude.Maybe Prelude.Bool),
+                              _EnumOptions'deprecatedLegacyJsonFieldConflicts :: !(Prelude.Maybe Prelude.Bool),
+                              _EnumOptions'features :: !(Prelude.Maybe FeatureSet),
                               _EnumOptions'uninterpretedOption :: !(Data.Vector.Vector UninterpretedOption),
                               _EnumOptions'_unknownFields :: !Data.ProtoLens.FieldSet}
   deriving stock (Prelude.Eq, Prelude.Ord)
@@ -1911,6 +2032,36 @@ instance Data.ProtoLens.Field.HasField EnumOptions "maybe'deprecated" (Prelude.M
            _EnumOptions'deprecated
            (\ x__ y__ -> x__ {_EnumOptions'deprecated = y__}))
         Prelude.id
+instance Data.ProtoLens.Field.HasField EnumOptions "deprecatedLegacyJsonFieldConflicts" Prelude.Bool where
+  fieldOf _
+    = (Prelude..)
+        (Lens.Family2.Unchecked.lens
+           _EnumOptions'deprecatedLegacyJsonFieldConflicts
+           (\ x__ y__
+              -> x__ {_EnumOptions'deprecatedLegacyJsonFieldConflicts = y__}))
+        (Data.ProtoLens.maybeLens Data.ProtoLens.fieldDefault)
+instance Data.ProtoLens.Field.HasField EnumOptions "maybe'deprecatedLegacyJsonFieldConflicts" (Prelude.Maybe Prelude.Bool) where
+  fieldOf _
+    = (Prelude..)
+        (Lens.Family2.Unchecked.lens
+           _EnumOptions'deprecatedLegacyJsonFieldConflicts
+           (\ x__ y__
+              -> x__ {_EnumOptions'deprecatedLegacyJsonFieldConflicts = y__}))
+        Prelude.id
+instance Data.ProtoLens.Field.HasField EnumOptions "features" FeatureSet where
+  fieldOf _
+    = (Prelude..)
+        (Lens.Family2.Unchecked.lens
+           _EnumOptions'features
+           (\ x__ y__ -> x__ {_EnumOptions'features = y__}))
+        (Data.ProtoLens.maybeLens Data.ProtoLens.defMessage)
+instance Data.ProtoLens.Field.HasField EnumOptions "maybe'features" (Prelude.Maybe FeatureSet) where
+  fieldOf _
+    = (Prelude..)
+        (Lens.Family2.Unchecked.lens
+           _EnumOptions'features
+           (\ x__ y__ -> x__ {_EnumOptions'features = y__}))
+        Prelude.id
 instance Data.ProtoLens.Field.HasField EnumOptions "uninterpretedOption" [UninterpretedOption] where
   fieldOf _
     = (Prelude..)
@@ -1936,7 +2087,9 @@ instance Data.ProtoLens.Message EnumOptions where
       \allowAlias\DC2%\n\
       \\n\
       \deprecated\CAN\ETX \SOH(\b:\ENQfalseR\n\
-      \deprecated\DC2X\n\
+      \deprecated\DC2V\n\
+      \&deprecated_legacy_json_field_conflicts\CAN\ACK \SOH(\bR\"deprecatedLegacyJsonFieldConflictsB\STX\CAN\SOH\DC27\n\
+      \\bfeatures\CAN\a \SOH(\v2\ESC.google.protobuf.FeatureSetR\bfeatures\DC2X\n\
       \\DC4uninterpreted_option\CAN\231\a \ETX(\v2$.google.protobuf.UninterpretedOptionR\DC3uninterpretedOption*\t\b\232\a\DLE\128\128\128\128\STXJ\EOT\b\ENQ\DLE\ACK"
   packedFileDescriptor _ = packedFileDescriptor
   fieldsByTag
@@ -1957,6 +2110,23 @@ instance Data.ProtoLens.Message EnumOptions where
               (Data.ProtoLens.OptionalField
                  (Data.ProtoLens.Field.field @"maybe'deprecated")) ::
               Data.ProtoLens.FieldDescriptor EnumOptions
+        deprecatedLegacyJsonFieldConflicts__field_descriptor
+          = Data.ProtoLens.FieldDescriptor
+              "deprecated_legacy_json_field_conflicts"
+              (Data.ProtoLens.ScalarField Data.ProtoLens.BoolField ::
+                 Data.ProtoLens.FieldTypeDescriptor Prelude.Bool)
+              (Data.ProtoLens.OptionalField
+                 (Data.ProtoLens.Field.field
+                    @"maybe'deprecatedLegacyJsonFieldConflicts")) ::
+              Data.ProtoLens.FieldDescriptor EnumOptions
+        features__field_descriptor
+          = Data.ProtoLens.FieldDescriptor
+              "features"
+              (Data.ProtoLens.MessageField Data.ProtoLens.MessageType ::
+                 Data.ProtoLens.FieldTypeDescriptor FeatureSet)
+              (Data.ProtoLens.OptionalField
+                 (Data.ProtoLens.Field.field @"maybe'features")) ::
+              Data.ProtoLens.FieldDescriptor EnumOptions
         uninterpretedOption__field_descriptor
           = Data.ProtoLens.FieldDescriptor
               "uninterpreted_option"
@@ -1970,6 +2140,9 @@ instance Data.ProtoLens.Message EnumOptions where
         Data.Map.fromList
           [(Data.ProtoLens.Tag 2, allowAlias__field_descriptor),
            (Data.ProtoLens.Tag 3, deprecated__field_descriptor),
+           (Data.ProtoLens.Tag 6, 
+            deprecatedLegacyJsonFieldConflicts__field_descriptor),
+           (Data.ProtoLens.Tag 7, features__field_descriptor),
            (Data.ProtoLens.Tag 999, uninterpretedOption__field_descriptor)]
   unknownFields
     = Lens.Family2.Unchecked.lens
@@ -1979,6 +2152,8 @@ instance Data.ProtoLens.Message EnumOptions where
     = EnumOptions'_constructor
         {_EnumOptions'allowAlias = Prelude.Nothing,
          _EnumOptions'deprecated = Prelude.Nothing,
+         _EnumOptions'deprecatedLegacyJsonFieldConflicts = Prelude.Nothing,
+         _EnumOptions'features = Prelude.Nothing,
          _EnumOptions'uninterpretedOption = Data.Vector.Generic.empty,
          _EnumOptions'_unknownFields = []}
   parseMessage
@@ -2028,6 +2203,27 @@ instance Data.ProtoLens.Message EnumOptions where
                                        "deprecated"
                                 loop
                                   (Lens.Family2.set (Data.ProtoLens.Field.field @"deprecated") y x)
+                                  mutable'uninterpretedOption
+                        48
+                          -> do y <- (Data.ProtoLens.Encoding.Bytes.<?>)
+                                       (Prelude.fmap
+                                          ((Prelude./=) 0) Data.ProtoLens.Encoding.Bytes.getVarInt)
+                                       "deprecated_legacy_json_field_conflicts"
+                                loop
+                                  (Lens.Family2.set
+                                     (Data.ProtoLens.Field.field
+                                        @"deprecatedLegacyJsonFieldConflicts")
+                                     y
+                                     x)
+                                  mutable'uninterpretedOption
+                        58
+                          -> do y <- (Data.ProtoLens.Encoding.Bytes.<?>)
+                                       (do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
+                                           Data.ProtoLens.Encoding.Bytes.isolate
+                                             (Prelude.fromIntegral len) Data.ProtoLens.parseMessage)
+                                       "features"
+                                loop
+                                  (Lens.Family2.set (Data.ProtoLens.Field.field @"features") y x)
                                   mutable'uninterpretedOption
                         7994
                           -> do !y <- (Data.ProtoLens.Encoding.Bytes.<?>)
@@ -2082,22 +2278,54 @@ instance Data.ProtoLens.Message EnumOptions where
                              (\ b -> if b then 1 else 0)
                              _v))
                 ((Data.Monoid.<>)
-                   (Data.ProtoLens.Encoding.Bytes.foldMapBuilder
-                      (\ _v
-                         -> (Data.Monoid.<>)
-                              (Data.ProtoLens.Encoding.Bytes.putVarInt 7994)
-                              ((Prelude..)
-                                 (\ bs
-                                    -> (Data.Monoid.<>)
-                                         (Data.ProtoLens.Encoding.Bytes.putVarInt
-                                            (Prelude.fromIntegral (Data.ByteString.length bs)))
-                                         (Data.ProtoLens.Encoding.Bytes.putBytes bs))
-                                 Data.ProtoLens.encodeMessage
-                                 _v))
-                      (Lens.Family2.view
-                         (Data.ProtoLens.Field.field @"vec'uninterpretedOption") _x))
-                   (Data.ProtoLens.Encoding.Wire.buildFieldSet
-                      (Lens.Family2.view Data.ProtoLens.unknownFields _x))))
+                   (case
+                        Lens.Family2.view
+                          (Data.ProtoLens.Field.field
+                             @"maybe'deprecatedLegacyJsonFieldConflicts")
+                          _x
+                    of
+                      Prelude.Nothing -> Data.Monoid.mempty
+                      (Prelude.Just _v)
+                        -> (Data.Monoid.<>)
+                             (Data.ProtoLens.Encoding.Bytes.putVarInt 48)
+                             ((Prelude..)
+                                Data.ProtoLens.Encoding.Bytes.putVarInt
+                                (\ b -> if b then 1 else 0)
+                                _v))
+                   ((Data.Monoid.<>)
+                      (case
+                           Lens.Family2.view (Data.ProtoLens.Field.field @"maybe'features") _x
+                       of
+                         Prelude.Nothing -> Data.Monoid.mempty
+                         (Prelude.Just _v)
+                           -> (Data.Monoid.<>)
+                                (Data.ProtoLens.Encoding.Bytes.putVarInt 58)
+                                ((Prelude..)
+                                   (\ bs
+                                      -> (Data.Monoid.<>)
+                                           (Data.ProtoLens.Encoding.Bytes.putVarInt
+                                              (Prelude.fromIntegral (Data.ByteString.length bs)))
+                                           (Data.ProtoLens.Encoding.Bytes.putBytes bs))
+                                   Data.ProtoLens.encodeMessage
+                                   _v))
+                      ((Data.Monoid.<>)
+                         (Data.ProtoLens.Encoding.Bytes.foldMapBuilder
+                            (\ _v
+                               -> (Data.Monoid.<>)
+                                    (Data.ProtoLens.Encoding.Bytes.putVarInt 7994)
+                                    ((Prelude..)
+                                       (\ bs
+                                          -> (Data.Monoid.<>)
+                                               (Data.ProtoLens.Encoding.Bytes.putVarInt
+                                                  (Prelude.fromIntegral
+                                                     (Data.ByteString.length bs)))
+                                               (Data.ProtoLens.Encoding.Bytes.putBytes bs))
+                                       Data.ProtoLens.encodeMessage
+                                       _v))
+                            (Lens.Family2.view
+                               (Data.ProtoLens.Field.field @"vec'uninterpretedOption") _x))
+                         (Data.ProtoLens.Encoding.Wire.buildFieldSet
+                            (Lens.Family2.view Data.ProtoLens.unknownFields _x))))))
 instance Control.DeepSeq.NFData EnumOptions where
   rnf
     = \ x__
@@ -2108,7 +2336,11 @@ instance Control.DeepSeq.NFData EnumOptions where
                 (Control.DeepSeq.deepseq
                    (_EnumOptions'deprecated x__)
                    (Control.DeepSeq.deepseq
-                      (_EnumOptions'uninterpretedOption x__) ())))
+                      (_EnumOptions'deprecatedLegacyJsonFieldConflicts x__)
+                      (Control.DeepSeq.deepseq
+                         (_EnumOptions'features x__)
+                         (Control.DeepSeq.deepseq
+                            (_EnumOptions'uninterpretedOption x__) ())))))
 {- | Fields :
      
          * 'Proto.Google.Protobuf.Descriptor_Fields.name' @:: Lens' EnumValueDescriptorProto Data.Text.Text@
@@ -2247,14 +2479,9 @@ instance Data.ProtoLens.Message EnumValueDescriptorProto where
                       case tag of
                         10
                           -> do y <- (Data.ProtoLens.Encoding.Bytes.<?>)
-                                       (do value <- do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
-                                                       Data.ProtoLens.Encoding.Bytes.getBytes
-                                                         (Prelude.fromIntegral len)
-                                           Data.ProtoLens.Encoding.Bytes.runEither
-                                             (case Data.Text.Encoding.decodeUtf8' value of
-                                                (Prelude.Left err)
-                                                  -> Prelude.Left (Prelude.show err)
-                                                (Prelude.Right r) -> Prelude.Right r))
+                                       (do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
+                                           Data.ProtoLens.Encoding.Bytes.getText
+                                             (Prelude.fromIntegral len))
                                        "name"
                                 loop (Lens.Family2.set (Data.ProtoLens.Field.field @"name") y x)
                         16
@@ -2341,10 +2568,19 @@ instance Control.DeepSeq.NFData EnumValueDescriptorProto where
      
          * 'Proto.Google.Protobuf.Descriptor_Fields.deprecated' @:: Lens' EnumValueOptions Prelude.Bool@
          * 'Proto.Google.Protobuf.Descriptor_Fields.maybe'deprecated' @:: Lens' EnumValueOptions (Prelude.Maybe Prelude.Bool)@
+         * 'Proto.Google.Protobuf.Descriptor_Fields.features' @:: Lens' EnumValueOptions FeatureSet@
+         * 'Proto.Google.Protobuf.Descriptor_Fields.maybe'features' @:: Lens' EnumValueOptions (Prelude.Maybe FeatureSet)@
+         * 'Proto.Google.Protobuf.Descriptor_Fields.debugRedact' @:: Lens' EnumValueOptions Prelude.Bool@
+         * 'Proto.Google.Protobuf.Descriptor_Fields.maybe'debugRedact' @:: Lens' EnumValueOptions (Prelude.Maybe Prelude.Bool)@
+         * 'Proto.Google.Protobuf.Descriptor_Fields.featureSupport' @:: Lens' EnumValueOptions FieldOptions'FeatureSupport@
+         * 'Proto.Google.Protobuf.Descriptor_Fields.maybe'featureSupport' @:: Lens' EnumValueOptions (Prelude.Maybe FieldOptions'FeatureSupport)@
          * 'Proto.Google.Protobuf.Descriptor_Fields.uninterpretedOption' @:: Lens' EnumValueOptions [UninterpretedOption]@
          * 'Proto.Google.Protobuf.Descriptor_Fields.vec'uninterpretedOption' @:: Lens' EnumValueOptions (Data.Vector.Vector UninterpretedOption)@ -}
 data EnumValueOptions
   = EnumValueOptions'_constructor {_EnumValueOptions'deprecated :: !(Prelude.Maybe Prelude.Bool),
+                                   _EnumValueOptions'features :: !(Prelude.Maybe FeatureSet),
+                                   _EnumValueOptions'debugRedact :: !(Prelude.Maybe Prelude.Bool),
+                                   _EnumValueOptions'featureSupport :: !(Prelude.Maybe FieldOptions'FeatureSupport),
                                    _EnumValueOptions'uninterpretedOption :: !(Data.Vector.Vector UninterpretedOption),
                                    _EnumValueOptions'_unknownFields :: !Data.ProtoLens.FieldSet}
   deriving stock (Prelude.Eq, Prelude.Ord)
@@ -2367,6 +2603,48 @@ instance Data.ProtoLens.Field.HasField EnumValueOptions "maybe'deprecated" (Prel
         (Lens.Family2.Unchecked.lens
            _EnumValueOptions'deprecated
            (\ x__ y__ -> x__ {_EnumValueOptions'deprecated = y__}))
+        Prelude.id
+instance Data.ProtoLens.Field.HasField EnumValueOptions "features" FeatureSet where
+  fieldOf _
+    = (Prelude..)
+        (Lens.Family2.Unchecked.lens
+           _EnumValueOptions'features
+           (\ x__ y__ -> x__ {_EnumValueOptions'features = y__}))
+        (Data.ProtoLens.maybeLens Data.ProtoLens.defMessage)
+instance Data.ProtoLens.Field.HasField EnumValueOptions "maybe'features" (Prelude.Maybe FeatureSet) where
+  fieldOf _
+    = (Prelude..)
+        (Lens.Family2.Unchecked.lens
+           _EnumValueOptions'features
+           (\ x__ y__ -> x__ {_EnumValueOptions'features = y__}))
+        Prelude.id
+instance Data.ProtoLens.Field.HasField EnumValueOptions "debugRedact" Prelude.Bool where
+  fieldOf _
+    = (Prelude..)
+        (Lens.Family2.Unchecked.lens
+           _EnumValueOptions'debugRedact
+           (\ x__ y__ -> x__ {_EnumValueOptions'debugRedact = y__}))
+        (Data.ProtoLens.maybeLens Prelude.False)
+instance Data.ProtoLens.Field.HasField EnumValueOptions "maybe'debugRedact" (Prelude.Maybe Prelude.Bool) where
+  fieldOf _
+    = (Prelude..)
+        (Lens.Family2.Unchecked.lens
+           _EnumValueOptions'debugRedact
+           (\ x__ y__ -> x__ {_EnumValueOptions'debugRedact = y__}))
+        Prelude.id
+instance Data.ProtoLens.Field.HasField EnumValueOptions "featureSupport" FieldOptions'FeatureSupport where
+  fieldOf _
+    = (Prelude..)
+        (Lens.Family2.Unchecked.lens
+           _EnumValueOptions'featureSupport
+           (\ x__ y__ -> x__ {_EnumValueOptions'featureSupport = y__}))
+        (Data.ProtoLens.maybeLens Data.ProtoLens.defMessage)
+instance Data.ProtoLens.Field.HasField EnumValueOptions "maybe'featureSupport" (Prelude.Maybe FieldOptions'FeatureSupport) where
+  fieldOf _
+    = (Prelude..)
+        (Lens.Family2.Unchecked.lens
+           _EnumValueOptions'featureSupport
+           (\ x__ y__ -> x__ {_EnumValueOptions'featureSupport = y__}))
         Prelude.id
 instance Data.ProtoLens.Field.HasField EnumValueOptions "uninterpretedOption" [UninterpretedOption] where
   fieldOf _
@@ -2391,7 +2669,10 @@ instance Data.ProtoLens.Message EnumValueOptions where
       \\DLEEnumValueOptions\DC2%\n\
       \\n\
       \deprecated\CAN\SOH \SOH(\b:\ENQfalseR\n\
-      \deprecated\DC2X\n\
+      \deprecated\DC27\n\
+      \\bfeatures\CAN\STX \SOH(\v2\ESC.google.protobuf.FeatureSetR\bfeatures\DC2(\n\
+      \\fdebug_redact\CAN\ETX \SOH(\b:\ENQfalseR\vdebugRedact\DC2U\n\
+      \\SIfeature_support\CAN\EOT \SOH(\v2,.google.protobuf.FieldOptions.FeatureSupportR\SOfeatureSupport\DC2X\n\
       \\DC4uninterpreted_option\CAN\231\a \ETX(\v2$.google.protobuf.UninterpretedOptionR\DC3uninterpretedOption*\t\b\232\a\DLE\128\128\128\128\STX"
   packedFileDescriptor _ = packedFileDescriptor
   fieldsByTag
@@ -2403,6 +2684,30 @@ instance Data.ProtoLens.Message EnumValueOptions where
                  Data.ProtoLens.FieldTypeDescriptor Prelude.Bool)
               (Data.ProtoLens.OptionalField
                  (Data.ProtoLens.Field.field @"maybe'deprecated")) ::
+              Data.ProtoLens.FieldDescriptor EnumValueOptions
+        features__field_descriptor
+          = Data.ProtoLens.FieldDescriptor
+              "features"
+              (Data.ProtoLens.MessageField Data.ProtoLens.MessageType ::
+                 Data.ProtoLens.FieldTypeDescriptor FeatureSet)
+              (Data.ProtoLens.OptionalField
+                 (Data.ProtoLens.Field.field @"maybe'features")) ::
+              Data.ProtoLens.FieldDescriptor EnumValueOptions
+        debugRedact__field_descriptor
+          = Data.ProtoLens.FieldDescriptor
+              "debug_redact"
+              (Data.ProtoLens.ScalarField Data.ProtoLens.BoolField ::
+                 Data.ProtoLens.FieldTypeDescriptor Prelude.Bool)
+              (Data.ProtoLens.OptionalField
+                 (Data.ProtoLens.Field.field @"maybe'debugRedact")) ::
+              Data.ProtoLens.FieldDescriptor EnumValueOptions
+        featureSupport__field_descriptor
+          = Data.ProtoLens.FieldDescriptor
+              "feature_support"
+              (Data.ProtoLens.MessageField Data.ProtoLens.MessageType ::
+                 Data.ProtoLens.FieldTypeDescriptor FieldOptions'FeatureSupport)
+              (Data.ProtoLens.OptionalField
+                 (Data.ProtoLens.Field.field @"maybe'featureSupport")) ::
               Data.ProtoLens.FieldDescriptor EnumValueOptions
         uninterpretedOption__field_descriptor
           = Data.ProtoLens.FieldDescriptor
@@ -2416,6 +2721,9 @@ instance Data.ProtoLens.Message EnumValueOptions where
       in
         Data.Map.fromList
           [(Data.ProtoLens.Tag 1, deprecated__field_descriptor),
+           (Data.ProtoLens.Tag 2, features__field_descriptor),
+           (Data.ProtoLens.Tag 3, debugRedact__field_descriptor),
+           (Data.ProtoLens.Tag 4, featureSupport__field_descriptor),
            (Data.ProtoLens.Tag 999, uninterpretedOption__field_descriptor)]
   unknownFields
     = Lens.Family2.Unchecked.lens
@@ -2424,6 +2732,9 @@ instance Data.ProtoLens.Message EnumValueOptions where
   defMessage
     = EnumValueOptions'_constructor
         {_EnumValueOptions'deprecated = Prelude.Nothing,
+         _EnumValueOptions'features = Prelude.Nothing,
+         _EnumValueOptions'debugRedact = Prelude.Nothing,
+         _EnumValueOptions'featureSupport = Prelude.Nothing,
          _EnumValueOptions'uninterpretedOption = Data.Vector.Generic.empty,
          _EnumValueOptions'_unknownFields = []}
   parseMessage
@@ -2465,6 +2776,33 @@ instance Data.ProtoLens.Message EnumValueOptions where
                                 loop
                                   (Lens.Family2.set (Data.ProtoLens.Field.field @"deprecated") y x)
                                   mutable'uninterpretedOption
+                        18
+                          -> do y <- (Data.ProtoLens.Encoding.Bytes.<?>)
+                                       (do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
+                                           Data.ProtoLens.Encoding.Bytes.isolate
+                                             (Prelude.fromIntegral len) Data.ProtoLens.parseMessage)
+                                       "features"
+                                loop
+                                  (Lens.Family2.set (Data.ProtoLens.Field.field @"features") y x)
+                                  mutable'uninterpretedOption
+                        24
+                          -> do y <- (Data.ProtoLens.Encoding.Bytes.<?>)
+                                       (Prelude.fmap
+                                          ((Prelude./=) 0) Data.ProtoLens.Encoding.Bytes.getVarInt)
+                                       "debug_redact"
+                                loop
+                                  (Lens.Family2.set (Data.ProtoLens.Field.field @"debugRedact") y x)
+                                  mutable'uninterpretedOption
+                        34
+                          -> do y <- (Data.ProtoLens.Encoding.Bytes.<?>)
+                                       (do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
+                                           Data.ProtoLens.Encoding.Bytes.isolate
+                                             (Prelude.fromIntegral len) Data.ProtoLens.parseMessage)
+                                       "feature_support"
+                                loop
+                                  (Lens.Family2.set
+                                     (Data.ProtoLens.Field.field @"featureSupport") y x)
+                                  mutable'uninterpretedOption
                         7994
                           -> do !y <- (Data.ProtoLens.Encoding.Bytes.<?>)
                                         (do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
@@ -2505,22 +2843,69 @@ instance Data.ProtoLens.Message EnumValueOptions where
                           (\ b -> if b then 1 else 0)
                           _v))
              ((Data.Monoid.<>)
-                (Data.ProtoLens.Encoding.Bytes.foldMapBuilder
-                   (\ _v
-                      -> (Data.Monoid.<>)
-                           (Data.ProtoLens.Encoding.Bytes.putVarInt 7994)
-                           ((Prelude..)
-                              (\ bs
-                                 -> (Data.Monoid.<>)
-                                      (Data.ProtoLens.Encoding.Bytes.putVarInt
-                                         (Prelude.fromIntegral (Data.ByteString.length bs)))
-                                      (Data.ProtoLens.Encoding.Bytes.putBytes bs))
-                              Data.ProtoLens.encodeMessage
-                              _v))
-                   (Lens.Family2.view
-                      (Data.ProtoLens.Field.field @"vec'uninterpretedOption") _x))
-                (Data.ProtoLens.Encoding.Wire.buildFieldSet
-                   (Lens.Family2.view Data.ProtoLens.unknownFields _x)))
+                (case
+                     Lens.Family2.view (Data.ProtoLens.Field.field @"maybe'features") _x
+                 of
+                   Prelude.Nothing -> Data.Monoid.mempty
+                   (Prelude.Just _v)
+                     -> (Data.Monoid.<>)
+                          (Data.ProtoLens.Encoding.Bytes.putVarInt 18)
+                          ((Prelude..)
+                             (\ bs
+                                -> (Data.Monoid.<>)
+                                     (Data.ProtoLens.Encoding.Bytes.putVarInt
+                                        (Prelude.fromIntegral (Data.ByteString.length bs)))
+                                     (Data.ProtoLens.Encoding.Bytes.putBytes bs))
+                             Data.ProtoLens.encodeMessage
+                             _v))
+                ((Data.Monoid.<>)
+                   (case
+                        Lens.Family2.view
+                          (Data.ProtoLens.Field.field @"maybe'debugRedact") _x
+                    of
+                      Prelude.Nothing -> Data.Monoid.mempty
+                      (Prelude.Just _v)
+                        -> (Data.Monoid.<>)
+                             (Data.ProtoLens.Encoding.Bytes.putVarInt 24)
+                             ((Prelude..)
+                                Data.ProtoLens.Encoding.Bytes.putVarInt
+                                (\ b -> if b then 1 else 0)
+                                _v))
+                   ((Data.Monoid.<>)
+                      (case
+                           Lens.Family2.view
+                             (Data.ProtoLens.Field.field @"maybe'featureSupport") _x
+                       of
+                         Prelude.Nothing -> Data.Monoid.mempty
+                         (Prelude.Just _v)
+                           -> (Data.Monoid.<>)
+                                (Data.ProtoLens.Encoding.Bytes.putVarInt 34)
+                                ((Prelude..)
+                                   (\ bs
+                                      -> (Data.Monoid.<>)
+                                           (Data.ProtoLens.Encoding.Bytes.putVarInt
+                                              (Prelude.fromIntegral (Data.ByteString.length bs)))
+                                           (Data.ProtoLens.Encoding.Bytes.putBytes bs))
+                                   Data.ProtoLens.encodeMessage
+                                   _v))
+                      ((Data.Monoid.<>)
+                         (Data.ProtoLens.Encoding.Bytes.foldMapBuilder
+                            (\ _v
+                               -> (Data.Monoid.<>)
+                                    (Data.ProtoLens.Encoding.Bytes.putVarInt 7994)
+                                    ((Prelude..)
+                                       (\ bs
+                                          -> (Data.Monoid.<>)
+                                               (Data.ProtoLens.Encoding.Bytes.putVarInt
+                                                  (Prelude.fromIntegral
+                                                     (Data.ByteString.length bs)))
+                                               (Data.ProtoLens.Encoding.Bytes.putBytes bs))
+                                       Data.ProtoLens.encodeMessage
+                                       _v))
+                            (Lens.Family2.view
+                               (Data.ProtoLens.Field.field @"vec'uninterpretedOption") _x))
+                         (Data.ProtoLens.Encoding.Wire.buildFieldSet
+                            (Lens.Family2.view Data.ProtoLens.unknownFields _x))))))
 instance Control.DeepSeq.NFData EnumValueOptions where
   rnf
     = \ x__
@@ -2529,13 +2914,28 @@ instance Control.DeepSeq.NFData EnumValueOptions where
              (Control.DeepSeq.deepseq
                 (_EnumValueOptions'deprecated x__)
                 (Control.DeepSeq.deepseq
-                   (_EnumValueOptions'uninterpretedOption x__) ()))
+                   (_EnumValueOptions'features x__)
+                   (Control.DeepSeq.deepseq
+                      (_EnumValueOptions'debugRedact x__)
+                      (Control.DeepSeq.deepseq
+                         (_EnumValueOptions'featureSupport x__)
+                         (Control.DeepSeq.deepseq
+                            (_EnumValueOptions'uninterpretedOption x__) ())))))
 {- | Fields :
      
          * 'Proto.Google.Protobuf.Descriptor_Fields.uninterpretedOption' @:: Lens' ExtensionRangeOptions [UninterpretedOption]@
-         * 'Proto.Google.Protobuf.Descriptor_Fields.vec'uninterpretedOption' @:: Lens' ExtensionRangeOptions (Data.Vector.Vector UninterpretedOption)@ -}
+         * 'Proto.Google.Protobuf.Descriptor_Fields.vec'uninterpretedOption' @:: Lens' ExtensionRangeOptions (Data.Vector.Vector UninterpretedOption)@
+         * 'Proto.Google.Protobuf.Descriptor_Fields.declaration' @:: Lens' ExtensionRangeOptions [ExtensionRangeOptions'Declaration]@
+         * 'Proto.Google.Protobuf.Descriptor_Fields.vec'declaration' @:: Lens' ExtensionRangeOptions (Data.Vector.Vector ExtensionRangeOptions'Declaration)@
+         * 'Proto.Google.Protobuf.Descriptor_Fields.features' @:: Lens' ExtensionRangeOptions FeatureSet@
+         * 'Proto.Google.Protobuf.Descriptor_Fields.maybe'features' @:: Lens' ExtensionRangeOptions (Prelude.Maybe FeatureSet)@
+         * 'Proto.Google.Protobuf.Descriptor_Fields.verification' @:: Lens' ExtensionRangeOptions ExtensionRangeOptions'VerificationState@
+         * 'Proto.Google.Protobuf.Descriptor_Fields.maybe'verification' @:: Lens' ExtensionRangeOptions (Prelude.Maybe ExtensionRangeOptions'VerificationState)@ -}
 data ExtensionRangeOptions
   = ExtensionRangeOptions'_constructor {_ExtensionRangeOptions'uninterpretedOption :: !(Data.Vector.Vector UninterpretedOption),
+                                        _ExtensionRangeOptions'declaration :: !(Data.Vector.Vector ExtensionRangeOptions'Declaration),
+                                        _ExtensionRangeOptions'features :: !(Prelude.Maybe FeatureSet),
+                                        _ExtensionRangeOptions'verification :: !(Prelude.Maybe ExtensionRangeOptions'VerificationState),
                                         _ExtensionRangeOptions'_unknownFields :: !Data.ProtoLens.FieldSet}
   deriving stock (Prelude.Eq, Prelude.Ord)
 instance Prelude.Show ExtensionRangeOptions where
@@ -2562,13 +2962,71 @@ instance Data.ProtoLens.Field.HasField ExtensionRangeOptions "vec'uninterpretedO
            (\ x__ y__
               -> x__ {_ExtensionRangeOptions'uninterpretedOption = y__}))
         Prelude.id
+instance Data.ProtoLens.Field.HasField ExtensionRangeOptions "declaration" [ExtensionRangeOptions'Declaration] where
+  fieldOf _
+    = (Prelude..)
+        (Lens.Family2.Unchecked.lens
+           _ExtensionRangeOptions'declaration
+           (\ x__ y__ -> x__ {_ExtensionRangeOptions'declaration = y__}))
+        (Lens.Family2.Unchecked.lens
+           Data.Vector.Generic.toList
+           (\ _ y__ -> Data.Vector.Generic.fromList y__))
+instance Data.ProtoLens.Field.HasField ExtensionRangeOptions "vec'declaration" (Data.Vector.Vector ExtensionRangeOptions'Declaration) where
+  fieldOf _
+    = (Prelude..)
+        (Lens.Family2.Unchecked.lens
+           _ExtensionRangeOptions'declaration
+           (\ x__ y__ -> x__ {_ExtensionRangeOptions'declaration = y__}))
+        Prelude.id
+instance Data.ProtoLens.Field.HasField ExtensionRangeOptions "features" FeatureSet where
+  fieldOf _
+    = (Prelude..)
+        (Lens.Family2.Unchecked.lens
+           _ExtensionRangeOptions'features
+           (\ x__ y__ -> x__ {_ExtensionRangeOptions'features = y__}))
+        (Data.ProtoLens.maybeLens Data.ProtoLens.defMessage)
+instance Data.ProtoLens.Field.HasField ExtensionRangeOptions "maybe'features" (Prelude.Maybe FeatureSet) where
+  fieldOf _
+    = (Prelude..)
+        (Lens.Family2.Unchecked.lens
+           _ExtensionRangeOptions'features
+           (\ x__ y__ -> x__ {_ExtensionRangeOptions'features = y__}))
+        Prelude.id
+instance Data.ProtoLens.Field.HasField ExtensionRangeOptions "verification" ExtensionRangeOptions'VerificationState where
+  fieldOf _
+    = (Prelude..)
+        (Lens.Family2.Unchecked.lens
+           _ExtensionRangeOptions'verification
+           (\ x__ y__ -> x__ {_ExtensionRangeOptions'verification = y__}))
+        (Data.ProtoLens.maybeLens ExtensionRangeOptions'UNVERIFIED)
+instance Data.ProtoLens.Field.HasField ExtensionRangeOptions "maybe'verification" (Prelude.Maybe ExtensionRangeOptions'VerificationState) where
+  fieldOf _
+    = (Prelude..)
+        (Lens.Family2.Unchecked.lens
+           _ExtensionRangeOptions'verification
+           (\ x__ y__ -> x__ {_ExtensionRangeOptions'verification = y__}))
+        Prelude.id
 instance Data.ProtoLens.Message ExtensionRangeOptions where
   messageName _
     = Data.Text.pack "google.protobuf.ExtensionRangeOptions"
   packedMessageDescriptor _
     = "\n\
       \\NAKExtensionRangeOptions\DC2X\n\
-      \\DC4uninterpreted_option\CAN\231\a \ETX(\v2$.google.protobuf.UninterpretedOptionR\DC3uninterpretedOption*\t\b\232\a\DLE\128\128\128\128\STX"
+      \\DC4uninterpreted_option\CAN\231\a \ETX(\v2$.google.protobuf.UninterpretedOptionR\DC3uninterpretedOption\DC2Y\n\
+      \\vdeclaration\CAN\STX \ETX(\v22.google.protobuf.ExtensionRangeOptions.DeclarationR\vdeclarationB\ETX\136\SOH\STX\DC27\n\
+      \\bfeatures\CAN2 \SOH(\v2\ESC.google.protobuf.FeatureSetR\bfeatures\DC2m\n\
+      \\fverification\CAN\ETX \SOH(\SO28.google.protobuf.ExtensionRangeOptions.VerificationState:\n\
+      \UNVERIFIEDR\fverificationB\ETX\136\SOH\STX\SUB\148\SOH\n\
+      \\vDeclaration\DC2\SYN\n\
+      \\ACKnumber\CAN\SOH \SOH(\ENQR\ACKnumber\DC2\ESC\n\
+      \\tfull_name\CAN\STX \SOH(\tR\bfullName\DC2\DC2\n\
+      \\EOTtype\CAN\ETX \SOH(\tR\EOTtype\DC2\SUB\n\
+      \\breserved\CAN\ENQ \SOH(\bR\breserved\DC2\SUB\n\
+      \\brepeated\CAN\ACK \SOH(\bR\brepeatedJ\EOT\b\EOT\DLE\ENQ\"4\n\
+      \\DC1VerificationState\DC2\SI\n\
+      \\vDECLARATION\DLE\NUL\DC2\SO\n\
+      \\n\
+      \UNVERIFIED\DLE\SOH*\t\b\232\a\DLE\128\128\128\128\STX"
   packedFileDescriptor _ = packedFileDescriptor
   fieldsByTag
     = let
@@ -2581,9 +3039,37 @@ instance Data.ProtoLens.Message ExtensionRangeOptions where
                  Data.ProtoLens.Unpacked
                  (Data.ProtoLens.Field.field @"uninterpretedOption")) ::
               Data.ProtoLens.FieldDescriptor ExtensionRangeOptions
+        declaration__field_descriptor
+          = Data.ProtoLens.FieldDescriptor
+              "declaration"
+              (Data.ProtoLens.MessageField Data.ProtoLens.MessageType ::
+                 Data.ProtoLens.FieldTypeDescriptor ExtensionRangeOptions'Declaration)
+              (Data.ProtoLens.RepeatedField
+                 Data.ProtoLens.Unpacked
+                 (Data.ProtoLens.Field.field @"declaration")) ::
+              Data.ProtoLens.FieldDescriptor ExtensionRangeOptions
+        features__field_descriptor
+          = Data.ProtoLens.FieldDescriptor
+              "features"
+              (Data.ProtoLens.MessageField Data.ProtoLens.MessageType ::
+                 Data.ProtoLens.FieldTypeDescriptor FeatureSet)
+              (Data.ProtoLens.OptionalField
+                 (Data.ProtoLens.Field.field @"maybe'features")) ::
+              Data.ProtoLens.FieldDescriptor ExtensionRangeOptions
+        verification__field_descriptor
+          = Data.ProtoLens.FieldDescriptor
+              "verification"
+              (Data.ProtoLens.ScalarField Data.ProtoLens.EnumField ::
+                 Data.ProtoLens.FieldTypeDescriptor ExtensionRangeOptions'VerificationState)
+              (Data.ProtoLens.OptionalField
+                 (Data.ProtoLens.Field.field @"maybe'verification")) ::
+              Data.ProtoLens.FieldDescriptor ExtensionRangeOptions
       in
         Data.Map.fromList
-          [(Data.ProtoLens.Tag 999, uninterpretedOption__field_descriptor)]
+          [(Data.ProtoLens.Tag 999, uninterpretedOption__field_descriptor),
+           (Data.ProtoLens.Tag 2, declaration__field_descriptor),
+           (Data.ProtoLens.Tag 50, features__field_descriptor),
+           (Data.ProtoLens.Tag 3, verification__field_descriptor)]
   unknownFields
     = Lens.Family2.Unchecked.lens
         _ExtensionRangeOptions'_unknownFields
@@ -2591,17 +3077,24 @@ instance Data.ProtoLens.Message ExtensionRangeOptions where
   defMessage
     = ExtensionRangeOptions'_constructor
         {_ExtensionRangeOptions'uninterpretedOption = Data.Vector.Generic.empty,
+         _ExtensionRangeOptions'declaration = Data.Vector.Generic.empty,
+         _ExtensionRangeOptions'features = Prelude.Nothing,
+         _ExtensionRangeOptions'verification = Prelude.Nothing,
          _ExtensionRangeOptions'_unknownFields = []}
   parseMessage
     = let
         loop ::
           ExtensionRangeOptions
-          -> Data.ProtoLens.Encoding.Growing.Growing Data.Vector.Vector Data.ProtoLens.Encoding.Growing.RealWorld UninterpretedOption
-             -> Data.ProtoLens.Encoding.Bytes.Parser ExtensionRangeOptions
-        loop x mutable'uninterpretedOption
+          -> Data.ProtoLens.Encoding.Growing.Growing Data.Vector.Vector Data.ProtoLens.Encoding.Growing.RealWorld ExtensionRangeOptions'Declaration
+             -> Data.ProtoLens.Encoding.Growing.Growing Data.Vector.Vector Data.ProtoLens.Encoding.Growing.RealWorld UninterpretedOption
+                -> Data.ProtoLens.Encoding.Bytes.Parser ExtensionRangeOptions
+        loop x mutable'declaration mutable'uninterpretedOption
           = do end <- Data.ProtoLens.Encoding.Bytes.atEnd
                if end then
-                   do frozen'uninterpretedOption <- Data.ProtoLens.Encoding.Parser.Unsafe.unsafeLiftIO
+                   do frozen'declaration <- Data.ProtoLens.Encoding.Parser.Unsafe.unsafeLiftIO
+                                              (Data.ProtoLens.Encoding.Growing.unsafeFreeze
+                                                 mutable'declaration)
+                      frozen'uninterpretedOption <- Data.ProtoLens.Encoding.Parser.Unsafe.unsafeLiftIO
                                                       (Data.ProtoLens.Encoding.Growing.unsafeFreeze
                                                          mutable'uninterpretedOption)
                       (let missing = []
@@ -2618,9 +3111,12 @@ instance Data.ProtoLens.Message ExtensionRangeOptions where
                            Data.ProtoLens.unknownFields
                            (\ !t -> Prelude.reverse t)
                            (Lens.Family2.set
-                              (Data.ProtoLens.Field.field @"vec'uninterpretedOption")
-                              frozen'uninterpretedOption
-                              x))
+                              (Data.ProtoLens.Field.field @"vec'declaration")
+                              frozen'declaration
+                              (Lens.Family2.set
+                                 (Data.ProtoLens.Field.field @"vec'uninterpretedOption")
+                                 frozen'uninterpretedOption
+                                 x)))
                else
                    do tag <- Data.ProtoLens.Encoding.Bytes.getVarInt
                       case tag of
@@ -2634,19 +3130,59 @@ instance Data.ProtoLens.Message ExtensionRangeOptions where
                                 v <- Data.ProtoLens.Encoding.Parser.Unsafe.unsafeLiftIO
                                        (Data.ProtoLens.Encoding.Growing.append
                                           mutable'uninterpretedOption y)
-                                loop x v
+                                loop x mutable'declaration v
+                        18
+                          -> do !y <- (Data.ProtoLens.Encoding.Bytes.<?>)
+                                        (do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
+                                            Data.ProtoLens.Encoding.Bytes.isolate
+                                              (Prelude.fromIntegral len)
+                                              Data.ProtoLens.parseMessage)
+                                        "declaration"
+                                v <- Data.ProtoLens.Encoding.Parser.Unsafe.unsafeLiftIO
+                                       (Data.ProtoLens.Encoding.Growing.append
+                                          mutable'declaration y)
+                                loop x v mutable'uninterpretedOption
+                        402
+                          -> do y <- (Data.ProtoLens.Encoding.Bytes.<?>)
+                                       (do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
+                                           Data.ProtoLens.Encoding.Bytes.isolate
+                                             (Prelude.fromIntegral len) Data.ProtoLens.parseMessage)
+                                       "features"
+                                loop
+                                  (Lens.Family2.set (Data.ProtoLens.Field.field @"features") y x)
+                                  mutable'declaration
+                                  mutable'uninterpretedOption
+                        24
+                          -> do y <- (Data.ProtoLens.Encoding.Bytes.<?>)
+                                       (Prelude.fmap
+                                          Prelude.toEnum
+                                          (Prelude.fmap
+                                             Prelude.fromIntegral
+                                             Data.ProtoLens.Encoding.Bytes.getVarInt))
+                                       "verification"
+                                loop
+                                  (Lens.Family2.set
+                                     (Data.ProtoLens.Field.field @"verification") y x)
+                                  mutable'declaration
+                                  mutable'uninterpretedOption
                         wire
                           -> do !y <- Data.ProtoLens.Encoding.Wire.parseTaggedValueFromWire
                                         wire
                                 loop
                                   (Lens.Family2.over
                                      Data.ProtoLens.unknownFields (\ !t -> (:) y t) x)
+                                  mutable'declaration
                                   mutable'uninterpretedOption
       in
         (Data.ProtoLens.Encoding.Bytes.<?>)
-          (do mutable'uninterpretedOption <- Data.ProtoLens.Encoding.Parser.Unsafe.unsafeLiftIO
+          (do mutable'declaration <- Data.ProtoLens.Encoding.Parser.Unsafe.unsafeLiftIO
+                                       Data.ProtoLens.Encoding.Growing.new
+              mutable'uninterpretedOption <- Data.ProtoLens.Encoding.Parser.Unsafe.unsafeLiftIO
                                                Data.ProtoLens.Encoding.Growing.new
-              loop Data.ProtoLens.defMessage mutable'uninterpretedOption)
+              loop
+                Data.ProtoLens.defMessage
+                mutable'declaration
+                mutable'uninterpretedOption)
           "ExtensionRangeOptions"
   buildMessage
     = \ _x
@@ -2665,15 +3201,1713 @@ instance Data.ProtoLens.Message ExtensionRangeOptions where
                            _v))
                 (Lens.Family2.view
                    (Data.ProtoLens.Field.field @"vec'uninterpretedOption") _x))
-             (Data.ProtoLens.Encoding.Wire.buildFieldSet
-                (Lens.Family2.view Data.ProtoLens.unknownFields _x))
+             ((Data.Monoid.<>)
+                (Data.ProtoLens.Encoding.Bytes.foldMapBuilder
+                   (\ _v
+                      -> (Data.Monoid.<>)
+                           (Data.ProtoLens.Encoding.Bytes.putVarInt 18)
+                           ((Prelude..)
+                              (\ bs
+                                 -> (Data.Monoid.<>)
+                                      (Data.ProtoLens.Encoding.Bytes.putVarInt
+                                         (Prelude.fromIntegral (Data.ByteString.length bs)))
+                                      (Data.ProtoLens.Encoding.Bytes.putBytes bs))
+                              Data.ProtoLens.encodeMessage
+                              _v))
+                   (Lens.Family2.view
+                      (Data.ProtoLens.Field.field @"vec'declaration") _x))
+                ((Data.Monoid.<>)
+                   (case
+                        Lens.Family2.view (Data.ProtoLens.Field.field @"maybe'features") _x
+                    of
+                      Prelude.Nothing -> Data.Monoid.mempty
+                      (Prelude.Just _v)
+                        -> (Data.Monoid.<>)
+                             (Data.ProtoLens.Encoding.Bytes.putVarInt 402)
+                             ((Prelude..)
+                                (\ bs
+                                   -> (Data.Monoid.<>)
+                                        (Data.ProtoLens.Encoding.Bytes.putVarInt
+                                           (Prelude.fromIntegral (Data.ByteString.length bs)))
+                                        (Data.ProtoLens.Encoding.Bytes.putBytes bs))
+                                Data.ProtoLens.encodeMessage
+                                _v))
+                   ((Data.Monoid.<>)
+                      (case
+                           Lens.Family2.view
+                             (Data.ProtoLens.Field.field @"maybe'verification") _x
+                       of
+                         Prelude.Nothing -> Data.Monoid.mempty
+                         (Prelude.Just _v)
+                           -> (Data.Monoid.<>)
+                                (Data.ProtoLens.Encoding.Bytes.putVarInt 24)
+                                ((Prelude..)
+                                   ((Prelude..)
+                                      Data.ProtoLens.Encoding.Bytes.putVarInt Prelude.fromIntegral)
+                                   Prelude.fromEnum
+                                   _v))
+                      (Data.ProtoLens.Encoding.Wire.buildFieldSet
+                         (Lens.Family2.view Data.ProtoLens.unknownFields _x)))))
 instance Control.DeepSeq.NFData ExtensionRangeOptions where
   rnf
     = \ x__
         -> Control.DeepSeq.deepseq
              (_ExtensionRangeOptions'_unknownFields x__)
              (Control.DeepSeq.deepseq
-                (_ExtensionRangeOptions'uninterpretedOption x__) ())
+                (_ExtensionRangeOptions'uninterpretedOption x__)
+                (Control.DeepSeq.deepseq
+                   (_ExtensionRangeOptions'declaration x__)
+                   (Control.DeepSeq.deepseq
+                      (_ExtensionRangeOptions'features x__)
+                      (Control.DeepSeq.deepseq
+                         (_ExtensionRangeOptions'verification x__) ()))))
+{- | Fields :
+     
+         * 'Proto.Google.Protobuf.Descriptor_Fields.number' @:: Lens' ExtensionRangeOptions'Declaration Data.Int.Int32@
+         * 'Proto.Google.Protobuf.Descriptor_Fields.maybe'number' @:: Lens' ExtensionRangeOptions'Declaration (Prelude.Maybe Data.Int.Int32)@
+         * 'Proto.Google.Protobuf.Descriptor_Fields.fullName' @:: Lens' ExtensionRangeOptions'Declaration Data.Text.Text@
+         * 'Proto.Google.Protobuf.Descriptor_Fields.maybe'fullName' @:: Lens' ExtensionRangeOptions'Declaration (Prelude.Maybe Data.Text.Text)@
+         * 'Proto.Google.Protobuf.Descriptor_Fields.type'' @:: Lens' ExtensionRangeOptions'Declaration Data.Text.Text@
+         * 'Proto.Google.Protobuf.Descriptor_Fields.maybe'type'' @:: Lens' ExtensionRangeOptions'Declaration (Prelude.Maybe Data.Text.Text)@
+         * 'Proto.Google.Protobuf.Descriptor_Fields.reserved' @:: Lens' ExtensionRangeOptions'Declaration Prelude.Bool@
+         * 'Proto.Google.Protobuf.Descriptor_Fields.maybe'reserved' @:: Lens' ExtensionRangeOptions'Declaration (Prelude.Maybe Prelude.Bool)@
+         * 'Proto.Google.Protobuf.Descriptor_Fields.repeated' @:: Lens' ExtensionRangeOptions'Declaration Prelude.Bool@
+         * 'Proto.Google.Protobuf.Descriptor_Fields.maybe'repeated' @:: Lens' ExtensionRangeOptions'Declaration (Prelude.Maybe Prelude.Bool)@ -}
+data ExtensionRangeOptions'Declaration
+  = ExtensionRangeOptions'Declaration'_constructor {_ExtensionRangeOptions'Declaration'number :: !(Prelude.Maybe Data.Int.Int32),
+                                                    _ExtensionRangeOptions'Declaration'fullName :: !(Prelude.Maybe Data.Text.Text),
+                                                    _ExtensionRangeOptions'Declaration'type' :: !(Prelude.Maybe Data.Text.Text),
+                                                    _ExtensionRangeOptions'Declaration'reserved :: !(Prelude.Maybe Prelude.Bool),
+                                                    _ExtensionRangeOptions'Declaration'repeated :: !(Prelude.Maybe Prelude.Bool),
+                                                    _ExtensionRangeOptions'Declaration'_unknownFields :: !Data.ProtoLens.FieldSet}
+  deriving stock (Prelude.Eq, Prelude.Ord)
+instance Prelude.Show ExtensionRangeOptions'Declaration where
+  showsPrec _ __x __s
+    = Prelude.showChar
+        '{'
+        (Prelude.showString
+           (Data.ProtoLens.showMessageShort __x) (Prelude.showChar '}' __s))
+instance Data.ProtoLens.Field.HasField ExtensionRangeOptions'Declaration "number" Data.Int.Int32 where
+  fieldOf _
+    = (Prelude..)
+        (Lens.Family2.Unchecked.lens
+           _ExtensionRangeOptions'Declaration'number
+           (\ x__ y__
+              -> x__ {_ExtensionRangeOptions'Declaration'number = y__}))
+        (Data.ProtoLens.maybeLens Data.ProtoLens.fieldDefault)
+instance Data.ProtoLens.Field.HasField ExtensionRangeOptions'Declaration "maybe'number" (Prelude.Maybe Data.Int.Int32) where
+  fieldOf _
+    = (Prelude..)
+        (Lens.Family2.Unchecked.lens
+           _ExtensionRangeOptions'Declaration'number
+           (\ x__ y__
+              -> x__ {_ExtensionRangeOptions'Declaration'number = y__}))
+        Prelude.id
+instance Data.ProtoLens.Field.HasField ExtensionRangeOptions'Declaration "fullName" Data.Text.Text where
+  fieldOf _
+    = (Prelude..)
+        (Lens.Family2.Unchecked.lens
+           _ExtensionRangeOptions'Declaration'fullName
+           (\ x__ y__
+              -> x__ {_ExtensionRangeOptions'Declaration'fullName = y__}))
+        (Data.ProtoLens.maybeLens Data.ProtoLens.fieldDefault)
+instance Data.ProtoLens.Field.HasField ExtensionRangeOptions'Declaration "maybe'fullName" (Prelude.Maybe Data.Text.Text) where
+  fieldOf _
+    = (Prelude..)
+        (Lens.Family2.Unchecked.lens
+           _ExtensionRangeOptions'Declaration'fullName
+           (\ x__ y__
+              -> x__ {_ExtensionRangeOptions'Declaration'fullName = y__}))
+        Prelude.id
+instance Data.ProtoLens.Field.HasField ExtensionRangeOptions'Declaration "type'" Data.Text.Text where
+  fieldOf _
+    = (Prelude..)
+        (Lens.Family2.Unchecked.lens
+           _ExtensionRangeOptions'Declaration'type'
+           (\ x__ y__
+              -> x__ {_ExtensionRangeOptions'Declaration'type' = y__}))
+        (Data.ProtoLens.maybeLens Data.ProtoLens.fieldDefault)
+instance Data.ProtoLens.Field.HasField ExtensionRangeOptions'Declaration "maybe'type'" (Prelude.Maybe Data.Text.Text) where
+  fieldOf _
+    = (Prelude..)
+        (Lens.Family2.Unchecked.lens
+           _ExtensionRangeOptions'Declaration'type'
+           (\ x__ y__
+              -> x__ {_ExtensionRangeOptions'Declaration'type' = y__}))
+        Prelude.id
+instance Data.ProtoLens.Field.HasField ExtensionRangeOptions'Declaration "reserved" Prelude.Bool where
+  fieldOf _
+    = (Prelude..)
+        (Lens.Family2.Unchecked.lens
+           _ExtensionRangeOptions'Declaration'reserved
+           (\ x__ y__
+              -> x__ {_ExtensionRangeOptions'Declaration'reserved = y__}))
+        (Data.ProtoLens.maybeLens Data.ProtoLens.fieldDefault)
+instance Data.ProtoLens.Field.HasField ExtensionRangeOptions'Declaration "maybe'reserved" (Prelude.Maybe Prelude.Bool) where
+  fieldOf _
+    = (Prelude..)
+        (Lens.Family2.Unchecked.lens
+           _ExtensionRangeOptions'Declaration'reserved
+           (\ x__ y__
+              -> x__ {_ExtensionRangeOptions'Declaration'reserved = y__}))
+        Prelude.id
+instance Data.ProtoLens.Field.HasField ExtensionRangeOptions'Declaration "repeated" Prelude.Bool where
+  fieldOf _
+    = (Prelude..)
+        (Lens.Family2.Unchecked.lens
+           _ExtensionRangeOptions'Declaration'repeated
+           (\ x__ y__
+              -> x__ {_ExtensionRangeOptions'Declaration'repeated = y__}))
+        (Data.ProtoLens.maybeLens Data.ProtoLens.fieldDefault)
+instance Data.ProtoLens.Field.HasField ExtensionRangeOptions'Declaration "maybe'repeated" (Prelude.Maybe Prelude.Bool) where
+  fieldOf _
+    = (Prelude..)
+        (Lens.Family2.Unchecked.lens
+           _ExtensionRangeOptions'Declaration'repeated
+           (\ x__ y__
+              -> x__ {_ExtensionRangeOptions'Declaration'repeated = y__}))
+        Prelude.id
+instance Data.ProtoLens.Message ExtensionRangeOptions'Declaration where
+  messageName _
+    = Data.Text.pack
+        "google.protobuf.ExtensionRangeOptions.Declaration"
+  packedMessageDescriptor _
+    = "\n\
+      \\vDeclaration\DC2\SYN\n\
+      \\ACKnumber\CAN\SOH \SOH(\ENQR\ACKnumber\DC2\ESC\n\
+      \\tfull_name\CAN\STX \SOH(\tR\bfullName\DC2\DC2\n\
+      \\EOTtype\CAN\ETX \SOH(\tR\EOTtype\DC2\SUB\n\
+      \\breserved\CAN\ENQ \SOH(\bR\breserved\DC2\SUB\n\
+      \\brepeated\CAN\ACK \SOH(\bR\brepeatedJ\EOT\b\EOT\DLE\ENQ"
+  packedFileDescriptor _ = packedFileDescriptor
+  fieldsByTag
+    = let
+        number__field_descriptor
+          = Data.ProtoLens.FieldDescriptor
+              "number"
+              (Data.ProtoLens.ScalarField Data.ProtoLens.Int32Field ::
+                 Data.ProtoLens.FieldTypeDescriptor Data.Int.Int32)
+              (Data.ProtoLens.OptionalField
+                 (Data.ProtoLens.Field.field @"maybe'number")) ::
+              Data.ProtoLens.FieldDescriptor ExtensionRangeOptions'Declaration
+        fullName__field_descriptor
+          = Data.ProtoLens.FieldDescriptor
+              "full_name"
+              (Data.ProtoLens.ScalarField Data.ProtoLens.StringField ::
+                 Data.ProtoLens.FieldTypeDescriptor Data.Text.Text)
+              (Data.ProtoLens.OptionalField
+                 (Data.ProtoLens.Field.field @"maybe'fullName")) ::
+              Data.ProtoLens.FieldDescriptor ExtensionRangeOptions'Declaration
+        type'__field_descriptor
+          = Data.ProtoLens.FieldDescriptor
+              "type"
+              (Data.ProtoLens.ScalarField Data.ProtoLens.StringField ::
+                 Data.ProtoLens.FieldTypeDescriptor Data.Text.Text)
+              (Data.ProtoLens.OptionalField
+                 (Data.ProtoLens.Field.field @"maybe'type'")) ::
+              Data.ProtoLens.FieldDescriptor ExtensionRangeOptions'Declaration
+        reserved__field_descriptor
+          = Data.ProtoLens.FieldDescriptor
+              "reserved"
+              (Data.ProtoLens.ScalarField Data.ProtoLens.BoolField ::
+                 Data.ProtoLens.FieldTypeDescriptor Prelude.Bool)
+              (Data.ProtoLens.OptionalField
+                 (Data.ProtoLens.Field.field @"maybe'reserved")) ::
+              Data.ProtoLens.FieldDescriptor ExtensionRangeOptions'Declaration
+        repeated__field_descriptor
+          = Data.ProtoLens.FieldDescriptor
+              "repeated"
+              (Data.ProtoLens.ScalarField Data.ProtoLens.BoolField ::
+                 Data.ProtoLens.FieldTypeDescriptor Prelude.Bool)
+              (Data.ProtoLens.OptionalField
+                 (Data.ProtoLens.Field.field @"maybe'repeated")) ::
+              Data.ProtoLens.FieldDescriptor ExtensionRangeOptions'Declaration
+      in
+        Data.Map.fromList
+          [(Data.ProtoLens.Tag 1, number__field_descriptor),
+           (Data.ProtoLens.Tag 2, fullName__field_descriptor),
+           (Data.ProtoLens.Tag 3, type'__field_descriptor),
+           (Data.ProtoLens.Tag 5, reserved__field_descriptor),
+           (Data.ProtoLens.Tag 6, repeated__field_descriptor)]
+  unknownFields
+    = Lens.Family2.Unchecked.lens
+        _ExtensionRangeOptions'Declaration'_unknownFields
+        (\ x__ y__
+           -> x__ {_ExtensionRangeOptions'Declaration'_unknownFields = y__})
+  defMessage
+    = ExtensionRangeOptions'Declaration'_constructor
+        {_ExtensionRangeOptions'Declaration'number = Prelude.Nothing,
+         _ExtensionRangeOptions'Declaration'fullName = Prelude.Nothing,
+         _ExtensionRangeOptions'Declaration'type' = Prelude.Nothing,
+         _ExtensionRangeOptions'Declaration'reserved = Prelude.Nothing,
+         _ExtensionRangeOptions'Declaration'repeated = Prelude.Nothing,
+         _ExtensionRangeOptions'Declaration'_unknownFields = []}
+  parseMessage
+    = let
+        loop ::
+          ExtensionRangeOptions'Declaration
+          -> Data.ProtoLens.Encoding.Bytes.Parser ExtensionRangeOptions'Declaration
+        loop x
+          = do end <- Data.ProtoLens.Encoding.Bytes.atEnd
+               if end then
+                   do (let missing = []
+                       in
+                         if Prelude.null missing then
+                             Prelude.return ()
+                         else
+                             Prelude.fail
+                               ((Prelude.++)
+                                  "Missing required fields: "
+                                  (Prelude.show (missing :: [Prelude.String]))))
+                      Prelude.return
+                        (Lens.Family2.over
+                           Data.ProtoLens.unknownFields (\ !t -> Prelude.reverse t) x)
+               else
+                   do tag <- Data.ProtoLens.Encoding.Bytes.getVarInt
+                      case tag of
+                        8 -> do y <- (Data.ProtoLens.Encoding.Bytes.<?>)
+                                       (Prelude.fmap
+                                          Prelude.fromIntegral
+                                          Data.ProtoLens.Encoding.Bytes.getVarInt)
+                                       "number"
+                                loop (Lens.Family2.set (Data.ProtoLens.Field.field @"number") y x)
+                        18
+                          -> do y <- (Data.ProtoLens.Encoding.Bytes.<?>)
+                                       (do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
+                                           Data.ProtoLens.Encoding.Bytes.getText
+                                             (Prelude.fromIntegral len))
+                                       "full_name"
+                                loop
+                                  (Lens.Family2.set (Data.ProtoLens.Field.field @"fullName") y x)
+                        26
+                          -> do y <- (Data.ProtoLens.Encoding.Bytes.<?>)
+                                       (do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
+                                           Data.ProtoLens.Encoding.Bytes.getText
+                                             (Prelude.fromIntegral len))
+                                       "type"
+                                loop (Lens.Family2.set (Data.ProtoLens.Field.field @"type'") y x)
+                        40
+                          -> do y <- (Data.ProtoLens.Encoding.Bytes.<?>)
+                                       (Prelude.fmap
+                                          ((Prelude./=) 0) Data.ProtoLens.Encoding.Bytes.getVarInt)
+                                       "reserved"
+                                loop
+                                  (Lens.Family2.set (Data.ProtoLens.Field.field @"reserved") y x)
+                        48
+                          -> do y <- (Data.ProtoLens.Encoding.Bytes.<?>)
+                                       (Prelude.fmap
+                                          ((Prelude./=) 0) Data.ProtoLens.Encoding.Bytes.getVarInt)
+                                       "repeated"
+                                loop
+                                  (Lens.Family2.set (Data.ProtoLens.Field.field @"repeated") y x)
+                        wire
+                          -> do !y <- Data.ProtoLens.Encoding.Wire.parseTaggedValueFromWire
+                                        wire
+                                loop
+                                  (Lens.Family2.over
+                                     Data.ProtoLens.unknownFields (\ !t -> (:) y t) x)
+      in
+        (Data.ProtoLens.Encoding.Bytes.<?>)
+          (do loop Data.ProtoLens.defMessage) "Declaration"
+  buildMessage
+    = \ _x
+        -> (Data.Monoid.<>)
+             (case
+                  Lens.Family2.view (Data.ProtoLens.Field.field @"maybe'number") _x
+              of
+                Prelude.Nothing -> Data.Monoid.mempty
+                (Prelude.Just _v)
+                  -> (Data.Monoid.<>)
+                       (Data.ProtoLens.Encoding.Bytes.putVarInt 8)
+                       ((Prelude..)
+                          Data.ProtoLens.Encoding.Bytes.putVarInt Prelude.fromIntegral _v))
+             ((Data.Monoid.<>)
+                (case
+                     Lens.Family2.view (Data.ProtoLens.Field.field @"maybe'fullName") _x
+                 of
+                   Prelude.Nothing -> Data.Monoid.mempty
+                   (Prelude.Just _v)
+                     -> (Data.Monoid.<>)
+                          (Data.ProtoLens.Encoding.Bytes.putVarInt 18)
+                          ((Prelude..)
+                             (\ bs
+                                -> (Data.Monoid.<>)
+                                     (Data.ProtoLens.Encoding.Bytes.putVarInt
+                                        (Prelude.fromIntegral (Data.ByteString.length bs)))
+                                     (Data.ProtoLens.Encoding.Bytes.putBytes bs))
+                             Data.Text.Encoding.encodeUtf8
+                             _v))
+                ((Data.Monoid.<>)
+                   (case
+                        Lens.Family2.view (Data.ProtoLens.Field.field @"maybe'type'") _x
+                    of
+                      Prelude.Nothing -> Data.Monoid.mempty
+                      (Prelude.Just _v)
+                        -> (Data.Monoid.<>)
+                             (Data.ProtoLens.Encoding.Bytes.putVarInt 26)
+                             ((Prelude..)
+                                (\ bs
+                                   -> (Data.Monoid.<>)
+                                        (Data.ProtoLens.Encoding.Bytes.putVarInt
+                                           (Prelude.fromIntegral (Data.ByteString.length bs)))
+                                        (Data.ProtoLens.Encoding.Bytes.putBytes bs))
+                                Data.Text.Encoding.encodeUtf8
+                                _v))
+                   ((Data.Monoid.<>)
+                      (case
+                           Lens.Family2.view (Data.ProtoLens.Field.field @"maybe'reserved") _x
+                       of
+                         Prelude.Nothing -> Data.Monoid.mempty
+                         (Prelude.Just _v)
+                           -> (Data.Monoid.<>)
+                                (Data.ProtoLens.Encoding.Bytes.putVarInt 40)
+                                ((Prelude..)
+                                   Data.ProtoLens.Encoding.Bytes.putVarInt
+                                   (\ b -> if b then 1 else 0)
+                                   _v))
+                      ((Data.Monoid.<>)
+                         (case
+                              Lens.Family2.view (Data.ProtoLens.Field.field @"maybe'repeated") _x
+                          of
+                            Prelude.Nothing -> Data.Monoid.mempty
+                            (Prelude.Just _v)
+                              -> (Data.Monoid.<>)
+                                   (Data.ProtoLens.Encoding.Bytes.putVarInt 48)
+                                   ((Prelude..)
+                                      Data.ProtoLens.Encoding.Bytes.putVarInt
+                                      (\ b -> if b then 1 else 0)
+                                      _v))
+                         (Data.ProtoLens.Encoding.Wire.buildFieldSet
+                            (Lens.Family2.view Data.ProtoLens.unknownFields _x))))))
+instance Control.DeepSeq.NFData ExtensionRangeOptions'Declaration where
+  rnf
+    = \ x__
+        -> Control.DeepSeq.deepseq
+             (_ExtensionRangeOptions'Declaration'_unknownFields x__)
+             (Control.DeepSeq.deepseq
+                (_ExtensionRangeOptions'Declaration'number x__)
+                (Control.DeepSeq.deepseq
+                   (_ExtensionRangeOptions'Declaration'fullName x__)
+                   (Control.DeepSeq.deepseq
+                      (_ExtensionRangeOptions'Declaration'type' x__)
+                      (Control.DeepSeq.deepseq
+                         (_ExtensionRangeOptions'Declaration'reserved x__)
+                         (Control.DeepSeq.deepseq
+                            (_ExtensionRangeOptions'Declaration'repeated x__) ())))))
+data ExtensionRangeOptions'VerificationState
+  = ExtensionRangeOptions'DECLARATION |
+    ExtensionRangeOptions'UNVERIFIED
+  deriving stock (Prelude.Show, Prelude.Eq, Prelude.Ord)
+instance Data.ProtoLens.MessageEnum ExtensionRangeOptions'VerificationState where
+  maybeToEnum 0 = Prelude.Just ExtensionRangeOptions'DECLARATION
+  maybeToEnum 1 = Prelude.Just ExtensionRangeOptions'UNVERIFIED
+  maybeToEnum _ = Prelude.Nothing
+  showEnum ExtensionRangeOptions'DECLARATION = "DECLARATION"
+  showEnum ExtensionRangeOptions'UNVERIFIED = "UNVERIFIED"
+  readEnum k
+    | (Prelude.==) k "DECLARATION"
+    = Prelude.Just ExtensionRangeOptions'DECLARATION
+    | (Prelude.==) k "UNVERIFIED"
+    = Prelude.Just ExtensionRangeOptions'UNVERIFIED
+    | Prelude.otherwise
+    = (Prelude.>>=) (Text.Read.readMaybe k) Data.ProtoLens.maybeToEnum
+instance Prelude.Bounded ExtensionRangeOptions'VerificationState where
+  minBound = ExtensionRangeOptions'DECLARATION
+  maxBound = ExtensionRangeOptions'UNVERIFIED
+instance Prelude.Enum ExtensionRangeOptions'VerificationState where
+  toEnum k__
+    = Prelude.maybe
+        (Prelude.error
+           ((Prelude.++)
+              "toEnum: unknown value for enum VerificationState: "
+              (Prelude.show k__)))
+        Prelude.id
+        (Data.ProtoLens.maybeToEnum k__)
+  fromEnum ExtensionRangeOptions'DECLARATION = 0
+  fromEnum ExtensionRangeOptions'UNVERIFIED = 1
+  succ ExtensionRangeOptions'UNVERIFIED
+    = Prelude.error
+        "ExtensionRangeOptions'VerificationState.succ: bad argument ExtensionRangeOptions'UNVERIFIED. This value would be out of bounds."
+  succ ExtensionRangeOptions'DECLARATION
+    = ExtensionRangeOptions'UNVERIFIED
+  pred ExtensionRangeOptions'DECLARATION
+    = Prelude.error
+        "ExtensionRangeOptions'VerificationState.pred: bad argument ExtensionRangeOptions'DECLARATION. This value would be out of bounds."
+  pred ExtensionRangeOptions'UNVERIFIED
+    = ExtensionRangeOptions'DECLARATION
+  enumFrom = Data.ProtoLens.Message.Enum.messageEnumFrom
+  enumFromTo = Data.ProtoLens.Message.Enum.messageEnumFromTo
+  enumFromThen = Data.ProtoLens.Message.Enum.messageEnumFromThen
+  enumFromThenTo = Data.ProtoLens.Message.Enum.messageEnumFromThenTo
+instance Data.ProtoLens.FieldDefault ExtensionRangeOptions'VerificationState where
+  fieldDefault = ExtensionRangeOptions'DECLARATION
+instance Control.DeepSeq.NFData ExtensionRangeOptions'VerificationState where
+  rnf x__ = Prelude.seq x__ ()
+{- | Fields :
+     
+         * 'Proto.Google.Protobuf.Descriptor_Fields.fieldPresence' @:: Lens' FeatureSet FeatureSet'FieldPresence@
+         * 'Proto.Google.Protobuf.Descriptor_Fields.maybe'fieldPresence' @:: Lens' FeatureSet (Prelude.Maybe FeatureSet'FieldPresence)@
+         * 'Proto.Google.Protobuf.Descriptor_Fields.enumType' @:: Lens' FeatureSet FeatureSet'EnumType@
+         * 'Proto.Google.Protobuf.Descriptor_Fields.maybe'enumType' @:: Lens' FeatureSet (Prelude.Maybe FeatureSet'EnumType)@
+         * 'Proto.Google.Protobuf.Descriptor_Fields.repeatedFieldEncoding' @:: Lens' FeatureSet FeatureSet'RepeatedFieldEncoding@
+         * 'Proto.Google.Protobuf.Descriptor_Fields.maybe'repeatedFieldEncoding' @:: Lens' FeatureSet (Prelude.Maybe FeatureSet'RepeatedFieldEncoding)@
+         * 'Proto.Google.Protobuf.Descriptor_Fields.utf8Validation' @:: Lens' FeatureSet FeatureSet'Utf8Validation@
+         * 'Proto.Google.Protobuf.Descriptor_Fields.maybe'utf8Validation' @:: Lens' FeatureSet (Prelude.Maybe FeatureSet'Utf8Validation)@
+         * 'Proto.Google.Protobuf.Descriptor_Fields.messageEncoding' @:: Lens' FeatureSet FeatureSet'MessageEncoding@
+         * 'Proto.Google.Protobuf.Descriptor_Fields.maybe'messageEncoding' @:: Lens' FeatureSet (Prelude.Maybe FeatureSet'MessageEncoding)@
+         * 'Proto.Google.Protobuf.Descriptor_Fields.jsonFormat' @:: Lens' FeatureSet FeatureSet'JsonFormat@
+         * 'Proto.Google.Protobuf.Descriptor_Fields.maybe'jsonFormat' @:: Lens' FeatureSet (Prelude.Maybe FeatureSet'JsonFormat)@ -}
+data FeatureSet
+  = FeatureSet'_constructor {_FeatureSet'fieldPresence :: !(Prelude.Maybe FeatureSet'FieldPresence),
+                             _FeatureSet'enumType :: !(Prelude.Maybe FeatureSet'EnumType),
+                             _FeatureSet'repeatedFieldEncoding :: !(Prelude.Maybe FeatureSet'RepeatedFieldEncoding),
+                             _FeatureSet'utf8Validation :: !(Prelude.Maybe FeatureSet'Utf8Validation),
+                             _FeatureSet'messageEncoding :: !(Prelude.Maybe FeatureSet'MessageEncoding),
+                             _FeatureSet'jsonFormat :: !(Prelude.Maybe FeatureSet'JsonFormat),
+                             _FeatureSet'_unknownFields :: !Data.ProtoLens.FieldSet}
+  deriving stock (Prelude.Eq, Prelude.Ord)
+instance Prelude.Show FeatureSet where
+  showsPrec _ __x __s
+    = Prelude.showChar
+        '{'
+        (Prelude.showString
+           (Data.ProtoLens.showMessageShort __x) (Prelude.showChar '}' __s))
+instance Data.ProtoLens.Field.HasField FeatureSet "fieldPresence" FeatureSet'FieldPresence where
+  fieldOf _
+    = (Prelude..)
+        (Lens.Family2.Unchecked.lens
+           _FeatureSet'fieldPresence
+           (\ x__ y__ -> x__ {_FeatureSet'fieldPresence = y__}))
+        (Data.ProtoLens.maybeLens Data.ProtoLens.fieldDefault)
+instance Data.ProtoLens.Field.HasField FeatureSet "maybe'fieldPresence" (Prelude.Maybe FeatureSet'FieldPresence) where
+  fieldOf _
+    = (Prelude..)
+        (Lens.Family2.Unchecked.lens
+           _FeatureSet'fieldPresence
+           (\ x__ y__ -> x__ {_FeatureSet'fieldPresence = y__}))
+        Prelude.id
+instance Data.ProtoLens.Field.HasField FeatureSet "enumType" FeatureSet'EnumType where
+  fieldOf _
+    = (Prelude..)
+        (Lens.Family2.Unchecked.lens
+           _FeatureSet'enumType
+           (\ x__ y__ -> x__ {_FeatureSet'enumType = y__}))
+        (Data.ProtoLens.maybeLens Data.ProtoLens.fieldDefault)
+instance Data.ProtoLens.Field.HasField FeatureSet "maybe'enumType" (Prelude.Maybe FeatureSet'EnumType) where
+  fieldOf _
+    = (Prelude..)
+        (Lens.Family2.Unchecked.lens
+           _FeatureSet'enumType
+           (\ x__ y__ -> x__ {_FeatureSet'enumType = y__}))
+        Prelude.id
+instance Data.ProtoLens.Field.HasField FeatureSet "repeatedFieldEncoding" FeatureSet'RepeatedFieldEncoding where
+  fieldOf _
+    = (Prelude..)
+        (Lens.Family2.Unchecked.lens
+           _FeatureSet'repeatedFieldEncoding
+           (\ x__ y__ -> x__ {_FeatureSet'repeatedFieldEncoding = y__}))
+        (Data.ProtoLens.maybeLens Data.ProtoLens.fieldDefault)
+instance Data.ProtoLens.Field.HasField FeatureSet "maybe'repeatedFieldEncoding" (Prelude.Maybe FeatureSet'RepeatedFieldEncoding) where
+  fieldOf _
+    = (Prelude..)
+        (Lens.Family2.Unchecked.lens
+           _FeatureSet'repeatedFieldEncoding
+           (\ x__ y__ -> x__ {_FeatureSet'repeatedFieldEncoding = y__}))
+        Prelude.id
+instance Data.ProtoLens.Field.HasField FeatureSet "utf8Validation" FeatureSet'Utf8Validation where
+  fieldOf _
+    = (Prelude..)
+        (Lens.Family2.Unchecked.lens
+           _FeatureSet'utf8Validation
+           (\ x__ y__ -> x__ {_FeatureSet'utf8Validation = y__}))
+        (Data.ProtoLens.maybeLens Data.ProtoLens.fieldDefault)
+instance Data.ProtoLens.Field.HasField FeatureSet "maybe'utf8Validation" (Prelude.Maybe FeatureSet'Utf8Validation) where
+  fieldOf _
+    = (Prelude..)
+        (Lens.Family2.Unchecked.lens
+           _FeatureSet'utf8Validation
+           (\ x__ y__ -> x__ {_FeatureSet'utf8Validation = y__}))
+        Prelude.id
+instance Data.ProtoLens.Field.HasField FeatureSet "messageEncoding" FeatureSet'MessageEncoding where
+  fieldOf _
+    = (Prelude..)
+        (Lens.Family2.Unchecked.lens
+           _FeatureSet'messageEncoding
+           (\ x__ y__ -> x__ {_FeatureSet'messageEncoding = y__}))
+        (Data.ProtoLens.maybeLens Data.ProtoLens.fieldDefault)
+instance Data.ProtoLens.Field.HasField FeatureSet "maybe'messageEncoding" (Prelude.Maybe FeatureSet'MessageEncoding) where
+  fieldOf _
+    = (Prelude..)
+        (Lens.Family2.Unchecked.lens
+           _FeatureSet'messageEncoding
+           (\ x__ y__ -> x__ {_FeatureSet'messageEncoding = y__}))
+        Prelude.id
+instance Data.ProtoLens.Field.HasField FeatureSet "jsonFormat" FeatureSet'JsonFormat where
+  fieldOf _
+    = (Prelude..)
+        (Lens.Family2.Unchecked.lens
+           _FeatureSet'jsonFormat
+           (\ x__ y__ -> x__ {_FeatureSet'jsonFormat = y__}))
+        (Data.ProtoLens.maybeLens Data.ProtoLens.fieldDefault)
+instance Data.ProtoLens.Field.HasField FeatureSet "maybe'jsonFormat" (Prelude.Maybe FeatureSet'JsonFormat) where
+  fieldOf _
+    = (Prelude..)
+        (Lens.Family2.Unchecked.lens
+           _FeatureSet'jsonFormat
+           (\ x__ y__ -> x__ {_FeatureSet'jsonFormat = y__}))
+        Prelude.id
+instance Data.ProtoLens.Message FeatureSet where
+  messageName _ = Data.Text.pack "google.protobuf.FeatureSet"
+  packedMessageDescriptor _
+    = "\n\
+      \\n\
+      \FeatureSet\DC2\145\SOH\n\
+      \\SOfield_presence\CAN\SOH \SOH(\SO2).google.protobuf.FeatureSet.FieldPresenceR\rfieldPresenceB?\136\SOH\SOH\152\SOH\EOT\152\SOH\SOH\162\SOH\r\DC2\bEXPLICIT\CAN\132\a\162\SOH\r\DC2\bIMPLICIT\CAN\231\a\162\SOH\r\DC2\bEXPLICIT\CAN\232\a\178\SOH\ETX\b\232\a\DC2l\n\
+      \\tenum_type\CAN\STX \SOH(\SO2$.google.protobuf.FeatureSet.EnumTypeR\benumTypeB)\136\SOH\SOH\152\SOH\ACK\152\SOH\SOH\162\SOH\v\DC2\ACKCLOSED\CAN\132\a\162\SOH\t\DC2\EOTOPEN\CAN\231\a\178\SOH\ETX\b\232\a\DC2\152\SOH\n\
+      \\ETBrepeated_field_encoding\CAN\ETX \SOH(\SO21.google.protobuf.FeatureSet.RepeatedFieldEncodingR\NAKrepeatedFieldEncodingB-\136\SOH\SOH\152\SOH\EOT\152\SOH\SOH\162\SOH\r\DC2\bEXPANDED\CAN\132\a\162\SOH\v\DC2\ACKPACKED\CAN\231\a\178\SOH\ETX\b\232\a\DC2~\n\
+      \\SIutf8_validation\CAN\EOT \SOH(\SO2*.google.protobuf.FeatureSet.Utf8ValidationR\SOutf8ValidationB)\136\SOH\SOH\152\SOH\EOT\152\SOH\SOH\162\SOH\t\DC2\EOTNONE\CAN\132\a\162\SOH\v\DC2\ACKVERIFY\CAN\231\a\178\SOH\ETX\b\232\a\DC2~\n\
+      \\DLEmessage_encoding\CAN\ENQ \SOH(\SO2+.google.protobuf.FeatureSet.MessageEncodingR\SImessageEncodingB&\136\SOH\SOH\152\SOH\EOT\152\SOH\SOH\162\SOH\DC4\DC2\SILENGTH_PREFIXED\CAN\132\a\178\SOH\ETX\b\232\a\DC2\130\SOH\n\
+      \\vjson_format\CAN\ACK \SOH(\SO2&.google.protobuf.FeatureSet.JsonFormatR\n\
+      \jsonFormatB9\136\SOH\SOH\152\SOH\ETX\152\SOH\ACK\152\SOH\SOH\162\SOH\ETB\DC2\DC2LEGACY_BEST_EFFORT\CAN\132\a\162\SOH\n\
+      \\DC2\ENQALLOW\CAN\231\a\178\SOH\ETX\b\232\a\"\\\n\
+      \\rFieldPresence\DC2\SUB\n\
+      \\SYNFIELD_PRESENCE_UNKNOWN\DLE\NUL\DC2\f\n\
+      \\bEXPLICIT\DLE\SOH\DC2\f\n\
+      \\bIMPLICIT\DLE\STX\DC2\DC3\n\
+      \\SILEGACY_REQUIRED\DLE\ETX\"7\n\
+      \\bEnumType\DC2\NAK\n\
+      \\DC1ENUM_TYPE_UNKNOWN\DLE\NUL\DC2\b\n\
+      \\EOTOPEN\DLE\SOH\DC2\n\
+      \\n\
+      \\ACKCLOSED\DLE\STX\"V\n\
+      \\NAKRepeatedFieldEncoding\DC2#\n\
+      \\USREPEATED_FIELD_ENCODING_UNKNOWN\DLE\NUL\DC2\n\
+      \\n\
+      \\ACKPACKED\DLE\SOH\DC2\f\n\
+      \\bEXPANDED\DLE\STX\"I\n\
+      \\SOUtf8Validation\DC2\ESC\n\
+      \\ETBUTF8_VALIDATION_UNKNOWN\DLE\NUL\DC2\n\
+      \\n\
+      \\ACKVERIFY\DLE\STX\DC2\b\n\
+      \\EOTNONE\DLE\ETX\"\EOT\b\SOH\DLE\SOH\"S\n\
+      \\SIMessageEncoding\DC2\FS\n\
+      \\CANMESSAGE_ENCODING_UNKNOWN\DLE\NUL\DC2\DC3\n\
+      \\SILENGTH_PREFIXED\DLE\SOH\DC2\r\n\
+      \\tDELIMITED\DLE\STX\"H\n\
+      \\n\
+      \JsonFormat\DC2\ETB\n\
+      \\DC3JSON_FORMAT_UNKNOWN\DLE\NUL\DC2\t\n\
+      \\ENQALLOW\DLE\SOH\DC2\SYN\n\
+      \\DC2LEGACY_BEST_EFFORT\DLE\STX*\ACK\b\232\a\DLE\139N*\ACK\b\139N\DLE\144N*\ACK\b\144N\DLE\145NJ\ACK\b\231\a\DLE\232\a"
+  packedFileDescriptor _ = packedFileDescriptor
+  fieldsByTag
+    = let
+        fieldPresence__field_descriptor
+          = Data.ProtoLens.FieldDescriptor
+              "field_presence"
+              (Data.ProtoLens.ScalarField Data.ProtoLens.EnumField ::
+                 Data.ProtoLens.FieldTypeDescriptor FeatureSet'FieldPresence)
+              (Data.ProtoLens.OptionalField
+                 (Data.ProtoLens.Field.field @"maybe'fieldPresence")) ::
+              Data.ProtoLens.FieldDescriptor FeatureSet
+        enumType__field_descriptor
+          = Data.ProtoLens.FieldDescriptor
+              "enum_type"
+              (Data.ProtoLens.ScalarField Data.ProtoLens.EnumField ::
+                 Data.ProtoLens.FieldTypeDescriptor FeatureSet'EnumType)
+              (Data.ProtoLens.OptionalField
+                 (Data.ProtoLens.Field.field @"maybe'enumType")) ::
+              Data.ProtoLens.FieldDescriptor FeatureSet
+        repeatedFieldEncoding__field_descriptor
+          = Data.ProtoLens.FieldDescriptor
+              "repeated_field_encoding"
+              (Data.ProtoLens.ScalarField Data.ProtoLens.EnumField ::
+                 Data.ProtoLens.FieldTypeDescriptor FeatureSet'RepeatedFieldEncoding)
+              (Data.ProtoLens.OptionalField
+                 (Data.ProtoLens.Field.field @"maybe'repeatedFieldEncoding")) ::
+              Data.ProtoLens.FieldDescriptor FeatureSet
+        utf8Validation__field_descriptor
+          = Data.ProtoLens.FieldDescriptor
+              "utf8_validation"
+              (Data.ProtoLens.ScalarField Data.ProtoLens.EnumField ::
+                 Data.ProtoLens.FieldTypeDescriptor FeatureSet'Utf8Validation)
+              (Data.ProtoLens.OptionalField
+                 (Data.ProtoLens.Field.field @"maybe'utf8Validation")) ::
+              Data.ProtoLens.FieldDescriptor FeatureSet
+        messageEncoding__field_descriptor
+          = Data.ProtoLens.FieldDescriptor
+              "message_encoding"
+              (Data.ProtoLens.ScalarField Data.ProtoLens.EnumField ::
+                 Data.ProtoLens.FieldTypeDescriptor FeatureSet'MessageEncoding)
+              (Data.ProtoLens.OptionalField
+                 (Data.ProtoLens.Field.field @"maybe'messageEncoding")) ::
+              Data.ProtoLens.FieldDescriptor FeatureSet
+        jsonFormat__field_descriptor
+          = Data.ProtoLens.FieldDescriptor
+              "json_format"
+              (Data.ProtoLens.ScalarField Data.ProtoLens.EnumField ::
+                 Data.ProtoLens.FieldTypeDescriptor FeatureSet'JsonFormat)
+              (Data.ProtoLens.OptionalField
+                 (Data.ProtoLens.Field.field @"maybe'jsonFormat")) ::
+              Data.ProtoLens.FieldDescriptor FeatureSet
+      in
+        Data.Map.fromList
+          [(Data.ProtoLens.Tag 1, fieldPresence__field_descriptor),
+           (Data.ProtoLens.Tag 2, enumType__field_descriptor),
+           (Data.ProtoLens.Tag 3, repeatedFieldEncoding__field_descriptor),
+           (Data.ProtoLens.Tag 4, utf8Validation__field_descriptor),
+           (Data.ProtoLens.Tag 5, messageEncoding__field_descriptor),
+           (Data.ProtoLens.Tag 6, jsonFormat__field_descriptor)]
+  unknownFields
+    = Lens.Family2.Unchecked.lens
+        _FeatureSet'_unknownFields
+        (\ x__ y__ -> x__ {_FeatureSet'_unknownFields = y__})
+  defMessage
+    = FeatureSet'_constructor
+        {_FeatureSet'fieldPresence = Prelude.Nothing,
+         _FeatureSet'enumType = Prelude.Nothing,
+         _FeatureSet'repeatedFieldEncoding = Prelude.Nothing,
+         _FeatureSet'utf8Validation = Prelude.Nothing,
+         _FeatureSet'messageEncoding = Prelude.Nothing,
+         _FeatureSet'jsonFormat = Prelude.Nothing,
+         _FeatureSet'_unknownFields = []}
+  parseMessage
+    = let
+        loop ::
+          FeatureSet -> Data.ProtoLens.Encoding.Bytes.Parser FeatureSet
+        loop x
+          = do end <- Data.ProtoLens.Encoding.Bytes.atEnd
+               if end then
+                   do (let missing = []
+                       in
+                         if Prelude.null missing then
+                             Prelude.return ()
+                         else
+                             Prelude.fail
+                               ((Prelude.++)
+                                  "Missing required fields: "
+                                  (Prelude.show (missing :: [Prelude.String]))))
+                      Prelude.return
+                        (Lens.Family2.over
+                           Data.ProtoLens.unknownFields (\ !t -> Prelude.reverse t) x)
+               else
+                   do tag <- Data.ProtoLens.Encoding.Bytes.getVarInt
+                      case tag of
+                        8 -> do y <- (Data.ProtoLens.Encoding.Bytes.<?>)
+                                       (Prelude.fmap
+                                          Prelude.toEnum
+                                          (Prelude.fmap
+                                             Prelude.fromIntegral
+                                             Data.ProtoLens.Encoding.Bytes.getVarInt))
+                                       "field_presence"
+                                loop
+                                  (Lens.Family2.set
+                                     (Data.ProtoLens.Field.field @"fieldPresence") y x)
+                        16
+                          -> do y <- (Data.ProtoLens.Encoding.Bytes.<?>)
+                                       (Prelude.fmap
+                                          Prelude.toEnum
+                                          (Prelude.fmap
+                                             Prelude.fromIntegral
+                                             Data.ProtoLens.Encoding.Bytes.getVarInt))
+                                       "enum_type"
+                                loop
+                                  (Lens.Family2.set (Data.ProtoLens.Field.field @"enumType") y x)
+                        24
+                          -> do y <- (Data.ProtoLens.Encoding.Bytes.<?>)
+                                       (Prelude.fmap
+                                          Prelude.toEnum
+                                          (Prelude.fmap
+                                             Prelude.fromIntegral
+                                             Data.ProtoLens.Encoding.Bytes.getVarInt))
+                                       "repeated_field_encoding"
+                                loop
+                                  (Lens.Family2.set
+                                     (Data.ProtoLens.Field.field @"repeatedFieldEncoding") y x)
+                        32
+                          -> do y <- (Data.ProtoLens.Encoding.Bytes.<?>)
+                                       (Prelude.fmap
+                                          Prelude.toEnum
+                                          (Prelude.fmap
+                                             Prelude.fromIntegral
+                                             Data.ProtoLens.Encoding.Bytes.getVarInt))
+                                       "utf8_validation"
+                                loop
+                                  (Lens.Family2.set
+                                     (Data.ProtoLens.Field.field @"utf8Validation") y x)
+                        40
+                          -> do y <- (Data.ProtoLens.Encoding.Bytes.<?>)
+                                       (Prelude.fmap
+                                          Prelude.toEnum
+                                          (Prelude.fmap
+                                             Prelude.fromIntegral
+                                             Data.ProtoLens.Encoding.Bytes.getVarInt))
+                                       "message_encoding"
+                                loop
+                                  (Lens.Family2.set
+                                     (Data.ProtoLens.Field.field @"messageEncoding") y x)
+                        48
+                          -> do y <- (Data.ProtoLens.Encoding.Bytes.<?>)
+                                       (Prelude.fmap
+                                          Prelude.toEnum
+                                          (Prelude.fmap
+                                             Prelude.fromIntegral
+                                             Data.ProtoLens.Encoding.Bytes.getVarInt))
+                                       "json_format"
+                                loop
+                                  (Lens.Family2.set (Data.ProtoLens.Field.field @"jsonFormat") y x)
+                        wire
+                          -> do !y <- Data.ProtoLens.Encoding.Wire.parseTaggedValueFromWire
+                                        wire
+                                loop
+                                  (Lens.Family2.over
+                                     Data.ProtoLens.unknownFields (\ !t -> (:) y t) x)
+      in
+        (Data.ProtoLens.Encoding.Bytes.<?>)
+          (do loop Data.ProtoLens.defMessage) "FeatureSet"
+  buildMessage
+    = \ _x
+        -> (Data.Monoid.<>)
+             (case
+                  Lens.Family2.view
+                    (Data.ProtoLens.Field.field @"maybe'fieldPresence") _x
+              of
+                Prelude.Nothing -> Data.Monoid.mempty
+                (Prelude.Just _v)
+                  -> (Data.Monoid.<>)
+                       (Data.ProtoLens.Encoding.Bytes.putVarInt 8)
+                       ((Prelude..)
+                          ((Prelude..)
+                             Data.ProtoLens.Encoding.Bytes.putVarInt Prelude.fromIntegral)
+                          Prelude.fromEnum
+                          _v))
+             ((Data.Monoid.<>)
+                (case
+                     Lens.Family2.view (Data.ProtoLens.Field.field @"maybe'enumType") _x
+                 of
+                   Prelude.Nothing -> Data.Monoid.mempty
+                   (Prelude.Just _v)
+                     -> (Data.Monoid.<>)
+                          (Data.ProtoLens.Encoding.Bytes.putVarInt 16)
+                          ((Prelude..)
+                             ((Prelude..)
+                                Data.ProtoLens.Encoding.Bytes.putVarInt Prelude.fromIntegral)
+                             Prelude.fromEnum
+                             _v))
+                ((Data.Monoid.<>)
+                   (case
+                        Lens.Family2.view
+                          (Data.ProtoLens.Field.field @"maybe'repeatedFieldEncoding") _x
+                    of
+                      Prelude.Nothing -> Data.Monoid.mempty
+                      (Prelude.Just _v)
+                        -> (Data.Monoid.<>)
+                             (Data.ProtoLens.Encoding.Bytes.putVarInt 24)
+                             ((Prelude..)
+                                ((Prelude..)
+                                   Data.ProtoLens.Encoding.Bytes.putVarInt Prelude.fromIntegral)
+                                Prelude.fromEnum
+                                _v))
+                   ((Data.Monoid.<>)
+                      (case
+                           Lens.Family2.view
+                             (Data.ProtoLens.Field.field @"maybe'utf8Validation") _x
+                       of
+                         Prelude.Nothing -> Data.Monoid.mempty
+                         (Prelude.Just _v)
+                           -> (Data.Monoid.<>)
+                                (Data.ProtoLens.Encoding.Bytes.putVarInt 32)
+                                ((Prelude..)
+                                   ((Prelude..)
+                                      Data.ProtoLens.Encoding.Bytes.putVarInt Prelude.fromIntegral)
+                                   Prelude.fromEnum
+                                   _v))
+                      ((Data.Monoid.<>)
+                         (case
+                              Lens.Family2.view
+                                (Data.ProtoLens.Field.field @"maybe'messageEncoding") _x
+                          of
+                            Prelude.Nothing -> Data.Monoid.mempty
+                            (Prelude.Just _v)
+                              -> (Data.Monoid.<>)
+                                   (Data.ProtoLens.Encoding.Bytes.putVarInt 40)
+                                   ((Prelude..)
+                                      ((Prelude..)
+                                         Data.ProtoLens.Encoding.Bytes.putVarInt
+                                         Prelude.fromIntegral)
+                                      Prelude.fromEnum
+                                      _v))
+                         ((Data.Monoid.<>)
+                            (case
+                                 Lens.Family2.view
+                                   (Data.ProtoLens.Field.field @"maybe'jsonFormat") _x
+                             of
+                               Prelude.Nothing -> Data.Monoid.mempty
+                               (Prelude.Just _v)
+                                 -> (Data.Monoid.<>)
+                                      (Data.ProtoLens.Encoding.Bytes.putVarInt 48)
+                                      ((Prelude..)
+                                         ((Prelude..)
+                                            Data.ProtoLens.Encoding.Bytes.putVarInt
+                                            Prelude.fromIntegral)
+                                         Prelude.fromEnum
+                                         _v))
+                            (Data.ProtoLens.Encoding.Wire.buildFieldSet
+                               (Lens.Family2.view Data.ProtoLens.unknownFields _x)))))))
+instance Control.DeepSeq.NFData FeatureSet where
+  rnf
+    = \ x__
+        -> Control.DeepSeq.deepseq
+             (_FeatureSet'_unknownFields x__)
+             (Control.DeepSeq.deepseq
+                (_FeatureSet'fieldPresence x__)
+                (Control.DeepSeq.deepseq
+                   (_FeatureSet'enumType x__)
+                   (Control.DeepSeq.deepseq
+                      (_FeatureSet'repeatedFieldEncoding x__)
+                      (Control.DeepSeq.deepseq
+                         (_FeatureSet'utf8Validation x__)
+                         (Control.DeepSeq.deepseq
+                            (_FeatureSet'messageEncoding x__)
+                            (Control.DeepSeq.deepseq (_FeatureSet'jsonFormat x__) ()))))))
+data FeatureSet'EnumType
+  = FeatureSet'ENUM_TYPE_UNKNOWN |
+    FeatureSet'OPEN |
+    FeatureSet'CLOSED
+  deriving stock (Prelude.Show, Prelude.Eq, Prelude.Ord)
+instance Data.ProtoLens.MessageEnum FeatureSet'EnumType where
+  maybeToEnum 0 = Prelude.Just FeatureSet'ENUM_TYPE_UNKNOWN
+  maybeToEnum 1 = Prelude.Just FeatureSet'OPEN
+  maybeToEnum 2 = Prelude.Just FeatureSet'CLOSED
+  maybeToEnum _ = Prelude.Nothing
+  showEnum FeatureSet'ENUM_TYPE_UNKNOWN = "ENUM_TYPE_UNKNOWN"
+  showEnum FeatureSet'OPEN = "OPEN"
+  showEnum FeatureSet'CLOSED = "CLOSED"
+  readEnum k
+    | (Prelude.==) k "ENUM_TYPE_UNKNOWN"
+    = Prelude.Just FeatureSet'ENUM_TYPE_UNKNOWN
+    | (Prelude.==) k "OPEN" = Prelude.Just FeatureSet'OPEN
+    | (Prelude.==) k "CLOSED" = Prelude.Just FeatureSet'CLOSED
+    | Prelude.otherwise
+    = (Prelude.>>=) (Text.Read.readMaybe k) Data.ProtoLens.maybeToEnum
+instance Prelude.Bounded FeatureSet'EnumType where
+  minBound = FeatureSet'ENUM_TYPE_UNKNOWN
+  maxBound = FeatureSet'CLOSED
+instance Prelude.Enum FeatureSet'EnumType where
+  toEnum k__
+    = Prelude.maybe
+        (Prelude.error
+           ((Prelude.++)
+              "toEnum: unknown value for enum EnumType: " (Prelude.show k__)))
+        Prelude.id
+        (Data.ProtoLens.maybeToEnum k__)
+  fromEnum FeatureSet'ENUM_TYPE_UNKNOWN = 0
+  fromEnum FeatureSet'OPEN = 1
+  fromEnum FeatureSet'CLOSED = 2
+  succ FeatureSet'CLOSED
+    = Prelude.error
+        "FeatureSet'EnumType.succ: bad argument FeatureSet'CLOSED. This value would be out of bounds."
+  succ FeatureSet'ENUM_TYPE_UNKNOWN = FeatureSet'OPEN
+  succ FeatureSet'OPEN = FeatureSet'CLOSED
+  pred FeatureSet'ENUM_TYPE_UNKNOWN
+    = Prelude.error
+        "FeatureSet'EnumType.pred: bad argument FeatureSet'ENUM_TYPE_UNKNOWN. This value would be out of bounds."
+  pred FeatureSet'OPEN = FeatureSet'ENUM_TYPE_UNKNOWN
+  pred FeatureSet'CLOSED = FeatureSet'OPEN
+  enumFrom = Data.ProtoLens.Message.Enum.messageEnumFrom
+  enumFromTo = Data.ProtoLens.Message.Enum.messageEnumFromTo
+  enumFromThen = Data.ProtoLens.Message.Enum.messageEnumFromThen
+  enumFromThenTo = Data.ProtoLens.Message.Enum.messageEnumFromThenTo
+instance Data.ProtoLens.FieldDefault FeatureSet'EnumType where
+  fieldDefault = FeatureSet'ENUM_TYPE_UNKNOWN
+instance Control.DeepSeq.NFData FeatureSet'EnumType where
+  rnf x__ = Prelude.seq x__ ()
+data FeatureSet'FieldPresence
+  = FeatureSet'FIELD_PRESENCE_UNKNOWN |
+    FeatureSet'EXPLICIT |
+    FeatureSet'IMPLICIT |
+    FeatureSet'LEGACY_REQUIRED
+  deriving stock (Prelude.Show, Prelude.Eq, Prelude.Ord)
+instance Data.ProtoLens.MessageEnum FeatureSet'FieldPresence where
+  maybeToEnum 0 = Prelude.Just FeatureSet'FIELD_PRESENCE_UNKNOWN
+  maybeToEnum 1 = Prelude.Just FeatureSet'EXPLICIT
+  maybeToEnum 2 = Prelude.Just FeatureSet'IMPLICIT
+  maybeToEnum 3 = Prelude.Just FeatureSet'LEGACY_REQUIRED
+  maybeToEnum _ = Prelude.Nothing
+  showEnum FeatureSet'FIELD_PRESENCE_UNKNOWN
+    = "FIELD_PRESENCE_UNKNOWN"
+  showEnum FeatureSet'EXPLICIT = "EXPLICIT"
+  showEnum FeatureSet'IMPLICIT = "IMPLICIT"
+  showEnum FeatureSet'LEGACY_REQUIRED = "LEGACY_REQUIRED"
+  readEnum k
+    | (Prelude.==) k "FIELD_PRESENCE_UNKNOWN"
+    = Prelude.Just FeatureSet'FIELD_PRESENCE_UNKNOWN
+    | (Prelude.==) k "EXPLICIT" = Prelude.Just FeatureSet'EXPLICIT
+    | (Prelude.==) k "IMPLICIT" = Prelude.Just FeatureSet'IMPLICIT
+    | (Prelude.==) k "LEGACY_REQUIRED"
+    = Prelude.Just FeatureSet'LEGACY_REQUIRED
+    | Prelude.otherwise
+    = (Prelude.>>=) (Text.Read.readMaybe k) Data.ProtoLens.maybeToEnum
+instance Prelude.Bounded FeatureSet'FieldPresence where
+  minBound = FeatureSet'FIELD_PRESENCE_UNKNOWN
+  maxBound = FeatureSet'LEGACY_REQUIRED
+instance Prelude.Enum FeatureSet'FieldPresence where
+  toEnum k__
+    = Prelude.maybe
+        (Prelude.error
+           ((Prelude.++)
+              "toEnum: unknown value for enum FieldPresence: "
+              (Prelude.show k__)))
+        Prelude.id
+        (Data.ProtoLens.maybeToEnum k__)
+  fromEnum FeatureSet'FIELD_PRESENCE_UNKNOWN = 0
+  fromEnum FeatureSet'EXPLICIT = 1
+  fromEnum FeatureSet'IMPLICIT = 2
+  fromEnum FeatureSet'LEGACY_REQUIRED = 3
+  succ FeatureSet'LEGACY_REQUIRED
+    = Prelude.error
+        "FeatureSet'FieldPresence.succ: bad argument FeatureSet'LEGACY_REQUIRED. This value would be out of bounds."
+  succ FeatureSet'FIELD_PRESENCE_UNKNOWN = FeatureSet'EXPLICIT
+  succ FeatureSet'EXPLICIT = FeatureSet'IMPLICIT
+  succ FeatureSet'IMPLICIT = FeatureSet'LEGACY_REQUIRED
+  pred FeatureSet'FIELD_PRESENCE_UNKNOWN
+    = Prelude.error
+        "FeatureSet'FieldPresence.pred: bad argument FeatureSet'FIELD_PRESENCE_UNKNOWN. This value would be out of bounds."
+  pred FeatureSet'EXPLICIT = FeatureSet'FIELD_PRESENCE_UNKNOWN
+  pred FeatureSet'IMPLICIT = FeatureSet'EXPLICIT
+  pred FeatureSet'LEGACY_REQUIRED = FeatureSet'IMPLICIT
+  enumFrom = Data.ProtoLens.Message.Enum.messageEnumFrom
+  enumFromTo = Data.ProtoLens.Message.Enum.messageEnumFromTo
+  enumFromThen = Data.ProtoLens.Message.Enum.messageEnumFromThen
+  enumFromThenTo = Data.ProtoLens.Message.Enum.messageEnumFromThenTo
+instance Data.ProtoLens.FieldDefault FeatureSet'FieldPresence where
+  fieldDefault = FeatureSet'FIELD_PRESENCE_UNKNOWN
+instance Control.DeepSeq.NFData FeatureSet'FieldPresence where
+  rnf x__ = Prelude.seq x__ ()
+data FeatureSet'JsonFormat
+  = FeatureSet'JSON_FORMAT_UNKNOWN |
+    FeatureSet'ALLOW |
+    FeatureSet'LEGACY_BEST_EFFORT
+  deriving stock (Prelude.Show, Prelude.Eq, Prelude.Ord)
+instance Data.ProtoLens.MessageEnum FeatureSet'JsonFormat where
+  maybeToEnum 0 = Prelude.Just FeatureSet'JSON_FORMAT_UNKNOWN
+  maybeToEnum 1 = Prelude.Just FeatureSet'ALLOW
+  maybeToEnum 2 = Prelude.Just FeatureSet'LEGACY_BEST_EFFORT
+  maybeToEnum _ = Prelude.Nothing
+  showEnum FeatureSet'JSON_FORMAT_UNKNOWN = "JSON_FORMAT_UNKNOWN"
+  showEnum FeatureSet'ALLOW = "ALLOW"
+  showEnum FeatureSet'LEGACY_BEST_EFFORT = "LEGACY_BEST_EFFORT"
+  readEnum k
+    | (Prelude.==) k "JSON_FORMAT_UNKNOWN"
+    = Prelude.Just FeatureSet'JSON_FORMAT_UNKNOWN
+    | (Prelude.==) k "ALLOW" = Prelude.Just FeatureSet'ALLOW
+    | (Prelude.==) k "LEGACY_BEST_EFFORT"
+    = Prelude.Just FeatureSet'LEGACY_BEST_EFFORT
+    | Prelude.otherwise
+    = (Prelude.>>=) (Text.Read.readMaybe k) Data.ProtoLens.maybeToEnum
+instance Prelude.Bounded FeatureSet'JsonFormat where
+  minBound = FeatureSet'JSON_FORMAT_UNKNOWN
+  maxBound = FeatureSet'LEGACY_BEST_EFFORT
+instance Prelude.Enum FeatureSet'JsonFormat where
+  toEnum k__
+    = Prelude.maybe
+        (Prelude.error
+           ((Prelude.++)
+              "toEnum: unknown value for enum JsonFormat: " (Prelude.show k__)))
+        Prelude.id
+        (Data.ProtoLens.maybeToEnum k__)
+  fromEnum FeatureSet'JSON_FORMAT_UNKNOWN = 0
+  fromEnum FeatureSet'ALLOW = 1
+  fromEnum FeatureSet'LEGACY_BEST_EFFORT = 2
+  succ FeatureSet'LEGACY_BEST_EFFORT
+    = Prelude.error
+        "FeatureSet'JsonFormat.succ: bad argument FeatureSet'LEGACY_BEST_EFFORT. This value would be out of bounds."
+  succ FeatureSet'JSON_FORMAT_UNKNOWN = FeatureSet'ALLOW
+  succ FeatureSet'ALLOW = FeatureSet'LEGACY_BEST_EFFORT
+  pred FeatureSet'JSON_FORMAT_UNKNOWN
+    = Prelude.error
+        "FeatureSet'JsonFormat.pred: bad argument FeatureSet'JSON_FORMAT_UNKNOWN. This value would be out of bounds."
+  pred FeatureSet'ALLOW = FeatureSet'JSON_FORMAT_UNKNOWN
+  pred FeatureSet'LEGACY_BEST_EFFORT = FeatureSet'ALLOW
+  enumFrom = Data.ProtoLens.Message.Enum.messageEnumFrom
+  enumFromTo = Data.ProtoLens.Message.Enum.messageEnumFromTo
+  enumFromThen = Data.ProtoLens.Message.Enum.messageEnumFromThen
+  enumFromThenTo = Data.ProtoLens.Message.Enum.messageEnumFromThenTo
+instance Data.ProtoLens.FieldDefault FeatureSet'JsonFormat where
+  fieldDefault = FeatureSet'JSON_FORMAT_UNKNOWN
+instance Control.DeepSeq.NFData FeatureSet'JsonFormat where
+  rnf x__ = Prelude.seq x__ ()
+data FeatureSet'MessageEncoding
+  = FeatureSet'MESSAGE_ENCODING_UNKNOWN |
+    FeatureSet'LENGTH_PREFIXED |
+    FeatureSet'DELIMITED
+  deriving stock (Prelude.Show, Prelude.Eq, Prelude.Ord)
+instance Data.ProtoLens.MessageEnum FeatureSet'MessageEncoding where
+  maybeToEnum 0 = Prelude.Just FeatureSet'MESSAGE_ENCODING_UNKNOWN
+  maybeToEnum 1 = Prelude.Just FeatureSet'LENGTH_PREFIXED
+  maybeToEnum 2 = Prelude.Just FeatureSet'DELIMITED
+  maybeToEnum _ = Prelude.Nothing
+  showEnum FeatureSet'MESSAGE_ENCODING_UNKNOWN
+    = "MESSAGE_ENCODING_UNKNOWN"
+  showEnum FeatureSet'LENGTH_PREFIXED = "LENGTH_PREFIXED"
+  showEnum FeatureSet'DELIMITED = "DELIMITED"
+  readEnum k
+    | (Prelude.==) k "MESSAGE_ENCODING_UNKNOWN"
+    = Prelude.Just FeatureSet'MESSAGE_ENCODING_UNKNOWN
+    | (Prelude.==) k "LENGTH_PREFIXED"
+    = Prelude.Just FeatureSet'LENGTH_PREFIXED
+    | (Prelude.==) k "DELIMITED" = Prelude.Just FeatureSet'DELIMITED
+    | Prelude.otherwise
+    = (Prelude.>>=) (Text.Read.readMaybe k) Data.ProtoLens.maybeToEnum
+instance Prelude.Bounded FeatureSet'MessageEncoding where
+  minBound = FeatureSet'MESSAGE_ENCODING_UNKNOWN
+  maxBound = FeatureSet'DELIMITED
+instance Prelude.Enum FeatureSet'MessageEncoding where
+  toEnum k__
+    = Prelude.maybe
+        (Prelude.error
+           ((Prelude.++)
+              "toEnum: unknown value for enum MessageEncoding: "
+              (Prelude.show k__)))
+        Prelude.id
+        (Data.ProtoLens.maybeToEnum k__)
+  fromEnum FeatureSet'MESSAGE_ENCODING_UNKNOWN = 0
+  fromEnum FeatureSet'LENGTH_PREFIXED = 1
+  fromEnum FeatureSet'DELIMITED = 2
+  succ FeatureSet'DELIMITED
+    = Prelude.error
+        "FeatureSet'MessageEncoding.succ: bad argument FeatureSet'DELIMITED. This value would be out of bounds."
+  succ FeatureSet'MESSAGE_ENCODING_UNKNOWN
+    = FeatureSet'LENGTH_PREFIXED
+  succ FeatureSet'LENGTH_PREFIXED = FeatureSet'DELIMITED
+  pred FeatureSet'MESSAGE_ENCODING_UNKNOWN
+    = Prelude.error
+        "FeatureSet'MessageEncoding.pred: bad argument FeatureSet'MESSAGE_ENCODING_UNKNOWN. This value would be out of bounds."
+  pred FeatureSet'LENGTH_PREFIXED
+    = FeatureSet'MESSAGE_ENCODING_UNKNOWN
+  pred FeatureSet'DELIMITED = FeatureSet'LENGTH_PREFIXED
+  enumFrom = Data.ProtoLens.Message.Enum.messageEnumFrom
+  enumFromTo = Data.ProtoLens.Message.Enum.messageEnumFromTo
+  enumFromThen = Data.ProtoLens.Message.Enum.messageEnumFromThen
+  enumFromThenTo = Data.ProtoLens.Message.Enum.messageEnumFromThenTo
+instance Data.ProtoLens.FieldDefault FeatureSet'MessageEncoding where
+  fieldDefault = FeatureSet'MESSAGE_ENCODING_UNKNOWN
+instance Control.DeepSeq.NFData FeatureSet'MessageEncoding where
+  rnf x__ = Prelude.seq x__ ()
+data FeatureSet'RepeatedFieldEncoding
+  = FeatureSet'REPEATED_FIELD_ENCODING_UNKNOWN |
+    FeatureSet'PACKED |
+    FeatureSet'EXPANDED
+  deriving stock (Prelude.Show, Prelude.Eq, Prelude.Ord)
+instance Data.ProtoLens.MessageEnum FeatureSet'RepeatedFieldEncoding where
+  maybeToEnum 0
+    = Prelude.Just FeatureSet'REPEATED_FIELD_ENCODING_UNKNOWN
+  maybeToEnum 1 = Prelude.Just FeatureSet'PACKED
+  maybeToEnum 2 = Prelude.Just FeatureSet'EXPANDED
+  maybeToEnum _ = Prelude.Nothing
+  showEnum FeatureSet'REPEATED_FIELD_ENCODING_UNKNOWN
+    = "REPEATED_FIELD_ENCODING_UNKNOWN"
+  showEnum FeatureSet'PACKED = "PACKED"
+  showEnum FeatureSet'EXPANDED = "EXPANDED"
+  readEnum k
+    | (Prelude.==) k "REPEATED_FIELD_ENCODING_UNKNOWN"
+    = Prelude.Just FeatureSet'REPEATED_FIELD_ENCODING_UNKNOWN
+    | (Prelude.==) k "PACKED" = Prelude.Just FeatureSet'PACKED
+    | (Prelude.==) k "EXPANDED" = Prelude.Just FeatureSet'EXPANDED
+    | Prelude.otherwise
+    = (Prelude.>>=) (Text.Read.readMaybe k) Data.ProtoLens.maybeToEnum
+instance Prelude.Bounded FeatureSet'RepeatedFieldEncoding where
+  minBound = FeatureSet'REPEATED_FIELD_ENCODING_UNKNOWN
+  maxBound = FeatureSet'EXPANDED
+instance Prelude.Enum FeatureSet'RepeatedFieldEncoding where
+  toEnum k__
+    = Prelude.maybe
+        (Prelude.error
+           ((Prelude.++)
+              "toEnum: unknown value for enum RepeatedFieldEncoding: "
+              (Prelude.show k__)))
+        Prelude.id
+        (Data.ProtoLens.maybeToEnum k__)
+  fromEnum FeatureSet'REPEATED_FIELD_ENCODING_UNKNOWN = 0
+  fromEnum FeatureSet'PACKED = 1
+  fromEnum FeatureSet'EXPANDED = 2
+  succ FeatureSet'EXPANDED
+    = Prelude.error
+        "FeatureSet'RepeatedFieldEncoding.succ: bad argument FeatureSet'EXPANDED. This value would be out of bounds."
+  succ FeatureSet'REPEATED_FIELD_ENCODING_UNKNOWN = FeatureSet'PACKED
+  succ FeatureSet'PACKED = FeatureSet'EXPANDED
+  pred FeatureSet'REPEATED_FIELD_ENCODING_UNKNOWN
+    = Prelude.error
+        "FeatureSet'RepeatedFieldEncoding.pred: bad argument FeatureSet'REPEATED_FIELD_ENCODING_UNKNOWN. This value would be out of bounds."
+  pred FeatureSet'PACKED = FeatureSet'REPEATED_FIELD_ENCODING_UNKNOWN
+  pred FeatureSet'EXPANDED = FeatureSet'PACKED
+  enumFrom = Data.ProtoLens.Message.Enum.messageEnumFrom
+  enumFromTo = Data.ProtoLens.Message.Enum.messageEnumFromTo
+  enumFromThen = Data.ProtoLens.Message.Enum.messageEnumFromThen
+  enumFromThenTo = Data.ProtoLens.Message.Enum.messageEnumFromThenTo
+instance Data.ProtoLens.FieldDefault FeatureSet'RepeatedFieldEncoding where
+  fieldDefault = FeatureSet'REPEATED_FIELD_ENCODING_UNKNOWN
+instance Control.DeepSeq.NFData FeatureSet'RepeatedFieldEncoding where
+  rnf x__ = Prelude.seq x__ ()
+data FeatureSet'Utf8Validation
+  = FeatureSet'UTF8_VALIDATION_UNKNOWN |
+    FeatureSet'VERIFY |
+    FeatureSet'NONE
+  deriving stock (Prelude.Show, Prelude.Eq, Prelude.Ord)
+instance Data.ProtoLens.MessageEnum FeatureSet'Utf8Validation where
+  maybeToEnum 0 = Prelude.Just FeatureSet'UTF8_VALIDATION_UNKNOWN
+  maybeToEnum 2 = Prelude.Just FeatureSet'VERIFY
+  maybeToEnum 3 = Prelude.Just FeatureSet'NONE
+  maybeToEnum _ = Prelude.Nothing
+  showEnum FeatureSet'UTF8_VALIDATION_UNKNOWN
+    = "UTF8_VALIDATION_UNKNOWN"
+  showEnum FeatureSet'VERIFY = "VERIFY"
+  showEnum FeatureSet'NONE = "NONE"
+  readEnum k
+    | (Prelude.==) k "UTF8_VALIDATION_UNKNOWN"
+    = Prelude.Just FeatureSet'UTF8_VALIDATION_UNKNOWN
+    | (Prelude.==) k "VERIFY" = Prelude.Just FeatureSet'VERIFY
+    | (Prelude.==) k "NONE" = Prelude.Just FeatureSet'NONE
+    | Prelude.otherwise
+    = (Prelude.>>=) (Text.Read.readMaybe k) Data.ProtoLens.maybeToEnum
+instance Prelude.Bounded FeatureSet'Utf8Validation where
+  minBound = FeatureSet'UTF8_VALIDATION_UNKNOWN
+  maxBound = FeatureSet'NONE
+instance Prelude.Enum FeatureSet'Utf8Validation where
+  toEnum k__
+    = Prelude.maybe
+        (Prelude.error
+           ((Prelude.++)
+              "toEnum: unknown value for enum Utf8Validation: "
+              (Prelude.show k__)))
+        Prelude.id
+        (Data.ProtoLens.maybeToEnum k__)
+  fromEnum FeatureSet'UTF8_VALIDATION_UNKNOWN = 0
+  fromEnum FeatureSet'VERIFY = 2
+  fromEnum FeatureSet'NONE = 3
+  succ FeatureSet'NONE
+    = Prelude.error
+        "FeatureSet'Utf8Validation.succ: bad argument FeatureSet'NONE. This value would be out of bounds."
+  succ FeatureSet'UTF8_VALIDATION_UNKNOWN = FeatureSet'VERIFY
+  succ FeatureSet'VERIFY = FeatureSet'NONE
+  pred FeatureSet'UTF8_VALIDATION_UNKNOWN
+    = Prelude.error
+        "FeatureSet'Utf8Validation.pred: bad argument FeatureSet'UTF8_VALIDATION_UNKNOWN. This value would be out of bounds."
+  pred FeatureSet'VERIFY = FeatureSet'UTF8_VALIDATION_UNKNOWN
+  pred FeatureSet'NONE = FeatureSet'VERIFY
+  enumFrom = Data.ProtoLens.Message.Enum.messageEnumFrom
+  enumFromTo = Data.ProtoLens.Message.Enum.messageEnumFromTo
+  enumFromThen = Data.ProtoLens.Message.Enum.messageEnumFromThen
+  enumFromThenTo = Data.ProtoLens.Message.Enum.messageEnumFromThenTo
+instance Data.ProtoLens.FieldDefault FeatureSet'Utf8Validation where
+  fieldDefault = FeatureSet'UTF8_VALIDATION_UNKNOWN
+instance Control.DeepSeq.NFData FeatureSet'Utf8Validation where
+  rnf x__ = Prelude.seq x__ ()
+{- | Fields :
+     
+         * 'Proto.Google.Protobuf.Descriptor_Fields.defaults' @:: Lens' FeatureSetDefaults [FeatureSetDefaults'FeatureSetEditionDefault]@
+         * 'Proto.Google.Protobuf.Descriptor_Fields.vec'defaults' @:: Lens' FeatureSetDefaults (Data.Vector.Vector FeatureSetDefaults'FeatureSetEditionDefault)@
+         * 'Proto.Google.Protobuf.Descriptor_Fields.minimumEdition' @:: Lens' FeatureSetDefaults Edition@
+         * 'Proto.Google.Protobuf.Descriptor_Fields.maybe'minimumEdition' @:: Lens' FeatureSetDefaults (Prelude.Maybe Edition)@
+         * 'Proto.Google.Protobuf.Descriptor_Fields.maximumEdition' @:: Lens' FeatureSetDefaults Edition@
+         * 'Proto.Google.Protobuf.Descriptor_Fields.maybe'maximumEdition' @:: Lens' FeatureSetDefaults (Prelude.Maybe Edition)@ -}
+data FeatureSetDefaults
+  = FeatureSetDefaults'_constructor {_FeatureSetDefaults'defaults :: !(Data.Vector.Vector FeatureSetDefaults'FeatureSetEditionDefault),
+                                     _FeatureSetDefaults'minimumEdition :: !(Prelude.Maybe Edition),
+                                     _FeatureSetDefaults'maximumEdition :: !(Prelude.Maybe Edition),
+                                     _FeatureSetDefaults'_unknownFields :: !Data.ProtoLens.FieldSet}
+  deriving stock (Prelude.Eq, Prelude.Ord)
+instance Prelude.Show FeatureSetDefaults where
+  showsPrec _ __x __s
+    = Prelude.showChar
+        '{'
+        (Prelude.showString
+           (Data.ProtoLens.showMessageShort __x) (Prelude.showChar '}' __s))
+instance Data.ProtoLens.Field.HasField FeatureSetDefaults "defaults" [FeatureSetDefaults'FeatureSetEditionDefault] where
+  fieldOf _
+    = (Prelude..)
+        (Lens.Family2.Unchecked.lens
+           _FeatureSetDefaults'defaults
+           (\ x__ y__ -> x__ {_FeatureSetDefaults'defaults = y__}))
+        (Lens.Family2.Unchecked.lens
+           Data.Vector.Generic.toList
+           (\ _ y__ -> Data.Vector.Generic.fromList y__))
+instance Data.ProtoLens.Field.HasField FeatureSetDefaults "vec'defaults" (Data.Vector.Vector FeatureSetDefaults'FeatureSetEditionDefault) where
+  fieldOf _
+    = (Prelude..)
+        (Lens.Family2.Unchecked.lens
+           _FeatureSetDefaults'defaults
+           (\ x__ y__ -> x__ {_FeatureSetDefaults'defaults = y__}))
+        Prelude.id
+instance Data.ProtoLens.Field.HasField FeatureSetDefaults "minimumEdition" Edition where
+  fieldOf _
+    = (Prelude..)
+        (Lens.Family2.Unchecked.lens
+           _FeatureSetDefaults'minimumEdition
+           (\ x__ y__ -> x__ {_FeatureSetDefaults'minimumEdition = y__}))
+        (Data.ProtoLens.maybeLens Data.ProtoLens.fieldDefault)
+instance Data.ProtoLens.Field.HasField FeatureSetDefaults "maybe'minimumEdition" (Prelude.Maybe Edition) where
+  fieldOf _
+    = (Prelude..)
+        (Lens.Family2.Unchecked.lens
+           _FeatureSetDefaults'minimumEdition
+           (\ x__ y__ -> x__ {_FeatureSetDefaults'minimumEdition = y__}))
+        Prelude.id
+instance Data.ProtoLens.Field.HasField FeatureSetDefaults "maximumEdition" Edition where
+  fieldOf _
+    = (Prelude..)
+        (Lens.Family2.Unchecked.lens
+           _FeatureSetDefaults'maximumEdition
+           (\ x__ y__ -> x__ {_FeatureSetDefaults'maximumEdition = y__}))
+        (Data.ProtoLens.maybeLens Data.ProtoLens.fieldDefault)
+instance Data.ProtoLens.Field.HasField FeatureSetDefaults "maybe'maximumEdition" (Prelude.Maybe Edition) where
+  fieldOf _
+    = (Prelude..)
+        (Lens.Family2.Unchecked.lens
+           _FeatureSetDefaults'maximumEdition
+           (\ x__ y__ -> x__ {_FeatureSetDefaults'maximumEdition = y__}))
+        Prelude.id
+instance Data.ProtoLens.Message FeatureSetDefaults where
+  messageName _ = Data.Text.pack "google.protobuf.FeatureSetDefaults"
+  packedMessageDescriptor _
+    = "\n\
+      \\DC2FeatureSetDefaults\DC2X\n\
+      \\bdefaults\CAN\SOH \ETX(\v2<.google.protobuf.FeatureSetDefaults.FeatureSetEditionDefaultR\bdefaults\DC2A\n\
+      \\SIminimum_edition\CAN\EOT \SOH(\SO2\CAN.google.protobuf.EditionR\SOminimumEdition\DC2A\n\
+      \\SImaximum_edition\CAN\ENQ \SOH(\SO2\CAN.google.protobuf.EditionR\SOmaximumEdition\SUB\248\SOH\n\
+      \\CANFeatureSetEditionDefault\DC22\n\
+      \\aedition\CAN\ETX \SOH(\SO2\CAN.google.protobuf.EditionR\aedition\DC2N\n\
+      \\DC4overridable_features\CAN\EOT \SOH(\v2\ESC.google.protobuf.FeatureSetR\DC3overridableFeatures\DC2B\n\
+      \\SOfixed_features\CAN\ENQ \SOH(\v2\ESC.google.protobuf.FeatureSetR\rfixedFeaturesJ\EOT\b\SOH\DLE\STXJ\EOT\b\STX\DLE\ETXR\bfeatures"
+  packedFileDescriptor _ = packedFileDescriptor
+  fieldsByTag
+    = let
+        defaults__field_descriptor
+          = Data.ProtoLens.FieldDescriptor
+              "defaults"
+              (Data.ProtoLens.MessageField Data.ProtoLens.MessageType ::
+                 Data.ProtoLens.FieldTypeDescriptor FeatureSetDefaults'FeatureSetEditionDefault)
+              (Data.ProtoLens.RepeatedField
+                 Data.ProtoLens.Unpacked
+                 (Data.ProtoLens.Field.field @"defaults")) ::
+              Data.ProtoLens.FieldDescriptor FeatureSetDefaults
+        minimumEdition__field_descriptor
+          = Data.ProtoLens.FieldDescriptor
+              "minimum_edition"
+              (Data.ProtoLens.ScalarField Data.ProtoLens.EnumField ::
+                 Data.ProtoLens.FieldTypeDescriptor Edition)
+              (Data.ProtoLens.OptionalField
+                 (Data.ProtoLens.Field.field @"maybe'minimumEdition")) ::
+              Data.ProtoLens.FieldDescriptor FeatureSetDefaults
+        maximumEdition__field_descriptor
+          = Data.ProtoLens.FieldDescriptor
+              "maximum_edition"
+              (Data.ProtoLens.ScalarField Data.ProtoLens.EnumField ::
+                 Data.ProtoLens.FieldTypeDescriptor Edition)
+              (Data.ProtoLens.OptionalField
+                 (Data.ProtoLens.Field.field @"maybe'maximumEdition")) ::
+              Data.ProtoLens.FieldDescriptor FeatureSetDefaults
+      in
+        Data.Map.fromList
+          [(Data.ProtoLens.Tag 1, defaults__field_descriptor),
+           (Data.ProtoLens.Tag 4, minimumEdition__field_descriptor),
+           (Data.ProtoLens.Tag 5, maximumEdition__field_descriptor)]
+  unknownFields
+    = Lens.Family2.Unchecked.lens
+        _FeatureSetDefaults'_unknownFields
+        (\ x__ y__ -> x__ {_FeatureSetDefaults'_unknownFields = y__})
+  defMessage
+    = FeatureSetDefaults'_constructor
+        {_FeatureSetDefaults'defaults = Data.Vector.Generic.empty,
+         _FeatureSetDefaults'minimumEdition = Prelude.Nothing,
+         _FeatureSetDefaults'maximumEdition = Prelude.Nothing,
+         _FeatureSetDefaults'_unknownFields = []}
+  parseMessage
+    = let
+        loop ::
+          FeatureSetDefaults
+          -> Data.ProtoLens.Encoding.Growing.Growing Data.Vector.Vector Data.ProtoLens.Encoding.Growing.RealWorld FeatureSetDefaults'FeatureSetEditionDefault
+             -> Data.ProtoLens.Encoding.Bytes.Parser FeatureSetDefaults
+        loop x mutable'defaults
+          = do end <- Data.ProtoLens.Encoding.Bytes.atEnd
+               if end then
+                   do frozen'defaults <- Data.ProtoLens.Encoding.Parser.Unsafe.unsafeLiftIO
+                                           (Data.ProtoLens.Encoding.Growing.unsafeFreeze
+                                              mutable'defaults)
+                      (let missing = []
+                       in
+                         if Prelude.null missing then
+                             Prelude.return ()
+                         else
+                             Prelude.fail
+                               ((Prelude.++)
+                                  "Missing required fields: "
+                                  (Prelude.show (missing :: [Prelude.String]))))
+                      Prelude.return
+                        (Lens.Family2.over
+                           Data.ProtoLens.unknownFields
+                           (\ !t -> Prelude.reverse t)
+                           (Lens.Family2.set
+                              (Data.ProtoLens.Field.field @"vec'defaults") frozen'defaults x))
+               else
+                   do tag <- Data.ProtoLens.Encoding.Bytes.getVarInt
+                      case tag of
+                        10
+                          -> do !y <- (Data.ProtoLens.Encoding.Bytes.<?>)
+                                        (do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
+                                            Data.ProtoLens.Encoding.Bytes.isolate
+                                              (Prelude.fromIntegral len)
+                                              Data.ProtoLens.parseMessage)
+                                        "defaults"
+                                v <- Data.ProtoLens.Encoding.Parser.Unsafe.unsafeLiftIO
+                                       (Data.ProtoLens.Encoding.Growing.append mutable'defaults y)
+                                loop x v
+                        32
+                          -> do y <- (Data.ProtoLens.Encoding.Bytes.<?>)
+                                       (Prelude.fmap
+                                          Prelude.toEnum
+                                          (Prelude.fmap
+                                             Prelude.fromIntegral
+                                             Data.ProtoLens.Encoding.Bytes.getVarInt))
+                                       "minimum_edition"
+                                loop
+                                  (Lens.Family2.set
+                                     (Data.ProtoLens.Field.field @"minimumEdition") y x)
+                                  mutable'defaults
+                        40
+                          -> do y <- (Data.ProtoLens.Encoding.Bytes.<?>)
+                                       (Prelude.fmap
+                                          Prelude.toEnum
+                                          (Prelude.fmap
+                                             Prelude.fromIntegral
+                                             Data.ProtoLens.Encoding.Bytes.getVarInt))
+                                       "maximum_edition"
+                                loop
+                                  (Lens.Family2.set
+                                     (Data.ProtoLens.Field.field @"maximumEdition") y x)
+                                  mutable'defaults
+                        wire
+                          -> do !y <- Data.ProtoLens.Encoding.Wire.parseTaggedValueFromWire
+                                        wire
+                                loop
+                                  (Lens.Family2.over
+                                     Data.ProtoLens.unknownFields (\ !t -> (:) y t) x)
+                                  mutable'defaults
+      in
+        (Data.ProtoLens.Encoding.Bytes.<?>)
+          (do mutable'defaults <- Data.ProtoLens.Encoding.Parser.Unsafe.unsafeLiftIO
+                                    Data.ProtoLens.Encoding.Growing.new
+              loop Data.ProtoLens.defMessage mutable'defaults)
+          "FeatureSetDefaults"
+  buildMessage
+    = \ _x
+        -> (Data.Monoid.<>)
+             (Data.ProtoLens.Encoding.Bytes.foldMapBuilder
+                (\ _v
+                   -> (Data.Monoid.<>)
+                        (Data.ProtoLens.Encoding.Bytes.putVarInt 10)
+                        ((Prelude..)
+                           (\ bs
+                              -> (Data.Monoid.<>)
+                                   (Data.ProtoLens.Encoding.Bytes.putVarInt
+                                      (Prelude.fromIntegral (Data.ByteString.length bs)))
+                                   (Data.ProtoLens.Encoding.Bytes.putBytes bs))
+                           Data.ProtoLens.encodeMessage
+                           _v))
+                (Lens.Family2.view
+                   (Data.ProtoLens.Field.field @"vec'defaults") _x))
+             ((Data.Monoid.<>)
+                (case
+                     Lens.Family2.view
+                       (Data.ProtoLens.Field.field @"maybe'minimumEdition") _x
+                 of
+                   Prelude.Nothing -> Data.Monoid.mempty
+                   (Prelude.Just _v)
+                     -> (Data.Monoid.<>)
+                          (Data.ProtoLens.Encoding.Bytes.putVarInt 32)
+                          ((Prelude..)
+                             ((Prelude..)
+                                Data.ProtoLens.Encoding.Bytes.putVarInt Prelude.fromIntegral)
+                             Prelude.fromEnum
+                             _v))
+                ((Data.Monoid.<>)
+                   (case
+                        Lens.Family2.view
+                          (Data.ProtoLens.Field.field @"maybe'maximumEdition") _x
+                    of
+                      Prelude.Nothing -> Data.Monoid.mempty
+                      (Prelude.Just _v)
+                        -> (Data.Monoid.<>)
+                             (Data.ProtoLens.Encoding.Bytes.putVarInt 40)
+                             ((Prelude..)
+                                ((Prelude..)
+                                   Data.ProtoLens.Encoding.Bytes.putVarInt Prelude.fromIntegral)
+                                Prelude.fromEnum
+                                _v))
+                   (Data.ProtoLens.Encoding.Wire.buildFieldSet
+                      (Lens.Family2.view Data.ProtoLens.unknownFields _x))))
+instance Control.DeepSeq.NFData FeatureSetDefaults where
+  rnf
+    = \ x__
+        -> Control.DeepSeq.deepseq
+             (_FeatureSetDefaults'_unknownFields x__)
+             (Control.DeepSeq.deepseq
+                (_FeatureSetDefaults'defaults x__)
+                (Control.DeepSeq.deepseq
+                   (_FeatureSetDefaults'minimumEdition x__)
+                   (Control.DeepSeq.deepseq
+                      (_FeatureSetDefaults'maximumEdition x__) ())))
+{- | Fields :
+     
+         * 'Proto.Google.Protobuf.Descriptor_Fields.edition' @:: Lens' FeatureSetDefaults'FeatureSetEditionDefault Edition@
+         * 'Proto.Google.Protobuf.Descriptor_Fields.maybe'edition' @:: Lens' FeatureSetDefaults'FeatureSetEditionDefault (Prelude.Maybe Edition)@
+         * 'Proto.Google.Protobuf.Descriptor_Fields.overridableFeatures' @:: Lens' FeatureSetDefaults'FeatureSetEditionDefault FeatureSet@
+         * 'Proto.Google.Protobuf.Descriptor_Fields.maybe'overridableFeatures' @:: Lens' FeatureSetDefaults'FeatureSetEditionDefault (Prelude.Maybe FeatureSet)@
+         * 'Proto.Google.Protobuf.Descriptor_Fields.fixedFeatures' @:: Lens' FeatureSetDefaults'FeatureSetEditionDefault FeatureSet@
+         * 'Proto.Google.Protobuf.Descriptor_Fields.maybe'fixedFeatures' @:: Lens' FeatureSetDefaults'FeatureSetEditionDefault (Prelude.Maybe FeatureSet)@ -}
+data FeatureSetDefaults'FeatureSetEditionDefault
+  = FeatureSetDefaults'FeatureSetEditionDefault'_constructor {_FeatureSetDefaults'FeatureSetEditionDefault'edition :: !(Prelude.Maybe Edition),
+                                                              _FeatureSetDefaults'FeatureSetEditionDefault'overridableFeatures :: !(Prelude.Maybe FeatureSet),
+                                                              _FeatureSetDefaults'FeatureSetEditionDefault'fixedFeatures :: !(Prelude.Maybe FeatureSet),
+                                                              _FeatureSetDefaults'FeatureSetEditionDefault'_unknownFields :: !Data.ProtoLens.FieldSet}
+  deriving stock (Prelude.Eq, Prelude.Ord)
+instance Prelude.Show FeatureSetDefaults'FeatureSetEditionDefault where
+  showsPrec _ __x __s
+    = Prelude.showChar
+        '{'
+        (Prelude.showString
+           (Data.ProtoLens.showMessageShort __x) (Prelude.showChar '}' __s))
+instance Data.ProtoLens.Field.HasField FeatureSetDefaults'FeatureSetEditionDefault "edition" Edition where
+  fieldOf _
+    = (Prelude..)
+        (Lens.Family2.Unchecked.lens
+           _FeatureSetDefaults'FeatureSetEditionDefault'edition
+           (\ x__ y__
+              -> x__
+                   {_FeatureSetDefaults'FeatureSetEditionDefault'edition = y__}))
+        (Data.ProtoLens.maybeLens Data.ProtoLens.fieldDefault)
+instance Data.ProtoLens.Field.HasField FeatureSetDefaults'FeatureSetEditionDefault "maybe'edition" (Prelude.Maybe Edition) where
+  fieldOf _
+    = (Prelude..)
+        (Lens.Family2.Unchecked.lens
+           _FeatureSetDefaults'FeatureSetEditionDefault'edition
+           (\ x__ y__
+              -> x__
+                   {_FeatureSetDefaults'FeatureSetEditionDefault'edition = y__}))
+        Prelude.id
+instance Data.ProtoLens.Field.HasField FeatureSetDefaults'FeatureSetEditionDefault "overridableFeatures" FeatureSet where
+  fieldOf _
+    = (Prelude..)
+        (Lens.Family2.Unchecked.lens
+           _FeatureSetDefaults'FeatureSetEditionDefault'overridableFeatures
+           (\ x__ y__
+              -> x__
+                   {_FeatureSetDefaults'FeatureSetEditionDefault'overridableFeatures = y__}))
+        (Data.ProtoLens.maybeLens Data.ProtoLens.defMessage)
+instance Data.ProtoLens.Field.HasField FeatureSetDefaults'FeatureSetEditionDefault "maybe'overridableFeatures" (Prelude.Maybe FeatureSet) where
+  fieldOf _
+    = (Prelude..)
+        (Lens.Family2.Unchecked.lens
+           _FeatureSetDefaults'FeatureSetEditionDefault'overridableFeatures
+           (\ x__ y__
+              -> x__
+                   {_FeatureSetDefaults'FeatureSetEditionDefault'overridableFeatures = y__}))
+        Prelude.id
+instance Data.ProtoLens.Field.HasField FeatureSetDefaults'FeatureSetEditionDefault "fixedFeatures" FeatureSet where
+  fieldOf _
+    = (Prelude..)
+        (Lens.Family2.Unchecked.lens
+           _FeatureSetDefaults'FeatureSetEditionDefault'fixedFeatures
+           (\ x__ y__
+              -> x__
+                   {_FeatureSetDefaults'FeatureSetEditionDefault'fixedFeatures = y__}))
+        (Data.ProtoLens.maybeLens Data.ProtoLens.defMessage)
+instance Data.ProtoLens.Field.HasField FeatureSetDefaults'FeatureSetEditionDefault "maybe'fixedFeatures" (Prelude.Maybe FeatureSet) where
+  fieldOf _
+    = (Prelude..)
+        (Lens.Family2.Unchecked.lens
+           _FeatureSetDefaults'FeatureSetEditionDefault'fixedFeatures
+           (\ x__ y__
+              -> x__
+                   {_FeatureSetDefaults'FeatureSetEditionDefault'fixedFeatures = y__}))
+        Prelude.id
+instance Data.ProtoLens.Message FeatureSetDefaults'FeatureSetEditionDefault where
+  messageName _
+    = Data.Text.pack
+        "google.protobuf.FeatureSetDefaults.FeatureSetEditionDefault"
+  packedMessageDescriptor _
+    = "\n\
+      \\CANFeatureSetEditionDefault\DC22\n\
+      \\aedition\CAN\ETX \SOH(\SO2\CAN.google.protobuf.EditionR\aedition\DC2N\n\
+      \\DC4overridable_features\CAN\EOT \SOH(\v2\ESC.google.protobuf.FeatureSetR\DC3overridableFeatures\DC2B\n\
+      \\SOfixed_features\CAN\ENQ \SOH(\v2\ESC.google.protobuf.FeatureSetR\rfixedFeaturesJ\EOT\b\SOH\DLE\STXJ\EOT\b\STX\DLE\ETXR\bfeatures"
+  packedFileDescriptor _ = packedFileDescriptor
+  fieldsByTag
+    = let
+        edition__field_descriptor
+          = Data.ProtoLens.FieldDescriptor
+              "edition"
+              (Data.ProtoLens.ScalarField Data.ProtoLens.EnumField ::
+                 Data.ProtoLens.FieldTypeDescriptor Edition)
+              (Data.ProtoLens.OptionalField
+                 (Data.ProtoLens.Field.field @"maybe'edition")) ::
+              Data.ProtoLens.FieldDescriptor FeatureSetDefaults'FeatureSetEditionDefault
+        overridableFeatures__field_descriptor
+          = Data.ProtoLens.FieldDescriptor
+              "overridable_features"
+              (Data.ProtoLens.MessageField Data.ProtoLens.MessageType ::
+                 Data.ProtoLens.FieldTypeDescriptor FeatureSet)
+              (Data.ProtoLens.OptionalField
+                 (Data.ProtoLens.Field.field @"maybe'overridableFeatures")) ::
+              Data.ProtoLens.FieldDescriptor FeatureSetDefaults'FeatureSetEditionDefault
+        fixedFeatures__field_descriptor
+          = Data.ProtoLens.FieldDescriptor
+              "fixed_features"
+              (Data.ProtoLens.MessageField Data.ProtoLens.MessageType ::
+                 Data.ProtoLens.FieldTypeDescriptor FeatureSet)
+              (Data.ProtoLens.OptionalField
+                 (Data.ProtoLens.Field.field @"maybe'fixedFeatures")) ::
+              Data.ProtoLens.FieldDescriptor FeatureSetDefaults'FeatureSetEditionDefault
+      in
+        Data.Map.fromList
+          [(Data.ProtoLens.Tag 3, edition__field_descriptor),
+           (Data.ProtoLens.Tag 4, overridableFeatures__field_descriptor),
+           (Data.ProtoLens.Tag 5, fixedFeatures__field_descriptor)]
+  unknownFields
+    = Lens.Family2.Unchecked.lens
+        _FeatureSetDefaults'FeatureSetEditionDefault'_unknownFields
+        (\ x__ y__
+           -> x__
+                {_FeatureSetDefaults'FeatureSetEditionDefault'_unknownFields = y__})
+  defMessage
+    = FeatureSetDefaults'FeatureSetEditionDefault'_constructor
+        {_FeatureSetDefaults'FeatureSetEditionDefault'edition = Prelude.Nothing,
+         _FeatureSetDefaults'FeatureSetEditionDefault'overridableFeatures = Prelude.Nothing,
+         _FeatureSetDefaults'FeatureSetEditionDefault'fixedFeatures = Prelude.Nothing,
+         _FeatureSetDefaults'FeatureSetEditionDefault'_unknownFields = []}
+  parseMessage
+    = let
+        loop ::
+          FeatureSetDefaults'FeatureSetEditionDefault
+          -> Data.ProtoLens.Encoding.Bytes.Parser FeatureSetDefaults'FeatureSetEditionDefault
+        loop x
+          = do end <- Data.ProtoLens.Encoding.Bytes.atEnd
+               if end then
+                   do (let missing = []
+                       in
+                         if Prelude.null missing then
+                             Prelude.return ()
+                         else
+                             Prelude.fail
+                               ((Prelude.++)
+                                  "Missing required fields: "
+                                  (Prelude.show (missing :: [Prelude.String]))))
+                      Prelude.return
+                        (Lens.Family2.over
+                           Data.ProtoLens.unknownFields (\ !t -> Prelude.reverse t) x)
+               else
+                   do tag <- Data.ProtoLens.Encoding.Bytes.getVarInt
+                      case tag of
+                        24
+                          -> do y <- (Data.ProtoLens.Encoding.Bytes.<?>)
+                                       (Prelude.fmap
+                                          Prelude.toEnum
+                                          (Prelude.fmap
+                                             Prelude.fromIntegral
+                                             Data.ProtoLens.Encoding.Bytes.getVarInt))
+                                       "edition"
+                                loop (Lens.Family2.set (Data.ProtoLens.Field.field @"edition") y x)
+                        34
+                          -> do y <- (Data.ProtoLens.Encoding.Bytes.<?>)
+                                       (do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
+                                           Data.ProtoLens.Encoding.Bytes.isolate
+                                             (Prelude.fromIntegral len) Data.ProtoLens.parseMessage)
+                                       "overridable_features"
+                                loop
+                                  (Lens.Family2.set
+                                     (Data.ProtoLens.Field.field @"overridableFeatures") y x)
+                        42
+                          -> do y <- (Data.ProtoLens.Encoding.Bytes.<?>)
+                                       (do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
+                                           Data.ProtoLens.Encoding.Bytes.isolate
+                                             (Prelude.fromIntegral len) Data.ProtoLens.parseMessage)
+                                       "fixed_features"
+                                loop
+                                  (Lens.Family2.set
+                                     (Data.ProtoLens.Field.field @"fixedFeatures") y x)
+                        wire
+                          -> do !y <- Data.ProtoLens.Encoding.Wire.parseTaggedValueFromWire
+                                        wire
+                                loop
+                                  (Lens.Family2.over
+                                     Data.ProtoLens.unknownFields (\ !t -> (:) y t) x)
+      in
+        (Data.ProtoLens.Encoding.Bytes.<?>)
+          (do loop Data.ProtoLens.defMessage) "FeatureSetEditionDefault"
+  buildMessage
+    = \ _x
+        -> (Data.Monoid.<>)
+             (case
+                  Lens.Family2.view (Data.ProtoLens.Field.field @"maybe'edition") _x
+              of
+                Prelude.Nothing -> Data.Monoid.mempty
+                (Prelude.Just _v)
+                  -> (Data.Monoid.<>)
+                       (Data.ProtoLens.Encoding.Bytes.putVarInt 24)
+                       ((Prelude..)
+                          ((Prelude..)
+                             Data.ProtoLens.Encoding.Bytes.putVarInt Prelude.fromIntegral)
+                          Prelude.fromEnum
+                          _v))
+             ((Data.Monoid.<>)
+                (case
+                     Lens.Family2.view
+                       (Data.ProtoLens.Field.field @"maybe'overridableFeatures") _x
+                 of
+                   Prelude.Nothing -> Data.Monoid.mempty
+                   (Prelude.Just _v)
+                     -> (Data.Monoid.<>)
+                          (Data.ProtoLens.Encoding.Bytes.putVarInt 34)
+                          ((Prelude..)
+                             (\ bs
+                                -> (Data.Monoid.<>)
+                                     (Data.ProtoLens.Encoding.Bytes.putVarInt
+                                        (Prelude.fromIntegral (Data.ByteString.length bs)))
+                                     (Data.ProtoLens.Encoding.Bytes.putBytes bs))
+                             Data.ProtoLens.encodeMessage
+                             _v))
+                ((Data.Monoid.<>)
+                   (case
+                        Lens.Family2.view
+                          (Data.ProtoLens.Field.field @"maybe'fixedFeatures") _x
+                    of
+                      Prelude.Nothing -> Data.Monoid.mempty
+                      (Prelude.Just _v)
+                        -> (Data.Monoid.<>)
+                             (Data.ProtoLens.Encoding.Bytes.putVarInt 42)
+                             ((Prelude..)
+                                (\ bs
+                                   -> (Data.Monoid.<>)
+                                        (Data.ProtoLens.Encoding.Bytes.putVarInt
+                                           (Prelude.fromIntegral (Data.ByteString.length bs)))
+                                        (Data.ProtoLens.Encoding.Bytes.putBytes bs))
+                                Data.ProtoLens.encodeMessage
+                                _v))
+                   (Data.ProtoLens.Encoding.Wire.buildFieldSet
+                      (Lens.Family2.view Data.ProtoLens.unknownFields _x))))
+instance Control.DeepSeq.NFData FeatureSetDefaults'FeatureSetEditionDefault where
+  rnf
+    = \ x__
+        -> Control.DeepSeq.deepseq
+             (_FeatureSetDefaults'FeatureSetEditionDefault'_unknownFields x__)
+             (Control.DeepSeq.deepseq
+                (_FeatureSetDefaults'FeatureSetEditionDefault'edition x__)
+                (Control.DeepSeq.deepseq
+                   (_FeatureSetDefaults'FeatureSetEditionDefault'overridableFeatures
+                      x__)
+                   (Control.DeepSeq.deepseq
+                      (_FeatureSetDefaults'FeatureSetEditionDefault'fixedFeatures x__)
+                      ())))
 {- | Fields :
      
          * 'Proto.Google.Protobuf.Descriptor_Fields.name' @:: Lens' FieldDescriptorProto Data.Text.Text@
@@ -2918,8 +5152,8 @@ instance Data.ProtoLens.Message FieldDescriptorProto where
       \\vTYPE_SINT64\DLE\DC2\"C\n\
       \\ENQLabel\DC2\DC2\n\
       \\SOLABEL_OPTIONAL\DLE\SOH\DC2\DC2\n\
-      \\SOLABEL_REQUIRED\DLE\STX\DC2\DC2\n\
-      \\SOLABEL_REPEATED\DLE\ETX"
+      \\SOLABEL_REPEATED\DLE\ETX\DC2\DC2\n\
+      \\SOLABEL_REQUIRED\DLE\STX"
   packedFileDescriptor _ = packedFileDescriptor
   fieldsByTag
     = let
@@ -3067,14 +5301,9 @@ instance Data.ProtoLens.Message FieldDescriptorProto where
                       case tag of
                         10
                           -> do y <- (Data.ProtoLens.Encoding.Bytes.<?>)
-                                       (do value <- do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
-                                                       Data.ProtoLens.Encoding.Bytes.getBytes
-                                                         (Prelude.fromIntegral len)
-                                           Data.ProtoLens.Encoding.Bytes.runEither
-                                             (case Data.Text.Encoding.decodeUtf8' value of
-                                                (Prelude.Left err)
-                                                  -> Prelude.Left (Prelude.show err)
-                                                (Prelude.Right r) -> Prelude.Right r))
+                                       (do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
+                                           Data.ProtoLens.Encoding.Bytes.getText
+                                             (Prelude.fromIntegral len))
                                        "name"
                                 loop (Lens.Family2.set (Data.ProtoLens.Field.field @"name") y x)
                         24
@@ -3104,40 +5333,25 @@ instance Data.ProtoLens.Message FieldDescriptorProto where
                                 loop (Lens.Family2.set (Data.ProtoLens.Field.field @"type'") y x)
                         50
                           -> do y <- (Data.ProtoLens.Encoding.Bytes.<?>)
-                                       (do value <- do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
-                                                       Data.ProtoLens.Encoding.Bytes.getBytes
-                                                         (Prelude.fromIntegral len)
-                                           Data.ProtoLens.Encoding.Bytes.runEither
-                                             (case Data.Text.Encoding.decodeUtf8' value of
-                                                (Prelude.Left err)
-                                                  -> Prelude.Left (Prelude.show err)
-                                                (Prelude.Right r) -> Prelude.Right r))
+                                       (do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
+                                           Data.ProtoLens.Encoding.Bytes.getText
+                                             (Prelude.fromIntegral len))
                                        "type_name"
                                 loop
                                   (Lens.Family2.set (Data.ProtoLens.Field.field @"typeName") y x)
                         18
                           -> do y <- (Data.ProtoLens.Encoding.Bytes.<?>)
-                                       (do value <- do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
-                                                       Data.ProtoLens.Encoding.Bytes.getBytes
-                                                         (Prelude.fromIntegral len)
-                                           Data.ProtoLens.Encoding.Bytes.runEither
-                                             (case Data.Text.Encoding.decodeUtf8' value of
-                                                (Prelude.Left err)
-                                                  -> Prelude.Left (Prelude.show err)
-                                                (Prelude.Right r) -> Prelude.Right r))
+                                       (do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
+                                           Data.ProtoLens.Encoding.Bytes.getText
+                                             (Prelude.fromIntegral len))
                                        "extendee"
                                 loop
                                   (Lens.Family2.set (Data.ProtoLens.Field.field @"extendee") y x)
                         58
                           -> do y <- (Data.ProtoLens.Encoding.Bytes.<?>)
-                                       (do value <- do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
-                                                       Data.ProtoLens.Encoding.Bytes.getBytes
-                                                         (Prelude.fromIntegral len)
-                                           Data.ProtoLens.Encoding.Bytes.runEither
-                                             (case Data.Text.Encoding.decodeUtf8' value of
-                                                (Prelude.Left err)
-                                                  -> Prelude.Left (Prelude.show err)
-                                                (Prelude.Right r) -> Prelude.Right r))
+                                       (do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
+                                           Data.ProtoLens.Encoding.Bytes.getText
+                                             (Prelude.fromIntegral len))
                                        "default_value"
                                 loop
                                   (Lens.Family2.set
@@ -3152,14 +5366,9 @@ instance Data.ProtoLens.Message FieldDescriptorProto where
                                   (Lens.Family2.set (Data.ProtoLens.Field.field @"oneofIndex") y x)
                         82
                           -> do y <- (Data.ProtoLens.Encoding.Bytes.<?>)
-                                       (do value <- do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
-                                                       Data.ProtoLens.Encoding.Bytes.getBytes
-                                                         (Prelude.fromIntegral len)
-                                           Data.ProtoLens.Encoding.Bytes.runEither
-                                             (case Data.Text.Encoding.decodeUtf8' value of
-                                                (Prelude.Left err)
-                                                  -> Prelude.Left (Prelude.show err)
-                                                (Prelude.Right r) -> Prelude.Right r))
+                                       (do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
+                                           Data.ProtoLens.Encoding.Bytes.getText
+                                             (Prelude.fromIntegral len))
                                        "json_name"
                                 loop
                                   (Lens.Family2.set (Data.ProtoLens.Field.field @"jsonName") y x)
@@ -3400,15 +5609,15 @@ instance Data.ProtoLens.MessageEnum FieldDescriptorProto'Label where
   maybeToEnum 3 = Prelude.Just FieldDescriptorProto'LABEL_REPEATED
   maybeToEnum _ = Prelude.Nothing
   showEnum FieldDescriptorProto'LABEL_OPTIONAL = "LABEL_OPTIONAL"
-  showEnum FieldDescriptorProto'LABEL_REQUIRED = "LABEL_REQUIRED"
   showEnum FieldDescriptorProto'LABEL_REPEATED = "LABEL_REPEATED"
+  showEnum FieldDescriptorProto'LABEL_REQUIRED = "LABEL_REQUIRED"
   readEnum k
     | (Prelude.==) k "LABEL_OPTIONAL"
     = Prelude.Just FieldDescriptorProto'LABEL_OPTIONAL
-    | (Prelude.==) k "LABEL_REQUIRED"
-    = Prelude.Just FieldDescriptorProto'LABEL_REQUIRED
     | (Prelude.==) k "LABEL_REPEATED"
     = Prelude.Just FieldDescriptorProto'LABEL_REPEATED
+    | (Prelude.==) k "LABEL_REQUIRED"
+    = Prelude.Just FieldDescriptorProto'LABEL_REQUIRED
     | Prelude.otherwise
     = (Prelude.>>=) (Text.Read.readMaybe k) Data.ProtoLens.maybeToEnum
 instance Prelude.Bounded FieldDescriptorProto'Label where
@@ -3665,10 +5874,24 @@ instance Control.DeepSeq.NFData FieldDescriptorProto'Type where
          * 'Proto.Google.Protobuf.Descriptor_Fields.maybe'jstype' @:: Lens' FieldOptions (Prelude.Maybe FieldOptions'JSType)@
          * 'Proto.Google.Protobuf.Descriptor_Fields.lazy' @:: Lens' FieldOptions Prelude.Bool@
          * 'Proto.Google.Protobuf.Descriptor_Fields.maybe'lazy' @:: Lens' FieldOptions (Prelude.Maybe Prelude.Bool)@
+         * 'Proto.Google.Protobuf.Descriptor_Fields.unverifiedLazy' @:: Lens' FieldOptions Prelude.Bool@
+         * 'Proto.Google.Protobuf.Descriptor_Fields.maybe'unverifiedLazy' @:: Lens' FieldOptions (Prelude.Maybe Prelude.Bool)@
          * 'Proto.Google.Protobuf.Descriptor_Fields.deprecated' @:: Lens' FieldOptions Prelude.Bool@
          * 'Proto.Google.Protobuf.Descriptor_Fields.maybe'deprecated' @:: Lens' FieldOptions (Prelude.Maybe Prelude.Bool)@
          * 'Proto.Google.Protobuf.Descriptor_Fields.weak' @:: Lens' FieldOptions Prelude.Bool@
          * 'Proto.Google.Protobuf.Descriptor_Fields.maybe'weak' @:: Lens' FieldOptions (Prelude.Maybe Prelude.Bool)@
+         * 'Proto.Google.Protobuf.Descriptor_Fields.debugRedact' @:: Lens' FieldOptions Prelude.Bool@
+         * 'Proto.Google.Protobuf.Descriptor_Fields.maybe'debugRedact' @:: Lens' FieldOptions (Prelude.Maybe Prelude.Bool)@
+         * 'Proto.Google.Protobuf.Descriptor_Fields.retention' @:: Lens' FieldOptions FieldOptions'OptionRetention@
+         * 'Proto.Google.Protobuf.Descriptor_Fields.maybe'retention' @:: Lens' FieldOptions (Prelude.Maybe FieldOptions'OptionRetention)@
+         * 'Proto.Google.Protobuf.Descriptor_Fields.targets' @:: Lens' FieldOptions [FieldOptions'OptionTargetType]@
+         * 'Proto.Google.Protobuf.Descriptor_Fields.vec'targets' @:: Lens' FieldOptions (Data.Vector.Vector FieldOptions'OptionTargetType)@
+         * 'Proto.Google.Protobuf.Descriptor_Fields.editionDefaults' @:: Lens' FieldOptions [FieldOptions'EditionDefault]@
+         * 'Proto.Google.Protobuf.Descriptor_Fields.vec'editionDefaults' @:: Lens' FieldOptions (Data.Vector.Vector FieldOptions'EditionDefault)@
+         * 'Proto.Google.Protobuf.Descriptor_Fields.features' @:: Lens' FieldOptions FeatureSet@
+         * 'Proto.Google.Protobuf.Descriptor_Fields.maybe'features' @:: Lens' FieldOptions (Prelude.Maybe FeatureSet)@
+         * 'Proto.Google.Protobuf.Descriptor_Fields.featureSupport' @:: Lens' FieldOptions FieldOptions'FeatureSupport@
+         * 'Proto.Google.Protobuf.Descriptor_Fields.maybe'featureSupport' @:: Lens' FieldOptions (Prelude.Maybe FieldOptions'FeatureSupport)@
          * 'Proto.Google.Protobuf.Descriptor_Fields.uninterpretedOption' @:: Lens' FieldOptions [UninterpretedOption]@
          * 'Proto.Google.Protobuf.Descriptor_Fields.vec'uninterpretedOption' @:: Lens' FieldOptions (Data.Vector.Vector UninterpretedOption)@ -}
 data FieldOptions
@@ -3676,8 +5899,15 @@ data FieldOptions
                                _FieldOptions'packed :: !(Prelude.Maybe Prelude.Bool),
                                _FieldOptions'jstype :: !(Prelude.Maybe FieldOptions'JSType),
                                _FieldOptions'lazy :: !(Prelude.Maybe Prelude.Bool),
+                               _FieldOptions'unverifiedLazy :: !(Prelude.Maybe Prelude.Bool),
                                _FieldOptions'deprecated :: !(Prelude.Maybe Prelude.Bool),
                                _FieldOptions'weak :: !(Prelude.Maybe Prelude.Bool),
+                               _FieldOptions'debugRedact :: !(Prelude.Maybe Prelude.Bool),
+                               _FieldOptions'retention :: !(Prelude.Maybe FieldOptions'OptionRetention),
+                               _FieldOptions'targets :: !(Data.Vector.Vector FieldOptions'OptionTargetType),
+                               _FieldOptions'editionDefaults :: !(Data.Vector.Vector FieldOptions'EditionDefault),
+                               _FieldOptions'features :: !(Prelude.Maybe FeatureSet),
+                               _FieldOptions'featureSupport :: !(Prelude.Maybe FieldOptions'FeatureSupport),
                                _FieldOptions'uninterpretedOption :: !(Data.Vector.Vector UninterpretedOption),
                                _FieldOptions'_unknownFields :: !Data.ProtoLens.FieldSet}
   deriving stock (Prelude.Eq, Prelude.Ord)
@@ -3739,6 +5969,20 @@ instance Data.ProtoLens.Field.HasField FieldOptions "maybe'lazy" (Prelude.Maybe 
         (Lens.Family2.Unchecked.lens
            _FieldOptions'lazy (\ x__ y__ -> x__ {_FieldOptions'lazy = y__}))
         Prelude.id
+instance Data.ProtoLens.Field.HasField FieldOptions "unverifiedLazy" Prelude.Bool where
+  fieldOf _
+    = (Prelude..)
+        (Lens.Family2.Unchecked.lens
+           _FieldOptions'unverifiedLazy
+           (\ x__ y__ -> x__ {_FieldOptions'unverifiedLazy = y__}))
+        (Data.ProtoLens.maybeLens Prelude.False)
+instance Data.ProtoLens.Field.HasField FieldOptions "maybe'unverifiedLazy" (Prelude.Maybe Prelude.Bool) where
+  fieldOf _
+    = (Prelude..)
+        (Lens.Family2.Unchecked.lens
+           _FieldOptions'unverifiedLazy
+           (\ x__ y__ -> x__ {_FieldOptions'unverifiedLazy = y__}))
+        Prelude.id
 instance Data.ProtoLens.Field.HasField FieldOptions "deprecated" Prelude.Bool where
   fieldOf _
     = (Prelude..)
@@ -3765,6 +6009,94 @@ instance Data.ProtoLens.Field.HasField FieldOptions "maybe'weak" (Prelude.Maybe 
         (Lens.Family2.Unchecked.lens
            _FieldOptions'weak (\ x__ y__ -> x__ {_FieldOptions'weak = y__}))
         Prelude.id
+instance Data.ProtoLens.Field.HasField FieldOptions "debugRedact" Prelude.Bool where
+  fieldOf _
+    = (Prelude..)
+        (Lens.Family2.Unchecked.lens
+           _FieldOptions'debugRedact
+           (\ x__ y__ -> x__ {_FieldOptions'debugRedact = y__}))
+        (Data.ProtoLens.maybeLens Prelude.False)
+instance Data.ProtoLens.Field.HasField FieldOptions "maybe'debugRedact" (Prelude.Maybe Prelude.Bool) where
+  fieldOf _
+    = (Prelude..)
+        (Lens.Family2.Unchecked.lens
+           _FieldOptions'debugRedact
+           (\ x__ y__ -> x__ {_FieldOptions'debugRedact = y__}))
+        Prelude.id
+instance Data.ProtoLens.Field.HasField FieldOptions "retention" FieldOptions'OptionRetention where
+  fieldOf _
+    = (Prelude..)
+        (Lens.Family2.Unchecked.lens
+           _FieldOptions'retention
+           (\ x__ y__ -> x__ {_FieldOptions'retention = y__}))
+        (Data.ProtoLens.maybeLens Data.ProtoLens.fieldDefault)
+instance Data.ProtoLens.Field.HasField FieldOptions "maybe'retention" (Prelude.Maybe FieldOptions'OptionRetention) where
+  fieldOf _
+    = (Prelude..)
+        (Lens.Family2.Unchecked.lens
+           _FieldOptions'retention
+           (\ x__ y__ -> x__ {_FieldOptions'retention = y__}))
+        Prelude.id
+instance Data.ProtoLens.Field.HasField FieldOptions "targets" [FieldOptions'OptionTargetType] where
+  fieldOf _
+    = (Prelude..)
+        (Lens.Family2.Unchecked.lens
+           _FieldOptions'targets
+           (\ x__ y__ -> x__ {_FieldOptions'targets = y__}))
+        (Lens.Family2.Unchecked.lens
+           Data.Vector.Generic.toList
+           (\ _ y__ -> Data.Vector.Generic.fromList y__))
+instance Data.ProtoLens.Field.HasField FieldOptions "vec'targets" (Data.Vector.Vector FieldOptions'OptionTargetType) where
+  fieldOf _
+    = (Prelude..)
+        (Lens.Family2.Unchecked.lens
+           _FieldOptions'targets
+           (\ x__ y__ -> x__ {_FieldOptions'targets = y__}))
+        Prelude.id
+instance Data.ProtoLens.Field.HasField FieldOptions "editionDefaults" [FieldOptions'EditionDefault] where
+  fieldOf _
+    = (Prelude..)
+        (Lens.Family2.Unchecked.lens
+           _FieldOptions'editionDefaults
+           (\ x__ y__ -> x__ {_FieldOptions'editionDefaults = y__}))
+        (Lens.Family2.Unchecked.lens
+           Data.Vector.Generic.toList
+           (\ _ y__ -> Data.Vector.Generic.fromList y__))
+instance Data.ProtoLens.Field.HasField FieldOptions "vec'editionDefaults" (Data.Vector.Vector FieldOptions'EditionDefault) where
+  fieldOf _
+    = (Prelude..)
+        (Lens.Family2.Unchecked.lens
+           _FieldOptions'editionDefaults
+           (\ x__ y__ -> x__ {_FieldOptions'editionDefaults = y__}))
+        Prelude.id
+instance Data.ProtoLens.Field.HasField FieldOptions "features" FeatureSet where
+  fieldOf _
+    = (Prelude..)
+        (Lens.Family2.Unchecked.lens
+           _FieldOptions'features
+           (\ x__ y__ -> x__ {_FieldOptions'features = y__}))
+        (Data.ProtoLens.maybeLens Data.ProtoLens.defMessage)
+instance Data.ProtoLens.Field.HasField FieldOptions "maybe'features" (Prelude.Maybe FeatureSet) where
+  fieldOf _
+    = (Prelude..)
+        (Lens.Family2.Unchecked.lens
+           _FieldOptions'features
+           (\ x__ y__ -> x__ {_FieldOptions'features = y__}))
+        Prelude.id
+instance Data.ProtoLens.Field.HasField FieldOptions "featureSupport" FieldOptions'FeatureSupport where
+  fieldOf _
+    = (Prelude..)
+        (Lens.Family2.Unchecked.lens
+           _FieldOptions'featureSupport
+           (\ x__ y__ -> x__ {_FieldOptions'featureSupport = y__}))
+        (Data.ProtoLens.maybeLens Data.ProtoLens.defMessage)
+instance Data.ProtoLens.Field.HasField FieldOptions "maybe'featureSupport" (Prelude.Maybe FieldOptions'FeatureSupport) where
+  fieldOf _
+    = (Prelude..)
+        (Lens.Family2.Unchecked.lens
+           _FieldOptions'featureSupport
+           (\ x__ y__ -> x__ {_FieldOptions'featureSupport = y__}))
+        Prelude.id
 instance Data.ProtoLens.Field.HasField FieldOptions "uninterpretedOption" [UninterpretedOption] where
   fieldOf _
     = (Prelude..)
@@ -3789,13 +6121,28 @@ instance Data.ProtoLens.Message FieldOptions where
       \\ENQctype\CAN\SOH \SOH(\SO2#.google.protobuf.FieldOptions.CType:\ACKSTRINGR\ENQctype\DC2\SYN\n\
       \\ACKpacked\CAN\STX \SOH(\bR\ACKpacked\DC2G\n\
       \\ACKjstype\CAN\ACK \SOH(\SO2$.google.protobuf.FieldOptions.JSType:\tJS_NORMALR\ACKjstype\DC2\EM\n\
-      \\EOTlazy\CAN\ENQ \SOH(\b:\ENQfalseR\EOTlazy\DC2%\n\
+      \\EOTlazy\CAN\ENQ \SOH(\b:\ENQfalseR\EOTlazy\DC2.\n\
+      \\SIunverified_lazy\CAN\SI \SOH(\b:\ENQfalseR\SOunverifiedLazy\DC2%\n\
       \\n\
       \deprecated\CAN\ETX \SOH(\b:\ENQfalseR\n\
       \deprecated\DC2\EM\n\
       \\EOTweak\CAN\n\
-      \ \SOH(\b:\ENQfalseR\EOTweak\DC2X\n\
-      \\DC4uninterpreted_option\CAN\231\a \ETX(\v2$.google.protobuf.UninterpretedOptionR\DC3uninterpretedOption\"/\n\
+      \ \SOH(\b:\ENQfalseR\EOTweak\DC2(\n\
+      \\fdebug_redact\CAN\DLE \SOH(\b:\ENQfalseR\vdebugRedact\DC2K\n\
+      \\tretention\CAN\DC1 \SOH(\SO2-.google.protobuf.FieldOptions.OptionRetentionR\tretention\DC2H\n\
+      \\atargets\CAN\DC3 \ETX(\SO2..google.protobuf.FieldOptions.OptionTargetTypeR\atargets\DC2W\n\
+      \\DLEedition_defaults\CAN\DC4 \ETX(\v2,.google.protobuf.FieldOptions.EditionDefaultR\SIeditionDefaults\DC27\n\
+      \\bfeatures\CAN\NAK \SOH(\v2\ESC.google.protobuf.FeatureSetR\bfeatures\DC2U\n\
+      \\SIfeature_support\CAN\SYN \SOH(\v2,.google.protobuf.FieldOptions.FeatureSupportR\SOfeatureSupport\DC2X\n\
+      \\DC4uninterpreted_option\CAN\231\a \ETX(\v2$.google.protobuf.UninterpretedOptionR\DC3uninterpretedOption\SUBZ\n\
+      \\SOEditionDefault\DC22\n\
+      \\aedition\CAN\ETX \SOH(\SO2\CAN.google.protobuf.EditionR\aedition\DC2\DC4\n\
+      \\ENQvalue\CAN\STX \SOH(\tR\ENQvalue\SUB\150\STX\n\
+      \\SOFeatureSupport\DC2G\n\
+      \\DC2edition_introduced\CAN\SOH \SOH(\SO2\CAN.google.protobuf.EditionR\DC1editionIntroduced\DC2G\n\
+      \\DC2edition_deprecated\CAN\STX \SOH(\SO2\CAN.google.protobuf.EditionR\DC1editionDeprecated\DC2/\n\
+      \\DC3deprecation_warning\CAN\ETX \SOH(\tR\DC2deprecationWarning\DC2A\n\
+      \\SIedition_removed\CAN\EOT \SOH(\SO2\CAN.google.protobuf.EditionR\SOeditionRemoved\"/\n\
       \\ENQCType\DC2\n\
       \\n\
       \\ACKSTRING\DLE\NUL\DC2\b\n\
@@ -3804,7 +6151,22 @@ instance Data.ProtoLens.Message FieldOptions where
       \\ACKJSType\DC2\r\n\
       \\tJS_NORMAL\DLE\NUL\DC2\r\n\
       \\tJS_STRING\DLE\SOH\DC2\r\n\
-      \\tJS_NUMBER\DLE\STX*\t\b\232\a\DLE\128\128\128\128\STXJ\EOT\b\EOT\DLE\ENQ"
+      \\tJS_NUMBER\DLE\STX\"U\n\
+      \\SIOptionRetention\DC2\NAK\n\
+      \\DC1RETENTION_UNKNOWN\DLE\NUL\DC2\NAK\n\
+      \\DC1RETENTION_RUNTIME\DLE\SOH\DC2\DC4\n\
+      \\DLERETENTION_SOURCE\DLE\STX\"\140\STX\n\
+      \\DLEOptionTargetType\DC2\ETB\n\
+      \\DC3TARGET_TYPE_UNKNOWN\DLE\NUL\DC2\DC4\n\
+      \\DLETARGET_TYPE_FILE\DLE\SOH\DC2\US\n\
+      \\ESCTARGET_TYPE_EXTENSION_RANGE\DLE\STX\DC2\ETB\n\
+      \\DC3TARGET_TYPE_MESSAGE\DLE\ETX\DC2\NAK\n\
+      \\DC1TARGET_TYPE_FIELD\DLE\EOT\DC2\NAK\n\
+      \\DC1TARGET_TYPE_ONEOF\DLE\ENQ\DC2\DC4\n\
+      \\DLETARGET_TYPE_ENUM\DLE\ACK\DC2\SUB\n\
+      \\SYNTARGET_TYPE_ENUM_ENTRY\DLE\a\DC2\ETB\n\
+      \\DC3TARGET_TYPE_SERVICE\DLE\b\DC2\SYN\n\
+      \\DC2TARGET_TYPE_METHOD\DLE\t*\t\b\232\a\DLE\128\128\128\128\STXJ\EOT\b\EOT\DLE\ENQJ\EOT\b\DC2\DLE\DC3"
   packedFileDescriptor _ = packedFileDescriptor
   fieldsByTag
     = let
@@ -3840,6 +6202,14 @@ instance Data.ProtoLens.Message FieldOptions where
               (Data.ProtoLens.OptionalField
                  (Data.ProtoLens.Field.field @"maybe'lazy")) ::
               Data.ProtoLens.FieldDescriptor FieldOptions
+        unverifiedLazy__field_descriptor
+          = Data.ProtoLens.FieldDescriptor
+              "unverified_lazy"
+              (Data.ProtoLens.ScalarField Data.ProtoLens.BoolField ::
+                 Data.ProtoLens.FieldTypeDescriptor Prelude.Bool)
+              (Data.ProtoLens.OptionalField
+                 (Data.ProtoLens.Field.field @"maybe'unverifiedLazy")) ::
+              Data.ProtoLens.FieldDescriptor FieldOptions
         deprecated__field_descriptor
           = Data.ProtoLens.FieldDescriptor
               "deprecated"
@@ -3856,6 +6226,55 @@ instance Data.ProtoLens.Message FieldOptions where
               (Data.ProtoLens.OptionalField
                  (Data.ProtoLens.Field.field @"maybe'weak")) ::
               Data.ProtoLens.FieldDescriptor FieldOptions
+        debugRedact__field_descriptor
+          = Data.ProtoLens.FieldDescriptor
+              "debug_redact"
+              (Data.ProtoLens.ScalarField Data.ProtoLens.BoolField ::
+                 Data.ProtoLens.FieldTypeDescriptor Prelude.Bool)
+              (Data.ProtoLens.OptionalField
+                 (Data.ProtoLens.Field.field @"maybe'debugRedact")) ::
+              Data.ProtoLens.FieldDescriptor FieldOptions
+        retention__field_descriptor
+          = Data.ProtoLens.FieldDescriptor
+              "retention"
+              (Data.ProtoLens.ScalarField Data.ProtoLens.EnumField ::
+                 Data.ProtoLens.FieldTypeDescriptor FieldOptions'OptionRetention)
+              (Data.ProtoLens.OptionalField
+                 (Data.ProtoLens.Field.field @"maybe'retention")) ::
+              Data.ProtoLens.FieldDescriptor FieldOptions
+        targets__field_descriptor
+          = Data.ProtoLens.FieldDescriptor
+              "targets"
+              (Data.ProtoLens.ScalarField Data.ProtoLens.EnumField ::
+                 Data.ProtoLens.FieldTypeDescriptor FieldOptions'OptionTargetType)
+              (Data.ProtoLens.RepeatedField
+                 Data.ProtoLens.Unpacked (Data.ProtoLens.Field.field @"targets")) ::
+              Data.ProtoLens.FieldDescriptor FieldOptions
+        editionDefaults__field_descriptor
+          = Data.ProtoLens.FieldDescriptor
+              "edition_defaults"
+              (Data.ProtoLens.MessageField Data.ProtoLens.MessageType ::
+                 Data.ProtoLens.FieldTypeDescriptor FieldOptions'EditionDefault)
+              (Data.ProtoLens.RepeatedField
+                 Data.ProtoLens.Unpacked
+                 (Data.ProtoLens.Field.field @"editionDefaults")) ::
+              Data.ProtoLens.FieldDescriptor FieldOptions
+        features__field_descriptor
+          = Data.ProtoLens.FieldDescriptor
+              "features"
+              (Data.ProtoLens.MessageField Data.ProtoLens.MessageType ::
+                 Data.ProtoLens.FieldTypeDescriptor FeatureSet)
+              (Data.ProtoLens.OptionalField
+                 (Data.ProtoLens.Field.field @"maybe'features")) ::
+              Data.ProtoLens.FieldDescriptor FieldOptions
+        featureSupport__field_descriptor
+          = Data.ProtoLens.FieldDescriptor
+              "feature_support"
+              (Data.ProtoLens.MessageField Data.ProtoLens.MessageType ::
+                 Data.ProtoLens.FieldTypeDescriptor FieldOptions'FeatureSupport)
+              (Data.ProtoLens.OptionalField
+                 (Data.ProtoLens.Field.field @"maybe'featureSupport")) ::
+              Data.ProtoLens.FieldDescriptor FieldOptions
         uninterpretedOption__field_descriptor
           = Data.ProtoLens.FieldDescriptor
               "uninterpreted_option"
@@ -3871,8 +6290,15 @@ instance Data.ProtoLens.Message FieldOptions where
            (Data.ProtoLens.Tag 2, packed__field_descriptor),
            (Data.ProtoLens.Tag 6, jstype__field_descriptor),
            (Data.ProtoLens.Tag 5, lazy__field_descriptor),
+           (Data.ProtoLens.Tag 15, unverifiedLazy__field_descriptor),
            (Data.ProtoLens.Tag 3, deprecated__field_descriptor),
            (Data.ProtoLens.Tag 10, weak__field_descriptor),
+           (Data.ProtoLens.Tag 16, debugRedact__field_descriptor),
+           (Data.ProtoLens.Tag 17, retention__field_descriptor),
+           (Data.ProtoLens.Tag 19, targets__field_descriptor),
+           (Data.ProtoLens.Tag 20, editionDefaults__field_descriptor),
+           (Data.ProtoLens.Tag 21, features__field_descriptor),
+           (Data.ProtoLens.Tag 22, featureSupport__field_descriptor),
            (Data.ProtoLens.Tag 999, uninterpretedOption__field_descriptor)]
   unknownFields
     = Lens.Family2.Unchecked.lens
@@ -3884,20 +6310,39 @@ instance Data.ProtoLens.Message FieldOptions where
          _FieldOptions'packed = Prelude.Nothing,
          _FieldOptions'jstype = Prelude.Nothing,
          _FieldOptions'lazy = Prelude.Nothing,
+         _FieldOptions'unverifiedLazy = Prelude.Nothing,
          _FieldOptions'deprecated = Prelude.Nothing,
          _FieldOptions'weak = Prelude.Nothing,
+         _FieldOptions'debugRedact = Prelude.Nothing,
+         _FieldOptions'retention = Prelude.Nothing,
+         _FieldOptions'targets = Data.Vector.Generic.empty,
+         _FieldOptions'editionDefaults = Data.Vector.Generic.empty,
+         _FieldOptions'features = Prelude.Nothing,
+         _FieldOptions'featureSupport = Prelude.Nothing,
          _FieldOptions'uninterpretedOption = Data.Vector.Generic.empty,
          _FieldOptions'_unknownFields = []}
   parseMessage
     = let
         loop ::
           FieldOptions
-          -> Data.ProtoLens.Encoding.Growing.Growing Data.Vector.Vector Data.ProtoLens.Encoding.Growing.RealWorld UninterpretedOption
-             -> Data.ProtoLens.Encoding.Bytes.Parser FieldOptions
-        loop x mutable'uninterpretedOption
+          -> Data.ProtoLens.Encoding.Growing.Growing Data.Vector.Vector Data.ProtoLens.Encoding.Growing.RealWorld FieldOptions'EditionDefault
+             -> Data.ProtoLens.Encoding.Growing.Growing Data.Vector.Vector Data.ProtoLens.Encoding.Growing.RealWorld FieldOptions'OptionTargetType
+                -> Data.ProtoLens.Encoding.Growing.Growing Data.Vector.Vector Data.ProtoLens.Encoding.Growing.RealWorld UninterpretedOption
+                   -> Data.ProtoLens.Encoding.Bytes.Parser FieldOptions
+        loop
+          x
+          mutable'editionDefaults
+          mutable'targets
+          mutable'uninterpretedOption
           = do end <- Data.ProtoLens.Encoding.Bytes.atEnd
                if end then
-                   do frozen'uninterpretedOption <- Data.ProtoLens.Encoding.Parser.Unsafe.unsafeLiftIO
+                   do frozen'editionDefaults <- Data.ProtoLens.Encoding.Parser.Unsafe.unsafeLiftIO
+                                                  (Data.ProtoLens.Encoding.Growing.unsafeFreeze
+                                                     mutable'editionDefaults)
+                      frozen'targets <- Data.ProtoLens.Encoding.Parser.Unsafe.unsafeLiftIO
+                                          (Data.ProtoLens.Encoding.Growing.unsafeFreeze
+                                             mutable'targets)
+                      frozen'uninterpretedOption <- Data.ProtoLens.Encoding.Parser.Unsafe.unsafeLiftIO
                                                       (Data.ProtoLens.Encoding.Growing.unsafeFreeze
                                                          mutable'uninterpretedOption)
                       (let missing = []
@@ -3914,9 +6359,15 @@ instance Data.ProtoLens.Message FieldOptions where
                            Data.ProtoLens.unknownFields
                            (\ !t -> Prelude.reverse t)
                            (Lens.Family2.set
-                              (Data.ProtoLens.Field.field @"vec'uninterpretedOption")
-                              frozen'uninterpretedOption
-                              x))
+                              (Data.ProtoLens.Field.field @"vec'editionDefaults")
+                              frozen'editionDefaults
+                              (Lens.Family2.set
+                                 (Data.ProtoLens.Field.field @"vec'targets")
+                                 frozen'targets
+                                 (Lens.Family2.set
+                                    (Data.ProtoLens.Field.field @"vec'uninterpretedOption")
+                                    frozen'uninterpretedOption
+                                    x))))
                else
                    do tag <- Data.ProtoLens.Encoding.Bytes.getVarInt
                       case tag of
@@ -3929,6 +6380,8 @@ instance Data.ProtoLens.Message FieldOptions where
                                        "ctype"
                                 loop
                                   (Lens.Family2.set (Data.ProtoLens.Field.field @"ctype") y x)
+                                  mutable'editionDefaults
+                                  mutable'targets
                                   mutable'uninterpretedOption
                         16
                           -> do y <- (Data.ProtoLens.Encoding.Bytes.<?>)
@@ -3937,6 +6390,8 @@ instance Data.ProtoLens.Message FieldOptions where
                                        "packed"
                                 loop
                                   (Lens.Family2.set (Data.ProtoLens.Field.field @"packed") y x)
+                                  mutable'editionDefaults
+                                  mutable'targets
                                   mutable'uninterpretedOption
                         48
                           -> do y <- (Data.ProtoLens.Encoding.Bytes.<?>)
@@ -3948,6 +6403,8 @@ instance Data.ProtoLens.Message FieldOptions where
                                        "jstype"
                                 loop
                                   (Lens.Family2.set (Data.ProtoLens.Field.field @"jstype") y x)
+                                  mutable'editionDefaults
+                                  mutable'targets
                                   mutable'uninterpretedOption
                         40
                           -> do y <- (Data.ProtoLens.Encoding.Bytes.<?>)
@@ -3956,6 +6413,19 @@ instance Data.ProtoLens.Message FieldOptions where
                                        "lazy"
                                 loop
                                   (Lens.Family2.set (Data.ProtoLens.Field.field @"lazy") y x)
+                                  mutable'editionDefaults
+                                  mutable'targets
+                                  mutable'uninterpretedOption
+                        120
+                          -> do y <- (Data.ProtoLens.Encoding.Bytes.<?>)
+                                       (Prelude.fmap
+                                          ((Prelude./=) 0) Data.ProtoLens.Encoding.Bytes.getVarInt)
+                                       "unverified_lazy"
+                                loop
+                                  (Lens.Family2.set
+                                     (Data.ProtoLens.Field.field @"unverifiedLazy") y x)
+                                  mutable'editionDefaults
+                                  mutable'targets
                                   mutable'uninterpretedOption
                         24
                           -> do y <- (Data.ProtoLens.Encoding.Bytes.<?>)
@@ -3964,6 +6434,8 @@ instance Data.ProtoLens.Message FieldOptions where
                                        "deprecated"
                                 loop
                                   (Lens.Family2.set (Data.ProtoLens.Field.field @"deprecated") y x)
+                                  mutable'editionDefaults
+                                  mutable'targets
                                   mutable'uninterpretedOption
                         80
                           -> do y <- (Data.ProtoLens.Encoding.Bytes.<?>)
@@ -3972,6 +6444,100 @@ instance Data.ProtoLens.Message FieldOptions where
                                        "weak"
                                 loop
                                   (Lens.Family2.set (Data.ProtoLens.Field.field @"weak") y x)
+                                  mutable'editionDefaults
+                                  mutable'targets
+                                  mutable'uninterpretedOption
+                        128
+                          -> do y <- (Data.ProtoLens.Encoding.Bytes.<?>)
+                                       (Prelude.fmap
+                                          ((Prelude./=) 0) Data.ProtoLens.Encoding.Bytes.getVarInt)
+                                       "debug_redact"
+                                loop
+                                  (Lens.Family2.set (Data.ProtoLens.Field.field @"debugRedact") y x)
+                                  mutable'editionDefaults
+                                  mutable'targets
+                                  mutable'uninterpretedOption
+                        136
+                          -> do y <- (Data.ProtoLens.Encoding.Bytes.<?>)
+                                       (Prelude.fmap
+                                          Prelude.toEnum
+                                          (Prelude.fmap
+                                             Prelude.fromIntegral
+                                             Data.ProtoLens.Encoding.Bytes.getVarInt))
+                                       "retention"
+                                loop
+                                  (Lens.Family2.set (Data.ProtoLens.Field.field @"retention") y x)
+                                  mutable'editionDefaults
+                                  mutable'targets
+                                  mutable'uninterpretedOption
+                        152
+                          -> do !y <- (Data.ProtoLens.Encoding.Bytes.<?>)
+                                        (Prelude.fmap
+                                           Prelude.toEnum
+                                           (Prelude.fmap
+                                              Prelude.fromIntegral
+                                              Data.ProtoLens.Encoding.Bytes.getVarInt))
+                                        "targets"
+                                v <- Data.ProtoLens.Encoding.Parser.Unsafe.unsafeLiftIO
+                                       (Data.ProtoLens.Encoding.Growing.append mutable'targets y)
+                                loop x mutable'editionDefaults v mutable'uninterpretedOption
+                        154
+                          -> do y <- do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
+                                        Data.ProtoLens.Encoding.Bytes.isolate
+                                          (Prelude.fromIntegral len)
+                                          ((let
+                                              ploop qs
+                                                = do packedEnd <- Data.ProtoLens.Encoding.Bytes.atEnd
+                                                     if packedEnd then
+                                                         Prelude.return qs
+                                                     else
+                                                         do !q <- (Data.ProtoLens.Encoding.Bytes.<?>)
+                                                                    (Prelude.fmap
+                                                                       Prelude.toEnum
+                                                                       (Prelude.fmap
+                                                                          Prelude.fromIntegral
+                                                                          Data.ProtoLens.Encoding.Bytes.getVarInt))
+                                                                    "targets"
+                                                            qs' <- Data.ProtoLens.Encoding.Parser.Unsafe.unsafeLiftIO
+                                                                     (Data.ProtoLens.Encoding.Growing.append
+                                                                        qs q)
+                                                            ploop qs'
+                                            in ploop)
+                                             mutable'targets)
+                                loop x mutable'editionDefaults y mutable'uninterpretedOption
+                        162
+                          -> do !y <- (Data.ProtoLens.Encoding.Bytes.<?>)
+                                        (do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
+                                            Data.ProtoLens.Encoding.Bytes.isolate
+                                              (Prelude.fromIntegral len)
+                                              Data.ProtoLens.parseMessage)
+                                        "edition_defaults"
+                                v <- Data.ProtoLens.Encoding.Parser.Unsafe.unsafeLiftIO
+                                       (Data.ProtoLens.Encoding.Growing.append
+                                          mutable'editionDefaults y)
+                                loop x v mutable'targets mutable'uninterpretedOption
+                        170
+                          -> do y <- (Data.ProtoLens.Encoding.Bytes.<?>)
+                                       (do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
+                                           Data.ProtoLens.Encoding.Bytes.isolate
+                                             (Prelude.fromIntegral len) Data.ProtoLens.parseMessage)
+                                       "features"
+                                loop
+                                  (Lens.Family2.set (Data.ProtoLens.Field.field @"features") y x)
+                                  mutable'editionDefaults
+                                  mutable'targets
+                                  mutable'uninterpretedOption
+                        178
+                          -> do y <- (Data.ProtoLens.Encoding.Bytes.<?>)
+                                       (do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
+                                           Data.ProtoLens.Encoding.Bytes.isolate
+                                             (Prelude.fromIntegral len) Data.ProtoLens.parseMessage)
+                                       "feature_support"
+                                loop
+                                  (Lens.Family2.set
+                                     (Data.ProtoLens.Field.field @"featureSupport") y x)
+                                  mutable'editionDefaults
+                                  mutable'targets
                                   mutable'uninterpretedOption
                         7994
                           -> do !y <- (Data.ProtoLens.Encoding.Bytes.<?>)
@@ -3983,19 +6549,29 @@ instance Data.ProtoLens.Message FieldOptions where
                                 v <- Data.ProtoLens.Encoding.Parser.Unsafe.unsafeLiftIO
                                        (Data.ProtoLens.Encoding.Growing.append
                                           mutable'uninterpretedOption y)
-                                loop x v
+                                loop x mutable'editionDefaults mutable'targets v
                         wire
                           -> do !y <- Data.ProtoLens.Encoding.Wire.parseTaggedValueFromWire
                                         wire
                                 loop
                                   (Lens.Family2.over
                                      Data.ProtoLens.unknownFields (\ !t -> (:) y t) x)
+                                  mutable'editionDefaults
+                                  mutable'targets
                                   mutable'uninterpretedOption
       in
         (Data.ProtoLens.Encoding.Bytes.<?>)
-          (do mutable'uninterpretedOption <- Data.ProtoLens.Encoding.Parser.Unsafe.unsafeLiftIO
+          (do mutable'editionDefaults <- Data.ProtoLens.Encoding.Parser.Unsafe.unsafeLiftIO
+                                           Data.ProtoLens.Encoding.Growing.new
+              mutable'targets <- Data.ProtoLens.Encoding.Parser.Unsafe.unsafeLiftIO
+                                   Data.ProtoLens.Encoding.Growing.new
+              mutable'uninterpretedOption <- Data.ProtoLens.Encoding.Parser.Unsafe.unsafeLiftIO
                                                Data.ProtoLens.Encoding.Growing.new
-              loop Data.ProtoLens.defMessage mutable'uninterpretedOption)
+              loop
+                Data.ProtoLens.defMessage
+                mutable'editionDefaults
+                mutable'targets
+                mutable'uninterpretedOption)
           "FieldOptions"
   buildMessage
     = \ _x
@@ -4052,46 +6628,170 @@ instance Data.ProtoLens.Message FieldOptions where
                       ((Data.Monoid.<>)
                          (case
                               Lens.Family2.view
-                                (Data.ProtoLens.Field.field @"maybe'deprecated") _x
+                                (Data.ProtoLens.Field.field @"maybe'unverifiedLazy") _x
                           of
                             Prelude.Nothing -> Data.Monoid.mempty
                             (Prelude.Just _v)
                               -> (Data.Monoid.<>)
-                                   (Data.ProtoLens.Encoding.Bytes.putVarInt 24)
+                                   (Data.ProtoLens.Encoding.Bytes.putVarInt 120)
                                    ((Prelude..)
                                       Data.ProtoLens.Encoding.Bytes.putVarInt
                                       (\ b -> if b then 1 else 0)
                                       _v))
                          ((Data.Monoid.<>)
                             (case
-                                 Lens.Family2.view (Data.ProtoLens.Field.field @"maybe'weak") _x
+                                 Lens.Family2.view
+                                   (Data.ProtoLens.Field.field @"maybe'deprecated") _x
                              of
                                Prelude.Nothing -> Data.Monoid.mempty
                                (Prelude.Just _v)
                                  -> (Data.Monoid.<>)
-                                      (Data.ProtoLens.Encoding.Bytes.putVarInt 80)
+                                      (Data.ProtoLens.Encoding.Bytes.putVarInt 24)
                                       ((Prelude..)
                                          Data.ProtoLens.Encoding.Bytes.putVarInt
                                          (\ b -> if b then 1 else 0)
                                          _v))
                             ((Data.Monoid.<>)
-                               (Data.ProtoLens.Encoding.Bytes.foldMapBuilder
-                                  (\ _v
-                                     -> (Data.Monoid.<>)
-                                          (Data.ProtoLens.Encoding.Bytes.putVarInt 7994)
-                                          ((Prelude..)
-                                             (\ bs
-                                                -> (Data.Monoid.<>)
-                                                     (Data.ProtoLens.Encoding.Bytes.putVarInt
-                                                        (Prelude.fromIntegral
-                                                           (Data.ByteString.length bs)))
-                                                     (Data.ProtoLens.Encoding.Bytes.putBytes bs))
-                                             Data.ProtoLens.encodeMessage
-                                             _v))
-                                  (Lens.Family2.view
-                                     (Data.ProtoLens.Field.field @"vec'uninterpretedOption") _x))
-                               (Data.ProtoLens.Encoding.Wire.buildFieldSet
-                                  (Lens.Family2.view Data.ProtoLens.unknownFields _x))))))))
+                               (case
+                                    Lens.Family2.view (Data.ProtoLens.Field.field @"maybe'weak") _x
+                                of
+                                  Prelude.Nothing -> Data.Monoid.mempty
+                                  (Prelude.Just _v)
+                                    -> (Data.Monoid.<>)
+                                         (Data.ProtoLens.Encoding.Bytes.putVarInt 80)
+                                         ((Prelude..)
+                                            Data.ProtoLens.Encoding.Bytes.putVarInt
+                                            (\ b -> if b then 1 else 0)
+                                            _v))
+                               ((Data.Monoid.<>)
+                                  (case
+                                       Lens.Family2.view
+                                         (Data.ProtoLens.Field.field @"maybe'debugRedact") _x
+                                   of
+                                     Prelude.Nothing -> Data.Monoid.mempty
+                                     (Prelude.Just _v)
+                                       -> (Data.Monoid.<>)
+                                            (Data.ProtoLens.Encoding.Bytes.putVarInt 128)
+                                            ((Prelude..)
+                                               Data.ProtoLens.Encoding.Bytes.putVarInt
+                                               (\ b -> if b then 1 else 0)
+                                               _v))
+                                  ((Data.Monoid.<>)
+                                     (case
+                                          Lens.Family2.view
+                                            (Data.ProtoLens.Field.field @"maybe'retention") _x
+                                      of
+                                        Prelude.Nothing -> Data.Monoid.mempty
+                                        (Prelude.Just _v)
+                                          -> (Data.Monoid.<>)
+                                               (Data.ProtoLens.Encoding.Bytes.putVarInt 136)
+                                               ((Prelude..)
+                                                  ((Prelude..)
+                                                     Data.ProtoLens.Encoding.Bytes.putVarInt
+                                                     Prelude.fromIntegral)
+                                                  Prelude.fromEnum
+                                                  _v))
+                                     ((Data.Monoid.<>)
+                                        (Data.ProtoLens.Encoding.Bytes.foldMapBuilder
+                                           (\ _v
+                                              -> (Data.Monoid.<>)
+                                                   (Data.ProtoLens.Encoding.Bytes.putVarInt 152)
+                                                   ((Prelude..)
+                                                      ((Prelude..)
+                                                         Data.ProtoLens.Encoding.Bytes.putVarInt
+                                                         Prelude.fromIntegral)
+                                                      Prelude.fromEnum
+                                                      _v))
+                                           (Lens.Family2.view
+                                              (Data.ProtoLens.Field.field @"vec'targets") _x))
+                                        ((Data.Monoid.<>)
+                                           (Data.ProtoLens.Encoding.Bytes.foldMapBuilder
+                                              (\ _v
+                                                 -> (Data.Monoid.<>)
+                                                      (Data.ProtoLens.Encoding.Bytes.putVarInt 162)
+                                                      ((Prelude..)
+                                                         (\ bs
+                                                            -> (Data.Monoid.<>)
+                                                                 (Data.ProtoLens.Encoding.Bytes.putVarInt
+                                                                    (Prelude.fromIntegral
+                                                                       (Data.ByteString.length bs)))
+                                                                 (Data.ProtoLens.Encoding.Bytes.putBytes
+                                                                    bs))
+                                                         Data.ProtoLens.encodeMessage
+                                                         _v))
+                                              (Lens.Family2.view
+                                                 (Data.ProtoLens.Field.field @"vec'editionDefaults")
+                                                 _x))
+                                           ((Data.Monoid.<>)
+                                              (case
+                                                   Lens.Family2.view
+                                                     (Data.ProtoLens.Field.field @"maybe'features")
+                                                     _x
+                                               of
+                                                 Prelude.Nothing -> Data.Monoid.mempty
+                                                 (Prelude.Just _v)
+                                                   -> (Data.Monoid.<>)
+                                                        (Data.ProtoLens.Encoding.Bytes.putVarInt
+                                                           170)
+                                                        ((Prelude..)
+                                                           (\ bs
+                                                              -> (Data.Monoid.<>)
+                                                                   (Data.ProtoLens.Encoding.Bytes.putVarInt
+                                                                      (Prelude.fromIntegral
+                                                                         (Data.ByteString.length
+                                                                            bs)))
+                                                                   (Data.ProtoLens.Encoding.Bytes.putBytes
+                                                                      bs))
+                                                           Data.ProtoLens.encodeMessage
+                                                           _v))
+                                              ((Data.Monoid.<>)
+                                                 (case
+                                                      Lens.Family2.view
+                                                        (Data.ProtoLens.Field.field
+                                                           @"maybe'featureSupport")
+                                                        _x
+                                                  of
+                                                    Prelude.Nothing -> Data.Monoid.mempty
+                                                    (Prelude.Just _v)
+                                                      -> (Data.Monoid.<>)
+                                                           (Data.ProtoLens.Encoding.Bytes.putVarInt
+                                                              178)
+                                                           ((Prelude..)
+                                                              (\ bs
+                                                                 -> (Data.Monoid.<>)
+                                                                      (Data.ProtoLens.Encoding.Bytes.putVarInt
+                                                                         (Prelude.fromIntegral
+                                                                            (Data.ByteString.length
+                                                                               bs)))
+                                                                      (Data.ProtoLens.Encoding.Bytes.putBytes
+                                                                         bs))
+                                                              Data.ProtoLens.encodeMessage
+                                                              _v))
+                                                 ((Data.Monoid.<>)
+                                                    (Data.ProtoLens.Encoding.Bytes.foldMapBuilder
+                                                       (\ _v
+                                                          -> (Data.Monoid.<>)
+                                                               (Data.ProtoLens.Encoding.Bytes.putVarInt
+                                                                  7994)
+                                                               ((Prelude..)
+                                                                  (\ bs
+                                                                     -> (Data.Monoid.<>)
+                                                                          (Data.ProtoLens.Encoding.Bytes.putVarInt
+                                                                             (Prelude.fromIntegral
+                                                                                (Data.ByteString.length
+                                                                                   bs)))
+                                                                          (Data.ProtoLens.Encoding.Bytes.putBytes
+                                                                             bs))
+                                                                  Data.ProtoLens.encodeMessage
+                                                                  _v))
+                                                       (Lens.Family2.view
+                                                          (Data.ProtoLens.Field.field
+                                                             @"vec'uninterpretedOption")
+                                                          _x))
+                                                    (Data.ProtoLens.Encoding.Wire.buildFieldSet
+                                                       (Lens.Family2.view
+                                                          Data.ProtoLens.unknownFields
+                                                          _x)))))))))))))))
 instance Control.DeepSeq.NFData FieldOptions where
   rnf
     = \ x__
@@ -4106,11 +6806,26 @@ instance Control.DeepSeq.NFData FieldOptions where
                       (Control.DeepSeq.deepseq
                          (_FieldOptions'lazy x__)
                          (Control.DeepSeq.deepseq
-                            (_FieldOptions'deprecated x__)
+                            (_FieldOptions'unverifiedLazy x__)
                             (Control.DeepSeq.deepseq
-                               (_FieldOptions'weak x__)
+                               (_FieldOptions'deprecated x__)
                                (Control.DeepSeq.deepseq
-                                  (_FieldOptions'uninterpretedOption x__) ())))))))
+                                  (_FieldOptions'weak x__)
+                                  (Control.DeepSeq.deepseq
+                                     (_FieldOptions'debugRedact x__)
+                                     (Control.DeepSeq.deepseq
+                                        (_FieldOptions'retention x__)
+                                        (Control.DeepSeq.deepseq
+                                           (_FieldOptions'targets x__)
+                                           (Control.DeepSeq.deepseq
+                                              (_FieldOptions'editionDefaults x__)
+                                              (Control.DeepSeq.deepseq
+                                                 (_FieldOptions'features x__)
+                                                 (Control.DeepSeq.deepseq
+                                                    (_FieldOptions'featureSupport x__)
+                                                    (Control.DeepSeq.deepseq
+                                                       (_FieldOptions'uninterpretedOption x__)
+                                                       ()))))))))))))))
 data FieldOptions'CType
   = FieldOptions'STRING |
     FieldOptions'CORD |
@@ -4163,6 +6878,481 @@ instance Data.ProtoLens.FieldDefault FieldOptions'CType where
   fieldDefault = FieldOptions'STRING
 instance Control.DeepSeq.NFData FieldOptions'CType where
   rnf x__ = Prelude.seq x__ ()
+{- | Fields :
+     
+         * 'Proto.Google.Protobuf.Descriptor_Fields.edition' @:: Lens' FieldOptions'EditionDefault Edition@
+         * 'Proto.Google.Protobuf.Descriptor_Fields.maybe'edition' @:: Lens' FieldOptions'EditionDefault (Prelude.Maybe Edition)@
+         * 'Proto.Google.Protobuf.Descriptor_Fields.value' @:: Lens' FieldOptions'EditionDefault Data.Text.Text@
+         * 'Proto.Google.Protobuf.Descriptor_Fields.maybe'value' @:: Lens' FieldOptions'EditionDefault (Prelude.Maybe Data.Text.Text)@ -}
+data FieldOptions'EditionDefault
+  = FieldOptions'EditionDefault'_constructor {_FieldOptions'EditionDefault'edition :: !(Prelude.Maybe Edition),
+                                              _FieldOptions'EditionDefault'value :: !(Prelude.Maybe Data.Text.Text),
+                                              _FieldOptions'EditionDefault'_unknownFields :: !Data.ProtoLens.FieldSet}
+  deriving stock (Prelude.Eq, Prelude.Ord)
+instance Prelude.Show FieldOptions'EditionDefault where
+  showsPrec _ __x __s
+    = Prelude.showChar
+        '{'
+        (Prelude.showString
+           (Data.ProtoLens.showMessageShort __x) (Prelude.showChar '}' __s))
+instance Data.ProtoLens.Field.HasField FieldOptions'EditionDefault "edition" Edition where
+  fieldOf _
+    = (Prelude..)
+        (Lens.Family2.Unchecked.lens
+           _FieldOptions'EditionDefault'edition
+           (\ x__ y__ -> x__ {_FieldOptions'EditionDefault'edition = y__}))
+        (Data.ProtoLens.maybeLens Data.ProtoLens.fieldDefault)
+instance Data.ProtoLens.Field.HasField FieldOptions'EditionDefault "maybe'edition" (Prelude.Maybe Edition) where
+  fieldOf _
+    = (Prelude..)
+        (Lens.Family2.Unchecked.lens
+           _FieldOptions'EditionDefault'edition
+           (\ x__ y__ -> x__ {_FieldOptions'EditionDefault'edition = y__}))
+        Prelude.id
+instance Data.ProtoLens.Field.HasField FieldOptions'EditionDefault "value" Data.Text.Text where
+  fieldOf _
+    = (Prelude..)
+        (Lens.Family2.Unchecked.lens
+           _FieldOptions'EditionDefault'value
+           (\ x__ y__ -> x__ {_FieldOptions'EditionDefault'value = y__}))
+        (Data.ProtoLens.maybeLens Data.ProtoLens.fieldDefault)
+instance Data.ProtoLens.Field.HasField FieldOptions'EditionDefault "maybe'value" (Prelude.Maybe Data.Text.Text) where
+  fieldOf _
+    = (Prelude..)
+        (Lens.Family2.Unchecked.lens
+           _FieldOptions'EditionDefault'value
+           (\ x__ y__ -> x__ {_FieldOptions'EditionDefault'value = y__}))
+        Prelude.id
+instance Data.ProtoLens.Message FieldOptions'EditionDefault where
+  messageName _
+    = Data.Text.pack "google.protobuf.FieldOptions.EditionDefault"
+  packedMessageDescriptor _
+    = "\n\
+      \\SOEditionDefault\DC22\n\
+      \\aedition\CAN\ETX \SOH(\SO2\CAN.google.protobuf.EditionR\aedition\DC2\DC4\n\
+      \\ENQvalue\CAN\STX \SOH(\tR\ENQvalue"
+  packedFileDescriptor _ = packedFileDescriptor
+  fieldsByTag
+    = let
+        edition__field_descriptor
+          = Data.ProtoLens.FieldDescriptor
+              "edition"
+              (Data.ProtoLens.ScalarField Data.ProtoLens.EnumField ::
+                 Data.ProtoLens.FieldTypeDescriptor Edition)
+              (Data.ProtoLens.OptionalField
+                 (Data.ProtoLens.Field.field @"maybe'edition")) ::
+              Data.ProtoLens.FieldDescriptor FieldOptions'EditionDefault
+        value__field_descriptor
+          = Data.ProtoLens.FieldDescriptor
+              "value"
+              (Data.ProtoLens.ScalarField Data.ProtoLens.StringField ::
+                 Data.ProtoLens.FieldTypeDescriptor Data.Text.Text)
+              (Data.ProtoLens.OptionalField
+                 (Data.ProtoLens.Field.field @"maybe'value")) ::
+              Data.ProtoLens.FieldDescriptor FieldOptions'EditionDefault
+      in
+        Data.Map.fromList
+          [(Data.ProtoLens.Tag 3, edition__field_descriptor),
+           (Data.ProtoLens.Tag 2, value__field_descriptor)]
+  unknownFields
+    = Lens.Family2.Unchecked.lens
+        _FieldOptions'EditionDefault'_unknownFields
+        (\ x__ y__
+           -> x__ {_FieldOptions'EditionDefault'_unknownFields = y__})
+  defMessage
+    = FieldOptions'EditionDefault'_constructor
+        {_FieldOptions'EditionDefault'edition = Prelude.Nothing,
+         _FieldOptions'EditionDefault'value = Prelude.Nothing,
+         _FieldOptions'EditionDefault'_unknownFields = []}
+  parseMessage
+    = let
+        loop ::
+          FieldOptions'EditionDefault
+          -> Data.ProtoLens.Encoding.Bytes.Parser FieldOptions'EditionDefault
+        loop x
+          = do end <- Data.ProtoLens.Encoding.Bytes.atEnd
+               if end then
+                   do (let missing = []
+                       in
+                         if Prelude.null missing then
+                             Prelude.return ()
+                         else
+                             Prelude.fail
+                               ((Prelude.++)
+                                  "Missing required fields: "
+                                  (Prelude.show (missing :: [Prelude.String]))))
+                      Prelude.return
+                        (Lens.Family2.over
+                           Data.ProtoLens.unknownFields (\ !t -> Prelude.reverse t) x)
+               else
+                   do tag <- Data.ProtoLens.Encoding.Bytes.getVarInt
+                      case tag of
+                        24
+                          -> do y <- (Data.ProtoLens.Encoding.Bytes.<?>)
+                                       (Prelude.fmap
+                                          Prelude.toEnum
+                                          (Prelude.fmap
+                                             Prelude.fromIntegral
+                                             Data.ProtoLens.Encoding.Bytes.getVarInt))
+                                       "edition"
+                                loop (Lens.Family2.set (Data.ProtoLens.Field.field @"edition") y x)
+                        18
+                          -> do y <- (Data.ProtoLens.Encoding.Bytes.<?>)
+                                       (do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
+                                           Data.ProtoLens.Encoding.Bytes.getText
+                                             (Prelude.fromIntegral len))
+                                       "value"
+                                loop (Lens.Family2.set (Data.ProtoLens.Field.field @"value") y x)
+                        wire
+                          -> do !y <- Data.ProtoLens.Encoding.Wire.parseTaggedValueFromWire
+                                        wire
+                                loop
+                                  (Lens.Family2.over
+                                     Data.ProtoLens.unknownFields (\ !t -> (:) y t) x)
+      in
+        (Data.ProtoLens.Encoding.Bytes.<?>)
+          (do loop Data.ProtoLens.defMessage) "EditionDefault"
+  buildMessage
+    = \ _x
+        -> (Data.Monoid.<>)
+             (case
+                  Lens.Family2.view (Data.ProtoLens.Field.field @"maybe'edition") _x
+              of
+                Prelude.Nothing -> Data.Monoid.mempty
+                (Prelude.Just _v)
+                  -> (Data.Monoid.<>)
+                       (Data.ProtoLens.Encoding.Bytes.putVarInt 24)
+                       ((Prelude..)
+                          ((Prelude..)
+                             Data.ProtoLens.Encoding.Bytes.putVarInt Prelude.fromIntegral)
+                          Prelude.fromEnum
+                          _v))
+             ((Data.Monoid.<>)
+                (case
+                     Lens.Family2.view (Data.ProtoLens.Field.field @"maybe'value") _x
+                 of
+                   Prelude.Nothing -> Data.Monoid.mempty
+                   (Prelude.Just _v)
+                     -> (Data.Monoid.<>)
+                          (Data.ProtoLens.Encoding.Bytes.putVarInt 18)
+                          ((Prelude..)
+                             (\ bs
+                                -> (Data.Monoid.<>)
+                                     (Data.ProtoLens.Encoding.Bytes.putVarInt
+                                        (Prelude.fromIntegral (Data.ByteString.length bs)))
+                                     (Data.ProtoLens.Encoding.Bytes.putBytes bs))
+                             Data.Text.Encoding.encodeUtf8
+                             _v))
+                (Data.ProtoLens.Encoding.Wire.buildFieldSet
+                   (Lens.Family2.view Data.ProtoLens.unknownFields _x)))
+instance Control.DeepSeq.NFData FieldOptions'EditionDefault where
+  rnf
+    = \ x__
+        -> Control.DeepSeq.deepseq
+             (_FieldOptions'EditionDefault'_unknownFields x__)
+             (Control.DeepSeq.deepseq
+                (_FieldOptions'EditionDefault'edition x__)
+                (Control.DeepSeq.deepseq
+                   (_FieldOptions'EditionDefault'value x__) ()))
+{- | Fields :
+     
+         * 'Proto.Google.Protobuf.Descriptor_Fields.editionIntroduced' @:: Lens' FieldOptions'FeatureSupport Edition@
+         * 'Proto.Google.Protobuf.Descriptor_Fields.maybe'editionIntroduced' @:: Lens' FieldOptions'FeatureSupport (Prelude.Maybe Edition)@
+         * 'Proto.Google.Protobuf.Descriptor_Fields.editionDeprecated' @:: Lens' FieldOptions'FeatureSupport Edition@
+         * 'Proto.Google.Protobuf.Descriptor_Fields.maybe'editionDeprecated' @:: Lens' FieldOptions'FeatureSupport (Prelude.Maybe Edition)@
+         * 'Proto.Google.Protobuf.Descriptor_Fields.deprecationWarning' @:: Lens' FieldOptions'FeatureSupport Data.Text.Text@
+         * 'Proto.Google.Protobuf.Descriptor_Fields.maybe'deprecationWarning' @:: Lens' FieldOptions'FeatureSupport (Prelude.Maybe Data.Text.Text)@
+         * 'Proto.Google.Protobuf.Descriptor_Fields.editionRemoved' @:: Lens' FieldOptions'FeatureSupport Edition@
+         * 'Proto.Google.Protobuf.Descriptor_Fields.maybe'editionRemoved' @:: Lens' FieldOptions'FeatureSupport (Prelude.Maybe Edition)@ -}
+data FieldOptions'FeatureSupport
+  = FieldOptions'FeatureSupport'_constructor {_FieldOptions'FeatureSupport'editionIntroduced :: !(Prelude.Maybe Edition),
+                                              _FieldOptions'FeatureSupport'editionDeprecated :: !(Prelude.Maybe Edition),
+                                              _FieldOptions'FeatureSupport'deprecationWarning :: !(Prelude.Maybe Data.Text.Text),
+                                              _FieldOptions'FeatureSupport'editionRemoved :: !(Prelude.Maybe Edition),
+                                              _FieldOptions'FeatureSupport'_unknownFields :: !Data.ProtoLens.FieldSet}
+  deriving stock (Prelude.Eq, Prelude.Ord)
+instance Prelude.Show FieldOptions'FeatureSupport where
+  showsPrec _ __x __s
+    = Prelude.showChar
+        '{'
+        (Prelude.showString
+           (Data.ProtoLens.showMessageShort __x) (Prelude.showChar '}' __s))
+instance Data.ProtoLens.Field.HasField FieldOptions'FeatureSupport "editionIntroduced" Edition where
+  fieldOf _
+    = (Prelude..)
+        (Lens.Family2.Unchecked.lens
+           _FieldOptions'FeatureSupport'editionIntroduced
+           (\ x__ y__
+              -> x__ {_FieldOptions'FeatureSupport'editionIntroduced = y__}))
+        (Data.ProtoLens.maybeLens Data.ProtoLens.fieldDefault)
+instance Data.ProtoLens.Field.HasField FieldOptions'FeatureSupport "maybe'editionIntroduced" (Prelude.Maybe Edition) where
+  fieldOf _
+    = (Prelude..)
+        (Lens.Family2.Unchecked.lens
+           _FieldOptions'FeatureSupport'editionIntroduced
+           (\ x__ y__
+              -> x__ {_FieldOptions'FeatureSupport'editionIntroduced = y__}))
+        Prelude.id
+instance Data.ProtoLens.Field.HasField FieldOptions'FeatureSupport "editionDeprecated" Edition where
+  fieldOf _
+    = (Prelude..)
+        (Lens.Family2.Unchecked.lens
+           _FieldOptions'FeatureSupport'editionDeprecated
+           (\ x__ y__
+              -> x__ {_FieldOptions'FeatureSupport'editionDeprecated = y__}))
+        (Data.ProtoLens.maybeLens Data.ProtoLens.fieldDefault)
+instance Data.ProtoLens.Field.HasField FieldOptions'FeatureSupport "maybe'editionDeprecated" (Prelude.Maybe Edition) where
+  fieldOf _
+    = (Prelude..)
+        (Lens.Family2.Unchecked.lens
+           _FieldOptions'FeatureSupport'editionDeprecated
+           (\ x__ y__
+              -> x__ {_FieldOptions'FeatureSupport'editionDeprecated = y__}))
+        Prelude.id
+instance Data.ProtoLens.Field.HasField FieldOptions'FeatureSupport "deprecationWarning" Data.Text.Text where
+  fieldOf _
+    = (Prelude..)
+        (Lens.Family2.Unchecked.lens
+           _FieldOptions'FeatureSupport'deprecationWarning
+           (\ x__ y__
+              -> x__ {_FieldOptions'FeatureSupport'deprecationWarning = y__}))
+        (Data.ProtoLens.maybeLens Data.ProtoLens.fieldDefault)
+instance Data.ProtoLens.Field.HasField FieldOptions'FeatureSupport "maybe'deprecationWarning" (Prelude.Maybe Data.Text.Text) where
+  fieldOf _
+    = (Prelude..)
+        (Lens.Family2.Unchecked.lens
+           _FieldOptions'FeatureSupport'deprecationWarning
+           (\ x__ y__
+              -> x__ {_FieldOptions'FeatureSupport'deprecationWarning = y__}))
+        Prelude.id
+instance Data.ProtoLens.Field.HasField FieldOptions'FeatureSupport "editionRemoved" Edition where
+  fieldOf _
+    = (Prelude..)
+        (Lens.Family2.Unchecked.lens
+           _FieldOptions'FeatureSupport'editionRemoved
+           (\ x__ y__
+              -> x__ {_FieldOptions'FeatureSupport'editionRemoved = y__}))
+        (Data.ProtoLens.maybeLens Data.ProtoLens.fieldDefault)
+instance Data.ProtoLens.Field.HasField FieldOptions'FeatureSupport "maybe'editionRemoved" (Prelude.Maybe Edition) where
+  fieldOf _
+    = (Prelude..)
+        (Lens.Family2.Unchecked.lens
+           _FieldOptions'FeatureSupport'editionRemoved
+           (\ x__ y__
+              -> x__ {_FieldOptions'FeatureSupport'editionRemoved = y__}))
+        Prelude.id
+instance Data.ProtoLens.Message FieldOptions'FeatureSupport where
+  messageName _
+    = Data.Text.pack "google.protobuf.FieldOptions.FeatureSupport"
+  packedMessageDescriptor _
+    = "\n\
+      \\SOFeatureSupport\DC2G\n\
+      \\DC2edition_introduced\CAN\SOH \SOH(\SO2\CAN.google.protobuf.EditionR\DC1editionIntroduced\DC2G\n\
+      \\DC2edition_deprecated\CAN\STX \SOH(\SO2\CAN.google.protobuf.EditionR\DC1editionDeprecated\DC2/\n\
+      \\DC3deprecation_warning\CAN\ETX \SOH(\tR\DC2deprecationWarning\DC2A\n\
+      \\SIedition_removed\CAN\EOT \SOH(\SO2\CAN.google.protobuf.EditionR\SOeditionRemoved"
+  packedFileDescriptor _ = packedFileDescriptor
+  fieldsByTag
+    = let
+        editionIntroduced__field_descriptor
+          = Data.ProtoLens.FieldDescriptor
+              "edition_introduced"
+              (Data.ProtoLens.ScalarField Data.ProtoLens.EnumField ::
+                 Data.ProtoLens.FieldTypeDescriptor Edition)
+              (Data.ProtoLens.OptionalField
+                 (Data.ProtoLens.Field.field @"maybe'editionIntroduced")) ::
+              Data.ProtoLens.FieldDescriptor FieldOptions'FeatureSupport
+        editionDeprecated__field_descriptor
+          = Data.ProtoLens.FieldDescriptor
+              "edition_deprecated"
+              (Data.ProtoLens.ScalarField Data.ProtoLens.EnumField ::
+                 Data.ProtoLens.FieldTypeDescriptor Edition)
+              (Data.ProtoLens.OptionalField
+                 (Data.ProtoLens.Field.field @"maybe'editionDeprecated")) ::
+              Data.ProtoLens.FieldDescriptor FieldOptions'FeatureSupport
+        deprecationWarning__field_descriptor
+          = Data.ProtoLens.FieldDescriptor
+              "deprecation_warning"
+              (Data.ProtoLens.ScalarField Data.ProtoLens.StringField ::
+                 Data.ProtoLens.FieldTypeDescriptor Data.Text.Text)
+              (Data.ProtoLens.OptionalField
+                 (Data.ProtoLens.Field.field @"maybe'deprecationWarning")) ::
+              Data.ProtoLens.FieldDescriptor FieldOptions'FeatureSupport
+        editionRemoved__field_descriptor
+          = Data.ProtoLens.FieldDescriptor
+              "edition_removed"
+              (Data.ProtoLens.ScalarField Data.ProtoLens.EnumField ::
+                 Data.ProtoLens.FieldTypeDescriptor Edition)
+              (Data.ProtoLens.OptionalField
+                 (Data.ProtoLens.Field.field @"maybe'editionRemoved")) ::
+              Data.ProtoLens.FieldDescriptor FieldOptions'FeatureSupport
+      in
+        Data.Map.fromList
+          [(Data.ProtoLens.Tag 1, editionIntroduced__field_descriptor),
+           (Data.ProtoLens.Tag 2, editionDeprecated__field_descriptor),
+           (Data.ProtoLens.Tag 3, deprecationWarning__field_descriptor),
+           (Data.ProtoLens.Tag 4, editionRemoved__field_descriptor)]
+  unknownFields
+    = Lens.Family2.Unchecked.lens
+        _FieldOptions'FeatureSupport'_unknownFields
+        (\ x__ y__
+           -> x__ {_FieldOptions'FeatureSupport'_unknownFields = y__})
+  defMessage
+    = FieldOptions'FeatureSupport'_constructor
+        {_FieldOptions'FeatureSupport'editionIntroduced = Prelude.Nothing,
+         _FieldOptions'FeatureSupport'editionDeprecated = Prelude.Nothing,
+         _FieldOptions'FeatureSupport'deprecationWarning = Prelude.Nothing,
+         _FieldOptions'FeatureSupport'editionRemoved = Prelude.Nothing,
+         _FieldOptions'FeatureSupport'_unknownFields = []}
+  parseMessage
+    = let
+        loop ::
+          FieldOptions'FeatureSupport
+          -> Data.ProtoLens.Encoding.Bytes.Parser FieldOptions'FeatureSupport
+        loop x
+          = do end <- Data.ProtoLens.Encoding.Bytes.atEnd
+               if end then
+                   do (let missing = []
+                       in
+                         if Prelude.null missing then
+                             Prelude.return ()
+                         else
+                             Prelude.fail
+                               ((Prelude.++)
+                                  "Missing required fields: "
+                                  (Prelude.show (missing :: [Prelude.String]))))
+                      Prelude.return
+                        (Lens.Family2.over
+                           Data.ProtoLens.unknownFields (\ !t -> Prelude.reverse t) x)
+               else
+                   do tag <- Data.ProtoLens.Encoding.Bytes.getVarInt
+                      case tag of
+                        8 -> do y <- (Data.ProtoLens.Encoding.Bytes.<?>)
+                                       (Prelude.fmap
+                                          Prelude.toEnum
+                                          (Prelude.fmap
+                                             Prelude.fromIntegral
+                                             Data.ProtoLens.Encoding.Bytes.getVarInt))
+                                       "edition_introduced"
+                                loop
+                                  (Lens.Family2.set
+                                     (Data.ProtoLens.Field.field @"editionIntroduced") y x)
+                        16
+                          -> do y <- (Data.ProtoLens.Encoding.Bytes.<?>)
+                                       (Prelude.fmap
+                                          Prelude.toEnum
+                                          (Prelude.fmap
+                                             Prelude.fromIntegral
+                                             Data.ProtoLens.Encoding.Bytes.getVarInt))
+                                       "edition_deprecated"
+                                loop
+                                  (Lens.Family2.set
+                                     (Data.ProtoLens.Field.field @"editionDeprecated") y x)
+                        26
+                          -> do y <- (Data.ProtoLens.Encoding.Bytes.<?>)
+                                       (do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
+                                           Data.ProtoLens.Encoding.Bytes.getText
+                                             (Prelude.fromIntegral len))
+                                       "deprecation_warning"
+                                loop
+                                  (Lens.Family2.set
+                                     (Data.ProtoLens.Field.field @"deprecationWarning") y x)
+                        32
+                          -> do y <- (Data.ProtoLens.Encoding.Bytes.<?>)
+                                       (Prelude.fmap
+                                          Prelude.toEnum
+                                          (Prelude.fmap
+                                             Prelude.fromIntegral
+                                             Data.ProtoLens.Encoding.Bytes.getVarInt))
+                                       "edition_removed"
+                                loop
+                                  (Lens.Family2.set
+                                     (Data.ProtoLens.Field.field @"editionRemoved") y x)
+                        wire
+                          -> do !y <- Data.ProtoLens.Encoding.Wire.parseTaggedValueFromWire
+                                        wire
+                                loop
+                                  (Lens.Family2.over
+                                     Data.ProtoLens.unknownFields (\ !t -> (:) y t) x)
+      in
+        (Data.ProtoLens.Encoding.Bytes.<?>)
+          (do loop Data.ProtoLens.defMessage) "FeatureSupport"
+  buildMessage
+    = \ _x
+        -> (Data.Monoid.<>)
+             (case
+                  Lens.Family2.view
+                    (Data.ProtoLens.Field.field @"maybe'editionIntroduced") _x
+              of
+                Prelude.Nothing -> Data.Monoid.mempty
+                (Prelude.Just _v)
+                  -> (Data.Monoid.<>)
+                       (Data.ProtoLens.Encoding.Bytes.putVarInt 8)
+                       ((Prelude..)
+                          ((Prelude..)
+                             Data.ProtoLens.Encoding.Bytes.putVarInt Prelude.fromIntegral)
+                          Prelude.fromEnum
+                          _v))
+             ((Data.Monoid.<>)
+                (case
+                     Lens.Family2.view
+                       (Data.ProtoLens.Field.field @"maybe'editionDeprecated") _x
+                 of
+                   Prelude.Nothing -> Data.Monoid.mempty
+                   (Prelude.Just _v)
+                     -> (Data.Monoid.<>)
+                          (Data.ProtoLens.Encoding.Bytes.putVarInt 16)
+                          ((Prelude..)
+                             ((Prelude..)
+                                Data.ProtoLens.Encoding.Bytes.putVarInt Prelude.fromIntegral)
+                             Prelude.fromEnum
+                             _v))
+                ((Data.Monoid.<>)
+                   (case
+                        Lens.Family2.view
+                          (Data.ProtoLens.Field.field @"maybe'deprecationWarning") _x
+                    of
+                      Prelude.Nothing -> Data.Monoid.mempty
+                      (Prelude.Just _v)
+                        -> (Data.Monoid.<>)
+                             (Data.ProtoLens.Encoding.Bytes.putVarInt 26)
+                             ((Prelude..)
+                                (\ bs
+                                   -> (Data.Monoid.<>)
+                                        (Data.ProtoLens.Encoding.Bytes.putVarInt
+                                           (Prelude.fromIntegral (Data.ByteString.length bs)))
+                                        (Data.ProtoLens.Encoding.Bytes.putBytes bs))
+                                Data.Text.Encoding.encodeUtf8
+                                _v))
+                   ((Data.Monoid.<>)
+                      (case
+                           Lens.Family2.view
+                             (Data.ProtoLens.Field.field @"maybe'editionRemoved") _x
+                       of
+                         Prelude.Nothing -> Data.Monoid.mempty
+                         (Prelude.Just _v)
+                           -> (Data.Monoid.<>)
+                                (Data.ProtoLens.Encoding.Bytes.putVarInt 32)
+                                ((Prelude..)
+                                   ((Prelude..)
+                                      Data.ProtoLens.Encoding.Bytes.putVarInt Prelude.fromIntegral)
+                                   Prelude.fromEnum
+                                   _v))
+                      (Data.ProtoLens.Encoding.Wire.buildFieldSet
+                         (Lens.Family2.view Data.ProtoLens.unknownFields _x)))))
+instance Control.DeepSeq.NFData FieldOptions'FeatureSupport where
+  rnf
+    = \ x__
+        -> Control.DeepSeq.deepseq
+             (_FieldOptions'FeatureSupport'_unknownFields x__)
+             (Control.DeepSeq.deepseq
+                (_FieldOptions'FeatureSupport'editionIntroduced x__)
+                (Control.DeepSeq.deepseq
+                   (_FieldOptions'FeatureSupport'editionDeprecated x__)
+                   (Control.DeepSeq.deepseq
+                      (_FieldOptions'FeatureSupport'deprecationWarning x__)
+                      (Control.DeepSeq.deepseq
+                         (_FieldOptions'FeatureSupport'editionRemoved x__) ()))))
 data FieldOptions'JSType
   = FieldOptions'JS_NORMAL |
     FieldOptions'JS_STRING |
@@ -4214,6 +7404,193 @@ instance Data.ProtoLens.FieldDefault FieldOptions'JSType where
   fieldDefault = FieldOptions'JS_NORMAL
 instance Control.DeepSeq.NFData FieldOptions'JSType where
   rnf x__ = Prelude.seq x__ ()
+data FieldOptions'OptionRetention
+  = FieldOptions'RETENTION_UNKNOWN |
+    FieldOptions'RETENTION_RUNTIME |
+    FieldOptions'RETENTION_SOURCE
+  deriving stock (Prelude.Show, Prelude.Eq, Prelude.Ord)
+instance Data.ProtoLens.MessageEnum FieldOptions'OptionRetention where
+  maybeToEnum 0 = Prelude.Just FieldOptions'RETENTION_UNKNOWN
+  maybeToEnum 1 = Prelude.Just FieldOptions'RETENTION_RUNTIME
+  maybeToEnum 2 = Prelude.Just FieldOptions'RETENTION_SOURCE
+  maybeToEnum _ = Prelude.Nothing
+  showEnum FieldOptions'RETENTION_UNKNOWN = "RETENTION_UNKNOWN"
+  showEnum FieldOptions'RETENTION_RUNTIME = "RETENTION_RUNTIME"
+  showEnum FieldOptions'RETENTION_SOURCE = "RETENTION_SOURCE"
+  readEnum k
+    | (Prelude.==) k "RETENTION_UNKNOWN"
+    = Prelude.Just FieldOptions'RETENTION_UNKNOWN
+    | (Prelude.==) k "RETENTION_RUNTIME"
+    = Prelude.Just FieldOptions'RETENTION_RUNTIME
+    | (Prelude.==) k "RETENTION_SOURCE"
+    = Prelude.Just FieldOptions'RETENTION_SOURCE
+    | Prelude.otherwise
+    = (Prelude.>>=) (Text.Read.readMaybe k) Data.ProtoLens.maybeToEnum
+instance Prelude.Bounded FieldOptions'OptionRetention where
+  minBound = FieldOptions'RETENTION_UNKNOWN
+  maxBound = FieldOptions'RETENTION_SOURCE
+instance Prelude.Enum FieldOptions'OptionRetention where
+  toEnum k__
+    = Prelude.maybe
+        (Prelude.error
+           ((Prelude.++)
+              "toEnum: unknown value for enum OptionRetention: "
+              (Prelude.show k__)))
+        Prelude.id
+        (Data.ProtoLens.maybeToEnum k__)
+  fromEnum FieldOptions'RETENTION_UNKNOWN = 0
+  fromEnum FieldOptions'RETENTION_RUNTIME = 1
+  fromEnum FieldOptions'RETENTION_SOURCE = 2
+  succ FieldOptions'RETENTION_SOURCE
+    = Prelude.error
+        "FieldOptions'OptionRetention.succ: bad argument FieldOptions'RETENTION_SOURCE. This value would be out of bounds."
+  succ FieldOptions'RETENTION_UNKNOWN
+    = FieldOptions'RETENTION_RUNTIME
+  succ FieldOptions'RETENTION_RUNTIME = FieldOptions'RETENTION_SOURCE
+  pred FieldOptions'RETENTION_UNKNOWN
+    = Prelude.error
+        "FieldOptions'OptionRetention.pred: bad argument FieldOptions'RETENTION_UNKNOWN. This value would be out of bounds."
+  pred FieldOptions'RETENTION_RUNTIME
+    = FieldOptions'RETENTION_UNKNOWN
+  pred FieldOptions'RETENTION_SOURCE = FieldOptions'RETENTION_RUNTIME
+  enumFrom = Data.ProtoLens.Message.Enum.messageEnumFrom
+  enumFromTo = Data.ProtoLens.Message.Enum.messageEnumFromTo
+  enumFromThen = Data.ProtoLens.Message.Enum.messageEnumFromThen
+  enumFromThenTo = Data.ProtoLens.Message.Enum.messageEnumFromThenTo
+instance Data.ProtoLens.FieldDefault FieldOptions'OptionRetention where
+  fieldDefault = FieldOptions'RETENTION_UNKNOWN
+instance Control.DeepSeq.NFData FieldOptions'OptionRetention where
+  rnf x__ = Prelude.seq x__ ()
+data FieldOptions'OptionTargetType
+  = FieldOptions'TARGET_TYPE_UNKNOWN |
+    FieldOptions'TARGET_TYPE_FILE |
+    FieldOptions'TARGET_TYPE_EXTENSION_RANGE |
+    FieldOptions'TARGET_TYPE_MESSAGE |
+    FieldOptions'TARGET_TYPE_FIELD |
+    FieldOptions'TARGET_TYPE_ONEOF |
+    FieldOptions'TARGET_TYPE_ENUM |
+    FieldOptions'TARGET_TYPE_ENUM_ENTRY |
+    FieldOptions'TARGET_TYPE_SERVICE |
+    FieldOptions'TARGET_TYPE_METHOD
+  deriving stock (Prelude.Show, Prelude.Eq, Prelude.Ord)
+instance Data.ProtoLens.MessageEnum FieldOptions'OptionTargetType where
+  maybeToEnum 0 = Prelude.Just FieldOptions'TARGET_TYPE_UNKNOWN
+  maybeToEnum 1 = Prelude.Just FieldOptions'TARGET_TYPE_FILE
+  maybeToEnum 2
+    = Prelude.Just FieldOptions'TARGET_TYPE_EXTENSION_RANGE
+  maybeToEnum 3 = Prelude.Just FieldOptions'TARGET_TYPE_MESSAGE
+  maybeToEnum 4 = Prelude.Just FieldOptions'TARGET_TYPE_FIELD
+  maybeToEnum 5 = Prelude.Just FieldOptions'TARGET_TYPE_ONEOF
+  maybeToEnum 6 = Prelude.Just FieldOptions'TARGET_TYPE_ENUM
+  maybeToEnum 7 = Prelude.Just FieldOptions'TARGET_TYPE_ENUM_ENTRY
+  maybeToEnum 8 = Prelude.Just FieldOptions'TARGET_TYPE_SERVICE
+  maybeToEnum 9 = Prelude.Just FieldOptions'TARGET_TYPE_METHOD
+  maybeToEnum _ = Prelude.Nothing
+  showEnum FieldOptions'TARGET_TYPE_UNKNOWN = "TARGET_TYPE_UNKNOWN"
+  showEnum FieldOptions'TARGET_TYPE_FILE = "TARGET_TYPE_FILE"
+  showEnum FieldOptions'TARGET_TYPE_EXTENSION_RANGE
+    = "TARGET_TYPE_EXTENSION_RANGE"
+  showEnum FieldOptions'TARGET_TYPE_MESSAGE = "TARGET_TYPE_MESSAGE"
+  showEnum FieldOptions'TARGET_TYPE_FIELD = "TARGET_TYPE_FIELD"
+  showEnum FieldOptions'TARGET_TYPE_ONEOF = "TARGET_TYPE_ONEOF"
+  showEnum FieldOptions'TARGET_TYPE_ENUM = "TARGET_TYPE_ENUM"
+  showEnum FieldOptions'TARGET_TYPE_ENUM_ENTRY
+    = "TARGET_TYPE_ENUM_ENTRY"
+  showEnum FieldOptions'TARGET_TYPE_SERVICE = "TARGET_TYPE_SERVICE"
+  showEnum FieldOptions'TARGET_TYPE_METHOD = "TARGET_TYPE_METHOD"
+  readEnum k
+    | (Prelude.==) k "TARGET_TYPE_UNKNOWN"
+    = Prelude.Just FieldOptions'TARGET_TYPE_UNKNOWN
+    | (Prelude.==) k "TARGET_TYPE_FILE"
+    = Prelude.Just FieldOptions'TARGET_TYPE_FILE
+    | (Prelude.==) k "TARGET_TYPE_EXTENSION_RANGE"
+    = Prelude.Just FieldOptions'TARGET_TYPE_EXTENSION_RANGE
+    | (Prelude.==) k "TARGET_TYPE_MESSAGE"
+    = Prelude.Just FieldOptions'TARGET_TYPE_MESSAGE
+    | (Prelude.==) k "TARGET_TYPE_FIELD"
+    = Prelude.Just FieldOptions'TARGET_TYPE_FIELD
+    | (Prelude.==) k "TARGET_TYPE_ONEOF"
+    = Prelude.Just FieldOptions'TARGET_TYPE_ONEOF
+    | (Prelude.==) k "TARGET_TYPE_ENUM"
+    = Prelude.Just FieldOptions'TARGET_TYPE_ENUM
+    | (Prelude.==) k "TARGET_TYPE_ENUM_ENTRY"
+    = Prelude.Just FieldOptions'TARGET_TYPE_ENUM_ENTRY
+    | (Prelude.==) k "TARGET_TYPE_SERVICE"
+    = Prelude.Just FieldOptions'TARGET_TYPE_SERVICE
+    | (Prelude.==) k "TARGET_TYPE_METHOD"
+    = Prelude.Just FieldOptions'TARGET_TYPE_METHOD
+    | Prelude.otherwise
+    = (Prelude.>>=) (Text.Read.readMaybe k) Data.ProtoLens.maybeToEnum
+instance Prelude.Bounded FieldOptions'OptionTargetType where
+  minBound = FieldOptions'TARGET_TYPE_UNKNOWN
+  maxBound = FieldOptions'TARGET_TYPE_METHOD
+instance Prelude.Enum FieldOptions'OptionTargetType where
+  toEnum k__
+    = Prelude.maybe
+        (Prelude.error
+           ((Prelude.++)
+              "toEnum: unknown value for enum OptionTargetType: "
+              (Prelude.show k__)))
+        Prelude.id
+        (Data.ProtoLens.maybeToEnum k__)
+  fromEnum FieldOptions'TARGET_TYPE_UNKNOWN = 0
+  fromEnum FieldOptions'TARGET_TYPE_FILE = 1
+  fromEnum FieldOptions'TARGET_TYPE_EXTENSION_RANGE = 2
+  fromEnum FieldOptions'TARGET_TYPE_MESSAGE = 3
+  fromEnum FieldOptions'TARGET_TYPE_FIELD = 4
+  fromEnum FieldOptions'TARGET_TYPE_ONEOF = 5
+  fromEnum FieldOptions'TARGET_TYPE_ENUM = 6
+  fromEnum FieldOptions'TARGET_TYPE_ENUM_ENTRY = 7
+  fromEnum FieldOptions'TARGET_TYPE_SERVICE = 8
+  fromEnum FieldOptions'TARGET_TYPE_METHOD = 9
+  succ FieldOptions'TARGET_TYPE_METHOD
+    = Prelude.error
+        "FieldOptions'OptionTargetType.succ: bad argument FieldOptions'TARGET_TYPE_METHOD. This value would be out of bounds."
+  succ FieldOptions'TARGET_TYPE_UNKNOWN
+    = FieldOptions'TARGET_TYPE_FILE
+  succ FieldOptions'TARGET_TYPE_FILE
+    = FieldOptions'TARGET_TYPE_EXTENSION_RANGE
+  succ FieldOptions'TARGET_TYPE_EXTENSION_RANGE
+    = FieldOptions'TARGET_TYPE_MESSAGE
+  succ FieldOptions'TARGET_TYPE_MESSAGE
+    = FieldOptions'TARGET_TYPE_FIELD
+  succ FieldOptions'TARGET_TYPE_FIELD
+    = FieldOptions'TARGET_TYPE_ONEOF
+  succ FieldOptions'TARGET_TYPE_ONEOF = FieldOptions'TARGET_TYPE_ENUM
+  succ FieldOptions'TARGET_TYPE_ENUM
+    = FieldOptions'TARGET_TYPE_ENUM_ENTRY
+  succ FieldOptions'TARGET_TYPE_ENUM_ENTRY
+    = FieldOptions'TARGET_TYPE_SERVICE
+  succ FieldOptions'TARGET_TYPE_SERVICE
+    = FieldOptions'TARGET_TYPE_METHOD
+  pred FieldOptions'TARGET_TYPE_UNKNOWN
+    = Prelude.error
+        "FieldOptions'OptionTargetType.pred: bad argument FieldOptions'TARGET_TYPE_UNKNOWN. This value would be out of bounds."
+  pred FieldOptions'TARGET_TYPE_FILE
+    = FieldOptions'TARGET_TYPE_UNKNOWN
+  pred FieldOptions'TARGET_TYPE_EXTENSION_RANGE
+    = FieldOptions'TARGET_TYPE_FILE
+  pred FieldOptions'TARGET_TYPE_MESSAGE
+    = FieldOptions'TARGET_TYPE_EXTENSION_RANGE
+  pred FieldOptions'TARGET_TYPE_FIELD
+    = FieldOptions'TARGET_TYPE_MESSAGE
+  pred FieldOptions'TARGET_TYPE_ONEOF
+    = FieldOptions'TARGET_TYPE_FIELD
+  pred FieldOptions'TARGET_TYPE_ENUM = FieldOptions'TARGET_TYPE_ONEOF
+  pred FieldOptions'TARGET_TYPE_ENUM_ENTRY
+    = FieldOptions'TARGET_TYPE_ENUM
+  pred FieldOptions'TARGET_TYPE_SERVICE
+    = FieldOptions'TARGET_TYPE_ENUM_ENTRY
+  pred FieldOptions'TARGET_TYPE_METHOD
+    = FieldOptions'TARGET_TYPE_SERVICE
+  enumFrom = Data.ProtoLens.Message.Enum.messageEnumFrom
+  enumFromTo = Data.ProtoLens.Message.Enum.messageEnumFromTo
+  enumFromThen = Data.ProtoLens.Message.Enum.messageEnumFromThen
+  enumFromThenTo = Data.ProtoLens.Message.Enum.messageEnumFromThenTo
+instance Data.ProtoLens.FieldDefault FieldOptions'OptionTargetType where
+  fieldDefault = FieldOptions'TARGET_TYPE_UNKNOWN
+instance Control.DeepSeq.NFData FieldOptions'OptionTargetType where
+  rnf x__ = Prelude.seq x__ ()
 {- | Fields :
      
          * 'Proto.Google.Protobuf.Descriptor_Fields.name' @:: Lens' FileDescriptorProto Data.Text.Text@
@@ -4239,7 +7616,9 @@ instance Control.DeepSeq.NFData FieldOptions'JSType where
          * 'Proto.Google.Protobuf.Descriptor_Fields.sourceCodeInfo' @:: Lens' FileDescriptorProto SourceCodeInfo@
          * 'Proto.Google.Protobuf.Descriptor_Fields.maybe'sourceCodeInfo' @:: Lens' FileDescriptorProto (Prelude.Maybe SourceCodeInfo)@
          * 'Proto.Google.Protobuf.Descriptor_Fields.syntax' @:: Lens' FileDescriptorProto Data.Text.Text@
-         * 'Proto.Google.Protobuf.Descriptor_Fields.maybe'syntax' @:: Lens' FileDescriptorProto (Prelude.Maybe Data.Text.Text)@ -}
+         * 'Proto.Google.Protobuf.Descriptor_Fields.maybe'syntax' @:: Lens' FileDescriptorProto (Prelude.Maybe Data.Text.Text)@
+         * 'Proto.Google.Protobuf.Descriptor_Fields.edition' @:: Lens' FileDescriptorProto Edition@
+         * 'Proto.Google.Protobuf.Descriptor_Fields.maybe'edition' @:: Lens' FileDescriptorProto (Prelude.Maybe Edition)@ -}
 data FileDescriptorProto
   = FileDescriptorProto'_constructor {_FileDescriptorProto'name :: !(Prelude.Maybe Data.Text.Text),
                                       _FileDescriptorProto'package :: !(Prelude.Maybe Data.Text.Text),
@@ -4253,6 +7632,7 @@ data FileDescriptorProto
                                       _FileDescriptorProto'options :: !(Prelude.Maybe FileOptions),
                                       _FileDescriptorProto'sourceCodeInfo :: !(Prelude.Maybe SourceCodeInfo),
                                       _FileDescriptorProto'syntax :: !(Prelude.Maybe Data.Text.Text),
+                                      _FileDescriptorProto'edition :: !(Prelude.Maybe Edition),
                                       _FileDescriptorProto'_unknownFields :: !Data.ProtoLens.FieldSet}
   deriving stock (Prelude.Eq, Prelude.Ord)
 instance Prelude.Show FileDescriptorProto where
@@ -4443,6 +7823,20 @@ instance Data.ProtoLens.Field.HasField FileDescriptorProto "maybe'syntax" (Prelu
            _FileDescriptorProto'syntax
            (\ x__ y__ -> x__ {_FileDescriptorProto'syntax = y__}))
         Prelude.id
+instance Data.ProtoLens.Field.HasField FileDescriptorProto "edition" Edition where
+  fieldOf _
+    = (Prelude..)
+        (Lens.Family2.Unchecked.lens
+           _FileDescriptorProto'edition
+           (\ x__ y__ -> x__ {_FileDescriptorProto'edition = y__}))
+        (Data.ProtoLens.maybeLens Data.ProtoLens.fieldDefault)
+instance Data.ProtoLens.Field.HasField FileDescriptorProto "maybe'edition" (Prelude.Maybe Edition) where
+  fieldOf _
+    = (Prelude..)
+        (Lens.Family2.Unchecked.lens
+           _FileDescriptorProto'edition
+           (\ x__ y__ -> x__ {_FileDescriptorProto'edition = y__}))
+        Prelude.id
 instance Data.ProtoLens.Message FileDescriptorProto where
   messageName _
     = Data.Text.pack "google.protobuf.FileDescriptorProto"
@@ -4463,7 +7857,8 @@ instance Data.ProtoLens.Message FileDescriptorProto where
       \\textension\CAN\a \ETX(\v2%.google.protobuf.FieldDescriptorProtoR\textension\DC26\n\
       \\aoptions\CAN\b \SOH(\v2\FS.google.protobuf.FileOptionsR\aoptions\DC2I\n\
       \\DLEsource_code_info\CAN\t \SOH(\v2\US.google.protobuf.SourceCodeInfoR\SOsourceCodeInfo\DC2\SYN\n\
-      \\ACKsyntax\CAN\f \SOH(\tR\ACKsyntax"
+      \\ACKsyntax\CAN\f \SOH(\tR\ACKsyntax\DC22\n\
+      \\aedition\CAN\SO \SOH(\SO2\CAN.google.protobuf.EditionR\aedition"
   packedFileDescriptor _ = packedFileDescriptor
   fieldsByTag
     = let
@@ -4569,6 +7964,14 @@ instance Data.ProtoLens.Message FileDescriptorProto where
               (Data.ProtoLens.OptionalField
                  (Data.ProtoLens.Field.field @"maybe'syntax")) ::
               Data.ProtoLens.FieldDescriptor FileDescriptorProto
+        edition__field_descriptor
+          = Data.ProtoLens.FieldDescriptor
+              "edition"
+              (Data.ProtoLens.ScalarField Data.ProtoLens.EnumField ::
+                 Data.ProtoLens.FieldTypeDescriptor Edition)
+              (Data.ProtoLens.OptionalField
+                 (Data.ProtoLens.Field.field @"maybe'edition")) ::
+              Data.ProtoLens.FieldDescriptor FileDescriptorProto
       in
         Data.Map.fromList
           [(Data.ProtoLens.Tag 1, name__field_descriptor),
@@ -4582,7 +7985,8 @@ instance Data.ProtoLens.Message FileDescriptorProto where
            (Data.ProtoLens.Tag 7, extension__field_descriptor),
            (Data.ProtoLens.Tag 8, options__field_descriptor),
            (Data.ProtoLens.Tag 9, sourceCodeInfo__field_descriptor),
-           (Data.ProtoLens.Tag 12, syntax__field_descriptor)]
+           (Data.ProtoLens.Tag 12, syntax__field_descriptor),
+           (Data.ProtoLens.Tag 14, edition__field_descriptor)]
   unknownFields
     = Lens.Family2.Unchecked.lens
         _FileDescriptorProto'_unknownFields
@@ -4601,6 +8005,7 @@ instance Data.ProtoLens.Message FileDescriptorProto where
          _FileDescriptorProto'options = Prelude.Nothing,
          _FileDescriptorProto'sourceCodeInfo = Prelude.Nothing,
          _FileDescriptorProto'syntax = Prelude.Nothing,
+         _FileDescriptorProto'edition = Prelude.Nothing,
          _FileDescriptorProto'_unknownFields = []}
   parseMessage
     = let
@@ -4686,14 +8091,9 @@ instance Data.ProtoLens.Message FileDescriptorProto where
                       case tag of
                         10
                           -> do y <- (Data.ProtoLens.Encoding.Bytes.<?>)
-                                       (do value <- do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
-                                                       Data.ProtoLens.Encoding.Bytes.getBytes
-                                                         (Prelude.fromIntegral len)
-                                           Data.ProtoLens.Encoding.Bytes.runEither
-                                             (case Data.Text.Encoding.decodeUtf8' value of
-                                                (Prelude.Left err)
-                                                  -> Prelude.Left (Prelude.show err)
-                                                (Prelude.Right r) -> Prelude.Right r))
+                                       (do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
+                                           Data.ProtoLens.Encoding.Bytes.getText
+                                             (Prelude.fromIntegral len))
                                        "name"
                                 loop
                                   (Lens.Family2.set (Data.ProtoLens.Field.field @"name") y x)
@@ -4706,14 +8106,9 @@ instance Data.ProtoLens.Message FileDescriptorProto where
                                   mutable'weakDependency
                         18
                           -> do y <- (Data.ProtoLens.Encoding.Bytes.<?>)
-                                       (do value <- do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
-                                                       Data.ProtoLens.Encoding.Bytes.getBytes
-                                                         (Prelude.fromIntegral len)
-                                           Data.ProtoLens.Encoding.Bytes.runEither
-                                             (case Data.Text.Encoding.decodeUtf8' value of
-                                                (Prelude.Left err)
-                                                  -> Prelude.Left (Prelude.show err)
-                                                (Prelude.Right r) -> Prelude.Right r))
+                                       (do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
+                                           Data.ProtoLens.Encoding.Bytes.getText
+                                             (Prelude.fromIntegral len))
                                        "package"
                                 loop
                                   (Lens.Family2.set (Data.ProtoLens.Field.field @"package") y x)
@@ -4726,14 +8121,9 @@ instance Data.ProtoLens.Message FileDescriptorProto where
                                   mutable'weakDependency
                         26
                           -> do !y <- (Data.ProtoLens.Encoding.Bytes.<?>)
-                                        (do value <- do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
-                                                        Data.ProtoLens.Encoding.Bytes.getBytes
-                                                          (Prelude.fromIntegral len)
-                                            Data.ProtoLens.Encoding.Bytes.runEither
-                                              (case Data.Text.Encoding.decodeUtf8' value of
-                                                 (Prelude.Left err)
-                                                   -> Prelude.Left (Prelude.show err)
-                                                 (Prelude.Right r) -> Prelude.Right r))
+                                        (do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
+                                            Data.ProtoLens.Encoding.Bytes.getText
+                                              (Prelude.fromIntegral len))
                                         "dependency"
                                 v <- Data.ProtoLens.Encoding.Parser.Unsafe.unsafeLiftIO
                                        (Data.ProtoLens.Encoding.Growing.append mutable'dependency y)
@@ -4948,17 +8338,29 @@ instance Data.ProtoLens.Message FileDescriptorProto where
                                   mutable'weakDependency
                         98
                           -> do y <- (Data.ProtoLens.Encoding.Bytes.<?>)
-                                       (do value <- do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
-                                                       Data.ProtoLens.Encoding.Bytes.getBytes
-                                                         (Prelude.fromIntegral len)
-                                           Data.ProtoLens.Encoding.Bytes.runEither
-                                             (case Data.Text.Encoding.decodeUtf8' value of
-                                                (Prelude.Left err)
-                                                  -> Prelude.Left (Prelude.show err)
-                                                (Prelude.Right r) -> Prelude.Right r))
+                                       (do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
+                                           Data.ProtoLens.Encoding.Bytes.getText
+                                             (Prelude.fromIntegral len))
                                        "syntax"
                                 loop
                                   (Lens.Family2.set (Data.ProtoLens.Field.field @"syntax") y x)
+                                  mutable'dependency
+                                  mutable'enumType
+                                  mutable'extension
+                                  mutable'messageType
+                                  mutable'publicDependency
+                                  mutable'service
+                                  mutable'weakDependency
+                        112
+                          -> do y <- (Data.ProtoLens.Encoding.Bytes.<?>)
+                                       (Prelude.fmap
+                                          Prelude.toEnum
+                                          (Prelude.fmap
+                                             Prelude.fromIntegral
+                                             Data.ProtoLens.Encoding.Bytes.getVarInt))
+                                       "edition"
+                                loop
+                                  (Lens.Family2.set (Data.ProtoLens.Field.field @"edition") y x)
                                   mutable'dependency
                                   mutable'enumType
                                   mutable'extension
@@ -5201,9 +8603,27 @@ instance Data.ProtoLens.Message FileDescriptorProto where
                                                                       bs))
                                                            Data.Text.Encoding.encodeUtf8
                                                            _v))
-                                              (Data.ProtoLens.Encoding.Wire.buildFieldSet
-                                                 (Lens.Family2.view
-                                                    Data.ProtoLens.unknownFields _x)))))))))))))
+                                              ((Data.Monoid.<>)
+                                                 (case
+                                                      Lens.Family2.view
+                                                        (Data.ProtoLens.Field.field
+                                                           @"maybe'edition")
+                                                        _x
+                                                  of
+                                                    Prelude.Nothing -> Data.Monoid.mempty
+                                                    (Prelude.Just _v)
+                                                      -> (Data.Monoid.<>)
+                                                           (Data.ProtoLens.Encoding.Bytes.putVarInt
+                                                              112)
+                                                           ((Prelude..)
+                                                              ((Prelude..)
+                                                                 Data.ProtoLens.Encoding.Bytes.putVarInt
+                                                                 Prelude.fromIntegral)
+                                                              Prelude.fromEnum
+                                                              _v))
+                                                 (Data.ProtoLens.Encoding.Wire.buildFieldSet
+                                                    (Lens.Family2.view
+                                                       Data.ProtoLens.unknownFields _x))))))))))))))
 instance Control.DeepSeq.NFData FileDescriptorProto where
   rnf
     = \ x__
@@ -5232,7 +8652,10 @@ instance Control.DeepSeq.NFData FileDescriptorProto where
                                            (Control.DeepSeq.deepseq
                                               (_FileDescriptorProto'sourceCodeInfo x__)
                                               (Control.DeepSeq.deepseq
-                                                 (_FileDescriptorProto'syntax x__) ()))))))))))))
+                                                 (_FileDescriptorProto'syntax x__)
+                                                 (Control.DeepSeq.deepseq
+                                                    (_FileDescriptorProto'edition x__)
+                                                    ())))))))))))))
 {- | Fields :
      
          * 'Proto.Google.Protobuf.Descriptor_Fields.file' @:: Lens' FileDescriptorSet [FileDescriptorProto]@
@@ -5388,8 +8811,6 @@ instance Control.DeepSeq.NFData FileDescriptorSet where
          * 'Proto.Google.Protobuf.Descriptor_Fields.maybe'javaGenericServices' @:: Lens' FileOptions (Prelude.Maybe Prelude.Bool)@
          * 'Proto.Google.Protobuf.Descriptor_Fields.pyGenericServices' @:: Lens' FileOptions Prelude.Bool@
          * 'Proto.Google.Protobuf.Descriptor_Fields.maybe'pyGenericServices' @:: Lens' FileOptions (Prelude.Maybe Prelude.Bool)@
-         * 'Proto.Google.Protobuf.Descriptor_Fields.phpGenericServices' @:: Lens' FileOptions Prelude.Bool@
-         * 'Proto.Google.Protobuf.Descriptor_Fields.maybe'phpGenericServices' @:: Lens' FileOptions (Prelude.Maybe Prelude.Bool)@
          * 'Proto.Google.Protobuf.Descriptor_Fields.deprecated' @:: Lens' FileOptions Prelude.Bool@
          * 'Proto.Google.Protobuf.Descriptor_Fields.maybe'deprecated' @:: Lens' FileOptions (Prelude.Maybe Prelude.Bool)@
          * 'Proto.Google.Protobuf.Descriptor_Fields.ccEnableArenas' @:: Lens' FileOptions Prelude.Bool@
@@ -5408,6 +8829,8 @@ instance Control.DeepSeq.NFData FileDescriptorSet where
          * 'Proto.Google.Protobuf.Descriptor_Fields.maybe'phpMetadataNamespace' @:: Lens' FileOptions (Prelude.Maybe Data.Text.Text)@
          * 'Proto.Google.Protobuf.Descriptor_Fields.rubyPackage' @:: Lens' FileOptions Data.Text.Text@
          * 'Proto.Google.Protobuf.Descriptor_Fields.maybe'rubyPackage' @:: Lens' FileOptions (Prelude.Maybe Data.Text.Text)@
+         * 'Proto.Google.Protobuf.Descriptor_Fields.features' @:: Lens' FileOptions FeatureSet@
+         * 'Proto.Google.Protobuf.Descriptor_Fields.maybe'features' @:: Lens' FileOptions (Prelude.Maybe FeatureSet)@
          * 'Proto.Google.Protobuf.Descriptor_Fields.uninterpretedOption' @:: Lens' FileOptions [UninterpretedOption]@
          * 'Proto.Google.Protobuf.Descriptor_Fields.vec'uninterpretedOption' @:: Lens' FileOptions (Data.Vector.Vector UninterpretedOption)@ -}
 data FileOptions
@@ -5421,7 +8844,6 @@ data FileOptions
                               _FileOptions'ccGenericServices :: !(Prelude.Maybe Prelude.Bool),
                               _FileOptions'javaGenericServices :: !(Prelude.Maybe Prelude.Bool),
                               _FileOptions'pyGenericServices :: !(Prelude.Maybe Prelude.Bool),
-                              _FileOptions'phpGenericServices :: !(Prelude.Maybe Prelude.Bool),
                               _FileOptions'deprecated :: !(Prelude.Maybe Prelude.Bool),
                               _FileOptions'ccEnableArenas :: !(Prelude.Maybe Prelude.Bool),
                               _FileOptions'objcClassPrefix :: !(Prelude.Maybe Data.Text.Text),
@@ -5431,6 +8853,7 @@ data FileOptions
                               _FileOptions'phpNamespace :: !(Prelude.Maybe Data.Text.Text),
                               _FileOptions'phpMetadataNamespace :: !(Prelude.Maybe Data.Text.Text),
                               _FileOptions'rubyPackage :: !(Prelude.Maybe Data.Text.Text),
+                              _FileOptions'features :: !(Prelude.Maybe FeatureSet),
                               _FileOptions'uninterpretedOption :: !(Data.Vector.Vector UninterpretedOption),
                               _FileOptions'_unknownFields :: !Data.ProtoLens.FieldSet}
   deriving stock (Prelude.Eq, Prelude.Ord)
@@ -5580,20 +9003,6 @@ instance Data.ProtoLens.Field.HasField FileOptions "maybe'pyGenericServices" (Pr
            _FileOptions'pyGenericServices
            (\ x__ y__ -> x__ {_FileOptions'pyGenericServices = y__}))
         Prelude.id
-instance Data.ProtoLens.Field.HasField FileOptions "phpGenericServices" Prelude.Bool where
-  fieldOf _
-    = (Prelude..)
-        (Lens.Family2.Unchecked.lens
-           _FileOptions'phpGenericServices
-           (\ x__ y__ -> x__ {_FileOptions'phpGenericServices = y__}))
-        (Data.ProtoLens.maybeLens Prelude.False)
-instance Data.ProtoLens.Field.HasField FileOptions "maybe'phpGenericServices" (Prelude.Maybe Prelude.Bool) where
-  fieldOf _
-    = (Prelude..)
-        (Lens.Family2.Unchecked.lens
-           _FileOptions'phpGenericServices
-           (\ x__ y__ -> x__ {_FileOptions'phpGenericServices = y__}))
-        Prelude.id
 instance Data.ProtoLens.Field.HasField FileOptions "deprecated" Prelude.Bool where
   fieldOf _
     = (Prelude..)
@@ -5720,6 +9129,20 @@ instance Data.ProtoLens.Field.HasField FileOptions "maybe'rubyPackage" (Prelude.
            _FileOptions'rubyPackage
            (\ x__ y__ -> x__ {_FileOptions'rubyPackage = y__}))
         Prelude.id
+instance Data.ProtoLens.Field.HasField FileOptions "features" FeatureSet where
+  fieldOf _
+    = (Prelude..)
+        (Lens.Family2.Unchecked.lens
+           _FileOptions'features
+           (\ x__ y__ -> x__ {_FileOptions'features = y__}))
+        (Data.ProtoLens.maybeLens Data.ProtoLens.defMessage)
+instance Data.ProtoLens.Field.HasField FileOptions "maybe'features" (Prelude.Maybe FeatureSet) where
+  fieldOf _
+    = (Prelude..)
+        (Lens.Family2.Unchecked.lens
+           _FileOptions'features
+           (\ x__ y__ -> x__ {_FileOptions'features = y__}))
+        Prelude.id
 instance Data.ProtoLens.Field.HasField FileOptions "uninterpretedOption" [UninterpretedOption] where
   fieldOf _
     = (Prelude..)
@@ -5752,8 +9175,7 @@ instance Data.ProtoLens.Message FileOptions where
       \go_package\CAN\v \SOH(\tR\tgoPackage\DC25\n\
       \\DC3cc_generic_services\CAN\DLE \SOH(\b:\ENQfalseR\DC1ccGenericServices\DC29\n\
       \\NAKjava_generic_services\CAN\DC1 \SOH(\b:\ENQfalseR\DC3javaGenericServices\DC25\n\
-      \\DC3py_generic_services\CAN\DC2 \SOH(\b:\ENQfalseR\DC1pyGenericServices\DC27\n\
-      \\DC4php_generic_services\CAN* \SOH(\b:\ENQfalseR\DC2phpGenericServices\DC2%\n\
+      \\DC3py_generic_services\CAN\DC2 \SOH(\b:\ENQfalseR\DC1pyGenericServices\DC2%\n\
       \\n\
       \deprecated\CAN\ETB \SOH(\b:\ENQfalseR\n\
       \deprecated\DC2.\n\
@@ -5764,12 +9186,13 @@ instance Data.ProtoLens.Message FileOptions where
       \\DLEphp_class_prefix\CAN( \SOH(\tR\SOphpClassPrefix\DC2#\n\
       \\rphp_namespace\CAN) \SOH(\tR\fphpNamespace\DC24\n\
       \\SYNphp_metadata_namespace\CAN, \SOH(\tR\DC4phpMetadataNamespace\DC2!\n\
-      \\fruby_package\CAN- \SOH(\tR\vrubyPackage\DC2X\n\
+      \\fruby_package\CAN- \SOH(\tR\vrubyPackage\DC27\n\
+      \\bfeatures\CAN2 \SOH(\v2\ESC.google.protobuf.FeatureSetR\bfeatures\DC2X\n\
       \\DC4uninterpreted_option\CAN\231\a \ETX(\v2$.google.protobuf.UninterpretedOptionR\DC3uninterpretedOption\":\n\
       \\fOptimizeMode\DC2\t\n\
       \\ENQSPEED\DLE\SOH\DC2\r\n\
       \\tCODE_SIZE\DLE\STX\DC2\DLE\n\
-      \\fLITE_RUNTIME\DLE\ETX*\t\b\232\a\DLE\128\128\128\128\STXJ\EOT\b&\DLE'"
+      \\fLITE_RUNTIME\DLE\ETX*\t\b\232\a\DLE\128\128\128\128\STXJ\EOT\b*\DLE+J\EOT\b&\DLE'R\DC4php_generic_services"
   packedFileDescriptor _ = packedFileDescriptor
   fieldsByTag
     = let
@@ -5853,14 +9276,6 @@ instance Data.ProtoLens.Message FileOptions where
               (Data.ProtoLens.OptionalField
                  (Data.ProtoLens.Field.field @"maybe'pyGenericServices")) ::
               Data.ProtoLens.FieldDescriptor FileOptions
-        phpGenericServices__field_descriptor
-          = Data.ProtoLens.FieldDescriptor
-              "php_generic_services"
-              (Data.ProtoLens.ScalarField Data.ProtoLens.BoolField ::
-                 Data.ProtoLens.FieldTypeDescriptor Prelude.Bool)
-              (Data.ProtoLens.OptionalField
-                 (Data.ProtoLens.Field.field @"maybe'phpGenericServices")) ::
-              Data.ProtoLens.FieldDescriptor FileOptions
         deprecated__field_descriptor
           = Data.ProtoLens.FieldDescriptor
               "deprecated"
@@ -5933,6 +9348,14 @@ instance Data.ProtoLens.Message FileOptions where
               (Data.ProtoLens.OptionalField
                  (Data.ProtoLens.Field.field @"maybe'rubyPackage")) ::
               Data.ProtoLens.FieldDescriptor FileOptions
+        features__field_descriptor
+          = Data.ProtoLens.FieldDescriptor
+              "features"
+              (Data.ProtoLens.MessageField Data.ProtoLens.MessageType ::
+                 Data.ProtoLens.FieldTypeDescriptor FeatureSet)
+              (Data.ProtoLens.OptionalField
+                 (Data.ProtoLens.Field.field @"maybe'features")) ::
+              Data.ProtoLens.FieldDescriptor FileOptions
         uninterpretedOption__field_descriptor
           = Data.ProtoLens.FieldDescriptor
               "uninterpreted_option"
@@ -5955,7 +9378,6 @@ instance Data.ProtoLens.Message FileOptions where
            (Data.ProtoLens.Tag 16, ccGenericServices__field_descriptor),
            (Data.ProtoLens.Tag 17, javaGenericServices__field_descriptor),
            (Data.ProtoLens.Tag 18, pyGenericServices__field_descriptor),
-           (Data.ProtoLens.Tag 42, phpGenericServices__field_descriptor),
            (Data.ProtoLens.Tag 23, deprecated__field_descriptor),
            (Data.ProtoLens.Tag 31, ccEnableArenas__field_descriptor),
            (Data.ProtoLens.Tag 36, objcClassPrefix__field_descriptor),
@@ -5965,6 +9387,7 @@ instance Data.ProtoLens.Message FileOptions where
            (Data.ProtoLens.Tag 41, phpNamespace__field_descriptor),
            (Data.ProtoLens.Tag 44, phpMetadataNamespace__field_descriptor),
            (Data.ProtoLens.Tag 45, rubyPackage__field_descriptor),
+           (Data.ProtoLens.Tag 50, features__field_descriptor),
            (Data.ProtoLens.Tag 999, uninterpretedOption__field_descriptor)]
   unknownFields
     = Lens.Family2.Unchecked.lens
@@ -5982,7 +9405,6 @@ instance Data.ProtoLens.Message FileOptions where
          _FileOptions'ccGenericServices = Prelude.Nothing,
          _FileOptions'javaGenericServices = Prelude.Nothing,
          _FileOptions'pyGenericServices = Prelude.Nothing,
-         _FileOptions'phpGenericServices = Prelude.Nothing,
          _FileOptions'deprecated = Prelude.Nothing,
          _FileOptions'ccEnableArenas = Prelude.Nothing,
          _FileOptions'objcClassPrefix = Prelude.Nothing,
@@ -5992,6 +9414,7 @@ instance Data.ProtoLens.Message FileOptions where
          _FileOptions'phpNamespace = Prelude.Nothing,
          _FileOptions'phpMetadataNamespace = Prelude.Nothing,
          _FileOptions'rubyPackage = Prelude.Nothing,
+         _FileOptions'features = Prelude.Nothing,
          _FileOptions'uninterpretedOption = Data.Vector.Generic.empty,
          _FileOptions'_unknownFields = []}
   parseMessage
@@ -6028,28 +9451,18 @@ instance Data.ProtoLens.Message FileOptions where
                       case tag of
                         10
                           -> do y <- (Data.ProtoLens.Encoding.Bytes.<?>)
-                                       (do value <- do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
-                                                       Data.ProtoLens.Encoding.Bytes.getBytes
-                                                         (Prelude.fromIntegral len)
-                                           Data.ProtoLens.Encoding.Bytes.runEither
-                                             (case Data.Text.Encoding.decodeUtf8' value of
-                                                (Prelude.Left err)
-                                                  -> Prelude.Left (Prelude.show err)
-                                                (Prelude.Right r) -> Prelude.Right r))
+                                       (do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
+                                           Data.ProtoLens.Encoding.Bytes.getText
+                                             (Prelude.fromIntegral len))
                                        "java_package"
                                 loop
                                   (Lens.Family2.set (Data.ProtoLens.Field.field @"javaPackage") y x)
                                   mutable'uninterpretedOption
                         66
                           -> do y <- (Data.ProtoLens.Encoding.Bytes.<?>)
-                                       (do value <- do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
-                                                       Data.ProtoLens.Encoding.Bytes.getBytes
-                                                         (Prelude.fromIntegral len)
-                                           Data.ProtoLens.Encoding.Bytes.runEither
-                                             (case Data.Text.Encoding.decodeUtf8' value of
-                                                (Prelude.Left err)
-                                                  -> Prelude.Left (Prelude.show err)
-                                                (Prelude.Right r) -> Prelude.Right r))
+                                       (do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
+                                           Data.ProtoLens.Encoding.Bytes.getText
+                                             (Prelude.fromIntegral len))
                                        "java_outer_classname"
                                 loop
                                   (Lens.Family2.set
@@ -6095,14 +9508,9 @@ instance Data.ProtoLens.Message FileOptions where
                                   mutable'uninterpretedOption
                         90
                           -> do y <- (Data.ProtoLens.Encoding.Bytes.<?>)
-                                       (do value <- do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
-                                                       Data.ProtoLens.Encoding.Bytes.getBytes
-                                                         (Prelude.fromIntegral len)
-                                           Data.ProtoLens.Encoding.Bytes.runEither
-                                             (case Data.Text.Encoding.decodeUtf8' value of
-                                                (Prelude.Left err)
-                                                  -> Prelude.Left (Prelude.show err)
-                                                (Prelude.Right r) -> Prelude.Right r))
+                                       (do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
+                                           Data.ProtoLens.Encoding.Bytes.getText
+                                             (Prelude.fromIntegral len))
                                        "go_package"
                                 loop
                                   (Lens.Family2.set (Data.ProtoLens.Field.field @"goPackage") y x)
@@ -6134,15 +9542,6 @@ instance Data.ProtoLens.Message FileOptions where
                                   (Lens.Family2.set
                                      (Data.ProtoLens.Field.field @"pyGenericServices") y x)
                                   mutable'uninterpretedOption
-                        336
-                          -> do y <- (Data.ProtoLens.Encoding.Bytes.<?>)
-                                       (Prelude.fmap
-                                          ((Prelude./=) 0) Data.ProtoLens.Encoding.Bytes.getVarInt)
-                                       "php_generic_services"
-                                loop
-                                  (Lens.Family2.set
-                                     (Data.ProtoLens.Field.field @"phpGenericServices") y x)
-                                  mutable'uninterpretedOption
                         184
                           -> do y <- (Data.ProtoLens.Encoding.Bytes.<?>)
                                        (Prelude.fmap
@@ -6162,14 +9561,9 @@ instance Data.ProtoLens.Message FileOptions where
                                   mutable'uninterpretedOption
                         290
                           -> do y <- (Data.ProtoLens.Encoding.Bytes.<?>)
-                                       (do value <- do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
-                                                       Data.ProtoLens.Encoding.Bytes.getBytes
-                                                         (Prelude.fromIntegral len)
-                                           Data.ProtoLens.Encoding.Bytes.runEither
-                                             (case Data.Text.Encoding.decodeUtf8' value of
-                                                (Prelude.Left err)
-                                                  -> Prelude.Left (Prelude.show err)
-                                                (Prelude.Right r) -> Prelude.Right r))
+                                       (do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
+                                           Data.ProtoLens.Encoding.Bytes.getText
+                                             (Prelude.fromIntegral len))
                                        "objc_class_prefix"
                                 loop
                                   (Lens.Family2.set
@@ -6177,14 +9571,9 @@ instance Data.ProtoLens.Message FileOptions where
                                   mutable'uninterpretedOption
                         298
                           -> do y <- (Data.ProtoLens.Encoding.Bytes.<?>)
-                                       (do value <- do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
-                                                       Data.ProtoLens.Encoding.Bytes.getBytes
-                                                         (Prelude.fromIntegral len)
-                                           Data.ProtoLens.Encoding.Bytes.runEither
-                                             (case Data.Text.Encoding.decodeUtf8' value of
-                                                (Prelude.Left err)
-                                                  -> Prelude.Left (Prelude.show err)
-                                                (Prelude.Right r) -> Prelude.Right r))
+                                       (do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
+                                           Data.ProtoLens.Encoding.Bytes.getText
+                                             (Prelude.fromIntegral len))
                                        "csharp_namespace"
                                 loop
                                   (Lens.Family2.set
@@ -6192,28 +9581,18 @@ instance Data.ProtoLens.Message FileOptions where
                                   mutable'uninterpretedOption
                         314
                           -> do y <- (Data.ProtoLens.Encoding.Bytes.<?>)
-                                       (do value <- do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
-                                                       Data.ProtoLens.Encoding.Bytes.getBytes
-                                                         (Prelude.fromIntegral len)
-                                           Data.ProtoLens.Encoding.Bytes.runEither
-                                             (case Data.Text.Encoding.decodeUtf8' value of
-                                                (Prelude.Left err)
-                                                  -> Prelude.Left (Prelude.show err)
-                                                (Prelude.Right r) -> Prelude.Right r))
+                                       (do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
+                                           Data.ProtoLens.Encoding.Bytes.getText
+                                             (Prelude.fromIntegral len))
                                        "swift_prefix"
                                 loop
                                   (Lens.Family2.set (Data.ProtoLens.Field.field @"swiftPrefix") y x)
                                   mutable'uninterpretedOption
                         322
                           -> do y <- (Data.ProtoLens.Encoding.Bytes.<?>)
-                                       (do value <- do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
-                                                       Data.ProtoLens.Encoding.Bytes.getBytes
-                                                         (Prelude.fromIntegral len)
-                                           Data.ProtoLens.Encoding.Bytes.runEither
-                                             (case Data.Text.Encoding.decodeUtf8' value of
-                                                (Prelude.Left err)
-                                                  -> Prelude.Left (Prelude.show err)
-                                                (Prelude.Right r) -> Prelude.Right r))
+                                       (do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
+                                           Data.ProtoLens.Encoding.Bytes.getText
+                                             (Prelude.fromIntegral len))
                                        "php_class_prefix"
                                 loop
                                   (Lens.Family2.set
@@ -6221,14 +9600,9 @@ instance Data.ProtoLens.Message FileOptions where
                                   mutable'uninterpretedOption
                         330
                           -> do y <- (Data.ProtoLens.Encoding.Bytes.<?>)
-                                       (do value <- do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
-                                                       Data.ProtoLens.Encoding.Bytes.getBytes
-                                                         (Prelude.fromIntegral len)
-                                           Data.ProtoLens.Encoding.Bytes.runEither
-                                             (case Data.Text.Encoding.decodeUtf8' value of
-                                                (Prelude.Left err)
-                                                  -> Prelude.Left (Prelude.show err)
-                                                (Prelude.Right r) -> Prelude.Right r))
+                                       (do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
+                                           Data.ProtoLens.Encoding.Bytes.getText
+                                             (Prelude.fromIntegral len))
                                        "php_namespace"
                                 loop
                                   (Lens.Family2.set
@@ -6236,14 +9610,9 @@ instance Data.ProtoLens.Message FileOptions where
                                   mutable'uninterpretedOption
                         354
                           -> do y <- (Data.ProtoLens.Encoding.Bytes.<?>)
-                                       (do value <- do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
-                                                       Data.ProtoLens.Encoding.Bytes.getBytes
-                                                         (Prelude.fromIntegral len)
-                                           Data.ProtoLens.Encoding.Bytes.runEither
-                                             (case Data.Text.Encoding.decodeUtf8' value of
-                                                (Prelude.Left err)
-                                                  -> Prelude.Left (Prelude.show err)
-                                                (Prelude.Right r) -> Prelude.Right r))
+                                       (do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
+                                           Data.ProtoLens.Encoding.Bytes.getText
+                                             (Prelude.fromIntegral len))
                                        "php_metadata_namespace"
                                 loop
                                   (Lens.Family2.set
@@ -6251,17 +9620,21 @@ instance Data.ProtoLens.Message FileOptions where
                                   mutable'uninterpretedOption
                         362
                           -> do y <- (Data.ProtoLens.Encoding.Bytes.<?>)
-                                       (do value <- do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
-                                                       Data.ProtoLens.Encoding.Bytes.getBytes
-                                                         (Prelude.fromIntegral len)
-                                           Data.ProtoLens.Encoding.Bytes.runEither
-                                             (case Data.Text.Encoding.decodeUtf8' value of
-                                                (Prelude.Left err)
-                                                  -> Prelude.Left (Prelude.show err)
-                                                (Prelude.Right r) -> Prelude.Right r))
+                                       (do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
+                                           Data.ProtoLens.Encoding.Bytes.getText
+                                             (Prelude.fromIntegral len))
                                        "ruby_package"
                                 loop
                                   (Lens.Family2.set (Data.ProtoLens.Field.field @"rubyPackage") y x)
+                                  mutable'uninterpretedOption
+                        402
+                          -> do y <- (Data.ProtoLens.Encoding.Bytes.<?>)
+                                       (do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
+                                           Data.ProtoLens.Encoding.Bytes.isolate
+                                             (Prelude.fromIntegral len) Data.ProtoLens.parseMessage)
+                                       "features"
+                                loop
+                                  (Lens.Family2.set (Data.ProtoLens.Field.field @"features") y x)
                                   mutable'uninterpretedOption
                         7994
                           -> do !y <- (Data.ProtoLens.Encoding.Bytes.<?>)
@@ -6441,14 +9814,13 @@ instance Data.ProtoLens.Message FileOptions where
                                         ((Data.Monoid.<>)
                                            (case
                                                 Lens.Family2.view
-                                                  (Data.ProtoLens.Field.field
-                                                     @"maybe'phpGenericServices")
+                                                  (Data.ProtoLens.Field.field @"maybe'deprecated")
                                                   _x
                                             of
                                               Prelude.Nothing -> Data.Monoid.mempty
                                               (Prelude.Just _v)
                                                 -> (Data.Monoid.<>)
-                                                     (Data.ProtoLens.Encoding.Bytes.putVarInt 336)
+                                                     (Data.ProtoLens.Encoding.Bytes.putVarInt 184)
                                                      ((Prelude..)
                                                         Data.ProtoLens.Encoding.Bytes.putVarInt
                                                         (\ b -> if b then 1 else 0)
@@ -6457,14 +9829,14 @@ instance Data.ProtoLens.Message FileOptions where
                                               (case
                                                    Lens.Family2.view
                                                      (Data.ProtoLens.Field.field
-                                                        @"maybe'deprecated")
+                                                        @"maybe'ccEnableArenas")
                                                      _x
                                                of
                                                  Prelude.Nothing -> Data.Monoid.mempty
                                                  (Prelude.Just _v)
                                                    -> (Data.Monoid.<>)
                                                         (Data.ProtoLens.Encoding.Bytes.putVarInt
-                                                           184)
+                                                           248)
                                                         ((Prelude..)
                                                            Data.ProtoLens.Encoding.Bytes.putVarInt
                                                            (\ b -> if b then 1 else 0)
@@ -6473,30 +9845,37 @@ instance Data.ProtoLens.Message FileOptions where
                                                  (case
                                                       Lens.Family2.view
                                                         (Data.ProtoLens.Field.field
-                                                           @"maybe'ccEnableArenas")
+                                                           @"maybe'objcClassPrefix")
                                                         _x
                                                   of
                                                     Prelude.Nothing -> Data.Monoid.mempty
                                                     (Prelude.Just _v)
                                                       -> (Data.Monoid.<>)
                                                            (Data.ProtoLens.Encoding.Bytes.putVarInt
-                                                              248)
+                                                              290)
                                                            ((Prelude..)
-                                                              Data.ProtoLens.Encoding.Bytes.putVarInt
-                                                              (\ b -> if b then 1 else 0)
+                                                              (\ bs
+                                                                 -> (Data.Monoid.<>)
+                                                                      (Data.ProtoLens.Encoding.Bytes.putVarInt
+                                                                         (Prelude.fromIntegral
+                                                                            (Data.ByteString.length
+                                                                               bs)))
+                                                                      (Data.ProtoLens.Encoding.Bytes.putBytes
+                                                                         bs))
+                                                              Data.Text.Encoding.encodeUtf8
                                                               _v))
                                                  ((Data.Monoid.<>)
                                                     (case
                                                          Lens.Family2.view
                                                            (Data.ProtoLens.Field.field
-                                                              @"maybe'objcClassPrefix")
+                                                              @"maybe'csharpNamespace")
                                                            _x
                                                      of
                                                        Prelude.Nothing -> Data.Monoid.mempty
                                                        (Prelude.Just _v)
                                                          -> (Data.Monoid.<>)
                                                               (Data.ProtoLens.Encoding.Bytes.putVarInt
-                                                                 290)
+                                                                 298)
                                                               ((Prelude..)
                                                                  (\ bs
                                                                     -> (Data.Monoid.<>)
@@ -6512,14 +9891,14 @@ instance Data.ProtoLens.Message FileOptions where
                                                        (case
                                                             Lens.Family2.view
                                                               (Data.ProtoLens.Field.field
-                                                                 @"maybe'csharpNamespace")
+                                                                 @"maybe'swiftPrefix")
                                                               _x
                                                         of
                                                           Prelude.Nothing -> Data.Monoid.mempty
                                                           (Prelude.Just _v)
                                                             -> (Data.Monoid.<>)
                                                                  (Data.ProtoLens.Encoding.Bytes.putVarInt
-                                                                    298)
+                                                                    314)
                                                                  ((Prelude..)
                                                                     (\ bs
                                                                        -> (Data.Monoid.<>)
@@ -6535,14 +9914,14 @@ instance Data.ProtoLens.Message FileOptions where
                                                           (case
                                                                Lens.Family2.view
                                                                  (Data.ProtoLens.Field.field
-                                                                    @"maybe'swiftPrefix")
+                                                                    @"maybe'phpClassPrefix")
                                                                  _x
                                                            of
                                                              Prelude.Nothing -> Data.Monoid.mempty
                                                              (Prelude.Just _v)
                                                                -> (Data.Monoid.<>)
                                                                     (Data.ProtoLens.Encoding.Bytes.putVarInt
-                                                                       314)
+                                                                       322)
                                                                     ((Prelude..)
                                                                        (\ bs
                                                                           -> (Data.Monoid.<>)
@@ -6558,7 +9937,7 @@ instance Data.ProtoLens.Message FileOptions where
                                                              (case
                                                                   Lens.Family2.view
                                                                     (Data.ProtoLens.Field.field
-                                                                       @"maybe'phpClassPrefix")
+                                                                       @"maybe'phpNamespace")
                                                                     _x
                                                               of
                                                                 Prelude.Nothing
@@ -6566,7 +9945,7 @@ instance Data.ProtoLens.Message FileOptions where
                                                                 (Prelude.Just _v)
                                                                   -> (Data.Monoid.<>)
                                                                        (Data.ProtoLens.Encoding.Bytes.putVarInt
-                                                                          322)
+                                                                          330)
                                                                        ((Prelude..)
                                                                           (\ bs
                                                                              -> (Data.Monoid.<>)
@@ -6582,7 +9961,7 @@ instance Data.ProtoLens.Message FileOptions where
                                                                 (case
                                                                      Lens.Family2.view
                                                                        (Data.ProtoLens.Field.field
-                                                                          @"maybe'phpNamespace")
+                                                                          @"maybe'phpMetadataNamespace")
                                                                        _x
                                                                  of
                                                                    Prelude.Nothing
@@ -6590,7 +9969,7 @@ instance Data.ProtoLens.Message FileOptions where
                                                                    (Prelude.Just _v)
                                                                      -> (Data.Monoid.<>)
                                                                           (Data.ProtoLens.Encoding.Bytes.putVarInt
-                                                                             330)
+                                                                             354)
                                                                           ((Prelude..)
                                                                              (\ bs
                                                                                 -> (Data.Monoid.<>)
@@ -6606,7 +9985,7 @@ instance Data.ProtoLens.Message FileOptions where
                                                                    (case
                                                                         Lens.Family2.view
                                                                           (Data.ProtoLens.Field.field
-                                                                             @"maybe'phpMetadataNamespace")
+                                                                             @"maybe'rubyPackage")
                                                                           _x
                                                                     of
                                                                       Prelude.Nothing
@@ -6614,7 +9993,7 @@ instance Data.ProtoLens.Message FileOptions where
                                                                       (Prelude.Just _v)
                                                                         -> (Data.Monoid.<>)
                                                                              (Data.ProtoLens.Encoding.Bytes.putVarInt
-                                                                                354)
+                                                                                362)
                                                                              ((Prelude..)
                                                                                 (\ bs
                                                                                    -> (Data.Monoid.<>)
@@ -6630,7 +10009,7 @@ instance Data.ProtoLens.Message FileOptions where
                                                                       (case
                                                                            Lens.Family2.view
                                                                              (Data.ProtoLens.Field.field
-                                                                                @"maybe'rubyPackage")
+                                                                                @"maybe'features")
                                                                              _x
                                                                        of
                                                                          Prelude.Nothing
@@ -6638,7 +10017,7 @@ instance Data.ProtoLens.Message FileOptions where
                                                                          (Prelude.Just _v)
                                                                            -> (Data.Monoid.<>)
                                                                                 (Data.ProtoLens.Encoding.Bytes.putVarInt
-                                                                                   362)
+                                                                                   402)
                                                                                 ((Prelude..)
                                                                                    (\ bs
                                                                                       -> (Data.Monoid.<>)
@@ -6648,7 +10027,7 @@ instance Data.ProtoLens.Message FileOptions where
                                                                                                     bs)))
                                                                                            (Data.ProtoLens.Encoding.Bytes.putBytes
                                                                                               bs))
-                                                                                   Data.Text.Encoding.encodeUtf8
+                                                                                   Data.ProtoLens.encodeMessage
                                                                                    _v))
                                                                       ((Data.Monoid.<>)
                                                                          (Data.ProtoLens.Encoding.Bytes.foldMapBuilder
@@ -6701,27 +10080,26 @@ instance Control.DeepSeq.NFData FileOptions where
                                         (Control.DeepSeq.deepseq
                                            (_FileOptions'pyGenericServices x__)
                                            (Control.DeepSeq.deepseq
-                                              (_FileOptions'phpGenericServices x__)
+                                              (_FileOptions'deprecated x__)
                                               (Control.DeepSeq.deepseq
-                                                 (_FileOptions'deprecated x__)
+                                                 (_FileOptions'ccEnableArenas x__)
                                                  (Control.DeepSeq.deepseq
-                                                    (_FileOptions'ccEnableArenas x__)
+                                                    (_FileOptions'objcClassPrefix x__)
                                                     (Control.DeepSeq.deepseq
-                                                       (_FileOptions'objcClassPrefix x__)
+                                                       (_FileOptions'csharpNamespace x__)
                                                        (Control.DeepSeq.deepseq
-                                                          (_FileOptions'csharpNamespace x__)
+                                                          (_FileOptions'swiftPrefix x__)
                                                           (Control.DeepSeq.deepseq
-                                                             (_FileOptions'swiftPrefix x__)
+                                                             (_FileOptions'phpClassPrefix x__)
                                                              (Control.DeepSeq.deepseq
-                                                                (_FileOptions'phpClassPrefix x__)
+                                                                (_FileOptions'phpNamespace x__)
                                                                 (Control.DeepSeq.deepseq
-                                                                   (_FileOptions'phpNamespace x__)
+                                                                   (_FileOptions'phpMetadataNamespace
+                                                                      x__)
                                                                    (Control.DeepSeq.deepseq
-                                                                      (_FileOptions'phpMetadataNamespace
-                                                                         x__)
+                                                                      (_FileOptions'rubyPackage x__)
                                                                       (Control.DeepSeq.deepseq
-                                                                         (_FileOptions'rubyPackage
-                                                                            x__)
+                                                                         (_FileOptions'features x__)
                                                                          (Control.DeepSeq.deepseq
                                                                             (_FileOptions'uninterpretedOption
                                                                                x__)
@@ -6816,14 +10194,19 @@ instance Data.ProtoLens.Message GeneratedCodeInfo where
       \\DC1GeneratedCodeInfo\DC2M\n\
       \\n\
       \annotation\CAN\SOH \ETX(\v2-.google.protobuf.GeneratedCodeInfo.AnnotationR\n\
-      \annotation\SUBm\n\
+      \annotation\SUB\235\SOH\n\
       \\n\
       \Annotation\DC2\SYN\n\
       \\EOTpath\CAN\SOH \ETX(\ENQR\EOTpathB\STX\DLE\SOH\DC2\US\n\
       \\vsource_file\CAN\STX \SOH(\tR\n\
       \sourceFile\DC2\DC4\n\
       \\ENQbegin\CAN\ETX \SOH(\ENQR\ENQbegin\DC2\DLE\n\
-      \\ETXend\CAN\EOT \SOH(\ENQR\ETXend"
+      \\ETXend\CAN\EOT \SOH(\ENQR\ETXend\DC2R\n\
+      \\bsemantic\CAN\ENQ \SOH(\SO26.google.protobuf.GeneratedCodeInfo.Annotation.SemanticR\bsemantic\"(\n\
+      \\bSemantic\DC2\b\n\
+      \\EOTNONE\DLE\NUL\DC2\a\n\
+      \\ETXSET\DLE\SOH\DC2\t\n\
+      \\ENQALIAS\DLE\STX"
   packedFileDescriptor _ = packedFileDescriptor
   fieldsByTag
     = let
@@ -6936,12 +10319,15 @@ instance Control.DeepSeq.NFData GeneratedCodeInfo where
          * 'Proto.Google.Protobuf.Descriptor_Fields.begin' @:: Lens' GeneratedCodeInfo'Annotation Data.Int.Int32@
          * 'Proto.Google.Protobuf.Descriptor_Fields.maybe'begin' @:: Lens' GeneratedCodeInfo'Annotation (Prelude.Maybe Data.Int.Int32)@
          * 'Proto.Google.Protobuf.Descriptor_Fields.end' @:: Lens' GeneratedCodeInfo'Annotation Data.Int.Int32@
-         * 'Proto.Google.Protobuf.Descriptor_Fields.maybe'end' @:: Lens' GeneratedCodeInfo'Annotation (Prelude.Maybe Data.Int.Int32)@ -}
+         * 'Proto.Google.Protobuf.Descriptor_Fields.maybe'end' @:: Lens' GeneratedCodeInfo'Annotation (Prelude.Maybe Data.Int.Int32)@
+         * 'Proto.Google.Protobuf.Descriptor_Fields.semantic' @:: Lens' GeneratedCodeInfo'Annotation GeneratedCodeInfo'Annotation'Semantic@
+         * 'Proto.Google.Protobuf.Descriptor_Fields.maybe'semantic' @:: Lens' GeneratedCodeInfo'Annotation (Prelude.Maybe GeneratedCodeInfo'Annotation'Semantic)@ -}
 data GeneratedCodeInfo'Annotation
   = GeneratedCodeInfo'Annotation'_constructor {_GeneratedCodeInfo'Annotation'path :: !(Data.Vector.Unboxed.Vector Data.Int.Int32),
                                                _GeneratedCodeInfo'Annotation'sourceFile :: !(Prelude.Maybe Data.Text.Text),
                                                _GeneratedCodeInfo'Annotation'begin :: !(Prelude.Maybe Data.Int.Int32),
                                                _GeneratedCodeInfo'Annotation'end :: !(Prelude.Maybe Data.Int.Int32),
+                                               _GeneratedCodeInfo'Annotation'semantic :: !(Prelude.Maybe GeneratedCodeInfo'Annotation'Semantic),
                                                _GeneratedCodeInfo'Annotation'_unknownFields :: !Data.ProtoLens.FieldSet}
   deriving stock (Prelude.Eq, Prelude.Ord)
 instance Prelude.Show GeneratedCodeInfo'Annotation where
@@ -7010,6 +10396,20 @@ instance Data.ProtoLens.Field.HasField GeneratedCodeInfo'Annotation "maybe'end" 
            _GeneratedCodeInfo'Annotation'end
            (\ x__ y__ -> x__ {_GeneratedCodeInfo'Annotation'end = y__}))
         Prelude.id
+instance Data.ProtoLens.Field.HasField GeneratedCodeInfo'Annotation "semantic" GeneratedCodeInfo'Annotation'Semantic where
+  fieldOf _
+    = (Prelude..)
+        (Lens.Family2.Unchecked.lens
+           _GeneratedCodeInfo'Annotation'semantic
+           (\ x__ y__ -> x__ {_GeneratedCodeInfo'Annotation'semantic = y__}))
+        (Data.ProtoLens.maybeLens Data.ProtoLens.fieldDefault)
+instance Data.ProtoLens.Field.HasField GeneratedCodeInfo'Annotation "maybe'semantic" (Prelude.Maybe GeneratedCodeInfo'Annotation'Semantic) where
+  fieldOf _
+    = (Prelude..)
+        (Lens.Family2.Unchecked.lens
+           _GeneratedCodeInfo'Annotation'semantic
+           (\ x__ y__ -> x__ {_GeneratedCodeInfo'Annotation'semantic = y__}))
+        Prelude.id
 instance Data.ProtoLens.Message GeneratedCodeInfo'Annotation where
   messageName _
     = Data.Text.pack "google.protobuf.GeneratedCodeInfo.Annotation"
@@ -7021,7 +10421,12 @@ instance Data.ProtoLens.Message GeneratedCodeInfo'Annotation where
       \\vsource_file\CAN\STX \SOH(\tR\n\
       \sourceFile\DC2\DC4\n\
       \\ENQbegin\CAN\ETX \SOH(\ENQR\ENQbegin\DC2\DLE\n\
-      \\ETXend\CAN\EOT \SOH(\ENQR\ETXend"
+      \\ETXend\CAN\EOT \SOH(\ENQR\ETXend\DC2R\n\
+      \\bsemantic\CAN\ENQ \SOH(\SO26.google.protobuf.GeneratedCodeInfo.Annotation.SemanticR\bsemantic\"(\n\
+      \\bSemantic\DC2\b\n\
+      \\EOTNONE\DLE\NUL\DC2\a\n\
+      \\ETXSET\DLE\SOH\DC2\t\n\
+      \\ENQALIAS\DLE\STX"
   packedFileDescriptor _ = packedFileDescriptor
   fieldsByTag
     = let
@@ -7057,12 +10462,21 @@ instance Data.ProtoLens.Message GeneratedCodeInfo'Annotation where
               (Data.ProtoLens.OptionalField
                  (Data.ProtoLens.Field.field @"maybe'end")) ::
               Data.ProtoLens.FieldDescriptor GeneratedCodeInfo'Annotation
+        semantic__field_descriptor
+          = Data.ProtoLens.FieldDescriptor
+              "semantic"
+              (Data.ProtoLens.ScalarField Data.ProtoLens.EnumField ::
+                 Data.ProtoLens.FieldTypeDescriptor GeneratedCodeInfo'Annotation'Semantic)
+              (Data.ProtoLens.OptionalField
+                 (Data.ProtoLens.Field.field @"maybe'semantic")) ::
+              Data.ProtoLens.FieldDescriptor GeneratedCodeInfo'Annotation
       in
         Data.Map.fromList
           [(Data.ProtoLens.Tag 1, path__field_descriptor),
            (Data.ProtoLens.Tag 2, sourceFile__field_descriptor),
            (Data.ProtoLens.Tag 3, begin__field_descriptor),
-           (Data.ProtoLens.Tag 4, end__field_descriptor)]
+           (Data.ProtoLens.Tag 4, end__field_descriptor),
+           (Data.ProtoLens.Tag 5, semantic__field_descriptor)]
   unknownFields
     = Lens.Family2.Unchecked.lens
         _GeneratedCodeInfo'Annotation'_unknownFields
@@ -7074,6 +10488,7 @@ instance Data.ProtoLens.Message GeneratedCodeInfo'Annotation where
          _GeneratedCodeInfo'Annotation'sourceFile = Prelude.Nothing,
          _GeneratedCodeInfo'Annotation'begin = Prelude.Nothing,
          _GeneratedCodeInfo'Annotation'end = Prelude.Nothing,
+         _GeneratedCodeInfo'Annotation'semantic = Prelude.Nothing,
          _GeneratedCodeInfo'Annotation'_unknownFields = []}
   parseMessage
     = let
@@ -7136,14 +10551,9 @@ instance Data.ProtoLens.Message GeneratedCodeInfo'Annotation where
                                 loop x y
                         18
                           -> do y <- (Data.ProtoLens.Encoding.Bytes.<?>)
-                                       (do value <- do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
-                                                       Data.ProtoLens.Encoding.Bytes.getBytes
-                                                         (Prelude.fromIntegral len)
-                                           Data.ProtoLens.Encoding.Bytes.runEither
-                                             (case Data.Text.Encoding.decodeUtf8' value of
-                                                (Prelude.Left err)
-                                                  -> Prelude.Left (Prelude.show err)
-                                                (Prelude.Right r) -> Prelude.Right r))
+                                       (do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
+                                           Data.ProtoLens.Encoding.Bytes.getText
+                                             (Prelude.fromIntegral len))
                                        "source_file"
                                 loop
                                   (Lens.Family2.set (Data.ProtoLens.Field.field @"sourceFile") y x)
@@ -7165,6 +10575,17 @@ instance Data.ProtoLens.Message GeneratedCodeInfo'Annotation where
                                        "end"
                                 loop
                                   (Lens.Family2.set (Data.ProtoLens.Field.field @"end") y x)
+                                  mutable'path
+                        40
+                          -> do y <- (Data.ProtoLens.Encoding.Bytes.<?>)
+                                       (Prelude.fmap
+                                          Prelude.toEnum
+                                          (Prelude.fmap
+                                             Prelude.fromIntegral
+                                             Data.ProtoLens.Encoding.Bytes.getVarInt))
+                                       "semantic"
+                                loop
+                                  (Lens.Family2.set (Data.ProtoLens.Field.field @"semantic") y x)
                                   mutable'path
                         wire
                           -> do !y <- Data.ProtoLens.Encoding.Wire.parseTaggedValueFromWire
@@ -7237,8 +10658,22 @@ instance Data.ProtoLens.Message GeneratedCodeInfo'Annotation where
                                 (Data.ProtoLens.Encoding.Bytes.putVarInt 32)
                                 ((Prelude..)
                                    Data.ProtoLens.Encoding.Bytes.putVarInt Prelude.fromIntegral _v))
-                      (Data.ProtoLens.Encoding.Wire.buildFieldSet
-                         (Lens.Family2.view Data.ProtoLens.unknownFields _x)))))
+                      ((Data.Monoid.<>)
+                         (case
+                              Lens.Family2.view (Data.ProtoLens.Field.field @"maybe'semantic") _x
+                          of
+                            Prelude.Nothing -> Data.Monoid.mempty
+                            (Prelude.Just _v)
+                              -> (Data.Monoid.<>)
+                                   (Data.ProtoLens.Encoding.Bytes.putVarInt 40)
+                                   ((Prelude..)
+                                      ((Prelude..)
+                                         Data.ProtoLens.Encoding.Bytes.putVarInt
+                                         Prelude.fromIntegral)
+                                      Prelude.fromEnum
+                                      _v))
+                         (Data.ProtoLens.Encoding.Wire.buildFieldSet
+                            (Lens.Family2.view Data.ProtoLens.unknownFields _x))))))
 instance Control.DeepSeq.NFData GeneratedCodeInfo'Annotation where
   rnf
     = \ x__
@@ -7251,7 +10686,67 @@ instance Control.DeepSeq.NFData GeneratedCodeInfo'Annotation where
                    (Control.DeepSeq.deepseq
                       (_GeneratedCodeInfo'Annotation'begin x__)
                       (Control.DeepSeq.deepseq
-                         (_GeneratedCodeInfo'Annotation'end x__) ()))))
+                         (_GeneratedCodeInfo'Annotation'end x__)
+                         (Control.DeepSeq.deepseq
+                            (_GeneratedCodeInfo'Annotation'semantic x__) ())))))
+data GeneratedCodeInfo'Annotation'Semantic
+  = GeneratedCodeInfo'Annotation'NONE |
+    GeneratedCodeInfo'Annotation'SET |
+    GeneratedCodeInfo'Annotation'ALIAS
+  deriving stock (Prelude.Show, Prelude.Eq, Prelude.Ord)
+instance Data.ProtoLens.MessageEnum GeneratedCodeInfo'Annotation'Semantic where
+  maybeToEnum 0 = Prelude.Just GeneratedCodeInfo'Annotation'NONE
+  maybeToEnum 1 = Prelude.Just GeneratedCodeInfo'Annotation'SET
+  maybeToEnum 2 = Prelude.Just GeneratedCodeInfo'Annotation'ALIAS
+  maybeToEnum _ = Prelude.Nothing
+  showEnum GeneratedCodeInfo'Annotation'NONE = "NONE"
+  showEnum GeneratedCodeInfo'Annotation'SET = "SET"
+  showEnum GeneratedCodeInfo'Annotation'ALIAS = "ALIAS"
+  readEnum k
+    | (Prelude.==) k "NONE"
+    = Prelude.Just GeneratedCodeInfo'Annotation'NONE
+    | (Prelude.==) k "SET"
+    = Prelude.Just GeneratedCodeInfo'Annotation'SET
+    | (Prelude.==) k "ALIAS"
+    = Prelude.Just GeneratedCodeInfo'Annotation'ALIAS
+    | Prelude.otherwise
+    = (Prelude.>>=) (Text.Read.readMaybe k) Data.ProtoLens.maybeToEnum
+instance Prelude.Bounded GeneratedCodeInfo'Annotation'Semantic where
+  minBound = GeneratedCodeInfo'Annotation'NONE
+  maxBound = GeneratedCodeInfo'Annotation'ALIAS
+instance Prelude.Enum GeneratedCodeInfo'Annotation'Semantic where
+  toEnum k__
+    = Prelude.maybe
+        (Prelude.error
+           ((Prelude.++)
+              "toEnum: unknown value for enum Semantic: " (Prelude.show k__)))
+        Prelude.id
+        (Data.ProtoLens.maybeToEnum k__)
+  fromEnum GeneratedCodeInfo'Annotation'NONE = 0
+  fromEnum GeneratedCodeInfo'Annotation'SET = 1
+  fromEnum GeneratedCodeInfo'Annotation'ALIAS = 2
+  succ GeneratedCodeInfo'Annotation'ALIAS
+    = Prelude.error
+        "GeneratedCodeInfo'Annotation'Semantic.succ: bad argument GeneratedCodeInfo'Annotation'ALIAS. This value would be out of bounds."
+  succ GeneratedCodeInfo'Annotation'NONE
+    = GeneratedCodeInfo'Annotation'SET
+  succ GeneratedCodeInfo'Annotation'SET
+    = GeneratedCodeInfo'Annotation'ALIAS
+  pred GeneratedCodeInfo'Annotation'NONE
+    = Prelude.error
+        "GeneratedCodeInfo'Annotation'Semantic.pred: bad argument GeneratedCodeInfo'Annotation'NONE. This value would be out of bounds."
+  pred GeneratedCodeInfo'Annotation'SET
+    = GeneratedCodeInfo'Annotation'NONE
+  pred GeneratedCodeInfo'Annotation'ALIAS
+    = GeneratedCodeInfo'Annotation'SET
+  enumFrom = Data.ProtoLens.Message.Enum.messageEnumFrom
+  enumFromTo = Data.ProtoLens.Message.Enum.messageEnumFromTo
+  enumFromThen = Data.ProtoLens.Message.Enum.messageEnumFromThen
+  enumFromThenTo = Data.ProtoLens.Message.Enum.messageEnumFromThenTo
+instance Data.ProtoLens.FieldDefault GeneratedCodeInfo'Annotation'Semantic where
+  fieldDefault = GeneratedCodeInfo'Annotation'NONE
+instance Control.DeepSeq.NFData GeneratedCodeInfo'Annotation'Semantic where
+  rnf x__ = Prelude.seq x__ ()
 {- | Fields :
      
          * 'Proto.Google.Protobuf.Descriptor_Fields.messageSetWireFormat' @:: Lens' MessageOptions Prelude.Bool@
@@ -7262,6 +10757,10 @@ instance Control.DeepSeq.NFData GeneratedCodeInfo'Annotation where
          * 'Proto.Google.Protobuf.Descriptor_Fields.maybe'deprecated' @:: Lens' MessageOptions (Prelude.Maybe Prelude.Bool)@
          * 'Proto.Google.Protobuf.Descriptor_Fields.mapEntry' @:: Lens' MessageOptions Prelude.Bool@
          * 'Proto.Google.Protobuf.Descriptor_Fields.maybe'mapEntry' @:: Lens' MessageOptions (Prelude.Maybe Prelude.Bool)@
+         * 'Proto.Google.Protobuf.Descriptor_Fields.deprecatedLegacyJsonFieldConflicts' @:: Lens' MessageOptions Prelude.Bool@
+         * 'Proto.Google.Protobuf.Descriptor_Fields.maybe'deprecatedLegacyJsonFieldConflicts' @:: Lens' MessageOptions (Prelude.Maybe Prelude.Bool)@
+         * 'Proto.Google.Protobuf.Descriptor_Fields.features' @:: Lens' MessageOptions FeatureSet@
+         * 'Proto.Google.Protobuf.Descriptor_Fields.maybe'features' @:: Lens' MessageOptions (Prelude.Maybe FeatureSet)@
          * 'Proto.Google.Protobuf.Descriptor_Fields.uninterpretedOption' @:: Lens' MessageOptions [UninterpretedOption]@
          * 'Proto.Google.Protobuf.Descriptor_Fields.vec'uninterpretedOption' @:: Lens' MessageOptions (Data.Vector.Vector UninterpretedOption)@ -}
 data MessageOptions
@@ -7269,6 +10768,8 @@ data MessageOptions
                                  _MessageOptions'noStandardDescriptorAccessor :: !(Prelude.Maybe Prelude.Bool),
                                  _MessageOptions'deprecated :: !(Prelude.Maybe Prelude.Bool),
                                  _MessageOptions'mapEntry :: !(Prelude.Maybe Prelude.Bool),
+                                 _MessageOptions'deprecatedLegacyJsonFieldConflicts :: !(Prelude.Maybe Prelude.Bool),
+                                 _MessageOptions'features :: !(Prelude.Maybe FeatureSet),
                                  _MessageOptions'uninterpretedOption :: !(Data.Vector.Vector UninterpretedOption),
                                  _MessageOptions'_unknownFields :: !Data.ProtoLens.FieldSet}
   deriving stock (Prelude.Eq, Prelude.Ord)
@@ -7336,6 +10837,36 @@ instance Data.ProtoLens.Field.HasField MessageOptions "maybe'mapEntry" (Prelude.
            _MessageOptions'mapEntry
            (\ x__ y__ -> x__ {_MessageOptions'mapEntry = y__}))
         Prelude.id
+instance Data.ProtoLens.Field.HasField MessageOptions "deprecatedLegacyJsonFieldConflicts" Prelude.Bool where
+  fieldOf _
+    = (Prelude..)
+        (Lens.Family2.Unchecked.lens
+           _MessageOptions'deprecatedLegacyJsonFieldConflicts
+           (\ x__ y__
+              -> x__ {_MessageOptions'deprecatedLegacyJsonFieldConflicts = y__}))
+        (Data.ProtoLens.maybeLens Data.ProtoLens.fieldDefault)
+instance Data.ProtoLens.Field.HasField MessageOptions "maybe'deprecatedLegacyJsonFieldConflicts" (Prelude.Maybe Prelude.Bool) where
+  fieldOf _
+    = (Prelude..)
+        (Lens.Family2.Unchecked.lens
+           _MessageOptions'deprecatedLegacyJsonFieldConflicts
+           (\ x__ y__
+              -> x__ {_MessageOptions'deprecatedLegacyJsonFieldConflicts = y__}))
+        Prelude.id
+instance Data.ProtoLens.Field.HasField MessageOptions "features" FeatureSet where
+  fieldOf _
+    = (Prelude..)
+        (Lens.Family2.Unchecked.lens
+           _MessageOptions'features
+           (\ x__ y__ -> x__ {_MessageOptions'features = y__}))
+        (Data.ProtoLens.maybeLens Data.ProtoLens.defMessage)
+instance Data.ProtoLens.Field.HasField MessageOptions "maybe'features" (Prelude.Maybe FeatureSet) where
+  fieldOf _
+    = (Prelude..)
+        (Lens.Family2.Unchecked.lens
+           _MessageOptions'features
+           (\ x__ y__ -> x__ {_MessageOptions'features = y__}))
+        Prelude.id
 instance Data.ProtoLens.Field.HasField MessageOptions "uninterpretedOption" [UninterpretedOption] where
   fieldOf _
     = (Prelude..)
@@ -7362,8 +10893,10 @@ instance Data.ProtoLens.Message MessageOptions where
       \\n\
       \deprecated\CAN\ETX \SOH(\b:\ENQfalseR\n\
       \deprecated\DC2\ESC\n\
-      \\tmap_entry\CAN\a \SOH(\bR\bmapEntry\DC2X\n\
-      \\DC4uninterpreted_option\CAN\231\a \ETX(\v2$.google.protobuf.UninterpretedOptionR\DC3uninterpretedOption*\t\b\232\a\DLE\128\128\128\128\STXJ\EOT\b\b\DLE\tJ\EOT\b\t\DLE\n"
+      \\tmap_entry\CAN\a \SOH(\bR\bmapEntry\DC2V\n\
+      \&deprecated_legacy_json_field_conflicts\CAN\v \SOH(\bR\"deprecatedLegacyJsonFieldConflictsB\STX\CAN\SOH\DC27\n\
+      \\bfeatures\CAN\f \SOH(\v2\ESC.google.protobuf.FeatureSetR\bfeatures\DC2X\n\
+      \\DC4uninterpreted_option\CAN\231\a \ETX(\v2$.google.protobuf.UninterpretedOptionR\DC3uninterpretedOption*\t\b\232\a\DLE\128\128\128\128\STXJ\EOT\b\EOT\DLE\ENQJ\EOT\b\ENQ\DLE\ACKJ\EOT\b\ACK\DLE\aJ\EOT\b\b\DLE\tJ\EOT\b\t\DLE\n"
   packedFileDescriptor _ = packedFileDescriptor
   fieldsByTag
     = let
@@ -7400,6 +10933,23 @@ instance Data.ProtoLens.Message MessageOptions where
               (Data.ProtoLens.OptionalField
                  (Data.ProtoLens.Field.field @"maybe'mapEntry")) ::
               Data.ProtoLens.FieldDescriptor MessageOptions
+        deprecatedLegacyJsonFieldConflicts__field_descriptor
+          = Data.ProtoLens.FieldDescriptor
+              "deprecated_legacy_json_field_conflicts"
+              (Data.ProtoLens.ScalarField Data.ProtoLens.BoolField ::
+                 Data.ProtoLens.FieldTypeDescriptor Prelude.Bool)
+              (Data.ProtoLens.OptionalField
+                 (Data.ProtoLens.Field.field
+                    @"maybe'deprecatedLegacyJsonFieldConflicts")) ::
+              Data.ProtoLens.FieldDescriptor MessageOptions
+        features__field_descriptor
+          = Data.ProtoLens.FieldDescriptor
+              "features"
+              (Data.ProtoLens.MessageField Data.ProtoLens.MessageType ::
+                 Data.ProtoLens.FieldTypeDescriptor FeatureSet)
+              (Data.ProtoLens.OptionalField
+                 (Data.ProtoLens.Field.field @"maybe'features")) ::
+              Data.ProtoLens.FieldDescriptor MessageOptions
         uninterpretedOption__field_descriptor
           = Data.ProtoLens.FieldDescriptor
               "uninterpreted_option"
@@ -7416,6 +10966,9 @@ instance Data.ProtoLens.Message MessageOptions where
             noStandardDescriptorAccessor__field_descriptor),
            (Data.ProtoLens.Tag 3, deprecated__field_descriptor),
            (Data.ProtoLens.Tag 7, mapEntry__field_descriptor),
+           (Data.ProtoLens.Tag 11, 
+            deprecatedLegacyJsonFieldConflicts__field_descriptor),
+           (Data.ProtoLens.Tag 12, features__field_descriptor),
            (Data.ProtoLens.Tag 999, uninterpretedOption__field_descriptor)]
   unknownFields
     = Lens.Family2.Unchecked.lens
@@ -7427,6 +10980,8 @@ instance Data.ProtoLens.Message MessageOptions where
          _MessageOptions'noStandardDescriptorAccessor = Prelude.Nothing,
          _MessageOptions'deprecated = Prelude.Nothing,
          _MessageOptions'mapEntry = Prelude.Nothing,
+         _MessageOptions'deprecatedLegacyJsonFieldConflicts = Prelude.Nothing,
+         _MessageOptions'features = Prelude.Nothing,
          _MessageOptions'uninterpretedOption = Data.Vector.Generic.empty,
          _MessageOptions'_unknownFields = []}
   parseMessage
@@ -7495,6 +11050,27 @@ instance Data.ProtoLens.Message MessageOptions where
                                        "map_entry"
                                 loop
                                   (Lens.Family2.set (Data.ProtoLens.Field.field @"mapEntry") y x)
+                                  mutable'uninterpretedOption
+                        88
+                          -> do y <- (Data.ProtoLens.Encoding.Bytes.<?>)
+                                       (Prelude.fmap
+                                          ((Prelude./=) 0) Data.ProtoLens.Encoding.Bytes.getVarInt)
+                                       "deprecated_legacy_json_field_conflicts"
+                                loop
+                                  (Lens.Family2.set
+                                     (Data.ProtoLens.Field.field
+                                        @"deprecatedLegacyJsonFieldConflicts")
+                                     y
+                                     x)
+                                  mutable'uninterpretedOption
+                        98
+                          -> do y <- (Data.ProtoLens.Encoding.Bytes.<?>)
+                                       (do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
+                                           Data.ProtoLens.Encoding.Bytes.isolate
+                                             (Prelude.fromIntegral len) Data.ProtoLens.parseMessage)
+                                       "features"
+                                loop
+                                  (Lens.Family2.set (Data.ProtoLens.Field.field @"features") y x)
                                   mutable'uninterpretedOption
                         7994
                           -> do !y <- (Data.ProtoLens.Encoding.Bytes.<?>)
@@ -7575,23 +11151,55 @@ instance Data.ProtoLens.Message MessageOptions where
                                    (\ b -> if b then 1 else 0)
                                    _v))
                       ((Data.Monoid.<>)
-                         (Data.ProtoLens.Encoding.Bytes.foldMapBuilder
-                            (\ _v
-                               -> (Data.Monoid.<>)
-                                    (Data.ProtoLens.Encoding.Bytes.putVarInt 7994)
-                                    ((Prelude..)
-                                       (\ bs
-                                          -> (Data.Monoid.<>)
-                                               (Data.ProtoLens.Encoding.Bytes.putVarInt
-                                                  (Prelude.fromIntegral
-                                                     (Data.ByteString.length bs)))
-                                               (Data.ProtoLens.Encoding.Bytes.putBytes bs))
-                                       Data.ProtoLens.encodeMessage
-                                       _v))
-                            (Lens.Family2.view
-                               (Data.ProtoLens.Field.field @"vec'uninterpretedOption") _x))
-                         (Data.ProtoLens.Encoding.Wire.buildFieldSet
-                            (Lens.Family2.view Data.ProtoLens.unknownFields _x))))))
+                         (case
+                              Lens.Family2.view
+                                (Data.ProtoLens.Field.field
+                                   @"maybe'deprecatedLegacyJsonFieldConflicts")
+                                _x
+                          of
+                            Prelude.Nothing -> Data.Monoid.mempty
+                            (Prelude.Just _v)
+                              -> (Data.Monoid.<>)
+                                   (Data.ProtoLens.Encoding.Bytes.putVarInt 88)
+                                   ((Prelude..)
+                                      Data.ProtoLens.Encoding.Bytes.putVarInt
+                                      (\ b -> if b then 1 else 0)
+                                      _v))
+                         ((Data.Monoid.<>)
+                            (case
+                                 Lens.Family2.view (Data.ProtoLens.Field.field @"maybe'features") _x
+                             of
+                               Prelude.Nothing -> Data.Monoid.mempty
+                               (Prelude.Just _v)
+                                 -> (Data.Monoid.<>)
+                                      (Data.ProtoLens.Encoding.Bytes.putVarInt 98)
+                                      ((Prelude..)
+                                         (\ bs
+                                            -> (Data.Monoid.<>)
+                                                 (Data.ProtoLens.Encoding.Bytes.putVarInt
+                                                    (Prelude.fromIntegral
+                                                       (Data.ByteString.length bs)))
+                                                 (Data.ProtoLens.Encoding.Bytes.putBytes bs))
+                                         Data.ProtoLens.encodeMessage
+                                         _v))
+                            ((Data.Monoid.<>)
+                               (Data.ProtoLens.Encoding.Bytes.foldMapBuilder
+                                  (\ _v
+                                     -> (Data.Monoid.<>)
+                                          (Data.ProtoLens.Encoding.Bytes.putVarInt 7994)
+                                          ((Prelude..)
+                                             (\ bs
+                                                -> (Data.Monoid.<>)
+                                                     (Data.ProtoLens.Encoding.Bytes.putVarInt
+                                                        (Prelude.fromIntegral
+                                                           (Data.ByteString.length bs)))
+                                                     (Data.ProtoLens.Encoding.Bytes.putBytes bs))
+                                             Data.ProtoLens.encodeMessage
+                                             _v))
+                                  (Lens.Family2.view
+                                     (Data.ProtoLens.Field.field @"vec'uninterpretedOption") _x))
+                               (Data.ProtoLens.Encoding.Wire.buildFieldSet
+                                  (Lens.Family2.view Data.ProtoLens.unknownFields _x))))))))
 instance Control.DeepSeq.NFData MessageOptions where
   rnf
     = \ x__
@@ -7606,7 +11214,11 @@ instance Control.DeepSeq.NFData MessageOptions where
                       (Control.DeepSeq.deepseq
                          (_MessageOptions'mapEntry x__)
                          (Control.DeepSeq.deepseq
-                            (_MessageOptions'uninterpretedOption x__) ())))))
+                            (_MessageOptions'deprecatedLegacyJsonFieldConflicts x__)
+                            (Control.DeepSeq.deepseq
+                               (_MessageOptions'features x__)
+                               (Control.DeepSeq.deepseq
+                                  (_MessageOptions'uninterpretedOption x__) ())))))))
 {- | Fields :
      
          * 'Proto.Google.Protobuf.Descriptor_Fields.name' @:: Lens' MethodDescriptorProto Data.Text.Text@
@@ -7831,39 +11443,24 @@ instance Data.ProtoLens.Message MethodDescriptorProto where
                       case tag of
                         10
                           -> do y <- (Data.ProtoLens.Encoding.Bytes.<?>)
-                                       (do value <- do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
-                                                       Data.ProtoLens.Encoding.Bytes.getBytes
-                                                         (Prelude.fromIntegral len)
-                                           Data.ProtoLens.Encoding.Bytes.runEither
-                                             (case Data.Text.Encoding.decodeUtf8' value of
-                                                (Prelude.Left err)
-                                                  -> Prelude.Left (Prelude.show err)
-                                                (Prelude.Right r) -> Prelude.Right r))
+                                       (do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
+                                           Data.ProtoLens.Encoding.Bytes.getText
+                                             (Prelude.fromIntegral len))
                                        "name"
                                 loop (Lens.Family2.set (Data.ProtoLens.Field.field @"name") y x)
                         18
                           -> do y <- (Data.ProtoLens.Encoding.Bytes.<?>)
-                                       (do value <- do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
-                                                       Data.ProtoLens.Encoding.Bytes.getBytes
-                                                         (Prelude.fromIntegral len)
-                                           Data.ProtoLens.Encoding.Bytes.runEither
-                                             (case Data.Text.Encoding.decodeUtf8' value of
-                                                (Prelude.Left err)
-                                                  -> Prelude.Left (Prelude.show err)
-                                                (Prelude.Right r) -> Prelude.Right r))
+                                       (do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
+                                           Data.ProtoLens.Encoding.Bytes.getText
+                                             (Prelude.fromIntegral len))
                                        "input_type"
                                 loop
                                   (Lens.Family2.set (Data.ProtoLens.Field.field @"inputType") y x)
                         26
                           -> do y <- (Data.ProtoLens.Encoding.Bytes.<?>)
-                                       (do value <- do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
-                                                       Data.ProtoLens.Encoding.Bytes.getBytes
-                                                         (Prelude.fromIntegral len)
-                                           Data.ProtoLens.Encoding.Bytes.runEither
-                                             (case Data.Text.Encoding.decodeUtf8' value of
-                                                (Prelude.Left err)
-                                                  -> Prelude.Left (Prelude.show err)
-                                                (Prelude.Right r) -> Prelude.Right r))
+                                       (do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
+                                           Data.ProtoLens.Encoding.Bytes.getText
+                                             (Prelude.fromIntegral len))
                                        "output_type"
                                 loop
                                   (Lens.Family2.set (Data.ProtoLens.Field.field @"outputType") y x)
@@ -8018,11 +11615,14 @@ instance Control.DeepSeq.NFData MethodDescriptorProto where
          * 'Proto.Google.Protobuf.Descriptor_Fields.maybe'deprecated' @:: Lens' MethodOptions (Prelude.Maybe Prelude.Bool)@
          * 'Proto.Google.Protobuf.Descriptor_Fields.idempotencyLevel' @:: Lens' MethodOptions MethodOptions'IdempotencyLevel@
          * 'Proto.Google.Protobuf.Descriptor_Fields.maybe'idempotencyLevel' @:: Lens' MethodOptions (Prelude.Maybe MethodOptions'IdempotencyLevel)@
+         * 'Proto.Google.Protobuf.Descriptor_Fields.features' @:: Lens' MethodOptions FeatureSet@
+         * 'Proto.Google.Protobuf.Descriptor_Fields.maybe'features' @:: Lens' MethodOptions (Prelude.Maybe FeatureSet)@
          * 'Proto.Google.Protobuf.Descriptor_Fields.uninterpretedOption' @:: Lens' MethodOptions [UninterpretedOption]@
          * 'Proto.Google.Protobuf.Descriptor_Fields.vec'uninterpretedOption' @:: Lens' MethodOptions (Data.Vector.Vector UninterpretedOption)@ -}
 data MethodOptions
   = MethodOptions'_constructor {_MethodOptions'deprecated :: !(Prelude.Maybe Prelude.Bool),
                                 _MethodOptions'idempotencyLevel :: !(Prelude.Maybe MethodOptions'IdempotencyLevel),
+                                _MethodOptions'features :: !(Prelude.Maybe FeatureSet),
                                 _MethodOptions'uninterpretedOption :: !(Data.Vector.Vector UninterpretedOption),
                                 _MethodOptions'_unknownFields :: !Data.ProtoLens.FieldSet}
   deriving stock (Prelude.Eq, Prelude.Ord)
@@ -8060,6 +11660,20 @@ instance Data.ProtoLens.Field.HasField MethodOptions "maybe'idempotencyLevel" (P
            _MethodOptions'idempotencyLevel
            (\ x__ y__ -> x__ {_MethodOptions'idempotencyLevel = y__}))
         Prelude.id
+instance Data.ProtoLens.Field.HasField MethodOptions "features" FeatureSet where
+  fieldOf _
+    = (Prelude..)
+        (Lens.Family2.Unchecked.lens
+           _MethodOptions'features
+           (\ x__ y__ -> x__ {_MethodOptions'features = y__}))
+        (Data.ProtoLens.maybeLens Data.ProtoLens.defMessage)
+instance Data.ProtoLens.Field.HasField MethodOptions "maybe'features" (Prelude.Maybe FeatureSet) where
+  fieldOf _
+    = (Prelude..)
+        (Lens.Family2.Unchecked.lens
+           _MethodOptions'features
+           (\ x__ y__ -> x__ {_MethodOptions'features = y__}))
+        Prelude.id
 instance Data.ProtoLens.Field.HasField MethodOptions "uninterpretedOption" [UninterpretedOption] where
   fieldOf _
     = (Prelude..)
@@ -8084,7 +11698,8 @@ instance Data.ProtoLens.Message MethodOptions where
       \\n\
       \deprecated\CAN! \SOH(\b:\ENQfalseR\n\
       \deprecated\DC2q\n\
-      \\DC1idempotency_level\CAN\" \SOH(\SO2/.google.protobuf.MethodOptions.IdempotencyLevel:\DC3IDEMPOTENCY_UNKNOWNR\DLEidempotencyLevel\DC2X\n\
+      \\DC1idempotency_level\CAN\" \SOH(\SO2/.google.protobuf.MethodOptions.IdempotencyLevel:\DC3IDEMPOTENCY_UNKNOWNR\DLEidempotencyLevel\DC27\n\
+      \\bfeatures\CAN# \SOH(\v2\ESC.google.protobuf.FeatureSetR\bfeatures\DC2X\n\
       \\DC4uninterpreted_option\CAN\231\a \ETX(\v2$.google.protobuf.UninterpretedOptionR\DC3uninterpretedOption\"P\n\
       \\DLEIdempotencyLevel\DC2\ETB\n\
       \\DC3IDEMPOTENCY_UNKNOWN\DLE\NUL\DC2\DC3\n\
@@ -8110,6 +11725,14 @@ instance Data.ProtoLens.Message MethodOptions where
               (Data.ProtoLens.OptionalField
                  (Data.ProtoLens.Field.field @"maybe'idempotencyLevel")) ::
               Data.ProtoLens.FieldDescriptor MethodOptions
+        features__field_descriptor
+          = Data.ProtoLens.FieldDescriptor
+              "features"
+              (Data.ProtoLens.MessageField Data.ProtoLens.MessageType ::
+                 Data.ProtoLens.FieldTypeDescriptor FeatureSet)
+              (Data.ProtoLens.OptionalField
+                 (Data.ProtoLens.Field.field @"maybe'features")) ::
+              Data.ProtoLens.FieldDescriptor MethodOptions
         uninterpretedOption__field_descriptor
           = Data.ProtoLens.FieldDescriptor
               "uninterpreted_option"
@@ -8123,6 +11746,7 @@ instance Data.ProtoLens.Message MethodOptions where
         Data.Map.fromList
           [(Data.ProtoLens.Tag 33, deprecated__field_descriptor),
            (Data.ProtoLens.Tag 34, idempotencyLevel__field_descriptor),
+           (Data.ProtoLens.Tag 35, features__field_descriptor),
            (Data.ProtoLens.Tag 999, uninterpretedOption__field_descriptor)]
   unknownFields
     = Lens.Family2.Unchecked.lens
@@ -8132,6 +11756,7 @@ instance Data.ProtoLens.Message MethodOptions where
     = MethodOptions'_constructor
         {_MethodOptions'deprecated = Prelude.Nothing,
          _MethodOptions'idempotencyLevel = Prelude.Nothing,
+         _MethodOptions'features = Prelude.Nothing,
          _MethodOptions'uninterpretedOption = Data.Vector.Generic.empty,
          _MethodOptions'_unknownFields = []}
   parseMessage
@@ -8185,6 +11810,15 @@ instance Data.ProtoLens.Message MethodOptions where
                                 loop
                                   (Lens.Family2.set
                                      (Data.ProtoLens.Field.field @"idempotencyLevel") y x)
+                                  mutable'uninterpretedOption
+                        282
+                          -> do y <- (Data.ProtoLens.Encoding.Bytes.<?>)
+                                       (do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
+                                           Data.ProtoLens.Encoding.Bytes.isolate
+                                             (Prelude.fromIntegral len) Data.ProtoLens.parseMessage)
+                                       "features"
+                                loop
+                                  (Lens.Family2.set (Data.ProtoLens.Field.field @"features") y x)
                                   mutable'uninterpretedOption
                         7994
                           -> do !y <- (Data.ProtoLens.Encoding.Bytes.<?>)
@@ -8240,22 +11874,38 @@ instance Data.ProtoLens.Message MethodOptions where
                              Prelude.fromEnum
                              _v))
                 ((Data.Monoid.<>)
-                   (Data.ProtoLens.Encoding.Bytes.foldMapBuilder
-                      (\ _v
-                         -> (Data.Monoid.<>)
-                              (Data.ProtoLens.Encoding.Bytes.putVarInt 7994)
-                              ((Prelude..)
-                                 (\ bs
-                                    -> (Data.Monoid.<>)
-                                         (Data.ProtoLens.Encoding.Bytes.putVarInt
-                                            (Prelude.fromIntegral (Data.ByteString.length bs)))
-                                         (Data.ProtoLens.Encoding.Bytes.putBytes bs))
-                                 Data.ProtoLens.encodeMessage
-                                 _v))
-                      (Lens.Family2.view
-                         (Data.ProtoLens.Field.field @"vec'uninterpretedOption") _x))
-                   (Data.ProtoLens.Encoding.Wire.buildFieldSet
-                      (Lens.Family2.view Data.ProtoLens.unknownFields _x))))
+                   (case
+                        Lens.Family2.view (Data.ProtoLens.Field.field @"maybe'features") _x
+                    of
+                      Prelude.Nothing -> Data.Monoid.mempty
+                      (Prelude.Just _v)
+                        -> (Data.Monoid.<>)
+                             (Data.ProtoLens.Encoding.Bytes.putVarInt 282)
+                             ((Prelude..)
+                                (\ bs
+                                   -> (Data.Monoid.<>)
+                                        (Data.ProtoLens.Encoding.Bytes.putVarInt
+                                           (Prelude.fromIntegral (Data.ByteString.length bs)))
+                                        (Data.ProtoLens.Encoding.Bytes.putBytes bs))
+                                Data.ProtoLens.encodeMessage
+                                _v))
+                   ((Data.Monoid.<>)
+                      (Data.ProtoLens.Encoding.Bytes.foldMapBuilder
+                         (\ _v
+                            -> (Data.Monoid.<>)
+                                 (Data.ProtoLens.Encoding.Bytes.putVarInt 7994)
+                                 ((Prelude..)
+                                    (\ bs
+                                       -> (Data.Monoid.<>)
+                                            (Data.ProtoLens.Encoding.Bytes.putVarInt
+                                               (Prelude.fromIntegral (Data.ByteString.length bs)))
+                                            (Data.ProtoLens.Encoding.Bytes.putBytes bs))
+                                    Data.ProtoLens.encodeMessage
+                                    _v))
+                         (Lens.Family2.view
+                            (Data.ProtoLens.Field.field @"vec'uninterpretedOption") _x))
+                      (Data.ProtoLens.Encoding.Wire.buildFieldSet
+                         (Lens.Family2.view Data.ProtoLens.unknownFields _x)))))
 instance Control.DeepSeq.NFData MethodOptions where
   rnf
     = \ x__
@@ -8266,7 +11916,9 @@ instance Control.DeepSeq.NFData MethodOptions where
                 (Control.DeepSeq.deepseq
                    (_MethodOptions'idempotencyLevel x__)
                    (Control.DeepSeq.deepseq
-                      (_MethodOptions'uninterpretedOption x__) ())))
+                      (_MethodOptions'features x__)
+                      (Control.DeepSeq.deepseq
+                         (_MethodOptions'uninterpretedOption x__) ()))))
 data MethodOptions'IdempotencyLevel
   = MethodOptions'IDEMPOTENCY_UNKNOWN |
     MethodOptions'NO_SIDE_EFFECTS |
@@ -8434,14 +12086,9 @@ instance Data.ProtoLens.Message OneofDescriptorProto where
                       case tag of
                         10
                           -> do y <- (Data.ProtoLens.Encoding.Bytes.<?>)
-                                       (do value <- do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
-                                                       Data.ProtoLens.Encoding.Bytes.getBytes
-                                                         (Prelude.fromIntegral len)
-                                           Data.ProtoLens.Encoding.Bytes.runEither
-                                             (case Data.Text.Encoding.decodeUtf8' value of
-                                                (Prelude.Left err)
-                                                  -> Prelude.Left (Prelude.show err)
-                                                (Prelude.Right r) -> Prelude.Right r))
+                                       (do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
+                                           Data.ProtoLens.Encoding.Bytes.getText
+                                             (Prelude.fromIntegral len))
                                        "name"
                                 loop (Lens.Family2.set (Data.ProtoLens.Field.field @"name") y x)
                         18
@@ -8506,10 +12153,13 @@ instance Control.DeepSeq.NFData OneofDescriptorProto where
                 (Control.DeepSeq.deepseq (_OneofDescriptorProto'options x__) ()))
 {- | Fields :
      
+         * 'Proto.Google.Protobuf.Descriptor_Fields.features' @:: Lens' OneofOptions FeatureSet@
+         * 'Proto.Google.Protobuf.Descriptor_Fields.maybe'features' @:: Lens' OneofOptions (Prelude.Maybe FeatureSet)@
          * 'Proto.Google.Protobuf.Descriptor_Fields.uninterpretedOption' @:: Lens' OneofOptions [UninterpretedOption]@
          * 'Proto.Google.Protobuf.Descriptor_Fields.vec'uninterpretedOption' @:: Lens' OneofOptions (Data.Vector.Vector UninterpretedOption)@ -}
 data OneofOptions
-  = OneofOptions'_constructor {_OneofOptions'uninterpretedOption :: !(Data.Vector.Vector UninterpretedOption),
+  = OneofOptions'_constructor {_OneofOptions'features :: !(Prelude.Maybe FeatureSet),
+                               _OneofOptions'uninterpretedOption :: !(Data.Vector.Vector UninterpretedOption),
                                _OneofOptions'_unknownFields :: !Data.ProtoLens.FieldSet}
   deriving stock (Prelude.Eq, Prelude.Ord)
 instance Prelude.Show OneofOptions where
@@ -8518,6 +12168,20 @@ instance Prelude.Show OneofOptions where
         '{'
         (Prelude.showString
            (Data.ProtoLens.showMessageShort __x) (Prelude.showChar '}' __s))
+instance Data.ProtoLens.Field.HasField OneofOptions "features" FeatureSet where
+  fieldOf _
+    = (Prelude..)
+        (Lens.Family2.Unchecked.lens
+           _OneofOptions'features
+           (\ x__ y__ -> x__ {_OneofOptions'features = y__}))
+        (Data.ProtoLens.maybeLens Data.ProtoLens.defMessage)
+instance Data.ProtoLens.Field.HasField OneofOptions "maybe'features" (Prelude.Maybe FeatureSet) where
+  fieldOf _
+    = (Prelude..)
+        (Lens.Family2.Unchecked.lens
+           _OneofOptions'features
+           (\ x__ y__ -> x__ {_OneofOptions'features = y__}))
+        Prelude.id
 instance Data.ProtoLens.Field.HasField OneofOptions "uninterpretedOption" [UninterpretedOption] where
   fieldOf _
     = (Prelude..)
@@ -8538,11 +12202,20 @@ instance Data.ProtoLens.Message OneofOptions where
   messageName _ = Data.Text.pack "google.protobuf.OneofOptions"
   packedMessageDescriptor _
     = "\n\
-      \\fOneofOptions\DC2X\n\
+      \\fOneofOptions\DC27\n\
+      \\bfeatures\CAN\SOH \SOH(\v2\ESC.google.protobuf.FeatureSetR\bfeatures\DC2X\n\
       \\DC4uninterpreted_option\CAN\231\a \ETX(\v2$.google.protobuf.UninterpretedOptionR\DC3uninterpretedOption*\t\b\232\a\DLE\128\128\128\128\STX"
   packedFileDescriptor _ = packedFileDescriptor
   fieldsByTag
     = let
+        features__field_descriptor
+          = Data.ProtoLens.FieldDescriptor
+              "features"
+              (Data.ProtoLens.MessageField Data.ProtoLens.MessageType ::
+                 Data.ProtoLens.FieldTypeDescriptor FeatureSet)
+              (Data.ProtoLens.OptionalField
+                 (Data.ProtoLens.Field.field @"maybe'features")) ::
+              Data.ProtoLens.FieldDescriptor OneofOptions
         uninterpretedOption__field_descriptor
           = Data.ProtoLens.FieldDescriptor
               "uninterpreted_option"
@@ -8554,14 +12227,16 @@ instance Data.ProtoLens.Message OneofOptions where
               Data.ProtoLens.FieldDescriptor OneofOptions
       in
         Data.Map.fromList
-          [(Data.ProtoLens.Tag 999, uninterpretedOption__field_descriptor)]
+          [(Data.ProtoLens.Tag 1, features__field_descriptor),
+           (Data.ProtoLens.Tag 999, uninterpretedOption__field_descriptor)]
   unknownFields
     = Lens.Family2.Unchecked.lens
         _OneofOptions'_unknownFields
         (\ x__ y__ -> x__ {_OneofOptions'_unknownFields = y__})
   defMessage
     = OneofOptions'_constructor
-        {_OneofOptions'uninterpretedOption = Data.Vector.Generic.empty,
+        {_OneofOptions'features = Prelude.Nothing,
+         _OneofOptions'uninterpretedOption = Data.Vector.Generic.empty,
          _OneofOptions'_unknownFields = []}
   parseMessage
     = let
@@ -8595,6 +12270,15 @@ instance Data.ProtoLens.Message OneofOptions where
                else
                    do tag <- Data.ProtoLens.Encoding.Bytes.getVarInt
                       case tag of
+                        10
+                          -> do y <- (Data.ProtoLens.Encoding.Bytes.<?>)
+                                       (do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
+                                           Data.ProtoLens.Encoding.Bytes.isolate
+                                             (Prelude.fromIntegral len) Data.ProtoLens.parseMessage)
+                                       "features"
+                                loop
+                                  (Lens.Family2.set (Data.ProtoLens.Field.field @"features") y x)
+                                  mutable'uninterpretedOption
                         7994
                           -> do !y <- (Data.ProtoLens.Encoding.Bytes.<?>)
                                         (do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
@@ -8622,29 +12306,47 @@ instance Data.ProtoLens.Message OneofOptions where
   buildMessage
     = \ _x
         -> (Data.Monoid.<>)
-             (Data.ProtoLens.Encoding.Bytes.foldMapBuilder
-                (\ _v
-                   -> (Data.Monoid.<>)
-                        (Data.ProtoLens.Encoding.Bytes.putVarInt 7994)
-                        ((Prelude..)
-                           (\ bs
-                              -> (Data.Monoid.<>)
-                                   (Data.ProtoLens.Encoding.Bytes.putVarInt
-                                      (Prelude.fromIntegral (Data.ByteString.length bs)))
-                                   (Data.ProtoLens.Encoding.Bytes.putBytes bs))
-                           Data.ProtoLens.encodeMessage
-                           _v))
-                (Lens.Family2.view
-                   (Data.ProtoLens.Field.field @"vec'uninterpretedOption") _x))
-             (Data.ProtoLens.Encoding.Wire.buildFieldSet
-                (Lens.Family2.view Data.ProtoLens.unknownFields _x))
+             (case
+                  Lens.Family2.view (Data.ProtoLens.Field.field @"maybe'features") _x
+              of
+                Prelude.Nothing -> Data.Monoid.mempty
+                (Prelude.Just _v)
+                  -> (Data.Monoid.<>)
+                       (Data.ProtoLens.Encoding.Bytes.putVarInt 10)
+                       ((Prelude..)
+                          (\ bs
+                             -> (Data.Monoid.<>)
+                                  (Data.ProtoLens.Encoding.Bytes.putVarInt
+                                     (Prelude.fromIntegral (Data.ByteString.length bs)))
+                                  (Data.ProtoLens.Encoding.Bytes.putBytes bs))
+                          Data.ProtoLens.encodeMessage
+                          _v))
+             ((Data.Monoid.<>)
+                (Data.ProtoLens.Encoding.Bytes.foldMapBuilder
+                   (\ _v
+                      -> (Data.Monoid.<>)
+                           (Data.ProtoLens.Encoding.Bytes.putVarInt 7994)
+                           ((Prelude..)
+                              (\ bs
+                                 -> (Data.Monoid.<>)
+                                      (Data.ProtoLens.Encoding.Bytes.putVarInt
+                                         (Prelude.fromIntegral (Data.ByteString.length bs)))
+                                      (Data.ProtoLens.Encoding.Bytes.putBytes bs))
+                              Data.ProtoLens.encodeMessage
+                              _v))
+                   (Lens.Family2.view
+                      (Data.ProtoLens.Field.field @"vec'uninterpretedOption") _x))
+                (Data.ProtoLens.Encoding.Wire.buildFieldSet
+                   (Lens.Family2.view Data.ProtoLens.unknownFields _x)))
 instance Control.DeepSeq.NFData OneofOptions where
   rnf
     = \ x__
         -> Control.DeepSeq.deepseq
              (_OneofOptions'_unknownFields x__)
              (Control.DeepSeq.deepseq
-                (_OneofOptions'uninterpretedOption x__) ())
+                (_OneofOptions'features x__)
+                (Control.DeepSeq.deepseq
+                   (_OneofOptions'uninterpretedOption x__) ()))
 {- | Fields :
      
          * 'Proto.Google.Protobuf.Descriptor_Fields.name' @:: Lens' ServiceDescriptorProto Data.Text.Text@
@@ -8792,14 +12494,9 @@ instance Data.ProtoLens.Message ServiceDescriptorProto where
                       case tag of
                         10
                           -> do y <- (Data.ProtoLens.Encoding.Bytes.<?>)
-                                       (do value <- do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
-                                                       Data.ProtoLens.Encoding.Bytes.getBytes
-                                                         (Prelude.fromIntegral len)
-                                           Data.ProtoLens.Encoding.Bytes.runEither
-                                             (case Data.Text.Encoding.decodeUtf8' value of
-                                                (Prelude.Left err)
-                                                  -> Prelude.Left (Prelude.show err)
-                                                (Prelude.Right r) -> Prelude.Right r))
+                                       (do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
+                                           Data.ProtoLens.Encoding.Bytes.getText
+                                             (Prelude.fromIntegral len))
                                        "name"
                                 loop
                                   (Lens.Family2.set (Data.ProtoLens.Field.field @"name") y x)
@@ -8899,12 +12596,15 @@ instance Control.DeepSeq.NFData ServiceDescriptorProto where
                       (_ServiceDescriptorProto'options x__) ())))
 {- | Fields :
      
+         * 'Proto.Google.Protobuf.Descriptor_Fields.features' @:: Lens' ServiceOptions FeatureSet@
+         * 'Proto.Google.Protobuf.Descriptor_Fields.maybe'features' @:: Lens' ServiceOptions (Prelude.Maybe FeatureSet)@
          * 'Proto.Google.Protobuf.Descriptor_Fields.deprecated' @:: Lens' ServiceOptions Prelude.Bool@
          * 'Proto.Google.Protobuf.Descriptor_Fields.maybe'deprecated' @:: Lens' ServiceOptions (Prelude.Maybe Prelude.Bool)@
          * 'Proto.Google.Protobuf.Descriptor_Fields.uninterpretedOption' @:: Lens' ServiceOptions [UninterpretedOption]@
          * 'Proto.Google.Protobuf.Descriptor_Fields.vec'uninterpretedOption' @:: Lens' ServiceOptions (Data.Vector.Vector UninterpretedOption)@ -}
 data ServiceOptions
-  = ServiceOptions'_constructor {_ServiceOptions'deprecated :: !(Prelude.Maybe Prelude.Bool),
+  = ServiceOptions'_constructor {_ServiceOptions'features :: !(Prelude.Maybe FeatureSet),
+                                 _ServiceOptions'deprecated :: !(Prelude.Maybe Prelude.Bool),
                                  _ServiceOptions'uninterpretedOption :: !(Data.Vector.Vector UninterpretedOption),
                                  _ServiceOptions'_unknownFields :: !Data.ProtoLens.FieldSet}
   deriving stock (Prelude.Eq, Prelude.Ord)
@@ -8914,6 +12614,20 @@ instance Prelude.Show ServiceOptions where
         '{'
         (Prelude.showString
            (Data.ProtoLens.showMessageShort __x) (Prelude.showChar '}' __s))
+instance Data.ProtoLens.Field.HasField ServiceOptions "features" FeatureSet where
+  fieldOf _
+    = (Prelude..)
+        (Lens.Family2.Unchecked.lens
+           _ServiceOptions'features
+           (\ x__ y__ -> x__ {_ServiceOptions'features = y__}))
+        (Data.ProtoLens.maybeLens Data.ProtoLens.defMessage)
+instance Data.ProtoLens.Field.HasField ServiceOptions "maybe'features" (Prelude.Maybe FeatureSet) where
+  fieldOf _
+    = (Prelude..)
+        (Lens.Family2.Unchecked.lens
+           _ServiceOptions'features
+           (\ x__ y__ -> x__ {_ServiceOptions'features = y__}))
+        Prelude.id
 instance Data.ProtoLens.Field.HasField ServiceOptions "deprecated" Prelude.Bool where
   fieldOf _
     = (Prelude..)
@@ -8948,7 +12662,8 @@ instance Data.ProtoLens.Message ServiceOptions where
   messageName _ = Data.Text.pack "google.protobuf.ServiceOptions"
   packedMessageDescriptor _
     = "\n\
-      \\SOServiceOptions\DC2%\n\
+      \\SOServiceOptions\DC27\n\
+      \\bfeatures\CAN\" \SOH(\v2\ESC.google.protobuf.FeatureSetR\bfeatures\DC2%\n\
       \\n\
       \deprecated\CAN! \SOH(\b:\ENQfalseR\n\
       \deprecated\DC2X\n\
@@ -8956,6 +12671,14 @@ instance Data.ProtoLens.Message ServiceOptions where
   packedFileDescriptor _ = packedFileDescriptor
   fieldsByTag
     = let
+        features__field_descriptor
+          = Data.ProtoLens.FieldDescriptor
+              "features"
+              (Data.ProtoLens.MessageField Data.ProtoLens.MessageType ::
+                 Data.ProtoLens.FieldTypeDescriptor FeatureSet)
+              (Data.ProtoLens.OptionalField
+                 (Data.ProtoLens.Field.field @"maybe'features")) ::
+              Data.ProtoLens.FieldDescriptor ServiceOptions
         deprecated__field_descriptor
           = Data.ProtoLens.FieldDescriptor
               "deprecated"
@@ -8975,7 +12698,8 @@ instance Data.ProtoLens.Message ServiceOptions where
               Data.ProtoLens.FieldDescriptor ServiceOptions
       in
         Data.Map.fromList
-          [(Data.ProtoLens.Tag 33, deprecated__field_descriptor),
+          [(Data.ProtoLens.Tag 34, features__field_descriptor),
+           (Data.ProtoLens.Tag 33, deprecated__field_descriptor),
            (Data.ProtoLens.Tag 999, uninterpretedOption__field_descriptor)]
   unknownFields
     = Lens.Family2.Unchecked.lens
@@ -8983,7 +12707,8 @@ instance Data.ProtoLens.Message ServiceOptions where
         (\ x__ y__ -> x__ {_ServiceOptions'_unknownFields = y__})
   defMessage
     = ServiceOptions'_constructor
-        {_ServiceOptions'deprecated = Prelude.Nothing,
+        {_ServiceOptions'features = Prelude.Nothing,
+         _ServiceOptions'deprecated = Prelude.Nothing,
          _ServiceOptions'uninterpretedOption = Data.Vector.Generic.empty,
          _ServiceOptions'_unknownFields = []}
   parseMessage
@@ -9018,6 +12743,15 @@ instance Data.ProtoLens.Message ServiceOptions where
                else
                    do tag <- Data.ProtoLens.Encoding.Bytes.getVarInt
                       case tag of
+                        274
+                          -> do y <- (Data.ProtoLens.Encoding.Bytes.<?>)
+                                       (do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
+                                           Data.ProtoLens.Encoding.Bytes.isolate
+                                             (Prelude.fromIntegral len) Data.ProtoLens.parseMessage)
+                                       "features"
+                                loop
+                                  (Lens.Family2.set (Data.ProtoLens.Field.field @"features") y x)
+                                  mutable'uninterpretedOption
                         264
                           -> do y <- (Data.ProtoLens.Encoding.Bytes.<?>)
                                        (Prelude.fmap
@@ -9054,43 +12788,61 @@ instance Data.ProtoLens.Message ServiceOptions where
     = \ _x
         -> (Data.Monoid.<>)
              (case
-                  Lens.Family2.view
-                    (Data.ProtoLens.Field.field @"maybe'deprecated") _x
+                  Lens.Family2.view (Data.ProtoLens.Field.field @"maybe'features") _x
               of
                 Prelude.Nothing -> Data.Monoid.mempty
                 (Prelude.Just _v)
                   -> (Data.Monoid.<>)
-                       (Data.ProtoLens.Encoding.Bytes.putVarInt 264)
+                       (Data.ProtoLens.Encoding.Bytes.putVarInt 274)
                        ((Prelude..)
-                          Data.ProtoLens.Encoding.Bytes.putVarInt
-                          (\ b -> if b then 1 else 0)
+                          (\ bs
+                             -> (Data.Monoid.<>)
+                                  (Data.ProtoLens.Encoding.Bytes.putVarInt
+                                     (Prelude.fromIntegral (Data.ByteString.length bs)))
+                                  (Data.ProtoLens.Encoding.Bytes.putBytes bs))
+                          Data.ProtoLens.encodeMessage
                           _v))
              ((Data.Monoid.<>)
-                (Data.ProtoLens.Encoding.Bytes.foldMapBuilder
-                   (\ _v
-                      -> (Data.Monoid.<>)
-                           (Data.ProtoLens.Encoding.Bytes.putVarInt 7994)
-                           ((Prelude..)
-                              (\ bs
-                                 -> (Data.Monoid.<>)
-                                      (Data.ProtoLens.Encoding.Bytes.putVarInt
-                                         (Prelude.fromIntegral (Data.ByteString.length bs)))
-                                      (Data.ProtoLens.Encoding.Bytes.putBytes bs))
-                              Data.ProtoLens.encodeMessage
-                              _v))
-                   (Lens.Family2.view
-                      (Data.ProtoLens.Field.field @"vec'uninterpretedOption") _x))
-                (Data.ProtoLens.Encoding.Wire.buildFieldSet
-                   (Lens.Family2.view Data.ProtoLens.unknownFields _x)))
+                (case
+                     Lens.Family2.view
+                       (Data.ProtoLens.Field.field @"maybe'deprecated") _x
+                 of
+                   Prelude.Nothing -> Data.Monoid.mempty
+                   (Prelude.Just _v)
+                     -> (Data.Monoid.<>)
+                          (Data.ProtoLens.Encoding.Bytes.putVarInt 264)
+                          ((Prelude..)
+                             Data.ProtoLens.Encoding.Bytes.putVarInt
+                             (\ b -> if b then 1 else 0)
+                             _v))
+                ((Data.Monoid.<>)
+                   (Data.ProtoLens.Encoding.Bytes.foldMapBuilder
+                      (\ _v
+                         -> (Data.Monoid.<>)
+                              (Data.ProtoLens.Encoding.Bytes.putVarInt 7994)
+                              ((Prelude..)
+                                 (\ bs
+                                    -> (Data.Monoid.<>)
+                                         (Data.ProtoLens.Encoding.Bytes.putVarInt
+                                            (Prelude.fromIntegral (Data.ByteString.length bs)))
+                                         (Data.ProtoLens.Encoding.Bytes.putBytes bs))
+                                 Data.ProtoLens.encodeMessage
+                                 _v))
+                      (Lens.Family2.view
+                         (Data.ProtoLens.Field.field @"vec'uninterpretedOption") _x))
+                   (Data.ProtoLens.Encoding.Wire.buildFieldSet
+                      (Lens.Family2.view Data.ProtoLens.unknownFields _x))))
 instance Control.DeepSeq.NFData ServiceOptions where
   rnf
     = \ x__
         -> Control.DeepSeq.deepseq
              (_ServiceOptions'_unknownFields x__)
              (Control.DeepSeq.deepseq
-                (_ServiceOptions'deprecated x__)
+                (_ServiceOptions'features x__)
                 (Control.DeepSeq.deepseq
-                   (_ServiceOptions'uninterpretedOption x__) ()))
+                   (_ServiceOptions'deprecated x__)
+                   (Control.DeepSeq.deepseq
+                      (_ServiceOptions'uninterpretedOption x__) ())))
 {- | Fields :
      
          * 'Proto.Google.Protobuf.Descriptor_Fields.location' @:: Lens' SourceCodeInfo [SourceCodeInfo'Location]@
@@ -9521,14 +13273,9 @@ instance Data.ProtoLens.Message SourceCodeInfo'Location where
                                 loop x mutable'leadingDetachedComments mutable'path y
                         26
                           -> do y <- (Data.ProtoLens.Encoding.Bytes.<?>)
-                                       (do value <- do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
-                                                       Data.ProtoLens.Encoding.Bytes.getBytes
-                                                         (Prelude.fromIntegral len)
-                                           Data.ProtoLens.Encoding.Bytes.runEither
-                                             (case Data.Text.Encoding.decodeUtf8' value of
-                                                (Prelude.Left err)
-                                                  -> Prelude.Left (Prelude.show err)
-                                                (Prelude.Right r) -> Prelude.Right r))
+                                       (do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
+                                           Data.ProtoLens.Encoding.Bytes.getText
+                                             (Prelude.fromIntegral len))
                                        "leading_comments"
                                 loop
                                   (Lens.Family2.set
@@ -9538,14 +13285,9 @@ instance Data.ProtoLens.Message SourceCodeInfo'Location where
                                   mutable'span
                         34
                           -> do y <- (Data.ProtoLens.Encoding.Bytes.<?>)
-                                       (do value <- do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
-                                                       Data.ProtoLens.Encoding.Bytes.getBytes
-                                                         (Prelude.fromIntegral len)
-                                           Data.ProtoLens.Encoding.Bytes.runEither
-                                             (case Data.Text.Encoding.decodeUtf8' value of
-                                                (Prelude.Left err)
-                                                  -> Prelude.Left (Prelude.show err)
-                                                (Prelude.Right r) -> Prelude.Right r))
+                                       (do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
+                                           Data.ProtoLens.Encoding.Bytes.getText
+                                             (Prelude.fromIntegral len))
                                        "trailing_comments"
                                 loop
                                   (Lens.Family2.set
@@ -9555,14 +13297,9 @@ instance Data.ProtoLens.Message SourceCodeInfo'Location where
                                   mutable'span
                         50
                           -> do !y <- (Data.ProtoLens.Encoding.Bytes.<?>)
-                                        (do value <- do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
-                                                        Data.ProtoLens.Encoding.Bytes.getBytes
-                                                          (Prelude.fromIntegral len)
-                                            Data.ProtoLens.Encoding.Bytes.runEither
-                                              (case Data.Text.Encoding.decodeUtf8' value of
-                                                 (Prelude.Left err)
-                                                   -> Prelude.Left (Prelude.show err)
-                                                 (Prelude.Right r) -> Prelude.Right r))
+                                        (do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
+                                            Data.ProtoLens.Encoding.Bytes.getText
+                                              (Prelude.fromIntegral len))
                                         "leading_detached_comments"
                                 v <- Data.ProtoLens.Encoding.Parser.Unsafe.unsafeLiftIO
                                        (Data.ProtoLens.Encoding.Growing.append
@@ -9969,14 +13706,9 @@ instance Data.ProtoLens.Message UninterpretedOption where
                                 loop x v
                         26
                           -> do y <- (Data.ProtoLens.Encoding.Bytes.<?>)
-                                       (do value <- do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
-                                                       Data.ProtoLens.Encoding.Bytes.getBytes
-                                                         (Prelude.fromIntegral len)
-                                           Data.ProtoLens.Encoding.Bytes.runEither
-                                             (case Data.Text.Encoding.decodeUtf8' value of
-                                                (Prelude.Left err)
-                                                  -> Prelude.Left (Prelude.show err)
-                                                (Prelude.Right r) -> Prelude.Right r))
+                                       (do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
+                                           Data.ProtoLens.Encoding.Bytes.getText
+                                             (Prelude.fromIntegral len))
                                        "identifier_value"
                                 loop
                                   (Lens.Family2.set
@@ -10019,14 +13751,9 @@ instance Data.ProtoLens.Message UninterpretedOption where
                                   mutable'name
                         66
                           -> do y <- (Data.ProtoLens.Encoding.Bytes.<?>)
-                                       (do value <- do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
-                                                       Data.ProtoLens.Encoding.Bytes.getBytes
-                                                         (Prelude.fromIntegral len)
-                                           Data.ProtoLens.Encoding.Bytes.runEither
-                                             (case Data.Text.Encoding.decodeUtf8' value of
-                                                (Prelude.Left err)
-                                                  -> Prelude.Left (Prelude.show err)
-                                                (Prelude.Right r) -> Prelude.Right r))
+                                       (do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
+                                           Data.ProtoLens.Encoding.Bytes.getText
+                                             (Prelude.fromIntegral len))
                                        "aggregate_value"
                                 loop
                                   (Lens.Family2.set
@@ -10270,14 +13997,9 @@ instance Data.ProtoLens.Message UninterpretedOption'NamePart where
                       case tag of
                         10
                           -> do y <- (Data.ProtoLens.Encoding.Bytes.<?>)
-                                       (do value <- do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
-                                                       Data.ProtoLens.Encoding.Bytes.getBytes
-                                                         (Prelude.fromIntegral len)
-                                           Data.ProtoLens.Encoding.Bytes.runEither
-                                             (case Data.Text.Encoding.decodeUtf8' value of
-                                                (Prelude.Left err)
-                                                  -> Prelude.Left (Prelude.show err)
-                                                (Prelude.Right r) -> Prelude.Right r))
+                                       (do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
+                                           Data.ProtoLens.Encoding.Bytes.getText
+                                             (Prelude.fromIntegral len))
                                        "name_part"
                                 loop
                                   (Lens.Family2.set (Data.ProtoLens.Field.field @"namePart") y x)
@@ -10341,7 +14063,7 @@ packedFileDescriptor
   = "\n\
     \ google/protobuf/descriptor.proto\DC2\SIgoogle.protobuf\"M\n\
     \\DC1FileDescriptorSet\DC28\n\
-    \\EOTfile\CAN\SOH \ETX(\v2$.google.protobuf.FileDescriptorProtoR\EOTfile\"\228\EOT\n\
+    \\EOTfile\CAN\SOH \ETX(\v2$.google.protobuf.FileDescriptorProtoR\EOTfile\"\152\ENQ\n\
     \\DC3FileDescriptorProto\DC2\DC2\n\
     \\EOTname\CAN\SOH \SOH(\tR\EOTname\DC2\CAN\n\
     \\apackage\CAN\STX \SOH(\tR\apackage\DC2\RS\n\
@@ -10357,7 +14079,8 @@ packedFileDescriptor
     \\textension\CAN\a \ETX(\v2%.google.protobuf.FieldDescriptorProtoR\textension\DC26\n\
     \\aoptions\CAN\b \SOH(\v2\FS.google.protobuf.FileOptionsR\aoptions\DC2I\n\
     \\DLEsource_code_info\CAN\t \SOH(\v2\US.google.protobuf.SourceCodeInfoR\SOsourceCodeInfo\DC2\SYN\n\
-    \\ACKsyntax\CAN\f \SOH(\tR\ACKsyntax\"\185\ACK\n\
+    \\ACKsyntax\CAN\f \SOH(\tR\ACKsyntax\DC22\n\
+    \\aedition\CAN\SO \SOH(\SO2\CAN.google.protobuf.EditionR\aedition\"\185\ACK\n\
     \\SIDescriptorProto\DC2\DC2\n\
     \\EOTname\CAN\SOH \SOH(\tR\EOTname\DC2;\n\
     \\ENQfield\CAN\STX \ETX(\v2%.google.protobuf.FieldDescriptorProtoR\ENQfield\DC2C\n\
@@ -10378,9 +14101,23 @@ packedFileDescriptor
     \\aoptions\CAN\ETX \SOH(\v2&.google.protobuf.ExtensionRangeOptionsR\aoptions\SUB7\n\
     \\rReservedRange\DC2\DC4\n\
     \\ENQstart\CAN\SOH \SOH(\ENQR\ENQstart\DC2\DLE\n\
-    \\ETXend\CAN\STX \SOH(\ENQR\ETXend\"|\n\
+    \\ETXend\CAN\STX \SOH(\ENQR\ETXend\"\204\EOT\n\
     \\NAKExtensionRangeOptions\DC2X\n\
-    \\DC4uninterpreted_option\CAN\231\a \ETX(\v2$.google.protobuf.UninterpretedOptionR\DC3uninterpretedOption*\t\b\232\a\DLE\128\128\128\128\STX\"\193\ACK\n\
+    \\DC4uninterpreted_option\CAN\231\a \ETX(\v2$.google.protobuf.UninterpretedOptionR\DC3uninterpretedOption\DC2Y\n\
+    \\vdeclaration\CAN\STX \ETX(\v22.google.protobuf.ExtensionRangeOptions.DeclarationR\vdeclarationB\ETX\136\SOH\STX\DC27\n\
+    \\bfeatures\CAN2 \SOH(\v2\ESC.google.protobuf.FeatureSetR\bfeatures\DC2m\n\
+    \\fverification\CAN\ETX \SOH(\SO28.google.protobuf.ExtensionRangeOptions.VerificationState:\n\
+    \UNVERIFIEDR\fverificationB\ETX\136\SOH\STX\SUB\148\SOH\n\
+    \\vDeclaration\DC2\SYN\n\
+    \\ACKnumber\CAN\SOH \SOH(\ENQR\ACKnumber\DC2\ESC\n\
+    \\tfull_name\CAN\STX \SOH(\tR\bfullName\DC2\DC2\n\
+    \\EOTtype\CAN\ETX \SOH(\tR\EOTtype\DC2\SUB\n\
+    \\breserved\CAN\ENQ \SOH(\bR\breserved\DC2\SUB\n\
+    \\brepeated\CAN\ACK \SOH(\bR\brepeatedJ\EOT\b\EOT\DLE\ENQ\"4\n\
+    \\DC1VerificationState\DC2\SI\n\
+    \\vDECLARATION\DLE\NUL\DC2\SO\n\
+    \\n\
+    \UNVERIFIED\DLE\SOH*\t\b\232\a\DLE\128\128\128\128\STX\"\193\ACK\n\
     \\DC4FieldDescriptorProto\DC2\DC2\n\
     \\EOTname\CAN\SOH \SOH(\tR\EOTname\DC2\SYN\n\
     \\ACKnumber\CAN\ETX \SOH(\ENQR\ACKnumber\DC2A\n\
@@ -10422,8 +14159,8 @@ packedFileDescriptor
     \\vTYPE_SINT64\DLE\DC2\"C\n\
     \\ENQLabel\DC2\DC2\n\
     \\SOLABEL_OPTIONAL\DLE\SOH\DC2\DC2\n\
-    \\SOLABEL_REQUIRED\DLE\STX\DC2\DC2\n\
-    \\SOLABEL_REPEATED\DLE\ETX\"c\n\
+    \\SOLABEL_REPEATED\DLE\ETX\DC2\DC2\n\
+    \\SOLABEL_REQUIRED\DLE\STX\"c\n\
     \\DC4OneofDescriptorProto\DC2\DC2\n\
     \\EOTname\CAN\SOH \SOH(\tR\EOTname\DC27\n\
     \\aoptions\CAN\STX \SOH(\v2\GS.google.protobuf.OneofOptionsR\aoptions\"\227\STX\n\
@@ -10452,7 +14189,7 @@ packedFileDescriptor
     \outputType\DC28\n\
     \\aoptions\CAN\EOT \SOH(\v2\RS.google.protobuf.MethodOptionsR\aoptions\DC20\n\
     \\DLEclient_streaming\CAN\ENQ \SOH(\b:\ENQfalseR\SIclientStreaming\DC20\n\
-    \\DLEserver_streaming\CAN\ACK \SOH(\b:\ENQfalseR\SIserverStreaming\"\145\t\n\
+    \\DLEserver_streaming\CAN\ACK \SOH(\b:\ENQfalseR\SIserverStreaming\"\173\t\n\
     \\vFileOptions\DC2!\n\
     \\fjava_package\CAN\SOH \SOH(\tR\vjavaPackage\DC20\n\
     \\DC4java_outer_classname\CAN\b \SOH(\tR\DC2javaOuterClassname\DC25\n\
@@ -10465,8 +14202,7 @@ packedFileDescriptor
     \go_package\CAN\v \SOH(\tR\tgoPackage\DC25\n\
     \\DC3cc_generic_services\CAN\DLE \SOH(\b:\ENQfalseR\DC1ccGenericServices\DC29\n\
     \\NAKjava_generic_services\CAN\DC1 \SOH(\b:\ENQfalseR\DC3javaGenericServices\DC25\n\
-    \\DC3py_generic_services\CAN\DC2 \SOH(\b:\ENQfalseR\DC1pyGenericServices\DC27\n\
-    \\DC4php_generic_services\CAN* \SOH(\b:\ENQfalseR\DC2phpGenericServices\DC2%\n\
+    \\DC3py_generic_services\CAN\DC2 \SOH(\b:\ENQfalseR\DC1pyGenericServices\DC2%\n\
     \\n\
     \deprecated\CAN\ETB \SOH(\b:\ENQfalseR\n\
     \deprecated\DC2.\n\
@@ -10477,32 +14213,50 @@ packedFileDescriptor
     \\DLEphp_class_prefix\CAN( \SOH(\tR\SOphpClassPrefix\DC2#\n\
     \\rphp_namespace\CAN) \SOH(\tR\fphpNamespace\DC24\n\
     \\SYNphp_metadata_namespace\CAN, \SOH(\tR\DC4phpMetadataNamespace\DC2!\n\
-    \\fruby_package\CAN- \SOH(\tR\vrubyPackage\DC2X\n\
+    \\fruby_package\CAN- \SOH(\tR\vrubyPackage\DC27\n\
+    \\bfeatures\CAN2 \SOH(\v2\ESC.google.protobuf.FeatureSetR\bfeatures\DC2X\n\
     \\DC4uninterpreted_option\CAN\231\a \ETX(\v2$.google.protobuf.UninterpretedOptionR\DC3uninterpretedOption\":\n\
     \\fOptimizeMode\DC2\t\n\
     \\ENQSPEED\DLE\SOH\DC2\r\n\
     \\tCODE_SIZE\DLE\STX\DC2\DLE\n\
-    \\fLITE_RUNTIME\DLE\ETX*\t\b\232\a\DLE\128\128\128\128\STXJ\EOT\b&\DLE'\"\209\STX\n\
+    \\fLITE_RUNTIME\DLE\ETX*\t\b\232\a\DLE\128\128\128\128\STXJ\EOT\b*\DLE+J\EOT\b&\DLE'R\DC4php_generic_services\"\244\ETX\n\
     \\SOMessageOptions\DC2<\n\
     \\ETBmessage_set_wire_format\CAN\SOH \SOH(\b:\ENQfalseR\DC4messageSetWireFormat\DC2L\n\
     \\USno_standard_descriptor_accessor\CAN\STX \SOH(\b:\ENQfalseR\FSnoStandardDescriptorAccessor\DC2%\n\
     \\n\
     \deprecated\CAN\ETX \SOH(\b:\ENQfalseR\n\
     \deprecated\DC2\ESC\n\
-    \\tmap_entry\CAN\a \SOH(\bR\bmapEntry\DC2X\n\
-    \\DC4uninterpreted_option\CAN\231\a \ETX(\v2$.google.protobuf.UninterpretedOptionR\DC3uninterpretedOption*\t\b\232\a\DLE\128\128\128\128\STXJ\EOT\b\b\DLE\tJ\EOT\b\t\DLE\n\
-    \\"\226\ETX\n\
+    \\tmap_entry\CAN\a \SOH(\bR\bmapEntry\DC2V\n\
+    \&deprecated_legacy_json_field_conflicts\CAN\v \SOH(\bR\"deprecatedLegacyJsonFieldConflictsB\STX\CAN\SOH\DC27\n\
+    \\bfeatures\CAN\f \SOH(\v2\ESC.google.protobuf.FeatureSetR\bfeatures\DC2X\n\
+    \\DC4uninterpreted_option\CAN\231\a \ETX(\v2$.google.protobuf.UninterpretedOptionR\DC3uninterpretedOption*\t\b\232\a\DLE\128\128\128\128\STXJ\EOT\b\EOT\DLE\ENQJ\EOT\b\ENQ\DLE\ACKJ\EOT\b\ACK\DLE\aJ\EOT\b\b\DLE\tJ\EOT\b\t\DLE\n\
+    \\"\157\r\n\
     \\fFieldOptions\DC2A\n\
     \\ENQctype\CAN\SOH \SOH(\SO2#.google.protobuf.FieldOptions.CType:\ACKSTRINGR\ENQctype\DC2\SYN\n\
     \\ACKpacked\CAN\STX \SOH(\bR\ACKpacked\DC2G\n\
     \\ACKjstype\CAN\ACK \SOH(\SO2$.google.protobuf.FieldOptions.JSType:\tJS_NORMALR\ACKjstype\DC2\EM\n\
-    \\EOTlazy\CAN\ENQ \SOH(\b:\ENQfalseR\EOTlazy\DC2%\n\
+    \\EOTlazy\CAN\ENQ \SOH(\b:\ENQfalseR\EOTlazy\DC2.\n\
+    \\SIunverified_lazy\CAN\SI \SOH(\b:\ENQfalseR\SOunverifiedLazy\DC2%\n\
     \\n\
     \deprecated\CAN\ETX \SOH(\b:\ENQfalseR\n\
     \deprecated\DC2\EM\n\
     \\EOTweak\CAN\n\
-    \ \SOH(\b:\ENQfalseR\EOTweak\DC2X\n\
-    \\DC4uninterpreted_option\CAN\231\a \ETX(\v2$.google.protobuf.UninterpretedOptionR\DC3uninterpretedOption\"/\n\
+    \ \SOH(\b:\ENQfalseR\EOTweak\DC2(\n\
+    \\fdebug_redact\CAN\DLE \SOH(\b:\ENQfalseR\vdebugRedact\DC2K\n\
+    \\tretention\CAN\DC1 \SOH(\SO2-.google.protobuf.FieldOptions.OptionRetentionR\tretention\DC2H\n\
+    \\atargets\CAN\DC3 \ETX(\SO2..google.protobuf.FieldOptions.OptionTargetTypeR\atargets\DC2W\n\
+    \\DLEedition_defaults\CAN\DC4 \ETX(\v2,.google.protobuf.FieldOptions.EditionDefaultR\SIeditionDefaults\DC27\n\
+    \\bfeatures\CAN\NAK \SOH(\v2\ESC.google.protobuf.FeatureSetR\bfeatures\DC2U\n\
+    \\SIfeature_support\CAN\SYN \SOH(\v2,.google.protobuf.FieldOptions.FeatureSupportR\SOfeatureSupport\DC2X\n\
+    \\DC4uninterpreted_option\CAN\231\a \ETX(\v2$.google.protobuf.UninterpretedOptionR\DC3uninterpretedOption\SUBZ\n\
+    \\SOEditionDefault\DC22\n\
+    \\aedition\CAN\ETX \SOH(\SO2\CAN.google.protobuf.EditionR\aedition\DC2\DC4\n\
+    \\ENQvalue\CAN\STX \SOH(\tR\ENQvalue\SUB\150\STX\n\
+    \\SOFeatureSupport\DC2G\n\
+    \\DC2edition_introduced\CAN\SOH \SOH(\SO2\CAN.google.protobuf.EditionR\DC1editionIntroduced\DC2G\n\
+    \\DC2edition_deprecated\CAN\STX \SOH(\SO2\CAN.google.protobuf.EditionR\DC1editionDeprecated\DC2/\n\
+    \\DC3deprecation_warning\CAN\ETX \SOH(\tR\DC2deprecationWarning\DC2A\n\
+    \\SIedition_removed\CAN\EOT \SOH(\SO2\CAN.google.protobuf.EditionR\SOeditionRemoved\"/\n\
     \\ENQCType\DC2\n\
     \\n\
     \\ACKSTRING\DLE\NUL\DC2\b\n\
@@ -10511,31 +14265,54 @@ packedFileDescriptor
     \\ACKJSType\DC2\r\n\
     \\tJS_NORMAL\DLE\NUL\DC2\r\n\
     \\tJS_STRING\DLE\SOH\DC2\r\n\
-    \\tJS_NUMBER\DLE\STX*\t\b\232\a\DLE\128\128\128\128\STXJ\EOT\b\EOT\DLE\ENQ\"s\n\
-    \\fOneofOptions\DC2X\n\
-    \\DC4uninterpreted_option\CAN\231\a \ETX(\v2$.google.protobuf.UninterpretedOptionR\DC3uninterpretedOption*\t\b\232\a\DLE\128\128\128\128\STX\"\192\SOH\n\
+    \\tJS_NUMBER\DLE\STX\"U\n\
+    \\SIOptionRetention\DC2\NAK\n\
+    \\DC1RETENTION_UNKNOWN\DLE\NUL\DC2\NAK\n\
+    \\DC1RETENTION_RUNTIME\DLE\SOH\DC2\DC4\n\
+    \\DLERETENTION_SOURCE\DLE\STX\"\140\STX\n\
+    \\DLEOptionTargetType\DC2\ETB\n\
+    \\DC3TARGET_TYPE_UNKNOWN\DLE\NUL\DC2\DC4\n\
+    \\DLETARGET_TYPE_FILE\DLE\SOH\DC2\US\n\
+    \\ESCTARGET_TYPE_EXTENSION_RANGE\DLE\STX\DC2\ETB\n\
+    \\DC3TARGET_TYPE_MESSAGE\DLE\ETX\DC2\NAK\n\
+    \\DC1TARGET_TYPE_FIELD\DLE\EOT\DC2\NAK\n\
+    \\DC1TARGET_TYPE_ONEOF\DLE\ENQ\DC2\DC4\n\
+    \\DLETARGET_TYPE_ENUM\DLE\ACK\DC2\SUB\n\
+    \\SYNTARGET_TYPE_ENUM_ENTRY\DLE\a\DC2\ETB\n\
+    \\DC3TARGET_TYPE_SERVICE\DLE\b\DC2\SYN\n\
+    \\DC2TARGET_TYPE_METHOD\DLE\t*\t\b\232\a\DLE\128\128\128\128\STXJ\EOT\b\EOT\DLE\ENQJ\EOT\b\DC2\DLE\DC3\"\172\SOH\n\
+    \\fOneofOptions\DC27\n\
+    \\bfeatures\CAN\SOH \SOH(\v2\ESC.google.protobuf.FeatureSetR\bfeatures\DC2X\n\
+    \\DC4uninterpreted_option\CAN\231\a \ETX(\v2$.google.protobuf.UninterpretedOptionR\DC3uninterpretedOption*\t\b\232\a\DLE\128\128\128\128\STX\"\209\STX\n\
     \\vEnumOptions\DC2\US\n\
     \\vallow_alias\CAN\STX \SOH(\bR\n\
     \allowAlias\DC2%\n\
     \\n\
     \deprecated\CAN\ETX \SOH(\b:\ENQfalseR\n\
-    \deprecated\DC2X\n\
-    \\DC4uninterpreted_option\CAN\231\a \ETX(\v2$.google.protobuf.UninterpretedOptionR\DC3uninterpretedOption*\t\b\232\a\DLE\128\128\128\128\STXJ\EOT\b\ENQ\DLE\ACK\"\158\SOH\n\
+    \deprecated\DC2V\n\
+    \&deprecated_legacy_json_field_conflicts\CAN\ACK \SOH(\bR\"deprecatedLegacyJsonFieldConflictsB\STX\CAN\SOH\DC27\n\
+    \\bfeatures\CAN\a \SOH(\v2\ESC.google.protobuf.FeatureSetR\bfeatures\DC2X\n\
+    \\DC4uninterpreted_option\CAN\231\a \ETX(\v2$.google.protobuf.UninterpretedOptionR\DC3uninterpretedOption*\t\b\232\a\DLE\128\128\128\128\STXJ\EOT\b\ENQ\DLE\ACK\"\216\STX\n\
     \\DLEEnumValueOptions\DC2%\n\
     \\n\
     \deprecated\CAN\SOH \SOH(\b:\ENQfalseR\n\
-    \deprecated\DC2X\n\
-    \\DC4uninterpreted_option\CAN\231\a \ETX(\v2$.google.protobuf.UninterpretedOptionR\DC3uninterpretedOption*\t\b\232\a\DLE\128\128\128\128\STX\"\156\SOH\n\
-    \\SOServiceOptions\DC2%\n\
+    \deprecated\DC27\n\
+    \\bfeatures\CAN\STX \SOH(\v2\ESC.google.protobuf.FeatureSetR\bfeatures\DC2(\n\
+    \\fdebug_redact\CAN\ETX \SOH(\b:\ENQfalseR\vdebugRedact\DC2U\n\
+    \\SIfeature_support\CAN\EOT \SOH(\v2,.google.protobuf.FieldOptions.FeatureSupportR\SOfeatureSupport\DC2X\n\
+    \\DC4uninterpreted_option\CAN\231\a \ETX(\v2$.google.protobuf.UninterpretedOptionR\DC3uninterpretedOption*\t\b\232\a\DLE\128\128\128\128\STX\"\213\SOH\n\
+    \\SOServiceOptions\DC27\n\
+    \\bfeatures\CAN\" \SOH(\v2\ESC.google.protobuf.FeatureSetR\bfeatures\DC2%\n\
     \\n\
     \deprecated\CAN! \SOH(\b:\ENQfalseR\n\
     \deprecated\DC2X\n\
-    \\DC4uninterpreted_option\CAN\231\a \ETX(\v2$.google.protobuf.UninterpretedOptionR\DC3uninterpretedOption*\t\b\232\a\DLE\128\128\128\128\STX\"\224\STX\n\
+    \\DC4uninterpreted_option\CAN\231\a \ETX(\v2$.google.protobuf.UninterpretedOptionR\DC3uninterpretedOption*\t\b\232\a\DLE\128\128\128\128\STX\"\153\ETX\n\
     \\rMethodOptions\DC2%\n\
     \\n\
     \deprecated\CAN! \SOH(\b:\ENQfalseR\n\
     \deprecated\DC2q\n\
-    \\DC1idempotency_level\CAN\" \SOH(\SO2/.google.protobuf.MethodOptions.IdempotencyLevel:\DC3IDEMPOTENCY_UNKNOWNR\DLEidempotencyLevel\DC2X\n\
+    \\DC1idempotency_level\CAN\" \SOH(\SO2/.google.protobuf.MethodOptions.IdempotencyLevel:\DC3IDEMPOTENCY_UNKNOWNR\DLEidempotencyLevel\DC27\n\
+    \\bfeatures\CAN# \SOH(\v2\ESC.google.protobuf.FeatureSetR\bfeatures\DC2X\n\
     \\DC4uninterpreted_option\CAN\231\a \ETX(\v2$.google.protobuf.UninterpretedOptionR\DC3uninterpretedOption\"P\n\
     \\DLEIdempotencyLevel\DC2\ETB\n\
     \\DC3IDEMPOTENCY_UNKNOWN\DLE\NUL\DC2\DC3\n\
@@ -10552,7 +14329,55 @@ packedFileDescriptor
     \\SIaggregate_value\CAN\b \SOH(\tR\SOaggregateValue\SUBJ\n\
     \\bNamePart\DC2\ESC\n\
     \\tname_part\CAN\SOH \STX(\tR\bnamePart\DC2!\n\
-    \\fis_extension\CAN\STX \STX(\bR\visExtension\"\167\STX\n\
+    \\fis_extension\CAN\STX \STX(\bR\visExtension\"\167\n\
+    \\n\
+    \\n\
+    \FeatureSet\DC2\145\SOH\n\
+    \\SOfield_presence\CAN\SOH \SOH(\SO2).google.protobuf.FeatureSet.FieldPresenceR\rfieldPresenceB?\136\SOH\SOH\152\SOH\EOT\152\SOH\SOH\162\SOH\r\DC2\bEXPLICIT\CAN\132\a\162\SOH\r\DC2\bIMPLICIT\CAN\231\a\162\SOH\r\DC2\bEXPLICIT\CAN\232\a\178\SOH\ETX\b\232\a\DC2l\n\
+    \\tenum_type\CAN\STX \SOH(\SO2$.google.protobuf.FeatureSet.EnumTypeR\benumTypeB)\136\SOH\SOH\152\SOH\ACK\152\SOH\SOH\162\SOH\v\DC2\ACKCLOSED\CAN\132\a\162\SOH\t\DC2\EOTOPEN\CAN\231\a\178\SOH\ETX\b\232\a\DC2\152\SOH\n\
+    \\ETBrepeated_field_encoding\CAN\ETX \SOH(\SO21.google.protobuf.FeatureSet.RepeatedFieldEncodingR\NAKrepeatedFieldEncodingB-\136\SOH\SOH\152\SOH\EOT\152\SOH\SOH\162\SOH\r\DC2\bEXPANDED\CAN\132\a\162\SOH\v\DC2\ACKPACKED\CAN\231\a\178\SOH\ETX\b\232\a\DC2~\n\
+    \\SIutf8_validation\CAN\EOT \SOH(\SO2*.google.protobuf.FeatureSet.Utf8ValidationR\SOutf8ValidationB)\136\SOH\SOH\152\SOH\EOT\152\SOH\SOH\162\SOH\t\DC2\EOTNONE\CAN\132\a\162\SOH\v\DC2\ACKVERIFY\CAN\231\a\178\SOH\ETX\b\232\a\DC2~\n\
+    \\DLEmessage_encoding\CAN\ENQ \SOH(\SO2+.google.protobuf.FeatureSet.MessageEncodingR\SImessageEncodingB&\136\SOH\SOH\152\SOH\EOT\152\SOH\SOH\162\SOH\DC4\DC2\SILENGTH_PREFIXED\CAN\132\a\178\SOH\ETX\b\232\a\DC2\130\SOH\n\
+    \\vjson_format\CAN\ACK \SOH(\SO2&.google.protobuf.FeatureSet.JsonFormatR\n\
+    \jsonFormatB9\136\SOH\SOH\152\SOH\ETX\152\SOH\ACK\152\SOH\SOH\162\SOH\ETB\DC2\DC2LEGACY_BEST_EFFORT\CAN\132\a\162\SOH\n\
+    \\DC2\ENQALLOW\CAN\231\a\178\SOH\ETX\b\232\a\"\\\n\
+    \\rFieldPresence\DC2\SUB\n\
+    \\SYNFIELD_PRESENCE_UNKNOWN\DLE\NUL\DC2\f\n\
+    \\bEXPLICIT\DLE\SOH\DC2\f\n\
+    \\bIMPLICIT\DLE\STX\DC2\DC3\n\
+    \\SILEGACY_REQUIRED\DLE\ETX\"7\n\
+    \\bEnumType\DC2\NAK\n\
+    \\DC1ENUM_TYPE_UNKNOWN\DLE\NUL\DC2\b\n\
+    \\EOTOPEN\DLE\SOH\DC2\n\
+    \\n\
+    \\ACKCLOSED\DLE\STX\"V\n\
+    \\NAKRepeatedFieldEncoding\DC2#\n\
+    \\USREPEATED_FIELD_ENCODING_UNKNOWN\DLE\NUL\DC2\n\
+    \\n\
+    \\ACKPACKED\DLE\SOH\DC2\f\n\
+    \\bEXPANDED\DLE\STX\"I\n\
+    \\SOUtf8Validation\DC2\ESC\n\
+    \\ETBUTF8_VALIDATION_UNKNOWN\DLE\NUL\DC2\n\
+    \\n\
+    \\ACKVERIFY\DLE\STX\DC2\b\n\
+    \\EOTNONE\DLE\ETX\"\EOT\b\SOH\DLE\SOH\"S\n\
+    \\SIMessageEncoding\DC2\FS\n\
+    \\CANMESSAGE_ENCODING_UNKNOWN\DLE\NUL\DC2\DC3\n\
+    \\SILENGTH_PREFIXED\DLE\SOH\DC2\r\n\
+    \\tDELIMITED\DLE\STX\"H\n\
+    \\n\
+    \JsonFormat\DC2\ETB\n\
+    \\DC3JSON_FORMAT_UNKNOWN\DLE\NUL\DC2\t\n\
+    \\ENQALLOW\DLE\SOH\DC2\SYN\n\
+    \\DC2LEGACY_BEST_EFFORT\DLE\STX*\ACK\b\232\a\DLE\139N*\ACK\b\139N\DLE\144N*\ACK\b\144N\DLE\145NJ\ACK\b\231\a\DLE\232\a\"\239\ETX\n\
+    \\DC2FeatureSetDefaults\DC2X\n\
+    \\bdefaults\CAN\SOH \ETX(\v2<.google.protobuf.FeatureSetDefaults.FeatureSetEditionDefaultR\bdefaults\DC2A\n\
+    \\SIminimum_edition\CAN\EOT \SOH(\SO2\CAN.google.protobuf.EditionR\SOminimumEdition\DC2A\n\
+    \\SImaximum_edition\CAN\ENQ \SOH(\SO2\CAN.google.protobuf.EditionR\SOmaximumEdition\SUB\248\SOH\n\
+    \\CANFeatureSetEditionDefault\DC22\n\
+    \\aedition\CAN\ETX \SOH(\SO2\CAN.google.protobuf.EditionR\aedition\DC2N\n\
+    \\DC4overridable_features\CAN\EOT \SOH(\v2\ESC.google.protobuf.FeatureSetR\DC3overridableFeatures\DC2B\n\
+    \\SOfixed_features\CAN\ENQ \SOH(\v2\ESC.google.protobuf.FeatureSetR\rfixedFeaturesJ\EOT\b\SOH\DLE\STXJ\EOT\b\STX\DLE\ETXR\bfeatures\"\167\STX\n\
     \\SOSourceCodeInfo\DC2D\n\
     \\blocation\CAN\SOH \ETX(\v2(.google.protobuf.SourceCodeInfo.LocationR\blocation\SUB\206\SOH\n\
     \\bLocation\DC2\SYN\n\
@@ -10560,22 +14385,41 @@ packedFileDescriptor
     \\EOTspan\CAN\STX \ETX(\ENQR\EOTspanB\STX\DLE\SOH\DC2)\n\
     \\DLEleading_comments\CAN\ETX \SOH(\tR\SIleadingComments\DC2+\n\
     \\DC1trailing_comments\CAN\EOT \SOH(\tR\DLEtrailingComments\DC2:\n\
-    \\EMleading_detached_comments\CAN\ACK \ETX(\tR\ETBleadingDetachedComments\"\209\SOH\n\
+    \\EMleading_detached_comments\CAN\ACK \ETX(\tR\ETBleadingDetachedComments\"\208\STX\n\
     \\DC1GeneratedCodeInfo\DC2M\n\
     \\n\
     \annotation\CAN\SOH \ETX(\v2-.google.protobuf.GeneratedCodeInfo.AnnotationR\n\
-    \annotation\SUBm\n\
+    \annotation\SUB\235\SOH\n\
     \\n\
     \Annotation\DC2\SYN\n\
     \\EOTpath\CAN\SOH \ETX(\ENQR\EOTpathB\STX\DLE\SOH\DC2\US\n\
     \\vsource_file\CAN\STX \SOH(\tR\n\
     \sourceFile\DC2\DC4\n\
     \\ENQbegin\CAN\ETX \SOH(\ENQR\ENQbegin\DC2\DLE\n\
-    \\ETXend\CAN\EOT \SOH(\ENQR\ETXendB~\n\
-    \\DC3com.google.protobufB\DLEDescriptorProtosH\SOHZ-google.golang.org/protobuf/types/descriptorpb\248\SOH\SOH\162\STX\ETXGPB\170\STX\SUBGoogle.Protobuf.ReflectionJ\188\200\STX\n\
-    \\a\DC2\ENQ'\NUL\140\a\SOH\n\
+    \\ETXend\CAN\EOT \SOH(\ENQR\ETXend\DC2R\n\
+    \\bsemantic\CAN\ENQ \SOH(\SO26.google.protobuf.GeneratedCodeInfo.Annotation.SemanticR\bsemantic\"(\n\
+    \\bSemantic\DC2\b\n\
+    \\EOTNONE\DLE\NUL\DC2\a\n\
+    \\ETXSET\DLE\SOH\DC2\t\n\
+    \\ENQALIAS\DLE\STX*\167\STX\n\
+    \\aEdition\DC2\DC3\n\
+    \\SIEDITION_UNKNOWN\DLE\NUL\DC2\DC3\n\
+    \\SOEDITION_LEGACY\DLE\132\a\DC2\DC3\n\
+    \\SOEDITION_PROTO2\DLE\230\a\DC2\DC3\n\
+    \\SOEDITION_PROTO3\DLE\231\a\DC2\DC1\n\
+    \\fEDITION_2023\DLE\232\a\DC2\DC1\n\
+    \\fEDITION_2024\DLE\233\a\DC2\ETB\n\
+    \\DC3EDITION_1_TEST_ONLY\DLE\SOH\DC2\ETB\n\
+    \\DC3EDITION_2_TEST_ONLY\DLE\STX\DC2\GS\n\
+    \\ETBEDITION_99997_TEST_ONLY\DLE\157\141\ACK\DC2\GS\n\
+    \\ETBEDITION_99998_TEST_ONLY\DLE\158\141\ACK\DC2\GS\n\
+    \\ETBEDITION_99999_TEST_ONLY\DLE\159\141\ACK\DC2\DC3\n\
+    \\vEDITION_MAX\DLE\255\255\255\255\aB~\n\
+    \\DC3com.google.protobufB\DLEDescriptorProtosH\SOHZ-google.golang.org/protobuf/types/descriptorpb\248\SOH\SOH\162\STX\ETXGPB\170\STX\SUBGoogle.Protobuf.ReflectionJ\139\195\ETX\n\
+    \\a\DC2\ENQ&\NUL\143\n\
+    \\SOH\n\
     \\170\SI\n\
-    \\SOH\f\DC2\ETX'\NUL\DC22\193\f Protocol Buffers - Google's data interchange format\n\
+    \\SOH\f\DC2\ETX&\NUL\DC22\193\f Protocol Buffers - Google's data interchange format\n\
     \ Copyright 2008 Google Inc.  All rights reserved.\n\
     \ https://developers.google.com/protocol-buffers/\n\
     \\n\
@@ -10613,720 +14457,974 @@ packedFileDescriptor
     \ without any other information (e.g. without reading its imports).\n\
     \\n\
     \\b\n\
-    \\SOH\STX\DC2\ETX)\NUL\CAN\n\
+    \\SOH\STX\DC2\ETX(\NUL\CAN\n\
     \\b\n\
-    \\SOH\b\DC2\ETX+\NULD\n\
+    \\SOH\b\DC2\ETX*\NULD\n\
     \\t\n\
-    \\STX\b\v\DC2\ETX+\NULD\n\
+    \\STX\b\v\DC2\ETX*\NULD\n\
     \\b\n\
-    \\SOH\b\DC2\ETX,\NUL,\n\
+    \\SOH\b\DC2\ETX+\NUL,\n\
     \\t\n\
-    \\STX\b\SOH\DC2\ETX,\NUL,\n\
+    \\STX\b\SOH\DC2\ETX+\NUL,\n\
     \\b\n\
-    \\SOH\b\DC2\ETX-\NUL1\n\
+    \\SOH\b\DC2\ETX,\NUL1\n\
     \\t\n\
-    \\STX\b\b\DC2\ETX-\NUL1\n\
+    \\STX\b\b\DC2\ETX,\NUL1\n\
     \\b\n\
-    \\SOH\b\DC2\ETX.\NUL7\n\
+    \\SOH\b\DC2\ETX-\NUL7\n\
     \\t\n\
-    \\STX\b%\DC2\ETX.\NUL7\n\
+    \\STX\b%\DC2\ETX-\NUL7\n\
     \\b\n\
-    \\SOH\b\DC2\ETX/\NUL!\n\
+    \\SOH\b\DC2\ETX.\NUL!\n\
     \\t\n\
-    \\STX\b$\DC2\ETX/\NUL!\n\
+    \\STX\b$\DC2\ETX.\NUL!\n\
     \\b\n\
-    \\SOH\b\DC2\ETX0\NUL\US\n\
+    \\SOH\b\DC2\ETX/\NUL\US\n\
     \\t\n\
-    \\STX\b\US\DC2\ETX0\NUL\US\n\
+    \\STX\b\US\DC2\ETX/\NUL\US\n\
     \\b\n\
-    \\SOH\b\DC2\ETX4\NUL\FS\n\
+    \\SOH\b\DC2\ETX3\NUL\FS\n\
     \\DEL\n\
-    \\STX\b\t\DC2\ETX4\NUL\FS\SUBt descriptor.proto must be optimized for speed because reflection-based\n\
+    \\STX\b\t\DC2\ETX3\NUL\FS\SUBt descriptor.proto must be optimized for speed because reflection-based\n\
     \ algorithms don't work during bootstrapping.\n\
     \\n\
     \j\n\
-    \\STX\EOT\NUL\DC2\EOT8\NUL:\SOH\SUB^ The protocol compiler can output a FileDescriptorSet containing the .proto\n\
+    \\STX\EOT\NUL\DC2\EOT7\NUL9\SOH\SUB^ The protocol compiler can output a FileDescriptorSet containing the .proto\n\
     \ files it parses.\n\
     \\n\
     \\n\
     \\n\
-    \\ETX\EOT\NUL\SOH\DC2\ETX8\b\EM\n\
+    \\ETX\EOT\NUL\SOH\DC2\ETX7\b\EM\n\
     \\v\n\
-    \\EOT\EOT\NUL\STX\NUL\DC2\ETX9\STX(\n\
+    \\EOT\EOT\NUL\STX\NUL\DC2\ETX8\STX(\n\
     \\f\n\
-    \\ENQ\EOT\NUL\STX\NUL\EOT\DC2\ETX9\STX\n\
+    \\ENQ\EOT\NUL\STX\NUL\EOT\DC2\ETX8\STX\n\
     \\n\
     \\f\n\
-    \\ENQ\EOT\NUL\STX\NUL\ACK\DC2\ETX9\v\RS\n\
+    \\ENQ\EOT\NUL\STX\NUL\ACK\DC2\ETX8\v\RS\n\
     \\f\n\
-    \\ENQ\EOT\NUL\STX\NUL\SOH\DC2\ETX9\US#\n\
+    \\ENQ\EOT\NUL\STX\NUL\SOH\DC2\ETX8\US#\n\
     \\f\n\
-    \\ENQ\EOT\NUL\STX\NUL\ETX\DC2\ETX9&'\n\
-    \/\n\
-    \\STX\EOT\SOH\DC2\EOT=\NULZ\SOH\SUB# Describes a complete .proto file.\n\
+    \\ENQ\EOT\NUL\STX\NUL\ETX\DC2\ETX8&'\n\
+    \-\n\
+    \\STX\ENQ\NUL\DC2\EOT<\NUL]\SOH\SUB! The full set of known editions.\n\
     \\n\
     \\n\
     \\n\
-    \\ETX\EOT\SOH\SOH\DC2\ETX=\b\ESC\n\
+    \\ETX\ENQ\NUL\SOH\DC2\ETX<\ENQ\f\n\
+    \:\n\
+    \\EOT\ENQ\NUL\STX\NUL\DC2\ETX>\STX\SYN\SUB- A placeholder for an unknown edition value.\n\
+    \\n\
+    \\f\n\
+    \\ENQ\ENQ\NUL\STX\NUL\SOH\DC2\ETX>\STX\DC1\n\
+    \\f\n\
+    \\ENQ\ENQ\NUL\STX\NUL\STX\DC2\ETX>\DC4\NAK\n\
+    \\153\SOH\n\
+    \\EOT\ENQ\NUL\STX\SOH\DC2\ETXB\STX\ETB\SUB\139\SOH A placeholder edition for specifying default behaviors *before* a feature\n\
+    \ was first introduced.  This is effectively an \"infinite past\".\n\
+    \\n\
+    \\f\n\
+    \\ENQ\ENQ\NUL\STX\SOH\SOH\DC2\ETXB\STX\DLE\n\
+    \\f\n\
+    \\ENQ\ENQ\NUL\STX\SOH\STX\DC2\ETXB\DC3\SYN\n\
+    \\130\STX\n\
+    \\EOT\ENQ\NUL\STX\STX\DC2\ETXH\STX\ETB\SUB\244\SOH Legacy syntax \"editions\".  These pre-date editions, but behave much like\n\
+    \ distinct editions.  These can't be used to specify the edition of proto\n\
+    \ files, but feature definitions must supply proto2/proto3 defaults for\n\
+    \ backwards compatibility.\n\
+    \\n\
+    \\f\n\
+    \\ENQ\ENQ\NUL\STX\STX\SOH\DC2\ETXH\STX\DLE\n\
+    \\f\n\
+    \\ENQ\ENQ\NUL\STX\STX\STX\DC2\ETXH\DC3\SYN\n\
+    \\v\n\
+    \\EOT\ENQ\NUL\STX\ETX\DC2\ETXI\STX\ETB\n\
+    \\f\n\
+    \\ENQ\ENQ\NUL\STX\ETX\SOH\DC2\ETXI\STX\DLE\n\
+    \\f\n\
+    \\ENQ\ENQ\NUL\STX\ETX\STX\DC2\ETXI\DC3\SYN\n\
+    \\175\SOH\n\
+    \\EOT\ENQ\NUL\STX\EOT\DC2\ETXN\STX\SYN\SUB\161\SOH Editions that have been released.  The specific values are arbitrary and\n\
+    \ should not be depended on, but they will always be time-ordered for easy\n\
+    \ comparison.\n\
+    \\n\
+    \\f\n\
+    \\ENQ\ENQ\NUL\STX\EOT\SOH\DC2\ETXN\STX\SO\n\
+    \\f\n\
+    \\ENQ\ENQ\NUL\STX\EOT\STX\DC2\ETXN\DC1\NAK\n\
+    \\v\n\
+    \\EOT\ENQ\NUL\STX\ENQ\DC2\ETXO\STX\SYN\n\
+    \\f\n\
+    \\ENQ\ENQ\NUL\STX\ENQ\SOH\DC2\ETXO\STX\SO\n\
+    \\f\n\
+    \\ENQ\ENQ\NUL\STX\ENQ\STX\DC2\ETXO\DC1\NAK\n\
+    \}\n\
+    \\EOT\ENQ\NUL\STX\ACK\DC2\ETXS\STX\SUB\SUBp Placeholder editions for testing feature resolution.  These should not be\n\
+    \ used or relyed on outside of tests.\n\
+    \\n\
+    \\f\n\
+    \\ENQ\ENQ\NUL\STX\ACK\SOH\DC2\ETXS\STX\NAK\n\
+    \\f\n\
+    \\ENQ\ENQ\NUL\STX\ACK\STX\DC2\ETXS\CAN\EM\n\
+    \\v\n\
+    \\EOT\ENQ\NUL\STX\a\DC2\ETXT\STX\SUB\n\
+    \\f\n\
+    \\ENQ\ENQ\NUL\STX\a\SOH\DC2\ETXT\STX\NAK\n\
+    \\f\n\
+    \\ENQ\ENQ\NUL\STX\a\STX\DC2\ETXT\CAN\EM\n\
+    \\v\n\
+    \\EOT\ENQ\NUL\STX\b\DC2\ETXU\STX\"\n\
+    \\f\n\
+    \\ENQ\ENQ\NUL\STX\b\SOH\DC2\ETXU\STX\EM\n\
+    \\f\n\
+    \\ENQ\ENQ\NUL\STX\b\STX\DC2\ETXU\FS!\n\
+    \\v\n\
+    \\EOT\ENQ\NUL\STX\t\DC2\ETXV\STX\"\n\
+    \\f\n\
+    \\ENQ\ENQ\NUL\STX\t\SOH\DC2\ETXV\STX\EM\n\
+    \\f\n\
+    \\ENQ\ENQ\NUL\STX\t\STX\DC2\ETXV\FS!\n\
+    \\v\n\
+    \\EOT\ENQ\NUL\STX\n\
+    \\DC2\ETXW\STX\"\n\
+    \\f\n\
+    \\ENQ\ENQ\NUL\STX\n\
+    \\SOH\DC2\ETXW\STX\EM\n\
+    \\f\n\
+    \\ENQ\ENQ\NUL\STX\n\
+    \\STX\DC2\ETXW\FS!\n\
+    \\184\SOH\n\
+    \\EOT\ENQ\NUL\STX\v\DC2\ETX\\\STX\ESC\SUB\170\SOH Placeholder for specifying unbounded edition support.  This should only\n\
+    \ ever be used by plugins that can expect to never require any changes to\n\
+    \ support a new edition.\n\
+    \\n\
+    \\f\n\
+    \\ENQ\ENQ\NUL\STX\v\SOH\DC2\ETX\\\STX\r\n\
+    \\f\n\
+    \\ENQ\ENQ\NUL\STX\v\STX\DC2\ETX\\\DLE\SUB\n\
+    \0\n\
+    \\STX\EOT\SOH\DC2\ENQ`\NUL\130\SOH\SOH\SUB# Describes a complete .proto file.\n\
+    \\n\
+    \\n\
+    \\n\
+    \\ETX\EOT\SOH\SOH\DC2\ETX`\b\ESC\n\
     \9\n\
-    \\EOT\EOT\SOH\STX\NUL\DC2\ETX>\STX\ESC\", file name, relative to root of source tree\n\
+    \\EOT\EOT\SOH\STX\NUL\DC2\ETXa\STX\ESC\", file name, relative to root of source tree\n\
     \\n\
     \\f\n\
-    \\ENQ\EOT\SOH\STX\NUL\EOT\DC2\ETX>\STX\n\
+    \\ENQ\EOT\SOH\STX\NUL\EOT\DC2\ETXa\STX\n\
     \\n\
     \\f\n\
-    \\ENQ\EOT\SOH\STX\NUL\ENQ\DC2\ETX>\v\DC1\n\
+    \\ENQ\EOT\SOH\STX\NUL\ENQ\DC2\ETXa\v\DC1\n\
     \\f\n\
-    \\ENQ\EOT\SOH\STX\NUL\SOH\DC2\ETX>\DC2\SYN\n\
+    \\ENQ\EOT\SOH\STX\NUL\SOH\DC2\ETXa\DC2\SYN\n\
     \\f\n\
-    \\ENQ\EOT\SOH\STX\NUL\ETX\DC2\ETX>\EM\SUB\n\
+    \\ENQ\EOT\SOH\STX\NUL\ETX\DC2\ETXa\EM\SUB\n\
     \*\n\
-    \\EOT\EOT\SOH\STX\SOH\DC2\ETX?\STX\RS\"\GS e.g. \"foo\", \"foo.bar\", etc.\n\
+    \\EOT\EOT\SOH\STX\SOH\DC2\ETXb\STX\RS\"\GS e.g. \"foo\", \"foo.bar\", etc.\n\
     \\n\
     \\f\n\
-    \\ENQ\EOT\SOH\STX\SOH\EOT\DC2\ETX?\STX\n\
+    \\ENQ\EOT\SOH\STX\SOH\EOT\DC2\ETXb\STX\n\
     \\n\
     \\f\n\
-    \\ENQ\EOT\SOH\STX\SOH\ENQ\DC2\ETX?\v\DC1\n\
+    \\ENQ\EOT\SOH\STX\SOH\ENQ\DC2\ETXb\v\DC1\n\
     \\f\n\
-    \\ENQ\EOT\SOH\STX\SOH\SOH\DC2\ETX?\DC2\EM\n\
+    \\ENQ\EOT\SOH\STX\SOH\SOH\DC2\ETXb\DC2\EM\n\
     \\f\n\
-    \\ENQ\EOT\SOH\STX\SOH\ETX\DC2\ETX?\FS\GS\n\
+    \\ENQ\EOT\SOH\STX\SOH\ETX\DC2\ETXb\FS\GS\n\
     \4\n\
-    \\EOT\EOT\SOH\STX\STX\DC2\ETXB\STX!\SUB' Names of files imported by this file.\n\
+    \\EOT\EOT\SOH\STX\STX\DC2\ETXe\STX!\SUB' Names of files imported by this file.\n\
     \\n\
     \\f\n\
-    \\ENQ\EOT\SOH\STX\STX\EOT\DC2\ETXB\STX\n\
+    \\ENQ\EOT\SOH\STX\STX\EOT\DC2\ETXe\STX\n\
     \\n\
     \\f\n\
-    \\ENQ\EOT\SOH\STX\STX\ENQ\DC2\ETXB\v\DC1\n\
+    \\ENQ\EOT\SOH\STX\STX\ENQ\DC2\ETXe\v\DC1\n\
     \\f\n\
-    \\ENQ\EOT\SOH\STX\STX\SOH\DC2\ETXB\DC2\FS\n\
+    \\ENQ\EOT\SOH\STX\STX\SOH\DC2\ETXe\DC2\FS\n\
     \\f\n\
-    \\ENQ\EOT\SOH\STX\STX\ETX\DC2\ETXB\US \n\
+    \\ENQ\EOT\SOH\STX\STX\ETX\DC2\ETXe\US \n\
     \Q\n\
-    \\EOT\EOT\SOH\STX\ETX\DC2\ETXD\STX(\SUBD Indexes of the public imported files in the dependency list above.\n\
+    \\EOT\EOT\SOH\STX\ETX\DC2\ETXg\STX(\SUBD Indexes of the public imported files in the dependency list above.\n\
     \\n\
     \\f\n\
-    \\ENQ\EOT\SOH\STX\ETX\EOT\DC2\ETXD\STX\n\
+    \\ENQ\EOT\SOH\STX\ETX\EOT\DC2\ETXg\STX\n\
     \\n\
     \\f\n\
-    \\ENQ\EOT\SOH\STX\ETX\ENQ\DC2\ETXD\v\DLE\n\
+    \\ENQ\EOT\SOH\STX\ETX\ENQ\DC2\ETXg\v\DLE\n\
     \\f\n\
-    \\ENQ\EOT\SOH\STX\ETX\SOH\DC2\ETXD\DC1\"\n\
+    \\ENQ\EOT\SOH\STX\ETX\SOH\DC2\ETXg\DC1\"\n\
     \\f\n\
-    \\ENQ\EOT\SOH\STX\ETX\ETX\DC2\ETXD%'\n\
+    \\ENQ\EOT\SOH\STX\ETX\ETX\DC2\ETXg%'\n\
     \z\n\
-    \\EOT\EOT\SOH\STX\EOT\DC2\ETXG\STX&\SUBm Indexes of the weak imported files in the dependency list.\n\
+    \\EOT\EOT\SOH\STX\EOT\DC2\ETXj\STX&\SUBm Indexes of the weak imported files in the dependency list.\n\
     \ For Google-internal migration only. Do not use.\n\
     \\n\
     \\f\n\
-    \\ENQ\EOT\SOH\STX\EOT\EOT\DC2\ETXG\STX\n\
+    \\ENQ\EOT\SOH\STX\EOT\EOT\DC2\ETXj\STX\n\
     \\n\
     \\f\n\
-    \\ENQ\EOT\SOH\STX\EOT\ENQ\DC2\ETXG\v\DLE\n\
+    \\ENQ\EOT\SOH\STX\EOT\ENQ\DC2\ETXj\v\DLE\n\
     \\f\n\
-    \\ENQ\EOT\SOH\STX\EOT\SOH\DC2\ETXG\DC1 \n\
+    \\ENQ\EOT\SOH\STX\EOT\SOH\DC2\ETXj\DC1 \n\
     \\f\n\
-    \\ENQ\EOT\SOH\STX\EOT\ETX\DC2\ETXG#%\n\
+    \\ENQ\EOT\SOH\STX\EOT\ETX\DC2\ETXj#%\n\
     \6\n\
-    \\EOT\EOT\SOH\STX\ENQ\DC2\ETXJ\STX,\SUB) All top-level definitions in this file.\n\
+    \\EOT\EOT\SOH\STX\ENQ\DC2\ETXm\STX,\SUB) All top-level definitions in this file.\n\
     \\n\
     \\f\n\
-    \\ENQ\EOT\SOH\STX\ENQ\EOT\DC2\ETXJ\STX\n\
+    \\ENQ\EOT\SOH\STX\ENQ\EOT\DC2\ETXm\STX\n\
     \\n\
     \\f\n\
-    \\ENQ\EOT\SOH\STX\ENQ\ACK\DC2\ETXJ\v\SUB\n\
+    \\ENQ\EOT\SOH\STX\ENQ\ACK\DC2\ETXm\v\SUB\n\
     \\f\n\
-    \\ENQ\EOT\SOH\STX\ENQ\SOH\DC2\ETXJ\ESC'\n\
+    \\ENQ\EOT\SOH\STX\ENQ\SOH\DC2\ETXm\ESC'\n\
     \\f\n\
-    \\ENQ\EOT\SOH\STX\ENQ\ETX\DC2\ETXJ*+\n\
+    \\ENQ\EOT\SOH\STX\ENQ\ETX\DC2\ETXm*+\n\
     \\v\n\
-    \\EOT\EOT\SOH\STX\ACK\DC2\ETXK\STX-\n\
+    \\EOT\EOT\SOH\STX\ACK\DC2\ETXn\STX-\n\
     \\f\n\
-    \\ENQ\EOT\SOH\STX\ACK\EOT\DC2\ETXK\STX\n\
+    \\ENQ\EOT\SOH\STX\ACK\EOT\DC2\ETXn\STX\n\
     \\n\
     \\f\n\
-    \\ENQ\EOT\SOH\STX\ACK\ACK\DC2\ETXK\v\RS\n\
+    \\ENQ\EOT\SOH\STX\ACK\ACK\DC2\ETXn\v\RS\n\
     \\f\n\
-    \\ENQ\EOT\SOH\STX\ACK\SOH\DC2\ETXK\US(\n\
+    \\ENQ\EOT\SOH\STX\ACK\SOH\DC2\ETXn\US(\n\
     \\f\n\
-    \\ENQ\EOT\SOH\STX\ACK\ETX\DC2\ETXK+,\n\
+    \\ENQ\EOT\SOH\STX\ACK\ETX\DC2\ETXn+,\n\
     \\v\n\
-    \\EOT\EOT\SOH\STX\a\DC2\ETXL\STX.\n\
+    \\EOT\EOT\SOH\STX\a\DC2\ETXo\STX.\n\
     \\f\n\
-    \\ENQ\EOT\SOH\STX\a\EOT\DC2\ETXL\STX\n\
+    \\ENQ\EOT\SOH\STX\a\EOT\DC2\ETXo\STX\n\
     \\n\
     \\f\n\
-    \\ENQ\EOT\SOH\STX\a\ACK\DC2\ETXL\v!\n\
+    \\ENQ\EOT\SOH\STX\a\ACK\DC2\ETXo\v!\n\
     \\f\n\
-    \\ENQ\EOT\SOH\STX\a\SOH\DC2\ETXL\")\n\
+    \\ENQ\EOT\SOH\STX\a\SOH\DC2\ETXo\")\n\
     \\f\n\
-    \\ENQ\EOT\SOH\STX\a\ETX\DC2\ETXL,-\n\
+    \\ENQ\EOT\SOH\STX\a\ETX\DC2\ETXo,-\n\
     \\v\n\
-    \\EOT\EOT\SOH\STX\b\DC2\ETXM\STX.\n\
+    \\EOT\EOT\SOH\STX\b\DC2\ETXp\STX.\n\
     \\f\n\
-    \\ENQ\EOT\SOH\STX\b\EOT\DC2\ETXM\STX\n\
+    \\ENQ\EOT\SOH\STX\b\EOT\DC2\ETXp\STX\n\
     \\n\
     \\f\n\
-    \\ENQ\EOT\SOH\STX\b\ACK\DC2\ETXM\v\US\n\
+    \\ENQ\EOT\SOH\STX\b\ACK\DC2\ETXp\v\US\n\
     \\f\n\
-    \\ENQ\EOT\SOH\STX\b\SOH\DC2\ETXM )\n\
+    \\ENQ\EOT\SOH\STX\b\SOH\DC2\ETXp )\n\
     \\f\n\
-    \\ENQ\EOT\SOH\STX\b\ETX\DC2\ETXM,-\n\
+    \\ENQ\EOT\SOH\STX\b\ETX\DC2\ETXp,-\n\
     \\v\n\
-    \\EOT\EOT\SOH\STX\t\DC2\ETXO\STX#\n\
+    \\EOT\EOT\SOH\STX\t\DC2\ETXr\STX#\n\
     \\f\n\
-    \\ENQ\EOT\SOH\STX\t\EOT\DC2\ETXO\STX\n\
+    \\ENQ\EOT\SOH\STX\t\EOT\DC2\ETXr\STX\n\
     \\n\
     \\f\n\
-    \\ENQ\EOT\SOH\STX\t\ACK\DC2\ETXO\v\SYN\n\
+    \\ENQ\EOT\SOH\STX\t\ACK\DC2\ETXr\v\SYN\n\
     \\f\n\
-    \\ENQ\EOT\SOH\STX\t\SOH\DC2\ETXO\ETB\RS\n\
+    \\ENQ\EOT\SOH\STX\t\SOH\DC2\ETXr\ETB\RS\n\
     \\f\n\
-    \\ENQ\EOT\SOH\STX\t\ETX\DC2\ETXO!\"\n\
+    \\ENQ\EOT\SOH\STX\t\ETX\DC2\ETXr!\"\n\
     \\244\SOH\n\
     \\EOT\EOT\SOH\STX\n\
-    \\DC2\ETXU\STX/\SUB\230\SOH This field contains optional information about the original source code.\n\
+    \\DC2\ETXx\STX/\SUB\230\SOH This field contains optional information about the original source code.\n\
     \ You may safely remove this entire field without harming runtime\n\
     \ functionality of the descriptors -- the information is needed only by\n\
     \ development tools.\n\
     \\n\
     \\f\n\
     \\ENQ\EOT\SOH\STX\n\
-    \\EOT\DC2\ETXU\STX\n\
+    \\EOT\DC2\ETXx\STX\n\
     \\n\
     \\f\n\
     \\ENQ\EOT\SOH\STX\n\
-    \\ACK\DC2\ETXU\v\EM\n\
+    \\ACK\DC2\ETXx\v\EM\n\
     \\f\n\
     \\ENQ\EOT\SOH\STX\n\
-    \\SOH\DC2\ETXU\SUB*\n\
+    \\SOH\DC2\ETXx\SUB*\n\
     \\f\n\
     \\ENQ\EOT\SOH\STX\n\
-    \\ETX\DC2\ETXU-.\n\
-    \]\n\
-    \\EOT\EOT\SOH\STX\v\DC2\ETXY\STX\RS\SUBP The syntax of the proto file.\n\
-    \ The supported values are \"proto2\" and \"proto3\".\n\
+    \\ETX\DC2\ETXx-.\n\
+    \\165\SOH\n\
+    \\EOT\EOT\SOH\STX\v\DC2\ETX~\STX\RS\SUB\151\SOH The syntax of the proto file.\n\
+    \ The supported values are \"proto2\", \"proto3\", and \"editions\".\n\
+    \\n\
+    \ If `edition` is present, this value must be \"editions\".\n\
     \\n\
     \\f\n\
-    \\ENQ\EOT\SOH\STX\v\EOT\DC2\ETXY\STX\n\
+    \\ENQ\EOT\SOH\STX\v\EOT\DC2\ETX~\STX\n\
     \\n\
     \\f\n\
-    \\ENQ\EOT\SOH\STX\v\ENQ\DC2\ETXY\v\DC1\n\
+    \\ENQ\EOT\SOH\STX\v\ENQ\DC2\ETX~\v\DC1\n\
     \\f\n\
-    \\ENQ\EOT\SOH\STX\v\SOH\DC2\ETXY\DC2\CAN\n\
+    \\ENQ\EOT\SOH\STX\v\SOH\DC2\ETX~\DC2\CAN\n\
     \\f\n\
-    \\ENQ\EOT\SOH\STX\v\ETX\DC2\ETXY\ESC\GS\n\
-    \'\n\
-    \\STX\EOT\STX\DC2\EOT]\NUL}\SOH\SUB\ESC Describes a message type.\n\
+    \\ENQ\EOT\SOH\STX\v\ETX\DC2\ETX~\ESC\GS\n\
+    \.\n\
+    \\EOT\EOT\SOH\STX\f\DC2\EOT\129\SOH\STX \SUB  The edition of the proto file.\n\
     \\n\
-    \\n\
-    \\n\
-    \\ETX\EOT\STX\SOH\DC2\ETX]\b\ETB\n\
-    \\v\n\
-    \\EOT\EOT\STX\STX\NUL\DC2\ETX^\STX\ESC\n\
-    \\f\n\
-    \\ENQ\EOT\STX\STX\NUL\EOT\DC2\ETX^\STX\n\
-    \\n\
-    \\f\n\
-    \\ENQ\EOT\STX\STX\NUL\ENQ\DC2\ETX^\v\DC1\n\
-    \\f\n\
-    \\ENQ\EOT\STX\STX\NUL\SOH\DC2\ETX^\DC2\SYN\n\
-    \\f\n\
-    \\ENQ\EOT\STX\STX\NUL\ETX\DC2\ETX^\EM\SUB\n\
-    \\v\n\
-    \\EOT\EOT\STX\STX\SOH\DC2\ETX`\STX*\n\
-    \\f\n\
-    \\ENQ\EOT\STX\STX\SOH\EOT\DC2\ETX`\STX\n\
-    \\n\
-    \\f\n\
-    \\ENQ\EOT\STX\STX\SOH\ACK\DC2\ETX`\v\US\n\
-    \\f\n\
-    \\ENQ\EOT\STX\STX\SOH\SOH\DC2\ETX` %\n\
-    \\f\n\
-    \\ENQ\EOT\STX\STX\SOH\ETX\DC2\ETX`()\n\
-    \\v\n\
-    \\EOT\EOT\STX\STX\STX\DC2\ETXa\STX.\n\
-    \\f\n\
-    \\ENQ\EOT\STX\STX\STX\EOT\DC2\ETXa\STX\n\
-    \\n\
-    \\f\n\
-    \\ENQ\EOT\STX\STX\STX\ACK\DC2\ETXa\v\US\n\
-    \\f\n\
-    \\ENQ\EOT\STX\STX\STX\SOH\DC2\ETXa )\n\
-    \\f\n\
-    \\ENQ\EOT\STX\STX\STX\ETX\DC2\ETXa,-\n\
-    \\v\n\
-    \\EOT\EOT\STX\STX\ETX\DC2\ETXc\STX+\n\
-    \\f\n\
-    \\ENQ\EOT\STX\STX\ETX\EOT\DC2\ETXc\STX\n\
-    \\n\
-    \\f\n\
-    \\ENQ\EOT\STX\STX\ETX\ACK\DC2\ETXc\v\SUB\n\
-    \\f\n\
-    \\ENQ\EOT\STX\STX\ETX\SOH\DC2\ETXc\ESC&\n\
-    \\f\n\
-    \\ENQ\EOT\STX\STX\ETX\ETX\DC2\ETXc)*\n\
-    \\v\n\
-    \\EOT\EOT\STX\STX\EOT\DC2\ETXd\STX-\n\
-    \\f\n\
-    \\ENQ\EOT\STX\STX\EOT\EOT\DC2\ETXd\STX\n\
-    \\n\
-    \\f\n\
-    \\ENQ\EOT\STX\STX\EOT\ACK\DC2\ETXd\v\RS\n\
-    \\f\n\
-    \\ENQ\EOT\STX\STX\EOT\SOH\DC2\ETXd\US(\n\
-    \\f\n\
-    \\ENQ\EOT\STX\STX\EOT\ETX\DC2\ETXd+,\n\
-    \\f\n\
-    \\EOT\EOT\STX\ETX\NUL\DC2\EOTf\STXk\ETX\n\
-    \\f\n\
-    \\ENQ\EOT\STX\ETX\NUL\SOH\DC2\ETXf\n\
-    \\CAN\n\
-    \\ESC\n\
-    \\ACK\EOT\STX\ETX\NUL\STX\NUL\DC2\ETXg\EOT\GS\"\f Inclusive.\n\
-    \\n\
-    \\SO\n\
-    \\a\EOT\STX\ETX\NUL\STX\NUL\EOT\DC2\ETXg\EOT\f\n\
-    \\SO\n\
-    \\a\EOT\STX\ETX\NUL\STX\NUL\ENQ\DC2\ETXg\r\DC2\n\
-    \\SO\n\
-    \\a\EOT\STX\ETX\NUL\STX\NUL\SOH\DC2\ETXg\DC3\CAN\n\
-    \\SO\n\
-    \\a\EOT\STX\ETX\NUL\STX\NUL\ETX\DC2\ETXg\ESC\FS\n\
-    \\ESC\n\
-    \\ACK\EOT\STX\ETX\NUL\STX\SOH\DC2\ETXh\EOT\ESC\"\f Exclusive.\n\
-    \\n\
-    \\SO\n\
-    \\a\EOT\STX\ETX\NUL\STX\SOH\EOT\DC2\ETXh\EOT\f\n\
-    \\SO\n\
-    \\a\EOT\STX\ETX\NUL\STX\SOH\ENQ\DC2\ETXh\r\DC2\n\
-    \\SO\n\
-    \\a\EOT\STX\ETX\NUL\STX\SOH\SOH\DC2\ETXh\DC3\SYN\n\
-    \\SO\n\
-    \\a\EOT\STX\ETX\NUL\STX\SOH\ETX\DC2\ETXh\EM\SUB\n\
     \\r\n\
-    \\ACK\EOT\STX\ETX\NUL\STX\STX\DC2\ETXj\EOT/\n\
-    \\SO\n\
-    \\a\EOT\STX\ETX\NUL\STX\STX\EOT\DC2\ETXj\EOT\f\n\
-    \\SO\n\
-    \\a\EOT\STX\ETX\NUL\STX\STX\ACK\DC2\ETXj\r\"\n\
-    \\SO\n\
-    \\a\EOT\STX\ETX\NUL\STX\STX\SOH\DC2\ETXj#*\n\
-    \\SO\n\
-    \\a\EOT\STX\ETX\NUL\STX\STX\ETX\DC2\ETXj-.\n\
-    \\v\n\
-    \\EOT\EOT\STX\STX\ENQ\DC2\ETXl\STX.\n\
-    \\f\n\
-    \\ENQ\EOT\STX\STX\ENQ\EOT\DC2\ETXl\STX\n\
+    \\ENQ\EOT\SOH\STX\f\EOT\DC2\EOT\129\SOH\STX\n\
     \\n\
-    \\f\n\
-    \\ENQ\EOT\STX\STX\ENQ\ACK\DC2\ETXl\v\EM\n\
-    \\f\n\
-    \\ENQ\EOT\STX\STX\ENQ\SOH\DC2\ETXl\SUB)\n\
-    \\f\n\
-    \\ENQ\EOT\STX\STX\ENQ\ETX\DC2\ETXl,-\n\
-    \\v\n\
-    \\EOT\EOT\STX\STX\ACK\DC2\ETXn\STX/\n\
-    \\f\n\
-    \\ENQ\EOT\STX\STX\ACK\EOT\DC2\ETXn\STX\n\
+    \\r\n\
+    \\ENQ\EOT\SOH\STX\f\ACK\DC2\EOT\129\SOH\v\DC2\n\
+    \\r\n\
+    \\ENQ\EOT\SOH\STX\f\SOH\DC2\EOT\129\SOH\DC3\SUB\n\
+    \\r\n\
+    \\ENQ\EOT\SOH\STX\f\ETX\DC2\EOT\129\SOH\GS\US\n\
+    \)\n\
+    \\STX\EOT\STX\DC2\ACK\133\SOH\NUL\165\SOH\SOH\SUB\ESC Describes a message type.\n\
     \\n\
-    \\f\n\
-    \\ENQ\EOT\STX\STX\ACK\ACK\DC2\ETXn\v\US\n\
-    \\f\n\
-    \\ENQ\EOT\STX\STX\ACK\SOH\DC2\ETXn *\n\
-    \\f\n\
-    \\ENQ\EOT\STX\STX\ACK\ETX\DC2\ETXn-.\n\
     \\v\n\
-    \\EOT\EOT\STX\STX\a\DC2\ETXp\STX&\n\
+    \\ETX\EOT\STX\SOH\DC2\EOT\133\SOH\b\ETB\n\
     \\f\n\
-    \\ENQ\EOT\STX\STX\a\EOT\DC2\ETXp\STX\n\
+    \\EOT\EOT\STX\STX\NUL\DC2\EOT\134\SOH\STX\ESC\n\
+    \\r\n\
+    \\ENQ\EOT\STX\STX\NUL\EOT\DC2\EOT\134\SOH\STX\n\
     \\n\
+    \\r\n\
+    \\ENQ\EOT\STX\STX\NUL\ENQ\DC2\EOT\134\SOH\v\DC1\n\
+    \\r\n\
+    \\ENQ\EOT\STX\STX\NUL\SOH\DC2\EOT\134\SOH\DC2\SYN\n\
+    \\r\n\
+    \\ENQ\EOT\STX\STX\NUL\ETX\DC2\EOT\134\SOH\EM\SUB\n\
     \\f\n\
-    \\ENQ\EOT\STX\STX\a\ACK\DC2\ETXp\v\EM\n\
+    \\EOT\EOT\STX\STX\SOH\DC2\EOT\136\SOH\STX*\n\
+    \\r\n\
+    \\ENQ\EOT\STX\STX\SOH\EOT\DC2\EOT\136\SOH\STX\n\
+    \\n\
+    \\r\n\
+    \\ENQ\EOT\STX\STX\SOH\ACK\DC2\EOT\136\SOH\v\US\n\
+    \\r\n\
+    \\ENQ\EOT\STX\STX\SOH\SOH\DC2\EOT\136\SOH %\n\
+    \\r\n\
+    \\ENQ\EOT\STX\STX\SOH\ETX\DC2\EOT\136\SOH()\n\
     \\f\n\
-    \\ENQ\EOT\STX\STX\a\SOH\DC2\ETXp\SUB!\n\
+    \\EOT\EOT\STX\STX\STX\DC2\EOT\137\SOH\STX.\n\
+    \\r\n\
+    \\ENQ\EOT\STX\STX\STX\EOT\DC2\EOT\137\SOH\STX\n\
+    \\n\
+    \\r\n\
+    \\ENQ\EOT\STX\STX\STX\ACK\DC2\EOT\137\SOH\v\US\n\
+    \\r\n\
+    \\ENQ\EOT\STX\STX\STX\SOH\DC2\EOT\137\SOH )\n\
+    \\r\n\
+    \\ENQ\EOT\STX\STX\STX\ETX\DC2\EOT\137\SOH,-\n\
     \\f\n\
-    \\ENQ\EOT\STX\STX\a\ETX\DC2\ETXp$%\n\
-    \\170\SOH\n\
-    \\EOT\EOT\STX\ETX\SOH\DC2\EOTu\STXx\ETX\SUB\155\SOH Range of reserved tag numbers. Reserved tag numbers may not be used by\n\
+    \\EOT\EOT\STX\STX\ETX\DC2\EOT\139\SOH\STX+\n\
+    \\r\n\
+    \\ENQ\EOT\STX\STX\ETX\EOT\DC2\EOT\139\SOH\STX\n\
+    \\n\
+    \\r\n\
+    \\ENQ\EOT\STX\STX\ETX\ACK\DC2\EOT\139\SOH\v\SUB\n\
+    \\r\n\
+    \\ENQ\EOT\STX\STX\ETX\SOH\DC2\EOT\139\SOH\ESC&\n\
+    \\r\n\
+    \\ENQ\EOT\STX\STX\ETX\ETX\DC2\EOT\139\SOH)*\n\
+    \\f\n\
+    \\EOT\EOT\STX\STX\EOT\DC2\EOT\140\SOH\STX-\n\
+    \\r\n\
+    \\ENQ\EOT\STX\STX\EOT\EOT\DC2\EOT\140\SOH\STX\n\
+    \\n\
+    \\r\n\
+    \\ENQ\EOT\STX\STX\EOT\ACK\DC2\EOT\140\SOH\v\RS\n\
+    \\r\n\
+    \\ENQ\EOT\STX\STX\EOT\SOH\DC2\EOT\140\SOH\US(\n\
+    \\r\n\
+    \\ENQ\EOT\STX\STX\EOT\ETX\DC2\EOT\140\SOH+,\n\
+    \\SO\n\
+    \\EOT\EOT\STX\ETX\NUL\DC2\ACK\142\SOH\STX\147\SOH\ETX\n\
+    \\r\n\
+    \\ENQ\EOT\STX\ETX\NUL\SOH\DC2\EOT\142\SOH\n\
+    \\CAN\n\
+    \\FS\n\
+    \\ACK\EOT\STX\ETX\NUL\STX\NUL\DC2\EOT\143\SOH\EOT\GS\"\f Inclusive.\n\
+    \\n\
+    \\SI\n\
+    \\a\EOT\STX\ETX\NUL\STX\NUL\EOT\DC2\EOT\143\SOH\EOT\f\n\
+    \\SI\n\
+    \\a\EOT\STX\ETX\NUL\STX\NUL\ENQ\DC2\EOT\143\SOH\r\DC2\n\
+    \\SI\n\
+    \\a\EOT\STX\ETX\NUL\STX\NUL\SOH\DC2\EOT\143\SOH\DC3\CAN\n\
+    \\SI\n\
+    \\a\EOT\STX\ETX\NUL\STX\NUL\ETX\DC2\EOT\143\SOH\ESC\FS\n\
+    \\FS\n\
+    \\ACK\EOT\STX\ETX\NUL\STX\SOH\DC2\EOT\144\SOH\EOT\ESC\"\f Exclusive.\n\
+    \\n\
+    \\SI\n\
+    \\a\EOT\STX\ETX\NUL\STX\SOH\EOT\DC2\EOT\144\SOH\EOT\f\n\
+    \\SI\n\
+    \\a\EOT\STX\ETX\NUL\STX\SOH\ENQ\DC2\EOT\144\SOH\r\DC2\n\
+    \\SI\n\
+    \\a\EOT\STX\ETX\NUL\STX\SOH\SOH\DC2\EOT\144\SOH\DC3\SYN\n\
+    \\SI\n\
+    \\a\EOT\STX\ETX\NUL\STX\SOH\ETX\DC2\EOT\144\SOH\EM\SUB\n\
+    \\SO\n\
+    \\ACK\EOT\STX\ETX\NUL\STX\STX\DC2\EOT\146\SOH\EOT/\n\
+    \\SI\n\
+    \\a\EOT\STX\ETX\NUL\STX\STX\EOT\DC2\EOT\146\SOH\EOT\f\n\
+    \\SI\n\
+    \\a\EOT\STX\ETX\NUL\STX\STX\ACK\DC2\EOT\146\SOH\r\"\n\
+    \\SI\n\
+    \\a\EOT\STX\ETX\NUL\STX\STX\SOH\DC2\EOT\146\SOH#*\n\
+    \\SI\n\
+    \\a\EOT\STX\ETX\NUL\STX\STX\ETX\DC2\EOT\146\SOH-.\n\
+    \\f\n\
+    \\EOT\EOT\STX\STX\ENQ\DC2\EOT\148\SOH\STX.\n\
+    \\r\n\
+    \\ENQ\EOT\STX\STX\ENQ\EOT\DC2\EOT\148\SOH\STX\n\
+    \\n\
+    \\r\n\
+    \\ENQ\EOT\STX\STX\ENQ\ACK\DC2\EOT\148\SOH\v\EM\n\
+    \\r\n\
+    \\ENQ\EOT\STX\STX\ENQ\SOH\DC2\EOT\148\SOH\SUB)\n\
+    \\r\n\
+    \\ENQ\EOT\STX\STX\ENQ\ETX\DC2\EOT\148\SOH,-\n\
+    \\f\n\
+    \\EOT\EOT\STX\STX\ACK\DC2\EOT\150\SOH\STX/\n\
+    \\r\n\
+    \\ENQ\EOT\STX\STX\ACK\EOT\DC2\EOT\150\SOH\STX\n\
+    \\n\
+    \\r\n\
+    \\ENQ\EOT\STX\STX\ACK\ACK\DC2\EOT\150\SOH\v\US\n\
+    \\r\n\
+    \\ENQ\EOT\STX\STX\ACK\SOH\DC2\EOT\150\SOH *\n\
+    \\r\n\
+    \\ENQ\EOT\STX\STX\ACK\ETX\DC2\EOT\150\SOH-.\n\
+    \\f\n\
+    \\EOT\EOT\STX\STX\a\DC2\EOT\152\SOH\STX&\n\
+    \\r\n\
+    \\ENQ\EOT\STX\STX\a\EOT\DC2\EOT\152\SOH\STX\n\
+    \\n\
+    \\r\n\
+    \\ENQ\EOT\STX\STX\a\ACK\DC2\EOT\152\SOH\v\EM\n\
+    \\r\n\
+    \\ENQ\EOT\STX\STX\a\SOH\DC2\EOT\152\SOH\SUB!\n\
+    \\r\n\
+    \\ENQ\EOT\STX\STX\a\ETX\DC2\EOT\152\SOH$%\n\
+    \\172\SOH\n\
+    \\EOT\EOT\STX\ETX\SOH\DC2\ACK\157\SOH\STX\160\SOH\ETX\SUB\155\SOH Range of reserved tag numbers. Reserved tag numbers may not be used by\n\
     \ fields or extension ranges in the same message. Reserved ranges may\n\
     \ not overlap.\n\
     \\n\
-    \\f\n\
-    \\ENQ\EOT\STX\ETX\SOH\SOH\DC2\ETXu\n\
+    \\r\n\
+    \\ENQ\EOT\STX\ETX\SOH\SOH\DC2\EOT\157\SOH\n\
     \\ETB\n\
-    \\ESC\n\
-    \\ACK\EOT\STX\ETX\SOH\STX\NUL\DC2\ETXv\EOT\GS\"\f Inclusive.\n\
+    \\FS\n\
+    \\ACK\EOT\STX\ETX\SOH\STX\NUL\DC2\EOT\158\SOH\EOT\GS\"\f Inclusive.\n\
     \\n\
-    \\SO\n\
-    \\a\EOT\STX\ETX\SOH\STX\NUL\EOT\DC2\ETXv\EOT\f\n\
-    \\SO\n\
-    \\a\EOT\STX\ETX\SOH\STX\NUL\ENQ\DC2\ETXv\r\DC2\n\
-    \\SO\n\
-    \\a\EOT\STX\ETX\SOH\STX\NUL\SOH\DC2\ETXv\DC3\CAN\n\
-    \\SO\n\
-    \\a\EOT\STX\ETX\SOH\STX\NUL\ETX\DC2\ETXv\ESC\FS\n\
-    \\ESC\n\
-    \\ACK\EOT\STX\ETX\SOH\STX\SOH\DC2\ETXw\EOT\ESC\"\f Exclusive.\n\
+    \\SI\n\
+    \\a\EOT\STX\ETX\SOH\STX\NUL\EOT\DC2\EOT\158\SOH\EOT\f\n\
+    \\SI\n\
+    \\a\EOT\STX\ETX\SOH\STX\NUL\ENQ\DC2\EOT\158\SOH\r\DC2\n\
+    \\SI\n\
+    \\a\EOT\STX\ETX\SOH\STX\NUL\SOH\DC2\EOT\158\SOH\DC3\CAN\n\
+    \\SI\n\
+    \\a\EOT\STX\ETX\SOH\STX\NUL\ETX\DC2\EOT\158\SOH\ESC\FS\n\
+    \\FS\n\
+    \\ACK\EOT\STX\ETX\SOH\STX\SOH\DC2\EOT\159\SOH\EOT\ESC\"\f Exclusive.\n\
     \\n\
-    \\SO\n\
-    \\a\EOT\STX\ETX\SOH\STX\SOH\EOT\DC2\ETXw\EOT\f\n\
-    \\SO\n\
-    \\a\EOT\STX\ETX\SOH\STX\SOH\ENQ\DC2\ETXw\r\DC2\n\
-    \\SO\n\
-    \\a\EOT\STX\ETX\SOH\STX\SOH\SOH\DC2\ETXw\DC3\SYN\n\
-    \\SO\n\
-    \\a\EOT\STX\ETX\SOH\STX\SOH\ETX\DC2\ETXw\EM\SUB\n\
-    \\v\n\
-    \\EOT\EOT\STX\STX\b\DC2\ETXy\STX,\n\
+    \\SI\n\
+    \\a\EOT\STX\ETX\SOH\STX\SOH\EOT\DC2\EOT\159\SOH\EOT\f\n\
+    \\SI\n\
+    \\a\EOT\STX\ETX\SOH\STX\SOH\ENQ\DC2\EOT\159\SOH\r\DC2\n\
+    \\SI\n\
+    \\a\EOT\STX\ETX\SOH\STX\SOH\SOH\DC2\EOT\159\SOH\DC3\SYN\n\
+    \\SI\n\
+    \\a\EOT\STX\ETX\SOH\STX\SOH\ETX\DC2\EOT\159\SOH\EM\SUB\n\
     \\f\n\
-    \\ENQ\EOT\STX\STX\b\EOT\DC2\ETXy\STX\n\
+    \\EOT\EOT\STX\STX\b\DC2\EOT\161\SOH\STX,\n\
+    \\r\n\
+    \\ENQ\EOT\STX\STX\b\EOT\DC2\EOT\161\SOH\STX\n\
     \\n\
-    \\f\n\
-    \\ENQ\EOT\STX\STX\b\ACK\DC2\ETXy\v\CAN\n\
-    \\f\n\
-    \\ENQ\EOT\STX\STX\b\SOH\DC2\ETXy\EM'\n\
-    \\f\n\
-    \\ENQ\EOT\STX\STX\b\ETX\DC2\ETXy*+\n\
-    \\130\SOH\n\
-    \\EOT\EOT\STX\STX\t\DC2\ETX|\STX%\SUBu Reserved field names, which may not be used by fields in the same message.\n\
+    \\r\n\
+    \\ENQ\EOT\STX\STX\b\ACK\DC2\EOT\161\SOH\v\CAN\n\
+    \\r\n\
+    \\ENQ\EOT\STX\STX\b\SOH\DC2\EOT\161\SOH\EM'\n\
+    \\r\n\
+    \\ENQ\EOT\STX\STX\b\ETX\DC2\EOT\161\SOH*+\n\
+    \\131\SOH\n\
+    \\EOT\EOT\STX\STX\t\DC2\EOT\164\SOH\STX%\SUBu Reserved field names, which may not be used by fields in the same message.\n\
     \ A given name may only be reserved once.\n\
     \\n\
-    \\f\n\
-    \\ENQ\EOT\STX\STX\t\EOT\DC2\ETX|\STX\n\
+    \\r\n\
+    \\ENQ\EOT\STX\STX\t\EOT\DC2\EOT\164\SOH\STX\n\
     \\n\
+    \\r\n\
+    \\ENQ\EOT\STX\STX\t\ENQ\DC2\EOT\164\SOH\v\DC1\n\
+    \\r\n\
+    \\ENQ\EOT\STX\STX\t\SOH\DC2\EOT\164\SOH\DC2\US\n\
+    \\r\n\
+    \\ENQ\EOT\STX\STX\t\ETX\DC2\EOT\164\SOH\"$\n\
     \\f\n\
-    \\ENQ\EOT\STX\STX\t\ENQ\DC2\ETX|\v\DC1\n\
-    \\f\n\
-    \\ENQ\EOT\STX\STX\t\SOH\DC2\ETX|\DC2\US\n\
-    \\f\n\
-    \\ENQ\EOT\STX\STX\t\ETX\DC2\ETX|\"$\n\
+    \\STX\EOT\ETX\DC2\ACK\167\SOH\NUL\219\SOH\SOH\n\
     \\v\n\
-    \\STX\EOT\ETX\DC2\ENQ\DEL\NUL\134\SOH\SOH\n\
-    \\n\
-    \\n\
-    \\ETX\EOT\ETX\SOH\DC2\ETX\DEL\b\GS\n\
+    \\ETX\EOT\ETX\SOH\DC2\EOT\167\SOH\b\GS\n\
     \O\n\
-    \\EOT\EOT\ETX\STX\NUL\DC2\EOT\129\SOH\STX:\SUBA The parser stores options it doesn't recognize here. See above.\n\
+    \\EOT\EOT\ETX\STX\NUL\DC2\EOT\169\SOH\STX:\SUBA The parser stores options it doesn't recognize here. See above.\n\
     \\n\
     \\r\n\
-    \\ENQ\EOT\ETX\STX\NUL\EOT\DC2\EOT\129\SOH\STX\n\
+    \\ENQ\EOT\ETX\STX\NUL\EOT\DC2\EOT\169\SOH\STX\n\
     \\n\
     \\r\n\
-    \\ENQ\EOT\ETX\STX\NUL\ACK\DC2\EOT\129\SOH\v\RS\n\
+    \\ENQ\EOT\ETX\STX\NUL\ACK\DC2\EOT\169\SOH\v\RS\n\
     \\r\n\
-    \\ENQ\EOT\ETX\STX\NUL\SOH\DC2\EOT\129\SOH\US3\n\
+    \\ENQ\EOT\ETX\STX\NUL\SOH\DC2\EOT\169\SOH\US3\n\
     \\r\n\
-    \\ENQ\EOT\ETX\STX\NUL\ETX\DC2\EOT\129\SOH69\n\
+    \\ENQ\EOT\ETX\STX\NUL\ETX\DC2\EOT\169\SOH69\n\
+    \\SO\n\
+    \\EOT\EOT\ETX\ETX\NUL\DC2\ACK\171\SOH\STX\194\SOH\ETX\n\
+    \\r\n\
+    \\ENQ\EOT\ETX\ETX\NUL\SOH\DC2\EOT\171\SOH\n\
+    \\NAK\n\
+    \K\n\
+    \\ACK\EOT\ETX\ETX\NUL\STX\NUL\DC2\EOT\173\SOH\EOT\RS\SUB; The extension number declared within the extension range.\n\
+    \\n\
+    \\SI\n\
+    \\a\EOT\ETX\ETX\NUL\STX\NUL\EOT\DC2\EOT\173\SOH\EOT\f\n\
+    \\SI\n\
+    \\a\EOT\ETX\ETX\NUL\STX\NUL\ENQ\DC2\EOT\173\SOH\r\DC2\n\
+    \\SI\n\
+    \\a\EOT\ETX\ETX\NUL\STX\NUL\SOH\DC2\EOT\173\SOH\DC3\EM\n\
+    \\SI\n\
+    \\a\EOT\ETX\ETX\NUL\STX\NUL\ETX\DC2\EOT\173\SOH\FS\GS\n\
+    \z\n\
+    \\ACK\EOT\ETX\ETX\NUL\STX\SOH\DC2\EOT\177\SOH\EOT\"\SUBj The fully-qualified name of the extension field. There must be a leading\n\
+    \ dot in front of the full name.\n\
+    \\n\
+    \\SI\n\
+    \\a\EOT\ETX\ETX\NUL\STX\SOH\EOT\DC2\EOT\177\SOH\EOT\f\n\
+    \\SI\n\
+    \\a\EOT\ETX\ETX\NUL\STX\SOH\ENQ\DC2\EOT\177\SOH\r\DC3\n\
+    \\SI\n\
+    \\a\EOT\ETX\ETX\NUL\STX\SOH\SOH\DC2\EOT\177\SOH\DC4\GS\n\
+    \\SI\n\
+    \\a\EOT\ETX\ETX\NUL\STX\SOH\ETX\DC2\EOT\177\SOH !\n\
+    \\161\SOH\n\
+    \\ACK\EOT\ETX\ETX\NUL\STX\STX\DC2\EOT\182\SOH\EOT\GS\SUB\144\SOH The fully-qualified type name of the extension field. Unlike\n\
+    \ Metadata.type, Declaration.type must have a leading dot for messages\n\
+    \ and enums.\n\
+    \\n\
+    \\SI\n\
+    \\a\EOT\ETX\ETX\NUL\STX\STX\EOT\DC2\EOT\182\SOH\EOT\f\n\
+    \\SI\n\
+    \\a\EOT\ETX\ETX\NUL\STX\STX\ENQ\DC2\EOT\182\SOH\r\DC3\n\
+    \\SI\n\
+    \\a\EOT\ETX\ETX\NUL\STX\STX\SOH\DC2\EOT\182\SOH\DC4\CAN\n\
+    \\SI\n\
+    \\a\EOT\ETX\ETX\NUL\STX\STX\ETX\DC2\EOT\182\SOH\ESC\FS\n\
+    \\206\SOH\n\
+    \\ACK\EOT\ETX\ETX\NUL\STX\ETX\DC2\EOT\187\SOH\EOT\US\SUB\189\SOH If true, indicates that the number is reserved in the extension range,\n\
+    \ and any extension field with the number will fail to compile. Set this\n\
+    \ when a declared extension field is deleted.\n\
+    \\n\
+    \\SI\n\
+    \\a\EOT\ETX\ETX\NUL\STX\ETX\EOT\DC2\EOT\187\SOH\EOT\f\n\
+    \\SI\n\
+    \\a\EOT\ETX\ETX\NUL\STX\ETX\ENQ\DC2\EOT\187\SOH\r\DC1\n\
+    \\SI\n\
+    \\a\EOT\ETX\ETX\NUL\STX\ETX\SOH\DC2\EOT\187\SOH\DC2\SUB\n\
+    \\SI\n\
+    \\a\EOT\ETX\ETX\NUL\STX\ETX\ETX\DC2\EOT\187\SOH\GS\RS\n\
+    \\138\SOH\n\
+    \\ACK\EOT\ETX\ETX\NUL\STX\EOT\DC2\EOT\191\SOH\EOT\US\SUBz If true, indicates that the extension must be defined as repeated.\n\
+    \ Otherwise the extension must be defined as optional.\n\
+    \\n\
+    \\SI\n\
+    \\a\EOT\ETX\ETX\NUL\STX\EOT\EOT\DC2\EOT\191\SOH\EOT\f\n\
+    \\SI\n\
+    \\a\EOT\ETX\ETX\NUL\STX\EOT\ENQ\DC2\EOT\191\SOH\r\DC1\n\
+    \\SI\n\
+    \\a\EOT\ETX\ETX\NUL\STX\EOT\SOH\DC2\EOT\191\SOH\DC2\SUB\n\
+    \\SI\n\
+    \\a\EOT\ETX\ETX\NUL\STX\EOT\ETX\DC2\EOT\191\SOH\GS\RS\n\
+    \$\n\
+    \\ENQ\EOT\ETX\ETX\NUL\t\DC2\EOT\193\SOH\EOT\SI\"\NAK removed is_repeated\n\
+    \\n\
+    \\SO\n\
+    \\ACK\EOT\ETX\ETX\NUL\t\NUL\DC2\EOT\193\SOH\r\SO\n\
+    \\SI\n\
+    \\a\EOT\ETX\ETX\NUL\t\NUL\SOH\DC2\EOT\193\SOH\r\SO\n\
+    \\SI\n\
+    \\a\EOT\ETX\ETX\NUL\t\NUL\STX\DC2\EOT\193\SOH\r\SO\n\
+    \\177\SOH\n\
+    \\EOT\EOT\ETX\STX\SOH\DC2\EOT\199\SOH\STXF\SUB\162\SOH For external users: DO NOT USE. We are in the process of open sourcing\n\
+    \ extension declaration and executing internal cleanups before it can be\n\
+    \ used externally.\n\
+    \\n\
+    \\r\n\
+    \\ENQ\EOT\ETX\STX\SOH\EOT\DC2\EOT\199\SOH\STX\n\
+    \\n\
+    \\r\n\
+    \\ENQ\EOT\ETX\STX\SOH\ACK\DC2\EOT\199\SOH\v\SYN\n\
+    \\r\n\
+    \\ENQ\EOT\ETX\STX\SOH\SOH\DC2\EOT\199\SOH\ETB\"\n\
+    \\r\n\
+    \\ENQ\EOT\ETX\STX\SOH\ETX\DC2\EOT\199\SOH%&\n\
+    \\r\n\
+    \\ENQ\EOT\ETX\STX\SOH\b\DC2\EOT\199\SOH'E\n\
+    \\SO\n\
+    \\ACK\EOT\ETX\STX\SOH\b\DC1\DC2\EOT\199\SOH(D\n\
+    \=\n\
+    \\EOT\EOT\ETX\STX\STX\DC2\EOT\202\SOH\STX$\SUB/ Any features defined in the specific edition.\n\
+    \\n\
+    \\r\n\
+    \\ENQ\EOT\ETX\STX\STX\EOT\DC2\EOT\202\SOH\STX\n\
+    \\n\
+    \\r\n\
+    \\ENQ\EOT\ETX\STX\STX\ACK\DC2\EOT\202\SOH\v\NAK\n\
+    \\r\n\
+    \\ENQ\EOT\ETX\STX\STX\SOH\DC2\EOT\202\SOH\SYN\RS\n\
+    \\r\n\
+    \\ENQ\EOT\ETX\STX\STX\ETX\DC2\EOT\202\SOH!#\n\
+    \@\n\
+    \\EOT\EOT\ETX\EOT\NUL\DC2\ACK\205\SOH\STX\209\SOH\ETX\SUB0 The verification state of the extension range.\n\
+    \\n\
+    \\r\n\
+    \\ENQ\EOT\ETX\EOT\NUL\SOH\DC2\EOT\205\SOH\a\CAN\n\
+    \C\n\
+    \\ACK\EOT\ETX\EOT\NUL\STX\NUL\DC2\EOT\207\SOH\EOT\DC4\SUB3 All the extensions of the range must be declared.\n\
+    \\n\
+    \\SI\n\
+    \\a\EOT\ETX\EOT\NUL\STX\NUL\SOH\DC2\EOT\207\SOH\EOT\SI\n\
+    \\SI\n\
+    \\a\EOT\ETX\EOT\NUL\STX\NUL\STX\DC2\EOT\207\SOH\DC2\DC3\n\
+    \\SO\n\
+    \\ACK\EOT\ETX\EOT\NUL\STX\SOH\DC2\EOT\208\SOH\EOT\DC3\n\
+    \\SI\n\
+    \\a\EOT\ETX\EOT\NUL\STX\SOH\SOH\DC2\EOT\208\SOH\EOT\SO\n\
+    \\SI\n\
+    \\a\EOT\ETX\EOT\NUL\STX\SOH\STX\DC2\EOT\208\SOH\DC1\DC2\n\
+    \\142\SOH\n\
+    \\EOT\EOT\ETX\STX\ETX\DC2\ACK\214\SOH\STX\215\SOH;\SUB~ The verification state of the range.\n\
+    \ TODO: flip the default to DECLARATION once all empty ranges\n\
+    \ are marked as UNVERIFIED.\n\
+    \\n\
+    \\r\n\
+    \\ENQ\EOT\ETX\STX\ETX\EOT\DC2\EOT\214\SOH\STX\n\
+    \\n\
+    \\r\n\
+    \\ENQ\EOT\ETX\STX\ETX\ACK\DC2\EOT\214\SOH\v\FS\n\
+    \\r\n\
+    \\ENQ\EOT\ETX\STX\ETX\SOH\DC2\EOT\214\SOH\GS)\n\
+    \\r\n\
+    \\ENQ\EOT\ETX\STX\ETX\ETX\DC2\EOT\214\SOH,-\n\
+    \\r\n\
+    \\ENQ\EOT\ETX\STX\ETX\b\DC2\EOT\215\SOH\ACK:\n\
+    \\r\n\
+    \\ENQ\EOT\ETX\STX\ETX\a\DC2\EOT\215\SOH\DC1\ESC\n\
+    \\SO\n\
+    \\ACK\EOT\ETX\STX\ETX\b\DC1\DC2\EOT\215\SOH\GS9\n\
     \Z\n\
-    \\ETX\EOT\ETX\ENQ\DC2\EOT\133\SOH\STX\EM\SUBM Clients can define custom options in extensions of this message. See above.\n\
+    \\ETX\EOT\ETX\ENQ\DC2\EOT\218\SOH\STX\EM\SUBM Clients can define custom options in extensions of this message. See above.\n\
     \\n\
     \\f\n\
-    \\EOT\EOT\ETX\ENQ\NUL\DC2\EOT\133\SOH\r\CAN\n\
+    \\EOT\EOT\ETX\ENQ\NUL\DC2\EOT\218\SOH\r\CAN\n\
     \\r\n\
-    \\ENQ\EOT\ETX\ENQ\NUL\SOH\DC2\EOT\133\SOH\r\DC1\n\
+    \\ENQ\EOT\ETX\ENQ\NUL\SOH\DC2\EOT\218\SOH\r\DC1\n\
     \\r\n\
-    \\ENQ\EOT\ETX\ENQ\NUL\STX\DC2\EOT\133\SOH\NAK\CAN\n\
+    \\ENQ\EOT\ETX\ENQ\NUL\STX\DC2\EOT\218\SOH\NAK\CAN\n\
     \3\n\
-    \\STX\EOT\EOT\DC2\ACK\137\SOH\NUL\238\SOH\SOH\SUB% Describes a field within a message.\n\
+    \\STX\EOT\EOT\DC2\ACK\222\SOH\NUL\198\STX\SOH\SUB% Describes a field within a message.\n\
     \\n\
     \\v\n\
-    \\ETX\EOT\EOT\SOH\DC2\EOT\137\SOH\b\FS\n\
+    \\ETX\EOT\EOT\SOH\DC2\EOT\222\SOH\b\FS\n\
     \\SO\n\
-    \\EOT\EOT\EOT\EOT\NUL\DC2\ACK\138\SOH\STX\169\SOH\ETX\n\
+    \\EOT\EOT\EOT\EOT\NUL\DC2\ACK\223\SOH\STX\255\SOH\ETX\n\
     \\r\n\
-    \\ENQ\EOT\EOT\EOT\NUL\SOH\DC2\EOT\138\SOH\a\v\n\
+    \\ENQ\EOT\EOT\EOT\NUL\SOH\DC2\EOT\223\SOH\a\v\n\
     \S\n\
-    \\ACK\EOT\EOT\EOT\NUL\STX\NUL\DC2\EOT\141\SOH\EOT\DC4\SUBC 0 is reserved for errors.\n\
+    \\ACK\EOT\EOT\EOT\NUL\STX\NUL\DC2\EOT\226\SOH\EOT\DC4\SUBC 0 is reserved for errors.\n\
     \ Order is weird for historical reasons.\n\
     \\n\
     \\SI\n\
-    \\a\EOT\EOT\EOT\NUL\STX\NUL\SOH\DC2\EOT\141\SOH\EOT\SI\n\
+    \\a\EOT\EOT\EOT\NUL\STX\NUL\SOH\DC2\EOT\226\SOH\EOT\SI\n\
     \\SI\n\
-    \\a\EOT\EOT\EOT\NUL\STX\NUL\STX\DC2\EOT\141\SOH\DC2\DC3\n\
+    \\a\EOT\EOT\EOT\NUL\STX\NUL\STX\DC2\EOT\226\SOH\DC2\DC3\n\
     \\SO\n\
-    \\ACK\EOT\EOT\EOT\NUL\STX\SOH\DC2\EOT\142\SOH\EOT\DC3\n\
+    \\ACK\EOT\EOT\EOT\NUL\STX\SOH\DC2\EOT\227\SOH\EOT\DC3\n\
     \\SI\n\
-    \\a\EOT\EOT\EOT\NUL\STX\SOH\SOH\DC2\EOT\142\SOH\EOT\SO\n\
+    \\a\EOT\EOT\EOT\NUL\STX\SOH\SOH\DC2\EOT\227\SOH\EOT\SO\n\
     \\SI\n\
-    \\a\EOT\EOT\EOT\NUL\STX\SOH\STX\DC2\EOT\142\SOH\DC1\DC2\n\
+    \\a\EOT\EOT\EOT\NUL\STX\SOH\STX\DC2\EOT\227\SOH\DC1\DC2\n\
     \w\n\
-    \\ACK\EOT\EOT\EOT\NUL\STX\STX\DC2\EOT\145\SOH\EOT\DC3\SUBg Not ZigZag encoded.  Negative numbers take 10 bytes.  Use TYPE_SINT64 if\n\
+    \\ACK\EOT\EOT\EOT\NUL\STX\STX\DC2\EOT\230\SOH\EOT\DC3\SUBg Not ZigZag encoded.  Negative numbers take 10 bytes.  Use TYPE_SINT64 if\n\
     \ negative values are likely.\n\
     \\n\
     \\SI\n\
-    \\a\EOT\EOT\EOT\NUL\STX\STX\SOH\DC2\EOT\145\SOH\EOT\SO\n\
+    \\a\EOT\EOT\EOT\NUL\STX\STX\SOH\DC2\EOT\230\SOH\EOT\SO\n\
     \\SI\n\
-    \\a\EOT\EOT\EOT\NUL\STX\STX\STX\DC2\EOT\145\SOH\DC1\DC2\n\
+    \\a\EOT\EOT\EOT\NUL\STX\STX\STX\DC2\EOT\230\SOH\DC1\DC2\n\
     \\SO\n\
-    \\ACK\EOT\EOT\EOT\NUL\STX\ETX\DC2\EOT\146\SOH\EOT\DC4\n\
+    \\ACK\EOT\EOT\EOT\NUL\STX\ETX\DC2\EOT\231\SOH\EOT\DC4\n\
     \\SI\n\
-    \\a\EOT\EOT\EOT\NUL\STX\ETX\SOH\DC2\EOT\146\SOH\EOT\SI\n\
+    \\a\EOT\EOT\EOT\NUL\STX\ETX\SOH\DC2\EOT\231\SOH\EOT\SI\n\
     \\SI\n\
-    \\a\EOT\EOT\EOT\NUL\STX\ETX\STX\DC2\EOT\146\SOH\DC2\DC3\n\
+    \\a\EOT\EOT\EOT\NUL\STX\ETX\STX\DC2\EOT\231\SOH\DC2\DC3\n\
     \w\n\
-    \\ACK\EOT\EOT\EOT\NUL\STX\EOT\DC2\EOT\149\SOH\EOT\DC3\SUBg Not ZigZag encoded.  Negative numbers take 10 bytes.  Use TYPE_SINT32 if\n\
+    \\ACK\EOT\EOT\EOT\NUL\STX\EOT\DC2\EOT\234\SOH\EOT\DC3\SUBg Not ZigZag encoded.  Negative numbers take 10 bytes.  Use TYPE_SINT32 if\n\
     \ negative values are likely.\n\
     \\n\
     \\SI\n\
-    \\a\EOT\EOT\EOT\NUL\STX\EOT\SOH\DC2\EOT\149\SOH\EOT\SO\n\
+    \\a\EOT\EOT\EOT\NUL\STX\EOT\SOH\DC2\EOT\234\SOH\EOT\SO\n\
     \\SI\n\
-    \\a\EOT\EOT\EOT\NUL\STX\EOT\STX\DC2\EOT\149\SOH\DC1\DC2\n\
+    \\a\EOT\EOT\EOT\NUL\STX\EOT\STX\DC2\EOT\234\SOH\DC1\DC2\n\
     \\SO\n\
-    \\ACK\EOT\EOT\EOT\NUL\STX\ENQ\DC2\EOT\150\SOH\EOT\NAK\n\
+    \\ACK\EOT\EOT\EOT\NUL\STX\ENQ\DC2\EOT\235\SOH\EOT\NAK\n\
     \\SI\n\
-    \\a\EOT\EOT\EOT\NUL\STX\ENQ\SOH\DC2\EOT\150\SOH\EOT\DLE\n\
+    \\a\EOT\EOT\EOT\NUL\STX\ENQ\SOH\DC2\EOT\235\SOH\EOT\DLE\n\
     \\SI\n\
-    \\a\EOT\EOT\EOT\NUL\STX\ENQ\STX\DC2\EOT\150\SOH\DC3\DC4\n\
+    \\a\EOT\EOT\EOT\NUL\STX\ENQ\STX\DC2\EOT\235\SOH\DC3\DC4\n\
     \\SO\n\
-    \\ACK\EOT\EOT\EOT\NUL\STX\ACK\DC2\EOT\151\SOH\EOT\NAK\n\
+    \\ACK\EOT\EOT\EOT\NUL\STX\ACK\DC2\EOT\236\SOH\EOT\NAK\n\
     \\SI\n\
-    \\a\EOT\EOT\EOT\NUL\STX\ACK\SOH\DC2\EOT\151\SOH\EOT\DLE\n\
+    \\a\EOT\EOT\EOT\NUL\STX\ACK\SOH\DC2\EOT\236\SOH\EOT\DLE\n\
     \\SI\n\
-    \\a\EOT\EOT\EOT\NUL\STX\ACK\STX\DC2\EOT\151\SOH\DC3\DC4\n\
+    \\a\EOT\EOT\EOT\NUL\STX\ACK\STX\DC2\EOT\236\SOH\DC3\DC4\n\
     \\SO\n\
-    \\ACK\EOT\EOT\EOT\NUL\STX\a\DC2\EOT\152\SOH\EOT\DC2\n\
+    \\ACK\EOT\EOT\EOT\NUL\STX\a\DC2\EOT\237\SOH\EOT\DC2\n\
     \\SI\n\
-    \\a\EOT\EOT\EOT\NUL\STX\a\SOH\DC2\EOT\152\SOH\EOT\r\n\
+    \\a\EOT\EOT\EOT\NUL\STX\a\SOH\DC2\EOT\237\SOH\EOT\r\n\
     \\SI\n\
-    \\a\EOT\EOT\EOT\NUL\STX\a\STX\DC2\EOT\152\SOH\DLE\DC1\n\
+    \\a\EOT\EOT\EOT\NUL\STX\a\STX\DC2\EOT\237\SOH\DLE\DC1\n\
     \\SO\n\
-    \\ACK\EOT\EOT\EOT\NUL\STX\b\DC2\EOT\153\SOH\EOT\DC4\n\
+    \\ACK\EOT\EOT\EOT\NUL\STX\b\DC2\EOT\238\SOH\EOT\DC4\n\
     \\SI\n\
-    \\a\EOT\EOT\EOT\NUL\STX\b\SOH\DC2\EOT\153\SOH\EOT\SI\n\
+    \\a\EOT\EOT\EOT\NUL\STX\b\SOH\DC2\EOT\238\SOH\EOT\SI\n\
     \\SI\n\
-    \\a\EOT\EOT\EOT\NUL\STX\b\STX\DC2\EOT\153\SOH\DC2\DC3\n\
-    \\226\SOH\n\
-    \\ACK\EOT\EOT\EOT\NUL\STX\t\DC2\EOT\158\SOH\EOT\DC4\SUB\209\SOH Tag-delimited aggregate.\n\
-    \ Group type is deprecated and not supported in proto3. However, Proto3\n\
+    \\a\EOT\EOT\EOT\NUL\STX\b\STX\DC2\EOT\238\SOH\DC2\DC3\n\
+    \\198\STX\n\
+    \\ACK\EOT\EOT\EOT\NUL\STX\t\DC2\EOT\244\SOH\EOT\DC4\SUB\181\STX Tag-delimited aggregate.\n\
+    \ Group type is deprecated and not supported after google.protobuf. However, Proto3\n\
     \ implementations should still be able to parse the group wire format and\n\
-    \ treat group fields as unknown fields.\n\
+    \ treat group fields as unknown fields.  In Editions, the group wire format\n\
+    \ can be enabled via the `message_encoding` feature.\n\
     \\n\
     \\SI\n\
-    \\a\EOT\EOT\EOT\NUL\STX\t\SOH\DC2\EOT\158\SOH\EOT\SO\n\
+    \\a\EOT\EOT\EOT\NUL\STX\t\SOH\DC2\EOT\244\SOH\EOT\SO\n\
     \\SI\n\
-    \\a\EOT\EOT\EOT\NUL\STX\t\STX\DC2\EOT\158\SOH\DC1\DC3\n\
+    \\a\EOT\EOT\EOT\NUL\STX\t\STX\DC2\EOT\244\SOH\DC1\DC3\n\
     \-\n\
     \\ACK\EOT\EOT\EOT\NUL\STX\n\
-    \\DC2\EOT\159\SOH\EOT\SYN\"\GS Length-delimited aggregate.\n\
+    \\DC2\EOT\245\SOH\EOT\SYN\"\GS Length-delimited aggregate.\n\
     \\n\
     \\SI\n\
     \\a\EOT\EOT\EOT\NUL\STX\n\
-    \\SOH\DC2\EOT\159\SOH\EOT\DLE\n\
+    \\SOH\DC2\EOT\245\SOH\EOT\DLE\n\
     \\SI\n\
     \\a\EOT\EOT\EOT\NUL\STX\n\
-    \\STX\DC2\EOT\159\SOH\DC3\NAK\n\
+    \\STX\DC2\EOT\245\SOH\DC3\NAK\n\
     \#\n\
-    \\ACK\EOT\EOT\EOT\NUL\STX\v\DC2\EOT\162\SOH\EOT\DC4\SUB\DC3 New in version 2.\n\
+    \\ACK\EOT\EOT\EOT\NUL\STX\v\DC2\EOT\248\SOH\EOT\DC4\SUB\DC3 New in version 2.\n\
     \\n\
     \\SI\n\
-    \\a\EOT\EOT\EOT\NUL\STX\v\SOH\DC2\EOT\162\SOH\EOT\SO\n\
+    \\a\EOT\EOT\EOT\NUL\STX\v\SOH\DC2\EOT\248\SOH\EOT\SO\n\
     \\SI\n\
-    \\a\EOT\EOT\EOT\NUL\STX\v\STX\DC2\EOT\162\SOH\DC1\DC3\n\
+    \\a\EOT\EOT\EOT\NUL\STX\v\STX\DC2\EOT\248\SOH\DC1\DC3\n\
     \\SO\n\
-    \\ACK\EOT\EOT\EOT\NUL\STX\f\DC2\EOT\163\SOH\EOT\NAK\n\
+    \\ACK\EOT\EOT\EOT\NUL\STX\f\DC2\EOT\249\SOH\EOT\NAK\n\
     \\SI\n\
-    \\a\EOT\EOT\EOT\NUL\STX\f\SOH\DC2\EOT\163\SOH\EOT\SI\n\
+    \\a\EOT\EOT\EOT\NUL\STX\f\SOH\DC2\EOT\249\SOH\EOT\SI\n\
     \\SI\n\
-    \\a\EOT\EOT\EOT\NUL\STX\f\STX\DC2\EOT\163\SOH\DC2\DC4\n\
+    \\a\EOT\EOT\EOT\NUL\STX\f\STX\DC2\EOT\249\SOH\DC2\DC4\n\
     \\SO\n\
-    \\ACK\EOT\EOT\EOT\NUL\STX\r\DC2\EOT\164\SOH\EOT\DC3\n\
+    \\ACK\EOT\EOT\EOT\NUL\STX\r\DC2\EOT\250\SOH\EOT\DC3\n\
     \\SI\n\
-    \\a\EOT\EOT\EOT\NUL\STX\r\SOH\DC2\EOT\164\SOH\EOT\r\n\
+    \\a\EOT\EOT\EOT\NUL\STX\r\SOH\DC2\EOT\250\SOH\EOT\r\n\
     \\SI\n\
-    \\a\EOT\EOT\EOT\NUL\STX\r\STX\DC2\EOT\164\SOH\DLE\DC2\n\
+    \\a\EOT\EOT\EOT\NUL\STX\r\STX\DC2\EOT\250\SOH\DLE\DC2\n\
     \\SO\n\
-    \\ACK\EOT\EOT\EOT\NUL\STX\SO\DC2\EOT\165\SOH\EOT\ETB\n\
+    \\ACK\EOT\EOT\EOT\NUL\STX\SO\DC2\EOT\251\SOH\EOT\ETB\n\
     \\SI\n\
-    \\a\EOT\EOT\EOT\NUL\STX\SO\SOH\DC2\EOT\165\SOH\EOT\DC1\n\
+    \\a\EOT\EOT\EOT\NUL\STX\SO\SOH\DC2\EOT\251\SOH\EOT\DC1\n\
     \\SI\n\
-    \\a\EOT\EOT\EOT\NUL\STX\SO\STX\DC2\EOT\165\SOH\DC4\SYN\n\
+    \\a\EOT\EOT\EOT\NUL\STX\SO\STX\DC2\EOT\251\SOH\DC4\SYN\n\
     \\SO\n\
-    \\ACK\EOT\EOT\EOT\NUL\STX\SI\DC2\EOT\166\SOH\EOT\ETB\n\
+    \\ACK\EOT\EOT\EOT\NUL\STX\SI\DC2\EOT\252\SOH\EOT\ETB\n\
     \\SI\n\
-    \\a\EOT\EOT\EOT\NUL\STX\SI\SOH\DC2\EOT\166\SOH\EOT\DC1\n\
+    \\a\EOT\EOT\EOT\NUL\STX\SI\SOH\DC2\EOT\252\SOH\EOT\DC1\n\
     \\SI\n\
-    \\a\EOT\EOT\EOT\NUL\STX\SI\STX\DC2\EOT\166\SOH\DC4\SYN\n\
+    \\a\EOT\EOT\EOT\NUL\STX\SI\STX\DC2\EOT\252\SOH\DC4\SYN\n\
     \'\n\
-    \\ACK\EOT\EOT\EOT\NUL\STX\DLE\DC2\EOT\167\SOH\EOT\NAK\"\ETB Uses ZigZag encoding.\n\
+    \\ACK\EOT\EOT\EOT\NUL\STX\DLE\DC2\EOT\253\SOH\EOT\NAK\"\ETB Uses ZigZag encoding.\n\
     \\n\
     \\SI\n\
-    \\a\EOT\EOT\EOT\NUL\STX\DLE\SOH\DC2\EOT\167\SOH\EOT\SI\n\
+    \\a\EOT\EOT\EOT\NUL\STX\DLE\SOH\DC2\EOT\253\SOH\EOT\SI\n\
     \\SI\n\
-    \\a\EOT\EOT\EOT\NUL\STX\DLE\STX\DC2\EOT\167\SOH\DC2\DC4\n\
+    \\a\EOT\EOT\EOT\NUL\STX\DLE\STX\DC2\EOT\253\SOH\DC2\DC4\n\
     \'\n\
-    \\ACK\EOT\EOT\EOT\NUL\STX\DC1\DC2\EOT\168\SOH\EOT\NAK\"\ETB Uses ZigZag encoding.\n\
+    \\ACK\EOT\EOT\EOT\NUL\STX\DC1\DC2\EOT\254\SOH\EOT\NAK\"\ETB Uses ZigZag encoding.\n\
     \\n\
     \\SI\n\
-    \\a\EOT\EOT\EOT\NUL\STX\DC1\SOH\DC2\EOT\168\SOH\EOT\SI\n\
+    \\a\EOT\EOT\EOT\NUL\STX\DC1\SOH\DC2\EOT\254\SOH\EOT\SI\n\
     \\SI\n\
-    \\a\EOT\EOT\EOT\NUL\STX\DC1\STX\DC2\EOT\168\SOH\DC2\DC4\n\
+    \\a\EOT\EOT\EOT\NUL\STX\DC1\STX\DC2\EOT\254\SOH\DC2\DC4\n\
     \\SO\n\
-    \\EOT\EOT\EOT\EOT\SOH\DC2\ACK\171\SOH\STX\176\SOH\ETX\n\
+    \\EOT\EOT\EOT\EOT\SOH\DC2\ACK\129\STX\STX\137\STX\ETX\n\
     \\r\n\
-    \\ENQ\EOT\EOT\EOT\SOH\SOH\DC2\EOT\171\SOH\a\f\n\
+    \\ENQ\EOT\EOT\EOT\SOH\SOH\DC2\EOT\129\STX\a\f\n\
     \*\n\
-    \\ACK\EOT\EOT\EOT\SOH\STX\NUL\DC2\EOT\173\SOH\EOT\ETB\SUB\SUB 0 is reserved for errors\n\
+    \\ACK\EOT\EOT\EOT\SOH\STX\NUL\DC2\EOT\131\STX\EOT\ETB\SUB\SUB 0 is reserved for errors\n\
     \\n\
     \\SI\n\
-    \\a\EOT\EOT\EOT\SOH\STX\NUL\SOH\DC2\EOT\173\SOH\EOT\DC2\n\
+    \\a\EOT\EOT\EOT\SOH\STX\NUL\SOH\DC2\EOT\131\STX\EOT\DC2\n\
     \\SI\n\
-    \\a\EOT\EOT\EOT\SOH\STX\NUL\STX\DC2\EOT\173\SOH\NAK\SYN\n\
+    \\a\EOT\EOT\EOT\SOH\STX\NUL\STX\DC2\EOT\131\STX\NAK\SYN\n\
     \\SO\n\
-    \\ACK\EOT\EOT\EOT\SOH\STX\SOH\DC2\EOT\174\SOH\EOT\ETB\n\
+    \\ACK\EOT\EOT\EOT\SOH\STX\SOH\DC2\EOT\132\STX\EOT\ETB\n\
     \\SI\n\
-    \\a\EOT\EOT\EOT\SOH\STX\SOH\SOH\DC2\EOT\174\SOH\EOT\DC2\n\
+    \\a\EOT\EOT\EOT\SOH\STX\SOH\SOH\DC2\EOT\132\STX\EOT\DC2\n\
     \\SI\n\
-    \\a\EOT\EOT\EOT\SOH\STX\SOH\STX\DC2\EOT\174\SOH\NAK\SYN\n\
-    \\SO\n\
-    \\ACK\EOT\EOT\EOT\SOH\STX\STX\DC2\EOT\175\SOH\EOT\ETB\n\
+    \\a\EOT\EOT\EOT\SOH\STX\SOH\STX\DC2\EOT\132\STX\NAK\SYN\n\
+    \\204\SOH\n\
+    \\ACK\EOT\EOT\EOT\SOH\STX\STX\DC2\EOT\136\STX\EOT\ETB\SUB\187\SOH The required label is only allowed in google.protobuf.  In proto3 and Editions\n\
+    \ it's explicitly prohibited.  In Editions, the `field_presence` feature\n\
+    \ can be used to get this behavior.\n\
+    \\n\
     \\SI\n\
-    \\a\EOT\EOT\EOT\SOH\STX\STX\SOH\DC2\EOT\175\SOH\EOT\DC2\n\
+    \\a\EOT\EOT\EOT\SOH\STX\STX\SOH\DC2\EOT\136\STX\EOT\DC2\n\
     \\SI\n\
-    \\a\EOT\EOT\EOT\SOH\STX\STX\STX\DC2\EOT\175\SOH\NAK\SYN\n\
+    \\a\EOT\EOT\EOT\SOH\STX\STX\STX\DC2\EOT\136\STX\NAK\SYN\n\
     \\f\n\
-    \\EOT\EOT\EOT\STX\NUL\DC2\EOT\178\SOH\STX\ESC\n\
+    \\EOT\EOT\EOT\STX\NUL\DC2\EOT\139\STX\STX\ESC\n\
     \\r\n\
-    \\ENQ\EOT\EOT\STX\NUL\EOT\DC2\EOT\178\SOH\STX\n\
+    \\ENQ\EOT\EOT\STX\NUL\EOT\DC2\EOT\139\STX\STX\n\
     \\n\
     \\r\n\
-    \\ENQ\EOT\EOT\STX\NUL\ENQ\DC2\EOT\178\SOH\v\DC1\n\
+    \\ENQ\EOT\EOT\STX\NUL\ENQ\DC2\EOT\139\STX\v\DC1\n\
     \\r\n\
-    \\ENQ\EOT\EOT\STX\NUL\SOH\DC2\EOT\178\SOH\DC2\SYN\n\
+    \\ENQ\EOT\EOT\STX\NUL\SOH\DC2\EOT\139\STX\DC2\SYN\n\
     \\r\n\
-    \\ENQ\EOT\EOT\STX\NUL\ETX\DC2\EOT\178\SOH\EM\SUB\n\
+    \\ENQ\EOT\EOT\STX\NUL\ETX\DC2\EOT\139\STX\EM\SUB\n\
     \\f\n\
-    \\EOT\EOT\EOT\STX\SOH\DC2\EOT\179\SOH\STX\FS\n\
+    \\EOT\EOT\EOT\STX\SOH\DC2\EOT\140\STX\STX\FS\n\
     \\r\n\
-    \\ENQ\EOT\EOT\STX\SOH\EOT\DC2\EOT\179\SOH\STX\n\
+    \\ENQ\EOT\EOT\STX\SOH\EOT\DC2\EOT\140\STX\STX\n\
     \\n\
     \\r\n\
-    \\ENQ\EOT\EOT\STX\SOH\ENQ\DC2\EOT\179\SOH\v\DLE\n\
+    \\ENQ\EOT\EOT\STX\SOH\ENQ\DC2\EOT\140\STX\v\DLE\n\
     \\r\n\
-    \\ENQ\EOT\EOT\STX\SOH\SOH\DC2\EOT\179\SOH\DC1\ETB\n\
+    \\ENQ\EOT\EOT\STX\SOH\SOH\DC2\EOT\140\STX\DC1\ETB\n\
     \\r\n\
-    \\ENQ\EOT\EOT\STX\SOH\ETX\DC2\EOT\179\SOH\SUB\ESC\n\
+    \\ENQ\EOT\EOT\STX\SOH\ETX\DC2\EOT\140\STX\SUB\ESC\n\
     \\f\n\
-    \\EOT\EOT\EOT\STX\STX\DC2\EOT\180\SOH\STX\ESC\n\
+    \\EOT\EOT\EOT\STX\STX\DC2\EOT\141\STX\STX\ESC\n\
     \\r\n\
-    \\ENQ\EOT\EOT\STX\STX\EOT\DC2\EOT\180\SOH\STX\n\
+    \\ENQ\EOT\EOT\STX\STX\EOT\DC2\EOT\141\STX\STX\n\
     \\n\
     \\r\n\
-    \\ENQ\EOT\EOT\STX\STX\ACK\DC2\EOT\180\SOH\v\DLE\n\
+    \\ENQ\EOT\EOT\STX\STX\ACK\DC2\EOT\141\STX\v\DLE\n\
     \\r\n\
-    \\ENQ\EOT\EOT\STX\STX\SOH\DC2\EOT\180\SOH\DC1\SYN\n\
+    \\ENQ\EOT\EOT\STX\STX\SOH\DC2\EOT\141\STX\DC1\SYN\n\
     \\r\n\
-    \\ENQ\EOT\EOT\STX\STX\ETX\DC2\EOT\180\SOH\EM\SUB\n\
+    \\ENQ\EOT\EOT\STX\STX\ETX\DC2\EOT\141\STX\EM\SUB\n\
     \\156\SOH\n\
-    \\EOT\EOT\EOT\STX\ETX\DC2\EOT\184\SOH\STX\EM\SUB\141\SOH If type_name is set, this need not be set.  If both this and type_name\n\
+    \\EOT\EOT\EOT\STX\ETX\DC2\EOT\145\STX\STX\EM\SUB\141\SOH If type_name is set, this need not be set.  If both this and type_name\n\
     \ are set, this must be one of TYPE_ENUM, TYPE_MESSAGE or TYPE_GROUP.\n\
     \\n\
     \\r\n\
-    \\ENQ\EOT\EOT\STX\ETX\EOT\DC2\EOT\184\SOH\STX\n\
+    \\ENQ\EOT\EOT\STX\ETX\EOT\DC2\EOT\145\STX\STX\n\
     \\n\
     \\r\n\
-    \\ENQ\EOT\EOT\STX\ETX\ACK\DC2\EOT\184\SOH\v\SI\n\
+    \\ENQ\EOT\EOT\STX\ETX\ACK\DC2\EOT\145\STX\v\SI\n\
     \\r\n\
-    \\ENQ\EOT\EOT\STX\ETX\SOH\DC2\EOT\184\SOH\DLE\DC4\n\
+    \\ENQ\EOT\EOT\STX\ETX\SOH\DC2\EOT\145\STX\DLE\DC4\n\
     \\r\n\
-    \\ENQ\EOT\EOT\STX\ETX\ETX\DC2\EOT\184\SOH\ETB\CAN\n\
+    \\ENQ\EOT\EOT\STX\ETX\ETX\DC2\EOT\145\STX\ETB\CAN\n\
     \\183\STX\n\
-    \\EOT\EOT\EOT\STX\EOT\DC2\EOT\191\SOH\STX \SUB\168\STX For message and enum types, this is the name of the type.  If the name\n\
+    \\EOT\EOT\EOT\STX\EOT\DC2\EOT\152\STX\STX \SUB\168\STX For message and enum types, this is the name of the type.  If the name\n\
     \ starts with a '.', it is fully-qualified.  Otherwise, C++-like scoping\n\
     \ rules are used to find the type (i.e. first the nested types within this\n\
     \ message are searched, then within the parent, on up to the root\n\
     \ namespace).\n\
     \\n\
     \\r\n\
-    \\ENQ\EOT\EOT\STX\EOT\EOT\DC2\EOT\191\SOH\STX\n\
+    \\ENQ\EOT\EOT\STX\EOT\EOT\DC2\EOT\152\STX\STX\n\
     \\n\
     \\r\n\
-    \\ENQ\EOT\EOT\STX\EOT\ENQ\DC2\EOT\191\SOH\v\DC1\n\
+    \\ENQ\EOT\EOT\STX\EOT\ENQ\DC2\EOT\152\STX\v\DC1\n\
     \\r\n\
-    \\ENQ\EOT\EOT\STX\EOT\SOH\DC2\EOT\191\SOH\DC2\ESC\n\
+    \\ENQ\EOT\EOT\STX\EOT\SOH\DC2\EOT\152\STX\DC2\ESC\n\
     \\r\n\
-    \\ENQ\EOT\EOT\STX\EOT\ETX\DC2\EOT\191\SOH\RS\US\n\
+    \\ENQ\EOT\EOT\STX\EOT\ETX\DC2\EOT\152\STX\RS\US\n\
     \~\n\
-    \\EOT\EOT\EOT\STX\ENQ\DC2\EOT\195\SOH\STX\US\SUBp For extensions, this is the name of the type being extended.  It is\n\
+    \\EOT\EOT\EOT\STX\ENQ\DC2\EOT\156\STX\STX\US\SUBp For extensions, this is the name of the type being extended.  It is\n\
     \ resolved in the same manner as type_name.\n\
     \\n\
     \\r\n\
-    \\ENQ\EOT\EOT\STX\ENQ\EOT\DC2\EOT\195\SOH\STX\n\
+    \\ENQ\EOT\EOT\STX\ENQ\EOT\DC2\EOT\156\STX\STX\n\
     \\n\
     \\r\n\
-    \\ENQ\EOT\EOT\STX\ENQ\ENQ\DC2\EOT\195\SOH\v\DC1\n\
+    \\ENQ\EOT\EOT\STX\ENQ\ENQ\DC2\EOT\156\STX\v\DC1\n\
     \\r\n\
-    \\ENQ\EOT\EOT\STX\ENQ\SOH\DC2\EOT\195\SOH\DC2\SUB\n\
+    \\ENQ\EOT\EOT\STX\ENQ\SOH\DC2\EOT\156\STX\DC2\SUB\n\
     \\r\n\
-    \\ENQ\EOT\EOT\STX\ENQ\ETX\DC2\EOT\195\SOH\GS\RS\n\
-    \\177\STX\n\
-    \\EOT\EOT\EOT\STX\ACK\DC2\EOT\202\SOH\STX$\SUB\162\STX For numeric types, contains the original text representation of the value.\n\
+    \\ENQ\EOT\EOT\STX\ENQ\ETX\DC2\EOT\156\STX\GS\RS\n\
+    \\145\STX\n\
+    \\EOT\EOT\EOT\STX\ACK\DC2\EOT\162\STX\STX$\SUB\130\STX For numeric types, contains the original text representation of the value.\n\
     \ For booleans, \"true\" or \"false\".\n\
     \ For strings, contains the default text contents (not escaped in any way).\n\
     \ For bytes, contains the C escaped value.  All bytes >= 128 are escaped.\n\
-    \ TODO(kenton):  Base-64 encode?\n\
     \\n\
     \\r\n\
-    \\ENQ\EOT\EOT\STX\ACK\EOT\DC2\EOT\202\SOH\STX\n\
+    \\ENQ\EOT\EOT\STX\ACK\EOT\DC2\EOT\162\STX\STX\n\
     \\n\
     \\r\n\
-    \\ENQ\EOT\EOT\STX\ACK\ENQ\DC2\EOT\202\SOH\v\DC1\n\
+    \\ENQ\EOT\EOT\STX\ACK\ENQ\DC2\EOT\162\STX\v\DC1\n\
     \\r\n\
-    \\ENQ\EOT\EOT\STX\ACK\SOH\DC2\EOT\202\SOH\DC2\US\n\
+    \\ENQ\EOT\EOT\STX\ACK\SOH\DC2\EOT\162\STX\DC2\US\n\
     \\r\n\
-    \\ENQ\EOT\EOT\STX\ACK\ETX\DC2\EOT\202\SOH\"#\n\
+    \\ENQ\EOT\EOT\STX\ACK\ETX\DC2\EOT\162\STX\"#\n\
     \\132\SOH\n\
-    \\EOT\EOT\EOT\STX\a\DC2\EOT\206\SOH\STX!\SUBv If set, gives the index of a oneof in the containing type's oneof_decl\n\
+    \\EOT\EOT\EOT\STX\a\DC2\EOT\166\STX\STX!\SUBv If set, gives the index of a oneof in the containing type's oneof_decl\n\
     \ list.  This field is a member of that oneof.\n\
     \\n\
     \\r\n\
-    \\ENQ\EOT\EOT\STX\a\EOT\DC2\EOT\206\SOH\STX\n\
+    \\ENQ\EOT\EOT\STX\a\EOT\DC2\EOT\166\STX\STX\n\
     \\n\
     \\r\n\
-    \\ENQ\EOT\EOT\STX\a\ENQ\DC2\EOT\206\SOH\v\DLE\n\
+    \\ENQ\EOT\EOT\STX\a\ENQ\DC2\EOT\166\STX\v\DLE\n\
     \\r\n\
-    \\ENQ\EOT\EOT\STX\a\SOH\DC2\EOT\206\SOH\DC1\FS\n\
+    \\ENQ\EOT\EOT\STX\a\SOH\DC2\EOT\166\STX\DC1\FS\n\
     \\r\n\
-    \\ENQ\EOT\EOT\STX\a\ETX\DC2\EOT\206\SOH\US \n\
+    \\ENQ\EOT\EOT\STX\a\ETX\DC2\EOT\166\STX\US \n\
     \\250\SOH\n\
-    \\EOT\EOT\EOT\STX\b\DC2\EOT\212\SOH\STX!\SUB\235\SOH JSON name of this field. The value is set by protocol compiler. If the\n\
+    \\EOT\EOT\EOT\STX\b\DC2\EOT\172\STX\STX!\SUB\235\SOH JSON name of this field. The value is set by protocol compiler. If the\n\
     \ user has set a \"json_name\" option on this field, that option's value\n\
     \ will be used. Otherwise, it's deduced from the field's name by converting\n\
     \ it to camelCase.\n\
     \\n\
     \\r\n\
-    \\ENQ\EOT\EOT\STX\b\EOT\DC2\EOT\212\SOH\STX\n\
+    \\ENQ\EOT\EOT\STX\b\EOT\DC2\EOT\172\STX\STX\n\
     \\n\
     \\r\n\
-    \\ENQ\EOT\EOT\STX\b\ENQ\DC2\EOT\212\SOH\v\DC1\n\
+    \\ENQ\EOT\EOT\STX\b\ENQ\DC2\EOT\172\STX\v\DC1\n\
     \\r\n\
-    \\ENQ\EOT\EOT\STX\b\SOH\DC2\EOT\212\SOH\DC2\ESC\n\
+    \\ENQ\EOT\EOT\STX\b\SOH\DC2\EOT\172\STX\DC2\ESC\n\
     \\r\n\
-    \\ENQ\EOT\EOT\STX\b\ETX\DC2\EOT\212\SOH\RS \n\
+    \\ENQ\EOT\EOT\STX\b\ETX\DC2\EOT\172\STX\RS \n\
     \\f\n\
-    \\EOT\EOT\EOT\STX\t\DC2\EOT\214\SOH\STX$\n\
+    \\EOT\EOT\EOT\STX\t\DC2\EOT\174\STX\STX$\n\
     \\r\n\
-    \\ENQ\EOT\EOT\STX\t\EOT\DC2\EOT\214\SOH\STX\n\
+    \\ENQ\EOT\EOT\STX\t\EOT\DC2\EOT\174\STX\STX\n\
     \\n\
     \\r\n\
-    \\ENQ\EOT\EOT\STX\t\ACK\DC2\EOT\214\SOH\v\ETB\n\
+    \\ENQ\EOT\EOT\STX\t\ACK\DC2\EOT\174\STX\v\ETB\n\
     \\r\n\
-    \\ENQ\EOT\EOT\STX\t\SOH\DC2\EOT\214\SOH\CAN\US\n\
+    \\ENQ\EOT\EOT\STX\t\SOH\DC2\EOT\174\STX\CAN\US\n\
     \\r\n\
-    \\ENQ\EOT\EOT\STX\t\ETX\DC2\EOT\214\SOH\"#\n\
-    \\179\t\n\
+    \\ENQ\EOT\EOT\STX\t\ETX\DC2\EOT\174\STX\"#\n\
+    \\176\t\n\
     \\EOT\EOT\EOT\STX\n\
-    \\DC2\EOT\237\SOH\STX%\SUB\164\t If true, this is a proto3 \"optional\". When a proto3 field is optional, it\n\
+    \\DC2\EOT\197\STX\STX%\SUB\161\t If true, this is a proto3 \"optional\". When a proto3 field is optional, it\n\
     \ tracks presence regardless of field type.\n\
     \\n\
-    \ When proto3_optional is true, this field must be belong to a oneof to\n\
-    \ signal to old proto3 clients that presence is tracked for this field. This\n\
-    \ oneof is known as a \"synthetic\" oneof, and this field must be its sole\n\
-    \ member (each proto3 optional field gets its own synthetic oneof). Synthetic\n\
-    \ oneofs exist in the descriptor only, and do not generate any API. Synthetic\n\
-    \ oneofs must be ordered after all \"real\" oneofs.\n\
+    \ When proto3_optional is true, this field must belong to a oneof to signal\n\
+    \ to old proto3 clients that presence is tracked for this field. This oneof\n\
+    \ is known as a \"synthetic\" oneof, and this field must be its sole member\n\
+    \ (each proto3 optional field gets its own synthetic oneof). Synthetic oneofs\n\
+    \ exist in the descriptor only, and do not generate any API. Synthetic oneofs\n\
+    \ must be ordered after all \"real\" oneofs.\n\
     \\n\
     \ For message fields, proto3_optional doesn't create any semantic change,\n\
     \ since non-repeated message fields always track presence. However it still\n\
@@ -11342,84 +15440,84 @@ packedFileDescriptor
     \\n\
     \\r\n\
     \\ENQ\EOT\EOT\STX\n\
-    \\EOT\DC2\EOT\237\SOH\STX\n\
+    \\EOT\DC2\EOT\197\STX\STX\n\
     \\n\
     \\r\n\
     \\ENQ\EOT\EOT\STX\n\
-    \\ENQ\DC2\EOT\237\SOH\v\SI\n\
+    \\ENQ\DC2\EOT\197\STX\v\SI\n\
     \\r\n\
     \\ENQ\EOT\EOT\STX\n\
-    \\SOH\DC2\EOT\237\SOH\DLE\US\n\
+    \\SOH\DC2\EOT\197\STX\DLE\US\n\
     \\r\n\
     \\ENQ\EOT\EOT\STX\n\
-    \\ETX\DC2\EOT\237\SOH\"$\n\
+    \\ETX\DC2\EOT\197\STX\"$\n\
     \\"\n\
-    \\STX\EOT\ENQ\DC2\ACK\241\SOH\NUL\244\SOH\SOH\SUB\DC4 Describes a oneof.\n\
+    \\STX\EOT\ENQ\DC2\ACK\201\STX\NUL\204\STX\SOH\SUB\DC4 Describes a oneof.\n\
     \\n\
     \\v\n\
-    \\ETX\EOT\ENQ\SOH\DC2\EOT\241\SOH\b\FS\n\
+    \\ETX\EOT\ENQ\SOH\DC2\EOT\201\STX\b\FS\n\
     \\f\n\
-    \\EOT\EOT\ENQ\STX\NUL\DC2\EOT\242\SOH\STX\ESC\n\
+    \\EOT\EOT\ENQ\STX\NUL\DC2\EOT\202\STX\STX\ESC\n\
     \\r\n\
-    \\ENQ\EOT\ENQ\STX\NUL\EOT\DC2\EOT\242\SOH\STX\n\
+    \\ENQ\EOT\ENQ\STX\NUL\EOT\DC2\EOT\202\STX\STX\n\
     \\n\
     \\r\n\
-    \\ENQ\EOT\ENQ\STX\NUL\ENQ\DC2\EOT\242\SOH\v\DC1\n\
+    \\ENQ\EOT\ENQ\STX\NUL\ENQ\DC2\EOT\202\STX\v\DC1\n\
     \\r\n\
-    \\ENQ\EOT\ENQ\STX\NUL\SOH\DC2\EOT\242\SOH\DC2\SYN\n\
+    \\ENQ\EOT\ENQ\STX\NUL\SOH\DC2\EOT\202\STX\DC2\SYN\n\
     \\r\n\
-    \\ENQ\EOT\ENQ\STX\NUL\ETX\DC2\EOT\242\SOH\EM\SUB\n\
+    \\ENQ\EOT\ENQ\STX\NUL\ETX\DC2\EOT\202\STX\EM\SUB\n\
     \\f\n\
-    \\EOT\EOT\ENQ\STX\SOH\DC2\EOT\243\SOH\STX$\n\
+    \\EOT\EOT\ENQ\STX\SOH\DC2\EOT\203\STX\STX$\n\
     \\r\n\
-    \\ENQ\EOT\ENQ\STX\SOH\EOT\DC2\EOT\243\SOH\STX\n\
+    \\ENQ\EOT\ENQ\STX\SOH\EOT\DC2\EOT\203\STX\STX\n\
     \\n\
     \\r\n\
-    \\ENQ\EOT\ENQ\STX\SOH\ACK\DC2\EOT\243\SOH\v\ETB\n\
+    \\ENQ\EOT\ENQ\STX\SOH\ACK\DC2\EOT\203\STX\v\ETB\n\
     \\r\n\
-    \\ENQ\EOT\ENQ\STX\SOH\SOH\DC2\EOT\243\SOH\CAN\US\n\
+    \\ENQ\EOT\ENQ\STX\SOH\SOH\DC2\EOT\203\STX\CAN\US\n\
     \\r\n\
-    \\ENQ\EOT\ENQ\STX\SOH\ETX\DC2\EOT\243\SOH\"#\n\
+    \\ENQ\EOT\ENQ\STX\SOH\ETX\DC2\EOT\203\STX\"#\n\
     \'\n\
-    \\STX\EOT\ACK\DC2\ACK\247\SOH\NUL\145\STX\SOH\SUB\EM Describes an enum type.\n\
+    \\STX\EOT\ACK\DC2\ACK\207\STX\NUL\233\STX\SOH\SUB\EM Describes an enum type.\n\
     \\n\
     \\v\n\
-    \\ETX\EOT\ACK\SOH\DC2\EOT\247\SOH\b\ESC\n\
+    \\ETX\EOT\ACK\SOH\DC2\EOT\207\STX\b\ESC\n\
     \\f\n\
-    \\EOT\EOT\ACK\STX\NUL\DC2\EOT\248\SOH\STX\ESC\n\
+    \\EOT\EOT\ACK\STX\NUL\DC2\EOT\208\STX\STX\ESC\n\
     \\r\n\
-    \\ENQ\EOT\ACK\STX\NUL\EOT\DC2\EOT\248\SOH\STX\n\
+    \\ENQ\EOT\ACK\STX\NUL\EOT\DC2\EOT\208\STX\STX\n\
     \\n\
     \\r\n\
-    \\ENQ\EOT\ACK\STX\NUL\ENQ\DC2\EOT\248\SOH\v\DC1\n\
+    \\ENQ\EOT\ACK\STX\NUL\ENQ\DC2\EOT\208\STX\v\DC1\n\
     \\r\n\
-    \\ENQ\EOT\ACK\STX\NUL\SOH\DC2\EOT\248\SOH\DC2\SYN\n\
+    \\ENQ\EOT\ACK\STX\NUL\SOH\DC2\EOT\208\STX\DC2\SYN\n\
     \\r\n\
-    \\ENQ\EOT\ACK\STX\NUL\ETX\DC2\EOT\248\SOH\EM\SUB\n\
+    \\ENQ\EOT\ACK\STX\NUL\ETX\DC2\EOT\208\STX\EM\SUB\n\
     \\f\n\
-    \\EOT\EOT\ACK\STX\SOH\DC2\EOT\250\SOH\STX.\n\
+    \\EOT\EOT\ACK\STX\SOH\DC2\EOT\210\STX\STX.\n\
     \\r\n\
-    \\ENQ\EOT\ACK\STX\SOH\EOT\DC2\EOT\250\SOH\STX\n\
+    \\ENQ\EOT\ACK\STX\SOH\EOT\DC2\EOT\210\STX\STX\n\
     \\n\
     \\r\n\
-    \\ENQ\EOT\ACK\STX\SOH\ACK\DC2\EOT\250\SOH\v#\n\
+    \\ENQ\EOT\ACK\STX\SOH\ACK\DC2\EOT\210\STX\v#\n\
     \\r\n\
-    \\ENQ\EOT\ACK\STX\SOH\SOH\DC2\EOT\250\SOH$)\n\
+    \\ENQ\EOT\ACK\STX\SOH\SOH\DC2\EOT\210\STX$)\n\
     \\r\n\
-    \\ENQ\EOT\ACK\STX\SOH\ETX\DC2\EOT\250\SOH,-\n\
+    \\ENQ\EOT\ACK\STX\SOH\ETX\DC2\EOT\210\STX,-\n\
     \\f\n\
-    \\EOT\EOT\ACK\STX\STX\DC2\EOT\252\SOH\STX#\n\
+    \\EOT\EOT\ACK\STX\STX\DC2\EOT\212\STX\STX#\n\
     \\r\n\
-    \\ENQ\EOT\ACK\STX\STX\EOT\DC2\EOT\252\SOH\STX\n\
+    \\ENQ\EOT\ACK\STX\STX\EOT\DC2\EOT\212\STX\STX\n\
     \\n\
     \\r\n\
-    \\ENQ\EOT\ACK\STX\STX\ACK\DC2\EOT\252\SOH\v\SYN\n\
+    \\ENQ\EOT\ACK\STX\STX\ACK\DC2\EOT\212\STX\v\SYN\n\
     \\r\n\
-    \\ENQ\EOT\ACK\STX\STX\SOH\DC2\EOT\252\SOH\ETB\RS\n\
+    \\ENQ\EOT\ACK\STX\STX\SOH\DC2\EOT\212\STX\ETB\RS\n\
     \\r\n\
-    \\ENQ\EOT\ACK\STX\STX\ETX\DC2\EOT\252\SOH!\"\n\
+    \\ENQ\EOT\ACK\STX\STX\ETX\DC2\EOT\212\STX!\"\n\
     \\175\STX\n\
-    \\EOT\EOT\ACK\ETX\NUL\DC2\ACK\132\STX\STX\135\STX\ETX\SUB\158\STX Range of reserved numeric values. Reserved values may not be used by\n\
+    \\EOT\EOT\ACK\ETX\NUL\DC2\ACK\220\STX\STX\223\STX\ETX\SUB\158\STX Range of reserved numeric values. Reserved values may not be used by\n\
     \ entries in the same enum. Reserved ranges may not overlap.\n\
     \\n\
     \ Note that this is distinct from DescriptorProto.ReservedRange in that it\n\
@@ -11427,219 +15525,219 @@ packedFileDescriptor
     \ domain.\n\
     \\n\
     \\r\n\
-    \\ENQ\EOT\ACK\ETX\NUL\SOH\DC2\EOT\132\STX\n\
+    \\ENQ\EOT\ACK\ETX\NUL\SOH\DC2\EOT\220\STX\n\
     \\ESC\n\
     \\FS\n\
-    \\ACK\EOT\ACK\ETX\NUL\STX\NUL\DC2\EOT\133\STX\EOT\GS\"\f Inclusive.\n\
+    \\ACK\EOT\ACK\ETX\NUL\STX\NUL\DC2\EOT\221\STX\EOT\GS\"\f Inclusive.\n\
     \\n\
     \\SI\n\
-    \\a\EOT\ACK\ETX\NUL\STX\NUL\EOT\DC2\EOT\133\STX\EOT\f\n\
+    \\a\EOT\ACK\ETX\NUL\STX\NUL\EOT\DC2\EOT\221\STX\EOT\f\n\
     \\SI\n\
-    \\a\EOT\ACK\ETX\NUL\STX\NUL\ENQ\DC2\EOT\133\STX\r\DC2\n\
+    \\a\EOT\ACK\ETX\NUL\STX\NUL\ENQ\DC2\EOT\221\STX\r\DC2\n\
     \\SI\n\
-    \\a\EOT\ACK\ETX\NUL\STX\NUL\SOH\DC2\EOT\133\STX\DC3\CAN\n\
+    \\a\EOT\ACK\ETX\NUL\STX\NUL\SOH\DC2\EOT\221\STX\DC3\CAN\n\
     \\SI\n\
-    \\a\EOT\ACK\ETX\NUL\STX\NUL\ETX\DC2\EOT\133\STX\ESC\FS\n\
+    \\a\EOT\ACK\ETX\NUL\STX\NUL\ETX\DC2\EOT\221\STX\ESC\FS\n\
     \\FS\n\
-    \\ACK\EOT\ACK\ETX\NUL\STX\SOH\DC2\EOT\134\STX\EOT\ESC\"\f Inclusive.\n\
+    \\ACK\EOT\ACK\ETX\NUL\STX\SOH\DC2\EOT\222\STX\EOT\ESC\"\f Inclusive.\n\
     \\n\
     \\SI\n\
-    \\a\EOT\ACK\ETX\NUL\STX\SOH\EOT\DC2\EOT\134\STX\EOT\f\n\
+    \\a\EOT\ACK\ETX\NUL\STX\SOH\EOT\DC2\EOT\222\STX\EOT\f\n\
     \\SI\n\
-    \\a\EOT\ACK\ETX\NUL\STX\SOH\ENQ\DC2\EOT\134\STX\r\DC2\n\
+    \\a\EOT\ACK\ETX\NUL\STX\SOH\ENQ\DC2\EOT\222\STX\r\DC2\n\
     \\SI\n\
-    \\a\EOT\ACK\ETX\NUL\STX\SOH\SOH\DC2\EOT\134\STX\DC3\SYN\n\
+    \\a\EOT\ACK\ETX\NUL\STX\SOH\SOH\DC2\EOT\222\STX\DC3\SYN\n\
     \\SI\n\
-    \\a\EOT\ACK\ETX\NUL\STX\SOH\ETX\DC2\EOT\134\STX\EM\SUB\n\
+    \\a\EOT\ACK\ETX\NUL\STX\SOH\ETX\DC2\EOT\222\STX\EM\SUB\n\
     \\170\SOH\n\
-    \\EOT\EOT\ACK\STX\ETX\DC2\EOT\140\STX\STX0\SUB\155\SOH Range of reserved numeric values. Reserved numeric values may not be used\n\
+    \\EOT\EOT\ACK\STX\ETX\DC2\EOT\228\STX\STX0\SUB\155\SOH Range of reserved numeric values. Reserved numeric values may not be used\n\
     \ by enum values in the same enum declaration. Reserved ranges may not\n\
     \ overlap.\n\
     \\n\
     \\r\n\
-    \\ENQ\EOT\ACK\STX\ETX\EOT\DC2\EOT\140\STX\STX\n\
+    \\ENQ\EOT\ACK\STX\ETX\EOT\DC2\EOT\228\STX\STX\n\
     \\n\
     \\r\n\
-    \\ENQ\EOT\ACK\STX\ETX\ACK\DC2\EOT\140\STX\v\FS\n\
+    \\ENQ\EOT\ACK\STX\ETX\ACK\DC2\EOT\228\STX\v\FS\n\
     \\r\n\
-    \\ENQ\EOT\ACK\STX\ETX\SOH\DC2\EOT\140\STX\GS+\n\
+    \\ENQ\EOT\ACK\STX\ETX\SOH\DC2\EOT\228\STX\GS+\n\
     \\r\n\
-    \\ENQ\EOT\ACK\STX\ETX\ETX\DC2\EOT\140\STX./\n\
+    \\ENQ\EOT\ACK\STX\ETX\ETX\DC2\EOT\228\STX./\n\
     \l\n\
-    \\EOT\EOT\ACK\STX\EOT\DC2\EOT\144\STX\STX$\SUB^ Reserved enum value names, which may not be reused. A given name may only\n\
+    \\EOT\EOT\ACK\STX\EOT\DC2\EOT\232\STX\STX$\SUB^ Reserved enum value names, which may not be reused. A given name may only\n\
     \ be reserved once.\n\
     \\n\
     \\r\n\
-    \\ENQ\EOT\ACK\STX\EOT\EOT\DC2\EOT\144\STX\STX\n\
+    \\ENQ\EOT\ACK\STX\EOT\EOT\DC2\EOT\232\STX\STX\n\
     \\n\
     \\r\n\
-    \\ENQ\EOT\ACK\STX\EOT\ENQ\DC2\EOT\144\STX\v\DC1\n\
+    \\ENQ\EOT\ACK\STX\EOT\ENQ\DC2\EOT\232\STX\v\DC1\n\
     \\r\n\
-    \\ENQ\EOT\ACK\STX\EOT\SOH\DC2\EOT\144\STX\DC2\US\n\
+    \\ENQ\EOT\ACK\STX\EOT\SOH\DC2\EOT\232\STX\DC2\US\n\
     \\r\n\
-    \\ENQ\EOT\ACK\STX\EOT\ETX\DC2\EOT\144\STX\"#\n\
+    \\ENQ\EOT\ACK\STX\EOT\ETX\DC2\EOT\232\STX\"#\n\
     \1\n\
-    \\STX\EOT\a\DC2\ACK\148\STX\NUL\153\STX\SOH\SUB# Describes a value within an enum.\n\
+    \\STX\EOT\a\DC2\ACK\236\STX\NUL\241\STX\SOH\SUB# Describes a value within an enum.\n\
     \\n\
     \\v\n\
-    \\ETX\EOT\a\SOH\DC2\EOT\148\STX\b \n\
+    \\ETX\EOT\a\SOH\DC2\EOT\236\STX\b \n\
     \\f\n\
-    \\EOT\EOT\a\STX\NUL\DC2\EOT\149\STX\STX\ESC\n\
+    \\EOT\EOT\a\STX\NUL\DC2\EOT\237\STX\STX\ESC\n\
     \\r\n\
-    \\ENQ\EOT\a\STX\NUL\EOT\DC2\EOT\149\STX\STX\n\
+    \\ENQ\EOT\a\STX\NUL\EOT\DC2\EOT\237\STX\STX\n\
     \\n\
     \\r\n\
-    \\ENQ\EOT\a\STX\NUL\ENQ\DC2\EOT\149\STX\v\DC1\n\
+    \\ENQ\EOT\a\STX\NUL\ENQ\DC2\EOT\237\STX\v\DC1\n\
     \\r\n\
-    \\ENQ\EOT\a\STX\NUL\SOH\DC2\EOT\149\STX\DC2\SYN\n\
+    \\ENQ\EOT\a\STX\NUL\SOH\DC2\EOT\237\STX\DC2\SYN\n\
     \\r\n\
-    \\ENQ\EOT\a\STX\NUL\ETX\DC2\EOT\149\STX\EM\SUB\n\
+    \\ENQ\EOT\a\STX\NUL\ETX\DC2\EOT\237\STX\EM\SUB\n\
     \\f\n\
-    \\EOT\EOT\a\STX\SOH\DC2\EOT\150\STX\STX\FS\n\
+    \\EOT\EOT\a\STX\SOH\DC2\EOT\238\STX\STX\FS\n\
     \\r\n\
-    \\ENQ\EOT\a\STX\SOH\EOT\DC2\EOT\150\STX\STX\n\
+    \\ENQ\EOT\a\STX\SOH\EOT\DC2\EOT\238\STX\STX\n\
     \\n\
     \\r\n\
-    \\ENQ\EOT\a\STX\SOH\ENQ\DC2\EOT\150\STX\v\DLE\n\
+    \\ENQ\EOT\a\STX\SOH\ENQ\DC2\EOT\238\STX\v\DLE\n\
     \\r\n\
-    \\ENQ\EOT\a\STX\SOH\SOH\DC2\EOT\150\STX\DC1\ETB\n\
+    \\ENQ\EOT\a\STX\SOH\SOH\DC2\EOT\238\STX\DC1\ETB\n\
     \\r\n\
-    \\ENQ\EOT\a\STX\SOH\ETX\DC2\EOT\150\STX\SUB\ESC\n\
+    \\ENQ\EOT\a\STX\SOH\ETX\DC2\EOT\238\STX\SUB\ESC\n\
     \\f\n\
-    \\EOT\EOT\a\STX\STX\DC2\EOT\152\STX\STX(\n\
+    \\EOT\EOT\a\STX\STX\DC2\EOT\240\STX\STX(\n\
     \\r\n\
-    \\ENQ\EOT\a\STX\STX\EOT\DC2\EOT\152\STX\STX\n\
+    \\ENQ\EOT\a\STX\STX\EOT\DC2\EOT\240\STX\STX\n\
     \\n\
     \\r\n\
-    \\ENQ\EOT\a\STX\STX\ACK\DC2\EOT\152\STX\v\ESC\n\
+    \\ENQ\EOT\a\STX\STX\ACK\DC2\EOT\240\STX\v\ESC\n\
     \\r\n\
-    \\ENQ\EOT\a\STX\STX\SOH\DC2\EOT\152\STX\FS#\n\
+    \\ENQ\EOT\a\STX\STX\SOH\DC2\EOT\240\STX\FS#\n\
     \\r\n\
-    \\ENQ\EOT\a\STX\STX\ETX\DC2\EOT\152\STX&'\n\
+    \\ENQ\EOT\a\STX\STX\ETX\DC2\EOT\240\STX&'\n\
     \$\n\
-    \\STX\EOT\b\DC2\ACK\156\STX\NUL\161\STX\SOH\SUB\SYN Describes a service.\n\
+    \\STX\EOT\b\DC2\ACK\244\STX\NUL\249\STX\SOH\SUB\SYN Describes a service.\n\
     \\n\
     \\v\n\
-    \\ETX\EOT\b\SOH\DC2\EOT\156\STX\b\RS\n\
+    \\ETX\EOT\b\SOH\DC2\EOT\244\STX\b\RS\n\
     \\f\n\
-    \\EOT\EOT\b\STX\NUL\DC2\EOT\157\STX\STX\ESC\n\
+    \\EOT\EOT\b\STX\NUL\DC2\EOT\245\STX\STX\ESC\n\
     \\r\n\
-    \\ENQ\EOT\b\STX\NUL\EOT\DC2\EOT\157\STX\STX\n\
+    \\ENQ\EOT\b\STX\NUL\EOT\DC2\EOT\245\STX\STX\n\
     \\n\
     \\r\n\
-    \\ENQ\EOT\b\STX\NUL\ENQ\DC2\EOT\157\STX\v\DC1\n\
+    \\ENQ\EOT\b\STX\NUL\ENQ\DC2\EOT\245\STX\v\DC1\n\
     \\r\n\
-    \\ENQ\EOT\b\STX\NUL\SOH\DC2\EOT\157\STX\DC2\SYN\n\
+    \\ENQ\EOT\b\STX\NUL\SOH\DC2\EOT\245\STX\DC2\SYN\n\
     \\r\n\
-    \\ENQ\EOT\b\STX\NUL\ETX\DC2\EOT\157\STX\EM\SUB\n\
+    \\ENQ\EOT\b\STX\NUL\ETX\DC2\EOT\245\STX\EM\SUB\n\
     \\f\n\
-    \\EOT\EOT\b\STX\SOH\DC2\EOT\158\STX\STX,\n\
+    \\EOT\EOT\b\STX\SOH\DC2\EOT\246\STX\STX,\n\
     \\r\n\
-    \\ENQ\EOT\b\STX\SOH\EOT\DC2\EOT\158\STX\STX\n\
+    \\ENQ\EOT\b\STX\SOH\EOT\DC2\EOT\246\STX\STX\n\
     \\n\
     \\r\n\
-    \\ENQ\EOT\b\STX\SOH\ACK\DC2\EOT\158\STX\v \n\
+    \\ENQ\EOT\b\STX\SOH\ACK\DC2\EOT\246\STX\v \n\
     \\r\n\
-    \\ENQ\EOT\b\STX\SOH\SOH\DC2\EOT\158\STX!'\n\
+    \\ENQ\EOT\b\STX\SOH\SOH\DC2\EOT\246\STX!'\n\
     \\r\n\
-    \\ENQ\EOT\b\STX\SOH\ETX\DC2\EOT\158\STX*+\n\
+    \\ENQ\EOT\b\STX\SOH\ETX\DC2\EOT\246\STX*+\n\
     \\f\n\
-    \\EOT\EOT\b\STX\STX\DC2\EOT\160\STX\STX&\n\
+    \\EOT\EOT\b\STX\STX\DC2\EOT\248\STX\STX&\n\
     \\r\n\
-    \\ENQ\EOT\b\STX\STX\EOT\DC2\EOT\160\STX\STX\n\
+    \\ENQ\EOT\b\STX\STX\EOT\DC2\EOT\248\STX\STX\n\
     \\n\
     \\r\n\
-    \\ENQ\EOT\b\STX\STX\ACK\DC2\EOT\160\STX\v\EM\n\
+    \\ENQ\EOT\b\STX\STX\ACK\DC2\EOT\248\STX\v\EM\n\
     \\r\n\
-    \\ENQ\EOT\b\STX\STX\SOH\DC2\EOT\160\STX\SUB!\n\
+    \\ENQ\EOT\b\STX\STX\SOH\DC2\EOT\248\STX\SUB!\n\
     \\r\n\
-    \\ENQ\EOT\b\STX\STX\ETX\DC2\EOT\160\STX$%\n\
+    \\ENQ\EOT\b\STX\STX\ETX\DC2\EOT\248\STX$%\n\
     \0\n\
-    \\STX\EOT\t\DC2\ACK\164\STX\NUL\178\STX\SOH\SUB\" Describes a method of a service.\n\
+    \\STX\EOT\t\DC2\ACK\252\STX\NUL\138\ETX\SOH\SUB\" Describes a method of a service.\n\
     \\n\
     \\v\n\
-    \\ETX\EOT\t\SOH\DC2\EOT\164\STX\b\GS\n\
+    \\ETX\EOT\t\SOH\DC2\EOT\252\STX\b\GS\n\
     \\f\n\
-    \\EOT\EOT\t\STX\NUL\DC2\EOT\165\STX\STX\ESC\n\
+    \\EOT\EOT\t\STX\NUL\DC2\EOT\253\STX\STX\ESC\n\
     \\r\n\
-    \\ENQ\EOT\t\STX\NUL\EOT\DC2\EOT\165\STX\STX\n\
+    \\ENQ\EOT\t\STX\NUL\EOT\DC2\EOT\253\STX\STX\n\
     \\n\
     \\r\n\
-    \\ENQ\EOT\t\STX\NUL\ENQ\DC2\EOT\165\STX\v\DC1\n\
+    \\ENQ\EOT\t\STX\NUL\ENQ\DC2\EOT\253\STX\v\DC1\n\
     \\r\n\
-    \\ENQ\EOT\t\STX\NUL\SOH\DC2\EOT\165\STX\DC2\SYN\n\
+    \\ENQ\EOT\t\STX\NUL\SOH\DC2\EOT\253\STX\DC2\SYN\n\
     \\r\n\
-    \\ENQ\EOT\t\STX\NUL\ETX\DC2\EOT\165\STX\EM\SUB\n\
+    \\ENQ\EOT\t\STX\NUL\ETX\DC2\EOT\253\STX\EM\SUB\n\
     \\151\SOH\n\
-    \\EOT\EOT\t\STX\SOH\DC2\EOT\169\STX\STX!\SUB\136\SOH Input and output type names.  These are resolved in the same way as\n\
+    \\EOT\EOT\t\STX\SOH\DC2\EOT\129\ETX\STX!\SUB\136\SOH Input and output type names.  These are resolved in the same way as\n\
     \ FieldDescriptorProto.type_name, but must refer to a message type.\n\
     \\n\
     \\r\n\
-    \\ENQ\EOT\t\STX\SOH\EOT\DC2\EOT\169\STX\STX\n\
+    \\ENQ\EOT\t\STX\SOH\EOT\DC2\EOT\129\ETX\STX\n\
     \\n\
     \\r\n\
-    \\ENQ\EOT\t\STX\SOH\ENQ\DC2\EOT\169\STX\v\DC1\n\
+    \\ENQ\EOT\t\STX\SOH\ENQ\DC2\EOT\129\ETX\v\DC1\n\
     \\r\n\
-    \\ENQ\EOT\t\STX\SOH\SOH\DC2\EOT\169\STX\DC2\FS\n\
+    \\ENQ\EOT\t\STX\SOH\SOH\DC2\EOT\129\ETX\DC2\FS\n\
     \\r\n\
-    \\ENQ\EOT\t\STX\SOH\ETX\DC2\EOT\169\STX\US \n\
+    \\ENQ\EOT\t\STX\SOH\ETX\DC2\EOT\129\ETX\US \n\
     \\f\n\
-    \\EOT\EOT\t\STX\STX\DC2\EOT\170\STX\STX\"\n\
+    \\EOT\EOT\t\STX\STX\DC2\EOT\130\ETX\STX\"\n\
     \\r\n\
-    \\ENQ\EOT\t\STX\STX\EOT\DC2\EOT\170\STX\STX\n\
+    \\ENQ\EOT\t\STX\STX\EOT\DC2\EOT\130\ETX\STX\n\
     \\n\
     \\r\n\
-    \\ENQ\EOT\t\STX\STX\ENQ\DC2\EOT\170\STX\v\DC1\n\
+    \\ENQ\EOT\t\STX\STX\ENQ\DC2\EOT\130\ETX\v\DC1\n\
     \\r\n\
-    \\ENQ\EOT\t\STX\STX\SOH\DC2\EOT\170\STX\DC2\GS\n\
+    \\ENQ\EOT\t\STX\STX\SOH\DC2\EOT\130\ETX\DC2\GS\n\
     \\r\n\
-    \\ENQ\EOT\t\STX\STX\ETX\DC2\EOT\170\STX !\n\
+    \\ENQ\EOT\t\STX\STX\ETX\DC2\EOT\130\ETX !\n\
     \\f\n\
-    \\EOT\EOT\t\STX\ETX\DC2\EOT\172\STX\STX%\n\
+    \\EOT\EOT\t\STX\ETX\DC2\EOT\132\ETX\STX%\n\
     \\r\n\
-    \\ENQ\EOT\t\STX\ETX\EOT\DC2\EOT\172\STX\STX\n\
+    \\ENQ\EOT\t\STX\ETX\EOT\DC2\EOT\132\ETX\STX\n\
     \\n\
     \\r\n\
-    \\ENQ\EOT\t\STX\ETX\ACK\DC2\EOT\172\STX\v\CAN\n\
+    \\ENQ\EOT\t\STX\ETX\ACK\DC2\EOT\132\ETX\v\CAN\n\
     \\r\n\
-    \\ENQ\EOT\t\STX\ETX\SOH\DC2\EOT\172\STX\EM \n\
+    \\ENQ\EOT\t\STX\ETX\SOH\DC2\EOT\132\ETX\EM \n\
     \\r\n\
-    \\ENQ\EOT\t\STX\ETX\ETX\DC2\EOT\172\STX#$\n\
+    \\ENQ\EOT\t\STX\ETX\ETX\DC2\EOT\132\ETX#$\n\
     \E\n\
-    \\EOT\EOT\t\STX\EOT\DC2\EOT\175\STX\STX7\SUB7 Identifies if client streams multiple client messages\n\
+    \\EOT\EOT\t\STX\EOT\DC2\EOT\135\ETX\STX7\SUB7 Identifies if client streams multiple client messages\n\
     \\n\
     \\r\n\
-    \\ENQ\EOT\t\STX\EOT\EOT\DC2\EOT\175\STX\STX\n\
+    \\ENQ\EOT\t\STX\EOT\EOT\DC2\EOT\135\ETX\STX\n\
     \\n\
     \\r\n\
-    \\ENQ\EOT\t\STX\EOT\ENQ\DC2\EOT\175\STX\v\SI\n\
+    \\ENQ\EOT\t\STX\EOT\ENQ\DC2\EOT\135\ETX\v\SI\n\
     \\r\n\
-    \\ENQ\EOT\t\STX\EOT\SOH\DC2\EOT\175\STX\DLE \n\
+    \\ENQ\EOT\t\STX\EOT\SOH\DC2\EOT\135\ETX\DLE \n\
     \\r\n\
-    \\ENQ\EOT\t\STX\EOT\ETX\DC2\EOT\175\STX#$\n\
+    \\ENQ\EOT\t\STX\EOT\ETX\DC2\EOT\135\ETX#$\n\
     \\r\n\
-    \\ENQ\EOT\t\STX\EOT\b\DC2\EOT\175\STX%6\n\
+    \\ENQ\EOT\t\STX\EOT\b\DC2\EOT\135\ETX%6\n\
     \\r\n\
-    \\ENQ\EOT\t\STX\EOT\a\DC2\EOT\175\STX05\n\
+    \\ENQ\EOT\t\STX\EOT\a\DC2\EOT\135\ETX05\n\
     \E\n\
-    \\EOT\EOT\t\STX\ENQ\DC2\EOT\177\STX\STX7\SUB7 Identifies if server streams multiple server messages\n\
+    \\EOT\EOT\t\STX\ENQ\DC2\EOT\137\ETX\STX7\SUB7 Identifies if server streams multiple server messages\n\
     \\n\
     \\r\n\
-    \\ENQ\EOT\t\STX\ENQ\EOT\DC2\EOT\177\STX\STX\n\
+    \\ENQ\EOT\t\STX\ENQ\EOT\DC2\EOT\137\ETX\STX\n\
     \\n\
     \\r\n\
-    \\ENQ\EOT\t\STX\ENQ\ENQ\DC2\EOT\177\STX\v\SI\n\
+    \\ENQ\EOT\t\STX\ENQ\ENQ\DC2\EOT\137\ETX\v\SI\n\
     \\r\n\
-    \\ENQ\EOT\t\STX\ENQ\SOH\DC2\EOT\177\STX\DLE \n\
+    \\ENQ\EOT\t\STX\ENQ\SOH\DC2\EOT\137\ETX\DLE \n\
     \\r\n\
-    \\ENQ\EOT\t\STX\ENQ\ETX\DC2\EOT\177\STX#$\n\
+    \\ENQ\EOT\t\STX\ENQ\ETX\DC2\EOT\137\ETX#$\n\
     \\r\n\
-    \\ENQ\EOT\t\STX\ENQ\b\DC2\EOT\177\STX%6\n\
+    \\ENQ\EOT\t\STX\ENQ\b\DC2\EOT\137\ETX%6\n\
     \\r\n\
-    \\ENQ\EOT\t\STX\ENQ\a\DC2\EOT\177\STX05\n\
+    \\ENQ\EOT\t\STX\ENQ\a\DC2\EOT\137\ETX05\n\
     \\175\SO\n\
     \\STX\EOT\n\
-    \\DC2\ACK\213\STX\NUL\208\ETX\SOH2N ===================================================================\n\
+    \\DC2\ACK\172\ETX\NUL\168\EOT\SOH2N ===================================================================\n\
     \ Options\n\
     \2\208\r Each of the definitions above may have \"options\" attached.  These are\n\
     \ just annotations which may cause code to be generated slightly differently\n\
@@ -11672,190 +15770,194 @@ packedFileDescriptor
     \\n\
     \\v\n\
     \\ETX\EOT\n\
-    \\SOH\DC2\EOT\213\STX\b\DC3\n\
+    \\SOH\DC2\EOT\172\ETX\b\DC3\n\
     \\244\SOH\n\
     \\EOT\EOT\n\
-    \\STX\NUL\DC2\EOT\219\STX\STX#\SUB\229\SOH Sets the Java package where classes generated from this .proto will be\n\
+    \\STX\NUL\DC2\EOT\178\ETX\STX#\SUB\229\SOH Sets the Java package where classes generated from this .proto will be\n\
     \ placed.  By default, the proto package is used, but this is often\n\
     \ inappropriate because proto packages do not normally start with backwards\n\
     \ domain names.\n\
     \\n\
     \\r\n\
     \\ENQ\EOT\n\
-    \\STX\NUL\EOT\DC2\EOT\219\STX\STX\n\
+    \\STX\NUL\EOT\DC2\EOT\178\ETX\STX\n\
     \\n\
     \\r\n\
     \\ENQ\EOT\n\
-    \\STX\NUL\ENQ\DC2\EOT\219\STX\v\DC1\n\
+    \\STX\NUL\ENQ\DC2\EOT\178\ETX\v\DC1\n\
     \\r\n\
     \\ENQ\EOT\n\
-    \\STX\NUL\SOH\DC2\EOT\219\STX\DC2\RS\n\
+    \\STX\NUL\SOH\DC2\EOT\178\ETX\DC2\RS\n\
     \\r\n\
     \\ENQ\EOT\n\
-    \\STX\NUL\ETX\DC2\EOT\219\STX!\"\n\
-    \\191\STX\n\
+    \\STX\NUL\ETX\DC2\EOT\178\ETX!\"\n\
+    \\241\STX\n\
     \\EOT\EOT\n\
-    \\STX\SOH\DC2\EOT\227\STX\STX+\SUB\176\STX If set, all the classes from the .proto file are wrapped in a single\n\
-    \ outer class with the given name.  This applies to both Proto1\n\
-    \ (equivalent to the old \"--one_java_file\" option) and Proto2 (where\n\
-    \ a .proto always translates to a single class, but you may want to\n\
-    \ explicitly choose the class name).\n\
+    \\STX\SOH\DC2\EOT\185\ETX\STX+\SUB\226\STX Controls the name of the wrapper Java class generated for the .proto file.\n\
+    \ That class will always contain the .proto file's getDescriptor() method as\n\
+    \ well as any top-level extensions defined in the .proto file.\n\
+    \ If java_multiple_files is disabled, then all the other classes from the\n\
+    \ .proto file will be nested inside the single wrapper outer class.\n\
     \\n\
     \\r\n\
     \\ENQ\EOT\n\
-    \\STX\SOH\EOT\DC2\EOT\227\STX\STX\n\
+    \\STX\SOH\EOT\DC2\EOT\185\ETX\STX\n\
     \\n\
     \\r\n\
     \\ENQ\EOT\n\
-    \\STX\SOH\ENQ\DC2\EOT\227\STX\v\DC1\n\
+    \\STX\SOH\ENQ\DC2\EOT\185\ETX\v\DC1\n\
     \\r\n\
     \\ENQ\EOT\n\
-    \\STX\SOH\SOH\DC2\EOT\227\STX\DC2&\n\
+    \\STX\SOH\SOH\DC2\EOT\185\ETX\DC2&\n\
     \\r\n\
     \\ENQ\EOT\n\
-    \\STX\SOH\ETX\DC2\EOT\227\STX)*\n\
-    \\163\ETX\n\
+    \\STX\SOH\ETX\DC2\EOT\185\ETX)*\n\
+    \\166\ETX\n\
     \\EOT\EOT\n\
-    \\STX\STX\DC2\EOT\235\STX\STX;\SUB\148\ETX If set true, then the Java code generator will generate a separate .java\n\
+    \\STX\STX\DC2\EOT\193\ETX\STX;\SUB\151\ETX If enabled, then the Java code generator will generate a separate .java\n\
     \ file for each top-level message, enum, and service defined in the .proto\n\
-    \ file.  Thus, these types will *not* be nested inside the outer class\n\
-    \ named by java_outer_classname.  However, the outer class will still be\n\
+    \ file.  Thus, these types will *not* be nested inside the wrapper class\n\
+    \ named by java_outer_classname.  However, the wrapper class will still be\n\
     \ generated to contain the file's getDescriptor() method as well as any\n\
     \ top-level extensions defined in the file.\n\
     \\n\
     \\r\n\
     \\ENQ\EOT\n\
-    \\STX\STX\EOT\DC2\EOT\235\STX\STX\n\
+    \\STX\STX\EOT\DC2\EOT\193\ETX\STX\n\
     \\n\
     \\r\n\
     \\ENQ\EOT\n\
-    \\STX\STX\ENQ\DC2\EOT\235\STX\v\SI\n\
+    \\STX\STX\ENQ\DC2\EOT\193\ETX\v\SI\n\
     \\r\n\
     \\ENQ\EOT\n\
-    \\STX\STX\SOH\DC2\EOT\235\STX\DLE#\n\
+    \\STX\STX\SOH\DC2\EOT\193\ETX\DLE#\n\
     \\r\n\
     \\ENQ\EOT\n\
-    \\STX\STX\ETX\DC2\EOT\235\STX&(\n\
+    \\STX\STX\ETX\DC2\EOT\193\ETX&(\n\
     \\r\n\
     \\ENQ\EOT\n\
-    \\STX\STX\b\DC2\EOT\235\STX):\n\
+    \\STX\STX\b\DC2\EOT\193\ETX):\n\
     \\r\n\
     \\ENQ\EOT\n\
-    \\STX\STX\a\DC2\EOT\235\STX49\n\
+    \\STX\STX\a\DC2\EOT\193\ETX49\n\
     \)\n\
     \\EOT\EOT\n\
-    \\STX\ETX\DC2\EOT\238\STX\STXE\SUB\ESC This option does nothing.\n\
+    \\STX\ETX\DC2\EOT\196\ETX\STXE\SUB\ESC This option does nothing.\n\
     \\n\
     \\r\n\
     \\ENQ\EOT\n\
-    \\STX\ETX\EOT\DC2\EOT\238\STX\STX\n\
+    \\STX\ETX\EOT\DC2\EOT\196\ETX\STX\n\
     \\n\
     \\r\n\
     \\ENQ\EOT\n\
-    \\STX\ETX\ENQ\DC2\EOT\238\STX\v\SI\n\
+    \\STX\ETX\ENQ\DC2\EOT\196\ETX\v\SI\n\
     \\r\n\
     \\ENQ\EOT\n\
-    \\STX\ETX\SOH\DC2\EOT\238\STX\DLE-\n\
+    \\STX\ETX\SOH\DC2\EOT\196\ETX\DLE-\n\
     \\r\n\
     \\ENQ\EOT\n\
-    \\STX\ETX\ETX\DC2\EOT\238\STX02\n\
+    \\STX\ETX\ETX\DC2\EOT\196\ETX02\n\
     \\r\n\
     \\ENQ\EOT\n\
-    \\STX\ETX\b\DC2\EOT\238\STX3D\n\
+    \\STX\ETX\b\DC2\EOT\196\ETX3D\n\
     \\SO\n\
     \\ACK\EOT\n\
-    \\STX\ETX\b\ETX\DC2\EOT\238\STX4C\n\
-    \\230\STX\n\
+    \\STX\ETX\b\ETX\DC2\EOT\196\ETX4C\n\
+    \\207\ETX\n\
     \\EOT\EOT\n\
-    \\STX\EOT\DC2\EOT\246\STX\STX>\SUB\215\STX If set true, then the Java2 code generator will generate code that\n\
-    \ throws an exception whenever an attempt is made to assign a non-UTF-8\n\
-    \ byte sequence to a string field.\n\
-    \ Message reflection will do the same.\n\
-    \ However, an extension field still accepts non-UTF-8 byte sequences.\n\
-    \ This option has no effect on when used with the lite runtime.\n\
+    \\STX\EOT\DC2\EOT\208\ETX\STX>\SUB\192\ETX A proto2 file can set this to true to opt in to UTF-8 checking for Java,\n\
+    \ which will throw an exception if invalid UTF-8 is parsed from the wire or\n\
+    \ assigned to a string field.\n\
+    \\n\
+    \ TODO: clarify exactly what kinds of field types this option\n\
+    \ applies to, and update these docs accordingly.\n\
+    \\n\
+    \ Proto3 files already perform these checks. Setting the option explicitly to\n\
+    \ false has no effect: it cannot be used to opt proto3 files out of UTF-8\n\
+    \ checks.\n\
     \\n\
     \\r\n\
     \\ENQ\EOT\n\
-    \\STX\EOT\EOT\DC2\EOT\246\STX\STX\n\
+    \\STX\EOT\EOT\DC2\EOT\208\ETX\STX\n\
     \\n\
     \\r\n\
     \\ENQ\EOT\n\
-    \\STX\EOT\ENQ\DC2\EOT\246\STX\v\SI\n\
+    \\STX\EOT\ENQ\DC2\EOT\208\ETX\v\SI\n\
     \\r\n\
     \\ENQ\EOT\n\
-    \\STX\EOT\SOH\DC2\EOT\246\STX\DLE&\n\
+    \\STX\EOT\SOH\DC2\EOT\208\ETX\DLE&\n\
     \\r\n\
     \\ENQ\EOT\n\
-    \\STX\EOT\ETX\DC2\EOT\246\STX)+\n\
+    \\STX\EOT\ETX\DC2\EOT\208\ETX)+\n\
     \\r\n\
     \\ENQ\EOT\n\
-    \\STX\EOT\b\DC2\EOT\246\STX,=\n\
+    \\STX\EOT\b\DC2\EOT\208\ETX,=\n\
     \\r\n\
     \\ENQ\EOT\n\
-    \\STX\EOT\a\DC2\EOT\246\STX7<\n\
+    \\STX\EOT\a\DC2\EOT\208\ETX7<\n\
     \L\n\
     \\EOT\EOT\n\
-    \\EOT\NUL\DC2\ACK\250\STX\STX\255\STX\ETX\SUB< Generated classes can be optimized for speed or code size.\n\
+    \\EOT\NUL\DC2\ACK\211\ETX\STX\216\ETX\ETX\SUB< Generated classes can be optimized for speed or code size.\n\
     \\n\
     \\r\n\
     \\ENQ\EOT\n\
-    \\EOT\NUL\SOH\DC2\EOT\250\STX\a\DC3\n\
+    \\EOT\NUL\SOH\DC2\EOT\211\ETX\a\DC3\n\
     \D\n\
     \\ACK\EOT\n\
-    \\EOT\NUL\STX\NUL\DC2\EOT\251\STX\EOT\SO\"4 Generate complete code for parsing, serialization,\n\
+    \\EOT\NUL\STX\NUL\DC2\EOT\212\ETX\EOT\SO\"4 Generate complete code for parsing, serialization,\n\
     \\n\
     \\SI\n\
     \\a\EOT\n\
-    \\EOT\NUL\STX\NUL\SOH\DC2\EOT\251\STX\EOT\t\n\
+    \\EOT\NUL\STX\NUL\SOH\DC2\EOT\212\ETX\EOT\t\n\
     \\SI\n\
     \\a\EOT\n\
-    \\EOT\NUL\STX\NUL\STX\DC2\EOT\251\STX\f\r\n\
+    \\EOT\NUL\STX\NUL\STX\DC2\EOT\212\ETX\f\r\n\
     \G\n\
     \\ACK\EOT\n\
-    \\EOT\NUL\STX\SOH\DC2\EOT\253\STX\EOT\DC2\SUB\ACK etc.\n\
+    \\EOT\NUL\STX\SOH\DC2\EOT\214\ETX\EOT\DC2\SUB\ACK etc.\n\
     \\"/ Use ReflectionOps to implement these methods.\n\
     \\n\
     \\SI\n\
     \\a\EOT\n\
-    \\EOT\NUL\STX\SOH\SOH\DC2\EOT\253\STX\EOT\r\n\
+    \\EOT\NUL\STX\SOH\SOH\DC2\EOT\214\ETX\EOT\r\n\
     \\SI\n\
     \\a\EOT\n\
-    \\EOT\NUL\STX\SOH\STX\DC2\EOT\253\STX\DLE\DC1\n\
+    \\EOT\NUL\STX\SOH\STX\DC2\EOT\214\ETX\DLE\DC1\n\
     \G\n\
     \\ACK\EOT\n\
-    \\EOT\NUL\STX\STX\DC2\EOT\254\STX\EOT\NAK\"7 Generate code using MessageLite and the lite runtime.\n\
+    \\EOT\NUL\STX\STX\DC2\EOT\215\ETX\EOT\NAK\"7 Generate code using MessageLite and the lite runtime.\n\
     \\n\
     \\SI\n\
     \\a\EOT\n\
-    \\EOT\NUL\STX\STX\SOH\DC2\EOT\254\STX\EOT\DLE\n\
+    \\EOT\NUL\STX\STX\SOH\DC2\EOT\215\ETX\EOT\DLE\n\
     \\SI\n\
     \\a\EOT\n\
-    \\EOT\NUL\STX\STX\STX\DC2\EOT\254\STX\DC3\DC4\n\
+    \\EOT\NUL\STX\STX\STX\DC2\EOT\215\ETX\DC3\DC4\n\
     \\f\n\
     \\EOT\EOT\n\
-    \\STX\ENQ\DC2\EOT\128\ETX\STX;\n\
+    \\STX\ENQ\DC2\EOT\217\ETX\STX;\n\
     \\r\n\
     \\ENQ\EOT\n\
-    \\STX\ENQ\EOT\DC2\EOT\128\ETX\STX\n\
+    \\STX\ENQ\EOT\DC2\EOT\217\ETX\STX\n\
     \\n\
     \\r\n\
     \\ENQ\EOT\n\
-    \\STX\ENQ\ACK\DC2\EOT\128\ETX\v\ETB\n\
+    \\STX\ENQ\ACK\DC2\EOT\217\ETX\v\ETB\n\
     \\r\n\
     \\ENQ\EOT\n\
-    \\STX\ENQ\SOH\DC2\EOT\128\ETX\CAN$\n\
+    \\STX\ENQ\SOH\DC2\EOT\217\ETX\CAN$\n\
     \\r\n\
     \\ENQ\EOT\n\
-    \\STX\ENQ\ETX\DC2\EOT\128\ETX'(\n\
+    \\STX\ENQ\ETX\DC2\EOT\217\ETX'(\n\
     \\r\n\
     \\ENQ\EOT\n\
-    \\STX\ENQ\b\DC2\EOT\128\ETX):\n\
+    \\STX\ENQ\b\DC2\EOT\217\ETX):\n\
     \\r\n\
     \\ENQ\EOT\n\
-    \\STX\ENQ\a\DC2\EOT\128\ETX49\n\
+    \\STX\ENQ\a\DC2\EOT\217\ETX49\n\
     \\226\STX\n\
     \\EOT\EOT\n\
-    \\STX\ACK\DC2\EOT\135\ETX\STX\"\SUB\211\STX Sets the Go package where structs generated from this .proto will be\n\
+    \\STX\ACK\DC2\EOT\224\ETX\STX\"\SUB\211\STX Sets the Go package where structs generated from this .proto will be\n\
     \ placed. If omitted, the Go package will be derived from the following:\n\
     \   - The basename of the package import path, if provided.\n\
     \   - Otherwise, the package statement in the .proto file, if present.\n\
@@ -11863,20 +15965,20 @@ packedFileDescriptor
     \\n\
     \\r\n\
     \\ENQ\EOT\n\
-    \\STX\ACK\EOT\DC2\EOT\135\ETX\STX\n\
+    \\STX\ACK\EOT\DC2\EOT\224\ETX\STX\n\
     \\n\
     \\r\n\
     \\ENQ\EOT\n\
-    \\STX\ACK\ENQ\DC2\EOT\135\ETX\v\DC1\n\
+    \\STX\ACK\ENQ\DC2\EOT\224\ETX\v\DC1\n\
     \\r\n\
     \\ENQ\EOT\n\
-    \\STX\ACK\SOH\DC2\EOT\135\ETX\DC2\FS\n\
+    \\STX\ACK\SOH\DC2\EOT\224\ETX\DC2\FS\n\
     \\r\n\
     \\ENQ\EOT\n\
-    \\STX\ACK\ETX\DC2\EOT\135\ETX\US!\n\
+    \\STX\ACK\ETX\DC2\EOT\224\ETX\US!\n\
     \\212\EOT\n\
     \\EOT\EOT\n\
-    \\STX\a\DC2\EOT\150\ETX\STX;\SUB\197\EOT Should generic services be generated in each language?  \"Generic\" services\n\
+    \\STX\a\DC2\EOT\236\ETX\STX;\SUB\197\EOT Should generic services be generated in each language?  \"Generic\" services\n\
     \ are not specific to any particular RPC system.  They are generated by the\n\
     \ main code generators in each language (without additional plugins).\n\
     \ Generic services were the only kind of service generation supported by\n\
@@ -11889,326 +15991,342 @@ packedFileDescriptor
     \\n\
     \\r\n\
     \\ENQ\EOT\n\
-    \\STX\a\EOT\DC2\EOT\150\ETX\STX\n\
+    \\STX\a\EOT\DC2\EOT\236\ETX\STX\n\
     \\n\
     \\r\n\
     \\ENQ\EOT\n\
-    \\STX\a\ENQ\DC2\EOT\150\ETX\v\SI\n\
+    \\STX\a\ENQ\DC2\EOT\236\ETX\v\SI\n\
     \\r\n\
     \\ENQ\EOT\n\
-    \\STX\a\SOH\DC2\EOT\150\ETX\DLE#\n\
+    \\STX\a\SOH\DC2\EOT\236\ETX\DLE#\n\
     \\r\n\
     \\ENQ\EOT\n\
-    \\STX\a\ETX\DC2\EOT\150\ETX&(\n\
+    \\STX\a\ETX\DC2\EOT\236\ETX&(\n\
     \\r\n\
     \\ENQ\EOT\n\
-    \\STX\a\b\DC2\EOT\150\ETX):\n\
+    \\STX\a\b\DC2\EOT\236\ETX):\n\
     \\r\n\
     \\ENQ\EOT\n\
-    \\STX\a\a\DC2\EOT\150\ETX49\n\
+    \\STX\a\a\DC2\EOT\236\ETX49\n\
     \\f\n\
     \\EOT\EOT\n\
-    \\STX\b\DC2\EOT\151\ETX\STX=\n\
+    \\STX\b\DC2\EOT\237\ETX\STX=\n\
     \\r\n\
     \\ENQ\EOT\n\
-    \\STX\b\EOT\DC2\EOT\151\ETX\STX\n\
+    \\STX\b\EOT\DC2\EOT\237\ETX\STX\n\
     \\n\
     \\r\n\
     \\ENQ\EOT\n\
-    \\STX\b\ENQ\DC2\EOT\151\ETX\v\SI\n\
+    \\STX\b\ENQ\DC2\EOT\237\ETX\v\SI\n\
     \\r\n\
     \\ENQ\EOT\n\
-    \\STX\b\SOH\DC2\EOT\151\ETX\DLE%\n\
+    \\STX\b\SOH\DC2\EOT\237\ETX\DLE%\n\
     \\r\n\
     \\ENQ\EOT\n\
-    \\STX\b\ETX\DC2\EOT\151\ETX(*\n\
+    \\STX\b\ETX\DC2\EOT\237\ETX(*\n\
     \\r\n\
     \\ENQ\EOT\n\
-    \\STX\b\b\DC2\EOT\151\ETX+<\n\
+    \\STX\b\b\DC2\EOT\237\ETX+<\n\
     \\r\n\
     \\ENQ\EOT\n\
-    \\STX\b\a\DC2\EOT\151\ETX6;\n\
+    \\STX\b\a\DC2\EOT\237\ETX6;\n\
     \\f\n\
     \\EOT\EOT\n\
-    \\STX\t\DC2\EOT\152\ETX\STX;\n\
+    \\STX\t\DC2\EOT\238\ETX\STX;\n\
     \\r\n\
     \\ENQ\EOT\n\
-    \\STX\t\EOT\DC2\EOT\152\ETX\STX\n\
+    \\STX\t\EOT\DC2\EOT\238\ETX\STX\n\
     \\n\
     \\r\n\
     \\ENQ\EOT\n\
-    \\STX\t\ENQ\DC2\EOT\152\ETX\v\SI\n\
+    \\STX\t\ENQ\DC2\EOT\238\ETX\v\SI\n\
     \\r\n\
     \\ENQ\EOT\n\
-    \\STX\t\SOH\DC2\EOT\152\ETX\DLE#\n\
+    \\STX\t\SOH\DC2\EOT\238\ETX\DLE#\n\
     \\r\n\
     \\ENQ\EOT\n\
-    \\STX\t\ETX\DC2\EOT\152\ETX&(\n\
+    \\STX\t\ETX\DC2\EOT\238\ETX&(\n\
     \\r\n\
     \\ENQ\EOT\n\
-    \\STX\t\b\DC2\EOT\152\ETX):\n\
+    \\STX\t\b\DC2\EOT\238\ETX):\n\
     \\r\n\
     \\ENQ\EOT\n\
-    \\STX\t\a\DC2\EOT\152\ETX49\n\
+    \\STX\t\a\DC2\EOT\238\ETX49\n\
+    \+\n\
+    \\ETX\EOT\n\
+    \\t\DC2\EOT\239\ETX\STX\SO\"\RS removed php_generic_services\n\
+    \\n\
     \\f\n\
     \\EOT\EOT\n\
-    \\STX\n\
-    \\DC2\EOT\153\ETX\STX<\n\
+    \\t\NUL\DC2\EOT\239\ETX\v\r\n\
     \\r\n\
     \\ENQ\EOT\n\
-    \\STX\n\
-    \\EOT\DC2\EOT\153\ETX\STX\n\
+    \\t\NUL\SOH\DC2\EOT\239\ETX\v\r\n\
+    \\r\n\
+    \\ENQ\EOT\n\
+    \\t\NUL\STX\DC2\EOT\239\ETX\v\r\n\
+    \\v\n\
+    \\ETX\EOT\n\
     \\n\
-    \\r\n\
-    \\ENQ\EOT\n\
-    \\STX\n\
-    \\ENQ\DC2\EOT\153\ETX\v\SI\n\
-    \\r\n\
-    \\ENQ\EOT\n\
-    \\STX\n\
-    \\SOH\DC2\EOT\153\ETX\DLE$\n\
-    \\r\n\
-    \\ENQ\EOT\n\
-    \\STX\n\
-    \\ETX\DC2\EOT\153\ETX')\n\
-    \\r\n\
-    \\ENQ\EOT\n\
-    \\STX\n\
-    \\b\DC2\EOT\153\ETX*;\n\
-    \\r\n\
-    \\ENQ\EOT\n\
-    \\STX\n\
-    \\a\DC2\EOT\153\ETX5:\n\
+    \\DC2\EOT\240\ETX\STX\"\n\
+    \\f\n\
+    \\EOT\EOT\n\
+    \\n\
+    \\NUL\DC2\EOT\240\ETX\v!\n\
     \\243\SOH\n\
     \\EOT\EOT\n\
-    \\STX\v\DC2\EOT\159\ETX\STX2\SUB\228\SOH Is this file deprecated?\n\
+    \\STX\n\
+    \\DC2\EOT\246\ETX\STX2\SUB\228\SOH Is this file deprecated?\n\
     \ Depending on the target platform, this can emit Deprecated annotations\n\
     \ for everything in the file, or it will be completely ignored; in the very\n\
     \ least, this is a formalization for deprecating files.\n\
     \\n\
     \\r\n\
     \\ENQ\EOT\n\
-    \\STX\v\EOT\DC2\EOT\159\ETX\STX\n\
+    \\STX\n\
+    \\EOT\DC2\EOT\246\ETX\STX\n\
     \\n\
     \\r\n\
     \\ENQ\EOT\n\
-    \\STX\v\ENQ\DC2\EOT\159\ETX\v\SI\n\
+    \\STX\n\
+    \\ENQ\DC2\EOT\246\ETX\v\SI\n\
     \\r\n\
     \\ENQ\EOT\n\
-    \\STX\v\SOH\DC2\EOT\159\ETX\DLE\SUB\n\
+    \\STX\n\
+    \\SOH\DC2\EOT\246\ETX\DLE\SUB\n\
     \\r\n\
     \\ENQ\EOT\n\
-    \\STX\v\ETX\DC2\EOT\159\ETX\GS\US\n\
+    \\STX\n\
+    \\ETX\DC2\EOT\246\ETX\GS\US\n\
     \\r\n\
     \\ENQ\EOT\n\
-    \\STX\v\b\DC2\EOT\159\ETX 1\n\
+    \\STX\n\
+    \\b\DC2\EOT\246\ETX 1\n\
     \\r\n\
     \\ENQ\EOT\n\
-    \\STX\v\a\DC2\EOT\159\ETX+0\n\
+    \\STX\n\
+    \\a\DC2\EOT\246\ETX+0\n\
     \\DEL\n\
     \\EOT\EOT\n\
-    \\STX\f\DC2\EOT\163\ETX\STX7\SUBq Enables the use of arenas for the proto messages in this file. This applies\n\
+    \\STX\v\DC2\EOT\250\ETX\STX7\SUBq Enables the use of arenas for the proto messages in this file. This applies\n\
     \ only to generated classes for C++.\n\
     \\n\
     \\r\n\
     \\ENQ\EOT\n\
-    \\STX\f\EOT\DC2\EOT\163\ETX\STX\n\
+    \\STX\v\EOT\DC2\EOT\250\ETX\STX\n\
     \\n\
     \\r\n\
     \\ENQ\EOT\n\
-    \\STX\f\ENQ\DC2\EOT\163\ETX\v\SI\n\
+    \\STX\v\ENQ\DC2\EOT\250\ETX\v\SI\n\
     \\r\n\
     \\ENQ\EOT\n\
-    \\STX\f\SOH\DC2\EOT\163\ETX\DLE \n\
+    \\STX\v\SOH\DC2\EOT\250\ETX\DLE \n\
     \\r\n\
     \\ENQ\EOT\n\
-    \\STX\f\ETX\DC2\EOT\163\ETX#%\n\
+    \\STX\v\ETX\DC2\EOT\250\ETX#%\n\
     \\r\n\
     \\ENQ\EOT\n\
-    \\STX\f\b\DC2\EOT\163\ETX&6\n\
+    \\STX\v\b\DC2\EOT\250\ETX&6\n\
     \\r\n\
     \\ENQ\EOT\n\
-    \\STX\f\a\DC2\EOT\163\ETX15\n\
+    \\STX\v\a\DC2\EOT\250\ETX15\n\
     \\146\SOH\n\
     \\EOT\EOT\n\
-    \\STX\r\DC2\EOT\168\ETX\STX)\SUB\131\SOH Sets the objective c class prefix which is prepended to all objective c\n\
+    \\STX\f\DC2\EOT\254\ETX\STX)\SUB\131\SOH Sets the objective c class prefix which is prepended to all objective c\n\
     \ generated classes from this .proto. There is no default.\n\
     \\n\
     \\r\n\
     \\ENQ\EOT\n\
-    \\STX\r\EOT\DC2\EOT\168\ETX\STX\n\
+    \\STX\f\EOT\DC2\EOT\254\ETX\STX\n\
     \\n\
     \\r\n\
     \\ENQ\EOT\n\
-    \\STX\r\ENQ\DC2\EOT\168\ETX\v\DC1\n\
+    \\STX\f\ENQ\DC2\EOT\254\ETX\v\DC1\n\
     \\r\n\
     \\ENQ\EOT\n\
-    \\STX\r\SOH\DC2\EOT\168\ETX\DC2#\n\
+    \\STX\f\SOH\DC2\EOT\254\ETX\DC2#\n\
     \\r\n\
     \\ENQ\EOT\n\
-    \\STX\r\ETX\DC2\EOT\168\ETX&(\n\
+    \\STX\f\ETX\DC2\EOT\254\ETX&(\n\
     \I\n\
     \\EOT\EOT\n\
-    \\STX\SO\DC2\EOT\171\ETX\STX(\SUB; Namespace for generated classes; defaults to the package.\n\
+    \\STX\r\DC2\EOT\129\EOT\STX(\SUB; Namespace for generated classes; defaults to the package.\n\
     \\n\
     \\r\n\
     \\ENQ\EOT\n\
-    \\STX\SO\EOT\DC2\EOT\171\ETX\STX\n\
+    \\STX\r\EOT\DC2\EOT\129\EOT\STX\n\
     \\n\
     \\r\n\
     \\ENQ\EOT\n\
-    \\STX\SO\ENQ\DC2\EOT\171\ETX\v\DC1\n\
+    \\STX\r\ENQ\DC2\EOT\129\EOT\v\DC1\n\
     \\r\n\
     \\ENQ\EOT\n\
-    \\STX\SO\SOH\DC2\EOT\171\ETX\DC2\"\n\
+    \\STX\r\SOH\DC2\EOT\129\EOT\DC2\"\n\
     \\r\n\
     \\ENQ\EOT\n\
-    \\STX\SO\ETX\DC2\EOT\171\ETX%'\n\
+    \\STX\r\ETX\DC2\EOT\129\EOT%'\n\
     \\145\STX\n\
     \\EOT\EOT\n\
-    \\STX\SI\DC2\EOT\177\ETX\STX$\SUB\130\STX By default Swift generators will take the proto package and CamelCase it\n\
+    \\STX\SO\DC2\EOT\135\EOT\STX$\SUB\130\STX By default Swift generators will take the proto package and CamelCase it\n\
     \ replacing '.' with underscore and use that to prefix the types/symbols\n\
     \ defined. When this options is provided, they will use this value instead\n\
     \ to prefix the types/symbols defined.\n\
     \\n\
     \\r\n\
     \\ENQ\EOT\n\
-    \\STX\SI\EOT\DC2\EOT\177\ETX\STX\n\
+    \\STX\SO\EOT\DC2\EOT\135\EOT\STX\n\
     \\n\
     \\r\n\
     \\ENQ\EOT\n\
-    \\STX\SI\ENQ\DC2\EOT\177\ETX\v\DC1\n\
+    \\STX\SO\ENQ\DC2\EOT\135\EOT\v\DC1\n\
     \\r\n\
     \\ENQ\EOT\n\
-    \\STX\SI\SOH\DC2\EOT\177\ETX\DC2\RS\n\
+    \\STX\SO\SOH\DC2\EOT\135\EOT\DC2\RS\n\
     \\r\n\
     \\ENQ\EOT\n\
-    \\STX\SI\ETX\DC2\EOT\177\ETX!#\n\
+    \\STX\SO\ETX\DC2\EOT\135\EOT!#\n\
     \~\n\
     \\EOT\EOT\n\
-    \\STX\DLE\DC2\EOT\181\ETX\STX(\SUBp Sets the php class prefix which is prepended to all php generated classes\n\
+    \\STX\SI\DC2\EOT\139\EOT\STX(\SUBp Sets the php class prefix which is prepended to all php generated classes\n\
     \ from this .proto. Default is empty.\n\
     \\n\
     \\r\n\
     \\ENQ\EOT\n\
-    \\STX\DLE\EOT\DC2\EOT\181\ETX\STX\n\
+    \\STX\SI\EOT\DC2\EOT\139\EOT\STX\n\
     \\n\
     \\r\n\
     \\ENQ\EOT\n\
-    \\STX\DLE\ENQ\DC2\EOT\181\ETX\v\DC1\n\
+    \\STX\SI\ENQ\DC2\EOT\139\EOT\v\DC1\n\
     \\r\n\
     \\ENQ\EOT\n\
-    \\STX\DLE\SOH\DC2\EOT\181\ETX\DC2\"\n\
+    \\STX\SI\SOH\DC2\EOT\139\EOT\DC2\"\n\
     \\r\n\
     \\ENQ\EOT\n\
-    \\STX\DLE\ETX\DC2\EOT\181\ETX%'\n\
+    \\STX\SI\ETX\DC2\EOT\139\EOT%'\n\
     \\190\SOH\n\
     \\EOT\EOT\n\
-    \\STX\DC1\DC2\EOT\186\ETX\STX%\SUB\175\SOH Use this option to change the namespace of php generated classes. Default\n\
+    \\STX\DLE\DC2\EOT\144\EOT\STX%\SUB\175\SOH Use this option to change the namespace of php generated classes. Default\n\
     \ is empty. When this option is empty, the package name will be used for\n\
     \ determining the namespace.\n\
     \\n\
     \\r\n\
     \\ENQ\EOT\n\
-    \\STX\DC1\EOT\DC2\EOT\186\ETX\STX\n\
+    \\STX\DLE\EOT\DC2\EOT\144\EOT\STX\n\
     \\n\
     \\r\n\
     \\ENQ\EOT\n\
-    \\STX\DC1\ENQ\DC2\EOT\186\ETX\v\DC1\n\
+    \\STX\DLE\ENQ\DC2\EOT\144\EOT\v\DC1\n\
     \\r\n\
     \\ENQ\EOT\n\
-    \\STX\DC1\SOH\DC2\EOT\186\ETX\DC2\US\n\
+    \\STX\DLE\SOH\DC2\EOT\144\EOT\DC2\US\n\
     \\r\n\
     \\ENQ\EOT\n\
-    \\STX\DC1\ETX\DC2\EOT\186\ETX\"$\n\
+    \\STX\DLE\ETX\DC2\EOT\144\EOT\"$\n\
     \\202\SOH\n\
     \\EOT\EOT\n\
-    \\STX\DC2\DC2\EOT\191\ETX\STX.\SUB\187\SOH Use this option to change the namespace of php generated metadata classes.\n\
+    \\STX\DC1\DC2\EOT\149\EOT\STX.\SUB\187\SOH Use this option to change the namespace of php generated metadata classes.\n\
     \ Default is empty. When this option is empty, the proto file name will be\n\
     \ used for determining the namespace.\n\
     \\n\
     \\r\n\
     \\ENQ\EOT\n\
-    \\STX\DC2\EOT\DC2\EOT\191\ETX\STX\n\
+    \\STX\DC1\EOT\DC2\EOT\149\EOT\STX\n\
     \\n\
     \\r\n\
     \\ENQ\EOT\n\
-    \\STX\DC2\ENQ\DC2\EOT\191\ETX\v\DC1\n\
+    \\STX\DC1\ENQ\DC2\EOT\149\EOT\v\DC1\n\
     \\r\n\
     \\ENQ\EOT\n\
-    \\STX\DC2\SOH\DC2\EOT\191\ETX\DC2(\n\
+    \\STX\DC1\SOH\DC2\EOT\149\EOT\DC2(\n\
     \\r\n\
     \\ENQ\EOT\n\
-    \\STX\DC2\ETX\DC2\EOT\191\ETX+-\n\
+    \\STX\DC1\ETX\DC2\EOT\149\EOT+-\n\
     \\194\SOH\n\
     \\EOT\EOT\n\
-    \\STX\DC3\DC2\EOT\196\ETX\STX$\SUB\179\SOH Use this option to change the package of ruby generated classes. Default\n\
+    \\STX\DC2\DC2\EOT\154\EOT\STX$\SUB\179\SOH Use this option to change the package of ruby generated classes. Default\n\
     \ is empty. When this option is not set, the package name will be used for\n\
     \ determining the ruby package.\n\
     \\n\
     \\r\n\
     \\ENQ\EOT\n\
-    \\STX\DC3\EOT\DC2\EOT\196\ETX\STX\n\
+    \\STX\DC2\EOT\DC2\EOT\154\EOT\STX\n\
     \\n\
     \\r\n\
     \\ENQ\EOT\n\
-    \\STX\DC3\ENQ\DC2\EOT\196\ETX\v\DC1\n\
+    \\STX\DC2\ENQ\DC2\EOT\154\EOT\v\DC1\n\
     \\r\n\
     \\ENQ\EOT\n\
-    \\STX\DC3\SOH\DC2\EOT\196\ETX\DC2\RS\n\
+    \\STX\DC2\SOH\DC2\EOT\154\EOT\DC2\RS\n\
     \\r\n\
     \\ENQ\EOT\n\
-    \\STX\DC3\ETX\DC2\EOT\196\ETX!#\n\
+    \\STX\DC2\ETX\DC2\EOT\154\EOT!#\n\
+    \=\n\
+    \\EOT\EOT\n\
+    \\STX\DC3\DC2\EOT\157\EOT\STX$\SUB/ Any features defined in the specific edition.\n\
+    \\n\
+    \\r\n\
+    \\ENQ\EOT\n\
+    \\STX\DC3\EOT\DC2\EOT\157\EOT\STX\n\
+    \\n\
+    \\r\n\
+    \\ENQ\EOT\n\
+    \\STX\DC3\ACK\DC2\EOT\157\EOT\v\NAK\n\
+    \\r\n\
+    \\ENQ\EOT\n\
+    \\STX\DC3\SOH\DC2\EOT\157\EOT\SYN\RS\n\
+    \\r\n\
+    \\ENQ\EOT\n\
+    \\STX\DC3\ETX\DC2\EOT\157\EOT!#\n\
     \|\n\
     \\EOT\EOT\n\
-    \\STX\DC4\DC2\EOT\201\ETX\STX:\SUBn The parser stores options it doesn't recognize here.\n\
+    \\STX\DC4\DC2\EOT\161\EOT\STX:\SUBn The parser stores options it doesn't recognize here.\n\
     \ See the documentation for the \"Options\" section above.\n\
     \\n\
     \\r\n\
     \\ENQ\EOT\n\
-    \\STX\DC4\EOT\DC2\EOT\201\ETX\STX\n\
+    \\STX\DC4\EOT\DC2\EOT\161\EOT\STX\n\
     \\n\
     \\r\n\
     \\ENQ\EOT\n\
-    \\STX\DC4\ACK\DC2\EOT\201\ETX\v\RS\n\
+    \\STX\DC4\ACK\DC2\EOT\161\EOT\v\RS\n\
     \\r\n\
     \\ENQ\EOT\n\
-    \\STX\DC4\SOH\DC2\EOT\201\ETX\US3\n\
+    \\STX\DC4\SOH\DC2\EOT\161\EOT\US3\n\
     \\r\n\
     \\ENQ\EOT\n\
-    \\STX\DC4\ETX\DC2\EOT\201\ETX69\n\
+    \\STX\DC4\ETX\DC2\EOT\161\EOT69\n\
     \\135\SOH\n\
     \\ETX\EOT\n\
-    \\ENQ\DC2\EOT\205\ETX\STX\EM\SUBz Clients can define custom options in extensions of this message.\n\
+    \\ENQ\DC2\EOT\165\EOT\STX\EM\SUBz Clients can define custom options in extensions of this message.\n\
     \ See the documentation for the \"Options\" section above.\n\
     \\n\
     \\f\n\
     \\EOT\EOT\n\
-    \\ENQ\NUL\DC2\EOT\205\ETX\r\CAN\n\
+    \\ENQ\NUL\DC2\EOT\165\EOT\r\CAN\n\
     \\r\n\
     \\ENQ\EOT\n\
-    \\ENQ\NUL\SOH\DC2\EOT\205\ETX\r\DC1\n\
+    \\ENQ\NUL\SOH\DC2\EOT\165\EOT\r\DC1\n\
     \\r\n\
     \\ENQ\EOT\n\
-    \\ENQ\NUL\STX\DC2\EOT\205\ETX\NAK\CAN\n\
+    \\ENQ\NUL\STX\DC2\EOT\165\EOT\NAK\CAN\n\
     \\v\n\
     \\ETX\EOT\n\
-    \\t\DC2\EOT\207\ETX\STX\SO\n\
+    \\t\DC2\EOT\167\EOT\STX\SO\n\
     \\f\n\
     \\EOT\EOT\n\
-    \\t\NUL\DC2\EOT\207\ETX\v\r\n\
+    \\t\SOH\DC2\EOT\167\EOT\v\r\n\
     \\r\n\
     \\ENQ\EOT\n\
-    \\t\NUL\SOH\DC2\EOT\207\ETX\v\r\n\
+    \\t\SOH\SOH\DC2\EOT\167\EOT\v\r\n\
     \\r\n\
     \\ENQ\EOT\n\
-    \\t\NUL\STX\DC2\EOT\207\ETX\v\r\n\
+    \\t\SOH\STX\DC2\EOT\167\EOT\v\r\n\
     \\f\n\
-    \\STX\EOT\v\DC2\ACK\210\ETX\NUL\146\EOT\SOH\n\
+    \\STX\EOT\v\DC2\ACK\170\EOT\NUL\250\EOT\SOH\n\
     \\v\n\
-    \\ETX\EOT\v\SOH\DC2\EOT\210\ETX\b\SYN\n\
+    \\ETX\EOT\v\SOH\DC2\EOT\170\EOT\b\SYN\n\
     \\216\ENQ\n\
-    \\EOT\EOT\v\STX\NUL\DC2\EOT\229\ETX\STX>\SUB\201\ENQ Set true to use the old proto1 MessageSet wire format for extensions.\n\
+    \\EOT\EOT\v\STX\NUL\DC2\EOT\189\EOT\STX>\SUB\201\ENQ Set true to use the old proto1 MessageSet wire format for extensions.\n\
     \ This is provided for backwards-compatibility with the MessageSet wire\n\
     \ format.  You should not use this for any other reason:  It's less\n\
     \ efficient, has fewer features, and is more complicated.\n\
@@ -12228,57 +16346,77 @@ packedFileDescriptor
     \ the protocol compiler.\n\
     \\n\
     \\r\n\
-    \\ENQ\EOT\v\STX\NUL\EOT\DC2\EOT\229\ETX\STX\n\
+    \\ENQ\EOT\v\STX\NUL\EOT\DC2\EOT\189\EOT\STX\n\
     \\n\
     \\r\n\
-    \\ENQ\EOT\v\STX\NUL\ENQ\DC2\EOT\229\ETX\v\SI\n\
+    \\ENQ\EOT\v\STX\NUL\ENQ\DC2\EOT\189\EOT\v\SI\n\
     \\r\n\
-    \\ENQ\EOT\v\STX\NUL\SOH\DC2\EOT\229\ETX\DLE'\n\
+    \\ENQ\EOT\v\STX\NUL\SOH\DC2\EOT\189\EOT\DLE'\n\
     \\r\n\
-    \\ENQ\EOT\v\STX\NUL\ETX\DC2\EOT\229\ETX*+\n\
+    \\ENQ\EOT\v\STX\NUL\ETX\DC2\EOT\189\EOT*+\n\
     \\r\n\
-    \\ENQ\EOT\v\STX\NUL\b\DC2\EOT\229\ETX,=\n\
+    \\ENQ\EOT\v\STX\NUL\b\DC2\EOT\189\EOT,=\n\
     \\r\n\
-    \\ENQ\EOT\v\STX\NUL\a\DC2\EOT\229\ETX7<\n\
+    \\ENQ\EOT\v\STX\NUL\a\DC2\EOT\189\EOT7<\n\
     \\235\SOH\n\
-    \\EOT\EOT\v\STX\SOH\DC2\EOT\234\ETX\STXF\SUB\220\SOH Disables the generation of the standard \"descriptor()\" accessor, which can\n\
+    \\EOT\EOT\v\STX\SOH\DC2\EOT\194\EOT\STXF\SUB\220\SOH Disables the generation of the standard \"descriptor()\" accessor, which can\n\
     \ conflict with a field of the same name.  This is meant to make migration\n\
     \ from proto1 easier; new code should avoid fields named \"descriptor\".\n\
     \\n\
     \\r\n\
-    \\ENQ\EOT\v\STX\SOH\EOT\DC2\EOT\234\ETX\STX\n\
+    \\ENQ\EOT\v\STX\SOH\EOT\DC2\EOT\194\EOT\STX\n\
     \\n\
     \\r\n\
-    \\ENQ\EOT\v\STX\SOH\ENQ\DC2\EOT\234\ETX\v\SI\n\
+    \\ENQ\EOT\v\STX\SOH\ENQ\DC2\EOT\194\EOT\v\SI\n\
     \\r\n\
-    \\ENQ\EOT\v\STX\SOH\SOH\DC2\EOT\234\ETX\DLE/\n\
+    \\ENQ\EOT\v\STX\SOH\SOH\DC2\EOT\194\EOT\DLE/\n\
     \\r\n\
-    \\ENQ\EOT\v\STX\SOH\ETX\DC2\EOT\234\ETX23\n\
+    \\ENQ\EOT\v\STX\SOH\ETX\DC2\EOT\194\EOT23\n\
     \\r\n\
-    \\ENQ\EOT\v\STX\SOH\b\DC2\EOT\234\ETX4E\n\
+    \\ENQ\EOT\v\STX\SOH\b\DC2\EOT\194\EOT4E\n\
     \\r\n\
-    \\ENQ\EOT\v\STX\SOH\a\DC2\EOT\234\ETX?D\n\
+    \\ENQ\EOT\v\STX\SOH\a\DC2\EOT\194\EOT?D\n\
     \\238\SOH\n\
-    \\EOT\EOT\v\STX\STX\DC2\EOT\240\ETX\STX1\SUB\223\SOH Is this message deprecated?\n\
+    \\EOT\EOT\v\STX\STX\DC2\EOT\200\EOT\STX1\SUB\223\SOH Is this message deprecated?\n\
     \ Depending on the target platform, this can emit Deprecated annotations\n\
     \ for the message, or it will be completely ignored; in the very least,\n\
     \ this is a formalization for deprecating messages.\n\
     \\n\
     \\r\n\
-    \\ENQ\EOT\v\STX\STX\EOT\DC2\EOT\240\ETX\STX\n\
+    \\ENQ\EOT\v\STX\STX\EOT\DC2\EOT\200\EOT\STX\n\
     \\n\
     \\r\n\
-    \\ENQ\EOT\v\STX\STX\ENQ\DC2\EOT\240\ETX\v\SI\n\
+    \\ENQ\EOT\v\STX\STX\ENQ\DC2\EOT\200\EOT\v\SI\n\
     \\r\n\
-    \\ENQ\EOT\v\STX\STX\SOH\DC2\EOT\240\ETX\DLE\SUB\n\
+    \\ENQ\EOT\v\STX\STX\SOH\DC2\EOT\200\EOT\DLE\SUB\n\
     \\r\n\
-    \\ENQ\EOT\v\STX\STX\ETX\DC2\EOT\240\ETX\GS\RS\n\
+    \\ENQ\EOT\v\STX\STX\ETX\DC2\EOT\200\EOT\GS\RS\n\
     \\r\n\
-    \\ENQ\EOT\v\STX\STX\b\DC2\EOT\240\ETX\US0\n\
+    \\ENQ\EOT\v\STX\STX\b\DC2\EOT\200\EOT\US0\n\
     \\r\n\
-    \\ENQ\EOT\v\STX\STX\a\DC2\EOT\240\ETX*/\n\
+    \\ENQ\EOT\v\STX\STX\a\DC2\EOT\200\EOT*/\n\
+    \\v\n\
+    \\ETX\EOT\v\t\DC2\EOT\202\EOT\STX\DC3\n\
+    \\f\n\
+    \\EOT\EOT\v\t\NUL\DC2\EOT\202\EOT\v\f\n\
+    \\r\n\
+    \\ENQ\EOT\v\t\NUL\SOH\DC2\EOT\202\EOT\v\f\n\
+    \\r\n\
+    \\ENQ\EOT\v\t\NUL\STX\DC2\EOT\202\EOT\v\f\n\
+    \\f\n\
+    \\EOT\EOT\v\t\SOH\DC2\EOT\202\EOT\SO\SI\n\
+    \\r\n\
+    \\ENQ\EOT\v\t\SOH\SOH\DC2\EOT\202\EOT\SO\SI\n\
+    \\r\n\
+    \\ENQ\EOT\v\t\SOH\STX\DC2\EOT\202\EOT\SO\SI\n\
+    \\f\n\
+    \\EOT\EOT\v\t\STX\DC2\EOT\202\EOT\DC1\DC2\n\
+    \\r\n\
+    \\ENQ\EOT\v\t\STX\SOH\DC2\EOT\202\EOT\DC1\DC2\n\
+    \\r\n\
+    \\ENQ\EOT\v\t\STX\STX\DC2\EOT\202\EOT\DC1\DC2\n\
     \\160\ACK\n\
-    \\EOT\EOT\v\STX\ETX\DC2\EOT\135\EOT\STX\RS\SUB\145\ACK Whether the message is an automatically generated map entry type for the\n\
+    \\EOT\EOT\v\STX\ETX\DC2\EOT\225\EOT\STX\RS\SUB\145\ACK Whether the message is an automatically generated map entry type for the\n\
     \ maps field.\n\
     \\n\
     \ For maps fields:\n\
@@ -12301,118 +16439,166 @@ packedFileDescriptor
     \ parser.\n\
     \\n\
     \\r\n\
-    \\ENQ\EOT\v\STX\ETX\EOT\DC2\EOT\135\EOT\STX\n\
+    \\ENQ\EOT\v\STX\ETX\EOT\DC2\EOT\225\EOT\STX\n\
     \\n\
     \\r\n\
-    \\ENQ\EOT\v\STX\ETX\ENQ\DC2\EOT\135\EOT\v\SI\n\
+    \\ENQ\EOT\v\STX\ETX\ENQ\DC2\EOT\225\EOT\v\SI\n\
     \\r\n\
-    \\ENQ\EOT\v\STX\ETX\SOH\DC2\EOT\135\EOT\DLE\EM\n\
+    \\ENQ\EOT\v\STX\ETX\SOH\DC2\EOT\225\EOT\DLE\EM\n\
     \\r\n\
-    \\ENQ\EOT\v\STX\ETX\ETX\DC2\EOT\135\EOT\FS\GS\n\
+    \\ENQ\EOT\v\STX\ETX\ETX\DC2\EOT\225\EOT\FS\GS\n\
     \$\n\
-    \\ETX\EOT\v\t\DC2\EOT\137\EOT\STX\r\"\ETB javalite_serializable\n\
+    \\ETX\EOT\v\t\DC2\EOT\227\EOT\STX\r\"\ETB javalite_serializable\n\
     \\n\
     \\f\n\
-    \\EOT\EOT\v\t\NUL\DC2\EOT\137\EOT\v\f\n\
+    \\EOT\EOT\v\t\ETX\DC2\EOT\227\EOT\v\f\n\
     \\r\n\
-    \\ENQ\EOT\v\t\NUL\SOH\DC2\EOT\137\EOT\v\f\n\
+    \\ENQ\EOT\v\t\ETX\SOH\DC2\EOT\227\EOT\v\f\n\
     \\r\n\
-    \\ENQ\EOT\v\t\NUL\STX\DC2\EOT\137\EOT\v\f\n\
+    \\ENQ\EOT\v\t\ETX\STX\DC2\EOT\227\EOT\v\f\n\
     \\US\n\
-    \\ETX\EOT\v\t\DC2\EOT\138\EOT\STX\r\"\DC2 javanano_as_lite\n\
+    \\ETX\EOT\v\t\DC2\EOT\228\EOT\STX\r\"\DC2 javanano_as_lite\n\
     \\n\
     \\f\n\
-    \\EOT\EOT\v\t\SOH\DC2\EOT\138\EOT\v\f\n\
+    \\EOT\EOT\v\t\EOT\DC2\EOT\228\EOT\v\f\n\
     \\r\n\
-    \\ENQ\EOT\v\t\SOH\SOH\DC2\EOT\138\EOT\v\f\n\
+    \\ENQ\EOT\v\t\EOT\SOH\DC2\EOT\228\EOT\v\f\n\
     \\r\n\
-    \\ENQ\EOT\v\t\SOH\STX\DC2\EOT\138\EOT\v\f\n\
+    \\ENQ\EOT\v\t\EOT\STX\DC2\EOT\228\EOT\v\f\n\
+    \\221\ETX\n\
+    \\EOT\EOT\v\STX\EOT\DC2\EOT\240\EOT\STXP\SUB\206\ETX Enable the legacy handling of JSON field name conflicts.  This lowercases\n\
+    \ and strips underscored from the fields before comparison in proto3 only.\n\
+    \ The new behavior takes `json_name` into account and applies to proto2 as\n\
+    \ well.\n\
+    \\n\
+    \ This should only be used as a temporary measure against broken builds due\n\
+    \ to the change in behavior for JSON field name conflicts.\n\
+    \\n\
+    \ TODO This is legacy behavior we plan to remove once downstream\n\
+    \ teams have had time to migrate.\n\
+    \\n\
+    \\r\n\
+    \\ENQ\EOT\v\STX\EOT\EOT\DC2\EOT\240\EOT\STX\n\
+    \\n\
+    \\r\n\
+    \\ENQ\EOT\v\STX\EOT\ENQ\DC2\EOT\240\EOT\v\SI\n\
+    \\r\n\
+    \\ENQ\EOT\v\STX\EOT\SOH\DC2\EOT\240\EOT\DLE6\n\
+    \\r\n\
+    \\ENQ\EOT\v\STX\EOT\ETX\DC2\EOT\240\EOT9;\n\
+    \\r\n\
+    \\ENQ\EOT\v\STX\EOT\b\DC2\EOT\240\EOT<O\n\
+    \\SO\n\
+    \\ACK\EOT\v\STX\EOT\b\ETX\DC2\EOT\240\EOT=N\n\
+    \=\n\
+    \\EOT\EOT\v\STX\ENQ\DC2\EOT\243\EOT\STX$\SUB/ Any features defined in the specific edition.\n\
+    \\n\
+    \\r\n\
+    \\ENQ\EOT\v\STX\ENQ\EOT\DC2\EOT\243\EOT\STX\n\
+    \\n\
+    \\r\n\
+    \\ENQ\EOT\v\STX\ENQ\ACK\DC2\EOT\243\EOT\v\NAK\n\
+    \\r\n\
+    \\ENQ\EOT\v\STX\ENQ\SOH\DC2\EOT\243\EOT\SYN\RS\n\
+    \\r\n\
+    \\ENQ\EOT\v\STX\ENQ\ETX\DC2\EOT\243\EOT!#\n\
     \O\n\
-    \\EOT\EOT\v\STX\EOT\DC2\EOT\142\EOT\STX:\SUBA The parser stores options it doesn't recognize here. See above.\n\
+    \\EOT\EOT\v\STX\ACK\DC2\EOT\246\EOT\STX:\SUBA The parser stores options it doesn't recognize here. See above.\n\
     \\n\
     \\r\n\
-    \\ENQ\EOT\v\STX\EOT\EOT\DC2\EOT\142\EOT\STX\n\
+    \\ENQ\EOT\v\STX\ACK\EOT\DC2\EOT\246\EOT\STX\n\
     \\n\
     \\r\n\
-    \\ENQ\EOT\v\STX\EOT\ACK\DC2\EOT\142\EOT\v\RS\n\
+    \\ENQ\EOT\v\STX\ACK\ACK\DC2\EOT\246\EOT\v\RS\n\
     \\r\n\
-    \\ENQ\EOT\v\STX\EOT\SOH\DC2\EOT\142\EOT\US3\n\
+    \\ENQ\EOT\v\STX\ACK\SOH\DC2\EOT\246\EOT\US3\n\
     \\r\n\
-    \\ENQ\EOT\v\STX\EOT\ETX\DC2\EOT\142\EOT69\n\
+    \\ENQ\EOT\v\STX\ACK\ETX\DC2\EOT\246\EOT69\n\
     \Z\n\
-    \\ETX\EOT\v\ENQ\DC2\EOT\145\EOT\STX\EM\SUBM Clients can define custom options in extensions of this message. See above.\n\
+    \\ETX\EOT\v\ENQ\DC2\EOT\249\EOT\STX\EM\SUBM Clients can define custom options in extensions of this message. See above.\n\
     \\n\
     \\f\n\
-    \\EOT\EOT\v\ENQ\NUL\DC2\EOT\145\EOT\r\CAN\n\
+    \\EOT\EOT\v\ENQ\NUL\DC2\EOT\249\EOT\r\CAN\n\
     \\r\n\
-    \\ENQ\EOT\v\ENQ\NUL\SOH\DC2\EOT\145\EOT\r\DC1\n\
+    \\ENQ\EOT\v\ENQ\NUL\SOH\DC2\EOT\249\EOT\r\DC1\n\
     \\r\n\
-    \\ENQ\EOT\v\ENQ\NUL\STX\DC2\EOT\145\EOT\NAK\CAN\n\
+    \\ENQ\EOT\v\ENQ\NUL\STX\DC2\EOT\249\EOT\NAK\CAN\n\
     \\f\n\
-    \\STX\EOT\f\DC2\ACK\148\EOT\NUL\239\EOT\SOH\n\
+    \\STX\EOT\f\DC2\ACK\252\EOT\NUL\162\ACK\SOH\n\
     \\v\n\
-    \\ETX\EOT\f\SOH\DC2\EOT\148\EOT\b\DC4\n\
-    \\163\STX\n\
-    \\EOT\EOT\f\STX\NUL\DC2\EOT\153\EOT\STX.\SUB\148\STX The ctype option instructs the C++ code generator to use a different\n\
+    \\ETX\EOT\f\SOH\DC2\EOT\252\EOT\b\DC4\n\
+    \\194\ETX\n\
+    \\EOT\EOT\f\STX\NUL\DC2\EOT\132\ENQ\STXE\SUB\179\ETX NOTE: ctype is deprecated. Use `features.(pb.cpp).string_type` instead.\n\
+    \ The ctype option instructs the C++ code generator to use a different\n\
     \ representation of the field than it normally would.  See the specific\n\
-    \ options below.  This option is not yet implemented in the open source\n\
-    \ release -- sorry, we'll try to include it in a future version!\n\
+    \ options below.  This option is only implemented to support use of\n\
+    \ [ctype=CORD] and [ctype=STRING] (the default) on non-repeated fields of\n\
+    \ type \"bytes\" in the open source release.\n\
+    \ TODO: make ctype actually deprecated.\n\
     \\n\
     \\r\n\
-    \\ENQ\EOT\f\STX\NUL\EOT\DC2\EOT\153\EOT\STX\n\
+    \\ENQ\EOT\f\STX\NUL\EOT\DC2\EOT\132\ENQ\STX\n\
     \\n\
     \\r\n\
-    \\ENQ\EOT\f\STX\NUL\ACK\DC2\EOT\153\EOT\v\DLE\n\
+    \\ENQ\EOT\f\STX\NUL\ACK\DC2\EOT\132\ENQ\v\DLE\n\
     \\r\n\
-    \\ENQ\EOT\f\STX\NUL\SOH\DC2\EOT\153\EOT\DC1\SYN\n\
+    \\ENQ\EOT\f\STX\NUL\SOH\DC2\EOT\132\ENQ\DC1\SYN\n\
     \\r\n\
-    \\ENQ\EOT\f\STX\NUL\ETX\DC2\EOT\153\EOT\EM\SUB\n\
+    \\ENQ\EOT\f\STX\NUL\ETX\DC2\EOT\132\ENQ\EM\SUB\n\
     \\r\n\
-    \\ENQ\EOT\f\STX\NUL\b\DC2\EOT\153\EOT\ESC-\n\
+    \\ENQ\EOT\f\STX\NUL\b\DC2\EOT\132\ENQ\ESCD\n\
     \\r\n\
-    \\ENQ\EOT\f\STX\NUL\a\DC2\EOT\153\EOT&,\n\
+    \\ENQ\EOT\f\STX\NUL\a\DC2\EOT\132\ENQ=C\n\
     \\SO\n\
-    \\EOT\EOT\f\EOT\NUL\DC2\ACK\154\EOT\STX\161\EOT\ETX\n\
+    \\EOT\EOT\f\EOT\NUL\DC2\ACK\133\ENQ\STX\146\ENQ\ETX\n\
     \\r\n\
-    \\ENQ\EOT\f\EOT\NUL\SOH\DC2\EOT\154\EOT\a\f\n\
+    \\ENQ\EOT\f\EOT\NUL\SOH\DC2\EOT\133\ENQ\a\f\n\
     \\US\n\
-    \\ACK\EOT\f\EOT\NUL\STX\NUL\DC2\EOT\156\EOT\EOT\SI\SUB\SI Default mode.\n\
+    \\ACK\EOT\f\EOT\NUL\STX\NUL\DC2\EOT\135\ENQ\EOT\SI\SUB\SI Default mode.\n\
     \\n\
     \\SI\n\
-    \\a\EOT\f\EOT\NUL\STX\NUL\SOH\DC2\EOT\156\EOT\EOT\n\
+    \\a\EOT\f\EOT\NUL\STX\NUL\SOH\DC2\EOT\135\ENQ\EOT\n\
     \\n\
     \\SI\n\
-    \\a\EOT\f\EOT\NUL\STX\NUL\STX\DC2\EOT\156\EOT\r\SO\n\
+    \\a\EOT\f\EOT\NUL\STX\NUL\STX\DC2\EOT\135\ENQ\r\SO\n\
+    \\150\ETX\n\
+    \\ACK\EOT\f\EOT\NUL\STX\SOH\DC2\EOT\143\ENQ\EOT\r\SUB\133\ETX The option [ctype=CORD] may be applied to a non-repeated field of type\n\
+    \ \"bytes\". It indicates that in C++, the data should be stored in a Cord\n\
+    \ instead of a string.  For very large strings, this may reduce memory\n\
+    \ fragmentation. It may also allow better performance when parsing from a\n\
+    \ Cord, or when parsing with aliasing enabled, as the parsed Cord may then\n\
+    \ alias the original buffer.\n\
+    \\n\
+    \\SI\n\
+    \\a\EOT\f\EOT\NUL\STX\SOH\SOH\DC2\EOT\143\ENQ\EOT\b\n\
+    \\SI\n\
+    \\a\EOT\f\EOT\NUL\STX\SOH\STX\DC2\EOT\143\ENQ\v\f\n\
     \\SO\n\
-    \\ACK\EOT\f\EOT\NUL\STX\SOH\DC2\EOT\158\EOT\EOT\r\n\
+    \\ACK\EOT\f\EOT\NUL\STX\STX\DC2\EOT\145\ENQ\EOT\NAK\n\
     \\SI\n\
-    \\a\EOT\f\EOT\NUL\STX\SOH\SOH\DC2\EOT\158\EOT\EOT\b\n\
+    \\a\EOT\f\EOT\NUL\STX\STX\SOH\DC2\EOT\145\ENQ\EOT\DLE\n\
     \\SI\n\
-    \\a\EOT\f\EOT\NUL\STX\SOH\STX\DC2\EOT\158\EOT\v\f\n\
-    \\SO\n\
-    \\ACK\EOT\f\EOT\NUL\STX\STX\DC2\EOT\160\EOT\EOT\NAK\n\
-    \\SI\n\
-    \\a\EOT\f\EOT\NUL\STX\STX\SOH\DC2\EOT\160\EOT\EOT\DLE\n\
-    \\SI\n\
-    \\a\EOT\f\EOT\NUL\STX\STX\STX\DC2\EOT\160\EOT\DC3\DC4\n\
-    \\218\STX\n\
-    \\EOT\EOT\f\STX\SOH\DC2\EOT\167\EOT\STX\ESC\SUB\203\STX The packed option can be enabled for repeated primitive fields to enable\n\
+    \\a\EOT\f\EOT\NUL\STX\STX\STX\DC2\EOT\145\ENQ\DC3\DC4\n\
+    \\211\ETX\n\
+    \\EOT\EOT\f\STX\SOH\DC2\EOT\154\ENQ\STX\ESC\SUB\196\ETX The packed option can be enabled for repeated primitive fields to enable\n\
     \ a more efficient representation on the wire. Rather than repeatedly\n\
     \ writing the tag and type for each element, the entire array is encoded as\n\
     \ a single length-delimited blob. In proto3, only explicit setting it to\n\
-    \ false will avoid using packed encoding.\n\
+    \ false will avoid using packed encoding.  This option is prohibited in\n\
+    \ Editions, but the `repeated_field_encoding` feature can be used to control\n\
+    \ the behavior.\n\
     \\n\
     \\r\n\
-    \\ENQ\EOT\f\STX\SOH\EOT\DC2\EOT\167\EOT\STX\n\
+    \\ENQ\EOT\f\STX\SOH\EOT\DC2\EOT\154\ENQ\STX\n\
     \\n\
     \\r\n\
-    \\ENQ\EOT\f\STX\SOH\ENQ\DC2\EOT\167\EOT\v\SI\n\
+    \\ENQ\EOT\f\STX\SOH\ENQ\DC2\EOT\154\ENQ\v\SI\n\
     \\r\n\
-    \\ENQ\EOT\f\STX\SOH\SOH\DC2\EOT\167\EOT\DLE\SYN\n\
+    \\ENQ\EOT\f\STX\SOH\SOH\DC2\EOT\154\ENQ\DLE\SYN\n\
     \\r\n\
-    \\ENQ\EOT\f\STX\SOH\ETX\DC2\EOT\167\EOT\EM\SUB\n\
+    \\ENQ\EOT\f\STX\SOH\ETX\DC2\EOT\154\ENQ\EM\SUB\n\
     \\154\ENQ\n\
-    \\EOT\EOT\f\STX\STX\DC2\EOT\180\EOT\STX3\SUB\139\ENQ The jstype option determines the JavaScript type used for values of the\n\
+    \\EOT\EOT\f\STX\STX\DC2\EOT\167\ENQ\STX3\SUB\139\ENQ The jstype option determines the JavaScript type used for values of the\n\
     \ field.  The option is permitted only for 64 bit integral and fixed types\n\
     \ (int64, uint64, sint64, fixed64, sfixed64).  A field with jstype JS_STRING\n\
     \ is represented as JavaScript string, which avoids loss of precision that\n\
@@ -12425,45 +16611,47 @@ packedFileDescriptor
     \ goog.math.Integer.\n\
     \\n\
     \\r\n\
-    \\ENQ\EOT\f\STX\STX\EOT\DC2\EOT\180\EOT\STX\n\
+    \\ENQ\EOT\f\STX\STX\EOT\DC2\EOT\167\ENQ\STX\n\
     \\n\
     \\r\n\
-    \\ENQ\EOT\f\STX\STX\ACK\DC2\EOT\180\EOT\v\DC1\n\
+    \\ENQ\EOT\f\STX\STX\ACK\DC2\EOT\167\ENQ\v\DC1\n\
     \\r\n\
-    \\ENQ\EOT\f\STX\STX\SOH\DC2\EOT\180\EOT\DC2\CAN\n\
+    \\ENQ\EOT\f\STX\STX\SOH\DC2\EOT\167\ENQ\DC2\CAN\n\
     \\r\n\
-    \\ENQ\EOT\f\STX\STX\ETX\DC2\EOT\180\EOT\ESC\FS\n\
+    \\ENQ\EOT\f\STX\STX\ETX\DC2\EOT\167\ENQ\ESC\FS\n\
     \\r\n\
-    \\ENQ\EOT\f\STX\STX\b\DC2\EOT\180\EOT\GS2\n\
+    \\ENQ\EOT\f\STX\STX\b\DC2\EOT\167\ENQ\GS2\n\
     \\r\n\
-    \\ENQ\EOT\f\STX\STX\a\DC2\EOT\180\EOT(1\n\
+    \\ENQ\EOT\f\STX\STX\a\DC2\EOT\167\ENQ(1\n\
     \\SO\n\
-    \\EOT\EOT\f\EOT\SOH\DC2\ACK\181\EOT\STX\190\EOT\ETX\n\
+    \\EOT\EOT\f\EOT\SOH\DC2\ACK\168\ENQ\STX\177\ENQ\ETX\n\
     \\r\n\
-    \\ENQ\EOT\f\EOT\SOH\SOH\DC2\EOT\181\EOT\a\r\n\
+    \\ENQ\EOT\f\EOT\SOH\SOH\DC2\EOT\168\ENQ\a\r\n\
     \'\n\
-    \\ACK\EOT\f\EOT\SOH\STX\NUL\DC2\EOT\183\EOT\EOT\DC2\SUB\ETB Use the default type.\n\
+    \\ACK\EOT\f\EOT\SOH\STX\NUL\DC2\EOT\170\ENQ\EOT\DC2\SUB\ETB Use the default type.\n\
     \\n\
     \\SI\n\
-    \\a\EOT\f\EOT\SOH\STX\NUL\SOH\DC2\EOT\183\EOT\EOT\r\n\
+    \\a\EOT\f\EOT\SOH\STX\NUL\SOH\DC2\EOT\170\ENQ\EOT\r\n\
     \\SI\n\
-    \\a\EOT\f\EOT\SOH\STX\NUL\STX\DC2\EOT\183\EOT\DLE\DC1\n\
+    \\a\EOT\f\EOT\SOH\STX\NUL\STX\DC2\EOT\170\ENQ\DLE\DC1\n\
     \)\n\
-    \\ACK\EOT\f\EOT\SOH\STX\SOH\DC2\EOT\186\EOT\EOT\DC2\SUB\EM Use JavaScript strings.\n\
+    \\ACK\EOT\f\EOT\SOH\STX\SOH\DC2\EOT\173\ENQ\EOT\DC2\SUB\EM Use JavaScript strings.\n\
     \\n\
     \\SI\n\
-    \\a\EOT\f\EOT\SOH\STX\SOH\SOH\DC2\EOT\186\EOT\EOT\r\n\
+    \\a\EOT\f\EOT\SOH\STX\SOH\SOH\DC2\EOT\173\ENQ\EOT\r\n\
     \\SI\n\
-    \\a\EOT\f\EOT\SOH\STX\SOH\STX\DC2\EOT\186\EOT\DLE\DC1\n\
+    \\a\EOT\f\EOT\SOH\STX\SOH\STX\DC2\EOT\173\ENQ\DLE\DC1\n\
     \)\n\
-    \\ACK\EOT\f\EOT\SOH\STX\STX\DC2\EOT\189\EOT\EOT\DC2\SUB\EM Use JavaScript numbers.\n\
+    \\ACK\EOT\f\EOT\SOH\STX\STX\DC2\EOT\176\ENQ\EOT\DC2\SUB\EM Use JavaScript numbers.\n\
     \\n\
     \\SI\n\
-    \\a\EOT\f\EOT\SOH\STX\STX\SOH\DC2\EOT\189\EOT\EOT\r\n\
+    \\a\EOT\f\EOT\SOH\STX\STX\SOH\DC2\EOT\176\ENQ\EOT\r\n\
     \\SI\n\
-    \\a\EOT\f\EOT\SOH\STX\STX\STX\DC2\EOT\189\EOT\DLE\DC1\n\
-    \\239\f\n\
-    \\EOT\EOT\f\STX\ETX\DC2\EOT\220\EOT\STX+\SUB\224\f Should this field be parsed lazily?  Lazy applies only to message-type\n\
+    \\a\EOT\f\EOT\SOH\STX\STX\STX\DC2\EOT\176\ENQ\DLE\DC1\n\
+    \\153\n\
+    \\n\
+    \\EOT\EOT\f\STX\ETX\DC2\EOT\201\ENQ\STX+\SUB\138\n\
+    \ Should this field be parsed lazily?  Lazy applies only to message-type\n\
     \ fields.  It means that when the outer message is initially parsed, the\n\
     \ inner message's contents will not be parsed but instead stored in encoded\n\
     \ form.  The inner message will actually be parsed when it is first accessed.\n\
@@ -12480,237 +16668,610 @@ packedFileDescriptor
     \ call from multiple threads concurrently, while non-const methods continue\n\
     \ to require exclusive access.\n\
     \\n\
-    \\n\
-    \ Note that implementations may choose not to check required fields within\n\
-    \ a lazy sub-message.  That is, calling IsInitialized() on the outer message\n\
-    \ may return true even if the inner message has missing required fields.\n\
-    \ This is necessary because otherwise the inner message would have to be\n\
-    \ parsed in order to perform the check, defeating the purpose of lazy\n\
-    \ parsing.  An implementation which chooses not to check required fields\n\
-    \ must be consistent about it.  That is, for any particular sub-message, the\n\
-    \ implementation must either *always* check its required fields, or *never*\n\
-    \ check its required fields, regardless of whether or not the message has\n\
-    \ been parsed.\n\
+    \ Note that lazy message fields are still eagerly verified to check\n\
+    \ ill-formed wireformat or missing required fields. Calling IsInitialized()\n\
+    \ on the outer message would fail if the inner message has missing required\n\
+    \ fields. Failed verification would result in parsing failure (except when\n\
+    \ uninitialized messages are acceptable).\n\
     \\n\
     \\r\n\
-    \\ENQ\EOT\f\STX\ETX\EOT\DC2\EOT\220\EOT\STX\n\
+    \\ENQ\EOT\f\STX\ETX\EOT\DC2\EOT\201\ENQ\STX\n\
     \\n\
     \\r\n\
-    \\ENQ\EOT\f\STX\ETX\ENQ\DC2\EOT\220\EOT\v\SI\n\
+    \\ENQ\EOT\f\STX\ETX\ENQ\DC2\EOT\201\ENQ\v\SI\n\
     \\r\n\
-    \\ENQ\EOT\f\STX\ETX\SOH\DC2\EOT\220\EOT\DLE\DC4\n\
+    \\ENQ\EOT\f\STX\ETX\SOH\DC2\EOT\201\ENQ\DLE\DC4\n\
     \\r\n\
-    \\ENQ\EOT\f\STX\ETX\ETX\DC2\EOT\220\EOT\ETB\CAN\n\
+    \\ENQ\EOT\f\STX\ETX\ETX\DC2\EOT\201\ENQ\ETB\CAN\n\
     \\r\n\
-    \\ENQ\EOT\f\STX\ETX\b\DC2\EOT\220\EOT\EM*\n\
+    \\ENQ\EOT\f\STX\ETX\b\DC2\EOT\201\ENQ\EM*\n\
     \\r\n\
-    \\ENQ\EOT\f\STX\ETX\a\DC2\EOT\220\EOT$)\n\
+    \\ENQ\EOT\f\STX\ETX\a\DC2\EOT\201\ENQ$)\n\
+    \\175\SOH\n\
+    \\EOT\EOT\f\STX\EOT\DC2\EOT\206\ENQ\STX7\SUB\160\SOH unverified_lazy does no correctness checks on the byte stream. This should\n\
+    \ only be used where lazy with verification is prohibitive for performance\n\
+    \ reasons.\n\
+    \\n\
+    \\r\n\
+    \\ENQ\EOT\f\STX\EOT\EOT\DC2\EOT\206\ENQ\STX\n\
+    \\n\
+    \\r\n\
+    \\ENQ\EOT\f\STX\EOT\ENQ\DC2\EOT\206\ENQ\v\SI\n\
+    \\r\n\
+    \\ENQ\EOT\f\STX\EOT\SOH\DC2\EOT\206\ENQ\DLE\US\n\
+    \\r\n\
+    \\ENQ\EOT\f\STX\EOT\ETX\DC2\EOT\206\ENQ\"$\n\
+    \\r\n\
+    \\ENQ\EOT\f\STX\EOT\b\DC2\EOT\206\ENQ%6\n\
+    \\r\n\
+    \\ENQ\EOT\f\STX\EOT\a\DC2\EOT\206\ENQ05\n\
     \\232\SOH\n\
-    \\EOT\EOT\f\STX\EOT\DC2\EOT\226\EOT\STX1\SUB\217\SOH Is this field deprecated?\n\
+    \\EOT\EOT\f\STX\ENQ\DC2\EOT\212\ENQ\STX1\SUB\217\SOH Is this field deprecated?\n\
     \ Depending on the target platform, this can emit Deprecated annotations\n\
     \ for accessors, or it will be completely ignored; in the very least, this\n\
     \ is a formalization for deprecating fields.\n\
     \\n\
     \\r\n\
-    \\ENQ\EOT\f\STX\EOT\EOT\DC2\EOT\226\EOT\STX\n\
+    \\ENQ\EOT\f\STX\ENQ\EOT\DC2\EOT\212\ENQ\STX\n\
     \\n\
     \\r\n\
-    \\ENQ\EOT\f\STX\EOT\ENQ\DC2\EOT\226\EOT\v\SI\n\
+    \\ENQ\EOT\f\STX\ENQ\ENQ\DC2\EOT\212\ENQ\v\SI\n\
     \\r\n\
-    \\ENQ\EOT\f\STX\EOT\SOH\DC2\EOT\226\EOT\DLE\SUB\n\
+    \\ENQ\EOT\f\STX\ENQ\SOH\DC2\EOT\212\ENQ\DLE\SUB\n\
     \\r\n\
-    \\ENQ\EOT\f\STX\EOT\ETX\DC2\EOT\226\EOT\GS\RS\n\
+    \\ENQ\EOT\f\STX\ENQ\ETX\DC2\EOT\212\ENQ\GS\RS\n\
     \\r\n\
-    \\ENQ\EOT\f\STX\EOT\b\DC2\EOT\226\EOT\US0\n\
+    \\ENQ\EOT\f\STX\ENQ\b\DC2\EOT\212\ENQ\US0\n\
     \\r\n\
-    \\ENQ\EOT\f\STX\EOT\a\DC2\EOT\226\EOT*/\n\
+    \\ENQ\EOT\f\STX\ENQ\a\DC2\EOT\212\ENQ*/\n\
     \?\n\
-    \\EOT\EOT\f\STX\ENQ\DC2\EOT\229\EOT\STX,\SUB1 For Google-internal migration only. Do not use.\n\
+    \\EOT\EOT\f\STX\ACK\DC2\EOT\215\ENQ\STX,\SUB1 For Google-internal migration only. Do not use.\n\
     \\n\
     \\r\n\
-    \\ENQ\EOT\f\STX\ENQ\EOT\DC2\EOT\229\EOT\STX\n\
+    \\ENQ\EOT\f\STX\ACK\EOT\DC2\EOT\215\ENQ\STX\n\
     \\n\
     \\r\n\
-    \\ENQ\EOT\f\STX\ENQ\ENQ\DC2\EOT\229\EOT\v\SI\n\
+    \\ENQ\EOT\f\STX\ACK\ENQ\DC2\EOT\215\ENQ\v\SI\n\
     \\r\n\
-    \\ENQ\EOT\f\STX\ENQ\SOH\DC2\EOT\229\EOT\DLE\DC4\n\
+    \\ENQ\EOT\f\STX\ACK\SOH\DC2\EOT\215\ENQ\DLE\DC4\n\
     \\r\n\
-    \\ENQ\EOT\f\STX\ENQ\ETX\DC2\EOT\229\EOT\ETB\EM\n\
+    \\ENQ\EOT\f\STX\ACK\ETX\DC2\EOT\215\ENQ\ETB\EM\n\
     \\r\n\
-    \\ENQ\EOT\f\STX\ENQ\b\DC2\EOT\229\EOT\SUB+\n\
+    \\ENQ\EOT\f\STX\ACK\b\DC2\EOT\215\ENQ\SUB+\n\
     \\r\n\
-    \\ENQ\EOT\f\STX\ENQ\a\DC2\EOT\229\EOT%*\n\
+    \\ENQ\EOT\f\STX\ACK\a\DC2\EOT\215\ENQ%*\n\
+    \\151\SOH\n\
+    \\EOT\EOT\f\STX\a\DC2\EOT\219\ENQ\STX4\SUB\136\SOH Indicate that the field value should not be printed out when using debug\n\
+    \ formats, e.g. when the field contains sensitive credentials.\n\
+    \\n\
+    \\r\n\
+    \\ENQ\EOT\f\STX\a\EOT\DC2\EOT\219\ENQ\STX\n\
+    \\n\
+    \\r\n\
+    \\ENQ\EOT\f\STX\a\ENQ\DC2\EOT\219\ENQ\v\SI\n\
+    \\r\n\
+    \\ENQ\EOT\f\STX\a\SOH\DC2\EOT\219\ENQ\DLE\FS\n\
+    \\r\n\
+    \\ENQ\EOT\f\STX\a\ETX\DC2\EOT\219\ENQ\US!\n\
+    \\r\n\
+    \\ENQ\EOT\f\STX\a\b\DC2\EOT\219\ENQ\"3\n\
+    \\r\n\
+    \\ENQ\EOT\f\STX\a\a\DC2\EOT\219\ENQ-2\n\
+    \\197\SOH\n\
+    \\EOT\EOT\f\EOT\STX\DC2\ACK\224\ENQ\STX\228\ENQ\ETX\SUB\180\SOH If set to RETENTION_SOURCE, the option will be omitted from the binary.\n\
+    \ Note: as of January 2023, support for this is in progress and does not yet\n\
+    \ have an effect (b/264593489).\n\
+    \\n\
+    \\r\n\
+    \\ENQ\EOT\f\EOT\STX\SOH\DC2\EOT\224\ENQ\a\SYN\n\
+    \\SO\n\
+    \\ACK\EOT\f\EOT\STX\STX\NUL\DC2\EOT\225\ENQ\EOT\SUB\n\
+    \\SI\n\
+    \\a\EOT\f\EOT\STX\STX\NUL\SOH\DC2\EOT\225\ENQ\EOT\NAK\n\
+    \\SI\n\
+    \\a\EOT\f\EOT\STX\STX\NUL\STX\DC2\EOT\225\ENQ\CAN\EM\n\
+    \\SO\n\
+    \\ACK\EOT\f\EOT\STX\STX\SOH\DC2\EOT\226\ENQ\EOT\SUB\n\
+    \\SI\n\
+    \\a\EOT\f\EOT\STX\STX\SOH\SOH\DC2\EOT\226\ENQ\EOT\NAK\n\
+    \\SI\n\
+    \\a\EOT\f\EOT\STX\STX\SOH\STX\DC2\EOT\226\ENQ\CAN\EM\n\
+    \\SO\n\
+    \\ACK\EOT\f\EOT\STX\STX\STX\DC2\EOT\227\ENQ\EOT\EM\n\
+    \\SI\n\
+    \\a\EOT\f\EOT\STX\STX\STX\SOH\DC2\EOT\227\ENQ\EOT\DC4\n\
+    \\SI\n\
+    \\a\EOT\f\EOT\STX\STX\STX\STX\DC2\EOT\227\ENQ\ETB\CAN\n\
+    \\f\n\
+    \\EOT\EOT\f\STX\b\DC2\EOT\230\ENQ\STX*\n\
+    \\r\n\
+    \\ENQ\EOT\f\STX\b\EOT\DC2\EOT\230\ENQ\STX\n\
+    \\n\
+    \\r\n\
+    \\ENQ\EOT\f\STX\b\ACK\DC2\EOT\230\ENQ\v\SUB\n\
+    \\r\n\
+    \\ENQ\EOT\f\STX\b\SOH\DC2\EOT\230\ENQ\ESC$\n\
+    \\r\n\
+    \\ENQ\EOT\f\STX\b\ETX\DC2\EOT\230\ENQ')\n\
+    \\173\STX\n\
+    \\EOT\EOT\f\EOT\ETX\DC2\ACK\236\ENQ\STX\247\ENQ\ETX\SUB\156\STX This indicates the types of entities that the field may apply to when used\n\
+    \ as an option. If it is unset, then the field may be freely used as an\n\
+    \ option on any kind of entity. Note: as of January 2023, support for this is\n\
+    \ in progress and does not yet have an effect (b/264593489).\n\
+    \\n\
+    \\r\n\
+    \\ENQ\EOT\f\EOT\ETX\SOH\DC2\EOT\236\ENQ\a\ETB\n\
+    \\SO\n\
+    \\ACK\EOT\f\EOT\ETX\STX\NUL\DC2\EOT\237\ENQ\EOT\FS\n\
+    \\SI\n\
+    \\a\EOT\f\EOT\ETX\STX\NUL\SOH\DC2\EOT\237\ENQ\EOT\ETB\n\
+    \\SI\n\
+    \\a\EOT\f\EOT\ETX\STX\NUL\STX\DC2\EOT\237\ENQ\SUB\ESC\n\
+    \\SO\n\
+    \\ACK\EOT\f\EOT\ETX\STX\SOH\DC2\EOT\238\ENQ\EOT\EM\n\
+    \\SI\n\
+    \\a\EOT\f\EOT\ETX\STX\SOH\SOH\DC2\EOT\238\ENQ\EOT\DC4\n\
+    \\SI\n\
+    \\a\EOT\f\EOT\ETX\STX\SOH\STX\DC2\EOT\238\ENQ\ETB\CAN\n\
+    \\SO\n\
+    \\ACK\EOT\f\EOT\ETX\STX\STX\DC2\EOT\239\ENQ\EOT$\n\
+    \\SI\n\
+    \\a\EOT\f\EOT\ETX\STX\STX\SOH\DC2\EOT\239\ENQ\EOT\US\n\
+    \\SI\n\
+    \\a\EOT\f\EOT\ETX\STX\STX\STX\DC2\EOT\239\ENQ\"#\n\
+    \\SO\n\
+    \\ACK\EOT\f\EOT\ETX\STX\ETX\DC2\EOT\240\ENQ\EOT\FS\n\
+    \\SI\n\
+    \\a\EOT\f\EOT\ETX\STX\ETX\SOH\DC2\EOT\240\ENQ\EOT\ETB\n\
+    \\SI\n\
+    \\a\EOT\f\EOT\ETX\STX\ETX\STX\DC2\EOT\240\ENQ\SUB\ESC\n\
+    \\SO\n\
+    \\ACK\EOT\f\EOT\ETX\STX\EOT\DC2\EOT\241\ENQ\EOT\SUB\n\
+    \\SI\n\
+    \\a\EOT\f\EOT\ETX\STX\EOT\SOH\DC2\EOT\241\ENQ\EOT\NAK\n\
+    \\SI\n\
+    \\a\EOT\f\EOT\ETX\STX\EOT\STX\DC2\EOT\241\ENQ\CAN\EM\n\
+    \\SO\n\
+    \\ACK\EOT\f\EOT\ETX\STX\ENQ\DC2\EOT\242\ENQ\EOT\SUB\n\
+    \\SI\n\
+    \\a\EOT\f\EOT\ETX\STX\ENQ\SOH\DC2\EOT\242\ENQ\EOT\NAK\n\
+    \\SI\n\
+    \\a\EOT\f\EOT\ETX\STX\ENQ\STX\DC2\EOT\242\ENQ\CAN\EM\n\
+    \\SO\n\
+    \\ACK\EOT\f\EOT\ETX\STX\ACK\DC2\EOT\243\ENQ\EOT\EM\n\
+    \\SI\n\
+    \\a\EOT\f\EOT\ETX\STX\ACK\SOH\DC2\EOT\243\ENQ\EOT\DC4\n\
+    \\SI\n\
+    \\a\EOT\f\EOT\ETX\STX\ACK\STX\DC2\EOT\243\ENQ\ETB\CAN\n\
+    \\SO\n\
+    \\ACK\EOT\f\EOT\ETX\STX\a\DC2\EOT\244\ENQ\EOT\US\n\
+    \\SI\n\
+    \\a\EOT\f\EOT\ETX\STX\a\SOH\DC2\EOT\244\ENQ\EOT\SUB\n\
+    \\SI\n\
+    \\a\EOT\f\EOT\ETX\STX\a\STX\DC2\EOT\244\ENQ\GS\RS\n\
+    \\SO\n\
+    \\ACK\EOT\f\EOT\ETX\STX\b\DC2\EOT\245\ENQ\EOT\FS\n\
+    \\SI\n\
+    \\a\EOT\f\EOT\ETX\STX\b\SOH\DC2\EOT\245\ENQ\EOT\ETB\n\
+    \\SI\n\
+    \\a\EOT\f\EOT\ETX\STX\b\STX\DC2\EOT\245\ENQ\SUB\ESC\n\
+    \\SO\n\
+    \\ACK\EOT\f\EOT\ETX\STX\t\DC2\EOT\246\ENQ\EOT\ESC\n\
+    \\SI\n\
+    \\a\EOT\f\EOT\ETX\STX\t\SOH\DC2\EOT\246\ENQ\EOT\SYN\n\
+    \\SI\n\
+    \\a\EOT\f\EOT\ETX\STX\t\STX\DC2\EOT\246\ENQ\EM\SUB\n\
+    \\f\n\
+    \\EOT\EOT\f\STX\t\DC2\EOT\249\ENQ\STX)\n\
+    \\r\n\
+    \\ENQ\EOT\f\STX\t\EOT\DC2\EOT\249\ENQ\STX\n\
+    \\n\
+    \\r\n\
+    \\ENQ\EOT\f\STX\t\ACK\DC2\EOT\249\ENQ\v\ESC\n\
+    \\r\n\
+    \\ENQ\EOT\f\STX\t\SOH\DC2\EOT\249\ENQ\FS#\n\
+    \\r\n\
+    \\ENQ\EOT\f\STX\t\ETX\DC2\EOT\249\ENQ&(\n\
+    \\SO\n\
+    \\EOT\EOT\f\ETX\NUL\DC2\ACK\251\ENQ\STX\254\ENQ\ETX\n\
+    \\r\n\
+    \\ENQ\EOT\f\ETX\NUL\SOH\DC2\EOT\251\ENQ\n\
+    \\CAN\n\
+    \\SO\n\
+    \\ACK\EOT\f\ETX\NUL\STX\NUL\DC2\EOT\252\ENQ\EOT!\n\
+    \\SI\n\
+    \\a\EOT\f\ETX\NUL\STX\NUL\EOT\DC2\EOT\252\ENQ\EOT\f\n\
+    \\SI\n\
+    \\a\EOT\f\ETX\NUL\STX\NUL\ACK\DC2\EOT\252\ENQ\r\DC4\n\
+    \\SI\n\
+    \\a\EOT\f\ETX\NUL\STX\NUL\SOH\DC2\EOT\252\ENQ\NAK\FS\n\
+    \\SI\n\
+    \\a\EOT\f\ETX\NUL\STX\NUL\ETX\DC2\EOT\252\ENQ\US \n\
+    \\"\n\
+    \\ACK\EOT\f\ETX\NUL\STX\SOH\DC2\EOT\253\ENQ\EOT\RS\"\DC2 Textproto value.\n\
+    \\n\
+    \\SI\n\
+    \\a\EOT\f\ETX\NUL\STX\SOH\EOT\DC2\EOT\253\ENQ\EOT\f\n\
+    \\SI\n\
+    \\a\EOT\f\ETX\NUL\STX\SOH\ENQ\DC2\EOT\253\ENQ\r\DC3\n\
+    \\SI\n\
+    \\a\EOT\f\ETX\NUL\STX\SOH\SOH\DC2\EOT\253\ENQ\DC4\EM\n\
+    \\SI\n\
+    \\a\EOT\f\ETX\NUL\STX\SOH\ETX\DC2\EOT\253\ENQ\FS\GS\n\
+    \\f\n\
+    \\EOT\EOT\f\STX\n\
+    \\DC2\EOT\255\ENQ\STX0\n\
+    \\r\n\
+    \\ENQ\EOT\f\STX\n\
+    \\EOT\DC2\EOT\255\ENQ\STX\n\
+    \\n\
+    \\r\n\
+    \\ENQ\EOT\f\STX\n\
+    \\ACK\DC2\EOT\255\ENQ\v\EM\n\
+    \\r\n\
+    \\ENQ\EOT\f\STX\n\
+    \\SOH\DC2\EOT\255\ENQ\SUB*\n\
+    \\r\n\
+    \\ENQ\EOT\f\STX\n\
+    \\ETX\DC2\EOT\255\ENQ-/\n\
+    \=\n\
+    \\EOT\EOT\f\STX\v\DC2\EOT\130\ACK\STX$\SUB/ Any features defined in the specific edition.\n\
+    \\n\
+    \\r\n\
+    \\ENQ\EOT\f\STX\v\EOT\DC2\EOT\130\ACK\STX\n\
+    \\n\
+    \\r\n\
+    \\ENQ\EOT\f\STX\v\ACK\DC2\EOT\130\ACK\v\NAK\n\
+    \\r\n\
+    \\ENQ\EOT\f\STX\v\SOH\DC2\EOT\130\ACK\SYN\RS\n\
+    \\r\n\
+    \\ENQ\EOT\f\STX\v\ETX\DC2\EOT\130\ACK!#\n\
+    \D\n\
+    \\EOT\EOT\f\ETX\SOH\DC2\ACK\133\ACK\STX\151\ACK\ETX\SUB4 Information about the support window of a feature.\n\
+    \\n\
+    \\r\n\
+    \\ENQ\EOT\f\ETX\SOH\SOH\DC2\EOT\133\ACK\n\
+    \\CAN\n\
+    \\212\SOH\n\
+    \\ACK\EOT\f\ETX\SOH\STX\NUL\DC2\EOT\137\ACK\EOT,\SUB\195\SOH The edition that this feature was first available in.  In editions\n\
+    \ earlier than this one, the default assigned to EDITION_LEGACY will be\n\
+    \ used, and proto files will not be able to override it.\n\
+    \\n\
+    \\SI\n\
+    \\a\EOT\f\ETX\SOH\STX\NUL\EOT\DC2\EOT\137\ACK\EOT\f\n\
+    \\SI\n\
+    \\a\EOT\f\ETX\SOH\STX\NUL\ACK\DC2\EOT\137\ACK\r\DC4\n\
+    \\SI\n\
+    \\a\EOT\f\ETX\SOH\STX\NUL\SOH\DC2\EOT\137\ACK\NAK'\n\
+    \\SI\n\
+    \\a\EOT\f\ETX\SOH\STX\NUL\ETX\DC2\EOT\137\ACK*+\n\
+    \w\n\
+    \\ACK\EOT\f\ETX\SOH\STX\SOH\DC2\EOT\141\ACK\EOT,\SUBg The edition this feature becomes deprecated in.  Using this after this\n\
+    \ edition may trigger warnings.\n\
+    \\n\
+    \\SI\n\
+    \\a\EOT\f\ETX\SOH\STX\SOH\EOT\DC2\EOT\141\ACK\EOT\f\n\
+    \\SI\n\
+    \\a\EOT\f\ETX\SOH\STX\SOH\ACK\DC2\EOT\141\ACK\r\DC4\n\
+    \\SI\n\
+    \\a\EOT\f\ETX\SOH\STX\SOH\SOH\DC2\EOT\141\ACK\NAK'\n\
+    \\SI\n\
+    \\a\EOT\f\ETX\SOH\STX\SOH\ETX\DC2\EOT\141\ACK*+\n\
+    \v\n\
+    \\ACK\EOT\f\ETX\SOH\STX\STX\DC2\EOT\145\ACK\EOT,\SUBf The deprecation warning text if this feature is used after the edition it\n\
+    \ was marked deprecated in.\n\
+    \\n\
+    \\SI\n\
+    \\a\EOT\f\ETX\SOH\STX\STX\EOT\DC2\EOT\145\ACK\EOT\f\n\
+    \\SI\n\
+    \\a\EOT\f\ETX\SOH\STX\STX\ENQ\DC2\EOT\145\ACK\r\DC3\n\
+    \\SI\n\
+    \\a\EOT\f\ETX\SOH\STX\STX\SOH\DC2\EOT\145\ACK\DC4'\n\
+    \\SI\n\
+    \\a\EOT\f\ETX\SOH\STX\STX\ETX\DC2\EOT\145\ACK*+\n\
+    \\190\SOH\n\
+    \\ACK\EOT\f\ETX\SOH\STX\ETX\DC2\EOT\150\ACK\EOT)\SUB\173\SOH The edition this feature is no longer available in.  In editions after\n\
+    \ this one, the last default assigned will be used, and proto files will\n\
+    \ not be able to override it.\n\
+    \\n\
+    \\SI\n\
+    \\a\EOT\f\ETX\SOH\STX\ETX\EOT\DC2\EOT\150\ACK\EOT\f\n\
+    \\SI\n\
+    \\a\EOT\f\ETX\SOH\STX\ETX\ACK\DC2\EOT\150\ACK\r\DC4\n\
+    \\SI\n\
+    \\a\EOT\f\ETX\SOH\STX\ETX\SOH\DC2\EOT\150\ACK\NAK$\n\
+    \\SI\n\
+    \\a\EOT\f\ETX\SOH\STX\ETX\ETX\DC2\EOT\150\ACK'(\n\
+    \\f\n\
+    \\EOT\EOT\f\STX\f\DC2\EOT\152\ACK\STX/\n\
+    \\r\n\
+    \\ENQ\EOT\f\STX\f\EOT\DC2\EOT\152\ACK\STX\n\
+    \\n\
+    \\r\n\
+    \\ENQ\EOT\f\STX\f\ACK\DC2\EOT\152\ACK\v\EM\n\
+    \\r\n\
+    \\ENQ\EOT\f\STX\f\SOH\DC2\EOT\152\ACK\SUB)\n\
+    \\r\n\
+    \\ENQ\EOT\f\STX\f\ETX\DC2\EOT\152\ACK,.\n\
     \O\n\
-    \\EOT\EOT\f\STX\ACK\DC2\EOT\233\EOT\STX:\SUBA The parser stores options it doesn't recognize here. See above.\n\
+    \\EOT\EOT\f\STX\r\DC2\EOT\155\ACK\STX:\SUBA The parser stores options it doesn't recognize here. See above.\n\
     \\n\
     \\r\n\
-    \\ENQ\EOT\f\STX\ACK\EOT\DC2\EOT\233\EOT\STX\n\
+    \\ENQ\EOT\f\STX\r\EOT\DC2\EOT\155\ACK\STX\n\
     \\n\
     \\r\n\
-    \\ENQ\EOT\f\STX\ACK\ACK\DC2\EOT\233\EOT\v\RS\n\
+    \\ENQ\EOT\f\STX\r\ACK\DC2\EOT\155\ACK\v\RS\n\
     \\r\n\
-    \\ENQ\EOT\f\STX\ACK\SOH\DC2\EOT\233\EOT\US3\n\
+    \\ENQ\EOT\f\STX\r\SOH\DC2\EOT\155\ACK\US3\n\
     \\r\n\
-    \\ENQ\EOT\f\STX\ACK\ETX\DC2\EOT\233\EOT69\n\
+    \\ENQ\EOT\f\STX\r\ETX\DC2\EOT\155\ACK69\n\
     \Z\n\
-    \\ETX\EOT\f\ENQ\DC2\EOT\236\EOT\STX\EM\SUBM Clients can define custom options in extensions of this message. See above.\n\
+    \\ETX\EOT\f\ENQ\DC2\EOT\158\ACK\STX\EM\SUBM Clients can define custom options in extensions of this message. See above.\n\
     \\n\
     \\f\n\
-    \\EOT\EOT\f\ENQ\NUL\DC2\EOT\236\EOT\r\CAN\n\
+    \\EOT\EOT\f\ENQ\NUL\DC2\EOT\158\ACK\r\CAN\n\
     \\r\n\
-    \\ENQ\EOT\f\ENQ\NUL\SOH\DC2\EOT\236\EOT\r\DC1\n\
+    \\ENQ\EOT\f\ENQ\NUL\SOH\DC2\EOT\158\ACK\r\DC1\n\
     \\r\n\
-    \\ENQ\EOT\f\ENQ\NUL\STX\DC2\EOT\236\EOT\NAK\CAN\n\
+    \\ENQ\EOT\f\ENQ\NUL\STX\DC2\EOT\158\ACK\NAK\CAN\n\
     \\FS\n\
-    \\ETX\EOT\f\t\DC2\EOT\238\EOT\STX\r\"\SI removed jtype\n\
+    \\ETX\EOT\f\t\DC2\EOT\160\ACK\STX\r\"\SI removed jtype\n\
     \\n\
     \\f\n\
-    \\EOT\EOT\f\t\NUL\DC2\EOT\238\EOT\v\f\n\
+    \\EOT\EOT\f\t\NUL\DC2\EOT\160\ACK\v\f\n\
     \\r\n\
-    \\ENQ\EOT\f\t\NUL\SOH\DC2\EOT\238\EOT\v\f\n\
+    \\ENQ\EOT\f\t\NUL\SOH\DC2\EOT\160\ACK\v\f\n\
     \\r\n\
-    \\ENQ\EOT\f\t\NUL\STX\DC2\EOT\238\EOT\v\f\n\
+    \\ENQ\EOT\f\t\NUL\STX\DC2\EOT\160\ACK\v\f\n\
+    \9\n\
+    \\ETX\EOT\f\t\DC2\EOT\161\ACK\STX\SO\", reserve target, target_obsolete_do_not_use\n\
+    \\n\
     \\f\n\
-    \\STX\EOT\r\DC2\ACK\241\EOT\NUL\247\EOT\SOH\n\
+    \\EOT\EOT\f\t\SOH\DC2\EOT\161\ACK\v\r\n\
+    \\r\n\
+    \\ENQ\EOT\f\t\SOH\SOH\DC2\EOT\161\ACK\v\r\n\
+    \\r\n\
+    \\ENQ\EOT\f\t\SOH\STX\DC2\EOT\161\ACK\v\r\n\
+    \\f\n\
+    \\STX\EOT\r\DC2\ACK\164\ACK\NUL\173\ACK\SOH\n\
     \\v\n\
-    \\ETX\EOT\r\SOH\DC2\EOT\241\EOT\b\DC4\n\
+    \\ETX\EOT\r\SOH\DC2\EOT\164\ACK\b\DC4\n\
+    \=\n\
+    \\EOT\EOT\r\STX\NUL\DC2\EOT\166\ACK\STX#\SUB/ Any features defined in the specific edition.\n\
+    \\n\
+    \\r\n\
+    \\ENQ\EOT\r\STX\NUL\EOT\DC2\EOT\166\ACK\STX\n\
+    \\n\
+    \\r\n\
+    \\ENQ\EOT\r\STX\NUL\ACK\DC2\EOT\166\ACK\v\NAK\n\
+    \\r\n\
+    \\ENQ\EOT\r\STX\NUL\SOH\DC2\EOT\166\ACK\SYN\RS\n\
+    \\r\n\
+    \\ENQ\EOT\r\STX\NUL\ETX\DC2\EOT\166\ACK!\"\n\
     \O\n\
-    \\EOT\EOT\r\STX\NUL\DC2\EOT\243\EOT\STX:\SUBA The parser stores options it doesn't recognize here. See above.\n\
+    \\EOT\EOT\r\STX\SOH\DC2\EOT\169\ACK\STX:\SUBA The parser stores options it doesn't recognize here. See above.\n\
     \\n\
     \\r\n\
-    \\ENQ\EOT\r\STX\NUL\EOT\DC2\EOT\243\EOT\STX\n\
+    \\ENQ\EOT\r\STX\SOH\EOT\DC2\EOT\169\ACK\STX\n\
     \\n\
     \\r\n\
-    \\ENQ\EOT\r\STX\NUL\ACK\DC2\EOT\243\EOT\v\RS\n\
+    \\ENQ\EOT\r\STX\SOH\ACK\DC2\EOT\169\ACK\v\RS\n\
     \\r\n\
-    \\ENQ\EOT\r\STX\NUL\SOH\DC2\EOT\243\EOT\US3\n\
+    \\ENQ\EOT\r\STX\SOH\SOH\DC2\EOT\169\ACK\US3\n\
     \\r\n\
-    \\ENQ\EOT\r\STX\NUL\ETX\DC2\EOT\243\EOT69\n\
+    \\ENQ\EOT\r\STX\SOH\ETX\DC2\EOT\169\ACK69\n\
     \Z\n\
-    \\ETX\EOT\r\ENQ\DC2\EOT\246\EOT\STX\EM\SUBM Clients can define custom options in extensions of this message. See above.\n\
+    \\ETX\EOT\r\ENQ\DC2\EOT\172\ACK\STX\EM\SUBM Clients can define custom options in extensions of this message. See above.\n\
     \\n\
     \\f\n\
-    \\EOT\EOT\r\ENQ\NUL\DC2\EOT\246\EOT\r\CAN\n\
+    \\EOT\EOT\r\ENQ\NUL\DC2\EOT\172\ACK\r\CAN\n\
     \\r\n\
-    \\ENQ\EOT\r\ENQ\NUL\SOH\DC2\EOT\246\EOT\r\DC1\n\
+    \\ENQ\EOT\r\ENQ\NUL\SOH\DC2\EOT\172\ACK\r\DC1\n\
     \\r\n\
-    \\ENQ\EOT\r\ENQ\NUL\STX\DC2\EOT\246\EOT\NAK\CAN\n\
+    \\ENQ\EOT\r\ENQ\NUL\STX\DC2\EOT\172\ACK\NAK\CAN\n\
     \\f\n\
-    \\STX\EOT\SO\DC2\ACK\249\EOT\NUL\140\ENQ\SOH\n\
+    \\STX\EOT\SO\DC2\ACK\175\ACK\NUL\205\ACK\SOH\n\
     \\v\n\
-    \\ETX\EOT\SO\SOH\DC2\EOT\249\EOT\b\DC3\n\
+    \\ETX\EOT\SO\SOH\DC2\EOT\175\ACK\b\DC3\n\
     \`\n\
-    \\EOT\EOT\SO\STX\NUL\DC2\EOT\253\EOT\STX \SUBR Set this option to true to allow mapping different tag names to the same\n\
+    \\EOT\EOT\SO\STX\NUL\DC2\EOT\179\ACK\STX \SUBR Set this option to true to allow mapping different tag names to the same\n\
     \ value.\n\
     \\n\
     \\r\n\
-    \\ENQ\EOT\SO\STX\NUL\EOT\DC2\EOT\253\EOT\STX\n\
+    \\ENQ\EOT\SO\STX\NUL\EOT\DC2\EOT\179\ACK\STX\n\
     \\n\
     \\r\n\
-    \\ENQ\EOT\SO\STX\NUL\ENQ\DC2\EOT\253\EOT\v\SI\n\
+    \\ENQ\EOT\SO\STX\NUL\ENQ\DC2\EOT\179\ACK\v\SI\n\
     \\r\n\
-    \\ENQ\EOT\SO\STX\NUL\SOH\DC2\EOT\253\EOT\DLE\ESC\n\
+    \\ENQ\EOT\SO\STX\NUL\SOH\DC2\EOT\179\ACK\DLE\ESC\n\
     \\r\n\
-    \\ENQ\EOT\SO\STX\NUL\ETX\DC2\EOT\253\EOT\RS\US\n\
+    \\ENQ\EOT\SO\STX\NUL\ETX\DC2\EOT\179\ACK\RS\US\n\
     \\229\SOH\n\
-    \\EOT\EOT\SO\STX\SOH\DC2\EOT\131\ENQ\STX1\SUB\214\SOH Is this enum deprecated?\n\
+    \\EOT\EOT\SO\STX\SOH\DC2\EOT\185\ACK\STX1\SUB\214\SOH Is this enum deprecated?\n\
     \ Depending on the target platform, this can emit Deprecated annotations\n\
     \ for the enum, or it will be completely ignored; in the very least, this\n\
     \ is a formalization for deprecating enums.\n\
     \\n\
     \\r\n\
-    \\ENQ\EOT\SO\STX\SOH\EOT\DC2\EOT\131\ENQ\STX\n\
+    \\ENQ\EOT\SO\STX\SOH\EOT\DC2\EOT\185\ACK\STX\n\
     \\n\
     \\r\n\
-    \\ENQ\EOT\SO\STX\SOH\ENQ\DC2\EOT\131\ENQ\v\SI\n\
+    \\ENQ\EOT\SO\STX\SOH\ENQ\DC2\EOT\185\ACK\v\SI\n\
     \\r\n\
-    \\ENQ\EOT\SO\STX\SOH\SOH\DC2\EOT\131\ENQ\DLE\SUB\n\
+    \\ENQ\EOT\SO\STX\SOH\SOH\DC2\EOT\185\ACK\DLE\SUB\n\
     \\r\n\
-    \\ENQ\EOT\SO\STX\SOH\ETX\DC2\EOT\131\ENQ\GS\RS\n\
+    \\ENQ\EOT\SO\STX\SOH\ETX\DC2\EOT\185\ACK\GS\RS\n\
     \\r\n\
-    \\ENQ\EOT\SO\STX\SOH\b\DC2\EOT\131\ENQ\US0\n\
+    \\ENQ\EOT\SO\STX\SOH\b\DC2\EOT\185\ACK\US0\n\
     \\r\n\
-    \\ENQ\EOT\SO\STX\SOH\a\DC2\EOT\131\ENQ*/\n\
+    \\ENQ\EOT\SO\STX\SOH\a\DC2\EOT\185\ACK*/\n\
     \\US\n\
-    \\ETX\EOT\SO\t\DC2\EOT\133\ENQ\STX\r\"\DC2 javanano_as_lite\n\
+    \\ETX\EOT\SO\t\DC2\EOT\187\ACK\STX\r\"\DC2 javanano_as_lite\n\
     \\n\
     \\f\n\
-    \\EOT\EOT\SO\t\NUL\DC2\EOT\133\ENQ\v\f\n\
+    \\EOT\EOT\SO\t\NUL\DC2\EOT\187\ACK\v\f\n\
     \\r\n\
-    \\ENQ\EOT\SO\t\NUL\SOH\DC2\EOT\133\ENQ\v\f\n\
+    \\ENQ\EOT\SO\t\NUL\SOH\DC2\EOT\187\ACK\v\f\n\
     \\r\n\
-    \\ENQ\EOT\SO\t\NUL\STX\DC2\EOT\133\ENQ\v\f\n\
+    \\ENQ\EOT\SO\t\NUL\STX\DC2\EOT\187\ACK\v\f\n\
+    \\200\STX\n\
+    \\EOT\EOT\SO\STX\STX\DC2\EOT\195\ACK\STXO\SUB\185\STX Enable the legacy handling of JSON field name conflicts.  This lowercases\n\
+    \ and strips underscored from the fields before comparison in proto3 only.\n\
+    \ The new behavior takes `json_name` into account and applies to proto2 as\n\
+    \ well.\n\
+    \ TODO Remove this legacy behavior once downstream teams have\n\
+    \ had time to migrate.\n\
+    \\n\
+    \\r\n\
+    \\ENQ\EOT\SO\STX\STX\EOT\DC2\EOT\195\ACK\STX\n\
+    \\n\
+    \\r\n\
+    \\ENQ\EOT\SO\STX\STX\ENQ\DC2\EOT\195\ACK\v\SI\n\
+    \\r\n\
+    \\ENQ\EOT\SO\STX\STX\SOH\DC2\EOT\195\ACK\DLE6\n\
+    \\r\n\
+    \\ENQ\EOT\SO\STX\STX\ETX\DC2\EOT\195\ACK9:\n\
+    \\r\n\
+    \\ENQ\EOT\SO\STX\STX\b\DC2\EOT\195\ACK;N\n\
+    \\SO\n\
+    \\ACK\EOT\SO\STX\STX\b\ETX\DC2\EOT\195\ACK<M\n\
+    \=\n\
+    \\EOT\EOT\SO\STX\ETX\DC2\EOT\198\ACK\STX#\SUB/ Any features defined in the specific edition.\n\
+    \\n\
+    \\r\n\
+    \\ENQ\EOT\SO\STX\ETX\EOT\DC2\EOT\198\ACK\STX\n\
+    \\n\
+    \\r\n\
+    \\ENQ\EOT\SO\STX\ETX\ACK\DC2\EOT\198\ACK\v\NAK\n\
+    \\r\n\
+    \\ENQ\EOT\SO\STX\ETX\SOH\DC2\EOT\198\ACK\SYN\RS\n\
+    \\r\n\
+    \\ENQ\EOT\SO\STX\ETX\ETX\DC2\EOT\198\ACK!\"\n\
     \O\n\
-    \\EOT\EOT\SO\STX\STX\DC2\EOT\136\ENQ\STX:\SUBA The parser stores options it doesn't recognize here. See above.\n\
+    \\EOT\EOT\SO\STX\EOT\DC2\EOT\201\ACK\STX:\SUBA The parser stores options it doesn't recognize here. See above.\n\
     \\n\
     \\r\n\
-    \\ENQ\EOT\SO\STX\STX\EOT\DC2\EOT\136\ENQ\STX\n\
+    \\ENQ\EOT\SO\STX\EOT\EOT\DC2\EOT\201\ACK\STX\n\
     \\n\
     \\r\n\
-    \\ENQ\EOT\SO\STX\STX\ACK\DC2\EOT\136\ENQ\v\RS\n\
+    \\ENQ\EOT\SO\STX\EOT\ACK\DC2\EOT\201\ACK\v\RS\n\
     \\r\n\
-    \\ENQ\EOT\SO\STX\STX\SOH\DC2\EOT\136\ENQ\US3\n\
+    \\ENQ\EOT\SO\STX\EOT\SOH\DC2\EOT\201\ACK\US3\n\
     \\r\n\
-    \\ENQ\EOT\SO\STX\STX\ETX\DC2\EOT\136\ENQ69\n\
+    \\ENQ\EOT\SO\STX\EOT\ETX\DC2\EOT\201\ACK69\n\
     \Z\n\
-    \\ETX\EOT\SO\ENQ\DC2\EOT\139\ENQ\STX\EM\SUBM Clients can define custom options in extensions of this message. See above.\n\
+    \\ETX\EOT\SO\ENQ\DC2\EOT\204\ACK\STX\EM\SUBM Clients can define custom options in extensions of this message. See above.\n\
     \\n\
     \\f\n\
-    \\EOT\EOT\SO\ENQ\NUL\DC2\EOT\139\ENQ\r\CAN\n\
+    \\EOT\EOT\SO\ENQ\NUL\DC2\EOT\204\ACK\r\CAN\n\
     \\r\n\
-    \\ENQ\EOT\SO\ENQ\NUL\SOH\DC2\EOT\139\ENQ\r\DC1\n\
+    \\ENQ\EOT\SO\ENQ\NUL\SOH\DC2\EOT\204\ACK\r\DC1\n\
     \\r\n\
-    \\ENQ\EOT\SO\ENQ\NUL\STX\DC2\EOT\139\ENQ\NAK\CAN\n\
+    \\ENQ\EOT\SO\ENQ\NUL\STX\DC2\EOT\204\ACK\NAK\CAN\n\
     \\f\n\
-    \\STX\EOT\SI\DC2\ACK\142\ENQ\NUL\154\ENQ\SOH\n\
+    \\STX\EOT\SI\DC2\ACK\207\ACK\NUL\230\ACK\SOH\n\
     \\v\n\
-    \\ETX\EOT\SI\SOH\DC2\EOT\142\ENQ\b\CAN\n\
+    \\ETX\EOT\SI\SOH\DC2\EOT\207\ACK\b\CAN\n\
     \\247\SOH\n\
-    \\EOT\EOT\SI\STX\NUL\DC2\EOT\147\ENQ\STX1\SUB\232\SOH Is this enum value deprecated?\n\
+    \\EOT\EOT\SI\STX\NUL\DC2\EOT\212\ACK\STX1\SUB\232\SOH Is this enum value deprecated?\n\
     \ Depending on the target platform, this can emit Deprecated annotations\n\
     \ for the enum value, or it will be completely ignored; in the very least,\n\
     \ this is a formalization for deprecating enum values.\n\
     \\n\
     \\r\n\
-    \\ENQ\EOT\SI\STX\NUL\EOT\DC2\EOT\147\ENQ\STX\n\
+    \\ENQ\EOT\SI\STX\NUL\EOT\DC2\EOT\212\ACK\STX\n\
     \\n\
     \\r\n\
-    \\ENQ\EOT\SI\STX\NUL\ENQ\DC2\EOT\147\ENQ\v\SI\n\
+    \\ENQ\EOT\SI\STX\NUL\ENQ\DC2\EOT\212\ACK\v\SI\n\
     \\r\n\
-    \\ENQ\EOT\SI\STX\NUL\SOH\DC2\EOT\147\ENQ\DLE\SUB\n\
+    \\ENQ\EOT\SI\STX\NUL\SOH\DC2\EOT\212\ACK\DLE\SUB\n\
     \\r\n\
-    \\ENQ\EOT\SI\STX\NUL\ETX\DC2\EOT\147\ENQ\GS\RS\n\
+    \\ENQ\EOT\SI\STX\NUL\ETX\DC2\EOT\212\ACK\GS\RS\n\
     \\r\n\
-    \\ENQ\EOT\SI\STX\NUL\b\DC2\EOT\147\ENQ\US0\n\
+    \\ENQ\EOT\SI\STX\NUL\b\DC2\EOT\212\ACK\US0\n\
     \\r\n\
-    \\ENQ\EOT\SI\STX\NUL\a\DC2\EOT\147\ENQ*/\n\
+    \\ENQ\EOT\SI\STX\NUL\a\DC2\EOT\212\ACK*/\n\
+    \=\n\
+    \\EOT\EOT\SI\STX\SOH\DC2\EOT\215\ACK\STX#\SUB/ Any features defined in the specific edition.\n\
+    \\n\
+    \\r\n\
+    \\ENQ\EOT\SI\STX\SOH\EOT\DC2\EOT\215\ACK\STX\n\
+    \\n\
+    \\r\n\
+    \\ENQ\EOT\SI\STX\SOH\ACK\DC2\EOT\215\ACK\v\NAK\n\
+    \\r\n\
+    \\ENQ\EOT\SI\STX\SOH\SOH\DC2\EOT\215\ACK\SYN\RS\n\
+    \\r\n\
+    \\ENQ\EOT\SI\STX\SOH\ETX\DC2\EOT\215\ACK!\"\n\
+    \\174\SOH\n\
+    \\EOT\EOT\SI\STX\STX\DC2\EOT\220\ACK\STX3\SUB\159\SOH Indicate that fields annotated with this enum value should not be printed\n\
+    \ out when using debug formats, e.g. when the field contains sensitive\n\
+    \ credentials.\n\
+    \\n\
+    \\r\n\
+    \\ENQ\EOT\SI\STX\STX\EOT\DC2\EOT\220\ACK\STX\n\
+    \\n\
+    \\r\n\
+    \\ENQ\EOT\SI\STX\STX\ENQ\DC2\EOT\220\ACK\v\SI\n\
+    \\r\n\
+    \\ENQ\EOT\SI\STX\STX\SOH\DC2\EOT\220\ACK\DLE\FS\n\
+    \\r\n\
+    \\ENQ\EOT\SI\STX\STX\ETX\DC2\EOT\220\ACK\US \n\
+    \\r\n\
+    \\ENQ\EOT\SI\STX\STX\b\DC2\EOT\220\ACK!2\n\
+    \\r\n\
+    \\ENQ\EOT\SI\STX\STX\a\DC2\EOT\220\ACK,1\n\
+    \H\n\
+    \\EOT\EOT\SI\STX\ETX\DC2\EOT\223\ACK\STX;\SUB: Information about the support window of a feature value.\n\
+    \\n\
+    \\r\n\
+    \\ENQ\EOT\SI\STX\ETX\EOT\DC2\EOT\223\ACK\STX\n\
+    \\n\
+    \\r\n\
+    \\ENQ\EOT\SI\STX\ETX\ACK\DC2\EOT\223\ACK\v&\n\
+    \\r\n\
+    \\ENQ\EOT\SI\STX\ETX\SOH\DC2\EOT\223\ACK'6\n\
+    \\r\n\
+    \\ENQ\EOT\SI\STX\ETX\ETX\DC2\EOT\223\ACK9:\n\
     \O\n\
-    \\EOT\EOT\SI\STX\SOH\DC2\EOT\150\ENQ\STX:\SUBA The parser stores options it doesn't recognize here. See above.\n\
+    \\EOT\EOT\SI\STX\EOT\DC2\EOT\226\ACK\STX:\SUBA The parser stores options it doesn't recognize here. See above.\n\
     \\n\
     \\r\n\
-    \\ENQ\EOT\SI\STX\SOH\EOT\DC2\EOT\150\ENQ\STX\n\
+    \\ENQ\EOT\SI\STX\EOT\EOT\DC2\EOT\226\ACK\STX\n\
     \\n\
     \\r\n\
-    \\ENQ\EOT\SI\STX\SOH\ACK\DC2\EOT\150\ENQ\v\RS\n\
+    \\ENQ\EOT\SI\STX\EOT\ACK\DC2\EOT\226\ACK\v\RS\n\
     \\r\n\
-    \\ENQ\EOT\SI\STX\SOH\SOH\DC2\EOT\150\ENQ\US3\n\
+    \\ENQ\EOT\SI\STX\EOT\SOH\DC2\EOT\226\ACK\US3\n\
     \\r\n\
-    \\ENQ\EOT\SI\STX\SOH\ETX\DC2\EOT\150\ENQ69\n\
+    \\ENQ\EOT\SI\STX\EOT\ETX\DC2\EOT\226\ACK69\n\
     \Z\n\
-    \\ETX\EOT\SI\ENQ\DC2\EOT\153\ENQ\STX\EM\SUBM Clients can define custom options in extensions of this message. See above.\n\
+    \\ETX\EOT\SI\ENQ\DC2\EOT\229\ACK\STX\EM\SUBM Clients can define custom options in extensions of this message. See above.\n\
     \\n\
     \\f\n\
-    \\EOT\EOT\SI\ENQ\NUL\DC2\EOT\153\ENQ\r\CAN\n\
+    \\EOT\EOT\SI\ENQ\NUL\DC2\EOT\229\ACK\r\CAN\n\
     \\r\n\
-    \\ENQ\EOT\SI\ENQ\NUL\SOH\DC2\EOT\153\ENQ\r\DC1\n\
+    \\ENQ\EOT\SI\ENQ\NUL\SOH\DC2\EOT\229\ACK\r\DC1\n\
     \\r\n\
-    \\ENQ\EOT\SI\ENQ\NUL\STX\DC2\EOT\153\ENQ\NAK\CAN\n\
+    \\ENQ\EOT\SI\ENQ\NUL\STX\DC2\EOT\229\ACK\NAK\CAN\n\
     \\f\n\
-    \\STX\EOT\DLE\DC2\ACK\156\ENQ\NUL\174\ENQ\SOH\n\
+    \\STX\EOT\DLE\DC2\ACK\232\ACK\NUL\253\ACK\SOH\n\
     \\v\n\
-    \\ETX\EOT\DLE\SOH\DC2\EOT\156\ENQ\b\SYN\n\
+    \\ETX\EOT\DLE\SOH\DC2\EOT\232\ACK\b\SYN\n\
+    \=\n\
+    \\EOT\EOT\DLE\STX\NUL\DC2\EOT\235\ACK\STX$\SUB/ Any features defined in the specific edition.\n\
+    \\n\
+    \\r\n\
+    \\ENQ\EOT\DLE\STX\NUL\EOT\DC2\EOT\235\ACK\STX\n\
+    \\n\
+    \\r\n\
+    \\ENQ\EOT\DLE\STX\NUL\ACK\DC2\EOT\235\ACK\v\NAK\n\
+    \\r\n\
+    \\ENQ\EOT\DLE\STX\NUL\SOH\DC2\EOT\235\ACK\SYN\RS\n\
+    \\r\n\
+    \\ENQ\EOT\DLE\STX\NUL\ETX\DC2\EOT\235\ACK!#\n\
     \\217\ETX\n\
-    \\EOT\EOT\DLE\STX\NUL\DC2\EOT\167\ENQ\STX2\SUB\223\SOH Is this service deprecated?\n\
+    \\EOT\EOT\DLE\STX\SOH\DC2\EOT\246\ACK\STX2\SUB\223\SOH Is this service deprecated?\n\
     \ Depending on the target platform, this can emit Deprecated annotations\n\
     \ for the service, or it will be completely ignored; in the very least,\n\
     \ this is a formalization for deprecating services.\n\
@@ -12720,45 +17281,45 @@ packedFileDescriptor
     \   Buffers.\n\
     \\n\
     \\r\n\
-    \\ENQ\EOT\DLE\STX\NUL\EOT\DC2\EOT\167\ENQ\STX\n\
+    \\ENQ\EOT\DLE\STX\SOH\EOT\DC2\EOT\246\ACK\STX\n\
     \\n\
     \\r\n\
-    \\ENQ\EOT\DLE\STX\NUL\ENQ\DC2\EOT\167\ENQ\v\SI\n\
+    \\ENQ\EOT\DLE\STX\SOH\ENQ\DC2\EOT\246\ACK\v\SI\n\
     \\r\n\
-    \\ENQ\EOT\DLE\STX\NUL\SOH\DC2\EOT\167\ENQ\DLE\SUB\n\
+    \\ENQ\EOT\DLE\STX\SOH\SOH\DC2\EOT\246\ACK\DLE\SUB\n\
     \\r\n\
-    \\ENQ\EOT\DLE\STX\NUL\ETX\DC2\EOT\167\ENQ\GS\US\n\
+    \\ENQ\EOT\DLE\STX\SOH\ETX\DC2\EOT\246\ACK\GS\US\n\
     \\r\n\
-    \\ENQ\EOT\DLE\STX\NUL\b\DC2\EOT\167\ENQ 1\n\
+    \\ENQ\EOT\DLE\STX\SOH\b\DC2\EOT\246\ACK 1\n\
     \\r\n\
-    \\ENQ\EOT\DLE\STX\NUL\a\DC2\EOT\167\ENQ+0\n\
+    \\ENQ\EOT\DLE\STX\SOH\a\DC2\EOT\246\ACK+0\n\
     \O\n\
-    \\EOT\EOT\DLE\STX\SOH\DC2\EOT\170\ENQ\STX:\SUBA The parser stores options it doesn't recognize here. See above.\n\
+    \\EOT\EOT\DLE\STX\STX\DC2\EOT\249\ACK\STX:\SUBA The parser stores options it doesn't recognize here. See above.\n\
     \\n\
     \\r\n\
-    \\ENQ\EOT\DLE\STX\SOH\EOT\DC2\EOT\170\ENQ\STX\n\
+    \\ENQ\EOT\DLE\STX\STX\EOT\DC2\EOT\249\ACK\STX\n\
     \\n\
     \\r\n\
-    \\ENQ\EOT\DLE\STX\SOH\ACK\DC2\EOT\170\ENQ\v\RS\n\
+    \\ENQ\EOT\DLE\STX\STX\ACK\DC2\EOT\249\ACK\v\RS\n\
     \\r\n\
-    \\ENQ\EOT\DLE\STX\SOH\SOH\DC2\EOT\170\ENQ\US3\n\
+    \\ENQ\EOT\DLE\STX\STX\SOH\DC2\EOT\249\ACK\US3\n\
     \\r\n\
-    \\ENQ\EOT\DLE\STX\SOH\ETX\DC2\EOT\170\ENQ69\n\
+    \\ENQ\EOT\DLE\STX\STX\ETX\DC2\EOT\249\ACK69\n\
     \Z\n\
-    \\ETX\EOT\DLE\ENQ\DC2\EOT\173\ENQ\STX\EM\SUBM Clients can define custom options in extensions of this message. See above.\n\
+    \\ETX\EOT\DLE\ENQ\DC2\EOT\252\ACK\STX\EM\SUBM Clients can define custom options in extensions of this message. See above.\n\
     \\n\
     \\f\n\
-    \\EOT\EOT\DLE\ENQ\NUL\DC2\EOT\173\ENQ\r\CAN\n\
+    \\EOT\EOT\DLE\ENQ\NUL\DC2\EOT\252\ACK\r\CAN\n\
     \\r\n\
-    \\ENQ\EOT\DLE\ENQ\NUL\SOH\DC2\EOT\173\ENQ\r\DC1\n\
+    \\ENQ\EOT\DLE\ENQ\NUL\SOH\DC2\EOT\252\ACK\r\DC1\n\
     \\r\n\
-    \\ENQ\EOT\DLE\ENQ\NUL\STX\DC2\EOT\173\ENQ\NAK\CAN\n\
+    \\ENQ\EOT\DLE\ENQ\NUL\STX\DC2\EOT\252\ACK\NAK\CAN\n\
     \\f\n\
-    \\STX\EOT\DC1\DC2\ACK\176\ENQ\NUL\205\ENQ\SOH\n\
+    \\STX\EOT\DC1\DC2\ACK\255\ACK\NUL\159\a\SOH\n\
     \\v\n\
-    \\ETX\EOT\DC1\SOH\DC2\EOT\176\ENQ\b\NAK\n\
+    \\ETX\EOT\DC1\SOH\DC2\EOT\255\ACK\b\NAK\n\
     \\214\ETX\n\
-    \\EOT\EOT\DC1\STX\NUL\DC2\EOT\187\ENQ\STX2\SUB\220\SOH Is this method deprecated?\n\
+    \\EOT\EOT\DC1\STX\NUL\DC2\EOT\138\a\STX2\SUB\220\SOH Is this method deprecated?\n\
     \ Depending on the target platform, this can emit Deprecated annotations\n\
     \ for the method, or it will be completely ignored; in the very least,\n\
     \ this is a formalization for deprecating methods.\n\
@@ -12768,83 +17329,95 @@ packedFileDescriptor
     \   Buffers.\n\
     \\n\
     \\r\n\
-    \\ENQ\EOT\DC1\STX\NUL\EOT\DC2\EOT\187\ENQ\STX\n\
+    \\ENQ\EOT\DC1\STX\NUL\EOT\DC2\EOT\138\a\STX\n\
     \\n\
     \\r\n\
-    \\ENQ\EOT\DC1\STX\NUL\ENQ\DC2\EOT\187\ENQ\v\SI\n\
+    \\ENQ\EOT\DC1\STX\NUL\ENQ\DC2\EOT\138\a\v\SI\n\
     \\r\n\
-    \\ENQ\EOT\DC1\STX\NUL\SOH\DC2\EOT\187\ENQ\DLE\SUB\n\
+    \\ENQ\EOT\DC1\STX\NUL\SOH\DC2\EOT\138\a\DLE\SUB\n\
     \\r\n\
-    \\ENQ\EOT\DC1\STX\NUL\ETX\DC2\EOT\187\ENQ\GS\US\n\
+    \\ENQ\EOT\DC1\STX\NUL\ETX\DC2\EOT\138\a\GS\US\n\
     \\r\n\
-    \\ENQ\EOT\DC1\STX\NUL\b\DC2\EOT\187\ENQ 1\n\
+    \\ENQ\EOT\DC1\STX\NUL\b\DC2\EOT\138\a 1\n\
     \\r\n\
-    \\ENQ\EOT\DC1\STX\NUL\a\DC2\EOT\187\ENQ+0\n\
+    \\ENQ\EOT\DC1\STX\NUL\a\DC2\EOT\138\a+0\n\
     \\240\SOH\n\
-    \\EOT\EOT\DC1\EOT\NUL\DC2\ACK\192\ENQ\STX\196\ENQ\ETX\SUB\223\SOH Is this method side-effect-free (or safe in HTTP parlance), or idempotent,\n\
+    \\EOT\EOT\DC1\EOT\NUL\DC2\ACK\143\a\STX\147\a\ETX\SUB\223\SOH Is this method side-effect-free (or safe in HTTP parlance), or idempotent,\n\
     \ or neither? HTTP based RPC implementation may choose GET verb for safe\n\
     \ methods, and PUT verb for idempotent methods instead of the default POST.\n\
     \\n\
     \\r\n\
-    \\ENQ\EOT\DC1\EOT\NUL\SOH\DC2\EOT\192\ENQ\a\ETB\n\
+    \\ENQ\EOT\DC1\EOT\NUL\SOH\DC2\EOT\143\a\a\ETB\n\
     \\SO\n\
-    \\ACK\EOT\DC1\EOT\NUL\STX\NUL\DC2\EOT\193\ENQ\EOT\FS\n\
+    \\ACK\EOT\DC1\EOT\NUL\STX\NUL\DC2\EOT\144\a\EOT\FS\n\
     \\SI\n\
-    \\a\EOT\DC1\EOT\NUL\STX\NUL\SOH\DC2\EOT\193\ENQ\EOT\ETB\n\
+    \\a\EOT\DC1\EOT\NUL\STX\NUL\SOH\DC2\EOT\144\a\EOT\ETB\n\
     \\SI\n\
-    \\a\EOT\DC1\EOT\NUL\STX\NUL\STX\DC2\EOT\193\ENQ\SUB\ESC\n\
+    \\a\EOT\DC1\EOT\NUL\STX\NUL\STX\DC2\EOT\144\a\SUB\ESC\n\
     \$\n\
-    \\ACK\EOT\DC1\EOT\NUL\STX\SOH\DC2\EOT\194\ENQ\EOT\CAN\"\DC4 implies idempotent\n\
+    \\ACK\EOT\DC1\EOT\NUL\STX\SOH\DC2\EOT\145\a\EOT\CAN\"\DC4 implies idempotent\n\
     \\n\
     \\SI\n\
-    \\a\EOT\DC1\EOT\NUL\STX\SOH\SOH\DC2\EOT\194\ENQ\EOT\DC3\n\
+    \\a\EOT\DC1\EOT\NUL\STX\SOH\SOH\DC2\EOT\145\a\EOT\DC3\n\
     \\SI\n\
-    \\a\EOT\DC1\EOT\NUL\STX\SOH\STX\DC2\EOT\194\ENQ\SYN\ETB\n\
+    \\a\EOT\DC1\EOT\NUL\STX\SOH\STX\DC2\EOT\145\a\SYN\ETB\n\
     \7\n\
-    \\ACK\EOT\DC1\EOT\NUL\STX\STX\DC2\EOT\195\ENQ\EOT\DC3\"' idempotent, but may have side effects\n\
+    \\ACK\EOT\DC1\EOT\NUL\STX\STX\DC2\EOT\146\a\EOT\DC3\"' idempotent, but may have side effects\n\
     \\n\
     \\SI\n\
-    \\a\EOT\DC1\EOT\NUL\STX\STX\SOH\DC2\EOT\195\ENQ\EOT\SO\n\
+    \\a\EOT\DC1\EOT\NUL\STX\STX\SOH\DC2\EOT\146\a\EOT\SO\n\
     \\SI\n\
-    \\a\EOT\DC1\EOT\NUL\STX\STX\STX\DC2\EOT\195\ENQ\DC1\DC2\n\
+    \\a\EOT\DC1\EOT\NUL\STX\STX\STX\DC2\EOT\146\a\DC1\DC2\n\
     \\SO\n\
-    \\EOT\EOT\DC1\STX\SOH\DC2\ACK\197\ENQ\STX\198\ENQ&\n\
+    \\EOT\EOT\DC1\STX\SOH\DC2\ACK\148\a\STX\149\a&\n\
     \\r\n\
-    \\ENQ\EOT\DC1\STX\SOH\EOT\DC2\EOT\197\ENQ\STX\n\
+    \\ENQ\EOT\DC1\STX\SOH\EOT\DC2\EOT\148\a\STX\n\
     \\n\
     \\r\n\
-    \\ENQ\EOT\DC1\STX\SOH\ACK\DC2\EOT\197\ENQ\v\ESC\n\
+    \\ENQ\EOT\DC1\STX\SOH\ACK\DC2\EOT\148\a\v\ESC\n\
     \\r\n\
-    \\ENQ\EOT\DC1\STX\SOH\SOH\DC2\EOT\197\ENQ\FS-\n\
+    \\ENQ\EOT\DC1\STX\SOH\SOH\DC2\EOT\148\a\FS-\n\
     \\r\n\
-    \\ENQ\EOT\DC1\STX\SOH\ETX\DC2\EOT\197\ENQ02\n\
+    \\ENQ\EOT\DC1\STX\SOH\ETX\DC2\EOT\148\a02\n\
     \\r\n\
-    \\ENQ\EOT\DC1\STX\SOH\b\DC2\EOT\198\ENQ\ACK%\n\
+    \\ENQ\EOT\DC1\STX\SOH\b\DC2\EOT\149\a\ACK%\n\
     \\r\n\
-    \\ENQ\EOT\DC1\STX\SOH\a\DC2\EOT\198\ENQ\DC1$\n\
+    \\ENQ\EOT\DC1\STX\SOH\a\DC2\EOT\149\a\DC1$\n\
+    \=\n\
+    \\EOT\EOT\DC1\STX\STX\DC2\EOT\152\a\STX$\SUB/ Any features defined in the specific edition.\n\
+    \\n\
+    \\r\n\
+    \\ENQ\EOT\DC1\STX\STX\EOT\DC2\EOT\152\a\STX\n\
+    \\n\
+    \\r\n\
+    \\ENQ\EOT\DC1\STX\STX\ACK\DC2\EOT\152\a\v\NAK\n\
+    \\r\n\
+    \\ENQ\EOT\DC1\STX\STX\SOH\DC2\EOT\152\a\SYN\RS\n\
+    \\r\n\
+    \\ENQ\EOT\DC1\STX\STX\ETX\DC2\EOT\152\a!#\n\
     \O\n\
-    \\EOT\EOT\DC1\STX\STX\DC2\EOT\201\ENQ\STX:\SUBA The parser stores options it doesn't recognize here. See above.\n\
+    \\EOT\EOT\DC1\STX\ETX\DC2\EOT\155\a\STX:\SUBA The parser stores options it doesn't recognize here. See above.\n\
     \\n\
     \\r\n\
-    \\ENQ\EOT\DC1\STX\STX\EOT\DC2\EOT\201\ENQ\STX\n\
+    \\ENQ\EOT\DC1\STX\ETX\EOT\DC2\EOT\155\a\STX\n\
     \\n\
     \\r\n\
-    \\ENQ\EOT\DC1\STX\STX\ACK\DC2\EOT\201\ENQ\v\RS\n\
+    \\ENQ\EOT\DC1\STX\ETX\ACK\DC2\EOT\155\a\v\RS\n\
     \\r\n\
-    \\ENQ\EOT\DC1\STX\STX\SOH\DC2\EOT\201\ENQ\US3\n\
+    \\ENQ\EOT\DC1\STX\ETX\SOH\DC2\EOT\155\a\US3\n\
     \\r\n\
-    \\ENQ\EOT\DC1\STX\STX\ETX\DC2\EOT\201\ENQ69\n\
+    \\ENQ\EOT\DC1\STX\ETX\ETX\DC2\EOT\155\a69\n\
     \Z\n\
-    \\ETX\EOT\DC1\ENQ\DC2\EOT\204\ENQ\STX\EM\SUBM Clients can define custom options in extensions of this message. See above.\n\
+    \\ETX\EOT\DC1\ENQ\DC2\EOT\158\a\STX\EM\SUBM Clients can define custom options in extensions of this message. See above.\n\
     \\n\
     \\f\n\
-    \\EOT\EOT\DC1\ENQ\NUL\DC2\EOT\204\ENQ\r\CAN\n\
+    \\EOT\EOT\DC1\ENQ\NUL\DC2\EOT\158\a\r\CAN\n\
     \\r\n\
-    \\ENQ\EOT\DC1\ENQ\NUL\SOH\DC2\EOT\204\ENQ\r\DC1\n\
+    \\ENQ\EOT\DC1\ENQ\NUL\SOH\DC2\EOT\158\a\r\DC1\n\
     \\r\n\
-    \\ENQ\EOT\DC1\ENQ\NUL\STX\DC2\EOT\204\ENQ\NAK\CAN\n\
+    \\ENQ\EOT\DC1\ENQ\NUL\STX\DC2\EOT\158\a\NAK\CAN\n\
     \\139\ETX\n\
-    \\STX\EOT\DC2\DC2\ACK\214\ENQ\NUL\234\ENQ\SOH\SUB\252\STX A message representing a option the parser does not recognize. This only\n\
+    \\STX\EOT\DC2\DC2\ACK\167\a\NUL\187\a\SOH\SUB\252\STX A message representing a option the parser does not recognize. This only\n\
     \ appears in options protos created by the compiler::Parser class.\n\
     \ DescriptorPool resolves these when building Descriptor objects. Therefore,\n\
     \ options protos in descriptor objects (e.g. returned by Descriptor::options(),\n\
@@ -12852,126 +17425,579 @@ packedFileDescriptor
     \ in them.\n\
     \\n\
     \\v\n\
-    \\ETX\EOT\DC2\SOH\DC2\EOT\214\ENQ\b\ESC\n\
+    \\ETX\EOT\DC2\SOH\DC2\EOT\167\a\b\ESC\n\
     \\203\STX\n\
-    \\EOT\EOT\DC2\ETX\NUL\DC2\ACK\220\ENQ\STX\223\ENQ\ETX\SUB\186\STX The name of the uninterpreted option.  Each string represents a segment in\n\
+    \\EOT\EOT\DC2\ETX\NUL\DC2\ACK\173\a\STX\176\a\ETX\SUB\186\STX The name of the uninterpreted option.  Each string represents a segment in\n\
     \ a dot-separated name.  is_extension is true iff a segment represents an\n\
     \ extension (denoted with parentheses in options specs in .proto files).\n\
-    \ E.g.,{ [\"foo\", false], [\"bar.baz\", true], [\"qux\", false] } represents\n\
-    \ \"foo.(bar.baz).qux\".\n\
+    \ E.g.,{ [\"foo\", false], [\"bar.baz\", true], [\"moo\", false] } represents\n\
+    \ \"foo.(bar.baz).moo\".\n\
     \\n\
     \\r\n\
-    \\ENQ\EOT\DC2\ETX\NUL\SOH\DC2\EOT\220\ENQ\n\
+    \\ENQ\EOT\DC2\ETX\NUL\SOH\DC2\EOT\173\a\n\
     \\DC2\n\
     \\SO\n\
-    \\ACK\EOT\DC2\ETX\NUL\STX\NUL\DC2\EOT\221\ENQ\EOT\"\n\
+    \\ACK\EOT\DC2\ETX\NUL\STX\NUL\DC2\EOT\174\a\EOT\"\n\
     \\SI\n\
-    \\a\EOT\DC2\ETX\NUL\STX\NUL\EOT\DC2\EOT\221\ENQ\EOT\f\n\
+    \\a\EOT\DC2\ETX\NUL\STX\NUL\EOT\DC2\EOT\174\a\EOT\f\n\
     \\SI\n\
-    \\a\EOT\DC2\ETX\NUL\STX\NUL\ENQ\DC2\EOT\221\ENQ\r\DC3\n\
+    \\a\EOT\DC2\ETX\NUL\STX\NUL\ENQ\DC2\EOT\174\a\r\DC3\n\
     \\SI\n\
-    \\a\EOT\DC2\ETX\NUL\STX\NUL\SOH\DC2\EOT\221\ENQ\DC4\GS\n\
+    \\a\EOT\DC2\ETX\NUL\STX\NUL\SOH\DC2\EOT\174\a\DC4\GS\n\
     \\SI\n\
-    \\a\EOT\DC2\ETX\NUL\STX\NUL\ETX\DC2\EOT\221\ENQ !\n\
+    \\a\EOT\DC2\ETX\NUL\STX\NUL\ETX\DC2\EOT\174\a !\n\
     \\SO\n\
-    \\ACK\EOT\DC2\ETX\NUL\STX\SOH\DC2\EOT\222\ENQ\EOT#\n\
+    \\ACK\EOT\DC2\ETX\NUL\STX\SOH\DC2\EOT\175\a\EOT#\n\
     \\SI\n\
-    \\a\EOT\DC2\ETX\NUL\STX\SOH\EOT\DC2\EOT\222\ENQ\EOT\f\n\
+    \\a\EOT\DC2\ETX\NUL\STX\SOH\EOT\DC2\EOT\175\a\EOT\f\n\
     \\SI\n\
-    \\a\EOT\DC2\ETX\NUL\STX\SOH\ENQ\DC2\EOT\222\ENQ\r\DC1\n\
+    \\a\EOT\DC2\ETX\NUL\STX\SOH\ENQ\DC2\EOT\175\a\r\DC1\n\
     \\SI\n\
-    \\a\EOT\DC2\ETX\NUL\STX\SOH\SOH\DC2\EOT\222\ENQ\DC2\RS\n\
+    \\a\EOT\DC2\ETX\NUL\STX\SOH\SOH\DC2\EOT\175\a\DC2\RS\n\
     \\SI\n\
-    \\a\EOT\DC2\ETX\NUL\STX\SOH\ETX\DC2\EOT\222\ENQ!\"\n\
+    \\a\EOT\DC2\ETX\NUL\STX\SOH\ETX\DC2\EOT\175\a!\"\n\
     \\f\n\
-    \\EOT\EOT\DC2\STX\NUL\DC2\EOT\224\ENQ\STX\GS\n\
+    \\EOT\EOT\DC2\STX\NUL\DC2\EOT\177\a\STX\GS\n\
     \\r\n\
-    \\ENQ\EOT\DC2\STX\NUL\EOT\DC2\EOT\224\ENQ\STX\n\
+    \\ENQ\EOT\DC2\STX\NUL\EOT\DC2\EOT\177\a\STX\n\
     \\n\
     \\r\n\
-    \\ENQ\EOT\DC2\STX\NUL\ACK\DC2\EOT\224\ENQ\v\DC3\n\
+    \\ENQ\EOT\DC2\STX\NUL\ACK\DC2\EOT\177\a\v\DC3\n\
     \\r\n\
-    \\ENQ\EOT\DC2\STX\NUL\SOH\DC2\EOT\224\ENQ\DC4\CAN\n\
+    \\ENQ\EOT\DC2\STX\NUL\SOH\DC2\EOT\177\a\DC4\CAN\n\
     \\r\n\
-    \\ENQ\EOT\DC2\STX\NUL\ETX\DC2\EOT\224\ENQ\ESC\FS\n\
+    \\ENQ\EOT\DC2\STX\NUL\ETX\DC2\EOT\177\a\ESC\FS\n\
     \\156\SOH\n\
-    \\EOT\EOT\DC2\STX\SOH\DC2\EOT\228\ENQ\STX'\SUB\141\SOH The value of the uninterpreted option, in whatever type the tokenizer\n\
+    \\EOT\EOT\DC2\STX\SOH\DC2\EOT\181\a\STX'\SUB\141\SOH The value of the uninterpreted option, in whatever type the tokenizer\n\
     \ identified it as during parsing. Exactly one of these should be set.\n\
     \\n\
     \\r\n\
-    \\ENQ\EOT\DC2\STX\SOH\EOT\DC2\EOT\228\ENQ\STX\n\
+    \\ENQ\EOT\DC2\STX\SOH\EOT\DC2\EOT\181\a\STX\n\
     \\n\
     \\r\n\
-    \\ENQ\EOT\DC2\STX\SOH\ENQ\DC2\EOT\228\ENQ\v\DC1\n\
+    \\ENQ\EOT\DC2\STX\SOH\ENQ\DC2\EOT\181\a\v\DC1\n\
     \\r\n\
-    \\ENQ\EOT\DC2\STX\SOH\SOH\DC2\EOT\228\ENQ\DC2\"\n\
+    \\ENQ\EOT\DC2\STX\SOH\SOH\DC2\EOT\181\a\DC2\"\n\
     \\r\n\
-    \\ENQ\EOT\DC2\STX\SOH\ETX\DC2\EOT\228\ENQ%&\n\
+    \\ENQ\EOT\DC2\STX\SOH\ETX\DC2\EOT\181\a%&\n\
     \\f\n\
-    \\EOT\EOT\DC2\STX\STX\DC2\EOT\229\ENQ\STX)\n\
+    \\EOT\EOT\DC2\STX\STX\DC2\EOT\182\a\STX)\n\
     \\r\n\
-    \\ENQ\EOT\DC2\STX\STX\EOT\DC2\EOT\229\ENQ\STX\n\
+    \\ENQ\EOT\DC2\STX\STX\EOT\DC2\EOT\182\a\STX\n\
     \\n\
     \\r\n\
-    \\ENQ\EOT\DC2\STX\STX\ENQ\DC2\EOT\229\ENQ\v\DC1\n\
+    \\ENQ\EOT\DC2\STX\STX\ENQ\DC2\EOT\182\a\v\DC1\n\
     \\r\n\
-    \\ENQ\EOT\DC2\STX\STX\SOH\DC2\EOT\229\ENQ\DC2$\n\
+    \\ENQ\EOT\DC2\STX\STX\SOH\DC2\EOT\182\a\DC2$\n\
     \\r\n\
-    \\ENQ\EOT\DC2\STX\STX\ETX\DC2\EOT\229\ENQ'(\n\
+    \\ENQ\EOT\DC2\STX\STX\ETX\DC2\EOT\182\a'(\n\
     \\f\n\
-    \\EOT\EOT\DC2\STX\ETX\DC2\EOT\230\ENQ\STX(\n\
+    \\EOT\EOT\DC2\STX\ETX\DC2\EOT\183\a\STX(\n\
     \\r\n\
-    \\ENQ\EOT\DC2\STX\ETX\EOT\DC2\EOT\230\ENQ\STX\n\
+    \\ENQ\EOT\DC2\STX\ETX\EOT\DC2\EOT\183\a\STX\n\
     \\n\
     \\r\n\
-    \\ENQ\EOT\DC2\STX\ETX\ENQ\DC2\EOT\230\ENQ\v\DLE\n\
+    \\ENQ\EOT\DC2\STX\ETX\ENQ\DC2\EOT\183\a\v\DLE\n\
     \\r\n\
-    \\ENQ\EOT\DC2\STX\ETX\SOH\DC2\EOT\230\ENQ\DC1#\n\
+    \\ENQ\EOT\DC2\STX\ETX\SOH\DC2\EOT\183\a\DC1#\n\
     \\r\n\
-    \\ENQ\EOT\DC2\STX\ETX\ETX\DC2\EOT\230\ENQ&'\n\
+    \\ENQ\EOT\DC2\STX\ETX\ETX\DC2\EOT\183\a&'\n\
     \\f\n\
-    \\EOT\EOT\DC2\STX\EOT\DC2\EOT\231\ENQ\STX#\n\
+    \\EOT\EOT\DC2\STX\EOT\DC2\EOT\184\a\STX#\n\
     \\r\n\
-    \\ENQ\EOT\DC2\STX\EOT\EOT\DC2\EOT\231\ENQ\STX\n\
+    \\ENQ\EOT\DC2\STX\EOT\EOT\DC2\EOT\184\a\STX\n\
     \\n\
     \\r\n\
-    \\ENQ\EOT\DC2\STX\EOT\ENQ\DC2\EOT\231\ENQ\v\DC1\n\
+    \\ENQ\EOT\DC2\STX\EOT\ENQ\DC2\EOT\184\a\v\DC1\n\
     \\r\n\
-    \\ENQ\EOT\DC2\STX\EOT\SOH\DC2\EOT\231\ENQ\DC2\RS\n\
+    \\ENQ\EOT\DC2\STX\EOT\SOH\DC2\EOT\184\a\DC2\RS\n\
     \\r\n\
-    \\ENQ\EOT\DC2\STX\EOT\ETX\DC2\EOT\231\ENQ!\"\n\
+    \\ENQ\EOT\DC2\STX\EOT\ETX\DC2\EOT\184\a!\"\n\
     \\f\n\
-    \\EOT\EOT\DC2\STX\ENQ\DC2\EOT\232\ENQ\STX\"\n\
+    \\EOT\EOT\DC2\STX\ENQ\DC2\EOT\185\a\STX\"\n\
     \\r\n\
-    \\ENQ\EOT\DC2\STX\ENQ\EOT\DC2\EOT\232\ENQ\STX\n\
+    \\ENQ\EOT\DC2\STX\ENQ\EOT\DC2\EOT\185\a\STX\n\
     \\n\
     \\r\n\
-    \\ENQ\EOT\DC2\STX\ENQ\ENQ\DC2\EOT\232\ENQ\v\DLE\n\
+    \\ENQ\EOT\DC2\STX\ENQ\ENQ\DC2\EOT\185\a\v\DLE\n\
     \\r\n\
-    \\ENQ\EOT\DC2\STX\ENQ\SOH\DC2\EOT\232\ENQ\DC1\GS\n\
+    \\ENQ\EOT\DC2\STX\ENQ\SOH\DC2\EOT\185\a\DC1\GS\n\
     \\r\n\
-    \\ENQ\EOT\DC2\STX\ENQ\ETX\DC2\EOT\232\ENQ !\n\
+    \\ENQ\EOT\DC2\STX\ENQ\ETX\DC2\EOT\185\a !\n\
     \\f\n\
-    \\EOT\EOT\DC2\STX\ACK\DC2\EOT\233\ENQ\STX&\n\
+    \\EOT\EOT\DC2\STX\ACK\DC2\EOT\186\a\STX&\n\
     \\r\n\
-    \\ENQ\EOT\DC2\STX\ACK\EOT\DC2\EOT\233\ENQ\STX\n\
+    \\ENQ\EOT\DC2\STX\ACK\EOT\DC2\EOT\186\a\STX\n\
     \\n\
     \\r\n\
-    \\ENQ\EOT\DC2\STX\ACK\ENQ\DC2\EOT\233\ENQ\v\DC1\n\
+    \\ENQ\EOT\DC2\STX\ACK\ENQ\DC2\EOT\186\a\v\DC1\n\
     \\r\n\
-    \\ENQ\EOT\DC2\STX\ACK\SOH\DC2\EOT\233\ENQ\DC2!\n\
+    \\ENQ\EOT\DC2\STX\ACK\SOH\DC2\EOT\186\a\DC2!\n\
     \\r\n\
-    \\ENQ\EOT\DC2\STX\ACK\ETX\DC2\EOT\233\ENQ$%\n\
+    \\ENQ\EOT\DC2\STX\ACK\ETX\DC2\EOT\186\a$%\n\
+    \\219\ETX\n\
+    \\STX\EOT\DC3\DC2\ACK\198\a\NUL\193\b\SOH\SUB\251\STX TODO Enums in C++ gencode (and potentially other languages) are\n\
+    \ not well scoped.  This means that each of the feature enums below can clash\n\
+    \ with each other.  The short names we've chosen maximize call-site\n\
+    \ readability, but leave us very open to this scenario.  A future feature will\n\
+    \ be designed and implemented to handle this, hopefully before we ever hit a\n\
+    \ conflict here.\n\
+    \2O ===================================================================\n\
+    \ Features\n\
+    \\n\
+    \\v\n\
+    \\ETX\EOT\DC3\SOH\DC2\EOT\198\a\b\DC2\n\
+    \\SO\n\
+    \\EOT\EOT\DC3\EOT\NUL\DC2\ACK\199\a\STX\204\a\ETX\n\
+    \\r\n\
+    \\ENQ\EOT\DC3\EOT\NUL\SOH\DC2\EOT\199\a\a\DC4\n\
+    \\SO\n\
+    \\ACK\EOT\DC3\EOT\NUL\STX\NUL\DC2\EOT\200\a\EOT\US\n\
+    \\SI\n\
+    \\a\EOT\DC3\EOT\NUL\STX\NUL\SOH\DC2\EOT\200\a\EOT\SUB\n\
+    \\SI\n\
+    \\a\EOT\DC3\EOT\NUL\STX\NUL\STX\DC2\EOT\200\a\GS\RS\n\
+    \\SO\n\
+    \\ACK\EOT\DC3\EOT\NUL\STX\SOH\DC2\EOT\201\a\EOT\DC1\n\
+    \\SI\n\
+    \\a\EOT\DC3\EOT\NUL\STX\SOH\SOH\DC2\EOT\201\a\EOT\f\n\
+    \\SI\n\
+    \\a\EOT\DC3\EOT\NUL\STX\SOH\STX\DC2\EOT\201\a\SI\DLE\n\
+    \\SO\n\
+    \\ACK\EOT\DC3\EOT\NUL\STX\STX\DC2\EOT\202\a\EOT\DC1\n\
+    \\SI\n\
+    \\a\EOT\DC3\EOT\NUL\STX\STX\SOH\DC2\EOT\202\a\EOT\f\n\
+    \\SI\n\
+    \\a\EOT\DC3\EOT\NUL\STX\STX\STX\DC2\EOT\202\a\SI\DLE\n\
+    \\SO\n\
+    \\ACK\EOT\DC3\EOT\NUL\STX\ETX\DC2\EOT\203\a\EOT\CAN\n\
+    \\SI\n\
+    \\a\EOT\DC3\EOT\NUL\STX\ETX\SOH\DC2\EOT\203\a\EOT\DC3\n\
+    \\SI\n\
+    \\a\EOT\DC3\EOT\NUL\STX\ETX\STX\DC2\EOT\203\a\SYN\ETB\n\
+    \\SO\n\
+    \\EOT\EOT\DC3\STX\NUL\DC2\ACK\205\a\STX\215\a\EOT\n\
+    \\r\n\
+    \\ENQ\EOT\DC3\STX\NUL\EOT\DC2\EOT\205\a\STX\n\
+    \\n\
+    \\r\n\
+    \\ENQ\EOT\DC3\STX\NUL\ACK\DC2\EOT\205\a\v\CAN\n\
+    \\r\n\
+    \\ENQ\EOT\DC3\STX\NUL\SOH\DC2\EOT\205\a\EM'\n\
+    \\r\n\
+    \\ENQ\EOT\DC3\STX\NUL\ETX\DC2\EOT\205\a*+\n\
+    \\SI\n\
+    \\ENQ\EOT\DC3\STX\NUL\b\DC2\ACK\205\a,\215\a\ETX\n\
+    \\SO\n\
+    \\ACK\EOT\DC3\STX\NUL\b\DC1\DC2\EOT\206\a\EOT!\n\
+    \\SI\n\
+    \\a\EOT\DC3\STX\NUL\b\DC3\NUL\DC2\EOT\207\a\EOT\US\n\
+    \\SI\n\
+    \\a\EOT\DC3\STX\NUL\b\DC3\SOH\DC2\EOT\208\a\EOT\RS\n\
+    \\DLE\n\
+    \\ACK\EOT\DC3\STX\NUL\b\SYN\DC2\ACK\209\a\EOT\211\a\ENQ\n\
+    \\SI\n\
+    \\a\EOT\DC3\STX\NUL\b\DC4\NUL\DC2\EOT\212\a\EOTE\n\
+    \\SI\n\
+    \\a\EOT\DC3\STX\NUL\b\DC4\SOH\DC2\EOT\213\a\EOTE\n\
+    \\SI\n\
+    \\a\EOT\DC3\STX\NUL\b\DC4\STX\DC2\EOT\214\a\EOTC\n\
+    \\SO\n\
+    \\EOT\EOT\DC3\EOT\SOH\DC2\ACK\217\a\STX\221\a\ETX\n\
+    \\r\n\
+    \\ENQ\EOT\DC3\EOT\SOH\SOH\DC2\EOT\217\a\a\SI\n\
+    \\SO\n\
+    \\ACK\EOT\DC3\EOT\SOH\STX\NUL\DC2\EOT\218\a\EOT\SUB\n\
+    \\SI\n\
+    \\a\EOT\DC3\EOT\SOH\STX\NUL\SOH\DC2\EOT\218\a\EOT\NAK\n\
+    \\SI\n\
+    \\a\EOT\DC3\EOT\SOH\STX\NUL\STX\DC2\EOT\218\a\CAN\EM\n\
+    \\SO\n\
+    \\ACK\EOT\DC3\EOT\SOH\STX\SOH\DC2\EOT\219\a\EOT\r\n\
+    \\SI\n\
+    \\a\EOT\DC3\EOT\SOH\STX\SOH\SOH\DC2\EOT\219\a\EOT\b\n\
+    \\SI\n\
+    \\a\EOT\DC3\EOT\SOH\STX\SOH\STX\DC2\EOT\219\a\v\f\n\
+    \\SO\n\
+    \\ACK\EOT\DC3\EOT\SOH\STX\STX\DC2\EOT\220\a\EOT\SI\n\
+    \\SI\n\
+    \\a\EOT\DC3\EOT\SOH\STX\STX\SOH\DC2\EOT\220\a\EOT\n\
+    \\n\
+    \\SI\n\
+    \\a\EOT\DC3\EOT\SOH\STX\STX\STX\DC2\EOT\220\a\r\SO\n\
+    \\SO\n\
+    \\EOT\EOT\DC3\STX\SOH\DC2\ACK\222\a\STX\231\a\EOT\n\
+    \\r\n\
+    \\ENQ\EOT\DC3\STX\SOH\EOT\DC2\EOT\222\a\STX\n\
+    \\n\
+    \\r\n\
+    \\ENQ\EOT\DC3\STX\SOH\ACK\DC2\EOT\222\a\v\DC3\n\
+    \\r\n\
+    \\ENQ\EOT\DC3\STX\SOH\SOH\DC2\EOT\222\a\DC4\GS\n\
+    \\r\n\
+    \\ENQ\EOT\DC3\STX\SOH\ETX\DC2\EOT\222\a !\n\
+    \\SI\n\
+    \\ENQ\EOT\DC3\STX\SOH\b\DC2\ACK\222\a\"\231\a\ETX\n\
+    \\SO\n\
+    \\ACK\EOT\DC3\STX\SOH\b\DC1\DC2\EOT\223\a\EOT!\n\
+    \\SI\n\
+    \\a\EOT\DC3\STX\SOH\b\DC3\NUL\DC2\EOT\224\a\EOT\RS\n\
+    \\SI\n\
+    \\a\EOT\DC3\STX\SOH\b\DC3\SOH\DC2\EOT\225\a\EOT\RS\n\
+    \\DLE\n\
+    \\ACK\EOT\DC3\STX\SOH\b\SYN\DC2\ACK\226\a\EOT\228\a\ENQ\n\
+    \\SI\n\
+    \\a\EOT\DC3\STX\SOH\b\DC4\NUL\DC2\EOT\229\a\EOTC\n\
+    \\SI\n\
+    \\a\EOT\DC3\STX\SOH\b\DC4\SOH\DC2\EOT\230\a\EOTA\n\
+    \\SO\n\
+    \\EOT\EOT\DC3\EOT\STX\DC2\ACK\233\a\STX\237\a\ETX\n\
+    \\r\n\
+    \\ENQ\EOT\DC3\EOT\STX\SOH\DC2\EOT\233\a\a\FS\n\
+    \\SO\n\
+    \\ACK\EOT\DC3\EOT\STX\STX\NUL\DC2\EOT\234\a\EOT(\n\
+    \\SI\n\
+    \\a\EOT\DC3\EOT\STX\STX\NUL\SOH\DC2\EOT\234\a\EOT#\n\
+    \\SI\n\
+    \\a\EOT\DC3\EOT\STX\STX\NUL\STX\DC2\EOT\234\a&'\n\
+    \\SO\n\
+    \\ACK\EOT\DC3\EOT\STX\STX\SOH\DC2\EOT\235\a\EOT\SI\n\
+    \\SI\n\
+    \\a\EOT\DC3\EOT\STX\STX\SOH\SOH\DC2\EOT\235\a\EOT\n\
+    \\n\
+    \\SI\n\
+    \\a\EOT\DC3\EOT\STX\STX\SOH\STX\DC2\EOT\235\a\r\SO\n\
+    \\SO\n\
+    \\ACK\EOT\DC3\EOT\STX\STX\STX\DC2\EOT\236\a\EOT\DC1\n\
+    \\SI\n\
+    \\a\EOT\DC3\EOT\STX\STX\STX\SOH\DC2\EOT\236\a\EOT\f\n\
+    \\SI\n\
+    \\a\EOT\DC3\EOT\STX\STX\STX\STX\DC2\EOT\236\a\SI\DLE\n\
+    \\SO\n\
+    \\EOT\EOT\DC3\STX\STX\DC2\ACK\238\a\STX\247\a\EOT\n\
+    \\r\n\
+    \\ENQ\EOT\DC3\STX\STX\EOT\DC2\EOT\238\a\STX\n\
+    \\n\
+    \\r\n\
+    \\ENQ\EOT\DC3\STX\STX\ACK\DC2\EOT\238\a\v \n\
+    \\r\n\
+    \\ENQ\EOT\DC3\STX\STX\SOH\DC2\EOT\238\a!8\n\
+    \\r\n\
+    \\ENQ\EOT\DC3\STX\STX\ETX\DC2\EOT\238\a;<\n\
+    \\SI\n\
+    \\ENQ\EOT\DC3\STX\STX\b\DC2\ACK\238\a=\247\a\ETX\n\
+    \\SO\n\
+    \\ACK\EOT\DC3\STX\STX\b\DC1\DC2\EOT\239\a\EOT!\n\
+    \\SI\n\
+    \\a\EOT\DC3\STX\STX\b\DC3\NUL\DC2\EOT\240\a\EOT\US\n\
+    \\SI\n\
+    \\a\EOT\DC3\STX\STX\b\DC3\SOH\DC2\EOT\241\a\EOT\RS\n\
+    \\DLE\n\
+    \\ACK\EOT\DC3\STX\STX\b\SYN\DC2\ACK\242\a\EOT\244\a\ENQ\n\
+    \\SI\n\
+    \\a\EOT\DC3\STX\STX\b\DC4\NUL\DC2\EOT\245\a\EOTE\n\
+    \\SI\n\
+    \\a\EOT\DC3\STX\STX\b\DC4\SOH\DC2\EOT\246\a\EOTC\n\
+    \\SO\n\
+    \\EOT\EOT\DC3\EOT\ETX\DC2\ACK\249\a\STX\254\a\ETX\n\
+    \\r\n\
+    \\ENQ\EOT\DC3\EOT\ETX\SOH\DC2\EOT\249\a\a\NAK\n\
+    \\SO\n\
+    \\ACK\EOT\DC3\EOT\ETX\STX\NUL\DC2\EOT\250\a\EOT \n\
+    \\SI\n\
+    \\a\EOT\DC3\EOT\ETX\STX\NUL\SOH\DC2\EOT\250\a\EOT\ESC\n\
+    \\SI\n\
+    \\a\EOT\DC3\EOT\ETX\STX\NUL\STX\DC2\EOT\250\a\RS\US\n\
+    \\SO\n\
+    \\ACK\EOT\DC3\EOT\ETX\STX\SOH\DC2\EOT\251\a\EOT\SI\n\
+    \\SI\n\
+    \\a\EOT\DC3\EOT\ETX\STX\SOH\SOH\DC2\EOT\251\a\EOT\n\
+    \\n\
+    \\SI\n\
+    \\a\EOT\DC3\EOT\ETX\STX\SOH\STX\DC2\EOT\251\a\r\SO\n\
+    \\SO\n\
+    \\ACK\EOT\DC3\EOT\ETX\STX\STX\DC2\EOT\252\a\EOT\r\n\
+    \\SI\n\
+    \\a\EOT\DC3\EOT\ETX\STX\STX\SOH\DC2\EOT\252\a\EOT\b\n\
+    \\SI\n\
+    \\a\EOT\DC3\EOT\ETX\STX\STX\STX\DC2\EOT\252\a\v\f\n\
+    \\r\n\
+    \\ENQ\EOT\DC3\EOT\ETX\EOT\DC2\EOT\253\a\EOT\SI\n\
+    \\SO\n\
+    \\ACK\EOT\DC3\EOT\ETX\EOT\NUL\DC2\EOT\253\a\r\SO\n\
+    \\SI\n\
+    \\a\EOT\DC3\EOT\ETX\EOT\NUL\SOH\DC2\EOT\253\a\r\SO\n\
+    \\SI\n\
+    \\a\EOT\DC3\EOT\ETX\EOT\NUL\STX\DC2\EOT\253\a\r\SO\n\
+    \\SO\n\
+    \\EOT\EOT\DC3\STX\ETX\DC2\ACK\255\a\STX\136\b\EOT\n\
+    \\r\n\
+    \\ENQ\EOT\DC3\STX\ETX\EOT\DC2\EOT\255\a\STX\n\
+    \\n\
+    \\r\n\
+    \\ENQ\EOT\DC3\STX\ETX\ACK\DC2\EOT\255\a\v\EM\n\
+    \\r\n\
+    \\ENQ\EOT\DC3\STX\ETX\SOH\DC2\EOT\255\a\SUB)\n\
+    \\r\n\
+    \\ENQ\EOT\DC3\STX\ETX\ETX\DC2\EOT\255\a,-\n\
+    \\SI\n\
+    \\ENQ\EOT\DC3\STX\ETX\b\DC2\ACK\255\a.\136\b\ETX\n\
+    \\SO\n\
+    \\ACK\EOT\DC3\STX\ETX\b\DC1\DC2\EOT\128\b\EOT!\n\
+    \\SI\n\
+    \\a\EOT\DC3\STX\ETX\b\DC3\NUL\DC2\EOT\129\b\EOT\US\n\
+    \\SI\n\
+    \\a\EOT\DC3\STX\ETX\b\DC3\SOH\DC2\EOT\130\b\EOT\RS\n\
+    \\DLE\n\
+    \\ACK\EOT\DC3\STX\ETX\b\SYN\DC2\ACK\131\b\EOT\133\b\ENQ\n\
+    \\SI\n\
+    \\a\EOT\DC3\STX\ETX\b\DC4\NUL\DC2\EOT\134\b\EOTA\n\
+    \\SI\n\
+    \\a\EOT\DC3\STX\ETX\b\DC4\SOH\DC2\EOT\135\b\EOTC\n\
+    \\SO\n\
+    \\EOT\EOT\DC3\EOT\EOT\DC2\ACK\138\b\STX\142\b\ETX\n\
+    \\r\n\
+    \\ENQ\EOT\DC3\EOT\EOT\SOH\DC2\EOT\138\b\a\SYN\n\
+    \\SO\n\
+    \\ACK\EOT\DC3\EOT\EOT\STX\NUL\DC2\EOT\139\b\EOT!\n\
+    \\SI\n\
+    \\a\EOT\DC3\EOT\EOT\STX\NUL\SOH\DC2\EOT\139\b\EOT\FS\n\
+    \\SI\n\
+    \\a\EOT\DC3\EOT\EOT\STX\NUL\STX\DC2\EOT\139\b\US \n\
+    \\SO\n\
+    \\ACK\EOT\DC3\EOT\EOT\STX\SOH\DC2\EOT\140\b\EOT\CAN\n\
+    \\SI\n\
+    \\a\EOT\DC3\EOT\EOT\STX\SOH\SOH\DC2\EOT\140\b\EOT\DC3\n\
+    \\SI\n\
+    \\a\EOT\DC3\EOT\EOT\STX\SOH\STX\DC2\EOT\140\b\SYN\ETB\n\
+    \\SO\n\
+    \\ACK\EOT\DC3\EOT\EOT\STX\STX\DC2\EOT\141\b\EOT\DC2\n\
+    \\SI\n\
+    \\a\EOT\DC3\EOT\EOT\STX\STX\SOH\DC2\EOT\141\b\EOT\r\n\
+    \\SI\n\
+    \\a\EOT\DC3\EOT\EOT\STX\STX\STX\DC2\EOT\141\b\DLE\DC1\n\
+    \\SO\n\
+    \\EOT\EOT\DC3\STX\EOT\DC2\ACK\143\b\STX\151\b\EOT\n\
+    \\r\n\
+    \\ENQ\EOT\DC3\STX\EOT\EOT\DC2\EOT\143\b\STX\n\
+    \\n\
+    \\r\n\
+    \\ENQ\EOT\DC3\STX\EOT\ACK\DC2\EOT\143\b\v\SUB\n\
+    \\r\n\
+    \\ENQ\EOT\DC3\STX\EOT\SOH\DC2\EOT\143\b\ESC+\n\
+    \\r\n\
+    \\ENQ\EOT\DC3\STX\EOT\ETX\DC2\EOT\143\b./\n\
+    \\SI\n\
+    \\ENQ\EOT\DC3\STX\EOT\b\DC2\ACK\143\b0\151\b\ETX\n\
+    \\SO\n\
+    \\ACK\EOT\DC3\STX\EOT\b\DC1\DC2\EOT\144\b\EOT!\n\
+    \\SI\n\
+    \\a\EOT\DC3\STX\EOT\b\DC3\NUL\DC2\EOT\145\b\EOT\US\n\
+    \\SI\n\
+    \\a\EOT\DC3\STX\EOT\b\DC3\SOH\DC2\EOT\146\b\EOT\RS\n\
+    \\DLE\n\
+    \\ACK\EOT\DC3\STX\EOT\b\SYN\DC2\ACK\147\b\EOT\149\b\ENQ\n\
+    \\SI\n\
+    \\a\EOT\DC3\STX\EOT\b\DC4\NUL\DC2\EOT\150\b\EOTL\n\
+    \\SO\n\
+    \\EOT\EOT\DC3\EOT\ENQ\DC2\ACK\153\b\STX\157\b\ETX\n\
+    \\r\n\
+    \\ENQ\EOT\DC3\EOT\ENQ\SOH\DC2\EOT\153\b\a\DC1\n\
+    \\SO\n\
+    \\ACK\EOT\DC3\EOT\ENQ\STX\NUL\DC2\EOT\154\b\EOT\FS\n\
+    \\SI\n\
+    \\a\EOT\DC3\EOT\ENQ\STX\NUL\SOH\DC2\EOT\154\b\EOT\ETB\n\
+    \\SI\n\
+    \\a\EOT\DC3\EOT\ENQ\STX\NUL\STX\DC2\EOT\154\b\SUB\ESC\n\
+    \\SO\n\
+    \\ACK\EOT\DC3\EOT\ENQ\STX\SOH\DC2\EOT\155\b\EOT\SO\n\
+    \\SI\n\
+    \\a\EOT\DC3\EOT\ENQ\STX\SOH\SOH\DC2\EOT\155\b\EOT\t\n\
+    \\SI\n\
+    \\a\EOT\DC3\EOT\ENQ\STX\SOH\STX\DC2\EOT\155\b\f\r\n\
+    \\SO\n\
+    \\ACK\EOT\DC3\EOT\ENQ\STX\STX\DC2\EOT\156\b\EOT\ESC\n\
+    \\SI\n\
+    \\a\EOT\DC3\EOT\ENQ\STX\STX\SOH\DC2\EOT\156\b\EOT\SYN\n\
+    \\SI\n\
+    \\a\EOT\DC3\EOT\ENQ\STX\STX\STX\DC2\EOT\156\b\EM\SUB\n\
+    \\SO\n\
+    \\EOT\EOT\DC3\STX\ENQ\DC2\ACK\158\b\STX\168\b\EOT\n\
+    \\r\n\
+    \\ENQ\EOT\DC3\STX\ENQ\EOT\DC2\EOT\158\b\STX\n\
+    \\n\
+    \\r\n\
+    \\ENQ\EOT\DC3\STX\ENQ\ACK\DC2\EOT\158\b\v\NAK\n\
+    \\r\n\
+    \\ENQ\EOT\DC3\STX\ENQ\SOH\DC2\EOT\158\b\SYN!\n\
+    \\r\n\
+    \\ENQ\EOT\DC3\STX\ENQ\ETX\DC2\EOT\158\b$%\n\
+    \\SI\n\
+    \\ENQ\EOT\DC3\STX\ENQ\b\DC2\ACK\158\b&\168\b\ETX\n\
+    \\SO\n\
+    \\ACK\EOT\DC3\STX\ENQ\b\DC1\DC2\EOT\159\b\EOT!\n\
+    \\SI\n\
+    \\a\EOT\DC3\STX\ENQ\b\DC3\NUL\DC2\EOT\160\b\EOT!\n\
+    \\SI\n\
+    \\a\EOT\DC3\STX\ENQ\b\DC3\SOH\DC2\EOT\161\b\EOT\RS\n\
+    \\SI\n\
+    \\a\EOT\DC3\STX\ENQ\b\DC3\STX\DC2\EOT\162\b\EOT\RS\n\
+    \\DLE\n\
+    \\ACK\EOT\DC3\STX\ENQ\b\SYN\DC2\ACK\163\b\EOT\165\b\ENQ\n\
+    \\SI\n\
+    \\a\EOT\DC3\STX\ENQ\b\DC4\NUL\DC2\EOT\166\b\EOTO\n\
+    \\SI\n\
+    \\a\EOT\DC3\STX\ENQ\b\DC4\SOH\DC2\EOT\167\b\EOTB\n\
+    \\v\n\
+    \\ETX\EOT\DC3\t\DC2\EOT\170\b\STX\SI\n\
+    \\f\n\
+    \\EOT\EOT\DC3\t\NUL\DC2\EOT\170\b\v\SO\n\
+    \\r\n\
+    \\ENQ\EOT\DC3\t\NUL\SOH\DC2\EOT\170\b\v\SO\n\
+    \\r\n\
+    \\ENQ\EOT\DC3\t\NUL\STX\DC2\EOT\170\b\v\SO\n\
+    \\r\n\
+    \\ETX\EOT\DC3\ENQ\DC2\ACK\172\b\STX\189\b\EOT\n\
+    \\f\n\
+    \\EOT\EOT\DC3\ENQ\NUL\DC2\EOT\172\b\r\EM\n\
+    \\r\n\
+    \\ENQ\EOT\DC3\ENQ\NUL\SOH\DC2\EOT\172\b\r\DC1\n\
+    \\r\n\
+    \\ENQ\EOT\DC3\ENQ\NUL\STX\DC2\EOT\172\b\NAK\EM\n\
+    \#\n\
+    \\ETX\EOT\DC3\ENQ\DC2\EOT\191\b\STX\SUB\"\SYN For internal testing\n\
+    \\n\
+    \\f\n\
+    \\EOT\EOT\DC3\ENQ\SOH\DC2\EOT\191\b\r\EM\n\
+    \\r\n\
+    \\ENQ\EOT\DC3\ENQ\SOH\SOH\DC2\EOT\191\b\r\DC1\n\
+    \\r\n\
+    \\ENQ\EOT\DC3\ENQ\SOH\STX\DC2\EOT\191\b\NAK\EM\n\
+    \:\n\
+    \\ETX\EOT\DC3\ENQ\DC2\EOT\192\b\STX\DC3\"- for https://github.com/bufbuild/protobuf-es\n\
+    \\n\
+    \\f\n\
+    \\EOT\EOT\DC3\ENQ\STX\DC2\EOT\192\b\r\DC2\n\
+    \\r\n\
+    \\ENQ\EOT\DC3\ENQ\STX\SOH\DC2\EOT\192\b\r\DC2\n\
+    \\r\n\
+    \\ENQ\EOT\DC3\ENQ\STX\STX\DC2\EOT\192\b\r\DC2\n\
+    \\172\STX\n\
+    \\STX\EOT\DC4\DC2\ACK\199\b\NUL\225\b\SOH\SUB\157\STX A compiled specification for the defaults of a set of features.  These\n\
+    \ messages are generated from FeatureSet extensions and can be used to seed\n\
+    \ feature resolution. The resolution with this object becomes a simple search\n\
+    \ for the closest matching edition, followed by proto merges.\n\
+    \\n\
+    \\v\n\
+    \\ETX\EOT\DC4\SOH\DC2\EOT\199\b\b\SUB\n\
+    \\176\STX\n\
+    \\EOT\EOT\DC4\ETX\NUL\DC2\ACK\204\b\STX\215\b\ETX\SUB\159\STX A map from every known edition with a unique set of defaults to its\n\
+    \ defaults. Not all editions may be contained here.  For a given edition,\n\
+    \ the defaults at the closest matching edition ordered at or before it should\n\
+    \ be used.  This field must be in strict ascending order by edition.\n\
+    \\n\
+    \\r\n\
+    \\ENQ\EOT\DC4\ETX\NUL\SOH\DC2\EOT\204\b\n\
+    \\"\n\
+    \\SO\n\
+    \\ACK\EOT\DC4\ETX\NUL\STX\NUL\DC2\EOT\205\b\EOT!\n\
+    \\SI\n\
+    \\a\EOT\DC4\ETX\NUL\STX\NUL\EOT\DC2\EOT\205\b\EOT\f\n\
+    \\SI\n\
+    \\a\EOT\DC4\ETX\NUL\STX\NUL\ACK\DC2\EOT\205\b\r\DC4\n\
+    \\SI\n\
+    \\a\EOT\DC4\ETX\NUL\STX\NUL\SOH\DC2\EOT\205\b\NAK\FS\n\
+    \\SI\n\
+    \\a\EOT\DC4\ETX\NUL\STX\NUL\ETX\DC2\EOT\205\b\US \n\
+    \N\n\
+    \\ACK\EOT\DC4\ETX\NUL\STX\SOH\DC2\EOT\208\b\EOT1\SUB> Defaults of features that can be overridden in this edition.\n\
+    \\n\
+    \\SI\n\
+    \\a\EOT\DC4\ETX\NUL\STX\SOH\EOT\DC2\EOT\208\b\EOT\f\n\
+    \\SI\n\
+    \\a\EOT\DC4\ETX\NUL\STX\SOH\ACK\DC2\EOT\208\b\r\ETB\n\
+    \\SI\n\
+    \\a\EOT\DC4\ETX\NUL\STX\SOH\SOH\DC2\EOT\208\b\CAN,\n\
+    \\SI\n\
+    \\a\EOT\DC4\ETX\NUL\STX\SOH\ETX\DC2\EOT\208\b/0\n\
+    \P\n\
+    \\ACK\EOT\DC4\ETX\NUL\STX\STX\DC2\EOT\211\b\EOT+\SUB@ Defaults of features that can't be overridden in this edition.\n\
+    \\n\
+    \\SI\n\
+    \\a\EOT\DC4\ETX\NUL\STX\STX\EOT\DC2\EOT\211\b\EOT\f\n\
+    \\SI\n\
+    \\a\EOT\DC4\ETX\NUL\STX\STX\ACK\DC2\EOT\211\b\r\ETB\n\
+    \\SI\n\
+    \\a\EOT\DC4\ETX\NUL\STX\STX\SOH\DC2\EOT\211\b\CAN&\n\
+    \\SI\n\
+    \\a\EOT\DC4\ETX\NUL\STX\STX\ETX\DC2\EOT\211\b)*\n\
+    \\r\n\
+    \\ENQ\EOT\DC4\ETX\NUL\t\DC2\EOT\213\b\EOT\DC2\n\
+    \\SO\n\
+    \\ACK\EOT\DC4\ETX\NUL\t\NUL\DC2\EOT\213\b\r\SO\n\
+    \\SI\n\
+    \\a\EOT\DC4\ETX\NUL\t\NUL\SOH\DC2\EOT\213\b\r\SO\n\
+    \\SI\n\
+    \\a\EOT\DC4\ETX\NUL\t\NUL\STX\DC2\EOT\213\b\r\SO\n\
+    \\SO\n\
+    \\ACK\EOT\DC4\ETX\NUL\t\SOH\DC2\EOT\213\b\DLE\DC1\n\
+    \\SI\n\
+    \\a\EOT\DC4\ETX\NUL\t\SOH\SOH\DC2\EOT\213\b\DLE\DC1\n\
+    \\SI\n\
+    \\a\EOT\DC4\ETX\NUL\t\SOH\STX\DC2\EOT\213\b\DLE\DC1\n\
+    \\r\n\
+    \\ENQ\EOT\DC4\ETX\NUL\n\
+    \\DC2\EOT\214\b\EOT\CAN\n\
+    \\SO\n\
+    \\ACK\EOT\DC4\ETX\NUL\n\
+    \\NUL\DC2\EOT\214\b\r\ETB\n\
+    \\f\n\
+    \\EOT\EOT\DC4\STX\NUL\DC2\EOT\216\b\STX1\n\
+    \\r\n\
+    \\ENQ\EOT\DC4\STX\NUL\EOT\DC2\EOT\216\b\STX\n\
+    \\n\
+    \\r\n\
+    \\ENQ\EOT\DC4\STX\NUL\ACK\DC2\EOT\216\b\v#\n\
+    \\r\n\
+    \\ENQ\EOT\DC4\STX\NUL\SOH\DC2\EOT\216\b$,\n\
+    \\r\n\
+    \\ENQ\EOT\DC4\STX\NUL\ETX\DC2\EOT\216\b/0\n\
+    \\130\SOH\n\
+    \\EOT\EOT\DC4\STX\SOH\DC2\EOT\220\b\STX'\SUBt The minimum supported edition (inclusive) when this was constructed.\n\
+    \ Editions before this will not have defaults.\n\
+    \\n\
+    \\r\n\
+    \\ENQ\EOT\DC4\STX\SOH\EOT\DC2\EOT\220\b\STX\n\
+    \\n\
+    \\r\n\
+    \\ENQ\EOT\DC4\STX\SOH\ACK\DC2\EOT\220\b\v\DC2\n\
+    \\r\n\
+    \\ENQ\EOT\DC4\STX\SOH\SOH\DC2\EOT\220\b\DC3\"\n\
+    \\r\n\
+    \\ENQ\EOT\DC4\STX\SOH\ETX\DC2\EOT\220\b%&\n\
+    \\134\SOH\n\
+    \\EOT\EOT\DC4\STX\STX\DC2\EOT\224\b\STX'\SUBx The maximum known edition (inclusive) when this was constructed. Editions\n\
+    \ after this will not have reliable defaults.\n\
+    \\n\
+    \\r\n\
+    \\ENQ\EOT\DC4\STX\STX\EOT\DC2\EOT\224\b\STX\n\
+    \\n\
+    \\r\n\
+    \\ENQ\EOT\DC4\STX\STX\ACK\DC2\EOT\224\b\v\DC2\n\
+    \\r\n\
+    \\ENQ\EOT\DC4\STX\STX\SOH\DC2\EOT\224\b\DC3\"\n\
+    \\r\n\
+    \\ENQ\EOT\DC4\STX\STX\ETX\DC2\EOT\224\b%&\n\
     \\218\SOH\n\
-    \\STX\EOT\DC3\DC2\ACK\241\ENQ\NUL\242\ACK\SOH\SUBj Encapsulates information about the original source file from which a\n\
+    \\STX\EOT\NAK\DC2\ACK\232\b\NUL\233\t\SOH\SUBj Encapsulates information about the original source file from which a\n\
     \ FileDescriptorProto was generated.\n\
     \2` ===================================================================\n\
     \ Optional source code info\n\
     \\n\
     \\v\n\
-    \\ETX\EOT\DC3\SOH\DC2\EOT\241\ENQ\b\SYN\n\
+    \\ETX\EOT\NAK\SOH\DC2\EOT\232\b\b\SYN\n\
     \\130\DC1\n\
-    \\EOT\EOT\DC3\STX\NUL\DC2\EOT\157\ACK\STX!\SUB\243\DLE A Location identifies a piece of source code in a .proto file which\n\
+    \\EOT\EOT\NAK\STX\NUL\DC2\EOT\148\t\STX!\SUB\243\DLE A Location identifies a piece of source code in a .proto file which\n\
     \ corresponds to a particular definition.  This information is intended\n\
     \ to be useful to IDEs, code indexers, documentation generators, and similar\n\
     \ tools.\n\
@@ -13016,26 +18042,26 @@ packedFileDescriptor
     \   be recorded in the future.\n\
     \\n\
     \\r\n\
-    \\ENQ\EOT\DC3\STX\NUL\EOT\DC2\EOT\157\ACK\STX\n\
+    \\ENQ\EOT\NAK\STX\NUL\EOT\DC2\EOT\148\t\STX\n\
     \\n\
     \\r\n\
-    \\ENQ\EOT\DC3\STX\NUL\ACK\DC2\EOT\157\ACK\v\DC3\n\
+    \\ENQ\EOT\NAK\STX\NUL\ACK\DC2\EOT\148\t\v\DC3\n\
     \\r\n\
-    \\ENQ\EOT\DC3\STX\NUL\SOH\DC2\EOT\157\ACK\DC4\FS\n\
+    \\ENQ\EOT\NAK\STX\NUL\SOH\DC2\EOT\148\t\DC4\FS\n\
     \\r\n\
-    \\ENQ\EOT\DC3\STX\NUL\ETX\DC2\EOT\157\ACK\US \n\
+    \\ENQ\EOT\NAK\STX\NUL\ETX\DC2\EOT\148\t\US \n\
     \\SO\n\
-    \\EOT\EOT\DC3\ETX\NUL\DC2\ACK\158\ACK\STX\241\ACK\ETX\n\
+    \\EOT\EOT\NAK\ETX\NUL\DC2\ACK\149\t\STX\232\t\ETX\n\
     \\r\n\
-    \\ENQ\EOT\DC3\ETX\NUL\SOH\DC2\EOT\158\ACK\n\
+    \\ENQ\EOT\NAK\ETX\NUL\SOH\DC2\EOT\149\t\n\
     \\DC2\n\
-    \\131\a\n\
-    \\ACK\EOT\DC3\ETX\NUL\STX\NUL\DC2\EOT\182\ACK\EOT,\SUB\242\ACK Identifies which part of the FileDescriptorProto was defined at this\n\
+    \\138\a\n\
+    \\ACK\EOT\NAK\ETX\NUL\STX\NUL\DC2\EOT\173\t\EOT,\SUB\249\ACK Identifies which part of the FileDescriptorProto was defined at this\n\
     \ location.\n\
     \\n\
     \ Each element is a field number or an index.  They form a path from\n\
-    \ the root FileDescriptorProto to the place where the definition.  For\n\
-    \ example, this path:\n\
+    \ the root FileDescriptorProto to the place where the definition appears.\n\
+    \ For example, this path:\n\
     \   [ 4, 3, 2, 7, 1 ]\n\
     \ refers to:\n\
     \   file.message_type(3)  // 4, 3\n\
@@ -13055,38 +18081,38 @@ packedFileDescriptor
     \ of the label to the terminating semicolon).\n\
     \\n\
     \\SI\n\
-    \\a\EOT\DC3\ETX\NUL\STX\NUL\EOT\DC2\EOT\182\ACK\EOT\f\n\
+    \\a\EOT\NAK\ETX\NUL\STX\NUL\EOT\DC2\EOT\173\t\EOT\f\n\
     \\SI\n\
-    \\a\EOT\DC3\ETX\NUL\STX\NUL\ENQ\DC2\EOT\182\ACK\r\DC2\n\
+    \\a\EOT\NAK\ETX\NUL\STX\NUL\ENQ\DC2\EOT\173\t\r\DC2\n\
     \\SI\n\
-    \\a\EOT\DC3\ETX\NUL\STX\NUL\SOH\DC2\EOT\182\ACK\DC3\ETB\n\
+    \\a\EOT\NAK\ETX\NUL\STX\NUL\SOH\DC2\EOT\173\t\DC3\ETB\n\
     \\SI\n\
-    \\a\EOT\DC3\ETX\NUL\STX\NUL\ETX\DC2\EOT\182\ACK\SUB\ESC\n\
+    \\a\EOT\NAK\ETX\NUL\STX\NUL\ETX\DC2\EOT\173\t\SUB\ESC\n\
     \\SI\n\
-    \\a\EOT\DC3\ETX\NUL\STX\NUL\b\DC2\EOT\182\ACK\FS+\n\
+    \\a\EOT\NAK\ETX\NUL\STX\NUL\b\DC2\EOT\173\t\FS+\n\
     \\DLE\n\
-    \\b\EOT\DC3\ETX\NUL\STX\NUL\b\STX\DC2\EOT\182\ACK\GS*\n\
+    \\b\EOT\NAK\ETX\NUL\STX\NUL\b\STX\DC2\EOT\173\t\GS*\n\
     \\210\STX\n\
-    \\ACK\EOT\DC3\ETX\NUL\STX\SOH\DC2\EOT\189\ACK\EOT,\SUB\193\STX Always has exactly three or four elements: start line, start column,\n\
+    \\ACK\EOT\NAK\ETX\NUL\STX\SOH\DC2\EOT\180\t\EOT,\SUB\193\STX Always has exactly three or four elements: start line, start column,\n\
     \ end line (optional, otherwise assumed same as start line), end column.\n\
     \ These are packed into a single field for efficiency.  Note that line\n\
     \ and column numbers are zero-based -- typically you will want to add\n\
     \ 1 to each before displaying to a user.\n\
     \\n\
     \\SI\n\
-    \\a\EOT\DC3\ETX\NUL\STX\SOH\EOT\DC2\EOT\189\ACK\EOT\f\n\
+    \\a\EOT\NAK\ETX\NUL\STX\SOH\EOT\DC2\EOT\180\t\EOT\f\n\
     \\SI\n\
-    \\a\EOT\DC3\ETX\NUL\STX\SOH\ENQ\DC2\EOT\189\ACK\r\DC2\n\
+    \\a\EOT\NAK\ETX\NUL\STX\SOH\ENQ\DC2\EOT\180\t\r\DC2\n\
     \\SI\n\
-    \\a\EOT\DC3\ETX\NUL\STX\SOH\SOH\DC2\EOT\189\ACK\DC3\ETB\n\
+    \\a\EOT\NAK\ETX\NUL\STX\SOH\SOH\DC2\EOT\180\t\DC3\ETB\n\
     \\SI\n\
-    \\a\EOT\DC3\ETX\NUL\STX\SOH\ETX\DC2\EOT\189\ACK\SUB\ESC\n\
+    \\a\EOT\NAK\ETX\NUL\STX\SOH\ETX\DC2\EOT\180\t\SUB\ESC\n\
     \\SI\n\
-    \\a\EOT\DC3\ETX\NUL\STX\SOH\b\DC2\EOT\189\ACK\FS+\n\
+    \\a\EOT\NAK\ETX\NUL\STX\SOH\b\DC2\EOT\180\t\FS+\n\
     \\DLE\n\
-    \\b\EOT\DC3\ETX\NUL\STX\SOH\b\STX\DC2\EOT\189\ACK\GS*\n\
+    \\b\EOT\NAK\ETX\NUL\STX\SOH\b\STX\DC2\EOT\180\t\GS*\n\
     \\165\f\n\
-    \\ACK\EOT\DC3\ETX\NUL\STX\STX\DC2\EOT\238\ACK\EOT)\SUB\148\f If this SourceCodeInfo represents a complete declaration, these are any\n\
+    \\ACK\EOT\NAK\ETX\NUL\STX\STX\DC2\EOT\229\t\EOT)\SUB\148\f If this SourceCodeInfo represents a complete declaration, these are any\n\
     \ comments appearing before and after the declaration which appear to be\n\
     \ attached to the declaration.\n\
     \\n\
@@ -13113,13 +18139,13 @@ packedFileDescriptor
     \   // Comment attached to baz.\n\
     \   // Another line attached to baz.\n\
     \\n\
-    \   // Comment attached to qux.\n\
+    \   // Comment attached to moo.\n\
     \   //\n\
-    \   // Another line attached to qux.\n\
-    \   optional double qux = 4;\n\
+    \   // Another line attached to moo.\n\
+    \   optional double moo = 4;\n\
     \\n\
     \   // Detached comment for corge. This is not leading or trailing comments\n\
-    \   // to qux or corge because there are blank lines separating it from\n\
+    \   // to moo or corge because there are blank lines separating it from\n\
     \   // both.\n\
     \\n\
     \   // Detached comment for corge paragraph 2.\n\
@@ -13135,107 +18161,169 @@ packedFileDescriptor
     \   // ignored detached comments.\n\
     \\n\
     \\SI\n\
-    \\a\EOT\DC3\ETX\NUL\STX\STX\EOT\DC2\EOT\238\ACK\EOT\f\n\
+    \\a\EOT\NAK\ETX\NUL\STX\STX\EOT\DC2\EOT\229\t\EOT\f\n\
     \\SI\n\
-    \\a\EOT\DC3\ETX\NUL\STX\STX\ENQ\DC2\EOT\238\ACK\r\DC3\n\
+    \\a\EOT\NAK\ETX\NUL\STX\STX\ENQ\DC2\EOT\229\t\r\DC3\n\
     \\SI\n\
-    \\a\EOT\DC3\ETX\NUL\STX\STX\SOH\DC2\EOT\238\ACK\DC4$\n\
+    \\a\EOT\NAK\ETX\NUL\STX\STX\SOH\DC2\EOT\229\t\DC4$\n\
     \\SI\n\
-    \\a\EOT\DC3\ETX\NUL\STX\STX\ETX\DC2\EOT\238\ACK'(\n\
+    \\a\EOT\NAK\ETX\NUL\STX\STX\ETX\DC2\EOT\229\t'(\n\
     \\SO\n\
-    \\ACK\EOT\DC3\ETX\NUL\STX\ETX\DC2\EOT\239\ACK\EOT*\n\
+    \\ACK\EOT\NAK\ETX\NUL\STX\ETX\DC2\EOT\230\t\EOT*\n\
     \\SI\n\
-    \\a\EOT\DC3\ETX\NUL\STX\ETX\EOT\DC2\EOT\239\ACK\EOT\f\n\
+    \\a\EOT\NAK\ETX\NUL\STX\ETX\EOT\DC2\EOT\230\t\EOT\f\n\
     \\SI\n\
-    \\a\EOT\DC3\ETX\NUL\STX\ETX\ENQ\DC2\EOT\239\ACK\r\DC3\n\
+    \\a\EOT\NAK\ETX\NUL\STX\ETX\ENQ\DC2\EOT\230\t\r\DC3\n\
     \\SI\n\
-    \\a\EOT\DC3\ETX\NUL\STX\ETX\SOH\DC2\EOT\239\ACK\DC4%\n\
+    \\a\EOT\NAK\ETX\NUL\STX\ETX\SOH\DC2\EOT\230\t\DC4%\n\
     \\SI\n\
-    \\a\EOT\DC3\ETX\NUL\STX\ETX\ETX\DC2\EOT\239\ACK()\n\
+    \\a\EOT\NAK\ETX\NUL\STX\ETX\ETX\DC2\EOT\230\t()\n\
     \\SO\n\
-    \\ACK\EOT\DC3\ETX\NUL\STX\EOT\DC2\EOT\240\ACK\EOT2\n\
+    \\ACK\EOT\NAK\ETX\NUL\STX\EOT\DC2\EOT\231\t\EOT2\n\
     \\SI\n\
-    \\a\EOT\DC3\ETX\NUL\STX\EOT\EOT\DC2\EOT\240\ACK\EOT\f\n\
+    \\a\EOT\NAK\ETX\NUL\STX\EOT\EOT\DC2\EOT\231\t\EOT\f\n\
     \\SI\n\
-    \\a\EOT\DC3\ETX\NUL\STX\EOT\ENQ\DC2\EOT\240\ACK\r\DC3\n\
+    \\a\EOT\NAK\ETX\NUL\STX\EOT\ENQ\DC2\EOT\231\t\r\DC3\n\
     \\SI\n\
-    \\a\EOT\DC3\ETX\NUL\STX\EOT\SOH\DC2\EOT\240\ACK\DC4-\n\
+    \\a\EOT\NAK\ETX\NUL\STX\EOT\SOH\DC2\EOT\231\t\DC4-\n\
     \\SI\n\
-    \\a\EOT\DC3\ETX\NUL\STX\EOT\ETX\DC2\EOT\240\ACK01\n\
+    \\a\EOT\NAK\ETX\NUL\STX\EOT\ETX\DC2\EOT\231\t01\n\
     \\238\SOH\n\
-    \\STX\EOT\DC4\DC2\ACK\247\ACK\NUL\140\a\SOH\SUB\223\SOH Describes the relationship between generated code and its original source\n\
+    \\STX\EOT\SYN\DC2\ACK\238\t\NUL\143\n\
+    \\SOH\SUB\223\SOH Describes the relationship between generated code and its original source\n\
     \ file. A GeneratedCodeInfo message is associated with only one generated\n\
     \ source file, but may contain references to different source .proto files.\n\
     \\n\
     \\v\n\
-    \\ETX\EOT\DC4\SOH\DC2\EOT\247\ACK\b\EM\n\
+    \\ETX\EOT\SYN\SOH\DC2\EOT\238\t\b\EM\n\
     \x\n\
-    \\EOT\EOT\DC4\STX\NUL\DC2\EOT\250\ACK\STX%\SUBj An Annotation connects some span of text in generated code to an element\n\
+    \\EOT\EOT\SYN\STX\NUL\DC2\EOT\241\t\STX%\SUBj An Annotation connects some span of text in generated code to an element\n\
     \ of its generating .proto file.\n\
     \\n\
     \\r\n\
-    \\ENQ\EOT\DC4\STX\NUL\EOT\DC2\EOT\250\ACK\STX\n\
+    \\ENQ\EOT\SYN\STX\NUL\EOT\DC2\EOT\241\t\STX\n\
     \\n\
     \\r\n\
-    \\ENQ\EOT\DC4\STX\NUL\ACK\DC2\EOT\250\ACK\v\NAK\n\
+    \\ENQ\EOT\SYN\STX\NUL\ACK\DC2\EOT\241\t\v\NAK\n\
     \\r\n\
-    \\ENQ\EOT\DC4\STX\NUL\SOH\DC2\EOT\250\ACK\SYN \n\
+    \\ENQ\EOT\SYN\STX\NUL\SOH\DC2\EOT\241\t\SYN \n\
     \\r\n\
-    \\ENQ\EOT\DC4\STX\NUL\ETX\DC2\EOT\250\ACK#$\n\
+    \\ENQ\EOT\SYN\STX\NUL\ETX\DC2\EOT\241\t#$\n\
     \\SO\n\
-    \\EOT\EOT\DC4\ETX\NUL\DC2\ACK\251\ACK\STX\139\a\ETX\n\
+    \\EOT\EOT\SYN\ETX\NUL\DC2\ACK\242\t\STX\142\n\
+    \\ETX\n\
     \\r\n\
-    \\ENQ\EOT\DC4\ETX\NUL\SOH\DC2\EOT\251\ACK\n\
+    \\ENQ\EOT\SYN\ETX\NUL\SOH\DC2\EOT\242\t\n\
     \\DC4\n\
     \\143\SOH\n\
-    \\ACK\EOT\DC4\ETX\NUL\STX\NUL\DC2\EOT\254\ACK\EOT,\SUB\DEL Identifies the element in the original source .proto file. This field\n\
+    \\ACK\EOT\SYN\ETX\NUL\STX\NUL\DC2\EOT\245\t\EOT,\SUB\DEL Identifies the element in the original source .proto file. This field\n\
     \ is formatted the same as SourceCodeInfo.Location.path.\n\
     \\n\
     \\SI\n\
-    \\a\EOT\DC4\ETX\NUL\STX\NUL\EOT\DC2\EOT\254\ACK\EOT\f\n\
+    \\a\EOT\SYN\ETX\NUL\STX\NUL\EOT\DC2\EOT\245\t\EOT\f\n\
     \\SI\n\
-    \\a\EOT\DC4\ETX\NUL\STX\NUL\ENQ\DC2\EOT\254\ACK\r\DC2\n\
+    \\a\EOT\SYN\ETX\NUL\STX\NUL\ENQ\DC2\EOT\245\t\r\DC2\n\
     \\SI\n\
-    \\a\EOT\DC4\ETX\NUL\STX\NUL\SOH\DC2\EOT\254\ACK\DC3\ETB\n\
+    \\a\EOT\SYN\ETX\NUL\STX\NUL\SOH\DC2\EOT\245\t\DC3\ETB\n\
     \\SI\n\
-    \\a\EOT\DC4\ETX\NUL\STX\NUL\ETX\DC2\EOT\254\ACK\SUB\ESC\n\
+    \\a\EOT\SYN\ETX\NUL\STX\NUL\ETX\DC2\EOT\245\t\SUB\ESC\n\
     \\SI\n\
-    \\a\EOT\DC4\ETX\NUL\STX\NUL\b\DC2\EOT\254\ACK\FS+\n\
+    \\a\EOT\SYN\ETX\NUL\STX\NUL\b\DC2\EOT\245\t\FS+\n\
     \\DLE\n\
-    \\b\EOT\DC4\ETX\NUL\STX\NUL\b\STX\DC2\EOT\254\ACK\GS*\n\
+    \\b\EOT\SYN\ETX\NUL\STX\NUL\b\STX\DC2\EOT\245\t\GS*\n\
     \O\n\
-    \\ACK\EOT\DC4\ETX\NUL\STX\SOH\DC2\EOT\129\a\EOT$\SUB? Identifies the filesystem path to the original source .proto.\n\
+    \\ACK\EOT\SYN\ETX\NUL\STX\SOH\DC2\EOT\248\t\EOT$\SUB? Identifies the filesystem path to the original source .proto.\n\
     \\n\
     \\SI\n\
-    \\a\EOT\DC4\ETX\NUL\STX\SOH\EOT\DC2\EOT\129\a\EOT\f\n\
+    \\a\EOT\SYN\ETX\NUL\STX\SOH\EOT\DC2\EOT\248\t\EOT\f\n\
     \\SI\n\
-    \\a\EOT\DC4\ETX\NUL\STX\SOH\ENQ\DC2\EOT\129\a\r\DC3\n\
+    \\a\EOT\SYN\ETX\NUL\STX\SOH\ENQ\DC2\EOT\248\t\r\DC3\n\
     \\SI\n\
-    \\a\EOT\DC4\ETX\NUL\STX\SOH\SOH\DC2\EOT\129\a\DC4\US\n\
+    \\a\EOT\SYN\ETX\NUL\STX\SOH\SOH\DC2\EOT\248\t\DC4\US\n\
     \\SI\n\
-    \\a\EOT\DC4\ETX\NUL\STX\SOH\ETX\DC2\EOT\129\a\"#\n\
+    \\a\EOT\SYN\ETX\NUL\STX\SOH\ETX\DC2\EOT\248\t\"#\n\
     \w\n\
-    \\ACK\EOT\DC4\ETX\NUL\STX\STX\DC2\EOT\133\a\EOT\GS\SUBg Identifies the starting offset in bytes in the generated code\n\
+    \\ACK\EOT\SYN\ETX\NUL\STX\STX\DC2\EOT\252\t\EOT\GS\SUBg Identifies the starting offset in bytes in the generated code\n\
     \ that relates to the identified object.\n\
     \\n\
     \\SI\n\
-    \\a\EOT\DC4\ETX\NUL\STX\STX\EOT\DC2\EOT\133\a\EOT\f\n\
+    \\a\EOT\SYN\ETX\NUL\STX\STX\EOT\DC2\EOT\252\t\EOT\f\n\
     \\SI\n\
-    \\a\EOT\DC4\ETX\NUL\STX\STX\ENQ\DC2\EOT\133\a\r\DC2\n\
+    \\a\EOT\SYN\ETX\NUL\STX\STX\ENQ\DC2\EOT\252\t\r\DC2\n\
     \\SI\n\
-    \\a\EOT\DC4\ETX\NUL\STX\STX\SOH\DC2\EOT\133\a\DC3\CAN\n\
+    \\a\EOT\SYN\ETX\NUL\STX\STX\SOH\DC2\EOT\252\t\DC3\CAN\n\
     \\SI\n\
-    \\a\EOT\DC4\ETX\NUL\STX\STX\ETX\DC2\EOT\133\a\ESC\FS\n\
+    \\a\EOT\SYN\ETX\NUL\STX\STX\ETX\DC2\EOT\252\t\ESC\FS\n\
     \\219\SOH\n\
-    \\ACK\EOT\DC4\ETX\NUL\STX\ETX\DC2\EOT\138\a\EOT\ESC\SUB\202\SOH Identifies the ending offset in bytes in the generated code that\n\
-    \ relates to the identified offset. The end offset should be one past\n\
+    \\ACK\EOT\SYN\ETX\NUL\STX\ETX\DC2\EOT\129\n\
+    \\EOT\ESC\SUB\202\SOH Identifies the ending offset in bytes in the generated code that\n\
+    \ relates to the identified object. The end offset should be one past\n\
     \ the last relevant byte (so the length of the text = end - begin).\n\
     \\n\
     \\SI\n\
-    \\a\EOT\DC4\ETX\NUL\STX\ETX\EOT\DC2\EOT\138\a\EOT\f\n\
+    \\a\EOT\SYN\ETX\NUL\STX\ETX\EOT\DC2\EOT\129\n\
+    \\EOT\f\n\
     \\SI\n\
-    \\a\EOT\DC4\ETX\NUL\STX\ETX\ENQ\DC2\EOT\138\a\r\DC2\n\
+    \\a\EOT\SYN\ETX\NUL\STX\ETX\ENQ\DC2\EOT\129\n\
+    \\r\DC2\n\
     \\SI\n\
-    \\a\EOT\DC4\ETX\NUL\STX\ETX\SOH\DC2\EOT\138\a\DC3\SYN\n\
+    \\a\EOT\SYN\ETX\NUL\STX\ETX\SOH\DC2\EOT\129\n\
+    \\DC3\SYN\n\
     \\SI\n\
-    \\a\EOT\DC4\ETX\NUL\STX\ETX\ETX\DC2\EOT\138\a\EM\SUB"
+    \\a\EOT\SYN\ETX\NUL\STX\ETX\ETX\DC2\EOT\129\n\
+    \\EM\SUB\n\
+    \j\n\
+    \\ACK\EOT\SYN\ETX\NUL\EOT\NUL\DC2\ACK\133\n\
+    \\EOT\140\n\
+    \\ENQ\SUBX Represents the identified object's effect on the element in the original\n\
+    \ .proto file.\n\
+    \\n\
+    \\SI\n\
+    \\a\EOT\SYN\ETX\NUL\EOT\NUL\SOH\DC2\EOT\133\n\
+    \\t\DC1\n\
+    \F\n\
+    \\b\EOT\SYN\ETX\NUL\EOT\NUL\STX\NUL\DC2\EOT\135\n\
+    \\ACK\SI\SUB4 There is no effect or the effect is indescribable.\n\
+    \\n\
+    \\DC1\n\
+    \\t\EOT\SYN\ETX\NUL\EOT\NUL\STX\NUL\SOH\DC2\EOT\135\n\
+    \\ACK\n\
+    \\n\
+    \\DC1\n\
+    \\t\EOT\SYN\ETX\NUL\EOT\NUL\STX\NUL\STX\DC2\EOT\135\n\
+    \\r\SO\n\
+    \<\n\
+    \\b\EOT\SYN\ETX\NUL\EOT\NUL\STX\SOH\DC2\EOT\137\n\
+    \\ACK\SO\SUB* The element is set or otherwise mutated.\n\
+    \\n\
+    \\DC1\n\
+    \\t\EOT\SYN\ETX\NUL\EOT\NUL\STX\SOH\SOH\DC2\EOT\137\n\
+    \\ACK\t\n\
+    \\DC1\n\
+    \\t\EOT\SYN\ETX\NUL\EOT\NUL\STX\SOH\STX\DC2\EOT\137\n\
+    \\f\r\n\
+    \8\n\
+    \\b\EOT\SYN\ETX\NUL\EOT\NUL\STX\STX\DC2\EOT\139\n\
+    \\ACK\DLE\SUB& An alias to the element is returned.\n\
+    \\n\
+    \\DC1\n\
+    \\t\EOT\SYN\ETX\NUL\EOT\NUL\STX\STX\SOH\DC2\EOT\139\n\
+    \\ACK\v\n\
+    \\DC1\n\
+    \\t\EOT\SYN\ETX\NUL\EOT\NUL\STX\STX\STX\DC2\EOT\139\n\
+    \\SO\SI\n\
+    \\SO\n\
+    \\ACK\EOT\SYN\ETX\NUL\STX\EOT\DC2\EOT\141\n\
+    \\EOT#\n\
+    \\SI\n\
+    \\a\EOT\SYN\ETX\NUL\STX\EOT\EOT\DC2\EOT\141\n\
+    \\EOT\f\n\
+    \\SI\n\
+    \\a\EOT\SYN\ETX\NUL\STX\EOT\ACK\DC2\EOT\141\n\
+    \\r\NAK\n\
+    \\SI\n\
+    \\a\EOT\SYN\ETX\NUL\STX\EOT\SOH\DC2\EOT\141\n\
+    \\SYN\RS\n\
+    \\SI\n\
+    \\a\EOT\SYN\ETX\NUL\STX\EOT\ETX\DC2\EOT\141\n\
+    \!\""

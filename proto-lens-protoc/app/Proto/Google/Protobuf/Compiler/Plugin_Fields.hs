@@ -72,6 +72,12 @@ major ::
   (Prelude.Functor f, Data.ProtoLens.Field.HasField s "major" a) =>
   Lens.Family2.LensLike' f s a
 major = Data.ProtoLens.Field.field @"major"
+maximumEdition ::
+  forall f s a.
+  (Prelude.Functor f,
+   Data.ProtoLens.Field.HasField s "maximumEdition" a) =>
+  Lens.Family2.LensLike' f s a
+maximumEdition = Data.ProtoLens.Field.field @"maximumEdition"
 maybe'compilerVersion ::
   forall f s a.
   (Prelude.Functor f,
@@ -111,6 +117,20 @@ maybe'major ::
    Data.ProtoLens.Field.HasField s "maybe'major" a) =>
   Lens.Family2.LensLike' f s a
 maybe'major = Data.ProtoLens.Field.field @"maybe'major"
+maybe'maximumEdition ::
+  forall f s a.
+  (Prelude.Functor f,
+   Data.ProtoLens.Field.HasField s "maybe'maximumEdition" a) =>
+  Lens.Family2.LensLike' f s a
+maybe'maximumEdition
+  = Data.ProtoLens.Field.field @"maybe'maximumEdition"
+maybe'minimumEdition ::
+  forall f s a.
+  (Prelude.Functor f,
+   Data.ProtoLens.Field.HasField s "maybe'minimumEdition" a) =>
+  Lens.Family2.LensLike' f s a
+maybe'minimumEdition
+  = Data.ProtoLens.Field.field @"maybe'minimumEdition"
 maybe'minor ::
   forall f s a.
   (Prelude.Functor f,
@@ -148,6 +168,12 @@ maybe'supportedFeatures ::
   Lens.Family2.LensLike' f s a
 maybe'supportedFeatures
   = Data.ProtoLens.Field.field @"maybe'supportedFeatures"
+minimumEdition ::
+  forall f s a.
+  (Prelude.Functor f,
+   Data.ProtoLens.Field.HasField s "minimumEdition" a) =>
+  Lens.Family2.LensLike' f s a
+minimumEdition = Data.ProtoLens.Field.field @"minimumEdition"
 minor ::
   forall f s a.
   (Prelude.Functor f, Data.ProtoLens.Field.HasField s "minor" a) =>
@@ -175,6 +201,13 @@ protoFile ::
    Data.ProtoLens.Field.HasField s "protoFile" a) =>
   Lens.Family2.LensLike' f s a
 protoFile = Data.ProtoLens.Field.field @"protoFile"
+sourceFileDescriptors ::
+  forall f s a.
+  (Prelude.Functor f,
+   Data.ProtoLens.Field.HasField s "sourceFileDescriptors" a) =>
+  Lens.Family2.LensLike' f s a
+sourceFileDescriptors
+  = Data.ProtoLens.Field.field @"sourceFileDescriptors"
 suffix ::
   forall f s a.
   (Prelude.Functor f, Data.ProtoLens.Field.HasField s "suffix" a) =>
@@ -205,3 +238,10 @@ vec'protoFile ::
    Data.ProtoLens.Field.HasField s "vec'protoFile" a) =>
   Lens.Family2.LensLike' f s a
 vec'protoFile = Data.ProtoLens.Field.field @"vec'protoFile"
+vec'sourceFileDescriptors ::
+  forall f s a.
+  (Prelude.Functor f,
+   Data.ProtoLens.Field.HasField s "vec'sourceFileDescriptors" a) =>
+  Lens.Family2.LensLike' f s a
+vec'sourceFileDescriptors
+  = Data.ProtoLens.Field.field @"vec'sourceFileDescriptors"

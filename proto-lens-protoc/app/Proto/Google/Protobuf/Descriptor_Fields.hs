@@ -79,12 +79,30 @@ ctype ::
   (Prelude.Functor f, Data.ProtoLens.Field.HasField s "ctype" a) =>
   Lens.Family2.LensLike' f s a
 ctype = Data.ProtoLens.Field.field @"ctype"
+debugRedact ::
+  forall f s a.
+  (Prelude.Functor f,
+   Data.ProtoLens.Field.HasField s "debugRedact" a) =>
+  Lens.Family2.LensLike' f s a
+debugRedact = Data.ProtoLens.Field.field @"debugRedact"
+declaration ::
+  forall f s a.
+  (Prelude.Functor f,
+   Data.ProtoLens.Field.HasField s "declaration" a) =>
+  Lens.Family2.LensLike' f s a
+declaration = Data.ProtoLens.Field.field @"declaration"
 defaultValue ::
   forall f s a.
   (Prelude.Functor f,
    Data.ProtoLens.Field.HasField s "defaultValue" a) =>
   Lens.Family2.LensLike' f s a
 defaultValue = Data.ProtoLens.Field.field @"defaultValue"
+defaults ::
+  forall f s a.
+  (Prelude.Functor f,
+   Data.ProtoLens.Field.HasField s "defaults" a) =>
+  Lens.Family2.LensLike' f s a
+defaults = Data.ProtoLens.Field.field @"defaults"
 dependency ::
   forall f s a.
   (Prelude.Functor f,
@@ -97,12 +115,55 @@ deprecated ::
    Data.ProtoLens.Field.HasField s "deprecated" a) =>
   Lens.Family2.LensLike' f s a
 deprecated = Data.ProtoLens.Field.field @"deprecated"
+deprecatedLegacyJsonFieldConflicts ::
+  forall f s a.
+  (Prelude.Functor f,
+   Data.ProtoLens.Field.HasField s "deprecatedLegacyJsonFieldConflicts" a) =>
+  Lens.Family2.LensLike' f s a
+deprecatedLegacyJsonFieldConflicts
+  = Data.ProtoLens.Field.field @"deprecatedLegacyJsonFieldConflicts"
+deprecationWarning ::
+  forall f s a.
+  (Prelude.Functor f,
+   Data.ProtoLens.Field.HasField s "deprecationWarning" a) =>
+  Lens.Family2.LensLike' f s a
+deprecationWarning
+  = Data.ProtoLens.Field.field @"deprecationWarning"
 doubleValue ::
   forall f s a.
   (Prelude.Functor f,
    Data.ProtoLens.Field.HasField s "doubleValue" a) =>
   Lens.Family2.LensLike' f s a
 doubleValue = Data.ProtoLens.Field.field @"doubleValue"
+edition ::
+  forall f s a.
+  (Prelude.Functor f, Data.ProtoLens.Field.HasField s "edition" a) =>
+  Lens.Family2.LensLike' f s a
+edition = Data.ProtoLens.Field.field @"edition"
+editionDefaults ::
+  forall f s a.
+  (Prelude.Functor f,
+   Data.ProtoLens.Field.HasField s "editionDefaults" a) =>
+  Lens.Family2.LensLike' f s a
+editionDefaults = Data.ProtoLens.Field.field @"editionDefaults"
+editionDeprecated ::
+  forall f s a.
+  (Prelude.Functor f,
+   Data.ProtoLens.Field.HasField s "editionDeprecated" a) =>
+  Lens.Family2.LensLike' f s a
+editionDeprecated = Data.ProtoLens.Field.field @"editionDeprecated"
+editionIntroduced ::
+  forall f s a.
+  (Prelude.Functor f,
+   Data.ProtoLens.Field.HasField s "editionIntroduced" a) =>
+  Lens.Family2.LensLike' f s a
+editionIntroduced = Data.ProtoLens.Field.field @"editionIntroduced"
+editionRemoved ::
+  forall f s a.
+  (Prelude.Functor f,
+   Data.ProtoLens.Field.HasField s "editionRemoved" a) =>
+  Lens.Family2.LensLike' f s a
+editionRemoved = Data.ProtoLens.Field.field @"editionRemoved"
 end ::
   forall f s a.
   (Prelude.Functor f, Data.ProtoLens.Field.HasField s "end" a) =>
@@ -132,16 +193,46 @@ extensionRange ::
    Data.ProtoLens.Field.HasField s "extensionRange" a) =>
   Lens.Family2.LensLike' f s a
 extensionRange = Data.ProtoLens.Field.field @"extensionRange"
+featureSupport ::
+  forall f s a.
+  (Prelude.Functor f,
+   Data.ProtoLens.Field.HasField s "featureSupport" a) =>
+  Lens.Family2.LensLike' f s a
+featureSupport = Data.ProtoLens.Field.field @"featureSupport"
+features ::
+  forall f s a.
+  (Prelude.Functor f,
+   Data.ProtoLens.Field.HasField s "features" a) =>
+  Lens.Family2.LensLike' f s a
+features = Data.ProtoLens.Field.field @"features"
 field ::
   forall f s a.
   (Prelude.Functor f, Data.ProtoLens.Field.HasField s "field" a) =>
   Lens.Family2.LensLike' f s a
 field = Data.ProtoLens.Field.field @"field"
+fieldPresence ::
+  forall f s a.
+  (Prelude.Functor f,
+   Data.ProtoLens.Field.HasField s "fieldPresence" a) =>
+  Lens.Family2.LensLike' f s a
+fieldPresence = Data.ProtoLens.Field.field @"fieldPresence"
 file ::
   forall f s a.
   (Prelude.Functor f, Data.ProtoLens.Field.HasField s "file" a) =>
   Lens.Family2.LensLike' f s a
 file = Data.ProtoLens.Field.field @"file"
+fixedFeatures ::
+  forall f s a.
+  (Prelude.Functor f,
+   Data.ProtoLens.Field.HasField s "fixedFeatures" a) =>
+  Lens.Family2.LensLike' f s a
+fixedFeatures = Data.ProtoLens.Field.field @"fixedFeatures"
+fullName ::
+  forall f s a.
+  (Prelude.Functor f,
+   Data.ProtoLens.Field.HasField s "fullName" a) =>
+  Lens.Family2.LensLike' f s a
+fullName = Data.ProtoLens.Field.field @"fullName"
 goPackage ::
   forall f s a.
   (Prelude.Functor f,
@@ -212,6 +303,12 @@ javaStringCheckUtf8 ::
   Lens.Family2.LensLike' f s a
 javaStringCheckUtf8
   = Data.ProtoLens.Field.field @"javaStringCheckUtf8"
+jsonFormat ::
+  forall f s a.
+  (Prelude.Functor f,
+   Data.ProtoLens.Field.HasField s "jsonFormat" a) =>
+  Lens.Family2.LensLike' f s a
+jsonFormat = Data.ProtoLens.Field.field @"jsonFormat"
 jsonName ::
   forall f s a.
   (Prelude.Functor f,
@@ -258,6 +355,12 @@ mapEntry ::
    Data.ProtoLens.Field.HasField s "mapEntry" a) =>
   Lens.Family2.LensLike' f s a
 mapEntry = Data.ProtoLens.Field.field @"mapEntry"
+maximumEdition ::
+  forall f s a.
+  (Prelude.Functor f,
+   Data.ProtoLens.Field.HasField s "maximumEdition" a) =>
+  Lens.Family2.LensLike' f s a
+maximumEdition = Data.ProtoLens.Field.field @"maximumEdition"
 maybe'aggregateValue ::
   forall f s a.
   (Prelude.Functor f,
@@ -311,6 +414,12 @@ maybe'ctype ::
    Data.ProtoLens.Field.HasField s "maybe'ctype" a) =>
   Lens.Family2.LensLike' f s a
 maybe'ctype = Data.ProtoLens.Field.field @"maybe'ctype"
+maybe'debugRedact ::
+  forall f s a.
+  (Prelude.Functor f,
+   Data.ProtoLens.Field.HasField s "maybe'debugRedact" a) =>
+  Lens.Family2.LensLike' f s a
+maybe'debugRedact = Data.ProtoLens.Field.field @"maybe'debugRedact"
 maybe'defaultValue ::
   forall f s a.
   (Prelude.Functor f,
@@ -324,24 +433,105 @@ maybe'deprecated ::
    Data.ProtoLens.Field.HasField s "maybe'deprecated" a) =>
   Lens.Family2.LensLike' f s a
 maybe'deprecated = Data.ProtoLens.Field.field @"maybe'deprecated"
+maybe'deprecatedLegacyJsonFieldConflicts ::
+  forall f s a.
+  (Prelude.Functor f,
+   Data.ProtoLens.Field.HasField s "maybe'deprecatedLegacyJsonFieldConflicts" a) =>
+  Lens.Family2.LensLike' f s a
+maybe'deprecatedLegacyJsonFieldConflicts
+  = Data.ProtoLens.Field.field
+      @"maybe'deprecatedLegacyJsonFieldConflicts"
+maybe'deprecationWarning ::
+  forall f s a.
+  (Prelude.Functor f,
+   Data.ProtoLens.Field.HasField s "maybe'deprecationWarning" a) =>
+  Lens.Family2.LensLike' f s a
+maybe'deprecationWarning
+  = Data.ProtoLens.Field.field @"maybe'deprecationWarning"
 maybe'doubleValue ::
   forall f s a.
   (Prelude.Functor f,
    Data.ProtoLens.Field.HasField s "maybe'doubleValue" a) =>
   Lens.Family2.LensLike' f s a
 maybe'doubleValue = Data.ProtoLens.Field.field @"maybe'doubleValue"
+maybe'edition ::
+  forall f s a.
+  (Prelude.Functor f,
+   Data.ProtoLens.Field.HasField s "maybe'edition" a) =>
+  Lens.Family2.LensLike' f s a
+maybe'edition = Data.ProtoLens.Field.field @"maybe'edition"
+maybe'editionDeprecated ::
+  forall f s a.
+  (Prelude.Functor f,
+   Data.ProtoLens.Field.HasField s "maybe'editionDeprecated" a) =>
+  Lens.Family2.LensLike' f s a
+maybe'editionDeprecated
+  = Data.ProtoLens.Field.field @"maybe'editionDeprecated"
+maybe'editionIntroduced ::
+  forall f s a.
+  (Prelude.Functor f,
+   Data.ProtoLens.Field.HasField s "maybe'editionIntroduced" a) =>
+  Lens.Family2.LensLike' f s a
+maybe'editionIntroduced
+  = Data.ProtoLens.Field.field @"maybe'editionIntroduced"
+maybe'editionRemoved ::
+  forall f s a.
+  (Prelude.Functor f,
+   Data.ProtoLens.Field.HasField s "maybe'editionRemoved" a) =>
+  Lens.Family2.LensLike' f s a
+maybe'editionRemoved
+  = Data.ProtoLens.Field.field @"maybe'editionRemoved"
 maybe'end ::
   forall f s a.
   (Prelude.Functor f,
    Data.ProtoLens.Field.HasField s "maybe'end" a) =>
   Lens.Family2.LensLike' f s a
 maybe'end = Data.ProtoLens.Field.field @"maybe'end"
+maybe'enumType ::
+  forall f s a.
+  (Prelude.Functor f,
+   Data.ProtoLens.Field.HasField s "maybe'enumType" a) =>
+  Lens.Family2.LensLike' f s a
+maybe'enumType = Data.ProtoLens.Field.field @"maybe'enumType"
 maybe'extendee ::
   forall f s a.
   (Prelude.Functor f,
    Data.ProtoLens.Field.HasField s "maybe'extendee" a) =>
   Lens.Family2.LensLike' f s a
 maybe'extendee = Data.ProtoLens.Field.field @"maybe'extendee"
+maybe'featureSupport ::
+  forall f s a.
+  (Prelude.Functor f,
+   Data.ProtoLens.Field.HasField s "maybe'featureSupport" a) =>
+  Lens.Family2.LensLike' f s a
+maybe'featureSupport
+  = Data.ProtoLens.Field.field @"maybe'featureSupport"
+maybe'features ::
+  forall f s a.
+  (Prelude.Functor f,
+   Data.ProtoLens.Field.HasField s "maybe'features" a) =>
+  Lens.Family2.LensLike' f s a
+maybe'features = Data.ProtoLens.Field.field @"maybe'features"
+maybe'fieldPresence ::
+  forall f s a.
+  (Prelude.Functor f,
+   Data.ProtoLens.Field.HasField s "maybe'fieldPresence" a) =>
+  Lens.Family2.LensLike' f s a
+maybe'fieldPresence
+  = Data.ProtoLens.Field.field @"maybe'fieldPresence"
+maybe'fixedFeatures ::
+  forall f s a.
+  (Prelude.Functor f,
+   Data.ProtoLens.Field.HasField s "maybe'fixedFeatures" a) =>
+  Lens.Family2.LensLike' f s a
+maybe'fixedFeatures
+  = Data.ProtoLens.Field.field @"maybe'fixedFeatures"
+maybe'fullName ::
+  forall f s a.
+  (Prelude.Functor f,
+   Data.ProtoLens.Field.HasField s "maybe'fullName" a) =>
+  Lens.Family2.LensLike' f s a
+maybe'fullName = Data.ProtoLens.Field.field @"maybe'fullName"
 maybe'goPackage ::
   forall f s a.
   (Prelude.Functor f,
@@ -409,6 +599,12 @@ maybe'javaStringCheckUtf8 ::
   Lens.Family2.LensLike' f s a
 maybe'javaStringCheckUtf8
   = Data.ProtoLens.Field.field @"maybe'javaStringCheckUtf8"
+maybe'jsonFormat ::
+  forall f s a.
+  (Prelude.Functor f,
+   Data.ProtoLens.Field.HasField s "maybe'jsonFormat" a) =>
+  Lens.Family2.LensLike' f s a
+maybe'jsonFormat = Data.ProtoLens.Field.field @"maybe'jsonFormat"
 maybe'jsonName ::
   forall f s a.
   (Prelude.Functor f,
@@ -446,6 +642,20 @@ maybe'mapEntry ::
    Data.ProtoLens.Field.HasField s "maybe'mapEntry" a) =>
   Lens.Family2.LensLike' f s a
 maybe'mapEntry = Data.ProtoLens.Field.field @"maybe'mapEntry"
+maybe'maximumEdition ::
+  forall f s a.
+  (Prelude.Functor f,
+   Data.ProtoLens.Field.HasField s "maybe'maximumEdition" a) =>
+  Lens.Family2.LensLike' f s a
+maybe'maximumEdition
+  = Data.ProtoLens.Field.field @"maybe'maximumEdition"
+maybe'messageEncoding ::
+  forall f s a.
+  (Prelude.Functor f,
+   Data.ProtoLens.Field.HasField s "maybe'messageEncoding" a) =>
+  Lens.Family2.LensLike' f s a
+maybe'messageEncoding
+  = Data.ProtoLens.Field.field @"maybe'messageEncoding"
 maybe'messageSetWireFormat ::
   forall f s a.
   (Prelude.Functor f,
@@ -453,6 +663,13 @@ maybe'messageSetWireFormat ::
   Lens.Family2.LensLike' f s a
 maybe'messageSetWireFormat
   = Data.ProtoLens.Field.field @"maybe'messageSetWireFormat"
+maybe'minimumEdition ::
+  forall f s a.
+  (Prelude.Functor f,
+   Data.ProtoLens.Field.HasField s "maybe'minimumEdition" a) =>
+  Lens.Family2.LensLike' f s a
+maybe'minimumEdition
+  = Data.ProtoLens.Field.field @"maybe'minimumEdition"
 maybe'name ::
   forall f s a.
   (Prelude.Functor f,
@@ -510,6 +727,13 @@ maybe'outputType ::
    Data.ProtoLens.Field.HasField s "maybe'outputType" a) =>
   Lens.Family2.LensLike' f s a
 maybe'outputType = Data.ProtoLens.Field.field @"maybe'outputType"
+maybe'overridableFeatures ::
+  forall f s a.
+  (Prelude.Functor f,
+   Data.ProtoLens.Field.HasField s "maybe'overridableFeatures" a) =>
+  Lens.Family2.LensLike' f s a
+maybe'overridableFeatures
+  = Data.ProtoLens.Field.field @"maybe'overridableFeatures"
 maybe'package ::
   forall f s a.
   (Prelude.Functor f,
@@ -529,13 +753,6 @@ maybe'phpClassPrefix ::
   Lens.Family2.LensLike' f s a
 maybe'phpClassPrefix
   = Data.ProtoLens.Field.field @"maybe'phpClassPrefix"
-maybe'phpGenericServices ::
-  forall f s a.
-  (Prelude.Functor f,
-   Data.ProtoLens.Field.HasField s "maybe'phpGenericServices" a) =>
-  Lens.Family2.LensLike' f s a
-maybe'phpGenericServices
-  = Data.ProtoLens.Field.field @"maybe'phpGenericServices"
 maybe'phpMetadataNamespace ::
   forall f s a.
   (Prelude.Functor f,
@@ -571,12 +788,43 @@ maybe'pyGenericServices ::
   Lens.Family2.LensLike' f s a
 maybe'pyGenericServices
   = Data.ProtoLens.Field.field @"maybe'pyGenericServices"
+maybe'repeated ::
+  forall f s a.
+  (Prelude.Functor f,
+   Data.ProtoLens.Field.HasField s "maybe'repeated" a) =>
+  Lens.Family2.LensLike' f s a
+maybe'repeated = Data.ProtoLens.Field.field @"maybe'repeated"
+maybe'repeatedFieldEncoding ::
+  forall f s a.
+  (Prelude.Functor f,
+   Data.ProtoLens.Field.HasField s "maybe'repeatedFieldEncoding" a) =>
+  Lens.Family2.LensLike' f s a
+maybe'repeatedFieldEncoding
+  = Data.ProtoLens.Field.field @"maybe'repeatedFieldEncoding"
+maybe'reserved ::
+  forall f s a.
+  (Prelude.Functor f,
+   Data.ProtoLens.Field.HasField s "maybe'reserved" a) =>
+  Lens.Family2.LensLike' f s a
+maybe'reserved = Data.ProtoLens.Field.field @"maybe'reserved"
+maybe'retention ::
+  forall f s a.
+  (Prelude.Functor f,
+   Data.ProtoLens.Field.HasField s "maybe'retention" a) =>
+  Lens.Family2.LensLike' f s a
+maybe'retention = Data.ProtoLens.Field.field @"maybe'retention"
 maybe'rubyPackage ::
   forall f s a.
   (Prelude.Functor f,
    Data.ProtoLens.Field.HasField s "maybe'rubyPackage" a) =>
   Lens.Family2.LensLike' f s a
 maybe'rubyPackage = Data.ProtoLens.Field.field @"maybe'rubyPackage"
+maybe'semantic ::
+  forall f s a.
+  (Prelude.Functor f,
+   Data.ProtoLens.Field.HasField s "maybe'semantic" a) =>
+  Lens.Family2.LensLike' f s a
+maybe'semantic = Data.ProtoLens.Field.field @"maybe'semantic"
 maybe'serverStreaming ::
   forall f s a.
   (Prelude.Functor f,
@@ -640,12 +888,45 @@ maybe'typeName ::
    Data.ProtoLens.Field.HasField s "maybe'typeName" a) =>
   Lens.Family2.LensLike' f s a
 maybe'typeName = Data.ProtoLens.Field.field @"maybe'typeName"
+maybe'unverifiedLazy ::
+  forall f s a.
+  (Prelude.Functor f,
+   Data.ProtoLens.Field.HasField s "maybe'unverifiedLazy" a) =>
+  Lens.Family2.LensLike' f s a
+maybe'unverifiedLazy
+  = Data.ProtoLens.Field.field @"maybe'unverifiedLazy"
+maybe'utf8Validation ::
+  forall f s a.
+  (Prelude.Functor f,
+   Data.ProtoLens.Field.HasField s "maybe'utf8Validation" a) =>
+  Lens.Family2.LensLike' f s a
+maybe'utf8Validation
+  = Data.ProtoLens.Field.field @"maybe'utf8Validation"
+maybe'value ::
+  forall f s a.
+  (Prelude.Functor f,
+   Data.ProtoLens.Field.HasField s "maybe'value" a) =>
+  Lens.Family2.LensLike' f s a
+maybe'value = Data.ProtoLens.Field.field @"maybe'value"
+maybe'verification ::
+  forall f s a.
+  (Prelude.Functor f,
+   Data.ProtoLens.Field.HasField s "maybe'verification" a) =>
+  Lens.Family2.LensLike' f s a
+maybe'verification
+  = Data.ProtoLens.Field.field @"maybe'verification"
 maybe'weak ::
   forall f s a.
   (Prelude.Functor f,
    Data.ProtoLens.Field.HasField s "maybe'weak" a) =>
   Lens.Family2.LensLike' f s a
 maybe'weak = Data.ProtoLens.Field.field @"maybe'weak"
+messageEncoding ::
+  forall f s a.
+  (Prelude.Functor f,
+   Data.ProtoLens.Field.HasField s "messageEncoding" a) =>
+  Lens.Family2.LensLike' f s a
+messageEncoding = Data.ProtoLens.Field.field @"messageEncoding"
 messageSetWireFormat ::
   forall f s a.
   (Prelude.Functor f,
@@ -664,6 +945,12 @@ method ::
   (Prelude.Functor f, Data.ProtoLens.Field.HasField s "method" a) =>
   Lens.Family2.LensLike' f s a
 method = Data.ProtoLens.Field.field @"method"
+minimumEdition ::
+  forall f s a.
+  (Prelude.Functor f,
+   Data.ProtoLens.Field.HasField s "minimumEdition" a) =>
+  Lens.Family2.LensLike' f s a
+minimumEdition = Data.ProtoLens.Field.field @"minimumEdition"
 name ::
   forall f s a.
   (Prelude.Functor f, Data.ProtoLens.Field.HasField s "name" a) =>
@@ -734,6 +1021,13 @@ outputType ::
    Data.ProtoLens.Field.HasField s "outputType" a) =>
   Lens.Family2.LensLike' f s a
 outputType = Data.ProtoLens.Field.field @"outputType"
+overridableFeatures ::
+  forall f s a.
+  (Prelude.Functor f,
+   Data.ProtoLens.Field.HasField s "overridableFeatures" a) =>
+  Lens.Family2.LensLike' f s a
+overridableFeatures
+  = Data.ProtoLens.Field.field @"overridableFeatures"
 package ::
   forall f s a.
   (Prelude.Functor f, Data.ProtoLens.Field.HasField s "package" a) =>
@@ -755,13 +1049,6 @@ phpClassPrefix ::
    Data.ProtoLens.Field.HasField s "phpClassPrefix" a) =>
   Lens.Family2.LensLike' f s a
 phpClassPrefix = Data.ProtoLens.Field.field @"phpClassPrefix"
-phpGenericServices ::
-  forall f s a.
-  (Prelude.Functor f,
-   Data.ProtoLens.Field.HasField s "phpGenericServices" a) =>
-  Lens.Family2.LensLike' f s a
-phpGenericServices
-  = Data.ProtoLens.Field.field @"phpGenericServices"
 phpMetadataNamespace ::
   forall f s a.
   (Prelude.Functor f,
@@ -799,6 +1086,25 @@ pyGenericServices ::
    Data.ProtoLens.Field.HasField s "pyGenericServices" a) =>
   Lens.Family2.LensLike' f s a
 pyGenericServices = Data.ProtoLens.Field.field @"pyGenericServices"
+repeated ::
+  forall f s a.
+  (Prelude.Functor f,
+   Data.ProtoLens.Field.HasField s "repeated" a) =>
+  Lens.Family2.LensLike' f s a
+repeated = Data.ProtoLens.Field.field @"repeated"
+repeatedFieldEncoding ::
+  forall f s a.
+  (Prelude.Functor f,
+   Data.ProtoLens.Field.HasField s "repeatedFieldEncoding" a) =>
+  Lens.Family2.LensLike' f s a
+repeatedFieldEncoding
+  = Data.ProtoLens.Field.field @"repeatedFieldEncoding"
+reserved ::
+  forall f s a.
+  (Prelude.Functor f,
+   Data.ProtoLens.Field.HasField s "reserved" a) =>
+  Lens.Family2.LensLike' f s a
+reserved = Data.ProtoLens.Field.field @"reserved"
 reservedName ::
   forall f s a.
   (Prelude.Functor f,
@@ -811,12 +1117,24 @@ reservedRange ::
    Data.ProtoLens.Field.HasField s "reservedRange" a) =>
   Lens.Family2.LensLike' f s a
 reservedRange = Data.ProtoLens.Field.field @"reservedRange"
+retention ::
+  forall f s a.
+  (Prelude.Functor f,
+   Data.ProtoLens.Field.HasField s "retention" a) =>
+  Lens.Family2.LensLike' f s a
+retention = Data.ProtoLens.Field.field @"retention"
 rubyPackage ::
   forall f s a.
   (Prelude.Functor f,
    Data.ProtoLens.Field.HasField s "rubyPackage" a) =>
   Lens.Family2.LensLike' f s a
 rubyPackage = Data.ProtoLens.Field.field @"rubyPackage"
+semantic ::
+  forall f s a.
+  (Prelude.Functor f,
+   Data.ProtoLens.Field.HasField s "semantic" a) =>
+  Lens.Family2.LensLike' f s a
+semantic = Data.ProtoLens.Field.field @"semantic"
 serverStreaming ::
   forall f s a.
   (Prelude.Functor f,
@@ -867,6 +1185,11 @@ syntax ::
   (Prelude.Functor f, Data.ProtoLens.Field.HasField s "syntax" a) =>
   Lens.Family2.LensLike' f s a
 syntax = Data.ProtoLens.Field.field @"syntax"
+targets ::
+  forall f s a.
+  (Prelude.Functor f, Data.ProtoLens.Field.HasField s "targets" a) =>
+  Lens.Family2.LensLike' f s a
+targets = Data.ProtoLens.Field.field @"targets"
 trailingComments ::
   forall f s a.
   (Prelude.Functor f,
@@ -891,6 +1214,18 @@ uninterpretedOption ::
   Lens.Family2.LensLike' f s a
 uninterpretedOption
   = Data.ProtoLens.Field.field @"uninterpretedOption"
+unverifiedLazy ::
+  forall f s a.
+  (Prelude.Functor f,
+   Data.ProtoLens.Field.HasField s "unverifiedLazy" a) =>
+  Lens.Family2.LensLike' f s a
+unverifiedLazy = Data.ProtoLens.Field.field @"unverifiedLazy"
+utf8Validation ::
+  forall f s a.
+  (Prelude.Functor f,
+   Data.ProtoLens.Field.HasField s "utf8Validation" a) =>
+  Lens.Family2.LensLike' f s a
+utf8Validation = Data.ProtoLens.Field.field @"utf8Validation"
 value ::
   forall f s a.
   (Prelude.Functor f, Data.ProtoLens.Field.HasField s "value" a) =>
@@ -902,12 +1237,31 @@ vec'annotation ::
    Data.ProtoLens.Field.HasField s "vec'annotation" a) =>
   Lens.Family2.LensLike' f s a
 vec'annotation = Data.ProtoLens.Field.field @"vec'annotation"
+vec'declaration ::
+  forall f s a.
+  (Prelude.Functor f,
+   Data.ProtoLens.Field.HasField s "vec'declaration" a) =>
+  Lens.Family2.LensLike' f s a
+vec'declaration = Data.ProtoLens.Field.field @"vec'declaration"
+vec'defaults ::
+  forall f s a.
+  (Prelude.Functor f,
+   Data.ProtoLens.Field.HasField s "vec'defaults" a) =>
+  Lens.Family2.LensLike' f s a
+vec'defaults = Data.ProtoLens.Field.field @"vec'defaults"
 vec'dependency ::
   forall f s a.
   (Prelude.Functor f,
    Data.ProtoLens.Field.HasField s "vec'dependency" a) =>
   Lens.Family2.LensLike' f s a
 vec'dependency = Data.ProtoLens.Field.field @"vec'dependency"
+vec'editionDefaults ::
+  forall f s a.
+  (Prelude.Functor f,
+   Data.ProtoLens.Field.HasField s "vec'editionDefaults" a) =>
+  Lens.Family2.LensLike' f s a
+vec'editionDefaults
+  = Data.ProtoLens.Field.field @"vec'editionDefaults"
 vec'enumType ::
   forall f s a.
   (Prelude.Functor f,
@@ -1019,6 +1373,12 @@ vec'span ::
    Data.ProtoLens.Field.HasField s "vec'span" a) =>
   Lens.Family2.LensLike' f s a
 vec'span = Data.ProtoLens.Field.field @"vec'span"
+vec'targets ::
+  forall f s a.
+  (Prelude.Functor f,
+   Data.ProtoLens.Field.HasField s "vec'targets" a) =>
+  Lens.Family2.LensLike' f s a
+vec'targets = Data.ProtoLens.Field.field @"vec'targets"
 vec'uninterpretedOption ::
   forall f s a.
   (Prelude.Functor f,
@@ -1039,6 +1399,12 @@ vec'weakDependency ::
   Lens.Family2.LensLike' f s a
 vec'weakDependency
   = Data.ProtoLens.Field.field @"vec'weakDependency"
+verification ::
+  forall f s a.
+  (Prelude.Functor f,
+   Data.ProtoLens.Field.HasField s "verification" a) =>
+  Lens.Family2.LensLike' f s a
+verification = Data.ProtoLens.Field.field @"verification"
 weak ::
   forall f s a.
   (Prelude.Functor f, Data.ProtoLens.Field.HasField s "weak" a) =>

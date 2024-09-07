@@ -13,3 +13,4 @@ extra-deps:
   - proto-lens-runtime
   # A line like below will be appended by bootstrap.hs.
   # commit: 0bef8c2f3da645f068b8a26ac168c1da41608182
+  commit: a64671071c1790c3e94eba3fd289ded2e44a74a4
