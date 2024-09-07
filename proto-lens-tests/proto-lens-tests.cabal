@@ -234,6 +234,37 @@ test-suite descriptor_test
     , text
   default-language: Haskell2010
 
+test-suite editions2023_test
+  type: exitcode-stdio-1.0
+  main-is: editions2023_test.hs
+  other-modules:
+      Paths_proto_lens_tests
+      Proto.Editions2023
+      Proto.Editions2023_Fields
+  autogen-modules:
+      Paths_proto_lens_tests
+      Proto.Editions2023
+      Proto.Editions2023_Fields
+  hs-source-dirs:
+      tests
+  build-tool-depends:
+      proto-lens-protoc:proto-lens-protoc
+  build-depends:
+      QuickCheck
+    , base
+    , bytestring
+    , lens-family
+    , pretty
+    , proto-lens
+    , proto-lens-arbitrary
+    , proto-lens-runtime
+    , proto-lens-tests
+    , tasty
+    , tasty-hunit
+    , tasty-quickcheck
+    , text
+  default-language: Haskell2010
+
 test-suite enum_test
   type: exitcode-stdio-1.0
   main-is: enum_test.hs
