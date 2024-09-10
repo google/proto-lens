@@ -1,6 +1,6 @@
 cabal-version: 1.12
 
--- This file has been generated from package.yaml by hpack version 0.36.0.
+-- This file has been generated from package.yaml by hpack version 0.37.0.
 --
 -- see: https://github.com/sol/hpack
 
@@ -42,6 +42,7 @@ executable proto-lens-protoc
   main-is: protoc-gen-haskell.hs
   other-modules:
       Data.ProtoLens.Compiler.Definitions
+      Data.ProtoLens.Compiler.Editions.Defaults
       Data.ProtoLens.Compiler.Generate
       Data.ProtoLens.Compiler.Generate.Commented
       Data.ProtoLens.Compiler.Generate.Encoding
