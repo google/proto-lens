@@ -51,6 +51,7 @@ import Data.Maybe (catMaybes, fromMaybe)
 import Data.Monoid ((<>))
 #endif
 import Data.ProtoLens.Labels ()
+import Data.ProtoLens.Compiler.Editions.Features (featuresForEdition)
 import qualified Data.Semigroup as Semigroup
 import qualified Data.Set as Set
 import Data.String (IsString(..))
@@ -64,8 +65,13 @@ import Data.Tree
 import Lens.Family2 ((^.), (^..), toListOf)
 import Proto.Google.Protobuf.Descriptor
     ( DescriptorProto
+    , Edition(..)
     , EnumDescriptorProto
     , EnumValueDescriptorProto
+    , FeatureSet
+    , FeatureSet'FieldPresence(..)
+    , FeatureSet'EnumType(..)
+    , FeatureSet'RepeatedFieldEncoding(..)
     , FieldDescriptorProto
     , FieldDescriptorProto'Label(..)
     , FieldDescriptorProto'Type(..)
@@ -93,16 +99,29 @@ import GHC.SourceGen
 -- either from this or another file).
 type Env n = Map.Map Text (Definition n)
 
-data SyntaxType = Proto2 | Proto3 | Editions
-    deriving (Show, Eq)
+{-| Returns the edition for the file.
 
-fileSyntaxType :: FileDescriptorProto -> SyntaxType
-fileSyntaxType f = case f ^. #syntax of
-    "proto2" -> Proto2
-    "proto3" -> Proto3
-    "editions" -> Editions
-    "" -> Proto2  -- The proto compiler doesn't set syntax for proto2 files.
-    s -> error $ "Unknown syntax type " ++ show s
+For proto2 and proto3 files, 'EDITION_PROTO2' and 'EDITION_PROTO3' are returned,
+respectively, which will map to the equivalent feature set compatible with
+proto2 and proto3.
+
+>>> fileEdition $ defMessage & #syntax .~ "proto2"
+EDITION_PROTO2
+>>> fileEdition $ defMessage & #syntax .~ "proto3"
+EDITION_PROTO3
+
+-}
+fileEdition :: FileDescriptorProto -> Edition
+fileEdition f = case f ^. #syntax of
+  "editions" -> f ^. #edition
+  "proto3" -> EDITION_PROTO3
+  "proto2" -> EDITION_PROTO2
+  "" -> EDITION_PROTO2
+  s -> error $ "Unknown syntax type " ++ show s
+
+{-| Returns the feature defaults for the file. -}
+fileFeatures :: FileDescriptorProto -> FeatureSet
+fileFeatures f = featuresForEdition $ fileEdition f
 
 data Definition n = Message (MessageInfo n) | Enum (EnumInfo n)
     deriving Functor
@@ -309,7 +328,7 @@ collectDefinitions fd = let
         p -> "." <> p <> "."
     hsPrefix = ""
     in Map.fromList $ concatMap flatten $
-            messageAndEnumDefs (fileSyntaxType fd)
+            messageAndEnumDefs (fileFeatures fd)
                 protoPrefix hsPrefix Map.empty
                 (fd ^. #messageType) (fd ^. #enumType)
 
@@ -337,7 +356,7 @@ collectServices fd = fmap (toServiceInfo $ fd ^. #package) $ fd ^. #service
             }
 
 messageAndEnumDefs ::
-    SyntaxType -> Text -> String
+    FeatureSet -> Text -> String
     -> GroupMap
         -- ^ Group fields of the parent message (if any).
     -> [DescriptorProto]
@@ -345,17 +364,17 @@ messageAndEnumDefs ::
     -> Forest (Text, Definition OccNameStr)
         -- ^ Organized as a list of trees, to make it possible for callers
         -- to get the immediate child nested types.
-messageAndEnumDefs syntaxType protoPrefix hsPrefix groups messages enums
-    = map (messageDefs syntaxType protoPrefix hsPrefix groups) messages
+messageAndEnumDefs features protoPrefix hsPrefix groups messages enums
+    = map (messageDefs features protoPrefix hsPrefix groups) messages
         ++ map
             (flip Node [] -- Enums have no sub-definitions
-                . enumDef syntaxType protoPrefix hsPrefix)
+                . enumDef features protoPrefix hsPrefix)
             enums
 
 -- | Generate the definitions for a message and its nested types (if any).
-messageDefs :: SyntaxType -> Text -> String -> GroupMap -> DescriptorProto
+messageDefs :: FeatureSet -> Text -> String -> GroupMap -> DescriptorProto
             -> Tree (Text, Definition OccNameStr)
-messageDefs syntaxType protoPrefix hsPrefix groups d
+messageDefs features protoPrefix hsPrefix groups d
     = Node (protoName, thisDef) subDefs
   where
     protoName = protoPrefix <> d ^. #name
@@ -371,7 +390,7 @@ messageDefs syntaxType protoPrefix hsPrefix groups d
             , messageDescriptor = d
             , messageFields =
                   map (PlainFieldInfo <$>
-                              (fieldKind syntaxType mapEntries) <*> (fieldInfo hsPrefix'))
+                              (fieldKind features mapEntries) <*> (fieldInfo hsPrefix'))
                       $ Map.findWithDefault [] Nothing allFields
             , messageOneofFields = collectOneofFields hsPrefix' d allFields
             , messageUnknownFields =
@@ -379,7 +398,7 @@ messageDefs syntaxType protoPrefix hsPrefix groups d
             , groupFieldNumber = Map.lookup protoName groups
             }
     subDefs = messageAndEnumDefs
-                    syntaxType
+                    features
                     (protoName <> ".")
                     hsPrefix'
                     (collectGroupFields $ d ^. #field)
@@ -427,15 +446,19 @@ fieldInfo hsPrefix f = FieldInfo
                             }
 
 fieldKind ::
-    SyntaxType -> Map.Map Text MapEntryInfo -> FieldDescriptorProto
+    FeatureSet -> Map.Map Text MapEntryInfo -> FieldDescriptorProto
     -> FieldKind
-fieldKind syntaxType mapEntries f = case f ^. #label of
-            FieldDescriptorProto'LABEL_OPTIONAL
-                | syntaxType == Proto3
-                    && f ^. #type' /= FieldDescriptorProto'TYPE_MESSAGE
-                    && not (f ^. #proto3Optional)
-                    -> OptionalValueField
-                | otherwise -> OptionalMaybeField
+fieldKind features mapEntries f = case f ^. #label of
+            FieldDescriptorProto'LABEL_OPTIONAL ->
+                case features ^. #fieldPresence of
+                  FeatureSet'IMPLICIT
+                    | f ^. #type' /= FieldDescriptorProto'TYPE_MESSAGE
+                      && not (f ^. #proto3Optional)
+                      -> OptionalValueField
+                    | otherwise -> OptionalMaybeField
+                  FeatureSet'EXPLICIT -> OptionalMaybeField
+                  FeatureSet'LEGACY_REQUIRED -> RequiredField
+                  _ -> error $ "Has unknown field presence: " ++ show (f ^. #name)
             FieldDescriptorProto'LABEL_REQUIRED -> RequiredField
             FieldDescriptorProto'LABEL_REPEATED
                 | Just entryInfo <- Map.lookup (f ^. #typeName) mapEntries
@@ -446,10 +469,11 @@ fieldKind syntaxType mapEntries f = case f ^. #label of
         | f ^. #type' `elem` unpackableTypes = NotPackable
         | packedByDefault = Packed
         | otherwise = Packable
-    -- If the "packed" attribute isn't set, then default to packed if proto3.
-    -- Unfortunately, protoc doesn't implement this logic for us automatically.
-    packedByDefault = fromMaybe (syntaxType == Proto3)
-                        $ f ^. #options . #maybe'packed
+
+    packedByDefault =
+        fromMaybe (features ^. #repeatedFieldEncoding == FeatureSet'PACKED)
+        $ f ^. #options . #maybe'packed
+
     unpackableTypes =
         [ FieldDescriptorProto'TYPE_MESSAGE
         , FieldDescriptorProto'TYPE_GROUP
@@ -603,9 +627,9 @@ reservedKeywords = Set.fromList $
     ]
 
 -- | Generate the definition for an enum type.
-enumDef :: SyntaxType -> Text -> String -> EnumDescriptorProto
+enumDef :: FeatureSet -> Text -> String -> EnumDescriptorProto
           -> (Text, Definition OccNameStr)
-enumDef syntaxType protoPrefix hsPrefix d = let
+enumDef features protoPrefix hsPrefix d = let
     mkText n = protoPrefix <> n
     mkHsName n = fromString $ hsPrefix ++ case hsName n of
       ('_':xs) -> 'X':xs
@@ -613,14 +637,16 @@ enumDef syntaxType protoPrefix hsPrefix d = let
     in (mkText (d ^. #name)
        , Enum EnumInfo
             { enumName = mkHsName (d ^. #name)
-            , enumUnrecognized = if syntaxType == Proto2
-                    then Nothing
-                    else Just EnumUnrecognizedInfo
-                            { unrecognizedName
-                                = mkHsName (d ^. #name <> "'Unrecognized")
-                            , unrecognizedValueName
-                                = mkHsName (d ^. #name <> "'UnrecognizedValue")
-                            }
+            , enumUnrecognized = case features ^. #enumType of
+                FeatureSet'CLOSED -> Nothing
+                FeatureSet'OPEN ->
+                  Just EnumUnrecognizedInfo
+                      { unrecognizedName
+                          = mkHsName (d ^. #name <> "'Unrecognized")
+                      , unrecognizedValueName
+                          = mkHsName (d ^. #name <> "'UnrecognizedValue")
+                      }
+                _ -> error $ "Has unknown enum type: " ++ show (d ^. #name)
             , enumDescriptor = d
             , enumValues = collectEnumValues mkHsName $ d ^. #value
             })
