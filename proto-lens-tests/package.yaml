@@ -56,15 +56,6 @@ tests:
       - Proto.Canonical
       - Proto.Canonical_Fields
 
-  editions2023_test:
-    main: editions2023_test.hs
-    source-dirs: tests
-    dependencies:
-      - proto-lens-tests
-    generated-other-modules:
-      - Proto.Editions2023
-      - Proto.Editions2023_Fields
-
   group_test:
     main: group_test.hs
     source-dirs: tests
