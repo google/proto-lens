@@ -43,6 +43,7 @@ executable proto-lens-protoc
   other-modules:
       Data.ProtoLens.Compiler.Definitions
       Data.ProtoLens.Compiler.Editions.Defaults
+      Data.ProtoLens.Compiler.Editions.Features
       Data.ProtoLens.Compiler.Generate
       Data.ProtoLens.Compiler.Generate.Commented
       Data.ProtoLens.Compiler.Generate.Encoding
