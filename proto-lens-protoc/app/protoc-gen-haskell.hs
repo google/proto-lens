@@ -76,8 +76,8 @@ makeResponse dflags prog request = let
                & #supportedFeatures .~
                  (foldl (.|.) zeroBits $ fmap (toEnum . fromEnum) features)
                -- Do not process actual Protobuf Editions files yet.
-               & #minimumEdition .~ fromIntegral (fromEnum EDITION_LEGACY)
-               & #maximumEdition .~ fromIntegral (fromEnum EDITION_LEGACY)
+               & #minimumEdition .~ fromIntegral (fromEnum EDITION_PROTO2)
+               & #maximumEdition .~ fromIntegral (fromEnum EDITION_2023)
     in case outputFiles of
          Right fs -> preamble & #file .~
            [ defMessage
