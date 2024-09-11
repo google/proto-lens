@@ -51,7 +51,10 @@ import Data.Maybe (catMaybes, fromMaybe)
 import Data.Monoid ((<>))
 #endif
 import Data.ProtoLens.Labels ()
-import Data.ProtoLens.Compiler.Editions.Features (featuresForEdition)
+import Data.ProtoLens.Compiler.Editions.Features
+    ( featuresForEdition
+    , mergedInto
+    )
 import qualified Data.Semigroup as Semigroup
 import qualified Data.Set as Set
 import Data.String (IsString(..))
@@ -119,9 +122,18 @@ fileEdition f = case f ^. #syntax of
   "" -> Right EDITION_PROTO2
   s -> Left $ "Unknown syntax type " <> T.pack (show s)
 
-{-| Returns the feature defaults for the file. -}
+{-| Returns the feature defaults for the file.
+
+This includes the file-scope options which override
+the feature defaults for an edition.
+-}
 fileFeatures :: FileDescriptorProto -> Either Text FeatureSet
-fileFeatures f = fileEdition f >>= featuresForEdition
+fileFeatures f =
+  edition <- fileEdition f
+  features <- featuresForEdition
+  return $ case f ^. #options . #maybe'features of
+             Just overrides -> overrides `mergedInto` features
+             Nothing -> features
 
 data Definition n = Message (MessageInfo n) | Enum (EnumInfo n)
     deriving Functor
@@ -391,7 +403,7 @@ messageDefs features protoPrefix hsPrefix groups d
             , messageDescriptor = d
             , messageFields =
                   map (PlainFieldInfo <$>
-                              (fieldKind features mapEntries) <*> (fieldInfo hsPrefix'))
+                              (fieldKind features' mapEntries) <*> (fieldInfo hsPrefix'))
                       $ Map.findWithDefault [] Nothing allFields
             , messageOneofFields = collectOneofFields hsPrefix' d allFields
             , messageUnknownFields =
@@ -399,7 +411,7 @@ messageDefs features protoPrefix hsPrefix groups d
             , groupFieldNumber = Map.lookup protoName groups
             }
     subDefs = messageAndEnumDefs
-                    features
+                    features'
                     (protoName <> ".")
                     hsPrefix'
                     (collectGroupFields $ d ^. #field)
@@ -408,6 +420,10 @@ messageDefs features protoPrefix hsPrefix groups d
     -- For efficiency, only look for map entries within the immediate
     -- nested types, rather than recursively searching through all of them.
     mapEntries = collectMapEntries $ map rootLabel subDefs
+    -- Include message-scope feature overrides.
+    features' = case d ^. #options . #maybe'features of
+      Just overrides -> overrides `mergedInto ` features
+      Nothing -> features
 
 -- | If this type is a map entry, retrieves the relevant information
 -- along with the proto name of this type.
@@ -451,7 +467,7 @@ fieldKind ::
     -> FieldKind
 fieldKind features mapEntries f = case f ^. #label of
             FieldDescriptorProto'LABEL_OPTIONAL ->
-                case features ^. #fieldPresence of
+                case features' ^. #fieldPresence of
                   FeatureSet'IMPLICIT
                     | f ^. #type' /= FieldDescriptorProto'TYPE_MESSAGE
                       && not (f ^. #proto3Optional)
@@ -472,7 +488,7 @@ fieldKind features mapEntries f = case f ^. #label of
         | otherwise = Packable
 
     packedByDefault =
-        fromMaybe (features ^. #repeatedFieldEncoding == FeatureSet'PACKED)
+        fromMaybe (features' ^. #repeatedFieldEncoding == FeatureSet'PACKED)
         $ f ^. #options . #maybe'packed
 
     unpackableTypes =
@@ -481,6 +497,11 @@ fieldKind features mapEntries f = case f ^. #label of
         , FieldDescriptorProto'TYPE_STRING
         , FieldDescriptorProto'TYPE_BYTES
         ]
+
+    -- Include field-scope feature overrides
+    features' = case f ^. #options . #maybe'features of
+      Just overrides -> overrides `mergedInto` features
+      Nothing -> features
 
 collectOneofFields
     :: String -> DescriptorProto -> Map.Map (Maybe Int32) [FieldDescriptorProto]
@@ -635,10 +656,13 @@ enumDef features protoPrefix hsPrefix d = let
     mkHsName n = fromString $ hsPrefix ++ case hsName n of
       ('_':xs) -> 'X':xs
       xs       -> xs
+    features' = case d ^. #options . #maybe'features of
+      Just overrides -> overrides `mergedInto` features
+      Nothing -> features
     in (mkText (d ^. #name)
        , Enum EnumInfo
             { enumName = mkHsName (d ^. #name)
-            , enumUnrecognized = case features ^. #enumType of
+            , enumUnrecognized = case features' ^. #enumType of
                 FeatureSet'CLOSED -> Nothing
                 FeatureSet'OPEN ->
                   Just EnumUnrecognizedInfo
