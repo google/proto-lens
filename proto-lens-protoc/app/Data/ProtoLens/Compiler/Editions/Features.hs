@@ -48,7 +48,7 @@ for a particular edition.
 featuresForEditionFromDefaults :: FeatureSetDefaults -> Edition -> FeatureSet
 featuresForEditionFromDefaults defaults edition
   | (d : _) <- candidates = (d ^. #overridableFeatures) `mergedInto` (d ^. #fixedFeatures)
-  | otherwise = defMessage
+  | otherwise = error $ "Unsupported edition with tag number: " ++ show (fromEnum edition)
   where
     candidates = dropWhile (\d -> d ^. #edition > edition) recentFirst
 
