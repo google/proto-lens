@@ -1,0 +1,74 @@
+edition = "2023";
+
+package edition2023;
+
+// For testing whether the feature defaults are as expected for edition 2023.
+message Defaults {
+  int32 field_presence = 1;  // EXPLICIT
+
+  enum Alternative {
+    ALT_ZERO = 0;
+    ALT_FIRST = 1;
+    ALT_SECOND = 2;
+  }
+  Alternative enum_type = 2;  // OPEN
+
+  repeated int64 repeated_field_encoding = 3;  // PACKED
+
+  string utf8_validation = 4;  // VERIFY
+
+  message Sub {
+    int32 foo = 1;
+  }
+  Sub message_encoding = 5;  // LENGTH_PREFIXED
+}
+
+// For testing explicitly specified features.
+message Features {
+  int32 field_presence_explicit = 1 [features.field_presence = EXPLICIT];
+  int32 field_presence_implicit = 2 [features.field_presence = IMPLICIT];
+
+  message WithRequiredField {
+    int32 field_presence_required = 1 [features.field_presence = LEGACY_REQUIRED];
+    int32 ignored_field = 2;
+  }
+
+  enum Mood {
+    option features.enum_type = CLOSED;
+    MOOD_NEUTRAL = 0;
+    MOOD_HAPPY = 1;
+    MOOD_SAD = 2;
+  }
+  Mood enum_type_closed = 4;
+
+  enum Level {
+    option features.enum_type = OPEN;
+    LEVEL_LOW = 0;
+    LEVEL_MID = 1;
+    LEVEL_HIGH = 2;
+  }
+  Level enum_type_open = 5;
+
+  repeated int64 repeated_field_expanded = 6 [features.repeated_field_encoding = EXPANDED];
+  repeated int64 repeated_field_packed = 7 [features.repeated_field_encoding = PACKED];
+
+  string utf8_validation_none = 8 [features.utf8_validation = NONE];
+  string utf8_validation_verify = 9 [features.utf8_validation = VERIFY];
+
+  message Sub {
+    int32 foo = 1;
+  }
+  Sub message_encoding_delimited = 10 [features.message_encoding = DELIMITED];
+  Sub message_encoding_length_prefixed = 11 [features.message_encoding = LENGTH_PREFIXED];
+
+  // Message encoding is supposed to be determined by field, but proto-lens
+  // currently does it by message type, so the previous LENGTH_PREFIXED field
+  // is still encoded like a group, i.e., with a DELIMITED encoding.
+  // Until this is changed, the following is for a working test where
+  // LENGTH_PREFIXED encoding is explicitly specified.
+  message LengthPrefixedSub {
+    int32 foo = 1;
+  }
+  LengthPrefixedSub message_encoding_length_prefixed_separate = 12
+      [features.message_encoding = LENGTH_PREFIXED];
+}

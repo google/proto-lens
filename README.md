@@ -118,6 +118,15 @@ will generate the haskell files `Proto/Project/{Foo,Bar}.hs`.
 - Unknown proto2 enum values cause a decoding error, instead of being preserved
   round-trip.
 
+## Protobuf Editions
+
+- `features.utf8_validation = NONE` does not disable UTF-8 validation.
+
+- If more than one field sharing the same message type are
+  in a single message type, and if one of the fields has
+  `features.message_encoding = DELIMITED`, then all of these
+  fields will use `DELIMITED` encoding.
+
 # Troubleshooting
 
 ## Rebuilding

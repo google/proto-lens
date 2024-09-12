@@ -18,12 +18,16 @@ import qualified Data.Map as Map
 import Data.Semigroup ((<>))
 #endif
 import qualified Data.Text as Text
-import Lens.Family2 (view, (^.))
+import Lens.Family2 ((^.))
 import GHC.SourceGen
 
 import Data.ProtoLens.Compiler.Definitions
 import Data.ProtoLens.Compiler.Generate.Field
 import Data.ProtoLens.Encoding.Wire (joinTypeAndTag)
+import Proto.Google.Protobuf.Descriptor
+  ( FieldDescriptorProto'Type(..)
+  , FeatureSet'MessageEncoding(..)
+  )
 
 generatedParser :: Env RdrNameStr -> MessageInfo OccNameStr -> HsExpr'
 generatedParser env m =
@@ -636,7 +640,19 @@ buildField :: FieldInfo -> HsExpr'
 buildField = buildFieldType . fieldInfoEncoding
 
 fieldInfoEncoding :: FieldInfo -> FieldEncoding
-fieldInfoEncoding = fieldEncoding . view #type' . fieldDescriptor
+fieldInfoEncoding info
+  -- In almost all cases, the encoding of a type is determined only by the type.
+  -- There is one exception introduced in Protobuf Editions, and this is the
+  -- ability to control the message encoding with "features.message_encoding".
+  | isMessage = messageEncoding
+  | otherwise = fieldEncoding $ fieldDescriptor info ^. #type'
+  where
+    descriptor = fieldDescriptor info
+    isMessage = descriptor ^. #type' == FieldDescriptorProto'TYPE_MESSAGE
+    messageEncoding = case descriptor ^. #options . #features . #messageEncoding of
+      -- DELIMITED encoding is the same as proto2 group encoding.
+      FeatureSet'DELIMITED -> fieldEncoding FieldDescriptorProto'TYPE_GROUP
+      _ -> fieldEncoding FieldDescriptorProto'TYPE_MESSAGE
 
 growingType :: Env RdrNameStr -> FieldInfo -> HsType'
 growingType env f
