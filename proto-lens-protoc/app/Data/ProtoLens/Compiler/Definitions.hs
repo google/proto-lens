@@ -72,8 +72,9 @@ import Proto.Google.Protobuf.Descriptor
     , EnumDescriptorProto
     , EnumValueDescriptorProto
     , FeatureSet
-    , FeatureSet'FieldPresence(..)
     , FeatureSet'EnumType(..)
+    , FeatureSet'FieldPresence(..)
+    , FeatureSet'MessageEncoding(..)
     , FeatureSet'RepeatedFieldEncoding(..)
     , FieldDescriptorProto
     , FieldDescriptorProto'Label(..)
@@ -453,8 +454,10 @@ collectGroupFields :: [FieldDescriptorProto] -> GroupMap
 collectGroupFields fs = Map.fromList
     [ (f ^. #typeName, f ^. #number)
     | f <- fs
-    , f ^. #type' == FieldDescriptorProto'TYPE_GROUP
-      ]
+    , (f ^. #type' == FieldDescriptorProto'TYPE_GROUP) ||
+      -- Message fields with DELIMITED encoding are the same as proto2 groups.
+      (f ^. #options . #features . #messageEncoding == FeatureSet'DELIMITED)
+    ]
 
 fieldInfo :: String -> FieldDescriptorProto -> FieldInfo
 fieldInfo hsPrefix f = FieldInfo
