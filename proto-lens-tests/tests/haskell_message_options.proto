@@ -1,0 +1,16 @@
+syntax = "proto2";
+
+import "google/protobuf/descriptor.proto";
+
+package pb;
+
+extend google.protobuf.MessageOptions {
+  // TODO: Get a real tag number.
+  optional HaskellMessageOptions haskell = 50000;
+}
+
+message HaskellMessageOptions {
+  // stock derived: Eq, Ord
+  // instance: Show, NFData
+  optional string deriving = 1;
+}

@@ -52,6 +52,7 @@ library:
     - Data.Vector as Data.ProtoLens.Runtime.Data.Vector
     - Data.Vector.Generic as Data.ProtoLens.Runtime.Data.Vector.Generic
     - Data.Vector.Unboxed as Data.ProtoLens.Runtime.Data.Vector.Unboxed
+    - GHC.Generics as Data.ProtoLens.Runtime.GHC.Generics
     - Lens.Family2 as Data.ProtoLens.Runtime.Lens.Family2
     - Lens.Family2.Unchecked as Data.ProtoLens.Runtime.Lens.Family2.Unchecked
     - Text.Read as Data.ProtoLens.Runtime.Text.Read

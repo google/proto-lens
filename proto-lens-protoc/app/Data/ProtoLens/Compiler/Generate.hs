@@ -15,6 +15,9 @@ module Data.ProtoLens.Compiler.Generate(
     ) where
 
 
+import Data.Text.Encoding (decodeUtf8Lenient)
+import Data.ProtoLens.Encoding.Wire (parseFieldSet)
+import Data.ProtoLens.Encoding.Parser
 import Control.Arrow (second)
 import qualified Data.Foldable as F
 import qualified Data.List as List
@@ -63,6 +66,8 @@ import Proto.Google.Protobuf.Descriptor
     , FieldDescriptorProto'Type(..)
     )
 
+import Data.ProtoLens.Encoding.Wire (TaggedValue(..), WireValue(..))
+import Data.ProtoLens.Message (unknownFields)
 import Data.ProtoLens.Compiler.Definitions
 import Data.ProtoLens.Compiler.Generate.Commented
 import Data.ProtoLens.Compiler.Generate.Encoding
@@ -117,7 +122,7 @@ generateModule modName fdesc imports publicImports definitions importedEnv servi
                "MultiParamTypeClasses", "FlexibleContexts", "FlexibleInstances",
                "PatternSynonyms", "MagicHash", "NoImplicitPrelude",
                "DataKinds", "BangPatterns", "TypeApplications",
-               "OverloadedStrings", "DerivingStrategies"]
+               "OverloadedStrings", "DerivingStrategies", "DeriveGeneric"]
               -- Allow unused imports in case we don't import anything from
               -- Data.Text, Data.Int, etc.
           , optionsGhcPragma "-Wno-unused-imports"
@@ -145,6 +150,7 @@ generateModule modName fdesc imports publicImports definitions importedEnv servi
               , "Data.Vector"
               , "Data.Vector.Generic"
               , "Data.Vector.Unboxed"
+              , "GHC.Generics"
               , "Text.Read"
               ]
     env = Map.union (unqualifyEnv definitions) importedEnv
@@ -300,6 +306,17 @@ generateServiceDecls env si =
                        Message msg -> var $ messageName msg
                        Enum _ -> error "Service must have a message type"
 
+getMessageDeriving :: MessageInfo OccNameStr -> [HsType']
+getMessageDeriving info = map var classes
+  where
+    descriptor = messageDescriptor info
+    options = descriptor ^. #options
+    extraFields = options ^. unknownFields
+    classes | [] <- extraFields = []
+            | [TaggedValue 50000 (Lengthy s)] <- extraFields = [fromString $ parse s]
+            | otherwise = []
+    parse s | Right [TaggedValue 1 (Lengthy s')] <- runParser parseFieldSet s = unpack $ decodeUtf8Lenient s'
+            | otherwise = ""
 
 generateMessageDecls :: ModuleNameStr -> Env RdrNameStr -> T.Text -> MessageInfo OccNameStr -> [CommentedDecl]
 generateMessageDecls fieldModName env protoName info =
@@ -314,7 +331,7 @@ generateMessageDecls fieldModName env protoName info =
                 ]
                 ++ [(messageUnknownFields info, strict $ field $ var "Data.ProtoLens.FieldSet")]
             ]
-            [derivingStock [var "Prelude.Eq", var "Prelude.Ord"]]
+            [derivingStock $ [var "Prelude.Eq", var "Prelude.Ord"] ++ getMessageDeriving info]
     -- instance Show Bar where
     --   showsPrec __x __s = showChar '{' (showString (showMessageShort __x) (showChar '}' s))
     , uncommented $
