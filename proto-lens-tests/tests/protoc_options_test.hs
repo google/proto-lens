@@ -13,5 +13,5 @@ main = testMain [testNames]
 
 testNames :: TestTree
 testNames = testCase "testNoPackage" $ do
-    (defMessage :: GenericMessage) @=? defMessage
+    -- This will not compile if Generic was not derived.
     ((to . from) (defMessage :: GenericMessage)) @=? (defMessage :: GenericMessage)
