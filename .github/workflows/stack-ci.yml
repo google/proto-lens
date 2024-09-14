@@ -76,7 +76,7 @@ jobs:
 
       # Installs the recent protoc, for now unpinned to gain some experience
       - name: Install Protoc
-        uses: arduino/setup-protoc@v1
+        uses: arduino/setup-protoc@v3
         with:
           version: '28.x'
 
