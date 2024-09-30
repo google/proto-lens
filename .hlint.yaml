@@ -1,0 +1,34 @@
+# HLint configuration file
+# https://github.com/ndmitchell/hlint
+##########################
+
+
+# Ignore generated files.
+- ignore: {within: Proto.Google.Protobuf.Descriptor}
+- ignore: {within: Proto.Google.Protobuf.Descriptor_Fields}
+- ignore: {within: Proto.Google.Protobuf.Compiler.Plugin}
+- ignore: {within: Proto.Google.Protobuf.Compiler.Plugin_Fields}
+
+
+# Warnings currently triggered by existing code.
+- ignore: {name: "Avoid lambda"} # 1 hint
+- ignore: {name: "Eta reduce"} # 1 hint
+- ignore: {name: "Fuse foldr/map"} # 1 hint
+- ignore: {name: "Move brackets to avoid $"} # 8 hints
+- ignore: {name: "Redundant $"} # 23 hints
+- ignore: {name: "Redundant ^."} # 2 hints
+- ignore: {name: "Redundant bracket"} # 13 hints
+- ignore: {name: "Unused LANGUAGE pragma"} # 11 hints
+- ignore: {name: "Use :"} # 2 hints
+- ignore: {name: "Use <$"} # 1 hint
+- ignore: {name: "Use <$>"} # 1 hint
+- ignore: {name: "Use ?~"} # 5 hints
+- ignore: {name: "Use camelCase"} # 3 hints
+- ignore: {name: "Use concatMap"} # 1 hint
+- ignore: {name: "Use fewer imports"} # 2 hints
+- ignore: {name: "Use fmap"} # 10 hints
+- ignore: {name: "Use lambda-case"} # 3 hints
+- ignore: {name: "Use maybe"} # 1 hint
+- ignore: {name: "Use newtype instead of data"} # 1 hint
+- ignore: {name: "Use replicate"} # 1 hint
+- ignore: {name: "Use unless"} # 1 hint
