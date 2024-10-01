@@ -659,6 +659,7 @@ enumDef features protoPrefix hsPrefix d = let
     mkHsName n = fromString $ hsPrefix ++ case hsName n of
       ('_':xs) -> 'X':xs
       xs       -> xs
+    -- Include enum-scope feature overrides.
     features' = case d ^. #options . #maybe'features of
       Just overrides -> overrides `mergedInto` features
       Nothing -> features
