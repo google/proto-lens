@@ -5,10 +5,10 @@ edition = "2023";
 package edition2023_fileoptions;
 
 // In edition 2023, the default for field presence is EXPLICIT.
-option features.field_presence = EXPLICIT;
+option features.field_presence = IMPLICIT;
 
 message FeatureOverrides {
-  // This inherit the EXPLICIT file option.
+  // This inherits the IMPLICIT file option.
   int32 field_presence = 1;
 
   message Sub {

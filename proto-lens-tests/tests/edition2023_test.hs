@@ -21,7 +21,7 @@ import Data.ProtoLens
 import Lens.Family2 ((&), (.~), (^.))
 import qualified Data.ByteString.Builder as Builder
 import Test.Tasty (testGroup)
-import Test.Tasty.HUnit (assertFailure, testCase, (@=?))
+import Test.Tasty.HUnit (assertFailure, testCase, (@=?), (@?=))
 
 import Proto.Edition2023
     ( Defaults
@@ -89,7 +89,7 @@ main = testMain
   , testGroup "Explicitly specified features"
     [ testGroup "field_presence"
       [ testCase "EXPLICIT" $
-        (defFeatures ^. maybe'fieldPresenceExplicit) @=? Nothing
+        (defFeatures ^. maybe'fieldPresenceExplicit) @?= Nothing
 
       , testCase "IMPLICIT" $
         defFeatures @=? (defFeatures & fieldPresenceImplicit .~ 0)
@@ -187,11 +187,12 @@ main = testMain
     ]
 
   , testGroup "Feature overrides from file options"
-    [ testCase "EXPLICIT field presence passed to field" $
-        ((defMessage :: FeatureOverrides) ^. O.maybe'fieldPresence) @=? Nothing
+    [ testCase "IMPLICIT field presence passed to field" $
+        ((defMessage :: FeatureOverrides) & O.fieldPresence .~ 0) @?= defMessage
 
-    , testCase "EXPLICIT field presence passed through nested message type" $
-        ((defMessage :: FeatureOverrides) ^. O.sub . O.maybe'fieldPresence) @=? Nothing
+    , testCase "IMPLICIT field presence passed through nested message type" $
+        ((defMessage :: FeatureOverrides) & O.sub . O.fieldPresence .~ 0) @?=
+        (defMessage & O.sub .~ defMessage)
     ]
   ]
 
