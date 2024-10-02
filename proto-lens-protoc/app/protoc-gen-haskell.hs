@@ -36,7 +36,7 @@ import System.Environment (getProgName)
 import System.Exit (exitWith, ExitCode(..))
 import System.IO as IO
 
-import Data.ProtoLens.Compiler.Generate.Commented (CommentedModule, getModuleName)
+import Data.ProtoLens.Compiler.Generate.Commented (getModuleName)
 import Data.ProtoLens.Compiler.Generate
 import Data.ProtoLens.Compiler.Plugin
 
@@ -72,41 +72,47 @@ makeResponse dflags prog request = let
     features = [ CodeGeneratorResponse'FEATURE_PROTO3_OPTIONAL
                , CodeGeneratorResponse'FEATURE_SUPPORTS_EDITIONS
                ]
-    in defMessage
-           & #supportedFeatures .~
-               (foldl (.|.) zeroBits $ fmap (toEnum . fromEnum) features)
-           -- Do not process actual Protobuf Editions files yet.
-           & #minimumEdition .~ fromIntegral (fromEnum EDITION_LEGACY)
-           & #maximumEdition .~ fromIntegral (fromEnum EDITION_LEGACY)
-           & #file .~ [ defMessage
-                            & #name .~ outputName
-                            & #content .~ outputContent
-                     | (outputName, outputContent) <- outputFiles
-                     ]
-
+    preamble = defMessage
+               & #supportedFeatures .~
+                 (foldl (.|.) zeroBits $ fmap (toEnum . fromEnum) features)
+               -- Do not process actual Protobuf Editions files yet.
+               & #minimumEdition .~ fromIntegral (fromEnum EDITION_LEGACY)
+               & #maximumEdition .~ fromIntegral (fromEnum EDITION_LEGACY)
+    in case outputFiles of
+         Right fs -> preamble & #file .~
+           [ defMessage
+             & #name .~ outputName
+             & #content .~ outputContent
+           | (outputName, outputContent) <- fs
+           ]
+         Left e -> preamble & #error .~ e
 
 generateFiles :: DynFlags -> (FileDescriptorProto -> Text)
-              -> [FileDescriptorProto] -> [ProtoFileName] -> [(Text, Text)]
-generateFiles dflags header files toGenerate = let
-  filesByName = analyzeProtoFiles files
-  -- The contents of the generated Haskell file for a given .proto file.
-  modulesToBuild :: ProtoFile -> [CommentedModule]
-  modulesToBuild f = let
-      deps = descriptor f ^. #dependency
-      imports = Set.toAscList $ Set.fromList
-                  $ map (haskellModule . (filesByName !)) deps
-      in generateModule (haskellModule f) (descriptor f) imports
+              -> [FileDescriptorProto] -> [ProtoFileName]
+              -> Either Text [(Text, Text)]
+generateFiles dflags header files toGenerate = do
+  filesByName <- analyzeProtoFiles files
+
+  let modulesToBuild f =
+        generateModule (haskellModule f) (descriptor f) imports
             (publicImports f)
-             (definitions f)
-             (collectEnvFromDeps deps filesByName)
-             (services f)
-  in [ ( moduleFilePath $ pack $ showPpr dflags (getModuleName modul)
-       , header (descriptor f) <> pack (showPpr dflags modul)
-       )
-     | fileName <- toGenerate
-     , let f = filesByName ! fileName
-     , modul <- modulesToBuild f
-     ]
+            (definitions f)
+            (collectEnvFromDeps deps filesByName)
+            (services f)
+        where
+          deps = descriptor f ^. #dependency
+          imports = Set.toAscList $ Set.fromList
+                    $ map (haskellModule . (filesByName !)) deps
+
+
+  -- The contents of the generated Haskell file for a given .proto file.
+  return [ ( moduleFilePath $ pack $ showPpr dflags (getModuleName modul)
+           , header (descriptor f) <> pack (showPpr dflags modul)
+           )
+         | fileName <- toGenerate
+         , let f = filesByName ! fileName
+         , modul <- modulesToBuild f
+         ]
 
 moduleFilePath :: Text -> Text
 moduleFilePath n = T.replace "." "/" n <> ".hs"
