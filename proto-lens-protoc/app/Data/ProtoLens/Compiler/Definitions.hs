@@ -111,17 +111,17 @@ EDITION_PROTO2
 EDITION_PROTO3
 
 -}
-fileEdition :: FileDescriptorProto -> Edition
+fileEdition :: FileDescriptorProto -> Either Text Edition
 fileEdition f = case f ^. #syntax of
-  "editions" -> f ^. #edition
-  "proto3" -> EDITION_PROTO3
-  "proto2" -> EDITION_PROTO2
-  "" -> EDITION_PROTO2
-  s -> error $ "Unknown syntax type " ++ show s
+  "editions" -> Right $ f ^. #edition
+  "proto3" -> Right EDITION_PROTO3
+  "proto2" -> Right EDITION_PROTO2
+  "" -> Right EDITION_PROTO2
+  s -> Left $ "Unknown syntax type " <> T.pack (show s)
 
 {-| Returns the feature defaults for the file. -}
-fileFeatures :: FileDescriptorProto -> FeatureSet
-fileFeatures f = featuresForEdition $ fileEdition f
+fileFeatures :: FileDescriptorProto -> Either Text FeatureSet
+fileFeatures f = fileEdition f >>= featuresForEdition
 
 data Definition n = Message (MessageInfo n) | Enum (EnumInfo n)
     deriving Functor
@@ -321,16 +321,17 @@ definedType ty = fromMaybe err . Map.lookup ty
 
 -- | Collect all the definitions in the given file (including definitions
 -- nested in other messages), and assign Haskell names to them.
-collectDefinitions :: FileDescriptorProto -> Env OccNameStr
-collectDefinitions fd = let
-    protoPrefix = case fd ^. #package of
-        "" -> "."
-        p -> "." <> p <> "."
-    hsPrefix = ""
-    in Map.fromList $ concatMap flatten $
-            messageAndEnumDefs (fileFeatures fd)
-                protoPrefix hsPrefix Map.empty
-                (fd ^. #messageType) (fd ^. #enumType)
+collectDefinitions :: FileDescriptorProto -> Either Text (Env OccNameStr)
+collectDefinitions fd = do
+  let protoPrefix = case fd ^. #package of
+                      "" -> "."
+                      p -> "." <> p <> "."
+  let hsPrefix = ""
+  features <- fileFeatures fd
+  return $ Map.fromList $ concatMap flatten $
+    messageAndEnumDefs
+        features protoPrefix hsPrefix Map.empty
+        (fd ^. #messageType) (fd ^. #enumType)
 
 collectServices :: FileDescriptorProto -> [ServiceInfo]
 collectServices fd = fmap (toServiceInfo $ fd ^. #package) $ fd ^. #service

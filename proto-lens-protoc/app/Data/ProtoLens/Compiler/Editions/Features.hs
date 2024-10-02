@@ -5,6 +5,7 @@
 -- https://developers.google.com/open-source/licenses/bsd
 
 {-# LANGUAGE OverloadedLabels #-}
+{-# LANGUAGE OverloadedStrings #-}
 
 {-|
 Module: Data.ProtoLens.Compiler.Editions.Features
@@ -22,6 +23,8 @@ import Control.Applicative ((<|>))
 import Data.ProtoLens (defMessage)
 import Data.ProtoLens.Compiler.Editions.Defaults (nativeDefaults)
 import Data.ProtoLens.Labels ()
+import qualified Data.Text as T
+import Data.Text (Text)
 import Lens.Family2 ((^.), (.~), (&))
 import Proto.Google.Protobuf.Descriptor
   ( Edition
@@ -34,7 +37,7 @@ Returns the native feature set defaults for the given edition.
 Native features refer to the fields directly defined by 'FeatureSet'.
 Features defined as extensions of 'FeatureSet' would be custom features.
 -}
-featuresForEdition :: Edition -> FeatureSet
+featuresForEdition :: Edition -> Either Text FeatureSet
 featuresForEdition = featuresForEditionFromDefaults nativeDefaults
 
 {-|
@@ -45,10 +48,15 @@ If extensions were supported, this could be used directly
 to resolve custom features defined as extensions of 'FeatureSet'
 for a particular edition.
 -}
-featuresForEditionFromDefaults :: FeatureSetDefaults -> Edition -> FeatureSet
+featuresForEditionFromDefaults
+  :: FeatureSetDefaults
+  -> Edition
+  -> Either Text FeatureSet
 featuresForEditionFromDefaults defaults edition
-  | (d : _) <- candidates = (d ^. #overridableFeatures) `mergedInto` (d ^. #fixedFeatures)
-  | otherwise = error $ "Unsupported edition with tag number: " ++ show (fromEnum edition)
+  | (d : _) <- candidates =
+      Right $ (d ^. #overridableFeatures) `mergedInto` (d ^. #fixedFeatures)
+  | otherwise =
+      Left $ "Unsupported edition.  Tag number: " <> (T.pack . show . fromEnum) edition
   where
     candidates = dropWhile (\d -> d ^. #edition > edition) recentFirst
 

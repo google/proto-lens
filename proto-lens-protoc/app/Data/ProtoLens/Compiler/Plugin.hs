@@ -44,33 +44,34 @@ data ProtoFile = ProtoFile
 
 -- Given a list of FileDescriptorProtos, collect information about each file
 -- into a map of 'ProtoFile's keyed by 'ProtoFileName'.
-analyzeProtoFiles :: [FileDescriptorProto] -> Map ProtoFileName ProtoFile
-analyzeProtoFiles files =
-    Map.fromList [ (f ^. #name, ingestFile f) | f <- files ]
+analyzeProtoFiles :: [FileDescriptorProto] -> Either Text (Map ProtoFileName ProtoFile)
+analyzeProtoFiles files = do
+    -- The definitions in each input proto file, indexed by filename.
+    definitionsByName <- mapM collectDefinitions filesByName
+    let servicesByName = fmap collectServices filesByName
+    let exportsByName = transitiveExports files
+    let exportedEnvs = fmap (foldMap (definitionsByName !)) exportsByName
+
+    let ingestFile f = ProtoFile
+          { descriptor = f
+          , haskellModule = m
+          , definitions = definitionsByName ! n
+          , services = servicesByName ! n
+          , exportedEnv = qualifyEnv m $ exportedEnvs ! n
+          , publicImports = [moduleNames ! i | i <- reexported]
+          }
+          where
+            n = f ^. #name
+            m = moduleNames ! n
+            reexported =
+              [ (f ^. #dependency) !! fromIntegral i
+              | i <- f ^. #publicDependency
+              ]
+
+    return $ Map.fromList [ (f ^. #name, ingestFile f) | f <- files ]
   where
     filesByName = Map.fromList [(f ^. #name, f) | f <- files]
     moduleNames = fmap fdModuleName filesByName
-    -- The definitions in each input proto file, indexed by filename.
-    definitionsByName = fmap collectDefinitions filesByName
-    servicesByName = fmap collectServices filesByName
-    exportsByName = transitiveExports files
-    exportedEnvs = fmap (foldMap (definitionsByName !)) exportsByName
-
-    ingestFile f = ProtoFile
-        { descriptor = f
-        , haskellModule = m
-        , definitions = definitionsByName ! n
-        , services = servicesByName ! n
-        , exportedEnv = qualifyEnv m $ exportedEnvs ! n
-        , publicImports = [moduleNames ! i | i <- reexported]
-        }
-      where
-        n = f ^. #name
-        m = moduleNames ! n
-        reexported =
-            [ (f ^. #dependency) !! fromIntegral i
-            | i <- f ^. #publicDependency
-            ]
 
 collectEnvFromDeps :: [ProtoFileName] -> Map ProtoFileName ProtoFile -> Env RdrNameStr
 collectEnvFromDeps deps filesByName =
