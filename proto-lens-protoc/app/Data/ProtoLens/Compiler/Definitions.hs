@@ -129,9 +129,9 @@ This includes the file-scope options which override
 the feature defaults for an edition.
 -}
 fileFeatures :: FileDescriptorProto -> Either Text FeatureSet
-fileFeatures f =
+fileFeatures f = do
   edition <- fileEdition f
-  features <- featuresForEdition
+  features <- featuresForEdition edition
   return $ case f ^. #options . #maybe'features of
              Just overrides -> overrides `mergedInto` features
              Nothing -> features
