@@ -106,9 +106,9 @@ respectively, which will map to the equivalent feature set compatible with
 proto2 and proto3.
 
 >>> fileEdition $ defMessage & #syntax .~ "proto2"
-EDITION_PROTO2
+Right EDITION_PROTO2
 >>> fileEdition $ defMessage & #syntax .~ "proto3"
-EDITION_PROTO3
+Right EDITION_PROTO3
 
 -}
 fileEdition :: FileDescriptorProto -> Either Text Edition
