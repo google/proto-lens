@@ -24,7 +24,7 @@ module Data.ProtoLens.Setup
     , generateProtos
     ) where
 
-import Control.Monad (filterM, forM_, when)
+import Control.Monad (filterM, forM_, unless, when)
 import qualified Data.ByteString as BS
 import qualified Data.Map as Map
 import Data.Maybe (maybeToList)
@@ -274,7 +274,7 @@ copyIfDifferent sourcePath targetPath = do
                 targetContents <- BS.readFile targetPath
                 return (sourceContents == targetContents)
     -- Do the move if necessary.
-    when (not identical) $ do
+    unless identical $ do
         createDirectoryIfMissing True (takeDirectory targetPath)
         copyFile sourcePath targetPath
 
