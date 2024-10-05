@@ -1,6 +1,6 @@
 # proto-lens
 
-[![Build Status](https://travis-ci.org/google/proto-lens.svg?branch=master)](https://travis-ci.org/google/proto-lens)
+[![Cabal build](https://github.com/google/proto-lens/actions/workflows/cabal-ci.yml/badge.svg)](https://github.com/google/proto-lens/actions/workflows/cabal-ci.yml)
 
 The proto-lens library provides an API for protocol buffers using modern Haskell
 language and library patterns.  Specifically, it provides:
