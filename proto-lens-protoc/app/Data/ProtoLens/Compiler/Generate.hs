@@ -596,7 +596,7 @@ generateEnumDecls info =
     -- instance Data.ProtoLens.FieldDefault Foo where
     --   fieldDefault = FirstEnumValue
     , instance' (var "Data.ProtoLens.FieldDefault" @@ dataType)
-        [valBind "fieldDefault" $ defaultCon]
+        [valBind "fieldDefault" defaultCon]
 
     -- instance NFData Foo where
     --   rnf x__ = seq x__ ()
@@ -953,7 +953,7 @@ messageInstance env protoName m =
     , funBind "packedMessageDescriptor" $ match [wildP] $ string msgDescriptor
     , funBind "packedFileDescriptor" $ match [wildP] $ var "packedFileDescriptor"
     , valBind "fieldsByTag" $
-          let' (map (fieldDescriptorVarBind $ messageName m) $ fields)
+          let' (map (fieldDescriptorVarBind $ messageName m) fields)
               $ var "Data.Map.fromList" @@ list fieldsByTag
     , valBind "unknownFields"
            $ rawFieldAccessor (unqual $ messageUnknownFields m)

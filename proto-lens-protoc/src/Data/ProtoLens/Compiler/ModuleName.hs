@@ -17,8 +17,7 @@ protoModuleName path = fixModuleName rawModuleName
     fixModuleName (c:cs) = c : fixModuleName cs
     rawModuleName = intercalate "."
                         . (prefix :)
-                        . splitDirectories $ dropExtension
-                        $ path
+                        . splitDirectories $ dropExtension path
 
 prefix :: String
 prefix = "Proto"

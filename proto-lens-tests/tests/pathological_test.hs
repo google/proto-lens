@@ -16,5 +16,5 @@ import Data.ProtoLens.TestUtil (testMain, runTypedTest, roundTripTest, TypedTest
 import Proto.Pathological
 
 main :: IO ()
-main = testMain $
+main = testMain
   [ runTypedTest (roundTripTest "pathological_foo" :: TypedTest Foo) ]

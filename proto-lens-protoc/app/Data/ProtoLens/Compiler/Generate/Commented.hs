@@ -47,7 +47,7 @@ data CommentedModule = CommentedModule
 
 getModuleName :: CommentedModule -> ModuleName
 getModuleName m =
-    fromMaybe (error $ "getModuleName: No explicit name")
+    fromMaybe (error "getModuleName: No explicit name")
         $ fmap unLoc $ hsmodName $ moduleHeader m
 
 instance Outputable CommentedModule where
