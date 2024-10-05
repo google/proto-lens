@@ -83,9 +83,9 @@ testUnknownGroup =
               & a .~ 42
               & b .~ 17
               & unknownFields .~
-                  [ TaggedValue 100 $ Wire.StartGroup
+                  [ TaggedValue 100 Wire.StartGroup
                   , TaggedValue 150 $ Wire.VarInt 5
-                  , TaggedValue 100 $ Wire.EndGroup
+                  , TaggedValue 100 Wire.EndGroup
                   ])
           (vcat [ keyedInt "a" 42
                 , keyedInt "b" 17
@@ -110,4 +110,4 @@ testUnknownSerialization name msg ts bs = testCase name $ do
     Right msg @=? decodeMessage bs'
     renderIndenting ts @=? renderIndenting (pprintMessage msg)
     -- Can't decode unknown fields from text format
-    satisfies isLeft $ (readMessage $ LT.pack $ show ts :: Either String msg)
+    satisfies isLeft (readMessage $ LT.pack $ show ts :: Either String msg)

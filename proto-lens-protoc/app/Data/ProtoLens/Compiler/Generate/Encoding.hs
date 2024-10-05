@@ -254,7 +254,7 @@ checkMissingFields s =
        in if null missing then return ()
           else fail ("Missing required fields: " ++ show missing)
     -}
-    let' [valBind missing $ allMissingFields]
+    let' [valBind missing allMissingFields]
     $ if' (var "Prelude.null" @@ var missing) (var "Prelude.return" @@ unit)
     $ var "Prelude.fail"
         @@ (var "Prelude.++"
@@ -497,7 +497,7 @@ buildPlainField x f = case plainFieldKind f of
                             , match [conP "Prelude.Just" [v']]
                                 $ buildTaggedField info v'
                             ]
-    OptionalValueField -> let' [valBind v $ fieldValue]
+    OptionalValueField -> let' [valBind v fieldValue]
                           $ if' (var "Prelude.==" @@ v' @@ var "Data.ProtoLens.fieldDefault")
                                 mempty'
                                 (buildTaggedField info v')

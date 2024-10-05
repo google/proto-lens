@@ -143,12 +143,12 @@ roundTripTest name = TypedTest $ testGroup name
     [ testProperty "shrink sanity" $
             -- Disable automatic shrinking so the test behaves
             -- sensibly if there's a bug in shrinkMessage.
-            noShrinking $
+            noShrinking (
 #if MIN_VERSION_QuickCheck(2,10,0)
             -- Limit the number of tests since shrinking is slow for large messages.
             withMaxSuccess 20
 #endif
-                (shrinkSanityProperty :: MessageProperty a)
+                (shrinkSanityProperty :: MessageProperty a))
     , testProperty "wire" (wireRoundTripProperty :: MessageProperty a)
     , testProperty "text" (textRoundTripProperty :: MessageProperty a)
     ]

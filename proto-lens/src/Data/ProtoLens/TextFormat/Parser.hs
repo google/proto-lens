@@ -102,7 +102,7 @@ parser = whiteSpace ptp *> parseMessage <* eof
         value <- naturalOrFloat ptp
         return $ makeNumberValue negative value
     parseString = liftM (ByteStringValue . mconcat)
-        $ many1 $ lexeme ptp $ protoStringLiteral
+        $ many1 $ lexeme ptp protoStringLiteral
     parseEnumValue = liftM EnumValue (identifier ptp)
     parseMessageValue =
         braces ptp (parseAny <|>

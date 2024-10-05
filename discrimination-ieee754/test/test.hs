@@ -80,7 +80,7 @@ nansTestGroup
        , Arbitrary b, FiniteBits b, Ord b, Show b
        )
     => Sort a -> (a -> b) -> (Bool -> b -> a) -> (b -> b) -> Test
-nansTestGroup s toWord makeNaN makePayload = testGroup "NaNs" $
+nansTestGroup s toWord makeNaN makePayload = testGroup "NaNs"
     [ testProperty "-NaN < everything" $ \x payload ->
         sortCompare s (makeNaN True payload) x == LT
     , testProperty "-NaN < -Infinity" $ \payload ->
