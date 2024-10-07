@@ -96,7 +96,7 @@ main = testMain
          (Just $ def1 & b .~ "\a\b\f\n\r\t\v\\\'\"")
          (Data.Text.Lazy.pack "b: \"\a\b\f\n\r\t\v\\\\\\\'\\\"\"")
     , readFrom
-         ("Parse string with legal non-escaped \' quote character")
+         "Parse string with legal non-escaped \' quote character"
          (Just $ def1 & b .~ "'")
          (Data.Text.Lazy.pack "b: \"'\"")
     , testCase "Render string with escape sequences" $
