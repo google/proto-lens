@@ -8,7 +8,6 @@
 
 {-# LANGUAGE CPP #-}
 {-# LANGUAGE OverloadedLabels #-}
-{-# LANGUAGE OverloadedStrings #-}
 module Data.ProtoLens.Compiler.Plugin
     ( ProtoFileName
     , ProtoFile(..)

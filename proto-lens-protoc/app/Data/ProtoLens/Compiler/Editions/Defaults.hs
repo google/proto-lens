@@ -4,8 +4,6 @@
 -- license that can be found in the LICENSE file or at
 -- https://developers.google.com/open-source/licenses/bsd
 
-{-# LANGUAGE OverloadedLabels #-}
-
 {-|
 Module: Data.ProtoLens.Compiler.Editions.Defaults
 Description: Exports defaults for native features in Protobuf Editions.

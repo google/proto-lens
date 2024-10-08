@@ -1,7 +1,5 @@
-{-# LANGUAGE GeneralizedNewtypeDeriving #-}
 {-# LANGUAGE OverloadedLabels           #-}
 {-# LANGUAGE OverloadedStrings          #-}
-{-# LANGUAGE TypeApplications           #-}
 
 module Main where
 

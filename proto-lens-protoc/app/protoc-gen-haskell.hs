@@ -7,7 +7,6 @@
 {-# LANGUAGE CPP #-}
 {-# LANGUAGE OverloadedLabels #-}
 {-# LANGUAGE OverloadedStrings #-}
-{-# LANGUAGE PatternSynonyms #-}
 module Main where
 
 import Control.Monad.IO.Class (liftIO)
