@@ -79,7 +79,7 @@ generatedParser env m =
         | Just g <- groupFieldNumber m = do'
             [ tag <-- getVarInt'
             , stmt $ case' tag $
-                (match [int (groupEndTag g)] (finish m exprs))
+                match [int (groupEndTag g)] (finish m exprs)
                     : parseTagCases continue exprs m
             ]
         {- Regular message type:
@@ -125,14 +125,14 @@ finish m s = do' $
     [ stmt $ checkMissingFields s
     , stmt $ var "Prelude.return" @@
         (over' unknownFields' (var "Prelude.reverse")
-            @@(foldr (@@)
+            @@ foldr (@@)
                 (partialMessage s)
                 (Map.intersectionWith
                     (\finfo frozen ->
                         var "Lens.Family2.set"
                             @@ fieldOfVector finfo
                             @@ var (unqual frozen))
-                repeatedInfos frozenNames)))
+                repeatedInfos frozenNames))
             ]
 
   where
@@ -220,7 +220,7 @@ updateParseState ::
        HsExpr' -- ^ An expression of type @msg -> msg@
     -> ParseState HsExpr'
     -> ParseState HsExpr'
-updateParseState f s = s { partialMessage = f @@ (partialMessage s) }
+updateParseState f s = s { partialMessage = f @@ partialMessage s }
 
 -- | Transform the loop arguments by marking a required field
 -- as having been set.
@@ -264,7 +264,7 @@ checkMissingFields s =
     missing = "missing"
     allMissingFields = Map.foldrWithKey consIfMissing (list []) (requiredFieldsUnset s)
     consIfMissing (FieldId f) e rest =
-        (if' e (cons @@ string (Text.unpack f)) (var "Prelude.id")) @@ rest
+        if' e (cons @@ string (Text.unpack f)) (var "Prelude.id") @@ rest
 
 -- | A list case alternatives for the fields of a message.
 --
@@ -584,7 +584,7 @@ buildPackedField f x = let' [valBind p x]
 
 buildOneofField :: HsExpr' -> OneofInfo -> HsExpr'
 buildOneofField x info = case' (view' @@ fieldOfOneof info @@ x) $
-    (match [conP_ "Prelude.Nothing"] mempty')
+    match [conP_ "Prelude.Nothing"] mempty'
     : [ match [conP "Prelude.Just" [conP (unqual $ caseConstructorName c)
                                  [v]]]
             $ buildTaggedField (caseField c) v

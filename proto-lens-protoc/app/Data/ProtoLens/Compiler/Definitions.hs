@@ -404,7 +404,7 @@ messageDefs features protoPrefix hsPrefix groups d
             , messageDescriptor = d
             , messageFields =
                   map (PlainFieldInfo <$>
-                              (fieldKind features' mapEntries) <*> (fieldInfo hsPrefix'))
+                              fieldKind features' mapEntries <*> fieldInfo hsPrefix')
                       $ Map.findWithDefault [] Nothing allFields
             , messageOneofFields = collectOneofFields hsPrefix' d allFields
             , messageUnknownFields =

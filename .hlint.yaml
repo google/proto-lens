@@ -16,7 +16,6 @@
 - ignore: {name: "Fuse foldr/map"} # 1 hint
 - ignore: {name: "Move brackets to avoid $"} # 8 hints
 - ignore: {name: "Redundant ^."} # 2 hints
-- ignore: {name: "Redundant bracket"} # 13 hints
 - ignore: {name: "Unused LANGUAGE pragma"} # 11 hints
 - ignore: {name: "Use :"} # 2 hints
 - ignore: {name: "Use <$"} # 1 hint

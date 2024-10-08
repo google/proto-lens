@@ -30,7 +30,7 @@ propNegLTPos :: Num a => Sort a -> (a, a) -> Bool
 propNegLTPos s (l, r) = sortCompare s (negate (abs l)) (abs r) == LT
 
 propNegZeroLTZero :: Fractional a => Sort a -> Bool
-propNegZeroLTZero s = sortCompare s (-0.0) (0.0) == LT
+propNegZeroLTZero s = sortCompare s (-0.0) 0.0 == LT
 
 inf :: Fractional a => a
 inf = 1.0 / 0

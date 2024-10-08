@@ -231,7 +231,7 @@ messageComment fieldModName n fields =
                  (moduleNameStrToString fieldModName)
                  (occNameStrToString $ nameFromSymbol $ lensSymbol l))
              Outputable.<>
-                 (Outputable.ppr $ var "Lens'" @@ t @@ (lensFieldType l))
+                 (Outputable.ppr $ var "Lens'" @@ t @@ lensFieldType l)
              Outputable.<> Outputable.char '@'
     t = var (unqual n)
 
@@ -412,7 +412,7 @@ generatePrisms env oneofInfo =
                                 -- The oneof sum type name
                              @@ (var . unqual $ oneofTypeName oneofInfo)
                                 -- The field contained in the sum
-                             @@ (hsFieldType env f)
+                             @@ hsFieldType env f
         -- Generate function definition
         -- Prism' is constructed with Constructor for building value
         -- and Deconstructor and wrapping in Just for getting value
@@ -880,7 +880,7 @@ hsFieldValueDefault env fd = case fd ^. #type' of
         -> var "Data.Text.pack" @@ string (T.unpack def)
     FieldDescriptorProto'TYPE_BYTES
         -> var "Data.ByteString.pack"
-                @@ list ((mkByte . fromEnum) <$> T.unpack def)
+                @@ list (mkByte . fromEnum <$> T.unpack def)
       where mkByte c
               | c > 0 && c < 255 = int $ fromIntegral c
               | otherwise = errorMessage "bytes"
