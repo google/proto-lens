@@ -1,6 +1,4 @@
 -- | A custom parsing monad, optimized for speed.
-{-# LANGUAGE BangPatterns #-}
-{-# LANGUAGE GeneralizedNewtypeDeriving #-}
 {-# LANGUAGE RankNTypes #-}
 {-# LANGUAGE ScopedTypeVariables #-}
 module Data.ProtoLens.Encoding.Parser

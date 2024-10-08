@@ -14,7 +14,6 @@
 --
 -- See @README.md@ for instructions on how to use proto-lens with Cabal.
 {-# LANGUAGE CPP #-}
-{-# LANGUAGE BangPatterns #-}
 module Data.ProtoLens.Setup
     ( defaultMainGeneratingProtos
     , defaultMainGeneratingSpecificProtos

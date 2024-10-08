@@ -3,7 +3,6 @@
 -- Upstream docs: <https://developers.google.com/protocol-buffers/docs/encoding>
 {-# LANGUAGE CPP #-}
 {-# LANGUAGE DeriveFunctor #-}
-{-# LANGUAGE LambdaCase #-}
 {-# LANGUAGE NoMonomorphismRestriction #-}
 {-# LANGUAGE OverloadedLabels #-}
 {-# LANGUAGE OverloadedStrings #-}
