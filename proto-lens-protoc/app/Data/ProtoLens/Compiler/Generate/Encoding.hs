@@ -371,7 +371,7 @@ unknownFieldCase ::
         loop (over unknownFields (\!t -> y:t) x) ...
 -}
 unknownFieldCase info loop x = match [wire] $ do' $
-    [ strictP y <-- if messageDescriptor info ^. #options ^. #messageSetWireFormat
+    [ strictP y <-- if messageDescriptor info ^. #options . #messageSetWireFormat
         then var "Data.ProtoLens.Encoding.Wire.parseMessageSetTaggedValueFromWire" @@ wire
         else var "Data.ProtoLens.Encoding.Wire.parseTaggedValueFromWire" @@ wire
     ]
@@ -458,7 +458,7 @@ generatedBuilder :: MessageInfo OccNameStr -> HsExpr'
 generatedBuilder m =
     lambda [x] $ foldMapExp $ map (buildPlainField x) (messageFields m)
                                 ++ map (buildOneofField x) (messageOneofFields m)
-                            ++ [if messageDescriptor m ^. #options ^. #messageSetWireFormat
+                            ++ [if messageDescriptor m ^. #options . #messageSetWireFormat
                                   then buildUnknownMessageSet x else buildUnknown x]
                             ++ buildGroupEnd
   where
