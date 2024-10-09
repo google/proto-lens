@@ -629,7 +629,7 @@ unsafeLiftIO' = var "Data.ProtoLens.Encoding.Parser.Unsafe.unsafeLiftIO"
 -- | Returns an expression of type @Parser a@ for the given field.
 parseField :: FieldInfo -> HsExpr'
 parseField f = var "Data.ProtoLens.Encoding.Bytes.<?>"
-                    @@ (parseFieldType $ fieldInfoEncoding f)
+                    @@ parseFieldType (fieldInfoEncoding f)
                     @@ string n
   where
     n = Text.unpack (fieldDescriptor f ^. #name)
