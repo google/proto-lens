@@ -73,7 +73,7 @@ testFailure =
 testIsolate :: [TestTree]
 testIsolate =
     [ testProperty "many" $ \bs bs' ->
-        runParser ((,) <$> (isolate (length bs) $ manyTillEnd getWord8) <*>
+        runParser ((,) <$> isolate (length bs) (manyTillEnd getWord8) <*>
                         manyTillEnd getWord8)
             (B.pack (bs ++ bs'))
             == Right (bs, bs')

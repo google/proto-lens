@@ -99,7 +99,7 @@ generateModule modName fdesc imports publicImports definitions importedEnv servi
                     ++ map importQualified (imports List.\\ publicImports)
                     ++ map import' publicImports)
                 [])
-          $ (concatMap generateDecls $ Map.toList definitions)
+          $ concatMap generateDecls (Map.toList definitions)
          ++ map uncommented (concatMap (generateServiceDecls env) services)
          ++ map uncommented packedFileDescriptorProto
       , CommentedModule pragmas
@@ -231,7 +231,7 @@ messageComment fieldModName n fields =
                  (moduleNameStrToString fieldModName)
                  (occNameStrToString $ nameFromSymbol $ lensSymbol l))
              Outputable.<>
-                 (Outputable.ppr $ var "Lens'" @@ t @@ lensFieldType l)
+                 Outputable.ppr (var "Lens'" @@ t @@ lensFieldType l)
              Outputable.<> Outputable.char '@'
     t = var (unqual n)
 
@@ -422,7 +422,7 @@ generatePrisms env oneofInfo =
                -- Sum type constructor
             @@ var (unqual consName)
                -- Case deconstruction
-            @@ (lambda [bvar "p__"] $
+            @@ lambda [bvar "p__"] (
                     case' (var "p__") $
                        [ match [conP (unqual consName) [bvar "p__val"]]
                              $ var "Prelude.Just" @@ var "p__val"
@@ -430,7 +430,7 @@ generatePrisms env oneofInfo =
                        -- We want to generate the otherwise case
                        -- depending on the amount of sum type cases there are
                        ++ otherwiseCase
-               )
+                    )
         generatePrism :: [RawMatch] -> OneofCase -> [HsDecl']
         generatePrism otherwiseCase oneofCase =
             let consName = caseConstructorName oneofCase

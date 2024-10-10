@@ -95,9 +95,9 @@ getVarIntH :: Handle -> ExceptT String IO Word64
 getVarIntH h = do
     buf <- liftIO malloc
     let loopStart !n !s =
-          (liftIO $ hGetBuf h buf 1) >>=
+          liftIO (hGetBuf h buf 1) >>=
           \case
-            1 -> (liftIO $ peek buf) >>=
+            1 -> liftIO (peek buf) >>=
                  getVarIntLoopFinish loopStart n s
             _ -> throwE "Unexpected end of file"
     res <- loopStart 0 1
