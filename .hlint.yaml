@@ -13,7 +13,6 @@
 # Warnings currently triggered by existing code.
 - ignore: {name: "Avoid lambda"} # 1 hint
 - ignore: {name: "Eta reduce"} # 1 hint
-- ignore: {name: "Use :"} # 2 hints
 - ignore: {name: "Use <$"} # 1 hint
 - ignore: {name: "Use <$>"} # 1 hint
 - ignore: {name: "Use ?~"} # 5 hints
