@@ -62,14 +62,14 @@ import Data.Semigroup ((<>))
 import qualified Data.Vector.Generic as V
 import Data.Word (Word8, Word32, Word64)
 import Foreign.Marshal (malloc, free)
-import Foreign.Storable (peek)
 import System.IO (Handle, hGetBuf)
 #if MIN_VERSION_base(4,11,0)
 import qualified GHC.Float as Float
+import Foreign.Storable (peek)
 #else
 import Foreign.Ptr (castPtr)
 import Foreign.Marshal.Alloc (alloca)
-import Foreign.Storable (Storable, poke)
+import Foreign.Storable (Storable, peek, poke)
 import System.IO.Unsafe (unsafePerformIO)
 #endif
 
