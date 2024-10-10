@@ -16,7 +16,6 @@
 - ignore: {name: "Use <$"} # 1 hint
 - ignore: {name: "Use <$>"} # 1 hint
 - ignore: {name: "Use ?~"} # 5 hints
-- ignore: {name: "Use concatMap"} # 1 hint
 - ignore: {name: "Use fmap"} # 10 hints
 - ignore: {name: "Use lambda-case"} # 3 hints
 - ignore: {name: "Use maybe"} # 1 hint
