@@ -2,7 +2,6 @@
 -- | Enables pretty-printing Haddock comments along with top-level declarations.
 module Data.ProtoLens.Compiler.Generate.Commented where
 
-import Data.Maybe (fromMaybe)
 import GHC.SourceGen
 #if MIN_VERSION_ghc(9,0,0)
 import GHC.Utils.Outputable (Outputable(..), SDoc, (<+>), ($+$), vcat, empty, text)
@@ -47,8 +46,10 @@ data CommentedModule = CommentedModule
 
 getModuleName :: CommentedModule -> ModuleName
 getModuleName m =
-    fromMaybe (error "getModuleName: No explicit name")
-        $ fmap unLoc $ hsmodName $ moduleHeader m
+    maybe
+        (error "getModuleName: No explicit name")
+        unLoc
+        (hsmodName $ moduleHeader m)
 
 instance Outputable CommentedModule where
     ppr m =

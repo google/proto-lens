@@ -424,12 +424,11 @@ generatePrisms env oneofInfo =
                -- Case deconstruction
             @@ lambda [bvar "p__"] (
                     case' (var "p__") $
-                       [ match [conP (unqual consName) [bvar "p__val"]]
-                             $ var "Prelude.Just" @@ var "p__val"
-                       ]
+                       match [conP (unqual consName) [bvar "p__val"]]
+                             (var "Prelude.Just" @@ var "p__val")
                        -- We want to generate the otherwise case
                        -- depending on the amount of sum type cases there are
-                       ++ otherwiseCase
+                       : otherwiseCase
                     )
         generatePrism :: [RawMatch] -> OneofCase -> [HsDecl']
         generatePrism otherwiseCase oneofCase =
@@ -812,15 +811,14 @@ oneofRecordField env oneofInfo
         -- since oneofs don't have a notion of a "default" case.
         -- data Foo = Foo { _Foo'bar = Maybe Foo'Bar }
         -- type instance Field "maybe'bar" Foo = Maybe Foo'Bar
-        [LensInstance
+        LensInstance
           { lensSymbol = "maybe'" <> overloadedName
                                         (oneofFieldName oneofInfo)
           , lensFieldType =
                 var "Prelude.Maybe" @@ var (unqual $ oneofTypeName oneofInfo)
           , lensExp = var "Prelude.id"
           }
-         ]
-         ++ concat
+        : concat
           -- Generate the same lenses for each sub-field of the oneof
           -- as if they were proto2 optional fields.
           -- type instance Field "bar" Foo = Bar
@@ -1089,7 +1087,7 @@ fieldTypeDescriptorExpr = \case
 -- instance NFData Bar where
 --    rnf = \x -> deepseq (_Bar'foo x) (deepseq (_Bar'bar x) ())
 messageRnfExpr :: MessageInfo OccNameStr -> HsExpr'
-messageRnfExpr msg = lambda [bvar "x__"] $ foldr (@@) unit (map seqField fieldNames)
+messageRnfExpr msg = lambda [bvar "x__"] $ foldr ((@@) . seqField) unit fieldNames
   where
     fieldNames = messageUnknownFields msg
                 : map (haskellRecordFieldName . fieldName . plainFieldInfo)
