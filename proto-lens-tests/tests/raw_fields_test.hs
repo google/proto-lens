@@ -13,7 +13,7 @@ module Main where
 import Control.Arrow (second)
 import Proto.RawFields
 import Proto.RawFields_Fields
-import Data.ByteString.Builder (word8)
+import Data.ByteString.Builder (Builder, byteString, word8)
 import Data.ProtoLens
 import Lens.Family2 (Lens', (&), (.~))
 import Data.Int (Int32, Int64)
@@ -24,7 +24,6 @@ import Data.Text (Text)
 import qualified Data.Text as Text
 import qualified Data.Text.Lazy as LT
 import Data.Text.Encoding (encodeUtf8)
-import Data.ByteString.Builder (Builder, byteString)
 
 import Data.ProtoLens.TestUtil
 
