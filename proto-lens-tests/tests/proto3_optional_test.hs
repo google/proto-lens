@@ -117,6 +117,10 @@ instance HasField Foo "maybe'_nonsynth" (Maybe ()) where
     fieldOf _ = lens (const Nothing) const
 #endif
 
+-- Ignore lint suggestions which test generated type names.
+{- HLINT ignore Foo'_tracked -}
+{- HLINT ignore Foo'_nonsynth -}
+
 -- We should not generate a data type or constructor for the synthetic oneof.
 data Foo'_tracked = Foo'Tracked Int32
 #if 0

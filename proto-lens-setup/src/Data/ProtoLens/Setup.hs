@@ -240,7 +240,7 @@ generateSources root l files = withSystemTempDirectory "protoc-out" $ \tmpDir ->
     -- Generate .hs files for all active components into a single temporary
     -- directory.
     let activeModules = collectActiveModules l
-    let allModules = Set.fromList . concat . map snd $ activeModules
+    let allModules = Set.fromList . concatMap snd $ activeModules
     let usedInComponent f = ModuleName.fromString (protoModuleName f)
                           `Set.member` allModules
     generateProtosWithImports (root : importDirs) tmpDir

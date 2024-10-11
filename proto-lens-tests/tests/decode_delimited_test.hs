@@ -16,8 +16,8 @@ import Proto.DecodeDelimited_Fields
 import System.IO (openBinaryFile, hClose, IOMode(ReadMode))
 import System.IO.Temp (withSystemTempFile)
 
-filename_template :: String
-filename_template = "test_decode_delimited"
+filenameTemplate :: String
+filenameTemplate = "test_decode_delimited"
 
 main :: IO ()
 main = testMain
@@ -28,13 +28,13 @@ main = testMain
     foo1 = defMessage & a .~ 42 & b .~ "hello" :: Foo
     foo2 = defMessage
         & a .~ 43
-        & b .~ (T.pack . take 300 . repeat $ 'x') :: Foo
+        & b .~ (T.pack . replicate 300 $ 'x') :: Foo
 
 testWithMessage :: (Eq msg, Show msg, Message msg) => msg -> IO ()
 testWithMessage msg =
   let bs = runBuilder . buildMessageDelimited $ msg
   in
-    withSystemTempFile filename_template $ \fname h -> do
+    withSystemTempFile filenameTemplate $ \fname h -> do
         B.hPut h bs
         hClose h
         h' <- openBinaryFile fname ReadMode
