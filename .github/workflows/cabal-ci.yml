@@ -1,19 +1,26 @@
 on:
   - push
   - pull_request
-name: cabal build with ghc 9.6
+name: cabal build
 jobs:
   runhaskell:
     name: cabal test
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        version:
+          - ghc: 9.6.3
+            cabal: 3.10.2.0
+          - ghc: 9.10.1
+            cabal: 3.12.1.0
     steps:
       - uses: actions/checkout@v4.2.0
         with:
           submodules: true
       - uses: haskell-actions/setup@dd344bc1cec854a369df8814ce17ef337d6e6170 # v2.7.6
         with:
-          ghc-version: '9.6.3'
-          cabal-version: '3.10.2.0'
-      - run: cabal build --dependencies-only --project-file ghc96.cabal.project all
-      - run: cabal build                     --project-file ghc96.cabal.project all
-      - run: cabal test                      --project-file ghc96.cabal.project all
+          ghc-version: ${{ matrix.version.ghc }}
+          cabal-version: ${{ matrix.version.cabal }}
+      - run: cabal build --dependencies-only --project-file ghc${{ matrix.version.ghc }}.cabal.project all
+      - run: cabal build                     --project-file ghc${{ matrix.version.ghc }}.cabal.project all
+      - run: cabal test                      --project-file ghc${{ matrix.version.ghc }}.cabal.project all
