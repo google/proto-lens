@@ -9,8 +9,6 @@ jobs:
     strategy:
       matrix:
         version:
-          - ghc: 9.6.3
-            cabal: 3.10.2.0
           - ghc: 9.10.1
             cabal: 3.12.1.0
     steps:
