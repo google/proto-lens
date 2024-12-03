@@ -1,6 +1,6 @@
 cabal-version: 2.0
 
--- This file has been generated from package.yaml by hpack version 0.36.0.
+-- This file has been generated from package.yaml by hpack version 0.36.1.
 --
 -- see: https://github.com/sol/hpack
 
@@ -29,7 +29,7 @@ source-repository head
 custom-setup
   setup-depends:
       Cabal
-    , base >=4.10 && <4.20
+    , base >=4.10 && <4.21
     , proto-lens-setup ==0.4.*
 
 library
@@ -46,7 +46,7 @@ library
   build-tool-depends:
       proto-lens-protoc:proto-lens-protoc
   build-depends:
-      base >=4.11 && <4.20
+      base >=4.11 && <4.21
     , bytestring >=0.10 && <0.13
     , containers >=0.5 && <0.8
     , contravariant >=1.3 && <1.6
@@ -79,7 +79,7 @@ test-suite discrimination_test
   build-depends:
       HUnit >=1.3 && <1.7
     , QuickCheck >=2.8 && <2.15
-    , base >=4.11 && <4.20
+    , base >=4.11 && <4.21
     , bytestring >=0.10 && <0.13
     , containers >=0.5 && <0.8
     , contravariant >=1.3 && <1.6

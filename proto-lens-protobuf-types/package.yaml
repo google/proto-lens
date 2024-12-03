@@ -27,14 +27,14 @@ extra-source-files:
 
 custom-setup:
   dependencies:
-    - base >= 4.10 && < 4.20
-    - Cabal >= 3 && < 3.12
+    - base >= 4.10 && < 4.21
+    - Cabal >= 3 && < 3.13
     - proto-lens-setup == 0.4.*
 
 build-tools: proto-lens-protoc:proto-lens-protoc
 
 dependencies:
-  - base >= 4.10 && < 4.20
+  - base >= 4.10 && < 4.21
   - lens-family >= 1.2 && < 2.2
   - proto-lens == 0.7.*
   - proto-lens-runtime == 0.7.*

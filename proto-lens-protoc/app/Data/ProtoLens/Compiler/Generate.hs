@@ -35,7 +35,9 @@ import GHC.Hs (ideclName, ideclAs)
 #else
 import HsSyn (ideclName, ideclAs)
 #endif
-#if MIN_VERSION_ghc(9,2,0)
+#if MIN_VERSION_ghc(9,10,0)
+import GHC.Parser.Annotation (noAnn)
+#elif MIN_VERSION_ghc(9,2,0)
 import GHC.Parser.Annotation (EpAnn(EpAnnNotUsed), SrcSpanAnn'(SrcSpanAnn))
 #endif
 #if MIN_VERSION_ghc(9,0,0)
@@ -212,7 +214,9 @@ type ModifyImports = ImportDecl' -> ImportDecl'
 reexported :: ModifyImports
 reexported imp = imp { ideclName = noLoc m', ideclAs = Just m }
   where
-#if MIN_VERSION_ghc(9,2,0)
+#if MIN_VERSION_ghc(9,10,0)
+    noLoc = SrcLoc.L noAnn
+#elif MIN_VERSION_ghc(9,2,0)
     noLoc = SrcLoc.L (SrcSpanAnn EpAnnNotUsed SrcLoc.noSrcSpan)
 #else
     noLoc = SrcLoc.noLoc

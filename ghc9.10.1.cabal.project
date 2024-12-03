@@ -1,0 +1,10 @@
+ packages:
+   proto-lens
+   proto-lens-runtime
+   proto-lens-optparse
+
+source-repository-package
+  type: git
+  location: https://github.com/google/ghc-source-gen
+  tag: 1f0ccfc5a236e349cd48c372deda373121cd9734
+
