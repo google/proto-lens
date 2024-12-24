@@ -1,5 +1,5 @@
 name: discrimination-ieee754
-version: '0.1.0.4'
+version: '0.1.0.5'
 synopsis: Discrimination of floating-point numbers via their IEEE754 representation.
 description: >
   Support for sorting/grouping by floating-point numbers.

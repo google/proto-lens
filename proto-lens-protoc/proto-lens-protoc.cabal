@@ -1,11 +1,11 @@
 cabal-version: 1.12
 
--- This file has been generated from package.yaml by hpack version 0.36.1.
+-- This file has been generated from package.yaml by hpack version 0.37.0.
 --
 -- see: https://github.com/sol/hpack
 
 name:           proto-lens-protoc
-version:        0.8.0.1
+version:        0.9.0.0
 synopsis:       Protocol buffer compiler for the proto-lens library.
 description:    Turn protocol buffer files (.proto) into Haskell files (.hs) which can be used with the proto-lens package.
                 The library component of this package contains compiler code (namely Data.ProtoLens.Compiler.*) is not guaranteed to have stable APIs.'

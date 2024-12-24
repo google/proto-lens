@@ -1,5 +1,8 @@
 # Changelog for `proto-lens-protobuf-types`
 
+## v0.7.2.2
+- Bump upper bounds for ghc-9.10.
+
 ## v0.7.2.0
 - Add support for additional well known types
 
