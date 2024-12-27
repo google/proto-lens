@@ -1,5 +1,9 @@
 # Changelog for `proto-lens-protoc`
 
+## v0.9.0.0
+- Support Protobuf Editions 2023 and 2024.
+- Update bootstrap protobuf bindings to protobuf v28.0.
+- Relax upper bounds for ghc-9.10.
 
 ## v0.8.0.0
 - Relax upper bounds for ghc-9.6

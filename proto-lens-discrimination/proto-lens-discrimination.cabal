@@ -1,11 +1,11 @@
 cabal-version: 2.0
 
--- This file has been generated from package.yaml by hpack version 0.36.1.
+-- This file has been generated from package.yaml by hpack version 0.37.0.
 --
 -- see: https://github.com/sol/hpack
 
 name:           proto-lens-discrimination
-version:        0.1.1.4
+version:        0.1.1.5
 synopsis:       Support for using proto-lens types with http://hackage.haskell.org/package/discrimination.
 description:    Reflection-based implementations of Sort for proto-lens' generated types.
 category:       Data

@@ -5,7 +5,7 @@ cabal-version: 2.0
 -- see: https://github.com/sol/hpack
 
 name:           proto-lens-tests
-version:        0.1.0.1
+version:        0.1.0.2
 synopsis:       Unit tests for proto-lens
 description:    This package contains a set of test suites for proto-lens.
 category:       Data

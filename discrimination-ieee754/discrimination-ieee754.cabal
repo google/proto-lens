@@ -1,11 +1,11 @@
 cabal-version: 1.12
 
--- This file has been generated from package.yaml by hpack version 0.36.1.
+-- This file has been generated from package.yaml by hpack version 0.37.0.
 --
 -- see: https://github.com/sol/hpack
 
 name:           discrimination-ieee754
-version:        0.1.0.4
+version:        0.1.0.5
 synopsis:       Discrimination of floating-point numbers via their IEEE754 representation.
 description:    Support for sorting/grouping by floating-point numbers. Uses the technique described by http://stereopsis.com/radix.html.
 category:       Data
