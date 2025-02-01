@@ -14,6 +14,8 @@
 
 name: Stack CI
 
+permissions: read-all
+
 on:
   push:
     branches:
@@ -79,6 +81,7 @@ jobs:
         uses: arduino/setup-protoc@v3
         with:
           version: '28.x'
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
 
       # Install Stack without GHC first, so we have an opportunity to cache the
       # Pantry package index.
