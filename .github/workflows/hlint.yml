@@ -9,4 +9,4 @@ jobs:
       security-events: write
     steps:
       - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
-      - uses: haskell-actions/hlint-scan@3e2feb228d5d90db9ba2bb93c720d83e4c06681c # v1.2.0
+      - uses: haskell-actions/hlint-scan@abd8bbb55afd1ec2c86bc28e081c1ca49037dd9c # v1.3.0
