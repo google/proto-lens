@@ -86,7 +86,7 @@ jobs:
       # Install Stack without GHC first, so we have an opportunity to cache the
       # Pantry package index.
       - name: Install Stack
-        uses: haskell-actions/setup@bbd90a29996ac33b1c644a42206e312fc0379748 # v2.7.9
+        uses: haskell-actions/setup@d9b5b3fcf7ca56b8fe585c9b77d3b0ce466affd2 # v2.7.10
         id: setup-stack
         with:
           enable-stack: true
@@ -103,7 +103,7 @@ jobs:
       # out-of-date one, so we benefit from using restore-keys to bootstrap it
       # with a previous index.
       - name: Cache Pantry Package Index
-        uses: actions/cache@d4323d4df104b026a6aa633fdb11d772146be0bf
+        uses: actions/cache@5a3ec84eff668545956fd18022155c47e93e2684
         with:
           # Everything except the decompressed Hackage index tarball.  Why is
           # that even materialized to disk?
@@ -120,7 +120,7 @@ jobs:
       # GHC takes a while to gunzip and configure; let's try caching it
       # pre-configured with zstd.
       - name: Cache Configured GHC
-        uses: actions/cache@d4323d4df104b026a6aa633fdb11d772146be0bf
+        uses: actions/cache@5a3ec84eff668545956fd18022155c47e93e2684
         with:
           # Omit the tarball itself; it'll double the cache size assuming
           # similar compression ratios.
@@ -145,7 +145,7 @@ jobs:
       # other builds with the same GHC version to benefit from any packages in
       # common between two lockfiles.
       - name: Cache Dependencies
-        uses: actions/cache@d4323d4df104b026a6aa633fdb11d772146be0bf
+        uses: actions/cache@5a3ec84eff668545956fd18022155c47e93e2684
         with:
           # The Stack global work directory, minus GHC installations (already
           # extracted from a tarball) and the Pantry package index (already
@@ -181,7 +181,7 @@ jobs:
       # Cache pre-built modules for incremental builds, making sure to keep
       # builds with different dependencies separate.
       - name: Cache Modules
-        uses: actions/cache@d4323d4df104b026a6aa633fdb11d772146be0bf
+        uses: actions/cache@5a3ec84eff668545956fd18022155c47e93e2684
         with:
           path: "**/.stack-work"
           key: |
