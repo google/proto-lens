@@ -15,7 +15,7 @@ jobs:
       - uses: actions/checkout@v4.2.2
         with:
           submodules: true
-      - uses: haskell-actions/setup@64445b6b5dd545faf5f8e2acee8253eb5c2b29aa # v2.7.11
+      - uses: haskell-actions/setup@96f3dafd067155f32643c2a0757ab71d2910e2c2 # v2.8.0
         with:
           ghc-version: ${{ matrix.version.ghc }}
           cabal-version: ${{ matrix.version.cabal }}
