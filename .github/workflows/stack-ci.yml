@@ -42,7 +42,7 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        uses: actions/checkout@ff7abcd0c3c05ccf6adc123a8cd1fd4fb30fb493
         with:
           submodules: true
 
@@ -72,7 +72,7 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+        uses: actions/checkout@ff7abcd0c3c05ccf6adc123a8cd1fd4fb30fb493
         with:
           submodules: true
 
@@ -103,7 +103,7 @@ jobs:
       # out-of-date one, so we benefit from using restore-keys to bootstrap it
       # with a previous index.
       - name: Cache Pantry Package Index
-        uses: actions/cache@5a3ec84eff668545956fd18022155c47e93e2684
+        uses: actions/cache@0400d5f644dc74513175e3cd8d07132dd4860809
         with:
           # Everything except the decompressed Hackage index tarball.  Why is
           # that even materialized to disk?
@@ -120,7 +120,7 @@ jobs:
       # GHC takes a while to gunzip and configure; let's try caching it
       # pre-configured with zstd.
       - name: Cache Configured GHC
-        uses: actions/cache@5a3ec84eff668545956fd18022155c47e93e2684
+        uses: actions/cache@0400d5f644dc74513175e3cd8d07132dd4860809
         with:
           # Omit the tarball itself; it'll double the cache size assuming
           # similar compression ratios.
@@ -145,7 +145,7 @@ jobs:
       # other builds with the same GHC version to benefit from any packages in
       # common between two lockfiles.
       - name: Cache Dependencies
-        uses: actions/cache@5a3ec84eff668545956fd18022155c47e93e2684
+        uses: actions/cache@0400d5f644dc74513175e3cd8d07132dd4860809
         with:
           # The Stack global work directory, minus GHC installations (already
           # extracted from a tarball) and the Pantry package index (already
@@ -181,7 +181,7 @@ jobs:
       # Cache pre-built modules for incremental builds, making sure to keep
       # builds with different dependencies separate.
       - name: Cache Modules
-        uses: actions/cache@5a3ec84eff668545956fd18022155c47e93e2684
+        uses: actions/cache@0400d5f644dc74513175e3cd8d07132dd4860809
         with:
           path: "**/.stack-work"
           key: |
