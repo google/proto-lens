@@ -32,12 +32,10 @@ executables:
     dependencies:
       - bytestring >= 0.10 && < 0.13
       - containers >= 0.5 && < 0.8
-      - ghc >= 8.2 && < 9.11
-      - ghc-paths == 0.1.*
-      - ghc-source-gen >= 0.4 && < 0.5
       - lens-family >= 1.2 && < 2.2
       - pretty == 1.1.*
       - proto-lens == 0.7.*
       - proto-lens-protoc
       - proto-lens-runtime == 0.7.*
       - text >= 1.2 && < 2.2
+      - prettyprinter

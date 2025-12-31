@@ -10,6 +10,7 @@
 {-# LANGUAGE LambdaCase #-}
 {-# LANGUAGE OverloadedLabels #-}
 {-# LANGUAGE OverloadedStrings #-}
+{-# LANGUAGE TypeApplications #-}
 module Data.ProtoLens.Compiler.Generate(
     generateModule,
     ) where
@@ -29,32 +30,8 @@ import Data.String (fromString)
 import Data.Text (unpack)
 import qualified Data.Text as T
 import Data.Tuple (swap)
-import GHC.SourceGen
-#if MIN_VERSION_ghc(8,10,0)
-import GHC.Hs (ideclName, ideclAs)
-#else
-import HsSyn (ideclName, ideclAs)
-#endif
-#if MIN_VERSION_ghc(9,10,0)
-import GHC.Parser.Annotation (noAnn)
-#elif MIN_VERSION_ghc(9,2,0)
-import GHC.Parser.Annotation (EpAnn(EpAnnNotUsed), SrcSpanAnn'(SrcSpanAnn))
-#endif
-#if MIN_VERSION_ghc(9,0,0)
-#if MIN_VERSION_ghc(9,6,0)
-import Language.Haskell.Syntax.Module.Name (moduleNameString, mkModuleName)
-#else
-import GHC.Unit.Module.Name (moduleNameString, mkModuleName)
-#endif
-import qualified GHC.Utils.Outputable as Outputable
-import GHC.Types.SrcLoc (unLoc)
-import qualified GHC.Types.SrcLoc as SrcLoc
-#else
-import Module (moduleNameString, mkModuleName)
-import qualified Outputable
-import SrcLoc (unLoc)
-import qualified SrcLoc
-#endif
+import Prettyprinter.GHC
+import Data.Text.Prettyprint.Doc (vsep, line, (<+>), pretty, Doc, vcat, nest)
 import Lens.Family2 ((^.))
 import Text.Printf (printf)
 
@@ -92,11 +69,11 @@ generateModule :: ModuleNameStr
                -> [ServiceInfo]
                -> [CommentedModule]
 generateModule modName fdesc imports publicImports definitions importedEnv services
-    = [ CommentedModule pragmas
+    = [ CommentedModule pragmas modName
             (module' (Just modName)
                 (Just $ serviceExports
                         ++ concatMap generateExports (Map.elems definitions)
-                        ++ map moduleContents publicImports)
+                        ++ map (pretty . import') publicImports)
                 (mainImports ++ sharedImports
                     ++ map importQualified (imports List.\\ publicImports)
                     ++ map import' publicImports)
@@ -104,14 +81,14 @@ generateModule modName fdesc imports publicImports definitions importedEnv servi
           $ concatMap generateDecls (Map.toList definitions)
          ++ map uncommented (concatMap (generateServiceDecls env) services)
          ++ map uncommented packedFileDescriptorProto
-      , CommentedModule pragmas
+      , CommentedModule pragmas fieldModName
             (module' (Just fieldModName) Nothing
                 (sharedImports ++ map importQualified imports) [])
           $ map uncommented
           $ concatMap generateFieldDecls allLensNames
       ]
   where
-    fieldModName = fromString $ moduleNameString (unModuleNameStr modName) ++ "_Fields"
+    fieldModName = fromString $ moduleNameString modName ++ "_Fields"
     pragmas =
           [ languagePragma $ List.intercalate ", " $ map fromString
               ["ScopedTypeVariables", "DataKinds", "TypeFamilies",
@@ -212,31 +189,24 @@ importQualified = qualified' . import'
 type ModifyImports = ImportDecl' -> ImportDecl'
 
 reexported :: ModifyImports
-reexported imp = imp { ideclName = noLoc m', ideclAs = Just m }
+reexported imp = imp { ideclName = m', ideclAs = Just m }
   where
-#if MIN_VERSION_ghc(9,10,0)
-    noLoc = SrcLoc.L noAnn
-#elif MIN_VERSION_ghc(9,2,0)
-    noLoc = SrcLoc.L (SrcSpanAnn EpAnnNotUsed SrcLoc.noSrcSpan)
-#else
-    noLoc = SrcLoc.noLoc
-#endif
-    m' = mkModuleName $ "Data.ProtoLens.Runtime." ++ moduleNameString (unLoc m)
+    m' = mkModuleName $ "Data.ProtoLens.Runtime." ++ moduleNameString m
     m = ideclName imp
 
-messageComment :: ModuleNameStr -> OccNameStr -> [RecordField] -> Outputable.SDoc
+messageComment :: ModuleNameStr -> OccNameStr -> [RecordField] -> Doc ()
 messageComment fieldModName n fields =
-    Outputable.vcat
-        $ [Outputable.text "Fields :", ""]
+    vcat
+        $ ["Fields :", ""]
             ++ map item (concatMap recordFieldLenses fields)
   where
-    item :: LensInstance -> Outputable.SDoc
-    item l = Outputable.text (printf "    * '%s.%s' @:: "
+    item :: LensInstance -> Doc ()
+    item l = pretty @String (printf "    * '%s.%s' @:: "
                  (moduleNameStrToString fieldModName)
                  (occNameStrToString $ nameFromSymbol $ lensSymbol l))
-             Outputable.<>
-                 Outputable.ppr (var "Lens'" @@ t @@ lensFieldType l)
-             Outputable.<> Outputable.char '@'
+             <>
+                 (var "Lens'" @@ t @@ lensFieldType l)
+             <> "@"
     t = var (unqual n)
 
 generateMessageExports :: MessageInfo OccNameStr -> [IE']
@@ -354,7 +324,7 @@ generateMessageDecls fieldModName env protoName info =
     [ uncommented $ instance'
         (var "Data.ProtoLens.Field.HasField" @@ dataType @@ sym @@ t)
             [funBind "fieldOf" $ match [wildP] $
-                var "Prelude.."
+                var "(Prelude..)"
                     @@ rawFieldAccessor (unqual $ recordFieldName li)
                     @@ lensExp i]
     | li <- allFields
@@ -533,8 +503,8 @@ generateEnumDecls info =
                 $ var "Prelude.show" @@ var "k"
             | Just u <- [unrecognized]
             ]
-        , funBind "readEnum" $ matchGRHSs [bvar "k"] $ guardedRhs $
-              [ guard (var "Prelude.==" @@ var "k" @@ string pn)
+        , "readEnum" <+> "k" <> nest 2 (line <> vsep
+              ([ guard (var "Prelude.==" @@ var "k" @@ string pn)
                     $ var "Prelude.Just" @@ var (unqual n)
               | v <- enumValues info
               , let n = enumValueName v
@@ -542,7 +512,7 @@ generateEnumDecls info =
               ]
               ++ [guard (var "Prelude.otherwise") $ var "Prelude.>>="
                                       @@ (var "Text.Read.readMaybe" @@ var "k")
-                                      @@ var "Data.ProtoLens.maybeToEnum"]
+                                      @@ var "Data.ProtoLens.maybeToEnum"]))
         ]
 
       -- instance Bounded Foo where
@@ -630,7 +600,7 @@ generateEnumDecls info =
                       ++ ": "
 
     errorMessageExpr = var "Prelude.error"
-                          @@ (var "Prelude.++" @@ string errorMessage
+                          @@ (var "(Prelude.++)" @@ string errorMessage
                               @@ (var "Prelude.show" @@ var "k__"))
 
     dataType = var $ unqual dataName
@@ -654,7 +624,7 @@ generateEnumDecls info =
 
     constructorNumbers = map (second (fromIntegral . (^. #number))) constructors
 
-    succDecl :: OccNameStr -> OccNameStr -> [(OccNameStr, OccNameStr)] -> RawInstDecl
+    succDecl :: OccNameStr -> OccNameStr -> [(OccNameStr, OccNameStr)] -> Doc' -- RawInstDecl
     succDecl funName boundName thePairs = funBinds funName $
         match [conP_ (unqual boundName)]
             (var "Prelude.error" @@ string (concat
@@ -948,7 +918,7 @@ oneofFieldAccessor o
     setter = lambda [wildP, bvar "y__"]
                 $ var "Prelude.fmap" @@ var (unqual consName) @@ var "y__"
 
-messageInstance :: Env RdrNameStr -> T.Text -> MessageInfo OccNameStr -> [RawInstDecl]
+messageInstance :: Env RdrNameStr -> T.Text -> MessageInfo OccNameStr -> [Doc']
 messageInstance env protoName m =
     [ funBind "messageName" $ match [wildP] $
           var "Data.Text.pack" @@ string (T.unpack protoName)

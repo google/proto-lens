@@ -39,14 +39,9 @@ import Data.ProtoLens.Compiler.Generate.Commented (getModuleName)
 import Data.ProtoLens.Compiler.Generate
 import Data.ProtoLens.Compiler.Plugin
 
-#if MIN_VERSION_ghc(9,0,0)
-import GHC.Driver.Session (DynFlags, getDynFlags)
-#else
-import DynFlags (DynFlags, getDynFlags)
-#endif
-import GHC (runGhc)
-import GHC.Paths (libdir)
-import GHC.SourceGen.Pretty (showPpr)
+import Data.Text.Prettyprint.Doc (pretty)
+import Debug.Trace
+import Prettyprinter.GHC
 
 main :: IO ()
 main = do
@@ -54,14 +49,12 @@ main = do
     progName <- getProgName
     case decodeMessage contents of
         Left e -> IO.hPutStrLn stderr e >> exitWith (ExitFailure 1)
-        Right x -> runGhc (Just libdir) $ do
-                      dflags <- getDynFlags
-                      liftIO $ B.putStr $ encodeMessage $
-                        makeResponse dflags progName x
+        Right x -> B.putStr $ encodeMessage $
+                        makeResponse progName x
 
-makeResponse :: DynFlags -> String -> CodeGeneratorRequest -> CodeGeneratorResponse
-makeResponse dflags prog request = let
-    outputFiles = generateFiles dflags header
+makeResponse :: String -> CodeGeneratorRequest -> CodeGeneratorResponse
+makeResponse prog request = let
+    outputFiles = generateFiles header
                       (request ^. #protoFile)
                       (request ^. #fileToGenerate)
     header :: FileDescriptorProto -> Text
@@ -80,16 +73,16 @@ makeResponse dflags prog request = let
     in case outputFiles of
          Right fs -> preamble & #file .~
            [ defMessage
-             & #name .~ outputName
+             & #name .~ (traceShowId outputName)
              & #content .~ outputContent
            | (outputName, outputContent) <- fs
            ]
          Left e -> preamble & #error .~ e
 
-generateFiles :: DynFlags -> (FileDescriptorProto -> Text)
+generateFiles :: (FileDescriptorProto -> Text)
               -> [FileDescriptorProto] -> [ProtoFileName]
               -> Either Text [(Text, Text)]
-generateFiles dflags header files toGenerate = do
+generateFiles header files toGenerate = do
   filesByName <- analyzeProtoFiles files
 
   let modulesToBuild f =
@@ -105,8 +98,8 @@ generateFiles dflags header files toGenerate = do
 
 
   -- The contents of the generated Haskell file for a given .proto file.
-  return [ ( moduleFilePath $ pack $ showPpr dflags (getModuleName modul)
-           , header (descriptor f) <> pack (showPpr dflags modul)
+  return [ ( moduleFilePath $ pack $ moduleNameStrToString (getModuleName modul)
+           , header (descriptor f) <> pack (show $ pretty modul)
            )
          | fileName <- toGenerate
          , let f = filesByName ! fileName
