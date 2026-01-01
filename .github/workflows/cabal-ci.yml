@@ -12,10 +12,10 @@ jobs:
           - ghc: 9.10.1
             cabal: 3.12.1.0
     steps:
-      - uses: actions/checkout@v6.0.0
+      - uses: actions/checkout@v6.0.1
         with:
           submodules: true
-      - uses: haskell-actions/setup@82e8b5066385702e477d9dc98f287070493e8abd # v2.8.2
+      - uses: haskell-actions/setup@0512451d82f3ca8c147db62e30464e7c4ca63d30 # v2.9.1
         with:
           ghc-version: ${{ matrix.version.ghc }}
           cabal-version: ${{ matrix.version.cabal }}
