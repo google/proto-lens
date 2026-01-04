@@ -83,7 +83,7 @@ import Proto.Google.Protobuf.Descriptor
     , MethodDescriptorProto
     , ServiceDescriptorProto
     )
-import GHC.SourceGen
+import Prettyprinter.GHC
     ( OccNameStr
     , RdrNameStr
     , ModuleNameStr

@@ -459,7 +459,7 @@ instance Data.ProtoLens.Message DescriptorProto where
                              Prelude.return ()
                          else
                              Prelude.fail
-                               ((Prelude.++)
+                               (((Prelude.++))
                                   "Missing required fields: "
                                   (Prelude.show (missing :: [Prelude.String]))))
                       Prelude.return
@@ -1041,7 +1041,7 @@ instance Data.ProtoLens.Message DescriptorProto'ExtensionRange where
                              Prelude.return ()
                          else
                              Prelude.fail
-                               ((Prelude.++)
+                               (((Prelude.++))
                                   "Missing required fields: "
                                   (Prelude.show (missing :: [Prelude.String]))))
                       Prelude.return
@@ -1230,7 +1230,7 @@ instance Data.ProtoLens.Message DescriptorProto'ReservedRange where
                              Prelude.return ()
                          else
                              Prelude.fail
-                               ((Prelude.++)
+                               (((Prelude.++))
                                   "Missing required fields: "
                                   (Prelude.show (missing :: [Prelude.String]))))
                       Prelude.return
@@ -1361,7 +1361,7 @@ instance Prelude.Enum Edition where
   toEnum k__
     = Prelude.maybe
         (Prelude.error
-           ((Prelude.++)
+           (((Prelude.++))
               "toEnum: unknown value for enum Edition: " (Prelude.show k__)))
         Prelude.id
         (Data.ProtoLens.maybeToEnum k__)
@@ -1618,7 +1618,7 @@ instance Data.ProtoLens.Message EnumDescriptorProto where
                              Prelude.return ()
                          else
                              Prelude.fail
-                               ((Prelude.++)
+                               (((Prelude.++))
                                   "Missing required fields: "
                                   (Prelude.show (missing :: [Prelude.String]))))
                       Prelude.return
@@ -1914,7 +1914,7 @@ instance Data.ProtoLens.Message EnumDescriptorProto'EnumReservedRange where
                              Prelude.return ()
                          else
                              Prelude.fail
-                               ((Prelude.++)
+                               (((Prelude.++))
                                   "Missing required fields: "
                                   (Prelude.show (missing :: [Prelude.String]))))
                       Prelude.return
@@ -2174,7 +2174,7 @@ instance Data.ProtoLens.Message EnumOptions where
                              Prelude.return ()
                          else
                              Prelude.fail
-                               ((Prelude.++)
+                               (((Prelude.++))
                                   "Missing required fields: "
                                   (Prelude.show (missing :: [Prelude.String]))))
                       Prelude.return
@@ -2468,7 +2468,7 @@ instance Data.ProtoLens.Message EnumValueDescriptorProto where
                              Prelude.return ()
                          else
                              Prelude.fail
-                               ((Prelude.++)
+                               (((Prelude.++))
                                   "Missing required fields: "
                                   (Prelude.show (missing :: [Prelude.String]))))
                       Prelude.return
@@ -2755,7 +2755,7 @@ instance Data.ProtoLens.Message EnumValueOptions where
                              Prelude.return ()
                          else
                              Prelude.fail
-                               ((Prelude.++)
+                               (((Prelude.++))
                                   "Missing required fields: "
                                   (Prelude.show (missing :: [Prelude.String]))))
                       Prelude.return
@@ -3103,7 +3103,7 @@ instance Data.ProtoLens.Message ExtensionRangeOptions where
                              Prelude.return ()
                          else
                              Prelude.fail
-                               ((Prelude.++)
+                               (((Prelude.++))
                                   "Missing required fields: "
                                   (Prelude.show (missing :: [Prelude.String]))))
                       Prelude.return
@@ -3456,7 +3456,7 @@ instance Data.ProtoLens.Message ExtensionRangeOptions'Declaration where
                              Prelude.return ()
                          else
                              Prelude.fail
-                               ((Prelude.++)
+                               (((Prelude.++))
                                   "Missing required fields: "
                                   (Prelude.show (missing :: [Prelude.String]))))
                       Prelude.return
@@ -3618,7 +3618,7 @@ instance Prelude.Enum ExtensionRangeOptions'VerificationState where
   toEnum k__
     = Prelude.maybe
         (Prelude.error
-           ((Prelude.++)
+           (((Prelude.++))
               "toEnum: unknown value for enum VerificationState: "
               (Prelude.show k__)))
         Prelude.id
@@ -3884,7 +3884,7 @@ instance Data.ProtoLens.Message FeatureSet where
                              Prelude.return ()
                          else
                              Prelude.fail
-                               ((Prelude.++)
+                               (((Prelude.++))
                                   "Missing required fields: "
                                   (Prelude.show (missing :: [Prelude.String]))))
                       Prelude.return
@@ -4097,7 +4097,7 @@ instance Prelude.Enum FeatureSet'EnumType where
   toEnum k__
     = Prelude.maybe
         (Prelude.error
-           ((Prelude.++)
+           (((Prelude.++))
               "toEnum: unknown value for enum EnumType: " (Prelude.show k__)))
         Prelude.id
         (Data.ProtoLens.maybeToEnum k__)
@@ -4155,7 +4155,7 @@ instance Prelude.Enum FeatureSet'FieldPresence where
   toEnum k__
     = Prelude.maybe
         (Prelude.error
-           ((Prelude.++)
+           (((Prelude.++))
               "toEnum: unknown value for enum FieldPresence: "
               (Prelude.show k__)))
         Prelude.id
@@ -4212,7 +4212,7 @@ instance Prelude.Enum FeatureSet'JsonFormat where
   toEnum k__
     = Prelude.maybe
         (Prelude.error
-           ((Prelude.++)
+           (((Prelude.++))
               "toEnum: unknown value for enum JsonFormat: " (Prelude.show k__)))
         Prelude.id
         (Data.ProtoLens.maybeToEnum k__)
@@ -4266,7 +4266,7 @@ instance Prelude.Enum FeatureSet'MessageEncoding where
   toEnum k__
     = Prelude.maybe
         (Prelude.error
-           ((Prelude.++)
+           (((Prelude.++))
               "toEnum: unknown value for enum MessageEncoding: "
               (Prelude.show k__)))
         Prelude.id
@@ -4323,7 +4323,7 @@ instance Prelude.Enum FeatureSet'RepeatedFieldEncoding where
   toEnum k__
     = Prelude.maybe
         (Prelude.error
-           ((Prelude.++)
+           (((Prelude.++))
               "toEnum: unknown value for enum RepeatedFieldEncoding: "
               (Prelude.show k__)))
         Prelude.id
@@ -4377,7 +4377,7 @@ instance Prelude.Enum FeatureSet'Utf8Validation where
   toEnum k__
     = Prelude.maybe
         (Prelude.error
-           ((Prelude.++)
+           (((Prelude.++))
               "toEnum: unknown value for enum Utf8Validation: "
               (Prelude.show k__)))
         Prelude.id
@@ -4540,7 +4540,7 @@ instance Data.ProtoLens.Message FeatureSetDefaults where
                              Prelude.return ()
                          else
                              Prelude.fail
-                               ((Prelude.++)
+                               (((Prelude.++))
                                   "Missing required fields: "
                                   (Prelude.show (missing :: [Prelude.String]))))
                       Prelude.return
@@ -4799,7 +4799,7 @@ instance Data.ProtoLens.Message FeatureSetDefaults'FeatureSetEditionDefault wher
                              Prelude.return ()
                          else
                              Prelude.fail
-                               ((Prelude.++)
+                               (((Prelude.++))
                                   "Missing required fields: "
                                   (Prelude.show (missing :: [Prelude.String]))))
                       Prelude.return
@@ -5290,7 +5290,7 @@ instance Data.ProtoLens.Message FieldDescriptorProto where
                              Prelude.return ()
                          else
                              Prelude.fail
-                               ((Prelude.++)
+                               (((Prelude.++))
                                   "Missing required fields: "
                                   (Prelude.show (missing :: [Prelude.String]))))
                       Prelude.return
@@ -5627,7 +5627,7 @@ instance Prelude.Enum FieldDescriptorProto'Label where
   toEnum k__
     = Prelude.maybe
         (Prelude.error
-           ((Prelude.++)
+           (((Prelude.++))
               "toEnum: unknown value for enum Label: " (Prelude.show k__)))
         Prelude.id
         (Data.ProtoLens.maybeToEnum k__)
@@ -5760,7 +5760,7 @@ instance Prelude.Enum FieldDescriptorProto'Type where
   toEnum k__
     = Prelude.maybe
         (Prelude.error
-           ((Prelude.++)
+           (((Prelude.++))
               "toEnum: unknown value for enum Type: " (Prelude.show k__)))
         Prelude.id
         (Data.ProtoLens.maybeToEnum k__)
@@ -6351,7 +6351,7 @@ instance Data.ProtoLens.Message FieldOptions where
                              Prelude.return ()
                          else
                              Prelude.fail
-                               ((Prelude.++)
+                               (((Prelude.++))
                                   "Missing required fields: "
                                   (Prelude.show (missing :: [Prelude.String]))))
                       Prelude.return
@@ -6853,7 +6853,7 @@ instance Prelude.Enum FieldOptions'CType where
   toEnum k__
     = Prelude.maybe
         (Prelude.error
-           ((Prelude.++)
+           (((Prelude.++))
               "toEnum: unknown value for enum CType: " (Prelude.show k__)))
         Prelude.id
         (Data.ProtoLens.maybeToEnum k__)
@@ -6978,7 +6978,7 @@ instance Data.ProtoLens.Message FieldOptions'EditionDefault where
                              Prelude.return ()
                          else
                              Prelude.fail
-                               ((Prelude.++)
+                               (((Prelude.++))
                                   "Missing required fields: "
                                   (Prelude.show (missing :: [Prelude.String]))))
                       Prelude.return
@@ -7218,7 +7218,7 @@ instance Data.ProtoLens.Message FieldOptions'FeatureSupport where
                              Prelude.return ()
                          else
                              Prelude.fail
-                               ((Prelude.++)
+                               (((Prelude.++))
                                   "Missing required fields: "
                                   (Prelude.show (missing :: [Prelude.String]))))
                       Prelude.return
@@ -7379,7 +7379,7 @@ instance Prelude.Enum FieldOptions'JSType where
   toEnum k__
     = Prelude.maybe
         (Prelude.error
-           ((Prelude.++)
+           (((Prelude.++))
               "toEnum: unknown value for enum JSType: " (Prelude.show k__)))
         Prelude.id
         (Data.ProtoLens.maybeToEnum k__)
@@ -7433,7 +7433,7 @@ instance Prelude.Enum FieldOptions'OptionRetention where
   toEnum k__
     = Prelude.maybe
         (Prelude.error
-           ((Prelude.++)
+           (((Prelude.++))
               "toEnum: unknown value for enum OptionRetention: "
               (Prelude.show k__)))
         Prelude.id
@@ -7528,7 +7528,7 @@ instance Prelude.Enum FieldOptions'OptionTargetType where
   toEnum k__
     = Prelude.maybe
         (Prelude.error
-           ((Prelude.++)
+           (((Prelude.++))
               "toEnum: unknown value for enum OptionTargetType: "
               (Prelude.show k__)))
         Prelude.id
@@ -8057,7 +8057,7 @@ instance Data.ProtoLens.Message FileDescriptorProto where
                              Prelude.return ()
                          else
                              Prelude.fail
-                               ((Prelude.++)
+                               (((Prelude.++))
                                   "Missing required fields: "
                                   (Prelude.show (missing :: [Prelude.String]))))
                       Prelude.return
@@ -8730,7 +8730,7 @@ instance Data.ProtoLens.Message FileDescriptorSet where
                              Prelude.return ()
                          else
                              Prelude.fail
-                               ((Prelude.++)
+                               (((Prelude.++))
                                   "Missing required fields: "
                                   (Prelude.show (missing :: [Prelude.String]))))
                       Prelude.return
@@ -9435,7 +9435,7 @@ instance Data.ProtoLens.Message FileOptions where
                              Prelude.return ()
                          else
                              Prelude.fail
-                               ((Prelude.++)
+                               (((Prelude.++))
                                   "Missing required fields: "
                                   (Prelude.show (missing :: [Prelude.String]))))
                       Prelude.return
@@ -10131,7 +10131,7 @@ instance Prelude.Enum FileOptions'OptimizeMode where
   toEnum k__
     = Prelude.maybe
         (Prelude.error
-           ((Prelude.++)
+           (((Prelude.++))
               "toEnum: unknown value for enum OptimizeMode: "
               (Prelude.show k__)))
         Prelude.id
@@ -10248,7 +10248,7 @@ instance Data.ProtoLens.Message GeneratedCodeInfo where
                              Prelude.return ()
                          else
                              Prelude.fail
-                               ((Prelude.++)
+                               (((Prelude.++))
                                   "Missing required fields: "
                                   (Prelude.show (missing :: [Prelude.String]))))
                       Prelude.return
@@ -10507,7 +10507,7 @@ instance Data.ProtoLens.Message GeneratedCodeInfo'Annotation where
                              Prelude.return ()
                          else
                              Prelude.fail
-                               ((Prelude.++)
+                               (((Prelude.++))
                                   "Missing required fields: "
                                   (Prelude.show (missing :: [Prelude.String]))))
                       Prelude.return
@@ -10718,7 +10718,7 @@ instance Prelude.Enum GeneratedCodeInfo'Annotation'Semantic where
   toEnum k__
     = Prelude.maybe
         (Prelude.error
-           ((Prelude.++)
+           (((Prelude.++))
               "toEnum: unknown value for enum Semantic: " (Prelude.show k__)))
         Prelude.id
         (Data.ProtoLens.maybeToEnum k__)
@@ -11002,7 +11002,7 @@ instance Data.ProtoLens.Message MessageOptions where
                              Prelude.return ()
                          else
                              Prelude.fail
-                               ((Prelude.++)
+                               (((Prelude.++))
                                   "Missing required fields: "
                                   (Prelude.show (missing :: [Prelude.String]))))
                       Prelude.return
@@ -11432,7 +11432,7 @@ instance Data.ProtoLens.Message MethodDescriptorProto where
                              Prelude.return ()
                          else
                              Prelude.fail
-                               ((Prelude.++)
+                               (((Prelude.++))
                                   "Missing required fields: "
                                   (Prelude.show (missing :: [Prelude.String]))))
                       Prelude.return
@@ -11777,7 +11777,7 @@ instance Data.ProtoLens.Message MethodOptions where
                              Prelude.return ()
                          else
                              Prelude.fail
-                               ((Prelude.++)
+                               (((Prelude.++))
                                   "Missing required fields: "
                                   (Prelude.show (missing :: [Prelude.String]))))
                       Prelude.return
@@ -11948,7 +11948,7 @@ instance Prelude.Enum MethodOptions'IdempotencyLevel where
   toEnum k__
     = Prelude.maybe
         (Prelude.error
-           ((Prelude.++)
+           (((Prelude.++))
               "toEnum: unknown value for enum IdempotencyLevel: "
               (Prelude.show k__)))
         Prelude.id
@@ -12075,7 +12075,7 @@ instance Data.ProtoLens.Message OneofDescriptorProto where
                              Prelude.return ()
                          else
                              Prelude.fail
-                               ((Prelude.++)
+                               (((Prelude.++))
                                   "Missing required fields: "
                                   (Prelude.show (missing :: [Prelude.String]))))
                       Prelude.return
@@ -12256,7 +12256,7 @@ instance Data.ProtoLens.Message OneofOptions where
                              Prelude.return ()
                          else
                              Prelude.fail
-                               ((Prelude.++)
+                               (((Prelude.++))
                                   "Missing required fields: "
                                   (Prelude.show (missing :: [Prelude.String]))))
                       Prelude.return
@@ -12480,7 +12480,7 @@ instance Data.ProtoLens.Message ServiceDescriptorProto where
                              Prelude.return ()
                          else
                              Prelude.fail
-                               ((Prelude.++)
+                               (((Prelude.++))
                                   "Missing required fields: "
                                   (Prelude.show (missing :: [Prelude.String]))))
                       Prelude.return
@@ -12729,7 +12729,7 @@ instance Data.ProtoLens.Message ServiceOptions where
                              Prelude.return ()
                          else
                              Prelude.fail
-                               ((Prelude.++)
+                               (((Prelude.++))
                                   "Missing required fields: "
                                   (Prelude.show (missing :: [Prelude.String]))))
                       Prelude.return
@@ -12926,7 +12926,7 @@ instance Data.ProtoLens.Message SourceCodeInfo where
                              Prelude.return ()
                          else
                              Prelude.fail
-                               ((Prelude.++)
+                               (((Prelude.++))
                                   "Missing required fields: "
                                   (Prelude.show (missing :: [Prelude.String]))))
                       Prelude.return
@@ -13192,7 +13192,7 @@ instance Data.ProtoLens.Message SourceCodeInfo'Location where
                              Prelude.return ()
                          else
                              Prelude.fail
-                               ((Prelude.++)
+                               (((Prelude.++))
                                   "Missing required fields: "
                                   (Prelude.show (missing :: [Prelude.String]))))
                       Prelude.return
@@ -13682,7 +13682,7 @@ instance Data.ProtoLens.Message UninterpretedOption where
                              Prelude.return ()
                          else
                              Prelude.fail
-                               ((Prelude.++)
+                               (((Prelude.++))
                                   "Missing required fields: "
                                   (Prelude.show (missing :: [Prelude.String]))))
                       Prelude.return
@@ -13986,7 +13986,7 @@ instance Data.ProtoLens.Message UninterpretedOption'NamePart where
                              Prelude.return ()
                          else
                              Prelude.fail
-                               ((Prelude.++)
+                               (((Prelude.++))
                                   "Missing required fields: "
                                   (Prelude.show (missing :: [Prelude.String]))))
                       Prelude.return

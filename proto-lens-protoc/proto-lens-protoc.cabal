@@ -53,6 +53,7 @@ executable proto-lens-protoc
       Proto.Google.Protobuf.Compiler.Plugin_Fields
       Proto.Google.Protobuf.Descriptor
       Proto.Google.Protobuf.Descriptor_Fields
+      Prettyprinter.GHC
       Paths_proto_lens_protoc
   hs-source-dirs:
       app
@@ -61,13 +62,11 @@ executable proto-lens-protoc
     , bytestring >=0.10 && <0.13
     , containers >=0.5 && <0.8
     , filepath >=1.4 && <1.6
-    , ghc >=8.2 && <9.11
-    , ghc-paths ==0.1.*
-    , ghc-source-gen ==0.4.*
     , lens-family >=1.2 && <2.2
     , pretty ==1.1.*
     , proto-lens ==0.7.*
     , proto-lens-protoc
     , proto-lens-runtime ==0.7.*
+    , prettyprinter
     , text >=1.2 && <2.2
   default-language: Haskell2010

@@ -18,7 +18,7 @@ import Data.Semigroup ((<>))
 #endif
 import qualified Data.Text as Text
 import Lens.Family2 ((^.))
-import GHC.SourceGen
+import Prettyprinter.GHC
 
 import Data.ProtoLens.Compiler.Definitions
 import Data.ProtoLens.Compiler.Generate.Field
@@ -43,7 +43,7 @@ generatedParser env m =
     let' [typeSig loop loopSig
          , funBind loop $ match (bvar <$> loopArgs names) loopExpr
          ]
-        $ var "Data.ProtoLens.Encoding.Bytes.<?>"
+        $ var "(Data.ProtoLens.Encoding.Bytes.<?>)"
            @@ do' (startStmts ++ [stmt $ continue startExp])
            @@ string msgName
   where
@@ -256,7 +256,7 @@ checkMissingFields s =
     let' [valBind missing allMissingFields]
     $ if' (var "Prelude.null" @@ var missing) (var "Prelude.return" @@ unit)
     $ var "Prelude.fail"
-        @@ (var "Prelude.++"
+        @@ (var "(Prelude.++)"
                 @@ string "Missing required fields: "
                 @@ (var "Prelude.show" @@ (var missing @::@ listTy (var "Prelude.String"))))
   where
@@ -381,7 +381,7 @@ unknownFieldCase info loop x = match [wire] $ do' $
             [conP "Data.ProtoLens.Encoding.Wire.TaggedValue"
                 [utag, conP_ "Data.ProtoLens.Encoding.Wire.EndGroup"]]
             $ var "Prelude.fail" @@
-                (var "Prelude.++"
+                (var "(Prelude.++)"
                     @@ string "Mismatched group-end tag number "
                     @@ (var "Prelude.show" @@ utag))
         , match [wildP] $ var "Prelude.return" @@ unit
@@ -415,7 +415,7 @@ overField f = over' (fieldOf f)
 over' :: HsExpr' -> HsExpr' -> HsExpr'
 over' f g = var "Lens.Family2.over"
                 @@ f
-                @@ lambda [strictP t] (g @@ t)
+                @@ lambda ["(!t)"] (g @@ t)
   where
     t = bvar "t"
 
@@ -484,7 +484,7 @@ buildUnknownMessageSet x
 foldMapExp :: [HsExpr'] -> HsExpr'
 foldMapExp [] = mempty'
 foldMapExp [x] = x
-foldMapExp (x:xs) = var "Data.Monoid.<>" @@ x @@ foldMapExp xs
+foldMapExp (x:xs) = var "(Data.Monoid.<>)" @@ x @@ foldMapExp xs
 
 -- | An expression of type @Builder@ which encodes the field value
 -- @x@ based on the kind and type of the field @f@.
@@ -497,7 +497,7 @@ buildPlainField x f = case plainFieldKind f of
                                 $ buildTaggedField info v'
                             ]
     OptionalValueField -> let' [valBind v fieldValue]
-                          $ if' (var "Prelude.==" @@ v' @@ var "Data.ProtoLens.fieldDefault")
+                          $ if' (var "(Prelude.==)" @@ v' @@ var "Data.ProtoLens.fieldDefault")
                                 mempty'
                                 (buildTaggedField info v')
     MapField entryInfo
@@ -571,7 +571,7 @@ buildPackedField :: FieldInfo -> HsExpr' -> HsExpr'
 -}
 buildPackedField f x = let' [valBind p x]
     $ if' (var "Data.Vector.Generic.null" @@ var p) mempty'
-    $ var "Data.Monoid.<>"
+    $ var "(Data.Monoid.<>)"
         @@ (putVarInt' @@ int (packedFieldTag f))
         @@ (buildFieldType lengthy
                 @@ (var "Data.ProtoLens.Encoding.Bytes.runBuilder"
@@ -628,7 +628,7 @@ unsafeLiftIO' = var "Data.ProtoLens.Encoding.Parser.Unsafe.unsafeLiftIO"
 
 -- | Returns an expression of type @Parser a@ for the given field.
 parseField :: FieldInfo -> HsExpr'
-parseField f = var "Data.ProtoLens.Encoding.Bytes.<?>"
+parseField f = var "(Data.ProtoLens.Encoding.Bytes.<?>)"
                     @@ parseFieldType (fieldInfoEncoding f)
                     @@ string n
   where

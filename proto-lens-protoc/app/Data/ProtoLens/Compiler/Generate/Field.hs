@@ -24,7 +24,7 @@ import Proto.Google.Protobuf.Descriptor (FieldDescriptorProto'Type(..))
 
 import Data.ProtoLens.Compiler.Definitions
 
-import GHC.SourceGen
+import Prettyprinter.GHC
 
 hsFieldType :: Env RdrNameStr -> FieldInfo -> HsType'
 hsFieldType env f = let
@@ -115,7 +115,7 @@ lengthy = FieldEncoding
     buildLengthy =
         -- Bind x since it may be a nontrivial expression:
         lambda [bs]
-            $ var "Data.Monoid.<>"
+            $ var "(Data.Monoid.<>)"
                 @@ (putVarInt'
                         @@ (fromIntegral'
                                 @@ (var "Data.ByteString.length" @@ bs)))
@@ -143,7 +143,7 @@ groupEnd = FieldEncoding
 -- Wrap a field encoding  with Haskell functions that should always succeed.
 bijectField :: HsExpr' -> HsExpr' -> FieldEncoding -> FieldEncoding
 bijectField buildF parseF f = FieldEncoding
-    { buildFieldType = var "Prelude.." @@ buildFieldType f @@ buildF
+    { buildFieldType = var "(Prelude..)" @@ buildFieldType f @@ buildF
     , parseFieldType = var "Prelude.fmap" @@ parseF @@ parseFieldType f
     , wireType = wireType f
     }
@@ -206,7 +206,7 @@ stringField =
     }
   where
     len = bvar "len"
-    buildString = var "Prelude.." @@ buildFieldType lengthy
+    buildString = var "(Prelude..)" @@ buildFieldType lengthy
                                   @@ var "Data.Text.Encoding.encodeUtf8"
     parseString = do'
         [ len <-- getVarInt'
@@ -217,7 +217,7 @@ stringField =
 -- | A protobuf message type.
 message :: FieldEncoding
 message = lengthy
-        { buildFieldType = var "Prelude.." @@
+        { buildFieldType = var "(Prelude..)" @@
             buildFieldType lengthy @@
             var "Data.ProtoLens.encodeMessage"
         , parseFieldType = isolatedLengthy (var "Data.ProtoLens.parseMessage")

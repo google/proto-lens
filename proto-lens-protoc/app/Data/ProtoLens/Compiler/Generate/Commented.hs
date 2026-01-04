@@ -1,61 +1,42 @@
 {-# LANGUAGE CPP #-}
+{-# LANGUAGE OverloadedStrings #-}
 -- | Enables pretty-printing Haddock comments along with top-level declarations.
 module Data.ProtoLens.Compiler.Generate.Commented where
 
-import GHC.SourceGen
-#if MIN_VERSION_ghc(9,0,0)
-import GHC.Utils.Outputable (Outputable(..), SDoc, (<+>), ($+$), vcat, empty, text)
-#else
-import Outputable (Outputable(..), SDoc, (<+>), ($+$), vcat, empty, text)
-#endif
-#if MIN_VERSION_ghc(8,10,0)
-import GHC.Hs (hsmodName)
-#else
-import HsSyn (hsmodName)
-#endif
-import GHC (ModuleName)
-#if MIN_VERSION_ghc(9,0,0)
-import GHC.Types.SrcLoc (unLoc)
-#else
-import SrcLoc (unLoc)
-#endif
+import Prettyprinter.GHC
+import Data.Text.Prettyprint.Doc (Pretty(..), Doc, hardline, (<+>), unAnnotate, vcat)
 
 -- | A declaration, along with an optional comment.
 --
 -- GHC's pretty-printer omits the contents of comments, so we can't use it here.
-data CommentedDecl = CommentedDecl (Maybe SDoc) HsDecl'
+data CommentedDecl = CommentedDecl (Maybe (Doc ())) HsDecl'
 
-instance Outputable CommentedDecl where
-    ppr (CommentedDecl maybeComment decl) =
-        maybe empty pprComment maybeComment
-        $+$ ppr decl
-      where
-        pprComment c = text "{- |" <+> c <+> text "-}"
+instance Pretty CommentedDecl where
+    pretty (CommentedDecl Nothing decl) = unAnnotate decl
+    pretty (CommentedDecl (Just comment) decl) = unAnnotate $
+        "{- |" <+> comment <+> "-}"  <> hardline <> decl
 
 uncommented :: HsDecl' -> CommentedDecl
 uncommented = CommentedDecl Nothing
 
-commented :: SDoc -> HsDecl' -> CommentedDecl
+commented :: Doc () -> HsDecl' -> CommentedDecl
 commented = CommentedDecl . Just
 
 data CommentedModule = CommentedModule
     { pragmaComments :: [String]
+    , moduleName :: ModuleNameStr
     , moduleHeader :: HsModule'
     , commentedDecls :: [CommentedDecl]
     }
 
-getModuleName :: CommentedModule -> ModuleName
-getModuleName m =
-    maybe
-        (error "getModuleName: No explicit name")
-        unLoc
-        (hsmodName $ moduleHeader m)
+getModuleName :: CommentedModule -> ModuleNameStr
+getModuleName = moduleName
 
-instance Outputable CommentedModule where
-    ppr m =
-        vcat (map text $ pragmaComments m)
-        $+$ ppr (moduleHeader m)
-        $+$ vcat (map ppr $ commentedDecls m)
+instance Pretty CommentedModule where
+    pretty m = unAnnotate $
+        vcat (map pretty $ pragmaComments m)
+        <> hardline <> moduleHeader m
+        <> hardline <> vcat (map pretty $ commentedDecls m)
 
 languagePragma, optionsGhcPragma :: String -> String
 languagePragma s = "{-# LANGUAGE " ++ s ++ "#-}"

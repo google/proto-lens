@@ -27,7 +27,7 @@ import Proto.Google.Protobuf.Descriptor (FileDescriptorProto)
 import Data.ProtoLens.Compiler.Definitions
 import Data.ProtoLens.Compiler.ModuleName
 
-import GHC.SourceGen (ModuleNameStr, OccNameStr, RdrNameStr)
+import Prettyprinter.GHC (ModuleNameStr, OccNameStr, RdrNameStr)
 
 -- | The filename of an input .proto file.
 type ProtoFileName = Text

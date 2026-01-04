@@ -245,7 +245,7 @@ instance Data.ProtoLens.Message CodeGeneratorRequest where
                              Prelude.return ()
                          else
                              Prelude.fail
-                               ((Prelude.++)
+                               (((Prelude.++))
                                   "Missing required fields: "
                                   (Prelude.show (missing :: [Prelude.String]))))
                       Prelude.return
@@ -639,7 +639,7 @@ instance Data.ProtoLens.Message CodeGeneratorResponse where
                              Prelude.return ()
                          else
                              Prelude.fail
-                               ((Prelude.++)
+                               (((Prelude.++))
                                   "Missing required fields: "
                                   (Prelude.show (missing :: [Prelude.String]))))
                       Prelude.return
@@ -824,7 +824,7 @@ instance Prelude.Enum CodeGeneratorResponse'Feature where
   toEnum k__
     = Prelude.maybe
         (Prelude.error
-           ((Prelude.++)
+           (((Prelude.++))
               "toEnum: unknown value for enum Feature: " (Prelude.show k__)))
         Prelude.id
         (Data.ProtoLens.maybeToEnum k__)
@@ -1014,7 +1014,7 @@ instance Data.ProtoLens.Message CodeGeneratorResponse'File where
                              Prelude.return ()
                          else
                              Prelude.fail
-                               ((Prelude.++)
+                               (((Prelude.++))
                                   "Missing required fields: "
                                   (Prelude.show (missing :: [Prelude.String]))))
                       Prelude.return
@@ -1289,7 +1289,7 @@ instance Data.ProtoLens.Message Version where
                              Prelude.return ()
                          else
                              Prelude.fail
-                               ((Prelude.++)
+                               (((Prelude.++))
                                   "Missing required fields: "
                                   (Prelude.show (missing :: [Prelude.String]))))
                       Prelude.return
