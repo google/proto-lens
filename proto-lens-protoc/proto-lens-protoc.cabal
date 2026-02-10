@@ -59,7 +59,7 @@ executable proto-lens-protoc
   build-depends:
       base >=4.10 && <4.22
     , bytestring >=0.10 && <0.13
-    , containers >=0.5 && <0.8
+    , containers >=0.5 && <0.9
     , filepath >=1.4 && <1.6
     , ghc >=8.2 && <9.13
     , ghc-paths ==0.1.*

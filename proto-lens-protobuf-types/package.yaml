@@ -34,7 +34,7 @@ custom-setup:
 build-tools: proto-lens-protoc:proto-lens-protoc
 
 dependencies:
-  - base >= 4.10 && < 4.21
+  - base >= 4.10 && < 4.22
   - lens-family >= 1.2 && < 2.2
   - proto-lens == 0.7.*
   - proto-lens-runtime == 0.7.*

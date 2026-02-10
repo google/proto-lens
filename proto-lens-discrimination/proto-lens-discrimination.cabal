@@ -48,7 +48,7 @@ library
   build-depends:
       base >=4.11 && <4.22
     , bytestring >=0.10 && <0.13
-    , containers >=0.5 && <0.8
+    , containers >=0.5 && <0.9
     , contravariant >=1.3 && <1.6
     , discrimination >=0.3 && <0.6
     , discrimination-ieee754 ==0.1.*
@@ -81,7 +81,7 @@ test-suite discrimination_test
     , QuickCheck >=2.8 && <2.18
     , base >=4.11 && <4.22
     , bytestring >=0.10 && <0.13
-    , containers >=0.5 && <0.8
+    , containers >=0.5 && <0.9
     , contravariant >=1.3 && <1.6
     , discrimination >=0.3 && <0.6
     , discrimination-ieee754 ==0.1.*

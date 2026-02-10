@@ -17,7 +17,7 @@ extra-source-files:
   - Changelog.md
 
 dependencies:
-  - base >= 4.10 && < 4.21
+  - base >= 4.10 && < 4.22
   - filepath >= 1.4 && < 1.6
 
 library:
@@ -31,7 +31,7 @@ executables:
     source-dirs: app
     dependencies:
       - bytestring >= 0.10 && < 0.13
-      - containers >= 0.5 && < 0.8
+      - containers >= 0.5 && < 0.9
       - ghc >= 8.2 && < 9.11
       - ghc-paths == 0.1.*
       - ghc-source-gen >= 0.4 && < 0.5
