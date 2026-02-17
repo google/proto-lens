@@ -28,6 +28,7 @@ import qualified Data.ByteString as BS
 import qualified Data.Map as Map
 import Data.Maybe (maybeToList)
 import qualified Data.Set as Set
+import Distribution.CabalSpecVersion (CabalSpecVersion)
 import Distribution.ModuleName (ModuleName)
 import qualified Distribution.ModuleName as ModuleName
 import qualified Distribution.InstalledPackageInfo as InstalledPackageInfo
@@ -74,7 +75,7 @@ import Distribution.Simple.Utils
     )
 #if MIN_VERSION_Cabal(2,4,0)
 import Distribution.Simple.Glob (matchDirFileGlob)
-import Distribution.Utils.Path (getSymbolicPath, SymbolicPath)
+-- import Distribution.Utils.Path (getSymbolicPath, SymbolicPath)
 #if MIN_VERSION_Cabal(3,14,0)
 import Distribution.Utils.Path (makeSymbolicPath)
 #endif
@@ -115,12 +116,16 @@ import Data.ProtoLens.Compiler.ModuleName (protoModuleName)
 
 -- Compatibility shim for the change of 'FilePath' to 'SymbolicPath' in Cabal-3.14.1 in few places
 #if MIN_VERSION_Cabal(3,14,0)
+getSymbolicPath' :: SymbolicPath -> FilePath
 getSymbolicPath' = getSymbolicPath
 
+matchDirFileGlob' :: _
 matchDirFileGlob' ver specVer path = matchDirFileGlob ver specVer (Just path)
 #else
+getSymbolicPath' :: FilePath -> FilePath
 getSymbolicPath' = id
 
+matchDirFileGlob' :: Verbosity -> CabalSpecVersion -> FilePath -> FilePath -> IO [FilePath]
 matchDirFileGlob' = matchDirFileGlob
 
 makeSymbolicPath :: FilePath -> FilePath

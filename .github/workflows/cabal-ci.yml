@@ -8,17 +8,18 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        version:
-          - ghc: 9.10.1
-            cabal: 3.12.1.0
+        ghc: ['9.10', '9.12']
+        cabal: ['3.12', '3.14', '3.16']
+
     steps:
-      - uses: actions/checkout@v6.0.0
+      - uses: actions/checkout@v6
         with:
-          submodules: true
-      - uses: haskell-actions/setup@82e8b5066385702e477d9dc98f287070493e8abd # v2.8.2
+          submodules: recursive
+          fetch-depth: 0
+      - uses: haskell-actions/setup@v2.10.3
         with:
-          ghc-version: ${{ matrix.version.ghc }}
-          cabal-version: ${{ matrix.version.cabal }}
-      - run: cabal build --dependencies-only --project-file ghc${{ matrix.version.ghc }}.cabal.project all
-      - run: cabal build                     --project-file ghc${{ matrix.version.ghc }}.cabal.project all
-      - run: cabal test                      --project-file ghc${{ matrix.version.ghc }}.cabal.project all
+          ghc-version: ${{ matrix.ghc }}
+          cabal-version: ${{ matrix.cabal }}
+      - run: cabal build --dependencies-only --project-file ghc${{ matrix.ghc }}.cabal.project all
+      - run: cabal build                     --project-file ghc${{ matrix.ghc }}.cabal.project all
+      - run: cabal test                      --project-file ghc${{ matrix.ghc }}.cabal.project all
