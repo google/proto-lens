@@ -15,7 +15,6 @@ module Data.ProtoLens.Compiler.Plugin
     , collectEnvFromDeps
     ) where
 
-import Data.List (foldl')
 import qualified Data.Map.Strict as Map
 import Data.Map.Strict (Map, unions, (!))
 import Data.String (fromString)

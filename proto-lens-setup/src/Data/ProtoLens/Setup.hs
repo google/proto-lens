@@ -13,7 +13,12 @@
 -- `build-dependencies`.
 --
 -- See @README.md@ for instructions on how to use proto-lens with Cabal.
+
 {-# LANGUAGE CPP #-}
+{-# LANGUAGE RankNTypes #-}
+{-# LANGUAGE KindSignatures #-}
+{-# LANGUAGE DataKinds #-}
+
 module Data.ProtoLens.Setup
     ( defaultMainGeneratingProtos
     , defaultMainGeneratingSpecificProtos
@@ -75,7 +80,7 @@ import Distribution.Simple.Utils
     )
 #if MIN_VERSION_Cabal(2,4,0)
 import Distribution.Simple.Glob (matchDirFileGlob)
--- import Distribution.Utils.Path (getSymbolicPath, SymbolicPath)
+import Distribution.Utils.Path (getSymbolicPath, CWD, AllowAbsolute, SymbolicPath, SymbolicPathX, FileOrDir(..))
 #if MIN_VERSION_Cabal(3,14,0)
 import Distribution.Utils.Path (makeSymbolicPath)
 #endif
@@ -116,10 +121,10 @@ import Data.ProtoLens.Compiler.ModuleName (protoModuleName)
 
 -- Compatibility shim for the change of 'FilePath' to 'SymbolicPath' in Cabal-3.14.1 in few places
 #if MIN_VERSION_Cabal(3,14,0)
-getSymbolicPath' :: SymbolicPath -> FilePath
+getSymbolicPath' :: forall (a :: AllowAbsolute) f t. SymbolicPathX a f t -> FilePath
 getSymbolicPath' = getSymbolicPath
 
-matchDirFileGlob' :: _
+matchDirFileGlob' :: forall dir (allowAbs :: AllowAbsolute) (file :: FileOrDir). Verbosity -> CabalSpecVersion -> SymbolicPath CWD (Dir dir) -> SymbolicPathX allowAbs dir file -> IO [SymbolicPathX allowAbs dir file]
 matchDirFileGlob' ver specVer path = matchDirFileGlob ver specVer (Just path)
 #else
 getSymbolicPath' :: FilePath -> FilePath

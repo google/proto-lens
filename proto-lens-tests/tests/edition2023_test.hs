@@ -111,7 +111,7 @@ main = testMain
           -- This does not match the specification for CLOSED enum types,
           -- which specifies that the value be an unset default value,
           -- but this is the current implementation for proto-lens.
-          handle (\(ErrorCallWithLocation _ _) -> return ()) $
+          handle (\(ErrorCall _) -> return ()) $
             case msg of
               -- The decoding should still have succeeded.
               Left e -> assertFailure $ "failed to decode: " ++ show e

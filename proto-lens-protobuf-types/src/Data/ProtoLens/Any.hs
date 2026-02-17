@@ -16,7 +16,6 @@ import Data.Semigroup ((<>))
 #endif
 import qualified Data.Text as Text
 import Data.Text (Text)
-import Data.Typeable (Typeable)
 import Data.ProtoLens
     ( decodeMessage
     , defMessage
@@ -53,7 +52,7 @@ data UnpackError
         , actualUrl :: Text -- ^ The typeUrl in the 'Any' being unpacked
         }
     | DecodingError Text  -- ^ The error from decodeMessage
-    deriving (Show, Eq, Typeable)
+    deriving (Show, Eq)
 
 instance Exception UnpackError
 

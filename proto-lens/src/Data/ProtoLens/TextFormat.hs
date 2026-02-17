@@ -28,7 +28,7 @@ import Control.Arrow (left)
 import Data.Bifunctor (first)
 import qualified Data.ByteString
 import Data.Char (isPrint, isAscii, chr)
-import Data.Foldable (foldlM, foldl')
+import Data.Foldable (foldlM)
 import qualified Data.Map as Map
 import Data.Maybe (catMaybes)
 import Data.Proxy (Proxy(Proxy))
