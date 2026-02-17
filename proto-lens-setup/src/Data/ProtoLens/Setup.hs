@@ -80,8 +80,8 @@ import Distribution.Simple.Utils
     )
 #if MIN_VERSION_Cabal(2,4,0)
 import Distribution.Simple.Glob (matchDirFileGlob)
-import Distribution.Utils.Path (getSymbolicPath, CWD, AllowAbsolute, SymbolicPath, SymbolicPathX, FileOrDir(..))
 #if MIN_VERSION_Cabal(3,14,0)
+import Distribution.Utils.Path (getSymbolicPath, CWD, AllowAbsolute, SymbolicPath, SymbolicPathX, FileOrDir(..))
 import Distribution.Utils.Path (makeSymbolicPath)
 #endif
 #endif
