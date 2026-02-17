@@ -33,7 +33,9 @@ import qualified Data.ByteString as BS
 import qualified Data.Map as Map
 import Data.Maybe (maybeToList)
 import qualified Data.Set as Set
+#if MIN_VERSION_Cabal(3,4,0)
 import Distribution.CabalSpecVersion (CabalSpecVersion)
+#endif
 import Distribution.ModuleName (ModuleName)
 import qualified Distribution.ModuleName as ModuleName
 import qualified Distribution.InstalledPackageInfo as InstalledPackageInfo
@@ -89,6 +91,10 @@ import Distribution.Simple
     ( defaultMainWithHooks
     , simpleUserHooks
     , UserHooks(..)
+#if MIN_VERSION_Cabal(3,4,0)
+#else
+    , Version
+#endif
     )
 import Distribution.Verbosity
     ( Verbosity
@@ -126,11 +132,20 @@ getSymbolicPath' = getSymbolicPath
 
 matchDirFileGlob' :: forall dir (allowAbs :: AllowAbsolute) (file :: FileOrDir). Verbosity -> CabalSpecVersion -> SymbolicPath CWD (Dir dir) -> SymbolicPathX allowAbs dir file -> IO [SymbolicPathX allowAbs dir file]
 matchDirFileGlob' ver specVer path = matchDirFileGlob ver specVer (Just path)
-#else
+#elif MIN_VERSION_Cabal(3,4,0)
 getSymbolicPath' :: FilePath -> FilePath
 getSymbolicPath' = id
 
 matchDirFileGlob' :: Verbosity -> CabalSpecVersion -> FilePath -> FilePath -> IO [FilePath]
+matchDirFileGlob' = matchDirFileGlob
+
+makeSymbolicPath :: FilePath -> FilePath
+makeSymbolicPath = id
+#else
+getSymbolicPath' :: FilePath -> FilePath
+getSymbolicPath' = id
+
+matchDirFileGlob' :: Verbosity -> Version -> FilePath -> FilePath -> IO [FilePath]
 matchDirFileGlob' = matchDirFileGlob
 
 makeSymbolicPath :: FilePath -> FilePath
