@@ -15,6 +15,7 @@ module Data.ProtoLens.Compiler.Plugin
     , collectEnvFromDeps
     ) where
 
+import qualified Data.Foldable as F
 import qualified Data.Map.Strict as Map
 import Data.Map.Strict (Map, unions, (!))
 import Data.String (fromString)
@@ -89,7 +90,7 @@ fdModuleName fd
 transitiveExports :: [FileDescriptorProto] -> Map ProtoFileName [ProtoFileName]
 -- Accumulate the transitive dependencies by folding over the files in
 -- topological order.
-transitiveExports = foldl' setExportsFromFile Map.empty
+transitiveExports = F.foldl' setExportsFromFile Map.empty
   where
     setExportsFromFile :: Map ProtoFileName [ProtoFileName]
                        -> FileDescriptorProto

@@ -29,6 +29,7 @@ import Data.Bifunctor (first)
 import qualified Data.ByteString
 import Data.Char (isPrint, isAscii, chr)
 import Data.Foldable (foldlM)
+import qualified Data.Foldable as F
 import qualified Data.Map as Map
 import Data.Maybe (catMaybes)
 import Data.Proxy (Proxy(Proxy))
@@ -228,7 +229,7 @@ buildMessage reg fields
                       <$> buildMessageFromDescriptor reg defMessage fields
 
 missingFields :: forall msg . Message msg => Proxy msg -> Parser.Message -> [String]
-missingFields _ = Set.toList . foldl' deleteField requiredFieldNames
+missingFields _ = Set.toList . F.foldl' deleteField requiredFieldNames
   where
     requiredFieldNames :: Set.Set String
     requiredFieldNames = Set.fromList $ Map.keys
