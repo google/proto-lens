@@ -1,1 +1,6 @@
-ghc9.10.cabal.project
+packages:
+   proto-lens
+   proto-lens-runtime
+   proto-lens-optparse
+
+tests: True
