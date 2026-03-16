@@ -50,10 +50,10 @@ extra-source-files:
 library:
   source-dirs: src
   dependencies:
-    - base >= 4.10 && < 4.21
+    - base >= 4.10 && < 4.22
     - bytestring >= 0.10 && < 0.13
     - containers >= 0.5 && < 0.8
-    - Cabal >= 2.0 && < 3.13
+    - Cabal >= 2.0 && < 3.15
     - deepseq >=1.4 && <1.6
     - directory >= 1.2 && < 1.4
     - filepath >= 1.4 && < 1.6
@@ -66,4 +66,3 @@ library:
     - text >= 1.2 && < 2.2
   exposed-modules:
     - Data.ProtoLens.Setup
-

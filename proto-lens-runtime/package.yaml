@@ -16,7 +16,7 @@ extra-source-files:
 
 library:
   dependencies:
-    - base >= 4.10 && < 4.21
+    - base >= 4.10 && < 4.22
     - bytestring >= 0.10 && < 0.13
     - containers >= 0.5 && < 0.8
     - deepseq >= 1.4 && <1.6

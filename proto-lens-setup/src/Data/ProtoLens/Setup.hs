@@ -86,6 +86,12 @@ import Distribution.Verbosity
     , normal
 #endif
     )
+#if MIN_VERSION_Cabal(3,14,0)
+import Distribution.Utils.Path
+    ( getSymbolicPath
+    , interpretSymbolicPathCWD
+    )
+#endif
 import System.FilePath
     ( (</>)
     , (<.>)
@@ -169,19 +175,29 @@ generatingProtos root = generatingSpecificProtos root getProtos
   where
     getProtos l = do
       -- Replicate Cabal's own logic for parsing file globs.
+#if MIN_VERSION_Cabal(3,14,0)
+      let desc = localPkgDescr l
+      files <- concat <$>
+          mapM (\f -> map getSymbolicPath <$>
+                      matchDirFileGlob normal (specVersion desc) Nothing f)
+               (extraSrcFiles desc)
+#else
       files <- concat <$> mapM (match $ localPkgDescr l)
                                (extraSrcFiles $ localPkgDescr l)
+#endif
       pure
            . filter (\f -> takeExtension f == ".proto")
            . map (makeRelative root)
            . filter (isSubdirectoryOf root)
            $ files
 
+#if !MIN_VERSION_Cabal(3,14,0)
 match :: PackageDescription -> FilePath -> IO [FilePath]
 #if MIN_VERSION_Cabal(2,4,0)
 match desc f = matchDirFileGlob normal (specVersion desc) "." f
 #else
 match _ f = matchFileGlob f
+#endif
 #endif
 
 -- | Augment the given 'UserHooks' to auto-generate Haskell files from the
@@ -254,7 +270,7 @@ generateSources root l files = withSystemTempDirectory "protoc-out" $ \tmpDir ->
           let sourcePath = tmpDir </> f
           sourceExists <- doesFileExist sourcePath
           when sourceExists $ do
-            let dest = autogenComponentModulesDir l compBI </> f
+            let dest = autogenComponentModulesDirPath l compBI </> f
             copyIfDifferent sourcePath dest
 
 -- Note: we do a copy rather than a move since a given module may be used in
@@ -302,6 +318,14 @@ copyProtosToDataDir verb root destDir files = do
 -- | Imports are stored as $datadir/proto-lens-imports/**/*.proto.
 protoLensImportsPrefix :: FilePath
 protoLensImportsPrefix = "proto-lens-imports"
+
+autogenComponentModulesDirPath :: LocalBuildInfo -> ComponentLocalBuildInfo -> FilePath
+#if MIN_VERSION_Cabal(3,14,0)
+autogenComponentModulesDirPath lbi clbi =
+    interpretSymbolicPathCWD (autogenComponentModulesDir lbi clbi)
+#else
+autogenComponentModulesDirPath = autogenComponentModulesDir
+#endif
 
 -- | Returns whether the @root@ is a parent folder of @f@.
 isSubdirectoryOf :: FilePath -> FilePath -> Bool
