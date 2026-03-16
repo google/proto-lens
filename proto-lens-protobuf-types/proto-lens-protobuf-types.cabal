@@ -40,7 +40,7 @@ source-repository head
 custom-setup
   setup-depends:
       Cabal >=3 && <3.13
-    , base >=4.10 && <4.21
+    , base >=4.10 && <4.22
     , proto-lens-setup ==0.4.*
 
 library
@@ -101,7 +101,7 @@ library
   build-tool-depends:
       proto-lens-protoc:proto-lens-protoc
   build-depends:
-      base >=4.10 && <4.21
+      base >=4.10 && <4.22
     , lens-family >=1.2 && <2.2
     , proto-lens ==0.7.*
     , proto-lens-runtime ==0.7.*

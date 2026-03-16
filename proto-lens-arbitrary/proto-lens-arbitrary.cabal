@@ -34,7 +34,7 @@ library
       src
   build-depends:
       QuickCheck >=2.8 && <2.15
-    , base >=4.10 && <4.21
+    , base >=4.10 && <4.22
     , bytestring >=0.10 && <0.13
     , containers >=0.5 && <0.8
     , lens-family >=1.2 && <2.2
