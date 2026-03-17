@@ -33,8 +33,8 @@ library
   hs-source-dirs:
       src
   build-depends:
-      base >=4.10 && <4.21
-    , optparse-applicative >=0.13 && <0.19
+      base >=4.10 && <4.22
+    , optparse-applicative >=0.13 && <0.20
     , proto-lens >=0.1 && <0.8
     , text >=1.2 && <2.2
   default-language: Haskell2010
