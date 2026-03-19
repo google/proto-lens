@@ -1,0 +1,44 @@
+packages:
+   proto-lens
+   proto-lens-runtime
+   proto-lens-optparse
+
+tests: True
+
+allow-newer:
+    , Cabal:Cabal-syntax
+    , Cabal:base
+    , Cabal:containers
+    , Cabal:time
+    , Cabal-syntax:containers
+    , aeson:containers
+    , aeson:semialign
+    , aeson:template-haskell
+    , aeson:these
+    , aeson:time
+    , aeson:uuid-types
+    , binary:containers
+    , binary-orphans:base
+    , criterion:aeson
+    , criterion:binary-orphans
+    , criterion:microstache
+    , discrimination:ghc-bignum
+    , indexed-traversable:base
+    , indexed-traversable:template-haskell
+    , indexed-traversable:containers
+    , indexed-traversable-instances:base
+    , lens-family:base
+    , lens-family:containers
+    , lens-family:lens-family-core
+    , lens-family-core:containers
+    , microstache:base
+    , microstache:containers
+    , proto-lens:lens-family
+    , proto-lens-protobuf-types:proto-lens-protobuf-types
+    , proto-lens-setup:Cabal
+    , semialign:base
+    , semialign:containers
+    , text-iso8601:time
+    , these:base
+    , time-compat:time
+    , uuid-types:template-haskell
