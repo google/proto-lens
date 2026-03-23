@@ -8,8 +8,8 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        ghc: ['9.12']
-        cabal: ['3.12', '3.14', '3.16']
+        ghc: ['9.12', '9.14']
+        cabal: ['3.16']
 
     steps:
       - uses: actions/checkout@v6
