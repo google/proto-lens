@@ -90,7 +90,7 @@ test-suite discrimination_test
     , proto-lens-arbitrary ==0.1.*
     , proto-lens-discrimination
     , proto-lens-runtime >=0.6 && <0.9
-    , test-framework ==0.9.*
+    , test-framework ==0.8.*
     , test-framework-hunit ==0.3.*
     , test-framework-quickcheck2 ==0.3.*
     , text >=1.2 && <2.2
