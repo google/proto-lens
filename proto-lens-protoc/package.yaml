@@ -6,7 +6,7 @@ description: >
   can be used with the proto-lens package.
  
   The library component of this package contains compiler code (namely
-  Data.ProtoLens.Compiler.*) is not guaranteed to have stable APIs.'
+  Data.ProtoLens.Compiler.*) is not guaranteed to have stable APIs.
 category: Data
 author: Judah Jacobson
 maintainer: proto-lens@googlegroups.com
@@ -17,7 +17,7 @@ extra-source-files:
   - Changelog.md
 
 dependencies:
-  - base >= 4.10 && < 4.22
+  - base >= 4.10 && < 4.23
   - filepath >= 1.4 && < 1.6
 
 library:
@@ -32,7 +32,7 @@ executables:
     dependencies:
       - bytestring >= 0.10 && < 0.13
       - containers >= 0.5 && < 0.9
-      - ghc >= 8.2 && < 9.13
+      - ghc >= 8.2 && < 9.15
       - ghc-paths == 0.1.*
       - ghc-source-gen >= 0.4 && < 0.5
       - lens-family >= 1.2 && < 2.2
