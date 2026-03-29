@@ -4,7 +4,7 @@
 # license that can be found in the LICENSE file or at
 # https://developers.google.com/open-source/licenses/bsd
 
-resolver: nightly-2024-04-06
+resolver: nightly-2026-02-17
 
 packages:
 - discrimination-ieee754
@@ -23,6 +23,6 @@ packages:
 ghc-options:
   "$locals": -Wall -Werror
 
-# Remove once the version is in stackage.
+# Required for older version lts builds.
 extra-deps:
 - ghc-source-gen-0.4.7.0
