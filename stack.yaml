@@ -25,4 +25,4 @@ ghc-options:
 
 # Remove once the version is in stackage.
 extra-deps:
-- ghc-source-gen-0.4.5.0
+- ghc-source-gen-0.4.7.0

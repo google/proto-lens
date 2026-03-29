@@ -16,8 +16,8 @@ extra-source-files:
 
 dependencies:
   - proto-lens >= 0.1 && < 0.8
-  - base >= 4.10 && < 4.21
-  - optparse-applicative >= 0.13 && < 0.19
+  - base >= 4.10 && < 4.22
+  - optparse-applicative >= 0.13 && < 0.20
   - text >= 1.2 && < 2.2
 
 library:

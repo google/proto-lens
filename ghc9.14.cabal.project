@@ -1,19 +1,11 @@
 packages:
-  discrimination-ieee754
-  proto-lens
-  proto-lens-arbitrary
-  proto-lens-benchmarks
-  proto-lens-discrimination
-  proto-lens-optparse
-  proto-lens-protobuf-types
-  proto-lens-protoc
-  proto-lens-runtime
-  proto-lens-setup
-  proto-lens-tests
-  proto-lens-tests-dep
+   proto-lens
+   proto-lens-runtime
+   proto-lens-optparse
 
-if impl (ghc >= 9.14)
-  allow-newer:
+tests: True
+
+allow-newer:
     , Cabal:Cabal-syntax
     , Cabal:base
     , Cabal:containers

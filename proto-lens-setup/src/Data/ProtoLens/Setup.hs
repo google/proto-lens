@@ -13,7 +13,12 @@
 -- `build-dependencies`.
 --
 -- See @README.md@ for instructions on how to use proto-lens with Cabal.
+
 {-# LANGUAGE CPP #-}
+{-# LANGUAGE RankNTypes #-}
+{-# LANGUAGE KindSignatures #-}
+{-# LANGUAGE DataKinds #-}
+
 module Data.ProtoLens.Setup
     ( defaultMainGeneratingProtos
     , defaultMainGeneratingSpecificProtos
@@ -28,6 +33,9 @@ import qualified Data.ByteString as BS
 import qualified Data.Map as Map
 import Data.Maybe (maybeToList)
 import qualified Data.Set as Set
+#if MIN_VERSION_Cabal(3,4,0)
+import Distribution.CabalSpecVersion (CabalSpecVersion)
+#endif
 import Distribution.ModuleName (ModuleName)
 import qualified Distribution.ModuleName as ModuleName
 import qualified Distribution.InstalledPackageInfo as InstalledPackageInfo
@@ -74,11 +82,19 @@ import Distribution.Simple.Utils
     )
 #if MIN_VERSION_Cabal(2,4,0)
 import Distribution.Simple.Glob (matchDirFileGlob)
+#if MIN_VERSION_Cabal(3,14,0)
+import Distribution.Utils.Path (getSymbolicPath, CWD, AllowAbsolute, SymbolicPath, SymbolicPathX, FileOrDir(..))
+import Distribution.Utils.Path (makeSymbolicPath)
+#endif
 #endif
 import Distribution.Simple
     ( defaultMainWithHooks
     , simpleUserHooks
     , UserHooks(..)
+#if MIN_VERSION_Cabal(3,4,0)
+#else
+    , Version
+#endif
     )
 import Distribution.Verbosity
     ( Verbosity
@@ -108,6 +124,33 @@ import System.IO.Temp (withSystemTempDirectory)
 import System.Process (callProcess)
 
 import Data.ProtoLens.Compiler.ModuleName (protoModuleName)
+
+-- Compatibility shim for the change of 'FilePath' to 'SymbolicPath' in Cabal-3.14.1 in few places
+#if MIN_VERSION_Cabal(3,14,0)
+getSymbolicPath' :: forall (a :: AllowAbsolute) f t. SymbolicPathX a f t -> FilePath
+getSymbolicPath' = getSymbolicPath
+
+matchDirFileGlob' :: forall dir (allowAbs :: AllowAbsolute) (file :: FileOrDir). Verbosity -> CabalSpecVersion -> SymbolicPath CWD (Dir dir) -> SymbolicPathX allowAbs dir file -> IO [SymbolicPathX allowAbs dir file]
+matchDirFileGlob' ver specVer path = matchDirFileGlob ver specVer (Just path)
+#elif MIN_VERSION_Cabal(3,4,0)
+getSymbolicPath' :: FilePath -> FilePath
+getSymbolicPath' = id
+
+matchDirFileGlob' :: Verbosity -> CabalSpecVersion -> FilePath -> FilePath -> IO [FilePath]
+matchDirFileGlob' = matchDirFileGlob
+
+makeSymbolicPath :: FilePath -> FilePath
+makeSymbolicPath = id
+#else
+getSymbolicPath' :: FilePath -> FilePath
+getSymbolicPath' = id
+
+matchDirFileGlob' :: Verbosity -> Version -> FilePath -> FilePath -> IO [FilePath]
+matchDirFileGlob' = matchDirFileGlob
+
+makeSymbolicPath :: FilePath -> FilePath
+makeSymbolicPath = id
+#endif
 
 -- | This behaves the same as 'Distribution.Simple.defaultMain', but
 -- auto-generates Haskell files from .proto files which are:
@@ -170,7 +213,7 @@ generatingProtos root = generatingSpecificProtos root getProtos
     getProtos l = do
       -- Replicate Cabal's own logic for parsing file globs.
       files <- concat <$> mapM (match $ localPkgDescr l)
-                               (extraSrcFiles $ localPkgDescr l)
+                               (map getSymbolicPath' $ extraSrcFiles $ localPkgDescr l)
       pure
            . filter (\f -> takeExtension f == ".proto")
            . map (makeRelative root)
@@ -179,7 +222,7 @@ generatingProtos root = generatingSpecificProtos root getProtos
 
 match :: PackageDescription -> FilePath -> IO [FilePath]
 #if MIN_VERSION_Cabal(2,4,0)
-match desc f = matchDirFileGlob normal (specVersion desc) "." f
+match desc f = map getSymbolicPath' <$> matchDirFileGlob' normal (specVersion desc) (makeSymbolicPath ".") (makeSymbolicPath f)
 #else
 match _ f = matchFileGlob f
 #endif
@@ -254,7 +297,7 @@ generateSources root l files = withSystemTempDirectory "protoc-out" $ \tmpDir ->
           let sourcePath = tmpDir </> f
           sourceExists <- doesFileExist sourcePath
           when sourceExists $ do
-            let dest = autogenComponentModulesDir l compBI </> f
+            let dest = getSymbolicPath' (autogenComponentModulesDir l compBI) </> f
             copyIfDifferent sourcePath dest
 
 -- Note: we do a copy rather than a move since a given module may be used in
