@@ -14,13 +14,13 @@ extra-source-files:
   - Changelog.md
 
 dependencies:
-  - proto-lens >= 0.4 && < 0.8
-  - base >= 4.10 && < 4.22
-  - bytestring >= 0.10 && < 0.13
+  - proto-lens >= 0.4 && < 0.9
+  - base >= 4.10 && < 4.23
+  - bytestring >= 0.10 && < 0.14
   - containers >= 0.5 && < 0.9
   - text >= 1.2 && < 2.2
   - lens-family >= 1.2 && < 2.2
-  - QuickCheck >= 2.8 && < 2.18
+  - QuickCheck >= 2.8 && < 2.19
 
 library:
   source-dirs: src

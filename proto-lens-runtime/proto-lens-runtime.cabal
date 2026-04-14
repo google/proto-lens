@@ -1,6 +1,6 @@
 cabal-version: 1.22
 
--- This file has been generated from package.yaml by hpack version 0.37.0.
+-- This file has been generated from package.yaml by hpack version 0.39.1.
 --
 -- see: https://github.com/sol/hpack
 
@@ -54,7 +54,7 @@ library
     , Text.Read as Data.ProtoLens.Runtime.Text.Read
   build-depends:
       base >=4.10 && <4.23
-    , bytestring >=0.10 && <0.13
+    , bytestring >=0.10 && <0.14
     , containers >=0.5 && <0.9
     , deepseq >=1.4 && <1.6
     , filepath >=1.4 && <1.6
