@@ -1,5 +1,12 @@
 # Changelog for `proto-lens-protobuf-types`
 
+## v0.7.2.3
+- Support GHC 9.12.
+- Support GHC 9.14.
+- Fix `Data.ProtoLens.Any` to not import `IsLabels` instance, allowing
+  use of other `IsLabels` instances (e.g. from `generic-lens`) alongside
+  `proto-lens-protobuf-types`.
+
 ## v0.7.2.2
 - Bump upper bounds for ghc-9.10.
 

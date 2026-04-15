@@ -1,5 +1,9 @@
 # Changelog for `proto-lens-setup`
 
+## v0.4.0.10
+- Support GHC 9.12 (add compatibility shim for Cabal >= 3.14 `SymbolicPath` API).
+- Support GHC 9.14.
+
 ## v0.4.0.9
 - Relax upper bounds for ghc-9.10.
 
