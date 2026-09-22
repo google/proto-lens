@@ -40,7 +40,7 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@c2d88d3ecc89a9ef08eebf45d9637801dcee7eb5
+        uses: actions/checkout@4f1f4aec02e41874fa0262ea8ff5172d7978ad1e
         with:
           submodules: true
 
@@ -70,7 +70,7 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@c2d88d3ecc89a9ef08eebf45d9637801dcee7eb5
+        uses: actions/checkout@4f1f4aec02e41874fa0262ea8ff5172d7978ad1e
         with:
           submodules: true
 
@@ -84,7 +84,7 @@ jobs:
       # Install Stack without GHC first, so we have an opportunity to cache the
       # Pantry package index.
       - name: Install Stack
-        uses: haskell-actions/setup@82e8b5066385702e477d9dc98f287070493e8abd # v2.8.2
+        uses: haskell-actions/setup@cd0d9bdd65b20557f41bea4dbe43d0b5fbbfe553 # v2.11.0
         id: setup-stack
         with:
           enable-stack: true
@@ -101,7 +101,7 @@ jobs:
       # out-of-date one, so we benefit from using restore-keys to bootstrap it
       # with a previous index.
       - name: Cache Pantry Package Index
-        uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9
         with:
           # Everything except the decompressed Hackage index tarball.  Why is
           # that even materialized to disk?
@@ -118,7 +118,7 @@ jobs:
       # GHC takes a while to gunzip and configure; let's try caching it
       # pre-configured with zstd.
       - name: Cache Configured GHC
-        uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9
         with:
           # Omit the tarball itself; it'll double the cache size assuming
           # similar compression ratios.
@@ -143,7 +143,7 @@ jobs:
       # other builds with the same GHC version to benefit from any packages in
       # common between two lockfiles.
       - name: Cache Dependencies
-        uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9
         with:
           # The Stack global work directory, minus GHC installations (already
           # extracted from a tarball) and the Pantry package index (already
@@ -179,7 +179,7 @@ jobs:
       # Cache pre-built modules for incremental builds, making sure to keep
       # builds with different dependencies separate.
       - name: Cache Modules
-        uses: actions/cache@0057852bfaa89a56745cba8c7296529d2fc39830
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9
         with:
           path: "**/.stack-work"
           key: |

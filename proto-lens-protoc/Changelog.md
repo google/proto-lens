@@ -1,5 +1,9 @@
 # Changelog for `proto-lens-protoc`
 
+## v0.9.0.1
+- Support GHC 9.12.
+- Support GHC 9.14.
+
 ## v0.9.0.0
 - Support Protobuf Editions 2023 and 2024.
 - Update bootstrap protobuf bindings to protobuf v28.0.

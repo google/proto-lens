@@ -2,6 +2,9 @@
 
 ## v0.7.1.7
 - Relax upper bounds for ghc-9.10.
+- Bump upper bound to allow ghc-prim-0.12 (ghc-9.10.2).
+- Support GHC 9.12.
+- Support GHC 9.14.
 
 ## v0.7.1.2
 - Support GHC 9.4

@@ -1,5 +1,9 @@
 # Changelog for `proto-lens-arbitrary`
 
+## v0.1.2.15
+- Support GHC 9.12.
+- Support GHC 9.14.
+
 ## v0.1.2.14
 - Relax upper bounds for ghc-9.10.
 
