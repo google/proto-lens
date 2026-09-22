@@ -2,6 +2,10 @@ on:
   - push
   - pull_request
 name: cabal build
+
+permissions:
+  contents: read
+
 jobs:
   runhaskell:
     name: cabal test
@@ -12,11 +16,11 @@ jobs:
         cabal: ['3.16']
 
     steps:
-      - uses: actions/checkout@v7
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           submodules: recursive
           fetch-depth: 0
-      - uses: haskell-actions/setup@v2.11.0
+      - uses: haskell-actions/setup@cd0d9bdd65b20557f41bea4dbe43d0b5fbbfe553 # v2.11.0
         with:
           ghc-version: ${{ matrix.ghc }}
           cabal-version: ${{ matrix.cabal }}
