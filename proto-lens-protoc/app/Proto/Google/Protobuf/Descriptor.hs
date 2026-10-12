@@ -11,13 +11,20 @@ module Proto.Google.Protobuf.Descriptor (
         ExtensionRangeOptions(), ExtensionRangeOptions'Declaration(),
         ExtensionRangeOptions'VerificationState(..),
         ExtensionRangeOptions'VerificationState(), FeatureSet(),
+        FeatureSet'EnforceNamingStyle(..), FeatureSet'EnforceNamingStyle(),
         FeatureSet'EnumType(..), FeatureSet'EnumType(),
         FeatureSet'FieldPresence(..), FeatureSet'FieldPresence(),
         FeatureSet'JsonFormat(..), FeatureSet'JsonFormat(),
         FeatureSet'MessageEncoding(..), FeatureSet'MessageEncoding(),
+        FeatureSet'ProtoLimitsFeature(),
+        FeatureSet'ProtoLimitsFeature'EnforceProtoLimits(..),
+        FeatureSet'ProtoLimitsFeature'EnforceProtoLimits(),
         FeatureSet'RepeatedFieldEncoding(..),
         FeatureSet'RepeatedFieldEncoding(), FeatureSet'Utf8Validation(..),
-        FeatureSet'Utf8Validation(), FeatureSetDefaults(),
+        FeatureSet'Utf8Validation(), FeatureSet'VisibilityFeature(),
+        FeatureSet'VisibilityFeature'DefaultSymbolVisibility(..),
+        FeatureSet'VisibilityFeature'DefaultSymbolVisibility(),
+        FeatureSetDefaults(),
         FeatureSetDefaults'FeatureSetEditionDefault(),
         FieldDescriptorProto(), FieldDescriptorProto'Label(..),
         FieldDescriptorProto'Label(), FieldDescriptorProto'Type(..),
@@ -36,7 +43,8 @@ module Proto.Google.Protobuf.Descriptor (
         MethodOptions'IdempotencyLevel(..),
         MethodOptions'IdempotencyLevel(), OneofDescriptorProto(),
         OneofOptions(), ServiceDescriptorProto(), ServiceOptions(),
-        SourceCodeInfo(), SourceCodeInfo'Location(), UninterpretedOption(),
+        SourceCodeInfo(), SourceCodeInfo'Location(), SymbolVisibility(..),
+        SymbolVisibility(), UninterpretedOption(),
         UninterpretedOption'NamePart()
     ) where
 import qualified Data.ProtoLens.Runtime.Control.DeepSeq as Control.DeepSeq
@@ -85,7 +93,9 @@ import qualified Data.ProtoLens.Runtime.Text.Read as Text.Read
          * 'Proto.Google.Protobuf.Descriptor_Fields.reservedRange' @:: Lens' DescriptorProto [DescriptorProto'ReservedRange]@
          * 'Proto.Google.Protobuf.Descriptor_Fields.vec'reservedRange' @:: Lens' DescriptorProto (Data.Vector.Vector DescriptorProto'ReservedRange)@
          * 'Proto.Google.Protobuf.Descriptor_Fields.reservedName' @:: Lens' DescriptorProto [Data.Text.Text]@
-         * 'Proto.Google.Protobuf.Descriptor_Fields.vec'reservedName' @:: Lens' DescriptorProto (Data.Vector.Vector Data.Text.Text)@ -}
+         * 'Proto.Google.Protobuf.Descriptor_Fields.vec'reservedName' @:: Lens' DescriptorProto (Data.Vector.Vector Data.Text.Text)@
+         * 'Proto.Google.Protobuf.Descriptor_Fields.visibility' @:: Lens' DescriptorProto SymbolVisibility@
+         * 'Proto.Google.Protobuf.Descriptor_Fields.maybe'visibility' @:: Lens' DescriptorProto (Prelude.Maybe SymbolVisibility)@ -}
 data DescriptorProto
   = DescriptorProto'_constructor {_DescriptorProto'name :: !(Prelude.Maybe Data.Text.Text),
                                   _DescriptorProto'field :: !(Data.Vector.Vector FieldDescriptorProto),
@@ -97,6 +107,7 @@ data DescriptorProto
                                   _DescriptorProto'options :: !(Prelude.Maybe MessageOptions),
                                   _DescriptorProto'reservedRange :: !(Data.Vector.Vector DescriptorProto'ReservedRange),
                                   _DescriptorProto'reservedName :: !(Data.Vector.Vector Data.Text.Text),
+                                  _DescriptorProto'visibility :: !(Prelude.Maybe SymbolVisibility),
                                   _DescriptorProto'_unknownFields :: !Data.ProtoLens.FieldSet}
   deriving stock (Prelude.Eq, Prelude.Ord)
 instance Prelude.Show DescriptorProto where
@@ -261,6 +272,20 @@ instance Data.ProtoLens.Field.HasField DescriptorProto "vec'reservedName" (Data.
            _DescriptorProto'reservedName
            (\ x__ y__ -> x__ {_DescriptorProto'reservedName = y__}))
         Prelude.id
+instance Data.ProtoLens.Field.HasField DescriptorProto "visibility" SymbolVisibility where
+  fieldOf _
+    = (Prelude..)
+        (Lens.Family2.Unchecked.lens
+           _DescriptorProto'visibility
+           (\ x__ y__ -> x__ {_DescriptorProto'visibility = y__}))
+        (Data.ProtoLens.maybeLens Data.ProtoLens.fieldDefault)
+instance Data.ProtoLens.Field.HasField DescriptorProto "maybe'visibility" (Prelude.Maybe SymbolVisibility) where
+  fieldOf _
+    = (Prelude..)
+        (Lens.Family2.Unchecked.lens
+           _DescriptorProto'visibility
+           (\ x__ y__ -> x__ {_DescriptorProto'visibility = y__}))
+        Prelude.id
 instance Data.ProtoLens.Message DescriptorProto where
   messageName _ = Data.Text.pack "google.protobuf.DescriptorProto"
   packedMessageDescriptor _
@@ -278,7 +303,10 @@ instance Data.ProtoLens.Message DescriptorProto where
       \\aoptions\CAN\a \SOH(\v2\US.google.protobuf.MessageOptionsR\aoptions\DC2U\n\
       \\SOreserved_range\CAN\t \ETX(\v2..google.protobuf.DescriptorProto.ReservedRangeR\rreservedRange\DC2#\n\
       \\rreserved_name\CAN\n\
-      \ \ETX(\tR\freservedName\SUBz\n\
+      \ \ETX(\tR\freservedName\DC2A\n\
+      \\n\
+      \visibility\CAN\v \SOH(\SO2!.google.protobuf.SymbolVisibilityR\n\
+      \visibility\SUBz\n\
       \\SOExtensionRange\DC2\DC4\n\
       \\ENQstart\CAN\SOH \SOH(\ENQR\ENQstart\DC2\DLE\n\
       \\ETXend\CAN\STX \SOH(\ENQR\ETXend\DC2@\n\
@@ -376,6 +404,14 @@ instance Data.ProtoLens.Message DescriptorProto where
                  Data.ProtoLens.Unpacked
                  (Data.ProtoLens.Field.field @"reservedName")) ::
               Data.ProtoLens.FieldDescriptor DescriptorProto
+        visibility__field_descriptor
+          = Data.ProtoLens.FieldDescriptor
+              "visibility"
+              (Data.ProtoLens.ScalarField Data.ProtoLens.EnumField ::
+                 Data.ProtoLens.FieldTypeDescriptor SymbolVisibility)
+              (Data.ProtoLens.OptionalField
+                 (Data.ProtoLens.Field.field @"maybe'visibility")) ::
+              Data.ProtoLens.FieldDescriptor DescriptorProto
       in
         Data.Map.fromList
           [(Data.ProtoLens.Tag 1, name__field_descriptor),
@@ -387,7 +423,8 @@ instance Data.ProtoLens.Message DescriptorProto where
            (Data.ProtoLens.Tag 8, oneofDecl__field_descriptor),
            (Data.ProtoLens.Tag 7, options__field_descriptor),
            (Data.ProtoLens.Tag 9, reservedRange__field_descriptor),
-           (Data.ProtoLens.Tag 10, reservedName__field_descriptor)]
+           (Data.ProtoLens.Tag 10, reservedName__field_descriptor),
+           (Data.ProtoLens.Tag 11, visibility__field_descriptor)]
   unknownFields
     = Lens.Family2.Unchecked.lens
         _DescriptorProto'_unknownFields
@@ -404,6 +441,7 @@ instance Data.ProtoLens.Message DescriptorProto where
          _DescriptorProto'options = Prelude.Nothing,
          _DescriptorProto'reservedRange = Data.Vector.Generic.empty,
          _DescriptorProto'reservedName = Data.Vector.Generic.empty,
+         _DescriptorProto'visibility = Prelude.Nothing,
          _DescriptorProto'_unknownFields = []}
   parseMessage
     = let
@@ -680,6 +718,24 @@ instance Data.ProtoLens.Message DescriptorProto where
                                   mutable'oneofDecl
                                   v
                                   mutable'reservedRange
+                        88
+                          -> do y <- (Data.ProtoLens.Encoding.Bytes.<?>)
+                                       (Prelude.fmap
+                                          Prelude.toEnum
+                                          (Prelude.fmap
+                                             Prelude.fromIntegral
+                                             Data.ProtoLens.Encoding.Bytes.getVarInt))
+                                       "visibility"
+                                loop
+                                  (Lens.Family2.set (Data.ProtoLens.Field.field @"visibility") y x)
+                                  mutable'enumType
+                                  mutable'extension
+                                  mutable'extensionRange
+                                  mutable'field
+                                  mutable'nestedType
+                                  mutable'oneofDecl
+                                  mutable'reservedName
+                                  mutable'reservedRange
                         wire
                           -> do !y <- Data.ProtoLens.Encoding.Wire.parseTaggedValueFromWire
                                         wire
@@ -885,9 +941,25 @@ instance Data.ProtoLens.Message DescriptorProto where
                                                       _v))
                                            (Lens.Family2.view
                                               (Data.ProtoLens.Field.field @"vec'reservedName") _x))
-                                        (Data.ProtoLens.Encoding.Wire.buildFieldSet
-                                           (Lens.Family2.view
-                                              Data.ProtoLens.unknownFields _x)))))))))))
+                                        ((Data.Monoid.<>)
+                                           (case
+                                                Lens.Family2.view
+                                                  (Data.ProtoLens.Field.field @"maybe'visibility")
+                                                  _x
+                                            of
+                                              Prelude.Nothing -> Data.Monoid.mempty
+                                              (Prelude.Just _v)
+                                                -> (Data.Monoid.<>)
+                                                     (Data.ProtoLens.Encoding.Bytes.putVarInt 88)
+                                                     ((Prelude..)
+                                                        ((Prelude..)
+                                                           Data.ProtoLens.Encoding.Bytes.putVarInt
+                                                           Prelude.fromIntegral)
+                                                        Prelude.fromEnum
+                                                        _v))
+                                           (Data.ProtoLens.Encoding.Wire.buildFieldSet
+                                              (Lens.Family2.view
+                                                 Data.ProtoLens.unknownFields _x))))))))))))
 instance Control.DeepSeq.NFData DescriptorProto where
   rnf
     = \ x__
@@ -912,7 +984,9 @@ instance Control.DeepSeq.NFData DescriptorProto where
                                      (Control.DeepSeq.deepseq
                                         (_DescriptorProto'reservedRange x__)
                                         (Control.DeepSeq.deepseq
-                                           (_DescriptorProto'reservedName x__) ()))))))))))
+                                           (_DescriptorProto'reservedName x__)
+                                           (Control.DeepSeq.deepseq
+                                              (_DescriptorProto'visibility x__) ())))))))))))
 {- | Fields :
      
          * 'Proto.Google.Protobuf.Descriptor_Fields.start' @:: Lens' DescriptorProto'ExtensionRange Data.Int.Int32@
@@ -1303,6 +1377,8 @@ data Edition
     EDITION_PROTO3 |
     EDITION_2023 |
     EDITION_2024 |
+    EDITION_2026 |
+    EDITION_UNSTABLE |
     EDITION_99997_TEST_ONLY |
     EDITION_99998_TEST_ONLY |
     EDITION_99999_TEST_ONLY |
@@ -1317,6 +1393,8 @@ instance Data.ProtoLens.MessageEnum Edition where
   maybeToEnum 999 = Prelude.Just EDITION_PROTO3
   maybeToEnum 1000 = Prelude.Just EDITION_2023
   maybeToEnum 1001 = Prelude.Just EDITION_2024
+  maybeToEnum 1002 = Prelude.Just EDITION_2026
+  maybeToEnum 9999 = Prelude.Just EDITION_UNSTABLE
   maybeToEnum 99997 = Prelude.Just EDITION_99997_TEST_ONLY
   maybeToEnum 99998 = Prelude.Just EDITION_99998_TEST_ONLY
   maybeToEnum 99999 = Prelude.Just EDITION_99999_TEST_ONLY
@@ -1328,6 +1406,8 @@ instance Data.ProtoLens.MessageEnum Edition where
   showEnum EDITION_PROTO3 = "EDITION_PROTO3"
   showEnum EDITION_2023 = "EDITION_2023"
   showEnum EDITION_2024 = "EDITION_2024"
+  showEnum EDITION_2026 = "EDITION_2026"
+  showEnum EDITION_UNSTABLE = "EDITION_UNSTABLE"
   showEnum EDITION_1_TEST_ONLY = "EDITION_1_TEST_ONLY"
   showEnum EDITION_2_TEST_ONLY = "EDITION_2_TEST_ONLY"
   showEnum EDITION_99997_TEST_ONLY = "EDITION_99997_TEST_ONLY"
@@ -1341,6 +1421,8 @@ instance Data.ProtoLens.MessageEnum Edition where
     | (Prelude.==) k "EDITION_PROTO3" = Prelude.Just EDITION_PROTO3
     | (Prelude.==) k "EDITION_2023" = Prelude.Just EDITION_2023
     | (Prelude.==) k "EDITION_2024" = Prelude.Just EDITION_2024
+    | (Prelude.==) k "EDITION_2026" = Prelude.Just EDITION_2026
+    | (Prelude.==) k "EDITION_UNSTABLE" = Prelude.Just EDITION_UNSTABLE
     | (Prelude.==) k "EDITION_1_TEST_ONLY"
     = Prelude.Just EDITION_1_TEST_ONLY
     | (Prelude.==) k "EDITION_2_TEST_ONLY"
@@ -1373,6 +1455,8 @@ instance Prelude.Enum Edition where
   fromEnum EDITION_PROTO3 = 999
   fromEnum EDITION_2023 = 1000
   fromEnum EDITION_2024 = 1001
+  fromEnum EDITION_2026 = 1002
+  fromEnum EDITION_UNSTABLE = 9999
   fromEnum EDITION_99997_TEST_ONLY = 99997
   fromEnum EDITION_99998_TEST_ONLY = 99998
   fromEnum EDITION_99999_TEST_ONLY = 99999
@@ -1387,7 +1471,9 @@ instance Prelude.Enum Edition where
   succ EDITION_PROTO2 = EDITION_PROTO3
   succ EDITION_PROTO3 = EDITION_2023
   succ EDITION_2023 = EDITION_2024
-  succ EDITION_2024 = EDITION_99997_TEST_ONLY
+  succ EDITION_2024 = EDITION_2026
+  succ EDITION_2026 = EDITION_UNSTABLE
+  succ EDITION_UNSTABLE = EDITION_99997_TEST_ONLY
   succ EDITION_99997_TEST_ONLY = EDITION_99998_TEST_ONLY
   succ EDITION_99998_TEST_ONLY = EDITION_99999_TEST_ONLY
   succ EDITION_99999_TEST_ONLY = EDITION_MAX
@@ -1401,7 +1487,9 @@ instance Prelude.Enum Edition where
   pred EDITION_PROTO3 = EDITION_PROTO2
   pred EDITION_2023 = EDITION_PROTO3
   pred EDITION_2024 = EDITION_2023
-  pred EDITION_99997_TEST_ONLY = EDITION_2024
+  pred EDITION_2026 = EDITION_2024
+  pred EDITION_UNSTABLE = EDITION_2026
+  pred EDITION_99997_TEST_ONLY = EDITION_UNSTABLE
   pred EDITION_99998_TEST_ONLY = EDITION_99997_TEST_ONLY
   pred EDITION_99999_TEST_ONLY = EDITION_99998_TEST_ONLY
   pred EDITION_MAX = EDITION_99999_TEST_ONLY
@@ -1424,13 +1512,16 @@ instance Control.DeepSeq.NFData Edition where
          * 'Proto.Google.Protobuf.Descriptor_Fields.reservedRange' @:: Lens' EnumDescriptorProto [EnumDescriptorProto'EnumReservedRange]@
          * 'Proto.Google.Protobuf.Descriptor_Fields.vec'reservedRange' @:: Lens' EnumDescriptorProto (Data.Vector.Vector EnumDescriptorProto'EnumReservedRange)@
          * 'Proto.Google.Protobuf.Descriptor_Fields.reservedName' @:: Lens' EnumDescriptorProto [Data.Text.Text]@
-         * 'Proto.Google.Protobuf.Descriptor_Fields.vec'reservedName' @:: Lens' EnumDescriptorProto (Data.Vector.Vector Data.Text.Text)@ -}
+         * 'Proto.Google.Protobuf.Descriptor_Fields.vec'reservedName' @:: Lens' EnumDescriptorProto (Data.Vector.Vector Data.Text.Text)@
+         * 'Proto.Google.Protobuf.Descriptor_Fields.visibility' @:: Lens' EnumDescriptorProto SymbolVisibility@
+         * 'Proto.Google.Protobuf.Descriptor_Fields.maybe'visibility' @:: Lens' EnumDescriptorProto (Prelude.Maybe SymbolVisibility)@ -}
 data EnumDescriptorProto
   = EnumDescriptorProto'_constructor {_EnumDescriptorProto'name :: !(Prelude.Maybe Data.Text.Text),
                                       _EnumDescriptorProto'value :: !(Data.Vector.Vector EnumValueDescriptorProto),
                                       _EnumDescriptorProto'options :: !(Prelude.Maybe EnumOptions),
                                       _EnumDescriptorProto'reservedRange :: !(Data.Vector.Vector EnumDescriptorProto'EnumReservedRange),
                                       _EnumDescriptorProto'reservedName :: !(Data.Vector.Vector Data.Text.Text),
+                                      _EnumDescriptorProto'visibility :: !(Prelude.Maybe SymbolVisibility),
                                       _EnumDescriptorProto'_unknownFields :: !Data.ProtoLens.FieldSet}
   deriving stock (Prelude.Eq, Prelude.Ord)
 instance Prelude.Show EnumDescriptorProto where
@@ -1515,6 +1606,20 @@ instance Data.ProtoLens.Field.HasField EnumDescriptorProto "vec'reservedName" (D
            _EnumDescriptorProto'reservedName
            (\ x__ y__ -> x__ {_EnumDescriptorProto'reservedName = y__}))
         Prelude.id
+instance Data.ProtoLens.Field.HasField EnumDescriptorProto "visibility" SymbolVisibility where
+  fieldOf _
+    = (Prelude..)
+        (Lens.Family2.Unchecked.lens
+           _EnumDescriptorProto'visibility
+           (\ x__ y__ -> x__ {_EnumDescriptorProto'visibility = y__}))
+        (Data.ProtoLens.maybeLens Data.ProtoLens.fieldDefault)
+instance Data.ProtoLens.Field.HasField EnumDescriptorProto "maybe'visibility" (Prelude.Maybe SymbolVisibility) where
+  fieldOf _
+    = (Prelude..)
+        (Lens.Family2.Unchecked.lens
+           _EnumDescriptorProto'visibility
+           (\ x__ y__ -> x__ {_EnumDescriptorProto'visibility = y__}))
+        Prelude.id
 instance Data.ProtoLens.Message EnumDescriptorProto where
   messageName _
     = Data.Text.pack "google.protobuf.EnumDescriptorProto"
@@ -1525,7 +1630,10 @@ instance Data.ProtoLens.Message EnumDescriptorProto where
       \\ENQvalue\CAN\STX \ETX(\v2).google.protobuf.EnumValueDescriptorProtoR\ENQvalue\DC26\n\
       \\aoptions\CAN\ETX \SOH(\v2\FS.google.protobuf.EnumOptionsR\aoptions\DC2]\n\
       \\SOreserved_range\CAN\EOT \ETX(\v26.google.protobuf.EnumDescriptorProto.EnumReservedRangeR\rreservedRange\DC2#\n\
-      \\rreserved_name\CAN\ENQ \ETX(\tR\freservedName\SUB;\n\
+      \\rreserved_name\CAN\ENQ \ETX(\tR\freservedName\DC2A\n\
+      \\n\
+      \visibility\CAN\ACK \SOH(\SO2!.google.protobuf.SymbolVisibilityR\n\
+      \visibility\SUB;\n\
       \\DC1EnumReservedRange\DC2\DC4\n\
       \\ENQstart\CAN\SOH \SOH(\ENQR\ENQstart\DC2\DLE\n\
       \\ETXend\CAN\STX \SOH(\ENQR\ETXend"
@@ -1574,13 +1682,22 @@ instance Data.ProtoLens.Message EnumDescriptorProto where
                  Data.ProtoLens.Unpacked
                  (Data.ProtoLens.Field.field @"reservedName")) ::
               Data.ProtoLens.FieldDescriptor EnumDescriptorProto
+        visibility__field_descriptor
+          = Data.ProtoLens.FieldDescriptor
+              "visibility"
+              (Data.ProtoLens.ScalarField Data.ProtoLens.EnumField ::
+                 Data.ProtoLens.FieldTypeDescriptor SymbolVisibility)
+              (Data.ProtoLens.OptionalField
+                 (Data.ProtoLens.Field.field @"maybe'visibility")) ::
+              Data.ProtoLens.FieldDescriptor EnumDescriptorProto
       in
         Data.Map.fromList
           [(Data.ProtoLens.Tag 1, name__field_descriptor),
            (Data.ProtoLens.Tag 2, value__field_descriptor),
            (Data.ProtoLens.Tag 3, options__field_descriptor),
            (Data.ProtoLens.Tag 4, reservedRange__field_descriptor),
-           (Data.ProtoLens.Tag 5, reservedName__field_descriptor)]
+           (Data.ProtoLens.Tag 5, reservedName__field_descriptor),
+           (Data.ProtoLens.Tag 6, visibility__field_descriptor)]
   unknownFields
     = Lens.Family2.Unchecked.lens
         _EnumDescriptorProto'_unknownFields
@@ -1592,6 +1709,7 @@ instance Data.ProtoLens.Message EnumDescriptorProto where
          _EnumDescriptorProto'options = Prelude.Nothing,
          _EnumDescriptorProto'reservedRange = Data.Vector.Generic.empty,
          _EnumDescriptorProto'reservedName = Data.Vector.Generic.empty,
+         _EnumDescriptorProto'visibility = Prelude.Nothing,
          _EnumDescriptorProto'_unknownFields = []}
   parseMessage
     = let
@@ -1689,6 +1807,19 @@ instance Data.ProtoLens.Message EnumDescriptorProto where
                                        (Data.ProtoLens.Encoding.Growing.append
                                           mutable'reservedName y)
                                 loop x v mutable'reservedRange mutable'value
+                        48
+                          -> do y <- (Data.ProtoLens.Encoding.Bytes.<?>)
+                                       (Prelude.fmap
+                                          Prelude.toEnum
+                                          (Prelude.fmap
+                                             Prelude.fromIntegral
+                                             Data.ProtoLens.Encoding.Bytes.getVarInt))
+                                       "visibility"
+                                loop
+                                  (Lens.Family2.set (Data.ProtoLens.Field.field @"visibility") y x)
+                                  mutable'reservedName
+                                  mutable'reservedRange
+                                  mutable'value
                         wire
                           -> do !y <- Data.ProtoLens.Encoding.Wire.parseTaggedValueFromWire
                                         wire
@@ -1791,8 +1922,23 @@ instance Data.ProtoLens.Message EnumDescriptorProto where
                                        _v))
                             (Lens.Family2.view
                                (Data.ProtoLens.Field.field @"vec'reservedName") _x))
-                         (Data.ProtoLens.Encoding.Wire.buildFieldSet
-                            (Lens.Family2.view Data.ProtoLens.unknownFields _x))))))
+                         ((Data.Monoid.<>)
+                            (case
+                                 Lens.Family2.view
+                                   (Data.ProtoLens.Field.field @"maybe'visibility") _x
+                             of
+                               Prelude.Nothing -> Data.Monoid.mempty
+                               (Prelude.Just _v)
+                                 -> (Data.Monoid.<>)
+                                      (Data.ProtoLens.Encoding.Bytes.putVarInt 48)
+                                      ((Prelude..)
+                                         ((Prelude..)
+                                            Data.ProtoLens.Encoding.Bytes.putVarInt
+                                            Prelude.fromIntegral)
+                                         Prelude.fromEnum
+                                         _v))
+                            (Data.ProtoLens.Encoding.Wire.buildFieldSet
+                               (Lens.Family2.view Data.ProtoLens.unknownFields _x)))))))
 instance Control.DeepSeq.NFData EnumDescriptorProto where
   rnf
     = \ x__
@@ -1807,7 +1953,9 @@ instance Control.DeepSeq.NFData EnumDescriptorProto where
                       (Control.DeepSeq.deepseq
                          (_EnumDescriptorProto'reservedRange x__)
                          (Control.DeepSeq.deepseq
-                            (_EnumDescriptorProto'reservedName x__) ())))))
+                            (_EnumDescriptorProto'reservedName x__)
+                            (Control.DeepSeq.deepseq
+                               (_EnumDescriptorProto'visibility x__) ()))))))
 {- | Fields :
      
          * 'Proto.Google.Protobuf.Descriptor_Fields.start' @:: Lens' EnumDescriptorProto'EnumReservedRange Data.Int.Int32@
@@ -2090,7 +2238,7 @@ instance Data.ProtoLens.Message EnumOptions where
       \deprecated\DC2V\n\
       \&deprecated_legacy_json_field_conflicts\CAN\ACK \SOH(\bR\"deprecatedLegacyJsonFieldConflictsB\STX\CAN\SOH\DC27\n\
       \\bfeatures\CAN\a \SOH(\v2\ESC.google.protobuf.FeatureSetR\bfeatures\DC2X\n\
-      \\DC4uninterpreted_option\CAN\231\a \ETX(\v2$.google.protobuf.UninterpretedOptionR\DC3uninterpretedOption*\t\b\232\a\DLE\128\128\128\128\STXJ\EOT\b\ENQ\DLE\ACK"
+      \\DC4uninterpreted_option\CAN\231\a \ETX(\v2$.google.protobuf.UninterpretedOptionR\DC3uninterpretedOption*\ACK\b\222\a\DLE\231\a*\t\b\232\a\DLE\128\128\128\128\STXJ\EOT\b\ENQ\DLE\ACK"
   packedFileDescriptor _ = packedFileDescriptor
   fieldsByTag
     = let
@@ -2673,7 +2821,7 @@ instance Data.ProtoLens.Message EnumValueOptions where
       \\bfeatures\CAN\STX \SOH(\v2\ESC.google.protobuf.FeatureSetR\bfeatures\DC2(\n\
       \\fdebug_redact\CAN\ETX \SOH(\b:\ENQfalseR\vdebugRedact\DC2U\n\
       \\SIfeature_support\CAN\EOT \SOH(\v2,.google.protobuf.FieldOptions.FeatureSupportR\SOfeatureSupport\DC2X\n\
-      \\DC4uninterpreted_option\CAN\231\a \ETX(\v2$.google.protobuf.UninterpretedOptionR\DC3uninterpretedOption*\t\b\232\a\DLE\128\128\128\128\STX"
+      \\DC4uninterpreted_option\CAN\231\a \ETX(\v2$.google.protobuf.UninterpretedOptionR\DC3uninterpretedOption*E\b\222\a\DLE\231\a\SUB=\DC2;\b\230\a\DC2\DC2.pb.enumvalue.json\SUB\".pb.enumvalue.JsonEnumValueOptions*\t\b\232\a\DLE\128\128\128\128\STX"
   packedFileDescriptor _ = packedFileDescriptor
   fieldsByTag
     = let
@@ -3026,7 +3174,7 @@ instance Data.ProtoLens.Message ExtensionRangeOptions where
       \\DC1VerificationState\DC2\SI\n\
       \\vDECLARATION\DLE\NUL\DC2\SO\n\
       \\n\
-      \UNVERIFIED\DLE\SOH*\t\b\232\a\DLE\128\128\128\128\STX"
+      \UNVERIFIED\DLE\SOH*\ACK\b\222\a\DLE\231\a*\t\b\232\a\DLE\128\128\128\128\STX"
   packedFileDescriptor _ = packedFileDescriptor
   fieldsByTag
     = let
@@ -3656,7 +3804,13 @@ instance Control.DeepSeq.NFData ExtensionRangeOptions'VerificationState where
          * 'Proto.Google.Protobuf.Descriptor_Fields.messageEncoding' @:: Lens' FeatureSet FeatureSet'MessageEncoding@
          * 'Proto.Google.Protobuf.Descriptor_Fields.maybe'messageEncoding' @:: Lens' FeatureSet (Prelude.Maybe FeatureSet'MessageEncoding)@
          * 'Proto.Google.Protobuf.Descriptor_Fields.jsonFormat' @:: Lens' FeatureSet FeatureSet'JsonFormat@
-         * 'Proto.Google.Protobuf.Descriptor_Fields.maybe'jsonFormat' @:: Lens' FeatureSet (Prelude.Maybe FeatureSet'JsonFormat)@ -}
+         * 'Proto.Google.Protobuf.Descriptor_Fields.maybe'jsonFormat' @:: Lens' FeatureSet (Prelude.Maybe FeatureSet'JsonFormat)@
+         * 'Proto.Google.Protobuf.Descriptor_Fields.enforceNamingStyle' @:: Lens' FeatureSet FeatureSet'EnforceNamingStyle@
+         * 'Proto.Google.Protobuf.Descriptor_Fields.maybe'enforceNamingStyle' @:: Lens' FeatureSet (Prelude.Maybe FeatureSet'EnforceNamingStyle)@
+         * 'Proto.Google.Protobuf.Descriptor_Fields.defaultSymbolVisibility' @:: Lens' FeatureSet FeatureSet'VisibilityFeature'DefaultSymbolVisibility@
+         * 'Proto.Google.Protobuf.Descriptor_Fields.maybe'defaultSymbolVisibility' @:: Lens' FeatureSet (Prelude.Maybe FeatureSet'VisibilityFeature'DefaultSymbolVisibility)@
+         * 'Proto.Google.Protobuf.Descriptor_Fields.enforceProtoLimits' @:: Lens' FeatureSet FeatureSet'ProtoLimitsFeature'EnforceProtoLimits@
+         * 'Proto.Google.Protobuf.Descriptor_Fields.maybe'enforceProtoLimits' @:: Lens' FeatureSet (Prelude.Maybe FeatureSet'ProtoLimitsFeature'EnforceProtoLimits)@ -}
 data FeatureSet
   = FeatureSet'_constructor {_FeatureSet'fieldPresence :: !(Prelude.Maybe FeatureSet'FieldPresence),
                              _FeatureSet'enumType :: !(Prelude.Maybe FeatureSet'EnumType),
@@ -3664,6 +3818,9 @@ data FeatureSet
                              _FeatureSet'utf8Validation :: !(Prelude.Maybe FeatureSet'Utf8Validation),
                              _FeatureSet'messageEncoding :: !(Prelude.Maybe FeatureSet'MessageEncoding),
                              _FeatureSet'jsonFormat :: !(Prelude.Maybe FeatureSet'JsonFormat),
+                             _FeatureSet'enforceNamingStyle :: !(Prelude.Maybe FeatureSet'EnforceNamingStyle),
+                             _FeatureSet'defaultSymbolVisibility :: !(Prelude.Maybe FeatureSet'VisibilityFeature'DefaultSymbolVisibility),
+                             _FeatureSet'enforceProtoLimits :: !(Prelude.Maybe FeatureSet'ProtoLimitsFeature'EnforceProtoLimits),
                              _FeatureSet'_unknownFields :: !Data.ProtoLens.FieldSet}
   deriving stock (Prelude.Eq, Prelude.Ord)
 instance Prelude.Show FeatureSet where
@@ -3756,20 +3913,80 @@ instance Data.ProtoLens.Field.HasField FeatureSet "maybe'jsonFormat" (Prelude.Ma
            _FeatureSet'jsonFormat
            (\ x__ y__ -> x__ {_FeatureSet'jsonFormat = y__}))
         Prelude.id
+instance Data.ProtoLens.Field.HasField FeatureSet "enforceNamingStyle" FeatureSet'EnforceNamingStyle where
+  fieldOf _
+    = (Prelude..)
+        (Lens.Family2.Unchecked.lens
+           _FeatureSet'enforceNamingStyle
+           (\ x__ y__ -> x__ {_FeatureSet'enforceNamingStyle = y__}))
+        (Data.ProtoLens.maybeLens Data.ProtoLens.fieldDefault)
+instance Data.ProtoLens.Field.HasField FeatureSet "maybe'enforceNamingStyle" (Prelude.Maybe FeatureSet'EnforceNamingStyle) where
+  fieldOf _
+    = (Prelude..)
+        (Lens.Family2.Unchecked.lens
+           _FeatureSet'enforceNamingStyle
+           (\ x__ y__ -> x__ {_FeatureSet'enforceNamingStyle = y__}))
+        Prelude.id
+instance Data.ProtoLens.Field.HasField FeatureSet "defaultSymbolVisibility" FeatureSet'VisibilityFeature'DefaultSymbolVisibility where
+  fieldOf _
+    = (Prelude..)
+        (Lens.Family2.Unchecked.lens
+           _FeatureSet'defaultSymbolVisibility
+           (\ x__ y__ -> x__ {_FeatureSet'defaultSymbolVisibility = y__}))
+        (Data.ProtoLens.maybeLens Data.ProtoLens.fieldDefault)
+instance Data.ProtoLens.Field.HasField FeatureSet "maybe'defaultSymbolVisibility" (Prelude.Maybe FeatureSet'VisibilityFeature'DefaultSymbolVisibility) where
+  fieldOf _
+    = (Prelude..)
+        (Lens.Family2.Unchecked.lens
+           _FeatureSet'defaultSymbolVisibility
+           (\ x__ y__ -> x__ {_FeatureSet'defaultSymbolVisibility = y__}))
+        Prelude.id
+instance Data.ProtoLens.Field.HasField FeatureSet "enforceProtoLimits" FeatureSet'ProtoLimitsFeature'EnforceProtoLimits where
+  fieldOf _
+    = (Prelude..)
+        (Lens.Family2.Unchecked.lens
+           _FeatureSet'enforceProtoLimits
+           (\ x__ y__ -> x__ {_FeatureSet'enforceProtoLimits = y__}))
+        (Data.ProtoLens.maybeLens Data.ProtoLens.fieldDefault)
+instance Data.ProtoLens.Field.HasField FeatureSet "maybe'enforceProtoLimits" (Prelude.Maybe FeatureSet'ProtoLimitsFeature'EnforceProtoLimits) where
+  fieldOf _
+    = (Prelude..)
+        (Lens.Family2.Unchecked.lens
+           _FeatureSet'enforceProtoLimits
+           (\ x__ y__ -> x__ {_FeatureSet'enforceProtoLimits = y__}))
+        Prelude.id
 instance Data.ProtoLens.Message FeatureSet where
   messageName _ = Data.Text.pack "google.protobuf.FeatureSet"
   packedMessageDescriptor _
     = "\n\
       \\n\
       \FeatureSet\DC2\145\SOH\n\
-      \\SOfield_presence\CAN\SOH \SOH(\SO2).google.protobuf.FeatureSet.FieldPresenceR\rfieldPresenceB?\136\SOH\SOH\152\SOH\EOT\152\SOH\SOH\162\SOH\r\DC2\bEXPLICIT\CAN\132\a\162\SOH\r\DC2\bIMPLICIT\CAN\231\a\162\SOH\r\DC2\bEXPLICIT\CAN\232\a\178\SOH\ETX\b\232\a\DC2l\n\
-      \\tenum_type\CAN\STX \SOH(\SO2$.google.protobuf.FeatureSet.EnumTypeR\benumTypeB)\136\SOH\SOH\152\SOH\ACK\152\SOH\SOH\162\SOH\v\DC2\ACKCLOSED\CAN\132\a\162\SOH\t\DC2\EOTOPEN\CAN\231\a\178\SOH\ETX\b\232\a\DC2\152\SOH\n\
-      \\ETBrepeated_field_encoding\CAN\ETX \SOH(\SO21.google.protobuf.FeatureSet.RepeatedFieldEncodingR\NAKrepeatedFieldEncodingB-\136\SOH\SOH\152\SOH\EOT\152\SOH\SOH\162\SOH\r\DC2\bEXPANDED\CAN\132\a\162\SOH\v\DC2\ACKPACKED\CAN\231\a\178\SOH\ETX\b\232\a\DC2~\n\
-      \\SIutf8_validation\CAN\EOT \SOH(\SO2*.google.protobuf.FeatureSet.Utf8ValidationR\SOutf8ValidationB)\136\SOH\SOH\152\SOH\EOT\152\SOH\SOH\162\SOH\t\DC2\EOTNONE\CAN\132\a\162\SOH\v\DC2\ACKVERIFY\CAN\231\a\178\SOH\ETX\b\232\a\DC2~\n\
-      \\DLEmessage_encoding\CAN\ENQ \SOH(\SO2+.google.protobuf.FeatureSet.MessageEncodingR\SImessageEncodingB&\136\SOH\SOH\152\SOH\EOT\152\SOH\SOH\162\SOH\DC4\DC2\SILENGTH_PREFIXED\CAN\132\a\178\SOH\ETX\b\232\a\DC2\130\SOH\n\
+      \\SOfield_presence\CAN\SOH \SOH(\SO2).google.protobuf.FeatureSet.FieldPresenceR\rfieldPresenceB?\136\SOH\SOH\152\SOH\EOT\152\SOH\SOH\162\SOH\r\CAN\132\a\DC2\bEXPLICIT\162\SOH\r\CAN\231\a\DC2\bIMPLICIT\162\SOH\r\CAN\232\a\DC2\bEXPLICIT\178\SOH\ETX\b\232\a\DC2l\n\
+      \\tenum_type\CAN\STX \SOH(\SO2$.google.protobuf.FeatureSet.EnumTypeR\benumTypeB)\136\SOH\SOH\152\SOH\ACK\152\SOH\SOH\162\SOH\v\CAN\132\a\DC2\ACKCLOSED\162\SOH\t\CAN\231\a\DC2\EOTOPEN\178\SOH\ETX\b\232\a\DC2\152\SOH\n\
+      \\ETBrepeated_field_encoding\CAN\ETX \SOH(\SO21.google.protobuf.FeatureSet.RepeatedFieldEncodingR\NAKrepeatedFieldEncodingB-\136\SOH\SOH\152\SOH\EOT\152\SOH\SOH\162\SOH\r\CAN\132\a\DC2\bEXPANDED\162\SOH\v\CAN\231\a\DC2\ACKPACKED\178\SOH\ETX\b\232\a\DC2~\n\
+      \\SIutf8_validation\CAN\EOT \SOH(\SO2*.google.protobuf.FeatureSet.Utf8ValidationR\SOutf8ValidationB)\136\SOH\SOH\152\SOH\EOT\152\SOH\SOH\162\SOH\t\CAN\132\a\DC2\EOTNONE\162\SOH\v\CAN\231\a\DC2\ACKVERIFY\178\SOH\ETX\b\232\a\DC2~\n\
+      \\DLEmessage_encoding\CAN\ENQ \SOH(\SO2+.google.protobuf.FeatureSet.MessageEncodingR\SImessageEncodingB&\136\SOH\SOH\152\SOH\EOT\152\SOH\SOH\162\SOH\DC4\CAN\132\a\DC2\SILENGTH_PREFIXED\178\SOH\ETX\b\232\a\DC2\130\SOH\n\
       \\vjson_format\CAN\ACK \SOH(\SO2&.google.protobuf.FeatureSet.JsonFormatR\n\
-      \jsonFormatB9\136\SOH\SOH\152\SOH\ETX\152\SOH\ACK\152\SOH\SOH\162\SOH\ETB\DC2\DC2LEGACY_BEST_EFFORT\CAN\132\a\162\SOH\n\
-      \\DC2\ENQALLOW\CAN\231\a\178\SOH\ETX\b\232\a\"\\\n\
+      \jsonFormatB9\136\SOH\SOH\152\SOH\ETX\152\SOH\ACK\152\SOH\SOH\162\SOH\ETB\CAN\132\a\DC2\DC2LEGACY_BEST_EFFORT\162\SOH\n\
+      \\CAN\231\a\DC2\ENQALLOW\178\SOH\ETX\b\232\a\DC2\188\SOH\n\
+      \\DC4enforce_naming_style\CAN\a \SOH(\SO2..google.protobuf.FeatureSet.EnforceNamingStyleR\DC2enforceNamingStyleBZ\136\SOH\STX\152\SOH\SOH\152\SOH\STX\152\SOH\ETX\152\SOH\EOT\152\SOH\ENQ\152\SOH\ACK\152\SOH\a\152\SOH\b\152\SOH\t\162\SOH\DC1\CAN\132\a\DC2\fSTYLE_LEGACY\162\SOH\SO\CAN\233\a\DC2\tSTYLE2024\162\SOH\SO\CAN\234\a\DC2\tSTYLE2026\178\SOH\ETX\b\233\a\DC2\199\SOH\n\
+      \\EMdefault_symbol_visibility\CAN\b \SOH(\SO2E.google.protobuf.FeatureSet.VisibilityFeature.DefaultSymbolVisibilityR\ETBdefaultSymbolVisibilityBD\136\SOH\STX\152\SOH\SOH\162\SOH\SI\CAN\132\a\DC2\n\
+      \EXPORT_ALL\162\SOH\NAK\CAN\233\a\DC2\DLEEXPORT_TOP_LEVEL\162\SOH\v\CAN\234\a\DC2\ACKSTRICT\178\SOH\ETX\b\233\a\DC2\195\SOH\n\
+      \\DC4enforce_proto_limits\CAN\t \SOH(\SO2A.google.protobuf.FeatureSet.ProtoLimitsFeature.EnforceProtoLimitsR\DC2enforceProtoLimitsBN\136\SOH\STX\152\SOH\ACK\152\SOH\ETX\152\SOH\EOT\152\SOH\ENQ\162\SOH\RS\CAN\132\a\DC2\EMLEGACY_NO_EXPLICIT_LIMITS\162\SOH\NAK\CAN\234\a\DC2\DLEPROTO_LIMITS2026\178\SOH\ETX\b\234\a\SUB\161\SOH\n\
+      \\DC1VisibilityFeature\"\129\SOH\n\
+      \\ETBDefaultSymbolVisibility\DC2%\n\
+      \!DEFAULT_SYMBOL_VISIBILITY_UNKNOWN\DLE\NUL\DC2\SO\n\
+      \\n\
+      \EXPORT_ALL\DLE\SOH\DC2\DC4\n\
+      \\DLEEXPORT_TOP_LEVEL\DLE\STX\DC2\r\n\
+      \\tLOCAL_ALL\DLE\ETX\DC2\n\
+      \\n\
+      \\ACKSTRICT\DLE\EOTJ\b\b\SOH\DLE\128\128\128\128\STX\SUBy\n\
+      \\DC2ProtoLimitsFeature\"c\n\
+      \\DC2EnforceProtoLimits\DC2\CAN\n\
+      \\DC4PROTO_LIMITS_UNKNOWN\DLE\NUL\DC2\GS\n\
+      \\EMLEGACY_NO_EXPLICIT_LIMITS\DLE\SOH\DC2\DC4\n\
+      \\DLEPROTO_LIMITS2026\DLE\STX\"\\\n\
       \\rFieldPresence\DC2\SUB\n\
       \\SYNFIELD_PRESENCE_UNKNOWN\DLE\NUL\DC2\f\n\
       \\bEXPLICIT\DLE\SOH\DC2\f\n\
@@ -3798,7 +4015,15 @@ instance Data.ProtoLens.Message FeatureSet where
       \JsonFormat\DC2\ETB\n\
       \\DC3JSON_FORMAT_UNKNOWN\DLE\NUL\DC2\t\n\
       \\ENQALLOW\DLE\SOH\DC2\SYN\n\
-      \\DC2LEGACY_BEST_EFFORT\DLE\STX*\ACK\b\232\a\DLE\139N*\ACK\b\139N\DLE\144N*\ACK\b\144N\DLE\145NJ\ACK\b\231\a\DLE\232\a"
+      \\DC2LEGACY_BEST_EFFORT\DLE\STX\"f\n\
+      \\DC2EnforceNamingStyle\DC2 \n\
+      \\FSENFORCE_NAMING_STYLE_UNKNOWN\DLE\NUL\DC2\r\n\
+      \\tSTYLE2024\DLE\SOH\DC2\DLE\n\
+      \\fSTYLE_LEGACY\DLE\STX\DC2\r\n\
+      \\tSTYLE2026\DLE\ETX*\188\STX\b\232\a\DLE\139N\SUB\179\STX\DC2\GS\b\232\a\DC2\a.pb.cpp\SUB\SI.pb.CppFeatures\DC2\US\b\233\a\DC2\b.pb.java\SUB\DLE.pb.JavaFeatures\DC2\ESC\b\234\a\DC2\ACK.pb.go\SUB\SO.pb.GoFeatures\DC2#\b\235\a\DC2\n\
+      \.pb.python\SUB\DC2.pb.PythonFeatures\DC2#\b\236\a\DC2\n\
+      \.pb.csharp\SUB\DC2.pb.CSharpFeatures\DC25\b\204\b\DC2\CAN.imp.impress_feature_set\SUB\SYN.imp.ImpressFeatureSet\DC2.\b\133N\DC2\DLE.pb.java_mutable\SUB\ETB.pb.JavaMutableFeatures\DC2#\b\134N\DC2\n\
+      \.pb.proto1\SUB\DC2.pb.Proto1Features*\ACK\b\139N\DLE\144N*\ACK\b\144N\DLE\145NJ\ACK\b\231\a\DLE\232\a"
   packedFileDescriptor _ = packedFileDescriptor
   fieldsByTag
     = let
@@ -3850,6 +4075,30 @@ instance Data.ProtoLens.Message FeatureSet where
               (Data.ProtoLens.OptionalField
                  (Data.ProtoLens.Field.field @"maybe'jsonFormat")) ::
               Data.ProtoLens.FieldDescriptor FeatureSet
+        enforceNamingStyle__field_descriptor
+          = Data.ProtoLens.FieldDescriptor
+              "enforce_naming_style"
+              (Data.ProtoLens.ScalarField Data.ProtoLens.EnumField ::
+                 Data.ProtoLens.FieldTypeDescriptor FeatureSet'EnforceNamingStyle)
+              (Data.ProtoLens.OptionalField
+                 (Data.ProtoLens.Field.field @"maybe'enforceNamingStyle")) ::
+              Data.ProtoLens.FieldDescriptor FeatureSet
+        defaultSymbolVisibility__field_descriptor
+          = Data.ProtoLens.FieldDescriptor
+              "default_symbol_visibility"
+              (Data.ProtoLens.ScalarField Data.ProtoLens.EnumField ::
+                 Data.ProtoLens.FieldTypeDescriptor FeatureSet'VisibilityFeature'DefaultSymbolVisibility)
+              (Data.ProtoLens.OptionalField
+                 (Data.ProtoLens.Field.field @"maybe'defaultSymbolVisibility")) ::
+              Data.ProtoLens.FieldDescriptor FeatureSet
+        enforceProtoLimits__field_descriptor
+          = Data.ProtoLens.FieldDescriptor
+              "enforce_proto_limits"
+              (Data.ProtoLens.ScalarField Data.ProtoLens.EnumField ::
+                 Data.ProtoLens.FieldTypeDescriptor FeatureSet'ProtoLimitsFeature'EnforceProtoLimits)
+              (Data.ProtoLens.OptionalField
+                 (Data.ProtoLens.Field.field @"maybe'enforceProtoLimits")) ::
+              Data.ProtoLens.FieldDescriptor FeatureSet
       in
         Data.Map.fromList
           [(Data.ProtoLens.Tag 1, fieldPresence__field_descriptor),
@@ -3857,7 +4106,10 @@ instance Data.ProtoLens.Message FeatureSet where
            (Data.ProtoLens.Tag 3, repeatedFieldEncoding__field_descriptor),
            (Data.ProtoLens.Tag 4, utf8Validation__field_descriptor),
            (Data.ProtoLens.Tag 5, messageEncoding__field_descriptor),
-           (Data.ProtoLens.Tag 6, jsonFormat__field_descriptor)]
+           (Data.ProtoLens.Tag 6, jsonFormat__field_descriptor),
+           (Data.ProtoLens.Tag 7, enforceNamingStyle__field_descriptor),
+           (Data.ProtoLens.Tag 8, defaultSymbolVisibility__field_descriptor),
+           (Data.ProtoLens.Tag 9, enforceProtoLimits__field_descriptor)]
   unknownFields
     = Lens.Family2.Unchecked.lens
         _FeatureSet'_unknownFields
@@ -3870,6 +4122,9 @@ instance Data.ProtoLens.Message FeatureSet where
          _FeatureSet'utf8Validation = Prelude.Nothing,
          _FeatureSet'messageEncoding = Prelude.Nothing,
          _FeatureSet'jsonFormat = Prelude.Nothing,
+         _FeatureSet'enforceNamingStyle = Prelude.Nothing,
+         _FeatureSet'defaultSymbolVisibility = Prelude.Nothing,
+         _FeatureSet'enforceProtoLimits = Prelude.Nothing,
          _FeatureSet'_unknownFields = []}
   parseMessage
     = let
@@ -3956,6 +4211,39 @@ instance Data.ProtoLens.Message FeatureSet where
                                        "json_format"
                                 loop
                                   (Lens.Family2.set (Data.ProtoLens.Field.field @"jsonFormat") y x)
+                        56
+                          -> do y <- (Data.ProtoLens.Encoding.Bytes.<?>)
+                                       (Prelude.fmap
+                                          Prelude.toEnum
+                                          (Prelude.fmap
+                                             Prelude.fromIntegral
+                                             Data.ProtoLens.Encoding.Bytes.getVarInt))
+                                       "enforce_naming_style"
+                                loop
+                                  (Lens.Family2.set
+                                     (Data.ProtoLens.Field.field @"enforceNamingStyle") y x)
+                        64
+                          -> do y <- (Data.ProtoLens.Encoding.Bytes.<?>)
+                                       (Prelude.fmap
+                                          Prelude.toEnum
+                                          (Prelude.fmap
+                                             Prelude.fromIntegral
+                                             Data.ProtoLens.Encoding.Bytes.getVarInt))
+                                       "default_symbol_visibility"
+                                loop
+                                  (Lens.Family2.set
+                                     (Data.ProtoLens.Field.field @"defaultSymbolVisibility") y x)
+                        72
+                          -> do y <- (Data.ProtoLens.Encoding.Bytes.<?>)
+                                       (Prelude.fmap
+                                          Prelude.toEnum
+                                          (Prelude.fmap
+                                             Prelude.fromIntegral
+                                             Data.ProtoLens.Encoding.Bytes.getVarInt))
+                                       "enforce_proto_limits"
+                                loop
+                                  (Lens.Family2.set
+                                     (Data.ProtoLens.Field.field @"enforceProtoLimits") y x)
                         wire
                           -> do !y <- Data.ProtoLens.Encoding.Wire.parseTaggedValueFromWire
                                         wire
@@ -4052,8 +4340,56 @@ instance Data.ProtoLens.Message FeatureSet where
                                             Prelude.fromIntegral)
                                          Prelude.fromEnum
                                          _v))
-                            (Data.ProtoLens.Encoding.Wire.buildFieldSet
-                               (Lens.Family2.view Data.ProtoLens.unknownFields _x)))))))
+                            ((Data.Monoid.<>)
+                               (case
+                                    Lens.Family2.view
+                                      (Data.ProtoLens.Field.field @"maybe'enforceNamingStyle") _x
+                                of
+                                  Prelude.Nothing -> Data.Monoid.mempty
+                                  (Prelude.Just _v)
+                                    -> (Data.Monoid.<>)
+                                         (Data.ProtoLens.Encoding.Bytes.putVarInt 56)
+                                         ((Prelude..)
+                                            ((Prelude..)
+                                               Data.ProtoLens.Encoding.Bytes.putVarInt
+                                               Prelude.fromIntegral)
+                                            Prelude.fromEnum
+                                            _v))
+                               ((Data.Monoid.<>)
+                                  (case
+                                       Lens.Family2.view
+                                         (Data.ProtoLens.Field.field
+                                            @"maybe'defaultSymbolVisibility")
+                                         _x
+                                   of
+                                     Prelude.Nothing -> Data.Monoid.mempty
+                                     (Prelude.Just _v)
+                                       -> (Data.Monoid.<>)
+                                            (Data.ProtoLens.Encoding.Bytes.putVarInt 64)
+                                            ((Prelude..)
+                                               ((Prelude..)
+                                                  Data.ProtoLens.Encoding.Bytes.putVarInt
+                                                  Prelude.fromIntegral)
+                                               Prelude.fromEnum
+                                               _v))
+                                  ((Data.Monoid.<>)
+                                     (case
+                                          Lens.Family2.view
+                                            (Data.ProtoLens.Field.field @"maybe'enforceProtoLimits")
+                                            _x
+                                      of
+                                        Prelude.Nothing -> Data.Monoid.mempty
+                                        (Prelude.Just _v)
+                                          -> (Data.Monoid.<>)
+                                               (Data.ProtoLens.Encoding.Bytes.putVarInt 72)
+                                               ((Prelude..)
+                                                  ((Prelude..)
+                                                     Data.ProtoLens.Encoding.Bytes.putVarInt
+                                                     Prelude.fromIntegral)
+                                                  Prelude.fromEnum
+                                                  _v))
+                                     (Data.ProtoLens.Encoding.Wire.buildFieldSet
+                                        (Lens.Family2.view Data.ProtoLens.unknownFields _x))))))))))
 instance Control.DeepSeq.NFData FeatureSet where
   rnf
     = \ x__
@@ -4069,7 +4405,77 @@ instance Control.DeepSeq.NFData FeatureSet where
                          (_FeatureSet'utf8Validation x__)
                          (Control.DeepSeq.deepseq
                             (_FeatureSet'messageEncoding x__)
-                            (Control.DeepSeq.deepseq (_FeatureSet'jsonFormat x__) ()))))))
+                            (Control.DeepSeq.deepseq
+                               (_FeatureSet'jsonFormat x__)
+                               (Control.DeepSeq.deepseq
+                                  (_FeatureSet'enforceNamingStyle x__)
+                                  (Control.DeepSeq.deepseq
+                                     (_FeatureSet'defaultSymbolVisibility x__)
+                                     (Control.DeepSeq.deepseq
+                                        (_FeatureSet'enforceProtoLimits x__) ())))))))))
+data FeatureSet'EnforceNamingStyle
+  = FeatureSet'ENFORCE_NAMING_STYLE_UNKNOWN |
+    FeatureSet'STYLE2024 |
+    FeatureSet'STYLE_LEGACY |
+    FeatureSet'STYLE2026
+  deriving stock (Prelude.Show, Prelude.Eq, Prelude.Ord)
+instance Data.ProtoLens.MessageEnum FeatureSet'EnforceNamingStyle where
+  maybeToEnum 0
+    = Prelude.Just FeatureSet'ENFORCE_NAMING_STYLE_UNKNOWN
+  maybeToEnum 1 = Prelude.Just FeatureSet'STYLE2024
+  maybeToEnum 2 = Prelude.Just FeatureSet'STYLE_LEGACY
+  maybeToEnum 3 = Prelude.Just FeatureSet'STYLE2026
+  maybeToEnum _ = Prelude.Nothing
+  showEnum FeatureSet'ENFORCE_NAMING_STYLE_UNKNOWN
+    = "ENFORCE_NAMING_STYLE_UNKNOWN"
+  showEnum FeatureSet'STYLE2024 = "STYLE2024"
+  showEnum FeatureSet'STYLE_LEGACY = "STYLE_LEGACY"
+  showEnum FeatureSet'STYLE2026 = "STYLE2026"
+  readEnum k
+    | (Prelude.==) k "ENFORCE_NAMING_STYLE_UNKNOWN"
+    = Prelude.Just FeatureSet'ENFORCE_NAMING_STYLE_UNKNOWN
+    | (Prelude.==) k "STYLE2024" = Prelude.Just FeatureSet'STYLE2024
+    | (Prelude.==) k "STYLE_LEGACY"
+    = Prelude.Just FeatureSet'STYLE_LEGACY
+    | (Prelude.==) k "STYLE2026" = Prelude.Just FeatureSet'STYLE2026
+    | Prelude.otherwise
+    = (Prelude.>>=) (Text.Read.readMaybe k) Data.ProtoLens.maybeToEnum
+instance Prelude.Bounded FeatureSet'EnforceNamingStyle where
+  minBound = FeatureSet'ENFORCE_NAMING_STYLE_UNKNOWN
+  maxBound = FeatureSet'STYLE2026
+instance Prelude.Enum FeatureSet'EnforceNamingStyle where
+  toEnum k__
+    = Prelude.maybe
+        (Prelude.error
+           ((Prelude.++)
+              "toEnum: unknown value for enum EnforceNamingStyle: "
+              (Prelude.show k__)))
+        Prelude.id
+        (Data.ProtoLens.maybeToEnum k__)
+  fromEnum FeatureSet'ENFORCE_NAMING_STYLE_UNKNOWN = 0
+  fromEnum FeatureSet'STYLE2024 = 1
+  fromEnum FeatureSet'STYLE_LEGACY = 2
+  fromEnum FeatureSet'STYLE2026 = 3
+  succ FeatureSet'STYLE2026
+    = Prelude.error
+        "FeatureSet'EnforceNamingStyle.succ: bad argument FeatureSet'STYLE2026. This value would be out of bounds."
+  succ FeatureSet'ENFORCE_NAMING_STYLE_UNKNOWN = FeatureSet'STYLE2024
+  succ FeatureSet'STYLE2024 = FeatureSet'STYLE_LEGACY
+  succ FeatureSet'STYLE_LEGACY = FeatureSet'STYLE2026
+  pred FeatureSet'ENFORCE_NAMING_STYLE_UNKNOWN
+    = Prelude.error
+        "FeatureSet'EnforceNamingStyle.pred: bad argument FeatureSet'ENFORCE_NAMING_STYLE_UNKNOWN. This value would be out of bounds."
+  pred FeatureSet'STYLE2024 = FeatureSet'ENFORCE_NAMING_STYLE_UNKNOWN
+  pred FeatureSet'STYLE_LEGACY = FeatureSet'STYLE2024
+  pred FeatureSet'STYLE2026 = FeatureSet'STYLE_LEGACY
+  enumFrom = Data.ProtoLens.Message.Enum.messageEnumFrom
+  enumFromTo = Data.ProtoLens.Message.Enum.messageEnumFromTo
+  enumFromThen = Data.ProtoLens.Message.Enum.messageEnumFromThen
+  enumFromThenTo = Data.ProtoLens.Message.Enum.messageEnumFromThenTo
+instance Data.ProtoLens.FieldDefault FeatureSet'EnforceNamingStyle where
+  fieldDefault = FeatureSet'ENFORCE_NAMING_STYLE_UNKNOWN
+instance Control.DeepSeq.NFData FeatureSet'EnforceNamingStyle where
+  rnf x__ = Prelude.seq x__ ()
 data FeatureSet'EnumType
   = FeatureSet'ENUM_TYPE_UNKNOWN |
     FeatureSet'OPEN |
@@ -4294,6 +4700,146 @@ instance Data.ProtoLens.FieldDefault FeatureSet'MessageEncoding where
   fieldDefault = FeatureSet'MESSAGE_ENCODING_UNKNOWN
 instance Control.DeepSeq.NFData FeatureSet'MessageEncoding where
   rnf x__ = Prelude.seq x__ ()
+{- | Fields :
+      -}
+data FeatureSet'ProtoLimitsFeature
+  = FeatureSet'ProtoLimitsFeature'_constructor {_FeatureSet'ProtoLimitsFeature'_unknownFields :: !Data.ProtoLens.FieldSet}
+  deriving stock (Prelude.Eq, Prelude.Ord)
+instance Prelude.Show FeatureSet'ProtoLimitsFeature where
+  showsPrec _ __x __s
+    = Prelude.showChar
+        '{'
+        (Prelude.showString
+           (Data.ProtoLens.showMessageShort __x) (Prelude.showChar '}' __s))
+instance Data.ProtoLens.Message FeatureSet'ProtoLimitsFeature where
+  messageName _
+    = Data.Text.pack "google.protobuf.FeatureSet.ProtoLimitsFeature"
+  packedMessageDescriptor _
+    = "\n\
+      \\DC2ProtoLimitsFeature\"c\n\
+      \\DC2EnforceProtoLimits\DC2\CAN\n\
+      \\DC4PROTO_LIMITS_UNKNOWN\DLE\NUL\DC2\GS\n\
+      \\EMLEGACY_NO_EXPLICIT_LIMITS\DLE\SOH\DC2\DC4\n\
+      \\DLEPROTO_LIMITS2026\DLE\STX"
+  packedFileDescriptor _ = packedFileDescriptor
+  fieldsByTag = let in Data.Map.fromList []
+  unknownFields
+    = Lens.Family2.Unchecked.lens
+        _FeatureSet'ProtoLimitsFeature'_unknownFields
+        (\ x__ y__
+           -> x__ {_FeatureSet'ProtoLimitsFeature'_unknownFields = y__})
+  defMessage
+    = FeatureSet'ProtoLimitsFeature'_constructor
+        {_FeatureSet'ProtoLimitsFeature'_unknownFields = []}
+  parseMessage
+    = let
+        loop ::
+          FeatureSet'ProtoLimitsFeature
+          -> Data.ProtoLens.Encoding.Bytes.Parser FeatureSet'ProtoLimitsFeature
+        loop x
+          = do end <- Data.ProtoLens.Encoding.Bytes.atEnd
+               if end then
+                   do (let missing = []
+                       in
+                         if Prelude.null missing then
+                             Prelude.return ()
+                         else
+                             Prelude.fail
+                               ((Prelude.++)
+                                  "Missing required fields: "
+                                  (Prelude.show (missing :: [Prelude.String]))))
+                      Prelude.return
+                        (Lens.Family2.over
+                           Data.ProtoLens.unknownFields (\ !t -> Prelude.reverse t) x)
+               else
+                   do tag <- Data.ProtoLens.Encoding.Bytes.getVarInt
+                      case tag of {
+                        wire
+                          -> do !y <- Data.ProtoLens.Encoding.Wire.parseTaggedValueFromWire
+                                        wire
+                                loop
+                                  (Lens.Family2.over
+                                     Data.ProtoLens.unknownFields (\ !t -> (:) y t) x) }
+      in
+        (Data.ProtoLens.Encoding.Bytes.<?>)
+          (do loop Data.ProtoLens.defMessage) "ProtoLimitsFeature"
+  buildMessage
+    = \ _x
+        -> Data.ProtoLens.Encoding.Wire.buildFieldSet
+             (Lens.Family2.view Data.ProtoLens.unknownFields _x)
+instance Control.DeepSeq.NFData FeatureSet'ProtoLimitsFeature where
+  rnf
+    = \ x__
+        -> Control.DeepSeq.deepseq
+             (_FeatureSet'ProtoLimitsFeature'_unknownFields x__) ()
+data FeatureSet'ProtoLimitsFeature'EnforceProtoLimits
+  = FeatureSet'ProtoLimitsFeature'PROTO_LIMITS_UNKNOWN |
+    FeatureSet'ProtoLimitsFeature'LEGACY_NO_EXPLICIT_LIMITS |
+    FeatureSet'ProtoLimitsFeature'PROTO_LIMITS2026
+  deriving stock (Prelude.Show, Prelude.Eq, Prelude.Ord)
+instance Data.ProtoLens.MessageEnum FeatureSet'ProtoLimitsFeature'EnforceProtoLimits where
+  maybeToEnum 0
+    = Prelude.Just FeatureSet'ProtoLimitsFeature'PROTO_LIMITS_UNKNOWN
+  maybeToEnum 1
+    = Prelude.Just
+        FeatureSet'ProtoLimitsFeature'LEGACY_NO_EXPLICIT_LIMITS
+  maybeToEnum 2
+    = Prelude.Just FeatureSet'ProtoLimitsFeature'PROTO_LIMITS2026
+  maybeToEnum _ = Prelude.Nothing
+  showEnum FeatureSet'ProtoLimitsFeature'PROTO_LIMITS_UNKNOWN
+    = "PROTO_LIMITS_UNKNOWN"
+  showEnum FeatureSet'ProtoLimitsFeature'LEGACY_NO_EXPLICIT_LIMITS
+    = "LEGACY_NO_EXPLICIT_LIMITS"
+  showEnum FeatureSet'ProtoLimitsFeature'PROTO_LIMITS2026
+    = "PROTO_LIMITS2026"
+  readEnum k
+    | (Prelude.==) k "PROTO_LIMITS_UNKNOWN"
+    = Prelude.Just FeatureSet'ProtoLimitsFeature'PROTO_LIMITS_UNKNOWN
+    | (Prelude.==) k "LEGACY_NO_EXPLICIT_LIMITS"
+    = Prelude.Just
+        FeatureSet'ProtoLimitsFeature'LEGACY_NO_EXPLICIT_LIMITS
+    | (Prelude.==) k "PROTO_LIMITS2026"
+    = Prelude.Just FeatureSet'ProtoLimitsFeature'PROTO_LIMITS2026
+    | Prelude.otherwise
+    = (Prelude.>>=) (Text.Read.readMaybe k) Data.ProtoLens.maybeToEnum
+instance Prelude.Bounded FeatureSet'ProtoLimitsFeature'EnforceProtoLimits where
+  minBound = FeatureSet'ProtoLimitsFeature'PROTO_LIMITS_UNKNOWN
+  maxBound = FeatureSet'ProtoLimitsFeature'PROTO_LIMITS2026
+instance Prelude.Enum FeatureSet'ProtoLimitsFeature'EnforceProtoLimits where
+  toEnum k__
+    = Prelude.maybe
+        (Prelude.error
+           ((Prelude.++)
+              "toEnum: unknown value for enum EnforceProtoLimits: "
+              (Prelude.show k__)))
+        Prelude.id
+        (Data.ProtoLens.maybeToEnum k__)
+  fromEnum FeatureSet'ProtoLimitsFeature'PROTO_LIMITS_UNKNOWN = 0
+  fromEnum FeatureSet'ProtoLimitsFeature'LEGACY_NO_EXPLICIT_LIMITS
+    = 1
+  fromEnum FeatureSet'ProtoLimitsFeature'PROTO_LIMITS2026 = 2
+  succ FeatureSet'ProtoLimitsFeature'PROTO_LIMITS2026
+    = Prelude.error
+        "FeatureSet'ProtoLimitsFeature'EnforceProtoLimits.succ: bad argument FeatureSet'ProtoLimitsFeature'PROTO_LIMITS2026. This value would be out of bounds."
+  succ FeatureSet'ProtoLimitsFeature'PROTO_LIMITS_UNKNOWN
+    = FeatureSet'ProtoLimitsFeature'LEGACY_NO_EXPLICIT_LIMITS
+  succ FeatureSet'ProtoLimitsFeature'LEGACY_NO_EXPLICIT_LIMITS
+    = FeatureSet'ProtoLimitsFeature'PROTO_LIMITS2026
+  pred FeatureSet'ProtoLimitsFeature'PROTO_LIMITS_UNKNOWN
+    = Prelude.error
+        "FeatureSet'ProtoLimitsFeature'EnforceProtoLimits.pred: bad argument FeatureSet'ProtoLimitsFeature'PROTO_LIMITS_UNKNOWN. This value would be out of bounds."
+  pred FeatureSet'ProtoLimitsFeature'LEGACY_NO_EXPLICIT_LIMITS
+    = FeatureSet'ProtoLimitsFeature'PROTO_LIMITS_UNKNOWN
+  pred FeatureSet'ProtoLimitsFeature'PROTO_LIMITS2026
+    = FeatureSet'ProtoLimitsFeature'LEGACY_NO_EXPLICIT_LIMITS
+  enumFrom = Data.ProtoLens.Message.Enum.messageEnumFrom
+  enumFromTo = Data.ProtoLens.Message.Enum.messageEnumFromTo
+  enumFromThen = Data.ProtoLens.Message.Enum.messageEnumFromThen
+  enumFromThenTo = Data.ProtoLens.Message.Enum.messageEnumFromThenTo
+instance Data.ProtoLens.FieldDefault FeatureSet'ProtoLimitsFeature'EnforceProtoLimits where
+  fieldDefault = FeatureSet'ProtoLimitsFeature'PROTO_LIMITS_UNKNOWN
+instance Control.DeepSeq.NFData FeatureSet'ProtoLimitsFeature'EnforceProtoLimits where
+  rnf x__ = Prelude.seq x__ ()
 data FeatureSet'RepeatedFieldEncoding
   = FeatureSet'REPEATED_FIELD_ENCODING_UNKNOWN |
     FeatureSet'PACKED |
@@ -4402,6 +4948,173 @@ instance Prelude.Enum FeatureSet'Utf8Validation where
 instance Data.ProtoLens.FieldDefault FeatureSet'Utf8Validation where
   fieldDefault = FeatureSet'UTF8_VALIDATION_UNKNOWN
 instance Control.DeepSeq.NFData FeatureSet'Utf8Validation where
+  rnf x__ = Prelude.seq x__ ()
+{- | Fields :
+      -}
+data FeatureSet'VisibilityFeature
+  = FeatureSet'VisibilityFeature'_constructor {_FeatureSet'VisibilityFeature'_unknownFields :: !Data.ProtoLens.FieldSet}
+  deriving stock (Prelude.Eq, Prelude.Ord)
+instance Prelude.Show FeatureSet'VisibilityFeature where
+  showsPrec _ __x __s
+    = Prelude.showChar
+        '{'
+        (Prelude.showString
+           (Data.ProtoLens.showMessageShort __x) (Prelude.showChar '}' __s))
+instance Data.ProtoLens.Message FeatureSet'VisibilityFeature where
+  messageName _
+    = Data.Text.pack "google.protobuf.FeatureSet.VisibilityFeature"
+  packedMessageDescriptor _
+    = "\n\
+      \\DC1VisibilityFeature\"\129\SOH\n\
+      \\ETBDefaultSymbolVisibility\DC2%\n\
+      \!DEFAULT_SYMBOL_VISIBILITY_UNKNOWN\DLE\NUL\DC2\SO\n\
+      \\n\
+      \EXPORT_ALL\DLE\SOH\DC2\DC4\n\
+      \\DLEEXPORT_TOP_LEVEL\DLE\STX\DC2\r\n\
+      \\tLOCAL_ALL\DLE\ETX\DC2\n\
+      \\n\
+      \\ACKSTRICT\DLE\EOTJ\b\b\SOH\DLE\128\128\128\128\STX"
+  packedFileDescriptor _ = packedFileDescriptor
+  fieldsByTag = let in Data.Map.fromList []
+  unknownFields
+    = Lens.Family2.Unchecked.lens
+        _FeatureSet'VisibilityFeature'_unknownFields
+        (\ x__ y__
+           -> x__ {_FeatureSet'VisibilityFeature'_unknownFields = y__})
+  defMessage
+    = FeatureSet'VisibilityFeature'_constructor
+        {_FeatureSet'VisibilityFeature'_unknownFields = []}
+  parseMessage
+    = let
+        loop ::
+          FeatureSet'VisibilityFeature
+          -> Data.ProtoLens.Encoding.Bytes.Parser FeatureSet'VisibilityFeature
+        loop x
+          = do end <- Data.ProtoLens.Encoding.Bytes.atEnd
+               if end then
+                   do (let missing = []
+                       in
+                         if Prelude.null missing then
+                             Prelude.return ()
+                         else
+                             Prelude.fail
+                               ((Prelude.++)
+                                  "Missing required fields: "
+                                  (Prelude.show (missing :: [Prelude.String]))))
+                      Prelude.return
+                        (Lens.Family2.over
+                           Data.ProtoLens.unknownFields (\ !t -> Prelude.reverse t) x)
+               else
+                   do tag <- Data.ProtoLens.Encoding.Bytes.getVarInt
+                      case tag of {
+                        wire
+                          -> do !y <- Data.ProtoLens.Encoding.Wire.parseTaggedValueFromWire
+                                        wire
+                                loop
+                                  (Lens.Family2.over
+                                     Data.ProtoLens.unknownFields (\ !t -> (:) y t) x) }
+      in
+        (Data.ProtoLens.Encoding.Bytes.<?>)
+          (do loop Data.ProtoLens.defMessage) "VisibilityFeature"
+  buildMessage
+    = \ _x
+        -> Data.ProtoLens.Encoding.Wire.buildFieldSet
+             (Lens.Family2.view Data.ProtoLens.unknownFields _x)
+instance Control.DeepSeq.NFData FeatureSet'VisibilityFeature where
+  rnf
+    = \ x__
+        -> Control.DeepSeq.deepseq
+             (_FeatureSet'VisibilityFeature'_unknownFields x__) ()
+data FeatureSet'VisibilityFeature'DefaultSymbolVisibility
+  = FeatureSet'VisibilityFeature'DEFAULT_SYMBOL_VISIBILITY_UNKNOWN |
+    FeatureSet'VisibilityFeature'EXPORT_ALL |
+    FeatureSet'VisibilityFeature'EXPORT_TOP_LEVEL |
+    FeatureSet'VisibilityFeature'LOCAL_ALL |
+    FeatureSet'VisibilityFeature'STRICT
+  deriving stock (Prelude.Show, Prelude.Eq, Prelude.Ord)
+instance Data.ProtoLens.MessageEnum FeatureSet'VisibilityFeature'DefaultSymbolVisibility where
+  maybeToEnum 0
+    = Prelude.Just
+        FeatureSet'VisibilityFeature'DEFAULT_SYMBOL_VISIBILITY_UNKNOWN
+  maybeToEnum 1
+    = Prelude.Just FeatureSet'VisibilityFeature'EXPORT_ALL
+  maybeToEnum 2
+    = Prelude.Just FeatureSet'VisibilityFeature'EXPORT_TOP_LEVEL
+  maybeToEnum 3 = Prelude.Just FeatureSet'VisibilityFeature'LOCAL_ALL
+  maybeToEnum 4 = Prelude.Just FeatureSet'VisibilityFeature'STRICT
+  maybeToEnum _ = Prelude.Nothing
+  showEnum
+    FeatureSet'VisibilityFeature'DEFAULT_SYMBOL_VISIBILITY_UNKNOWN
+    = "DEFAULT_SYMBOL_VISIBILITY_UNKNOWN"
+  showEnum FeatureSet'VisibilityFeature'EXPORT_ALL = "EXPORT_ALL"
+  showEnum FeatureSet'VisibilityFeature'EXPORT_TOP_LEVEL
+    = "EXPORT_TOP_LEVEL"
+  showEnum FeatureSet'VisibilityFeature'LOCAL_ALL = "LOCAL_ALL"
+  showEnum FeatureSet'VisibilityFeature'STRICT = "STRICT"
+  readEnum k
+    | (Prelude.==) k "DEFAULT_SYMBOL_VISIBILITY_UNKNOWN"
+    = Prelude.Just
+        FeatureSet'VisibilityFeature'DEFAULT_SYMBOL_VISIBILITY_UNKNOWN
+    | (Prelude.==) k "EXPORT_ALL"
+    = Prelude.Just FeatureSet'VisibilityFeature'EXPORT_ALL
+    | (Prelude.==) k "EXPORT_TOP_LEVEL"
+    = Prelude.Just FeatureSet'VisibilityFeature'EXPORT_TOP_LEVEL
+    | (Prelude.==) k "LOCAL_ALL"
+    = Prelude.Just FeatureSet'VisibilityFeature'LOCAL_ALL
+    | (Prelude.==) k "STRICT"
+    = Prelude.Just FeatureSet'VisibilityFeature'STRICT
+    | Prelude.otherwise
+    = (Prelude.>>=) (Text.Read.readMaybe k) Data.ProtoLens.maybeToEnum
+instance Prelude.Bounded FeatureSet'VisibilityFeature'DefaultSymbolVisibility where
+  minBound
+    = FeatureSet'VisibilityFeature'DEFAULT_SYMBOL_VISIBILITY_UNKNOWN
+  maxBound = FeatureSet'VisibilityFeature'STRICT
+instance Prelude.Enum FeatureSet'VisibilityFeature'DefaultSymbolVisibility where
+  toEnum k__
+    = Prelude.maybe
+        (Prelude.error
+           ((Prelude.++)
+              "toEnum: unknown value for enum DefaultSymbolVisibility: "
+              (Prelude.show k__)))
+        Prelude.id
+        (Data.ProtoLens.maybeToEnum k__)
+  fromEnum
+    FeatureSet'VisibilityFeature'DEFAULT_SYMBOL_VISIBILITY_UNKNOWN
+    = 0
+  fromEnum FeatureSet'VisibilityFeature'EXPORT_ALL = 1
+  fromEnum FeatureSet'VisibilityFeature'EXPORT_TOP_LEVEL = 2
+  fromEnum FeatureSet'VisibilityFeature'LOCAL_ALL = 3
+  fromEnum FeatureSet'VisibilityFeature'STRICT = 4
+  succ FeatureSet'VisibilityFeature'STRICT
+    = Prelude.error
+        "FeatureSet'VisibilityFeature'DefaultSymbolVisibility.succ: bad argument FeatureSet'VisibilityFeature'STRICT. This value would be out of bounds."
+  succ FeatureSet'VisibilityFeature'DEFAULT_SYMBOL_VISIBILITY_UNKNOWN
+    = FeatureSet'VisibilityFeature'EXPORT_ALL
+  succ FeatureSet'VisibilityFeature'EXPORT_ALL
+    = FeatureSet'VisibilityFeature'EXPORT_TOP_LEVEL
+  succ FeatureSet'VisibilityFeature'EXPORT_TOP_LEVEL
+    = FeatureSet'VisibilityFeature'LOCAL_ALL
+  succ FeatureSet'VisibilityFeature'LOCAL_ALL
+    = FeatureSet'VisibilityFeature'STRICT
+  pred FeatureSet'VisibilityFeature'DEFAULT_SYMBOL_VISIBILITY_UNKNOWN
+    = Prelude.error
+        "FeatureSet'VisibilityFeature'DefaultSymbolVisibility.pred: bad argument FeatureSet'VisibilityFeature'DEFAULT_SYMBOL_VISIBILITY_UNKNOWN. This value would be out of bounds."
+  pred FeatureSet'VisibilityFeature'EXPORT_ALL
+    = FeatureSet'VisibilityFeature'DEFAULT_SYMBOL_VISIBILITY_UNKNOWN
+  pred FeatureSet'VisibilityFeature'EXPORT_TOP_LEVEL
+    = FeatureSet'VisibilityFeature'EXPORT_ALL
+  pred FeatureSet'VisibilityFeature'LOCAL_ALL
+    = FeatureSet'VisibilityFeature'EXPORT_TOP_LEVEL
+  pred FeatureSet'VisibilityFeature'STRICT
+    = FeatureSet'VisibilityFeature'LOCAL_ALL
+  enumFrom = Data.ProtoLens.Message.Enum.messageEnumFrom
+  enumFromTo = Data.ProtoLens.Message.Enum.messageEnumFromTo
+  enumFromThen = Data.ProtoLens.Message.Enum.messageEnumFromThen
+  enumFromThenTo = Data.ProtoLens.Message.Enum.messageEnumFromThenTo
+instance Data.ProtoLens.FieldDefault FeatureSet'VisibilityFeature'DefaultSymbolVisibility where
+  fieldDefault
+    = FeatureSet'VisibilityFeature'DEFAULT_SYMBOL_VISIBILITY_UNKNOWN
+instance Control.DeepSeq.NFData FeatureSet'VisibilityFeature'DefaultSymbolVisibility where
   rnf x__ = Prelude.seq x__ ()
 {- | Fields :
      
@@ -6125,9 +6838,9 @@ instance Data.ProtoLens.Message FieldOptions where
       \\SIunverified_lazy\CAN\SI \SOH(\b:\ENQfalseR\SOunverifiedLazy\DC2%\n\
       \\n\
       \deprecated\CAN\ETX \SOH(\b:\ENQfalseR\n\
-      \deprecated\DC2\EM\n\
+      \deprecated\DC2\GS\n\
       \\EOTweak\CAN\n\
-      \ \SOH(\b:\ENQfalseR\EOTweak\DC2(\n\
+      \ \SOH(\b:\ENQfalseR\EOTweakB\STX\CAN\SOH\DC2(\n\
       \\fdebug_redact\CAN\DLE \SOH(\b:\ENQfalseR\vdebugRedact\DC2K\n\
       \\tretention\CAN\DC1 \SOH(\SO2-.google.protobuf.FieldOptions.OptionRetentionR\tretention\DC2H\n\
       \\atargets\CAN\DC3 \ETX(\SO2..google.protobuf.FieldOptions.OptionTargetTypeR\atargets\DC2W\n\
@@ -6137,12 +6850,13 @@ instance Data.ProtoLens.Message FieldOptions where
       \\DC4uninterpreted_option\CAN\231\a \ETX(\v2$.google.protobuf.UninterpretedOptionR\DC3uninterpretedOption\SUBZ\n\
       \\SOEditionDefault\DC22\n\
       \\aedition\CAN\ETX \SOH(\SO2\CAN.google.protobuf.EditionR\aedition\DC2\DC4\n\
-      \\ENQvalue\CAN\STX \SOH(\tR\ENQvalue\SUB\150\STX\n\
+      \\ENQvalue\CAN\STX \SOH(\tR\ENQvalue\SUB\187\STX\n\
       \\SOFeatureSupport\DC2G\n\
       \\DC2edition_introduced\CAN\SOH \SOH(\SO2\CAN.google.protobuf.EditionR\DC1editionIntroduced\DC2G\n\
       \\DC2edition_deprecated\CAN\STX \SOH(\SO2\CAN.google.protobuf.EditionR\DC1editionDeprecated\DC2/\n\
       \\DC3deprecation_warning\CAN\ETX \SOH(\tR\DC2deprecationWarning\DC2A\n\
-      \\SIedition_removed\CAN\EOT \SOH(\SO2\CAN.google.protobuf.EditionR\SOeditionRemoved\"/\n\
+      \\SIedition_removed\CAN\EOT \SOH(\SO2\CAN.google.protobuf.EditionR\SOeditionRemoved\DC2#\n\
+      \\rremoval_error\CAN\ENQ \SOH(\tR\fremovalError\"/\n\
       \\ENQCType\DC2\n\
       \\n\
       \\ACKSTRING\DLE\NUL\DC2\b\n\
@@ -6166,7 +6880,7 @@ instance Data.ProtoLens.Message FieldOptions where
       \\DLETARGET_TYPE_ENUM\DLE\ACK\DC2\SUB\n\
       \\SYNTARGET_TYPE_ENUM_ENTRY\DLE\a\DC2\ETB\n\
       \\DC3TARGET_TYPE_SERVICE\DLE\b\DC2\SYN\n\
-      \\DC2TARGET_TYPE_METHOD\DLE\t*\t\b\232\a\DLE\128\128\128\128\STXJ\EOT\b\EOT\DLE\ENQJ\EOT\b\DC2\DLE\DC3"
+      \\DC2TARGET_TYPE_METHOD\DLE\t*\ACK\b\222\a\DLE\231\a*\t\b\232\a\DLE\128\128\128\128\STXJ\EOT\b\EOT\DLE\ENQJ\EOT\b\DC2\DLE\DC3"
   packedFileDescriptor _ = packedFileDescriptor
   fieldsByTag
     = let
@@ -7063,12 +7777,15 @@ instance Control.DeepSeq.NFData FieldOptions'EditionDefault where
          * 'Proto.Google.Protobuf.Descriptor_Fields.deprecationWarning' @:: Lens' FieldOptions'FeatureSupport Data.Text.Text@
          * 'Proto.Google.Protobuf.Descriptor_Fields.maybe'deprecationWarning' @:: Lens' FieldOptions'FeatureSupport (Prelude.Maybe Data.Text.Text)@
          * 'Proto.Google.Protobuf.Descriptor_Fields.editionRemoved' @:: Lens' FieldOptions'FeatureSupport Edition@
-         * 'Proto.Google.Protobuf.Descriptor_Fields.maybe'editionRemoved' @:: Lens' FieldOptions'FeatureSupport (Prelude.Maybe Edition)@ -}
+         * 'Proto.Google.Protobuf.Descriptor_Fields.maybe'editionRemoved' @:: Lens' FieldOptions'FeatureSupport (Prelude.Maybe Edition)@
+         * 'Proto.Google.Protobuf.Descriptor_Fields.removalError' @:: Lens' FieldOptions'FeatureSupport Data.Text.Text@
+         * 'Proto.Google.Protobuf.Descriptor_Fields.maybe'removalError' @:: Lens' FieldOptions'FeatureSupport (Prelude.Maybe Data.Text.Text)@ -}
 data FieldOptions'FeatureSupport
   = FieldOptions'FeatureSupport'_constructor {_FieldOptions'FeatureSupport'editionIntroduced :: !(Prelude.Maybe Edition),
                                               _FieldOptions'FeatureSupport'editionDeprecated :: !(Prelude.Maybe Edition),
                                               _FieldOptions'FeatureSupport'deprecationWarning :: !(Prelude.Maybe Data.Text.Text),
                                               _FieldOptions'FeatureSupport'editionRemoved :: !(Prelude.Maybe Edition),
+                                              _FieldOptions'FeatureSupport'removalError :: !(Prelude.Maybe Data.Text.Text),
                                               _FieldOptions'FeatureSupport'_unknownFields :: !Data.ProtoLens.FieldSet}
   deriving stock (Prelude.Eq, Prelude.Ord)
 instance Prelude.Show FieldOptions'FeatureSupport where
@@ -7141,6 +7858,22 @@ instance Data.ProtoLens.Field.HasField FieldOptions'FeatureSupport "maybe'editio
            (\ x__ y__
               -> x__ {_FieldOptions'FeatureSupport'editionRemoved = y__}))
         Prelude.id
+instance Data.ProtoLens.Field.HasField FieldOptions'FeatureSupport "removalError" Data.Text.Text where
+  fieldOf _
+    = (Prelude..)
+        (Lens.Family2.Unchecked.lens
+           _FieldOptions'FeatureSupport'removalError
+           (\ x__ y__
+              -> x__ {_FieldOptions'FeatureSupport'removalError = y__}))
+        (Data.ProtoLens.maybeLens Data.ProtoLens.fieldDefault)
+instance Data.ProtoLens.Field.HasField FieldOptions'FeatureSupport "maybe'removalError" (Prelude.Maybe Data.Text.Text) where
+  fieldOf _
+    = (Prelude..)
+        (Lens.Family2.Unchecked.lens
+           _FieldOptions'FeatureSupport'removalError
+           (\ x__ y__
+              -> x__ {_FieldOptions'FeatureSupport'removalError = y__}))
+        Prelude.id
 instance Data.ProtoLens.Message FieldOptions'FeatureSupport where
   messageName _
     = Data.Text.pack "google.protobuf.FieldOptions.FeatureSupport"
@@ -7150,7 +7883,8 @@ instance Data.ProtoLens.Message FieldOptions'FeatureSupport where
       \\DC2edition_introduced\CAN\SOH \SOH(\SO2\CAN.google.protobuf.EditionR\DC1editionIntroduced\DC2G\n\
       \\DC2edition_deprecated\CAN\STX \SOH(\SO2\CAN.google.protobuf.EditionR\DC1editionDeprecated\DC2/\n\
       \\DC3deprecation_warning\CAN\ETX \SOH(\tR\DC2deprecationWarning\DC2A\n\
-      \\SIedition_removed\CAN\EOT \SOH(\SO2\CAN.google.protobuf.EditionR\SOeditionRemoved"
+      \\SIedition_removed\CAN\EOT \SOH(\SO2\CAN.google.protobuf.EditionR\SOeditionRemoved\DC2#\n\
+      \\rremoval_error\CAN\ENQ \SOH(\tR\fremovalError"
   packedFileDescriptor _ = packedFileDescriptor
   fieldsByTag
     = let
@@ -7186,12 +7920,21 @@ instance Data.ProtoLens.Message FieldOptions'FeatureSupport where
               (Data.ProtoLens.OptionalField
                  (Data.ProtoLens.Field.field @"maybe'editionRemoved")) ::
               Data.ProtoLens.FieldDescriptor FieldOptions'FeatureSupport
+        removalError__field_descriptor
+          = Data.ProtoLens.FieldDescriptor
+              "removal_error"
+              (Data.ProtoLens.ScalarField Data.ProtoLens.StringField ::
+                 Data.ProtoLens.FieldTypeDescriptor Data.Text.Text)
+              (Data.ProtoLens.OptionalField
+                 (Data.ProtoLens.Field.field @"maybe'removalError")) ::
+              Data.ProtoLens.FieldDescriptor FieldOptions'FeatureSupport
       in
         Data.Map.fromList
           [(Data.ProtoLens.Tag 1, editionIntroduced__field_descriptor),
            (Data.ProtoLens.Tag 2, editionDeprecated__field_descriptor),
            (Data.ProtoLens.Tag 3, deprecationWarning__field_descriptor),
-           (Data.ProtoLens.Tag 4, editionRemoved__field_descriptor)]
+           (Data.ProtoLens.Tag 4, editionRemoved__field_descriptor),
+           (Data.ProtoLens.Tag 5, removalError__field_descriptor)]
   unknownFields
     = Lens.Family2.Unchecked.lens
         _FieldOptions'FeatureSupport'_unknownFields
@@ -7203,6 +7946,7 @@ instance Data.ProtoLens.Message FieldOptions'FeatureSupport where
          _FieldOptions'FeatureSupport'editionDeprecated = Prelude.Nothing,
          _FieldOptions'FeatureSupport'deprecationWarning = Prelude.Nothing,
          _FieldOptions'FeatureSupport'editionRemoved = Prelude.Nothing,
+         _FieldOptions'FeatureSupport'removalError = Prelude.Nothing,
          _FieldOptions'FeatureSupport'_unknownFields = []}
   parseMessage
     = let
@@ -7268,6 +8012,15 @@ instance Data.ProtoLens.Message FieldOptions'FeatureSupport where
                                 loop
                                   (Lens.Family2.set
                                      (Data.ProtoLens.Field.field @"editionRemoved") y x)
+                        42
+                          -> do y <- (Data.ProtoLens.Encoding.Bytes.<?>)
+                                       (do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
+                                           Data.ProtoLens.Encoding.Bytes.getText
+                                             (Prelude.fromIntegral len))
+                                       "removal_error"
+                                loop
+                                  (Lens.Family2.set
+                                     (Data.ProtoLens.Field.field @"removalError") y x)
                         wire
                           -> do !y <- Data.ProtoLens.Encoding.Wire.parseTaggedValueFromWire
                                         wire
@@ -7338,8 +8091,25 @@ instance Data.ProtoLens.Message FieldOptions'FeatureSupport where
                                       Data.ProtoLens.Encoding.Bytes.putVarInt Prelude.fromIntegral)
                                    Prelude.fromEnum
                                    _v))
-                      (Data.ProtoLens.Encoding.Wire.buildFieldSet
-                         (Lens.Family2.view Data.ProtoLens.unknownFields _x)))))
+                      ((Data.Monoid.<>)
+                         (case
+                              Lens.Family2.view
+                                (Data.ProtoLens.Field.field @"maybe'removalError") _x
+                          of
+                            Prelude.Nothing -> Data.Monoid.mempty
+                            (Prelude.Just _v)
+                              -> (Data.Monoid.<>)
+                                   (Data.ProtoLens.Encoding.Bytes.putVarInt 42)
+                                   ((Prelude..)
+                                      (\ bs
+                                         -> (Data.Monoid.<>)
+                                              (Data.ProtoLens.Encoding.Bytes.putVarInt
+                                                 (Prelude.fromIntegral (Data.ByteString.length bs)))
+                                              (Data.ProtoLens.Encoding.Bytes.putBytes bs))
+                                      Data.Text.Encoding.encodeUtf8
+                                      _v))
+                         (Data.ProtoLens.Encoding.Wire.buildFieldSet
+                            (Lens.Family2.view Data.ProtoLens.unknownFields _x))))))
 instance Control.DeepSeq.NFData FieldOptions'FeatureSupport where
   rnf
     = \ x__
@@ -7352,7 +8122,9 @@ instance Control.DeepSeq.NFData FieldOptions'FeatureSupport where
                    (Control.DeepSeq.deepseq
                       (_FieldOptions'FeatureSupport'deprecationWarning x__)
                       (Control.DeepSeq.deepseq
-                         (_FieldOptions'FeatureSupport'editionRemoved x__) ()))))
+                         (_FieldOptions'FeatureSupport'editionRemoved x__)
+                         (Control.DeepSeq.deepseq
+                            (_FieldOptions'FeatureSupport'removalError x__) ())))))
 data FieldOptions'JSType
   = FieldOptions'JS_NORMAL |
     FieldOptions'JS_STRING |
@@ -7603,6 +8375,8 @@ instance Control.DeepSeq.NFData FieldOptions'OptionTargetType where
          * 'Proto.Google.Protobuf.Descriptor_Fields.vec'publicDependency' @:: Lens' FileDescriptorProto (Data.Vector.Unboxed.Vector Data.Int.Int32)@
          * 'Proto.Google.Protobuf.Descriptor_Fields.weakDependency' @:: Lens' FileDescriptorProto [Data.Int.Int32]@
          * 'Proto.Google.Protobuf.Descriptor_Fields.vec'weakDependency' @:: Lens' FileDescriptorProto (Data.Vector.Unboxed.Vector Data.Int.Int32)@
+         * 'Proto.Google.Protobuf.Descriptor_Fields.optionDependency' @:: Lens' FileDescriptorProto [Data.Text.Text]@
+         * 'Proto.Google.Protobuf.Descriptor_Fields.vec'optionDependency' @:: Lens' FileDescriptorProto (Data.Vector.Vector Data.Text.Text)@
          * 'Proto.Google.Protobuf.Descriptor_Fields.messageType' @:: Lens' FileDescriptorProto [DescriptorProto]@
          * 'Proto.Google.Protobuf.Descriptor_Fields.vec'messageType' @:: Lens' FileDescriptorProto (Data.Vector.Vector DescriptorProto)@
          * 'Proto.Google.Protobuf.Descriptor_Fields.enumType' @:: Lens' FileDescriptorProto [EnumDescriptorProto]@
@@ -7625,6 +8399,7 @@ data FileDescriptorProto
                                       _FileDescriptorProto'dependency :: !(Data.Vector.Vector Data.Text.Text),
                                       _FileDescriptorProto'publicDependency :: !(Data.Vector.Unboxed.Vector Data.Int.Int32),
                                       _FileDescriptorProto'weakDependency :: !(Data.Vector.Unboxed.Vector Data.Int.Int32),
+                                      _FileDescriptorProto'optionDependency :: !(Data.Vector.Vector Data.Text.Text),
                                       _FileDescriptorProto'messageType :: !(Data.Vector.Vector DescriptorProto),
                                       _FileDescriptorProto'enumType :: !(Data.Vector.Vector EnumDescriptorProto),
                                       _FileDescriptorProto'service :: !(Data.Vector.Vector ServiceDescriptorProto),
@@ -7716,6 +8491,22 @@ instance Data.ProtoLens.Field.HasField FileDescriptorProto "vec'weakDependency" 
         (Lens.Family2.Unchecked.lens
            _FileDescriptorProto'weakDependency
            (\ x__ y__ -> x__ {_FileDescriptorProto'weakDependency = y__}))
+        Prelude.id
+instance Data.ProtoLens.Field.HasField FileDescriptorProto "optionDependency" [Data.Text.Text] where
+  fieldOf _
+    = (Prelude..)
+        (Lens.Family2.Unchecked.lens
+           _FileDescriptorProto'optionDependency
+           (\ x__ y__ -> x__ {_FileDescriptorProto'optionDependency = y__}))
+        (Lens.Family2.Unchecked.lens
+           Data.Vector.Generic.toList
+           (\ _ y__ -> Data.Vector.Generic.fromList y__))
+instance Data.ProtoLens.Field.HasField FileDescriptorProto "vec'optionDependency" (Data.Vector.Vector Data.Text.Text) where
+  fieldOf _
+    = (Prelude..)
+        (Lens.Family2.Unchecked.lens
+           _FileDescriptorProto'optionDependency
+           (\ x__ y__ -> x__ {_FileDescriptorProto'optionDependency = y__}))
         Prelude.id
 instance Data.ProtoLens.Field.HasField FileDescriptorProto "messageType" [DescriptorProto] where
   fieldOf _
@@ -7850,7 +8641,8 @@ instance Data.ProtoLens.Message FileDescriptorProto where
       \dependency\DC2+\n\
       \\DC1public_dependency\CAN\n\
       \ \ETX(\ENQR\DLEpublicDependency\DC2'\n\
-      \\SIweak_dependency\CAN\v \ETX(\ENQR\SOweakDependency\DC2C\n\
+      \\SIweak_dependency\CAN\v \ETX(\ENQR\SOweakDependency\DC2+\n\
+      \\DC1option_dependency\CAN\SI \ETX(\tR\DLEoptionDependency\DC2C\n\
       \\fmessage_type\CAN\EOT \ETX(\v2 .google.protobuf.DescriptorProtoR\vmessageType\DC2A\n\
       \\tenum_type\CAN\ENQ \ETX(\v2$.google.protobuf.EnumDescriptorProtoR\benumType\DC2A\n\
       \\aservice\CAN\ACK \ETX(\v2'.google.protobuf.ServiceDescriptorProtoR\aservice\DC2C\n\
@@ -7904,6 +8696,15 @@ instance Data.ProtoLens.Message FileDescriptorProto where
               (Data.ProtoLens.RepeatedField
                  Data.ProtoLens.Unpacked
                  (Data.ProtoLens.Field.field @"weakDependency")) ::
+              Data.ProtoLens.FieldDescriptor FileDescriptorProto
+        optionDependency__field_descriptor
+          = Data.ProtoLens.FieldDescriptor
+              "option_dependency"
+              (Data.ProtoLens.ScalarField Data.ProtoLens.StringField ::
+                 Data.ProtoLens.FieldTypeDescriptor Data.Text.Text)
+              (Data.ProtoLens.RepeatedField
+                 Data.ProtoLens.Unpacked
+                 (Data.ProtoLens.Field.field @"optionDependency")) ::
               Data.ProtoLens.FieldDescriptor FileDescriptorProto
         messageType__field_descriptor
           = Data.ProtoLens.FieldDescriptor
@@ -7979,6 +8780,7 @@ instance Data.ProtoLens.Message FileDescriptorProto where
            (Data.ProtoLens.Tag 3, dependency__field_descriptor),
            (Data.ProtoLens.Tag 10, publicDependency__field_descriptor),
            (Data.ProtoLens.Tag 11, weakDependency__field_descriptor),
+           (Data.ProtoLens.Tag 15, optionDependency__field_descriptor),
            (Data.ProtoLens.Tag 4, messageType__field_descriptor),
            (Data.ProtoLens.Tag 5, enumType__field_descriptor),
            (Data.ProtoLens.Tag 6, service__field_descriptor),
@@ -7998,6 +8800,7 @@ instance Data.ProtoLens.Message FileDescriptorProto where
          _FileDescriptorProto'dependency = Data.Vector.Generic.empty,
          _FileDescriptorProto'publicDependency = Data.Vector.Generic.empty,
          _FileDescriptorProto'weakDependency = Data.Vector.Generic.empty,
+         _FileDescriptorProto'optionDependency = Data.Vector.Generic.empty,
          _FileDescriptorProto'messageType = Data.Vector.Generic.empty,
          _FileDescriptorProto'enumType = Data.Vector.Generic.empty,
          _FileDescriptorProto'service = Data.Vector.Generic.empty,
@@ -8015,16 +8818,18 @@ instance Data.ProtoLens.Message FileDescriptorProto where
              -> Data.ProtoLens.Encoding.Growing.Growing Data.Vector.Vector Data.ProtoLens.Encoding.Growing.RealWorld EnumDescriptorProto
                 -> Data.ProtoLens.Encoding.Growing.Growing Data.Vector.Vector Data.ProtoLens.Encoding.Growing.RealWorld FieldDescriptorProto
                    -> Data.ProtoLens.Encoding.Growing.Growing Data.Vector.Vector Data.ProtoLens.Encoding.Growing.RealWorld DescriptorProto
-                      -> Data.ProtoLens.Encoding.Growing.Growing Data.Vector.Unboxed.Vector Data.ProtoLens.Encoding.Growing.RealWorld Data.Int.Int32
-                         -> Data.ProtoLens.Encoding.Growing.Growing Data.Vector.Vector Data.ProtoLens.Encoding.Growing.RealWorld ServiceDescriptorProto
-                            -> Data.ProtoLens.Encoding.Growing.Growing Data.Vector.Unboxed.Vector Data.ProtoLens.Encoding.Growing.RealWorld Data.Int.Int32
-                               -> Data.ProtoLens.Encoding.Bytes.Parser FileDescriptorProto
+                      -> Data.ProtoLens.Encoding.Growing.Growing Data.Vector.Vector Data.ProtoLens.Encoding.Growing.RealWorld Data.Text.Text
+                         -> Data.ProtoLens.Encoding.Growing.Growing Data.Vector.Unboxed.Vector Data.ProtoLens.Encoding.Growing.RealWorld Data.Int.Int32
+                            -> Data.ProtoLens.Encoding.Growing.Growing Data.Vector.Vector Data.ProtoLens.Encoding.Growing.RealWorld ServiceDescriptorProto
+                               -> Data.ProtoLens.Encoding.Growing.Growing Data.Vector.Unboxed.Vector Data.ProtoLens.Encoding.Growing.RealWorld Data.Int.Int32
+                                  -> Data.ProtoLens.Encoding.Bytes.Parser FileDescriptorProto
         loop
           x
           mutable'dependency
           mutable'enumType
           mutable'extension
           mutable'messageType
+          mutable'optionDependency
           mutable'publicDependency
           mutable'service
           mutable'weakDependency
@@ -8042,6 +8847,9 @@ instance Data.ProtoLens.Message FileDescriptorProto where
                       frozen'messageType <- Data.ProtoLens.Encoding.Parser.Unsafe.unsafeLiftIO
                                               (Data.ProtoLens.Encoding.Growing.unsafeFreeze
                                                  mutable'messageType)
+                      frozen'optionDependency <- Data.ProtoLens.Encoding.Parser.Unsafe.unsafeLiftIO
+                                                   (Data.ProtoLens.Encoding.Growing.unsafeFreeze
+                                                      mutable'optionDependency)
                       frozen'publicDependency <- Data.ProtoLens.Encoding.Parser.Unsafe.unsafeLiftIO
                                                    (Data.ProtoLens.Encoding.Growing.unsafeFreeze
                                                       mutable'publicDependency)
@@ -8077,15 +8885,19 @@ instance Data.ProtoLens.Message FileDescriptorProto where
                                        (Data.ProtoLens.Field.field @"vec'messageType")
                                        frozen'messageType
                                        (Lens.Family2.set
-                                          (Data.ProtoLens.Field.field @"vec'publicDependency")
-                                          frozen'publicDependency
+                                          (Data.ProtoLens.Field.field @"vec'optionDependency")
+                                          frozen'optionDependency
                                           (Lens.Family2.set
-                                             (Data.ProtoLens.Field.field @"vec'service")
-                                             frozen'service
+                                             (Data.ProtoLens.Field.field @"vec'publicDependency")
+                                             frozen'publicDependency
                                              (Lens.Family2.set
-                                                (Data.ProtoLens.Field.field @"vec'weakDependency")
-                                                frozen'weakDependency
-                                                x))))))))
+                                                (Data.ProtoLens.Field.field @"vec'service")
+                                                frozen'service
+                                                (Lens.Family2.set
+                                                   (Data.ProtoLens.Field.field
+                                                      @"vec'weakDependency")
+                                                   frozen'weakDependency
+                                                   x)))))))))
                else
                    do tag <- Data.ProtoLens.Encoding.Bytes.getVarInt
                       case tag of
@@ -8101,6 +8913,7 @@ instance Data.ProtoLens.Message FileDescriptorProto where
                                   mutable'enumType
                                   mutable'extension
                                   mutable'messageType
+                                  mutable'optionDependency
                                   mutable'publicDependency
                                   mutable'service
                                   mutable'weakDependency
@@ -8116,6 +8929,7 @@ instance Data.ProtoLens.Message FileDescriptorProto where
                                   mutable'enumType
                                   mutable'extension
                                   mutable'messageType
+                                  mutable'optionDependency
                                   mutable'publicDependency
                                   mutable'service
                                   mutable'weakDependency
@@ -8133,6 +8947,7 @@ instance Data.ProtoLens.Message FileDescriptorProto where
                                   mutable'enumType
                                   mutable'extension
                                   mutable'messageType
+                                  mutable'optionDependency
                                   mutable'publicDependency
                                   mutable'service
                                   mutable'weakDependency
@@ -8151,6 +8966,7 @@ instance Data.ProtoLens.Message FileDescriptorProto where
                                   mutable'enumType
                                   mutable'extension
                                   mutable'messageType
+                                  mutable'optionDependency
                                   v
                                   mutable'service
                                   mutable'weakDependency
@@ -8181,6 +8997,7 @@ instance Data.ProtoLens.Message FileDescriptorProto where
                                   mutable'enumType
                                   mutable'extension
                                   mutable'messageType
+                                  mutable'optionDependency
                                   y
                                   mutable'service
                                   mutable'weakDependency
@@ -8199,6 +9016,7 @@ instance Data.ProtoLens.Message FileDescriptorProto where
                                   mutable'enumType
                                   mutable'extension
                                   mutable'messageType
+                                  mutable'optionDependency
                                   mutable'publicDependency
                                   mutable'service
                                   v
@@ -8229,9 +9047,29 @@ instance Data.ProtoLens.Message FileDescriptorProto where
                                   mutable'enumType
                                   mutable'extension
                                   mutable'messageType
+                                  mutable'optionDependency
                                   mutable'publicDependency
                                   mutable'service
                                   y
+                        122
+                          -> do !y <- (Data.ProtoLens.Encoding.Bytes.<?>)
+                                        (do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
+                                            Data.ProtoLens.Encoding.Bytes.getText
+                                              (Prelude.fromIntegral len))
+                                        "option_dependency"
+                                v <- Data.ProtoLens.Encoding.Parser.Unsafe.unsafeLiftIO
+                                       (Data.ProtoLens.Encoding.Growing.append
+                                          mutable'optionDependency y)
+                                loop
+                                  x
+                                  mutable'dependency
+                                  mutable'enumType
+                                  mutable'extension
+                                  mutable'messageType
+                                  v
+                                  mutable'publicDependency
+                                  mutable'service
+                                  mutable'weakDependency
                         34
                           -> do !y <- (Data.ProtoLens.Encoding.Bytes.<?>)
                                         (do len <- Data.ProtoLens.Encoding.Bytes.getVarInt
@@ -8248,6 +9086,7 @@ instance Data.ProtoLens.Message FileDescriptorProto where
                                   mutable'enumType
                                   mutable'extension
                                   v
+                                  mutable'optionDependency
                                   mutable'publicDependency
                                   mutable'service
                                   mutable'weakDependency
@@ -8266,6 +9105,7 @@ instance Data.ProtoLens.Message FileDescriptorProto where
                                   v
                                   mutable'extension
                                   mutable'messageType
+                                  mutable'optionDependency
                                   mutable'publicDependency
                                   mutable'service
                                   mutable'weakDependency
@@ -8284,6 +9124,7 @@ instance Data.ProtoLens.Message FileDescriptorProto where
                                   mutable'enumType
                                   mutable'extension
                                   mutable'messageType
+                                  mutable'optionDependency
                                   mutable'publicDependency
                                   v
                                   mutable'weakDependency
@@ -8302,6 +9143,7 @@ instance Data.ProtoLens.Message FileDescriptorProto where
                                   mutable'enumType
                                   v
                                   mutable'messageType
+                                  mutable'optionDependency
                                   mutable'publicDependency
                                   mutable'service
                                   mutable'weakDependency
@@ -8317,6 +9159,7 @@ instance Data.ProtoLens.Message FileDescriptorProto where
                                   mutable'enumType
                                   mutable'extension
                                   mutable'messageType
+                                  mutable'optionDependency
                                   mutable'publicDependency
                                   mutable'service
                                   mutable'weakDependency
@@ -8333,6 +9176,7 @@ instance Data.ProtoLens.Message FileDescriptorProto where
                                   mutable'enumType
                                   mutable'extension
                                   mutable'messageType
+                                  mutable'optionDependency
                                   mutable'publicDependency
                                   mutable'service
                                   mutable'weakDependency
@@ -8348,6 +9192,7 @@ instance Data.ProtoLens.Message FileDescriptorProto where
                                   mutable'enumType
                                   mutable'extension
                                   mutable'messageType
+                                  mutable'optionDependency
                                   mutable'publicDependency
                                   mutable'service
                                   mutable'weakDependency
@@ -8365,6 +9210,7 @@ instance Data.ProtoLens.Message FileDescriptorProto where
                                   mutable'enumType
                                   mutable'extension
                                   mutable'messageType
+                                  mutable'optionDependency
                                   mutable'publicDependency
                                   mutable'service
                                   mutable'weakDependency
@@ -8378,6 +9224,7 @@ instance Data.ProtoLens.Message FileDescriptorProto where
                                   mutable'enumType
                                   mutable'extension
                                   mutable'messageType
+                                  mutable'optionDependency
                                   mutable'publicDependency
                                   mutable'service
                                   mutable'weakDependency
@@ -8391,6 +9238,8 @@ instance Data.ProtoLens.Message FileDescriptorProto where
                                      Data.ProtoLens.Encoding.Growing.new
               mutable'messageType <- Data.ProtoLens.Encoding.Parser.Unsafe.unsafeLiftIO
                                        Data.ProtoLens.Encoding.Growing.new
+              mutable'optionDependency <- Data.ProtoLens.Encoding.Parser.Unsafe.unsafeLiftIO
+                                            Data.ProtoLens.Encoding.Growing.new
               mutable'publicDependency <- Data.ProtoLens.Encoding.Parser.Unsafe.unsafeLiftIO
                                             Data.ProtoLens.Encoding.Growing.new
               mutable'service <- Data.ProtoLens.Encoding.Parser.Unsafe.unsafeLiftIO
@@ -8403,6 +9252,7 @@ instance Data.ProtoLens.Message FileDescriptorProto where
                 mutable'enumType
                 mutable'extension
                 mutable'messageType
+                mutable'optionDependency
                 mutable'publicDependency
                 mutable'service
                 mutable'weakDependency)
@@ -8482,7 +9332,7 @@ instance Data.ProtoLens.Message FileDescriptorProto where
                             (Data.ProtoLens.Encoding.Bytes.foldMapBuilder
                                (\ _v
                                   -> (Data.Monoid.<>)
-                                       (Data.ProtoLens.Encoding.Bytes.putVarInt 34)
+                                       (Data.ProtoLens.Encoding.Bytes.putVarInt 122)
                                        ((Prelude..)
                                           (\ bs
                                              -> (Data.Monoid.<>)
@@ -8490,15 +9340,15 @@ instance Data.ProtoLens.Message FileDescriptorProto where
                                                      (Prelude.fromIntegral
                                                         (Data.ByteString.length bs)))
                                                   (Data.ProtoLens.Encoding.Bytes.putBytes bs))
-                                          Data.ProtoLens.encodeMessage
+                                          Data.Text.Encoding.encodeUtf8
                                           _v))
                                (Lens.Family2.view
-                                  (Data.ProtoLens.Field.field @"vec'messageType") _x))
+                                  (Data.ProtoLens.Field.field @"vec'optionDependency") _x))
                             ((Data.Monoid.<>)
                                (Data.ProtoLens.Encoding.Bytes.foldMapBuilder
                                   (\ _v
                                      -> (Data.Monoid.<>)
-                                          (Data.ProtoLens.Encoding.Bytes.putVarInt 42)
+                                          (Data.ProtoLens.Encoding.Bytes.putVarInt 34)
                                           ((Prelude..)
                                              (\ bs
                                                 -> (Data.Monoid.<>)
@@ -8509,12 +9359,12 @@ instance Data.ProtoLens.Message FileDescriptorProto where
                                              Data.ProtoLens.encodeMessage
                                              _v))
                                   (Lens.Family2.view
-                                     (Data.ProtoLens.Field.field @"vec'enumType") _x))
+                                     (Data.ProtoLens.Field.field @"vec'messageType") _x))
                                ((Data.Monoid.<>)
                                   (Data.ProtoLens.Encoding.Bytes.foldMapBuilder
                                      (\ _v
                                         -> (Data.Monoid.<>)
-                                             (Data.ProtoLens.Encoding.Bytes.putVarInt 50)
+                                             (Data.ProtoLens.Encoding.Bytes.putVarInt 42)
                                              ((Prelude..)
                                                 (\ bs
                                                    -> (Data.Monoid.<>)
@@ -8525,12 +9375,12 @@ instance Data.ProtoLens.Message FileDescriptorProto where
                                                 Data.ProtoLens.encodeMessage
                                                 _v))
                                      (Lens.Family2.view
-                                        (Data.ProtoLens.Field.field @"vec'service") _x))
+                                        (Data.ProtoLens.Field.field @"vec'enumType") _x))
                                   ((Data.Monoid.<>)
                                      (Data.ProtoLens.Encoding.Bytes.foldMapBuilder
                                         (\ _v
                                            -> (Data.Monoid.<>)
-                                                (Data.ProtoLens.Encoding.Bytes.putVarInt 58)
+                                                (Data.ProtoLens.Encoding.Bytes.putVarInt 50)
                                                 ((Prelude..)
                                                    (\ bs
                                                       -> (Data.Monoid.<>)
@@ -8542,37 +9392,33 @@ instance Data.ProtoLens.Message FileDescriptorProto where
                                                    Data.ProtoLens.encodeMessage
                                                    _v))
                                         (Lens.Family2.view
-                                           (Data.ProtoLens.Field.field @"vec'extension") _x))
+                                           (Data.ProtoLens.Field.field @"vec'service") _x))
                                      ((Data.Monoid.<>)
-                                        (case
-                                             Lens.Family2.view
-                                               (Data.ProtoLens.Field.field @"maybe'options") _x
-                                         of
-                                           Prelude.Nothing -> Data.Monoid.mempty
-                                           (Prelude.Just _v)
-                                             -> (Data.Monoid.<>)
-                                                  (Data.ProtoLens.Encoding.Bytes.putVarInt 66)
-                                                  ((Prelude..)
-                                                     (\ bs
-                                                        -> (Data.Monoid.<>)
-                                                             (Data.ProtoLens.Encoding.Bytes.putVarInt
-                                                                (Prelude.fromIntegral
-                                                                   (Data.ByteString.length bs)))
-                                                             (Data.ProtoLens.Encoding.Bytes.putBytes
-                                                                bs))
-                                                     Data.ProtoLens.encodeMessage
-                                                     _v))
+                                        (Data.ProtoLens.Encoding.Bytes.foldMapBuilder
+                                           (\ _v
+                                              -> (Data.Monoid.<>)
+                                                   (Data.ProtoLens.Encoding.Bytes.putVarInt 58)
+                                                   ((Prelude..)
+                                                      (\ bs
+                                                         -> (Data.Monoid.<>)
+                                                              (Data.ProtoLens.Encoding.Bytes.putVarInt
+                                                                 (Prelude.fromIntegral
+                                                                    (Data.ByteString.length bs)))
+                                                              (Data.ProtoLens.Encoding.Bytes.putBytes
+                                                                 bs))
+                                                      Data.ProtoLens.encodeMessage
+                                                      _v))
+                                           (Lens.Family2.view
+                                              (Data.ProtoLens.Field.field @"vec'extension") _x))
                                         ((Data.Monoid.<>)
                                            (case
                                                 Lens.Family2.view
-                                                  (Data.ProtoLens.Field.field
-                                                     @"maybe'sourceCodeInfo")
-                                                  _x
+                                                  (Data.ProtoLens.Field.field @"maybe'options") _x
                                             of
                                               Prelude.Nothing -> Data.Monoid.mempty
                                               (Prelude.Just _v)
                                                 -> (Data.Monoid.<>)
-                                                     (Data.ProtoLens.Encoding.Bytes.putVarInt 74)
+                                                     (Data.ProtoLens.Encoding.Bytes.putVarInt 66)
                                                      ((Prelude..)
                                                         (\ bs
                                                            -> (Data.Monoid.<>)
@@ -8586,12 +9432,14 @@ instance Data.ProtoLens.Message FileDescriptorProto where
                                            ((Data.Monoid.<>)
                                               (case
                                                    Lens.Family2.view
-                                                     (Data.ProtoLens.Field.field @"maybe'syntax") _x
+                                                     (Data.ProtoLens.Field.field
+                                                        @"maybe'sourceCodeInfo")
+                                                     _x
                                                of
                                                  Prelude.Nothing -> Data.Monoid.mempty
                                                  (Prelude.Just _v)
                                                    -> (Data.Monoid.<>)
-                                                        (Data.ProtoLens.Encoding.Bytes.putVarInt 98)
+                                                        (Data.ProtoLens.Encoding.Bytes.putVarInt 74)
                                                         ((Prelude..)
                                                            (\ bs
                                                               -> (Data.Monoid.<>)
@@ -8601,29 +9449,52 @@ instance Data.ProtoLens.Message FileDescriptorProto where
                                                                             bs)))
                                                                    (Data.ProtoLens.Encoding.Bytes.putBytes
                                                                       bs))
-                                                           Data.Text.Encoding.encodeUtf8
+                                                           Data.ProtoLens.encodeMessage
                                                            _v))
                                               ((Data.Monoid.<>)
                                                  (case
                                                       Lens.Family2.view
-                                                        (Data.ProtoLens.Field.field
-                                                           @"maybe'edition")
+                                                        (Data.ProtoLens.Field.field @"maybe'syntax")
                                                         _x
                                                   of
                                                     Prelude.Nothing -> Data.Monoid.mempty
                                                     (Prelude.Just _v)
                                                       -> (Data.Monoid.<>)
                                                            (Data.ProtoLens.Encoding.Bytes.putVarInt
-                                                              112)
+                                                              98)
                                                            ((Prelude..)
-                                                              ((Prelude..)
-                                                                 Data.ProtoLens.Encoding.Bytes.putVarInt
-                                                                 Prelude.fromIntegral)
-                                                              Prelude.fromEnum
+                                                              (\ bs
+                                                                 -> (Data.Monoid.<>)
+                                                                      (Data.ProtoLens.Encoding.Bytes.putVarInt
+                                                                         (Prelude.fromIntegral
+                                                                            (Data.ByteString.length
+                                                                               bs)))
+                                                                      (Data.ProtoLens.Encoding.Bytes.putBytes
+                                                                         bs))
+                                                              Data.Text.Encoding.encodeUtf8
                                                               _v))
-                                                 (Data.ProtoLens.Encoding.Wire.buildFieldSet
-                                                    (Lens.Family2.view
-                                                       Data.ProtoLens.unknownFields _x))))))))))))))
+                                                 ((Data.Monoid.<>)
+                                                    (case
+                                                         Lens.Family2.view
+                                                           (Data.ProtoLens.Field.field
+                                                              @"maybe'edition")
+                                                           _x
+                                                     of
+                                                       Prelude.Nothing -> Data.Monoid.mempty
+                                                       (Prelude.Just _v)
+                                                         -> (Data.Monoid.<>)
+                                                              (Data.ProtoLens.Encoding.Bytes.putVarInt
+                                                                 112)
+                                                              ((Prelude..)
+                                                                 ((Prelude..)
+                                                                    Data.ProtoLens.Encoding.Bytes.putVarInt
+                                                                    Prelude.fromIntegral)
+                                                                 Prelude.fromEnum
+                                                                 _v))
+                                                    (Data.ProtoLens.Encoding.Wire.buildFieldSet
+                                                       (Lens.Family2.view
+                                                          Data.ProtoLens.unknownFields
+                                                          _x)))))))))))))))
 instance Control.DeepSeq.NFData FileDescriptorProto where
   rnf
     = \ x__
@@ -8640,22 +9511,24 @@ instance Control.DeepSeq.NFData FileDescriptorProto where
                          (Control.DeepSeq.deepseq
                             (_FileDescriptorProto'weakDependency x__)
                             (Control.DeepSeq.deepseq
-                               (_FileDescriptorProto'messageType x__)
+                               (_FileDescriptorProto'optionDependency x__)
                                (Control.DeepSeq.deepseq
-                                  (_FileDescriptorProto'enumType x__)
+                                  (_FileDescriptorProto'messageType x__)
                                   (Control.DeepSeq.deepseq
-                                     (_FileDescriptorProto'service x__)
+                                     (_FileDescriptorProto'enumType x__)
                                      (Control.DeepSeq.deepseq
-                                        (_FileDescriptorProto'extension x__)
+                                        (_FileDescriptorProto'service x__)
                                         (Control.DeepSeq.deepseq
-                                           (_FileDescriptorProto'options x__)
+                                           (_FileDescriptorProto'extension x__)
                                            (Control.DeepSeq.deepseq
-                                              (_FileDescriptorProto'sourceCodeInfo x__)
+                                              (_FileDescriptorProto'options x__)
                                               (Control.DeepSeq.deepseq
-                                                 (_FileDescriptorProto'syntax x__)
+                                                 (_FileDescriptorProto'sourceCodeInfo x__)
                                                  (Control.DeepSeq.deepseq
-                                                    (_FileDescriptorProto'edition x__)
-                                                    ())))))))))))))
+                                                    (_FileDescriptorProto'syntax x__)
+                                                    (Control.DeepSeq.deepseq
+                                                       (_FileDescriptorProto'edition x__)
+                                                       ()))))))))))))))
 {- | Fields :
      
          * 'Proto.Google.Protobuf.Descriptor_Fields.file' @:: Lens' FileDescriptorSet [FileDescriptorProto]@
@@ -8691,7 +9564,7 @@ instance Data.ProtoLens.Message FileDescriptorSet where
   packedMessageDescriptor _
     = "\n\
       \\DC1FileDescriptorSet\DC28\n\
-      \\EOTfile\CAN\SOH \ETX(\v2$.google.protobuf.FileDescriptorProtoR\EOTfile"
+      \\EOTfile\CAN\SOH \ETX(\v2$.google.protobuf.FileDescriptorProtoR\EOTfile*{\b\128\236\202\255\SOH\DLE\129\236\202\255\SOH\SUBm\DC2k\b\128\236\202\255\SOH\DC24.buf.descriptor.v1.buf_file_descriptor_set_extension\SUB-.buf.descriptor.v1.FileDescriptorSetExtension"
   packedFileDescriptor _ = packedFileDescriptor
   fieldsByTag
     = let
@@ -9165,9 +10038,9 @@ instance Data.ProtoLens.Message FileOptions where
     = "\n\
       \\vFileOptions\DC2!\n\
       \\fjava_package\CAN\SOH \SOH(\tR\vjavaPackage\DC20\n\
-      \\DC4java_outer_classname\CAN\b \SOH(\tR\DC2javaOuterClassname\DC25\n\
+      \\DC4java_outer_classname\CAN\b \SOH(\tR\DC2javaOuterClassname\DC2\249\SOH\n\
       \\DC3java_multiple_files\CAN\n\
-      \ \SOH(\b:\ENQfalseR\DC1javaMultipleFiles\DC2D\n\
+      \ \SOH(\b:\ENQfalseR\DC1javaMultipleFilesB\193\SOH\178\SOH\189\SOH\b\230\a \233\a*\180\SOHThis behavior is enabled by default in editions 2024 and above. To disable it, you can set `features.(pb.java).nest_in_file_class = YES` on individual messages, enums, or services.\DC2D\n\
       \\GSjava_generate_equals_and_hash\CAN\DC4 \SOH(\bR\EMjavaGenerateEqualsAndHashB\STX\CAN\SOH\DC2:\n\
       \\SYNjava_string_check_utf8\CAN\ESC \SOH(\b:\ENQfalseR\DC3javaStringCheckUtf8\DC2S\n\
       \\foptimize_for\CAN\t \SOH(\SO2).google.protobuf.FileOptions.OptimizeMode:\ENQSPEEDR\voptimizeFor\DC2\GS\n\
@@ -9178,8 +10051,8 @@ instance Data.ProtoLens.Message FileOptions where
       \\DC3py_generic_services\CAN\DC2 \SOH(\b:\ENQfalseR\DC1pyGenericServices\DC2%\n\
       \\n\
       \deprecated\CAN\ETB \SOH(\b:\ENQfalseR\n\
-      \deprecated\DC2.\n\
-      \\DLEcc_enable_arenas\CAN\US \SOH(\b:\EOTtrueR\SOccEnableArenas\DC2*\n\
+      \deprecated\DC2\191\SOH\n\
+      \\DLEcc_enable_arenas\CAN\US \SOH(\b:\EOTtrueR\SOccEnableArenasB\142\SOH\178\SOH\138\SOH \234\a*\132\SOHcc_enable_arenas is enabled by default in every edition and overrides are ignored.This option is removed in editions 2026 and above.\DC2*\n\
       \\DC1objc_class_prefix\CAN$ \SOH(\tR\SIobjcClassPrefix\DC2)\n\
       \\DLEcsharp_namespace\CAN% \SOH(\tR\SIcsharpNamespace\DC2!\n\
       \\fswift_prefix\CAN' \SOH(\tR\vswiftPrefix\DC2(\n\
@@ -9192,7 +10065,7 @@ instance Data.ProtoLens.Message FileOptions where
       \\fOptimizeMode\DC2\t\n\
       \\ENQSPEED\DLE\SOH\DC2\r\n\
       \\tCODE_SIZE\DLE\STX\DC2\DLE\n\
-      \\fLITE_RUNTIME\DLE\ETX*\t\b\232\a\DLE\128\128\128\128\STXJ\EOT\b*\DLE+J\EOT\b&\DLE'R\DC4php_generic_services"
+      \\fLITE_RUNTIME\DLE\ETX*4\b\222\a\DLE\231\a\SUB,\DC2*\b\222\a\DC2\f.pb.file.cpp\SUB\ETB.pb.file.CppFileOptions*\t\b\232\a\DLE\128\128\128\128\STXJ\EOT\b*\DLE+J\EOT\b&\DLE'R\DC4php_generic_services"
   packedFileDescriptor _ = packedFileDescriptor
   fieldsByTag
     = let
@@ -10896,7 +11769,7 @@ instance Data.ProtoLens.Message MessageOptions where
       \\tmap_entry\CAN\a \SOH(\bR\bmapEntry\DC2V\n\
       \&deprecated_legacy_json_field_conflicts\CAN\v \SOH(\bR\"deprecatedLegacyJsonFieldConflictsB\STX\CAN\SOH\DC27\n\
       \\bfeatures\CAN\f \SOH(\v2\ESC.google.protobuf.FeatureSetR\bfeatures\DC2X\n\
-      \\DC4uninterpreted_option\CAN\231\a \ETX(\v2$.google.protobuf.UninterpretedOptionR\DC3uninterpretedOption*\t\b\232\a\DLE\128\128\128\128\STXJ\EOT\b\EOT\DLE\ENQJ\EOT\b\ENQ\DLE\ACKJ\EOT\b\ACK\DLE\aJ\EOT\b\b\DLE\tJ\EOT\b\t\DLE\n"
+      \\DC4uninterpreted_option\CAN\231\a \ETX(\v2$.google.protobuf.UninterpretedOptionR\DC3uninterpretedOption*\ACK\b\222\a\DLE\231\a*\t\b\232\a\DLE\128\128\128\128\STXJ\EOT\b\EOT\DLE\ENQJ\EOT\b\ENQ\DLE\ACKJ\EOT\b\ACK\DLE\aJ\EOT\b\b\DLE\tJ\EOT\b\t\DLE\n"
   packedFileDescriptor _ = packedFileDescriptor
   fieldsByTag
     = let
@@ -11705,7 +12578,7 @@ instance Data.ProtoLens.Message MethodOptions where
       \\DC3IDEMPOTENCY_UNKNOWN\DLE\NUL\DC2\DC3\n\
       \\SINO_SIDE_EFFECTS\DLE\SOH\DC2\SO\n\
       \\n\
-      \IDEMPOTENT\DLE\STX*\t\b\232\a\DLE\128\128\128\128\STX"
+      \IDEMPOTENT\DLE\STX*\ACK\b\222\a\DLE\231\a*\t\b\232\a\DLE\128\128\128\128\STX"
   packedFileDescriptor _ = packedFileDescriptor
   fieldsByTag
     = let
@@ -12204,7 +13077,7 @@ instance Data.ProtoLens.Message OneofOptions where
     = "\n\
       \\fOneofOptions\DC27\n\
       \\bfeatures\CAN\SOH \SOH(\v2\ESC.google.protobuf.FeatureSetR\bfeatures\DC2X\n\
-      \\DC4uninterpreted_option\CAN\231\a \ETX(\v2$.google.protobuf.UninterpretedOptionR\DC3uninterpretedOption*\t\b\232\a\DLE\128\128\128\128\STX"
+      \\DC4uninterpreted_option\CAN\231\a \ETX(\v2$.google.protobuf.UninterpretedOptionR\DC3uninterpretedOption*\ACK\b\222\a\DLE\231\a*\t\b\232\a\DLE\128\128\128\128\STX"
   packedFileDescriptor _ = packedFileDescriptor
   fieldsByTag
     = let
@@ -12419,7 +13292,7 @@ instance Data.ProtoLens.Message ServiceDescriptorProto where
       \\SYNServiceDescriptorProto\DC2\DC2\n\
       \\EOTname\CAN\SOH \SOH(\tR\EOTname\DC2>\n\
       \\ACKmethod\CAN\STX \ETX(\v2&.google.protobuf.MethodDescriptorProtoR\ACKmethod\DC29\n\
-      \\aoptions\CAN\ETX \SOH(\v2\US.google.protobuf.ServiceOptionsR\aoptions"
+      \\aoptions\CAN\ETX \SOH(\v2\US.google.protobuf.ServiceOptionsR\aoptionsJ\EOT\b\EOT\DLE\ENQR\ACKstream"
   packedFileDescriptor _ = packedFileDescriptor
   fieldsByTag
     = let
@@ -12667,7 +13540,7 @@ instance Data.ProtoLens.Message ServiceOptions where
       \\n\
       \deprecated\CAN! \SOH(\b:\ENQfalseR\n\
       \deprecated\DC2X\n\
-      \\DC4uninterpreted_option\CAN\231\a \ETX(\v2$.google.protobuf.UninterpretedOptionR\DC3uninterpretedOption*\t\b\232\a\DLE\128\128\128\128\STX"
+      \\DC4uninterpreted_option\CAN\231\a \ETX(\v2$.google.protobuf.UninterpretedOptionR\DC3uninterpretedOption*\ACK\b\222\a\DLE\231\a*\t\b\232\a\DLE\128\128\128\128\STX"
   packedFileDescriptor _ = packedFileDescriptor
   fieldsByTag
     = let
@@ -12884,7 +13757,7 @@ instance Data.ProtoLens.Message SourceCodeInfo where
       \\EOTspan\CAN\STX \ETX(\ENQR\EOTspanB\STX\DLE\SOH\DC2)\n\
       \\DLEleading_comments\CAN\ETX \SOH(\tR\SIleadingComments\DC2+\n\
       \\DC1trailing_comments\CAN\EOT \SOH(\tR\DLEtrailingComments\DC2:\n\
-      \\EMleading_detached_comments\CAN\ACK \ETX(\tR\ETBleadingDetachedComments"
+      \\EMleading_detached_comments\CAN\ACK \ETX(\tR\ETBleadingDetachedComments*u\b\128\236\202\255\SOH\DLE\129\236\202\255\SOH\SUBg\DC2e\b\128\236\202\255\SOH\DC21.buf.descriptor.v1.buf_source_code_info_extension\SUB*.buf.descriptor.v1.SourceCodeInfoExtension"
   packedFileDescriptor _ = packedFileDescriptor
   fieldsByTag
     = let
@@ -13435,6 +14308,57 @@ instance Control.DeepSeq.NFData SourceCodeInfo'Location where
                          (_SourceCodeInfo'Location'trailingComments x__)
                          (Control.DeepSeq.deepseq
                             (_SourceCodeInfo'Location'leadingDetachedComments x__) ())))))
+data SymbolVisibility
+  = VISIBILITY_UNSET | VISIBILITY_LOCAL | VISIBILITY_EXPORT
+  deriving stock (Prelude.Show, Prelude.Eq, Prelude.Ord)
+instance Data.ProtoLens.MessageEnum SymbolVisibility where
+  maybeToEnum 0 = Prelude.Just VISIBILITY_UNSET
+  maybeToEnum 1 = Prelude.Just VISIBILITY_LOCAL
+  maybeToEnum 2 = Prelude.Just VISIBILITY_EXPORT
+  maybeToEnum _ = Prelude.Nothing
+  showEnum VISIBILITY_UNSET = "VISIBILITY_UNSET"
+  showEnum VISIBILITY_LOCAL = "VISIBILITY_LOCAL"
+  showEnum VISIBILITY_EXPORT = "VISIBILITY_EXPORT"
+  readEnum k
+    | (Prelude.==) k "VISIBILITY_UNSET" = Prelude.Just VISIBILITY_UNSET
+    | (Prelude.==) k "VISIBILITY_LOCAL" = Prelude.Just VISIBILITY_LOCAL
+    | (Prelude.==) k "VISIBILITY_EXPORT"
+    = Prelude.Just VISIBILITY_EXPORT
+    | Prelude.otherwise
+    = (Prelude.>>=) (Text.Read.readMaybe k) Data.ProtoLens.maybeToEnum
+instance Prelude.Bounded SymbolVisibility where
+  minBound = VISIBILITY_UNSET
+  maxBound = VISIBILITY_EXPORT
+instance Prelude.Enum SymbolVisibility where
+  toEnum k__
+    = Prelude.maybe
+        (Prelude.error
+           ((Prelude.++)
+              "toEnum: unknown value for enum SymbolVisibility: "
+              (Prelude.show k__)))
+        Prelude.id
+        (Data.ProtoLens.maybeToEnum k__)
+  fromEnum VISIBILITY_UNSET = 0
+  fromEnum VISIBILITY_LOCAL = 1
+  fromEnum VISIBILITY_EXPORT = 2
+  succ VISIBILITY_EXPORT
+    = Prelude.error
+        "SymbolVisibility.succ: bad argument VISIBILITY_EXPORT. This value would be out of bounds."
+  succ VISIBILITY_UNSET = VISIBILITY_LOCAL
+  succ VISIBILITY_LOCAL = VISIBILITY_EXPORT
+  pred VISIBILITY_UNSET
+    = Prelude.error
+        "SymbolVisibility.pred: bad argument VISIBILITY_UNSET. This value would be out of bounds."
+  pred VISIBILITY_LOCAL = VISIBILITY_UNSET
+  pred VISIBILITY_EXPORT = VISIBILITY_LOCAL
+  enumFrom = Data.ProtoLens.Message.Enum.messageEnumFrom
+  enumFromTo = Data.ProtoLens.Message.Enum.messageEnumFromTo
+  enumFromThen = Data.ProtoLens.Message.Enum.messageEnumFromThen
+  enumFromThenTo = Data.ProtoLens.Message.Enum.messageEnumFromThenTo
+instance Data.ProtoLens.FieldDefault SymbolVisibility where
+  fieldDefault = VISIBILITY_UNSET
+instance Control.DeepSeq.NFData SymbolVisibility where
+  rnf x__ = Prelude.seq x__ ()
 {- | Fields :
      
          * 'Proto.Google.Protobuf.Descriptor_Fields.name' @:: Lens' UninterpretedOption [UninterpretedOption'NamePart]@
@@ -14061,9 +14985,9 @@ instance Control.DeepSeq.NFData UninterpretedOption'NamePart where
 packedFileDescriptor :: Data.ByteString.ByteString
 packedFileDescriptor
   = "\n\
-    \ google/protobuf/descriptor.proto\DC2\SIgoogle.protobuf\"M\n\
+    \ google/protobuf/descriptor.proto\DC2\SIgoogle.protobuf\"\202\SOH\n\
     \\DC1FileDescriptorSet\DC28\n\
-    \\EOTfile\CAN\SOH \ETX(\v2$.google.protobuf.FileDescriptorProtoR\EOTfile\"\152\ENQ\n\
+    \\EOTfile\CAN\SOH \ETX(\v2$.google.protobuf.FileDescriptorProtoR\EOTfile*{\b\128\236\202\255\SOH\DLE\129\236\202\255\SOH\SUBm\DC2k\b\128\236\202\255\SOH\DC24.buf.descriptor.v1.buf_file_descriptor_set_extension\SUB-.buf.descriptor.v1.FileDescriptorSetExtension\"\197\ENQ\n\
     \\DC3FileDescriptorProto\DC2\DC2\n\
     \\EOTname\CAN\SOH \SOH(\tR\EOTname\DC2\CAN\n\
     \\apackage\CAN\STX \SOH(\tR\apackage\DC2\RS\n\
@@ -14072,7 +14996,8 @@ packedFileDescriptor
     \dependency\DC2+\n\
     \\DC1public_dependency\CAN\n\
     \ \ETX(\ENQR\DLEpublicDependency\DC2'\n\
-    \\SIweak_dependency\CAN\v \ETX(\ENQR\SOweakDependency\DC2C\n\
+    \\SIweak_dependency\CAN\v \ETX(\ENQR\SOweakDependency\DC2+\n\
+    \\DC1option_dependency\CAN\SI \ETX(\tR\DLEoptionDependency\DC2C\n\
     \\fmessage_type\CAN\EOT \ETX(\v2 .google.protobuf.DescriptorProtoR\vmessageType\DC2A\n\
     \\tenum_type\CAN\ENQ \ETX(\v2$.google.protobuf.EnumDescriptorProtoR\benumType\DC2A\n\
     \\aservice\CAN\ACK \ETX(\v2'.google.protobuf.ServiceDescriptorProtoR\aservice\DC2C\n\
@@ -14080,7 +15005,7 @@ packedFileDescriptor
     \\aoptions\CAN\b \SOH(\v2\FS.google.protobuf.FileOptionsR\aoptions\DC2I\n\
     \\DLEsource_code_info\CAN\t \SOH(\v2\US.google.protobuf.SourceCodeInfoR\SOsourceCodeInfo\DC2\SYN\n\
     \\ACKsyntax\CAN\f \SOH(\tR\ACKsyntax\DC22\n\
-    \\aedition\CAN\SO \SOH(\SO2\CAN.google.protobuf.EditionR\aedition\"\185\ACK\n\
+    \\aedition\CAN\SO \SOH(\SO2\CAN.google.protobuf.EditionR\aedition\"\252\ACK\n\
     \\SIDescriptorProto\DC2\DC2\n\
     \\EOTname\CAN\SOH \SOH(\tR\EOTname\DC2;\n\
     \\ENQfield\CAN\STX \ETX(\v2%.google.protobuf.FieldDescriptorProtoR\ENQfield\DC2C\n\
@@ -14094,14 +15019,17 @@ packedFileDescriptor
     \\aoptions\CAN\a \SOH(\v2\US.google.protobuf.MessageOptionsR\aoptions\DC2U\n\
     \\SOreserved_range\CAN\t \ETX(\v2..google.protobuf.DescriptorProto.ReservedRangeR\rreservedRange\DC2#\n\
     \\rreserved_name\CAN\n\
-    \ \ETX(\tR\freservedName\SUBz\n\
+    \ \ETX(\tR\freservedName\DC2A\n\
+    \\n\
+    \visibility\CAN\v \SOH(\SO2!.google.protobuf.SymbolVisibilityR\n\
+    \visibility\SUBz\n\
     \\SOExtensionRange\DC2\DC4\n\
     \\ENQstart\CAN\SOH \SOH(\ENQR\ENQstart\DC2\DLE\n\
     \\ETXend\CAN\STX \SOH(\ENQR\ETXend\DC2@\n\
     \\aoptions\CAN\ETX \SOH(\v2&.google.protobuf.ExtensionRangeOptionsR\aoptions\SUB7\n\
     \\rReservedRange\DC2\DC4\n\
     \\ENQstart\CAN\SOH \SOH(\ENQR\ENQstart\DC2\DLE\n\
-    \\ETXend\CAN\STX \SOH(\ENQR\ETXend\"\204\EOT\n\
+    \\ETXend\CAN\STX \SOH(\ENQR\ETXend\"\212\EOT\n\
     \\NAKExtensionRangeOptions\DC2X\n\
     \\DC4uninterpreted_option\CAN\231\a \ETX(\v2$.google.protobuf.UninterpretedOptionR\DC3uninterpretedOption\DC2Y\n\
     \\vdeclaration\CAN\STX \ETX(\v22.google.protobuf.ExtensionRangeOptions.DeclarationR\vdeclarationB\ETX\136\SOH\STX\DC27\n\
@@ -14117,7 +15045,7 @@ packedFileDescriptor
     \\DC1VerificationState\DC2\SI\n\
     \\vDECLARATION\DLE\NUL\DC2\SO\n\
     \\n\
-    \UNVERIFIED\DLE\SOH*\t\b\232\a\DLE\128\128\128\128\STX\"\193\ACK\n\
+    \UNVERIFIED\DLE\SOH*\ACK\b\222\a\DLE\231\a*\t\b\232\a\DLE\128\128\128\128\STX\"\193\ACK\n\
     \\DC4FieldDescriptorProto\DC2\DC2\n\
     \\EOTname\CAN\SOH \SOH(\tR\EOTname\DC2\SYN\n\
     \\ACKnumber\CAN\ETX \SOH(\ENQR\ACKnumber\DC2A\n\
@@ -14163,24 +15091,27 @@ packedFileDescriptor
     \\SOLABEL_REQUIRED\DLE\STX\"c\n\
     \\DC4OneofDescriptorProto\DC2\DC2\n\
     \\EOTname\CAN\SOH \SOH(\tR\EOTname\DC27\n\
-    \\aoptions\CAN\STX \SOH(\v2\GS.google.protobuf.OneofOptionsR\aoptions\"\227\STX\n\
+    \\aoptions\CAN\STX \SOH(\v2\GS.google.protobuf.OneofOptionsR\aoptions\"\166\ETX\n\
     \\DC3EnumDescriptorProto\DC2\DC2\n\
     \\EOTname\CAN\SOH \SOH(\tR\EOTname\DC2?\n\
     \\ENQvalue\CAN\STX \ETX(\v2).google.protobuf.EnumValueDescriptorProtoR\ENQvalue\DC26\n\
     \\aoptions\CAN\ETX \SOH(\v2\FS.google.protobuf.EnumOptionsR\aoptions\DC2]\n\
     \\SOreserved_range\CAN\EOT \ETX(\v26.google.protobuf.EnumDescriptorProto.EnumReservedRangeR\rreservedRange\DC2#\n\
-    \\rreserved_name\CAN\ENQ \ETX(\tR\freservedName\SUB;\n\
+    \\rreserved_name\CAN\ENQ \ETX(\tR\freservedName\DC2A\n\
+    \\n\
+    \visibility\CAN\ACK \SOH(\SO2!.google.protobuf.SymbolVisibilityR\n\
+    \visibility\SUB;\n\
     \\DC1EnumReservedRange\DC2\DC4\n\
     \\ENQstart\CAN\SOH \SOH(\ENQR\ENQstart\DC2\DLE\n\
     \\ETXend\CAN\STX \SOH(\ENQR\ETXend\"\131\SOH\n\
     \\CANEnumValueDescriptorProto\DC2\DC2\n\
     \\EOTname\CAN\SOH \SOH(\tR\EOTname\DC2\SYN\n\
     \\ACKnumber\CAN\STX \SOH(\ENQR\ACKnumber\DC2;\n\
-    \\aoptions\CAN\ETX \SOH(\v2!.google.protobuf.EnumValueOptionsR\aoptions\"\167\SOH\n\
+    \\aoptions\CAN\ETX \SOH(\v2!.google.protobuf.EnumValueOptionsR\aoptions\"\181\SOH\n\
     \\SYNServiceDescriptorProto\DC2\DC2\n\
     \\EOTname\CAN\SOH \SOH(\tR\EOTname\DC2>\n\
     \\ACKmethod\CAN\STX \ETX(\v2&.google.protobuf.MethodDescriptorProtoR\ACKmethod\DC29\n\
-    \\aoptions\CAN\ETX \SOH(\v2\US.google.protobuf.ServiceOptionsR\aoptions\"\137\STX\n\
+    \\aoptions\CAN\ETX \SOH(\v2\US.google.protobuf.ServiceOptionsR\aoptionsJ\EOT\b\EOT\DLE\ENQR\ACKstream\"\137\STX\n\
     \\NAKMethodDescriptorProto\DC2\DC2\n\
     \\EOTname\CAN\SOH \SOH(\tR\EOTname\DC2\GS\n\
     \\n\
@@ -14189,12 +15120,12 @@ packedFileDescriptor
     \outputType\DC28\n\
     \\aoptions\CAN\EOT \SOH(\v2\RS.google.protobuf.MethodOptionsR\aoptions\DC20\n\
     \\DLEclient_streaming\CAN\ENQ \SOH(\b:\ENQfalseR\SIclientStreaming\DC20\n\
-    \\DLEserver_streaming\CAN\ACK \SOH(\b:\ENQfalseR\SIserverStreaming\"\173\t\n\
+    \\DLEserver_streaming\CAN\ACK \SOH(\b:\ENQfalseR\SIserverStreaming\"\186\f\n\
     \\vFileOptions\DC2!\n\
     \\fjava_package\CAN\SOH \SOH(\tR\vjavaPackage\DC20\n\
-    \\DC4java_outer_classname\CAN\b \SOH(\tR\DC2javaOuterClassname\DC25\n\
+    \\DC4java_outer_classname\CAN\b \SOH(\tR\DC2javaOuterClassname\DC2\249\SOH\n\
     \\DC3java_multiple_files\CAN\n\
-    \ \SOH(\b:\ENQfalseR\DC1javaMultipleFiles\DC2D\n\
+    \ \SOH(\b:\ENQfalseR\DC1javaMultipleFilesB\193\SOH\178\SOH\189\SOH\b\230\a \233\a*\180\SOHThis behavior is enabled by default in editions 2024 and above. To disable it, you can set `features.(pb.java).nest_in_file_class = YES` on individual messages, enums, or services.\DC2D\n\
     \\GSjava_generate_equals_and_hash\CAN\DC4 \SOH(\bR\EMjavaGenerateEqualsAndHashB\STX\CAN\SOH\DC2:\n\
     \\SYNjava_string_check_utf8\CAN\ESC \SOH(\b:\ENQfalseR\DC3javaStringCheckUtf8\DC2S\n\
     \\foptimize_for\CAN\t \SOH(\SO2).google.protobuf.FileOptions.OptimizeMode:\ENQSPEEDR\voptimizeFor\DC2\GS\n\
@@ -14205,8 +15136,8 @@ packedFileDescriptor
     \\DC3py_generic_services\CAN\DC2 \SOH(\b:\ENQfalseR\DC1pyGenericServices\DC2%\n\
     \\n\
     \deprecated\CAN\ETB \SOH(\b:\ENQfalseR\n\
-    \deprecated\DC2.\n\
-    \\DLEcc_enable_arenas\CAN\US \SOH(\b:\EOTtrueR\SOccEnableArenas\DC2*\n\
+    \deprecated\DC2\191\SOH\n\
+    \\DLEcc_enable_arenas\CAN\US \SOH(\b:\EOTtrueR\SOccEnableArenasB\142\SOH\178\SOH\138\SOH \234\a*\132\SOHcc_enable_arenas is enabled by default in every edition and overrides are ignored.This option is removed in editions 2026 and above.\DC2*\n\
     \\DC1objc_class_prefix\CAN$ \SOH(\tR\SIobjcClassPrefix\DC2)\n\
     \\DLEcsharp_namespace\CAN% \SOH(\tR\SIcsharpNamespace\DC2!\n\
     \\fswift_prefix\CAN' \SOH(\tR\vswiftPrefix\DC2(\n\
@@ -14219,7 +15150,7 @@ packedFileDescriptor
     \\fOptimizeMode\DC2\t\n\
     \\ENQSPEED\DLE\SOH\DC2\r\n\
     \\tCODE_SIZE\DLE\STX\DC2\DLE\n\
-    \\fLITE_RUNTIME\DLE\ETX*\t\b\232\a\DLE\128\128\128\128\STXJ\EOT\b*\DLE+J\EOT\b&\DLE'R\DC4php_generic_services\"\244\ETX\n\
+    \\fLITE_RUNTIME\DLE\ETX*4\b\222\a\DLE\231\a\SUB,\DC2*\b\222\a\DC2\f.pb.file.cpp\SUB\ETB.pb.file.CppFileOptions*\t\b\232\a\DLE\128\128\128\128\STXJ\EOT\b*\DLE+J\EOT\b&\DLE'R\DC4php_generic_services\"\252\ETX\n\
     \\SOMessageOptions\DC2<\n\
     \\ETBmessage_set_wire_format\CAN\SOH \SOH(\b:\ENQfalseR\DC4messageSetWireFormat\DC2L\n\
     \\USno_standard_descriptor_accessor\CAN\STX \SOH(\b:\ENQfalseR\FSnoStandardDescriptorAccessor\DC2%\n\
@@ -14229,8 +15160,8 @@ packedFileDescriptor
     \\tmap_entry\CAN\a \SOH(\bR\bmapEntry\DC2V\n\
     \&deprecated_legacy_json_field_conflicts\CAN\v \SOH(\bR\"deprecatedLegacyJsonFieldConflictsB\STX\CAN\SOH\DC27\n\
     \\bfeatures\CAN\f \SOH(\v2\ESC.google.protobuf.FeatureSetR\bfeatures\DC2X\n\
-    \\DC4uninterpreted_option\CAN\231\a \ETX(\v2$.google.protobuf.UninterpretedOptionR\DC3uninterpretedOption*\t\b\232\a\DLE\128\128\128\128\STXJ\EOT\b\EOT\DLE\ENQJ\EOT\b\ENQ\DLE\ACKJ\EOT\b\ACK\DLE\aJ\EOT\b\b\DLE\tJ\EOT\b\t\DLE\n\
-    \\"\157\r\n\
+    \\DC4uninterpreted_option\CAN\231\a \ETX(\v2$.google.protobuf.UninterpretedOptionR\DC3uninterpretedOption*\ACK\b\222\a\DLE\231\a*\t\b\232\a\DLE\128\128\128\128\STXJ\EOT\b\EOT\DLE\ENQJ\EOT\b\ENQ\DLE\ACKJ\EOT\b\ACK\DLE\aJ\EOT\b\b\DLE\tJ\EOT\b\t\DLE\n\
+    \\"\206\r\n\
     \\fFieldOptions\DC2A\n\
     \\ENQctype\CAN\SOH \SOH(\SO2#.google.protobuf.FieldOptions.CType:\ACKSTRINGR\ENQctype\DC2\SYN\n\
     \\ACKpacked\CAN\STX \SOH(\bR\ACKpacked\DC2G\n\
@@ -14239,9 +15170,9 @@ packedFileDescriptor
     \\SIunverified_lazy\CAN\SI \SOH(\b:\ENQfalseR\SOunverifiedLazy\DC2%\n\
     \\n\
     \deprecated\CAN\ETX \SOH(\b:\ENQfalseR\n\
-    \deprecated\DC2\EM\n\
+    \deprecated\DC2\GS\n\
     \\EOTweak\CAN\n\
-    \ \SOH(\b:\ENQfalseR\EOTweak\DC2(\n\
+    \ \SOH(\b:\ENQfalseR\EOTweakB\STX\CAN\SOH\DC2(\n\
     \\fdebug_redact\CAN\DLE \SOH(\b:\ENQfalseR\vdebugRedact\DC2K\n\
     \\tretention\CAN\DC1 \SOH(\SO2-.google.protobuf.FieldOptions.OptionRetentionR\tretention\DC2H\n\
     \\atargets\CAN\DC3 \ETX(\SO2..google.protobuf.FieldOptions.OptionTargetTypeR\atargets\DC2W\n\
@@ -14251,12 +15182,13 @@ packedFileDescriptor
     \\DC4uninterpreted_option\CAN\231\a \ETX(\v2$.google.protobuf.UninterpretedOptionR\DC3uninterpretedOption\SUBZ\n\
     \\SOEditionDefault\DC22\n\
     \\aedition\CAN\ETX \SOH(\SO2\CAN.google.protobuf.EditionR\aedition\DC2\DC4\n\
-    \\ENQvalue\CAN\STX \SOH(\tR\ENQvalue\SUB\150\STX\n\
+    \\ENQvalue\CAN\STX \SOH(\tR\ENQvalue\SUB\187\STX\n\
     \\SOFeatureSupport\DC2G\n\
     \\DC2edition_introduced\CAN\SOH \SOH(\SO2\CAN.google.protobuf.EditionR\DC1editionIntroduced\DC2G\n\
     \\DC2edition_deprecated\CAN\STX \SOH(\SO2\CAN.google.protobuf.EditionR\DC1editionDeprecated\DC2/\n\
     \\DC3deprecation_warning\CAN\ETX \SOH(\tR\DC2deprecationWarning\DC2A\n\
-    \\SIedition_removed\CAN\EOT \SOH(\SO2\CAN.google.protobuf.EditionR\SOeditionRemoved\"/\n\
+    \\SIedition_removed\CAN\EOT \SOH(\SO2\CAN.google.protobuf.EditionR\SOeditionRemoved\DC2#\n\
+    \\rremoval_error\CAN\ENQ \SOH(\tR\fremovalError\"/\n\
     \\ENQCType\DC2\n\
     \\n\
     \\ACKSTRING\DLE\NUL\DC2\b\n\
@@ -14280,10 +15212,10 @@ packedFileDescriptor
     \\DLETARGET_TYPE_ENUM\DLE\ACK\DC2\SUB\n\
     \\SYNTARGET_TYPE_ENUM_ENTRY\DLE\a\DC2\ETB\n\
     \\DC3TARGET_TYPE_SERVICE\DLE\b\DC2\SYN\n\
-    \\DC2TARGET_TYPE_METHOD\DLE\t*\t\b\232\a\DLE\128\128\128\128\STXJ\EOT\b\EOT\DLE\ENQJ\EOT\b\DC2\DLE\DC3\"\172\SOH\n\
+    \\DC2TARGET_TYPE_METHOD\DLE\t*\ACK\b\222\a\DLE\231\a*\t\b\232\a\DLE\128\128\128\128\STXJ\EOT\b\EOT\DLE\ENQJ\EOT\b\DC2\DLE\DC3\"\180\SOH\n\
     \\fOneofOptions\DC27\n\
     \\bfeatures\CAN\SOH \SOH(\v2\ESC.google.protobuf.FeatureSetR\bfeatures\DC2X\n\
-    \\DC4uninterpreted_option\CAN\231\a \ETX(\v2$.google.protobuf.UninterpretedOptionR\DC3uninterpretedOption*\t\b\232\a\DLE\128\128\128\128\STX\"\209\STX\n\
+    \\DC4uninterpreted_option\CAN\231\a \ETX(\v2$.google.protobuf.UninterpretedOptionR\DC3uninterpretedOption*\ACK\b\222\a\DLE\231\a*\t\b\232\a\DLE\128\128\128\128\STX\"\217\STX\n\
     \\vEnumOptions\DC2\US\n\
     \\vallow_alias\CAN\STX \SOH(\bR\n\
     \allowAlias\DC2%\n\
@@ -14292,7 +15224,7 @@ packedFileDescriptor
     \deprecated\DC2V\n\
     \&deprecated_legacy_json_field_conflicts\CAN\ACK \SOH(\bR\"deprecatedLegacyJsonFieldConflictsB\STX\CAN\SOH\DC27\n\
     \\bfeatures\CAN\a \SOH(\v2\ESC.google.protobuf.FeatureSetR\bfeatures\DC2X\n\
-    \\DC4uninterpreted_option\CAN\231\a \ETX(\v2$.google.protobuf.UninterpretedOptionR\DC3uninterpretedOption*\t\b\232\a\DLE\128\128\128\128\STXJ\EOT\b\ENQ\DLE\ACK\"\216\STX\n\
+    \\DC4uninterpreted_option\CAN\231\a \ETX(\v2$.google.protobuf.UninterpretedOptionR\DC3uninterpretedOption*\ACK\b\222\a\DLE\231\a*\t\b\232\a\DLE\128\128\128\128\STXJ\EOT\b\ENQ\DLE\ACK\"\159\ETX\n\
     \\DLEEnumValueOptions\DC2%\n\
     \\n\
     \deprecated\CAN\SOH \SOH(\b:\ENQfalseR\n\
@@ -14300,13 +15232,13 @@ packedFileDescriptor
     \\bfeatures\CAN\STX \SOH(\v2\ESC.google.protobuf.FeatureSetR\bfeatures\DC2(\n\
     \\fdebug_redact\CAN\ETX \SOH(\b:\ENQfalseR\vdebugRedact\DC2U\n\
     \\SIfeature_support\CAN\EOT \SOH(\v2,.google.protobuf.FieldOptions.FeatureSupportR\SOfeatureSupport\DC2X\n\
-    \\DC4uninterpreted_option\CAN\231\a \ETX(\v2$.google.protobuf.UninterpretedOptionR\DC3uninterpretedOption*\t\b\232\a\DLE\128\128\128\128\STX\"\213\SOH\n\
+    \\DC4uninterpreted_option\CAN\231\a \ETX(\v2$.google.protobuf.UninterpretedOptionR\DC3uninterpretedOption*E\b\222\a\DLE\231\a\SUB=\DC2;\b\230\a\DC2\DC2.pb.enumvalue.json\SUB\".pb.enumvalue.JsonEnumValueOptions*\t\b\232\a\DLE\128\128\128\128\STX\"\221\SOH\n\
     \\SOServiceOptions\DC27\n\
     \\bfeatures\CAN\" \SOH(\v2\ESC.google.protobuf.FeatureSetR\bfeatures\DC2%\n\
     \\n\
     \deprecated\CAN! \SOH(\b:\ENQfalseR\n\
     \deprecated\DC2X\n\
-    \\DC4uninterpreted_option\CAN\231\a \ETX(\v2$.google.protobuf.UninterpretedOptionR\DC3uninterpretedOption*\t\b\232\a\DLE\128\128\128\128\STX\"\153\ETX\n\
+    \\DC4uninterpreted_option\CAN\231\a \ETX(\v2$.google.protobuf.UninterpretedOptionR\DC3uninterpretedOption*\ACK\b\222\a\DLE\231\a*\t\b\232\a\DLE\128\128\128\128\STX\"\161\ETX\n\
     \\rMethodOptions\DC2%\n\
     \\n\
     \deprecated\CAN! \SOH(\b:\ENQfalseR\n\
@@ -14318,7 +15250,7 @@ packedFileDescriptor
     \\DC3IDEMPOTENCY_UNKNOWN\DLE\NUL\DC2\DC3\n\
     \\SINO_SIDE_EFFECTS\DLE\SOH\DC2\SO\n\
     \\n\
-    \IDEMPOTENT\DLE\STX*\t\b\232\a\DLE\128\128\128\128\STX\"\154\ETX\n\
+    \IDEMPOTENT\DLE\STX*\ACK\b\222\a\DLE\231\a*\t\b\232\a\DLE\128\128\128\128\STX\"\154\ETX\n\
     \\DC3UninterpretedOption\DC2A\n\
     \\EOTname\CAN\STX \ETX(\v2-.google.protobuf.UninterpretedOption.NamePartR\EOTname\DC2)\n\
     \\DLEidentifier_value\CAN\ETX \SOH(\tR\SIidentifierValue\DC2,\n\
@@ -14329,18 +15261,35 @@ packedFileDescriptor
     \\SIaggregate_value\CAN\b \SOH(\tR\SOaggregateValue\SUBJ\n\
     \\bNamePart\DC2\ESC\n\
     \\tname_part\CAN\SOH \STX(\tR\bnamePart\DC2!\n\
-    \\fis_extension\CAN\STX \STX(\bR\visExtension\"\167\n\
-    \\n\
+    \\fis_extension\CAN\STX \STX(\bR\visExtension\"\180\DC4\n\
     \\n\
     \FeatureSet\DC2\145\SOH\n\
-    \\SOfield_presence\CAN\SOH \SOH(\SO2).google.protobuf.FeatureSet.FieldPresenceR\rfieldPresenceB?\136\SOH\SOH\152\SOH\EOT\152\SOH\SOH\162\SOH\r\DC2\bEXPLICIT\CAN\132\a\162\SOH\r\DC2\bIMPLICIT\CAN\231\a\162\SOH\r\DC2\bEXPLICIT\CAN\232\a\178\SOH\ETX\b\232\a\DC2l\n\
-    \\tenum_type\CAN\STX \SOH(\SO2$.google.protobuf.FeatureSet.EnumTypeR\benumTypeB)\136\SOH\SOH\152\SOH\ACK\152\SOH\SOH\162\SOH\v\DC2\ACKCLOSED\CAN\132\a\162\SOH\t\DC2\EOTOPEN\CAN\231\a\178\SOH\ETX\b\232\a\DC2\152\SOH\n\
-    \\ETBrepeated_field_encoding\CAN\ETX \SOH(\SO21.google.protobuf.FeatureSet.RepeatedFieldEncodingR\NAKrepeatedFieldEncodingB-\136\SOH\SOH\152\SOH\EOT\152\SOH\SOH\162\SOH\r\DC2\bEXPANDED\CAN\132\a\162\SOH\v\DC2\ACKPACKED\CAN\231\a\178\SOH\ETX\b\232\a\DC2~\n\
-    \\SIutf8_validation\CAN\EOT \SOH(\SO2*.google.protobuf.FeatureSet.Utf8ValidationR\SOutf8ValidationB)\136\SOH\SOH\152\SOH\EOT\152\SOH\SOH\162\SOH\t\DC2\EOTNONE\CAN\132\a\162\SOH\v\DC2\ACKVERIFY\CAN\231\a\178\SOH\ETX\b\232\a\DC2~\n\
-    \\DLEmessage_encoding\CAN\ENQ \SOH(\SO2+.google.protobuf.FeatureSet.MessageEncodingR\SImessageEncodingB&\136\SOH\SOH\152\SOH\EOT\152\SOH\SOH\162\SOH\DC4\DC2\SILENGTH_PREFIXED\CAN\132\a\178\SOH\ETX\b\232\a\DC2\130\SOH\n\
+    \\SOfield_presence\CAN\SOH \SOH(\SO2).google.protobuf.FeatureSet.FieldPresenceR\rfieldPresenceB?\136\SOH\SOH\152\SOH\EOT\152\SOH\SOH\162\SOH\r\CAN\132\a\DC2\bEXPLICIT\162\SOH\r\CAN\231\a\DC2\bIMPLICIT\162\SOH\r\CAN\232\a\DC2\bEXPLICIT\178\SOH\ETX\b\232\a\DC2l\n\
+    \\tenum_type\CAN\STX \SOH(\SO2$.google.protobuf.FeatureSet.EnumTypeR\benumTypeB)\136\SOH\SOH\152\SOH\ACK\152\SOH\SOH\162\SOH\v\CAN\132\a\DC2\ACKCLOSED\162\SOH\t\CAN\231\a\DC2\EOTOPEN\178\SOH\ETX\b\232\a\DC2\152\SOH\n\
+    \\ETBrepeated_field_encoding\CAN\ETX \SOH(\SO21.google.protobuf.FeatureSet.RepeatedFieldEncodingR\NAKrepeatedFieldEncodingB-\136\SOH\SOH\152\SOH\EOT\152\SOH\SOH\162\SOH\r\CAN\132\a\DC2\bEXPANDED\162\SOH\v\CAN\231\a\DC2\ACKPACKED\178\SOH\ETX\b\232\a\DC2~\n\
+    \\SIutf8_validation\CAN\EOT \SOH(\SO2*.google.protobuf.FeatureSet.Utf8ValidationR\SOutf8ValidationB)\136\SOH\SOH\152\SOH\EOT\152\SOH\SOH\162\SOH\t\CAN\132\a\DC2\EOTNONE\162\SOH\v\CAN\231\a\DC2\ACKVERIFY\178\SOH\ETX\b\232\a\DC2~\n\
+    \\DLEmessage_encoding\CAN\ENQ \SOH(\SO2+.google.protobuf.FeatureSet.MessageEncodingR\SImessageEncodingB&\136\SOH\SOH\152\SOH\EOT\152\SOH\SOH\162\SOH\DC4\CAN\132\a\DC2\SILENGTH_PREFIXED\178\SOH\ETX\b\232\a\DC2\130\SOH\n\
     \\vjson_format\CAN\ACK \SOH(\SO2&.google.protobuf.FeatureSet.JsonFormatR\n\
-    \jsonFormatB9\136\SOH\SOH\152\SOH\ETX\152\SOH\ACK\152\SOH\SOH\162\SOH\ETB\DC2\DC2LEGACY_BEST_EFFORT\CAN\132\a\162\SOH\n\
-    \\DC2\ENQALLOW\CAN\231\a\178\SOH\ETX\b\232\a\"\\\n\
+    \jsonFormatB9\136\SOH\SOH\152\SOH\ETX\152\SOH\ACK\152\SOH\SOH\162\SOH\ETB\CAN\132\a\DC2\DC2LEGACY_BEST_EFFORT\162\SOH\n\
+    \\CAN\231\a\DC2\ENQALLOW\178\SOH\ETX\b\232\a\DC2\188\SOH\n\
+    \\DC4enforce_naming_style\CAN\a \SOH(\SO2..google.protobuf.FeatureSet.EnforceNamingStyleR\DC2enforceNamingStyleBZ\136\SOH\STX\152\SOH\SOH\152\SOH\STX\152\SOH\ETX\152\SOH\EOT\152\SOH\ENQ\152\SOH\ACK\152\SOH\a\152\SOH\b\152\SOH\t\162\SOH\DC1\CAN\132\a\DC2\fSTYLE_LEGACY\162\SOH\SO\CAN\233\a\DC2\tSTYLE2024\162\SOH\SO\CAN\234\a\DC2\tSTYLE2026\178\SOH\ETX\b\233\a\DC2\199\SOH\n\
+    \\EMdefault_symbol_visibility\CAN\b \SOH(\SO2E.google.protobuf.FeatureSet.VisibilityFeature.DefaultSymbolVisibilityR\ETBdefaultSymbolVisibilityBD\136\SOH\STX\152\SOH\SOH\162\SOH\SI\CAN\132\a\DC2\n\
+    \EXPORT_ALL\162\SOH\NAK\CAN\233\a\DC2\DLEEXPORT_TOP_LEVEL\162\SOH\v\CAN\234\a\DC2\ACKSTRICT\178\SOH\ETX\b\233\a\DC2\195\SOH\n\
+    \\DC4enforce_proto_limits\CAN\t \SOH(\SO2A.google.protobuf.FeatureSet.ProtoLimitsFeature.EnforceProtoLimitsR\DC2enforceProtoLimitsBN\136\SOH\STX\152\SOH\ACK\152\SOH\ETX\152\SOH\EOT\152\SOH\ENQ\162\SOH\RS\CAN\132\a\DC2\EMLEGACY_NO_EXPLICIT_LIMITS\162\SOH\NAK\CAN\234\a\DC2\DLEPROTO_LIMITS2026\178\SOH\ETX\b\234\a\SUB\161\SOH\n\
+    \\DC1VisibilityFeature\"\129\SOH\n\
+    \\ETBDefaultSymbolVisibility\DC2%\n\
+    \!DEFAULT_SYMBOL_VISIBILITY_UNKNOWN\DLE\NUL\DC2\SO\n\
+    \\n\
+    \EXPORT_ALL\DLE\SOH\DC2\DC4\n\
+    \\DLEEXPORT_TOP_LEVEL\DLE\STX\DC2\r\n\
+    \\tLOCAL_ALL\DLE\ETX\DC2\n\
+    \\n\
+    \\ACKSTRICT\DLE\EOTJ\b\b\SOH\DLE\128\128\128\128\STX\SUBy\n\
+    \\DC2ProtoLimitsFeature\"c\n\
+    \\DC2EnforceProtoLimits\DC2\CAN\n\
+    \\DC4PROTO_LIMITS_UNKNOWN\DLE\NUL\DC2\GS\n\
+    \\EMLEGACY_NO_EXPLICIT_LIMITS\DLE\SOH\DC2\DC4\n\
+    \\DLEPROTO_LIMITS2026\DLE\STX\"\\\n\
     \\rFieldPresence\DC2\SUB\n\
     \\SYNFIELD_PRESENCE_UNKNOWN\DLE\NUL\DC2\f\n\
     \\bEXPLICIT\DLE\SOH\DC2\f\n\
@@ -14369,7 +15318,15 @@ packedFileDescriptor
     \JsonFormat\DC2\ETB\n\
     \\DC3JSON_FORMAT_UNKNOWN\DLE\NUL\DC2\t\n\
     \\ENQALLOW\DLE\SOH\DC2\SYN\n\
-    \\DC2LEGACY_BEST_EFFORT\DLE\STX*\ACK\b\232\a\DLE\139N*\ACK\b\139N\DLE\144N*\ACK\b\144N\DLE\145NJ\ACK\b\231\a\DLE\232\a\"\239\ETX\n\
+    \\DC2LEGACY_BEST_EFFORT\DLE\STX\"f\n\
+    \\DC2EnforceNamingStyle\DC2 \n\
+    \\FSENFORCE_NAMING_STYLE_UNKNOWN\DLE\NUL\DC2\r\n\
+    \\tSTYLE2024\DLE\SOH\DC2\DLE\n\
+    \\fSTYLE_LEGACY\DLE\STX\DC2\r\n\
+    \\tSTYLE2026\DLE\ETX*\188\STX\b\232\a\DLE\139N\SUB\179\STX\DC2\GS\b\232\a\DC2\a.pb.cpp\SUB\SI.pb.CppFeatures\DC2\US\b\233\a\DC2\b.pb.java\SUB\DLE.pb.JavaFeatures\DC2\ESC\b\234\a\DC2\ACK.pb.go\SUB\SO.pb.GoFeatures\DC2#\b\235\a\DC2\n\
+    \.pb.python\SUB\DC2.pb.PythonFeatures\DC2#\b\236\a\DC2\n\
+    \.pb.csharp\SUB\DC2.pb.CSharpFeatures\DC25\b\204\b\DC2\CAN.imp.impress_feature_set\SUB\SYN.imp.ImpressFeatureSet\DC2.\b\133N\DC2\DLE.pb.java_mutable\SUB\ETB.pb.JavaMutableFeatures\DC2#\b\134N\DC2\n\
+    \.pb.proto1\SUB\DC2.pb.Proto1Features*\ACK\b\139N\DLE\144N*\ACK\b\144N\DLE\145NJ\ACK\b\231\a\DLE\232\a\"\239\ETX\n\
     \\DC2FeatureSetDefaults\DC2X\n\
     \\bdefaults\CAN\SOH \ETX(\v2<.google.protobuf.FeatureSetDefaults.FeatureSetEditionDefaultR\bdefaults\DC2A\n\
     \\SIminimum_edition\CAN\EOT \SOH(\SO2\CAN.google.protobuf.EditionR\SOminimumEdition\DC2A\n\
@@ -14377,7 +15334,7 @@ packedFileDescriptor
     \\CANFeatureSetEditionDefault\DC22\n\
     \\aedition\CAN\ETX \SOH(\SO2\CAN.google.protobuf.EditionR\aedition\DC2N\n\
     \\DC4overridable_features\CAN\EOT \SOH(\v2\ESC.google.protobuf.FeatureSetR\DC3overridableFeatures\DC2B\n\
-    \\SOfixed_features\CAN\ENQ \SOH(\v2\ESC.google.protobuf.FeatureSetR\rfixedFeaturesJ\EOT\b\SOH\DLE\STXJ\EOT\b\STX\DLE\ETXR\bfeatures\"\167\STX\n\
+    \\SOfixed_features\CAN\ENQ \SOH(\v2\ESC.google.protobuf.FeatureSetR\rfixedFeaturesJ\EOT\b\SOH\DLE\STXJ\EOT\b\STX\DLE\ETXR\bfeatures\"\158\ETX\n\
     \\SOSourceCodeInfo\DC2D\n\
     \\blocation\CAN\SOH \ETX(\v2(.google.protobuf.SourceCodeInfo.LocationR\blocation\SUB\206\SOH\n\
     \\bLocation\DC2\SYN\n\
@@ -14385,7 +15342,7 @@ packedFileDescriptor
     \\EOTspan\CAN\STX \ETX(\ENQR\EOTspanB\STX\DLE\SOH\DC2)\n\
     \\DLEleading_comments\CAN\ETX \SOH(\tR\SIleadingComments\DC2+\n\
     \\DC1trailing_comments\CAN\EOT \SOH(\tR\DLEtrailingComments\DC2:\n\
-    \\EMleading_detached_comments\CAN\ACK \ETX(\tR\ETBleadingDetachedComments\"\208\STX\n\
+    \\EMleading_detached_comments\CAN\ACK \ETX(\tR\ETBleadingDetachedComments*u\b\128\236\202\255\SOH\DLE\129\236\202\255\SOH\SUBg\DC2e\b\128\236\202\255\SOH\DC21.buf.descriptor.v1.buf_source_code_info_extension\SUB*.buf.descriptor.v1.SourceCodeInfoExtension\"\208\STX\n\
     \\DC1GeneratedCodeInfo\DC2M\n\
     \\n\
     \annotation\CAN\SOH \ETX(\v2-.google.protobuf.GeneratedCodeInfo.AnnotationR\n\
@@ -14401,53 +15358,35 @@ packedFileDescriptor
     \\bSemantic\DC2\b\n\
     \\EOTNONE\DLE\NUL\DC2\a\n\
     \\ETXSET\DLE\SOH\DC2\t\n\
-    \\ENQALIAS\DLE\STX*\167\STX\n\
+    \\ENQALIAS\DLE\STX*\209\STX\n\
     \\aEdition\DC2\DC3\n\
     \\SIEDITION_UNKNOWN\DLE\NUL\DC2\DC3\n\
     \\SOEDITION_LEGACY\DLE\132\a\DC2\DC3\n\
     \\SOEDITION_PROTO2\DLE\230\a\DC2\DC3\n\
     \\SOEDITION_PROTO3\DLE\231\a\DC2\DC1\n\
     \\fEDITION_2023\DLE\232\a\DC2\DC1\n\
-    \\fEDITION_2024\DLE\233\a\DC2\ETB\n\
+    \\fEDITION_2024\DLE\233\a\DC2\DC1\n\
+    \\fEDITION_2026\DLE\234\a\DC2\NAK\n\
+    \\DLEEDITION_UNSTABLE\DLE\143N\DC2\ETB\n\
     \\DC3EDITION_1_TEST_ONLY\DLE\SOH\DC2\ETB\n\
     \\DC3EDITION_2_TEST_ONLY\DLE\STX\DC2\GS\n\
     \\ETBEDITION_99997_TEST_ONLY\DLE\157\141\ACK\DC2\GS\n\
     \\ETBEDITION_99998_TEST_ONLY\DLE\158\141\ACK\DC2\GS\n\
     \\ETBEDITION_99999_TEST_ONLY\DLE\159\141\ACK\DC2\DC3\n\
-    \\vEDITION_MAX\DLE\255\255\255\255\aB~\n\
-    \\DC3com.google.protobufB\DLEDescriptorProtosH\SOHZ-google.golang.org/protobuf/types/descriptorpb\248\SOH\SOH\162\STX\ETXGPB\170\STX\SUBGoogle.Protobuf.ReflectionJ\139\195\ETX\n\
-    \\a\DC2\ENQ&\NUL\143\n\
-    \\SOH\n\
-    \\170\SI\n\
-    \\SOH\f\DC2\ETX&\NUL\DC22\193\f Protocol Buffers - Google's data interchange format\n\
-    \ Copyright 2008 Google Inc.  All rights reserved.\n\
-    \ https://developers.google.com/protocol-buffers/\n\
+    \\vEDITION_MAX\DLE\255\255\255\255\a*U\n\
+    \\DLESymbolVisibility\DC2\DC4\n\
+    \\DLEVISIBILITY_UNSET\DLE\NUL\DC2\DC4\n\
+    \\DLEVISIBILITY_LOCAL\DLE\SOH\DC2\NAK\n\
+    \\DC1VISIBILITY_EXPORT\DLE\STXB~\n\
+    \\DC3com.google.protobufB\DLEDescriptorProtosH\SOHZ-google.golang.org/protobuf/types/descriptorpb\248\SOH\SOH\162\STX\ETXGPB\170\STX\SUBGoogle.Protobuf.ReflectionJ\129\252\ETX\n\
+    \\a\DC2\ENQ\SI\NUL\251\v\SOH\n\
+    \\242\EOT\n\
+    \\SOH\f\DC2\ETX\SI\NUL\DC22\137\STX Protocol Buffers - Google's data interchange format\n\
+    \ Copyright 2008 Google LLC.  All rights reserved.\n\
     \\n\
-    \ Redistribution and use in source and binary forms, with or without\n\
-    \ modification, are permitted provided that the following conditions are\n\
-    \ met:\n\
-    \\n\
-    \     * Redistributions of source code must retain the above copyright\n\
-    \ notice, this list of conditions and the following disclaimer.\n\
-    \     * Redistributions in binary form must reproduce the above\n\
-    \ copyright notice, this list of conditions and the following disclaimer\n\
-    \ in the documentation and/or other materials provided with the\n\
-    \ distribution.\n\
-    \     * Neither the name of Google Inc. nor the names of its\n\
-    \ contributors may be used to endorse or promote products derived from\n\
-    \ this software without specific prior written permission.\n\
-    \\n\
-    \ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS\n\
-    \ \"AS IS\" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT\n\
-    \ LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR\n\
-    \ A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT\n\
-    \ OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,\n\
-    \ SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT\n\
-    \ LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,\n\
-    \ DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY\n\
-    \ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT\n\
-    \ (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE\n\
-    \ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.\n\
+    \ Use of this source code is governed by a BSD-style\n\
+    \ license that can be found in the LICENSE file or at\n\
+    \ https://developers.google.com/open-source/licenses/bsd\n\
     \2\219\STX Author: kenton@google.com (Kenton Varda)\n\
     \  Based on original Protocol Buffers design by\n\
     \  Sanjay Ghemawat, Jeff Dean, and others.\n\
@@ -14457,966 +15396,1038 @@ packedFileDescriptor
     \ without any other information (e.g. without reading its imports).\n\
     \\n\
     \\b\n\
-    \\SOH\STX\DC2\ETX(\NUL\CAN\n\
+    \\SOH\STX\DC2\ETX\DC1\NUL\CAN\n\
     \\b\n\
-    \\SOH\b\DC2\ETX*\NULD\n\
+    \\SOH\b\DC2\ETX\DC3\NULD\n\
     \\t\n\
-    \\STX\b\v\DC2\ETX*\NULD\n\
+    \\STX\b\v\DC2\ETX\DC3\NULD\n\
     \\b\n\
-    \\SOH\b\DC2\ETX+\NUL,\n\
+    \\SOH\b\DC2\ETX\DC4\NUL,\n\
     \\t\n\
-    \\STX\b\SOH\DC2\ETX+\NUL,\n\
+    \\STX\b\SOH\DC2\ETX\DC4\NUL,\n\
     \\b\n\
-    \\SOH\b\DC2\ETX,\NUL1\n\
+    \\SOH\b\DC2\ETX\NAK\NUL1\n\
     \\t\n\
-    \\STX\b\b\DC2\ETX,\NUL1\n\
+    \\STX\b\b\DC2\ETX\NAK\NUL1\n\
     \\b\n\
-    \\SOH\b\DC2\ETX-\NUL7\n\
+    \\SOH\b\DC2\ETX\SYN\NUL7\n\
     \\t\n\
-    \\STX\b%\DC2\ETX-\NUL7\n\
+    \\STX\b%\DC2\ETX\SYN\NUL7\n\
     \\b\n\
-    \\SOH\b\DC2\ETX.\NUL!\n\
+    \\SOH\b\DC2\ETX\ETB\NUL!\n\
     \\t\n\
-    \\STX\b$\DC2\ETX.\NUL!\n\
+    \\STX\b$\DC2\ETX\ETB\NUL!\n\
     \\b\n\
-    \\SOH\b\DC2\ETX/\NUL\US\n\
+    \\SOH\b\DC2\ETX\CAN\NUL\US\n\
     \\t\n\
-    \\STX\b\US\DC2\ETX/\NUL\US\n\
+    \\STX\b\US\DC2\ETX\CAN\NUL\US\n\
     \\b\n\
-    \\SOH\b\DC2\ETX3\NUL\FS\n\
+    \\SOH\b\DC2\ETX\FS\NUL\FS\n\
     \\DEL\n\
-    \\STX\b\t\DC2\ETX3\NUL\FS\SUBt descriptor.proto must be optimized for speed because reflection-based\n\
+    \\STX\b\t\DC2\ETX\FS\NUL\FS\SUBt descriptor.proto must be optimized for speed because reflection-based\n\
     \ algorithms don't work during bootstrapping.\n\
     \\n\
     \j\n\
-    \\STX\EOT\NUL\DC2\EOT7\NUL9\SOH\SUB^ The protocol compiler can output a FileDescriptorSet containing the .proto\n\
+    \\STX\EOT\NUL\DC2\EOT \NUL)\SOH\SUB^ The protocol compiler can output a FileDescriptorSet containing the .proto\n\
     \ files it parses.\n\
     \\n\
     \\n\
     \\n\
-    \\ETX\EOT\NUL\SOH\DC2\ETX7\b\EM\n\
+    \\ETX\EOT\NUL\SOH\DC2\ETX \b\EM\n\
     \\v\n\
-    \\EOT\EOT\NUL\STX\NUL\DC2\ETX8\STX(\n\
+    \\EOT\EOT\NUL\STX\NUL\DC2\ETX!\STX(\n\
     \\f\n\
-    \\ENQ\EOT\NUL\STX\NUL\EOT\DC2\ETX8\STX\n\
+    \\ENQ\EOT\NUL\STX\NUL\EOT\DC2\ETX!\STX\n\
     \\n\
     \\f\n\
-    \\ENQ\EOT\NUL\STX\NUL\ACK\DC2\ETX8\v\RS\n\
+    \\ENQ\EOT\NUL\STX\NUL\ACK\DC2\ETX!\v\RS\n\
     \\f\n\
-    \\ENQ\EOT\NUL\STX\NUL\SOH\DC2\ETX8\US#\n\
+    \\ENQ\EOT\NUL\STX\NUL\SOH\DC2\ETX!\US#\n\
     \\f\n\
-    \\ENQ\EOT\NUL\STX\NUL\ETX\DC2\ETX8&'\n\
+    \\ENQ\EOT\NUL\STX\NUL\ETX\DC2\ETX!&'\n\
+    \&\n\
+    \\ETX\EOT\NUL\ENQ\DC2\EOT$\STX(\ENQ\SUB\EM Extensions for tooling.\n\
+    \\n\
+    \\v\n\
+    \\EOT\EOT\NUL\ENQ\NUL\DC2\ETX$\r\SYN\n\
+    \\f\n\
+    \\ENQ\EOT\NUL\ENQ\NUL\SOH\DC2\ETX$\r\SYN\n\
+    \\f\n\
+    \\ENQ\EOT\NUL\ENQ\NUL\STX\DC2\ETX$\r\SYN\n\
+    \\r\n\
+    \\ENQ\EOT\NUL\ENQ\NUL\ETX\DC2\EOT$\ETB(\EOT\n\
+    \\SI\n\
+    \\a\EOT\NUL\ENQ\NUL\ETX\STX\NUL\DC2\EOT$\CAN(\ETX\n\
     \-\n\
-    \\STX\ENQ\NUL\DC2\EOT<\NUL]\SOH\SUB! The full set of known editions.\n\
+    \\STX\ENQ\NUL\DC2\EOT,\NULQ\SOH\SUB! The full set of known editions.\n\
     \\n\
     \\n\
     \\n\
-    \\ETX\ENQ\NUL\SOH\DC2\ETX<\ENQ\f\n\
+    \\ETX\ENQ\NUL\SOH\DC2\ETX,\ENQ\f\n\
     \:\n\
-    \\EOT\ENQ\NUL\STX\NUL\DC2\ETX>\STX\SYN\SUB- A placeholder for an unknown edition value.\n\
+    \\EOT\ENQ\NUL\STX\NUL\DC2\ETX.\STX\SYN\SUB- A placeholder for an unknown edition value.\n\
     \\n\
     \\f\n\
-    \\ENQ\ENQ\NUL\STX\NUL\SOH\DC2\ETX>\STX\DC1\n\
+    \\ENQ\ENQ\NUL\STX\NUL\SOH\DC2\ETX.\STX\DC1\n\
     \\f\n\
-    \\ENQ\ENQ\NUL\STX\NUL\STX\DC2\ETX>\DC4\NAK\n\
+    \\ENQ\ENQ\NUL\STX\NUL\STX\DC2\ETX.\DC4\NAK\n\
     \\153\SOH\n\
-    \\EOT\ENQ\NUL\STX\SOH\DC2\ETXB\STX\ETB\SUB\139\SOH A placeholder edition for specifying default behaviors *before* a feature\n\
+    \\EOT\ENQ\NUL\STX\SOH\DC2\ETX2\STX\ETB\SUB\139\SOH A placeholder edition for specifying default behaviors *before* a feature\n\
     \ was first introduced.  This is effectively an \"infinite past\".\n\
     \\n\
     \\f\n\
-    \\ENQ\ENQ\NUL\STX\SOH\SOH\DC2\ETXB\STX\DLE\n\
+    \\ENQ\ENQ\NUL\STX\SOH\SOH\DC2\ETX2\STX\DLE\n\
     \\f\n\
-    \\ENQ\ENQ\NUL\STX\SOH\STX\DC2\ETXB\DC3\SYN\n\
+    \\ENQ\ENQ\NUL\STX\SOH\STX\DC2\ETX2\DC3\SYN\n\
     \\130\STX\n\
-    \\EOT\ENQ\NUL\STX\STX\DC2\ETXH\STX\ETB\SUB\244\SOH Legacy syntax \"editions\".  These pre-date editions, but behave much like\n\
+    \\EOT\ENQ\NUL\STX\STX\DC2\ETX8\STX\ETB\SUB\244\SOH Legacy syntax \"editions\".  These pre-date editions, but behave much like\n\
     \ distinct editions.  These can't be used to specify the edition of proto\n\
     \ files, but feature definitions must supply proto2/proto3 defaults for\n\
     \ backwards compatibility.\n\
     \\n\
     \\f\n\
-    \\ENQ\ENQ\NUL\STX\STX\SOH\DC2\ETXH\STX\DLE\n\
+    \\ENQ\ENQ\NUL\STX\STX\SOH\DC2\ETX8\STX\DLE\n\
     \\f\n\
-    \\ENQ\ENQ\NUL\STX\STX\STX\DC2\ETXH\DC3\SYN\n\
+    \\ENQ\ENQ\NUL\STX\STX\STX\DC2\ETX8\DC3\SYN\n\
     \\v\n\
-    \\EOT\ENQ\NUL\STX\ETX\DC2\ETXI\STX\ETB\n\
+    \\EOT\ENQ\NUL\STX\ETX\DC2\ETX9\STX\ETB\n\
     \\f\n\
-    \\ENQ\ENQ\NUL\STX\ETX\SOH\DC2\ETXI\STX\DLE\n\
+    \\ENQ\ENQ\NUL\STX\ETX\SOH\DC2\ETX9\STX\DLE\n\
     \\f\n\
-    \\ENQ\ENQ\NUL\STX\ETX\STX\DC2\ETXI\DC3\SYN\n\
+    \\ENQ\ENQ\NUL\STX\ETX\STX\DC2\ETX9\DC3\SYN\n\
     \\175\SOH\n\
-    \\EOT\ENQ\NUL\STX\EOT\DC2\ETXN\STX\SYN\SUB\161\SOH Editions that have been released.  The specific values are arbitrary and\n\
+    \\EOT\ENQ\NUL\STX\EOT\DC2\ETX>\STX\SYN\SUB\161\SOH Editions that have been released.  The specific values are arbitrary and\n\
     \ should not be depended on, but they will always be time-ordered for easy\n\
     \ comparison.\n\
     \\n\
     \\f\n\
-    \\ENQ\ENQ\NUL\STX\EOT\SOH\DC2\ETXN\STX\SO\n\
+    \\ENQ\ENQ\NUL\STX\EOT\SOH\DC2\ETX>\STX\SO\n\
     \\f\n\
-    \\ENQ\ENQ\NUL\STX\EOT\STX\DC2\ETXN\DC1\NAK\n\
+    \\ENQ\ENQ\NUL\STX\EOT\STX\DC2\ETX>\DC1\NAK\n\
     \\v\n\
-    \\EOT\ENQ\NUL\STX\ENQ\DC2\ETXO\STX\SYN\n\
+    \\EOT\ENQ\NUL\STX\ENQ\DC2\ETX?\STX\SYN\n\
     \\f\n\
-    \\ENQ\ENQ\NUL\STX\ENQ\SOH\DC2\ETXO\STX\SO\n\
+    \\ENQ\ENQ\NUL\STX\ENQ\SOH\DC2\ETX?\STX\SO\n\
     \\f\n\
-    \\ENQ\ENQ\NUL\STX\ENQ\STX\DC2\ETXO\DC1\NAK\n\
-    \}\n\
-    \\EOT\ENQ\NUL\STX\ACK\DC2\ETXS\STX\SUB\SUBp Placeholder editions for testing feature resolution.  These should not be\n\
-    \ used or relyed on outside of tests.\n\
+    \\ENQ\ENQ\NUL\STX\ENQ\STX\DC2\ETX?\DC1\NAK\n\
+    \\v\n\
+    \\EOT\ENQ\NUL\STX\ACK\DC2\ETX@\STX\SYN\n\
+    \\f\n\
+    \\ENQ\ENQ\NUL\STX\ACK\SOH\DC2\ETX@\STX\SO\n\
+    \\f\n\
+    \\ENQ\ENQ\NUL\STX\ACK\STX\DC2\ETX@\DC1\NAK\n\
+    \U\n\
+    \\EOT\ENQ\NUL\STX\a\DC2\ETXC\STX\SUB\SUBH A placeholder edition for developing and testing unscheduled features.\n\
     \\n\
     \\f\n\
-    \\ENQ\ENQ\NUL\STX\ACK\SOH\DC2\ETXS\STX\NAK\n\
+    \\ENQ\ENQ\NUL\STX\a\SOH\DC2\ETXC\STX\DC2\n\
     \\f\n\
-    \\ENQ\ENQ\NUL\STX\ACK\STX\DC2\ETXS\CAN\EM\n\
+    \\ENQ\ENQ\NUL\STX\a\STX\DC2\ETXC\NAK\EM\n\
+    \}\n\
+    \\EOT\ENQ\NUL\STX\b\DC2\ETXG\STX\SUB\SUBp Placeholder editions for testing feature resolution.  These should not be\n\
+    \ used or relied on outside of tests.\n\
+    \\n\
+    \\f\n\
+    \\ENQ\ENQ\NUL\STX\b\SOH\DC2\ETXG\STX\NAK\n\
+    \\f\n\
+    \\ENQ\ENQ\NUL\STX\b\STX\DC2\ETXG\CAN\EM\n\
     \\v\n\
-    \\EOT\ENQ\NUL\STX\a\DC2\ETXT\STX\SUB\n\
+    \\EOT\ENQ\NUL\STX\t\DC2\ETXH\STX\SUB\n\
     \\f\n\
-    \\ENQ\ENQ\NUL\STX\a\SOH\DC2\ETXT\STX\NAK\n\
+    \\ENQ\ENQ\NUL\STX\t\SOH\DC2\ETXH\STX\NAK\n\
     \\f\n\
-    \\ENQ\ENQ\NUL\STX\a\STX\DC2\ETXT\CAN\EM\n\
-    \\v\n\
-    \\EOT\ENQ\NUL\STX\b\DC2\ETXU\STX\"\n\
-    \\f\n\
-    \\ENQ\ENQ\NUL\STX\b\SOH\DC2\ETXU\STX\EM\n\
-    \\f\n\
-    \\ENQ\ENQ\NUL\STX\b\STX\DC2\ETXU\FS!\n\
-    \\v\n\
-    \\EOT\ENQ\NUL\STX\t\DC2\ETXV\STX\"\n\
-    \\f\n\
-    \\ENQ\ENQ\NUL\STX\t\SOH\DC2\ETXV\STX\EM\n\
-    \\f\n\
-    \\ENQ\ENQ\NUL\STX\t\STX\DC2\ETXV\FS!\n\
+    \\ENQ\ENQ\NUL\STX\t\STX\DC2\ETXH\CAN\EM\n\
     \\v\n\
     \\EOT\ENQ\NUL\STX\n\
-    \\DC2\ETXW\STX\"\n\
+    \\DC2\ETXI\STX\"\n\
     \\f\n\
     \\ENQ\ENQ\NUL\STX\n\
-    \\SOH\DC2\ETXW\STX\EM\n\
+    \\SOH\DC2\ETXI\STX\EM\n\
     \\f\n\
     \\ENQ\ENQ\NUL\STX\n\
-    \\STX\DC2\ETXW\FS!\n\
+    \\STX\DC2\ETXI\FS!\n\
+    \\v\n\
+    \\EOT\ENQ\NUL\STX\v\DC2\ETXJ\STX\"\n\
+    \\f\n\
+    \\ENQ\ENQ\NUL\STX\v\SOH\DC2\ETXJ\STX\EM\n\
+    \\f\n\
+    \\ENQ\ENQ\NUL\STX\v\STX\DC2\ETXJ\FS!\n\
+    \\v\n\
+    \\EOT\ENQ\NUL\STX\f\DC2\ETXK\STX\"\n\
+    \\f\n\
+    \\ENQ\ENQ\NUL\STX\f\SOH\DC2\ETXK\STX\EM\n\
+    \\f\n\
+    \\ENQ\ENQ\NUL\STX\f\STX\DC2\ETXK\FS!\n\
     \\184\SOH\n\
-    \\EOT\ENQ\NUL\STX\v\DC2\ETX\\\STX\ESC\SUB\170\SOH Placeholder for specifying unbounded edition support.  This should only\n\
+    \\EOT\ENQ\NUL\STX\r\DC2\ETXP\STX\ESC\SUB\170\SOH Placeholder for specifying unbounded edition support.  This should only\n\
     \ ever be used by plugins that can expect to never require any changes to\n\
     \ support a new edition.\n\
     \\n\
     \\f\n\
-    \\ENQ\ENQ\NUL\STX\v\SOH\DC2\ETX\\\STX\r\n\
+    \\ENQ\ENQ\NUL\STX\r\SOH\DC2\ETXP\STX\r\n\
     \\f\n\
-    \\ENQ\ENQ\NUL\STX\v\STX\DC2\ETX\\\DLE\SUB\n\
+    \\ENQ\ENQ\NUL\STX\r\STX\DC2\ETXP\DLE\SUB\n\
     \0\n\
-    \\STX\EOT\SOH\DC2\ENQ`\NUL\130\SOH\SOH\SUB# Describes a complete .proto file.\n\
+    \\STX\EOT\SOH\DC2\ENQT\NUL\128\SOH\SOH\SUB# Describes a complete .proto file.\n\
     \\n\
     \\n\
     \\n\
-    \\ETX\EOT\SOH\SOH\DC2\ETX`\b\ESC\n\
+    \\ETX\EOT\SOH\SOH\DC2\ETXT\b\ESC\n\
     \9\n\
-    \\EOT\EOT\SOH\STX\NUL\DC2\ETXa\STX\ESC\", file name, relative to root of source tree\n\
+    \\EOT\EOT\SOH\STX\NUL\DC2\ETXU\STX\ESC\", file name, relative to root of source tree\n\
     \\n\
     \\f\n\
-    \\ENQ\EOT\SOH\STX\NUL\EOT\DC2\ETXa\STX\n\
+    \\ENQ\EOT\SOH\STX\NUL\EOT\DC2\ETXU\STX\n\
     \\n\
     \\f\n\
-    \\ENQ\EOT\SOH\STX\NUL\ENQ\DC2\ETXa\v\DC1\n\
+    \\ENQ\EOT\SOH\STX\NUL\ENQ\DC2\ETXU\v\DC1\n\
     \\f\n\
-    \\ENQ\EOT\SOH\STX\NUL\SOH\DC2\ETXa\DC2\SYN\n\
+    \\ENQ\EOT\SOH\STX\NUL\SOH\DC2\ETXU\DC2\SYN\n\
     \\f\n\
-    \\ENQ\EOT\SOH\STX\NUL\ETX\DC2\ETXa\EM\SUB\n\
+    \\ENQ\EOT\SOH\STX\NUL\ETX\DC2\ETXU\EM\SUB\n\
     \*\n\
-    \\EOT\EOT\SOH\STX\SOH\DC2\ETXb\STX\RS\"\GS e.g. \"foo\", \"foo.bar\", etc.\n\
+    \\EOT\EOT\SOH\STX\SOH\DC2\ETXV\STX\RS\"\GS e.g. \"foo\", \"foo.bar\", etc.\n\
     \\n\
     \\f\n\
-    \\ENQ\EOT\SOH\STX\SOH\EOT\DC2\ETXb\STX\n\
+    \\ENQ\EOT\SOH\STX\SOH\EOT\DC2\ETXV\STX\n\
     \\n\
     \\f\n\
-    \\ENQ\EOT\SOH\STX\SOH\ENQ\DC2\ETXb\v\DC1\n\
+    \\ENQ\EOT\SOH\STX\SOH\ENQ\DC2\ETXV\v\DC1\n\
     \\f\n\
-    \\ENQ\EOT\SOH\STX\SOH\SOH\DC2\ETXb\DC2\EM\n\
+    \\ENQ\EOT\SOH\STX\SOH\SOH\DC2\ETXV\DC2\EM\n\
     \\f\n\
-    \\ENQ\EOT\SOH\STX\SOH\ETX\DC2\ETXb\FS\GS\n\
+    \\ENQ\EOT\SOH\STX\SOH\ETX\DC2\ETXV\FS\GS\n\
     \4\n\
-    \\EOT\EOT\SOH\STX\STX\DC2\ETXe\STX!\SUB' Names of files imported by this file.\n\
+    \\EOT\EOT\SOH\STX\STX\DC2\ETXY\STX!\SUB' Names of files imported by this file.\n\
     \\n\
     \\f\n\
-    \\ENQ\EOT\SOH\STX\STX\EOT\DC2\ETXe\STX\n\
+    \\ENQ\EOT\SOH\STX\STX\EOT\DC2\ETXY\STX\n\
     \\n\
     \\f\n\
-    \\ENQ\EOT\SOH\STX\STX\ENQ\DC2\ETXe\v\DC1\n\
+    \\ENQ\EOT\SOH\STX\STX\ENQ\DC2\ETXY\v\DC1\n\
     \\f\n\
-    \\ENQ\EOT\SOH\STX\STX\SOH\DC2\ETXe\DC2\FS\n\
+    \\ENQ\EOT\SOH\STX\STX\SOH\DC2\ETXY\DC2\FS\n\
     \\f\n\
-    \\ENQ\EOT\SOH\STX\STX\ETX\DC2\ETXe\US \n\
+    \\ENQ\EOT\SOH\STX\STX\ETX\DC2\ETXY\US \n\
     \Q\n\
-    \\EOT\EOT\SOH\STX\ETX\DC2\ETXg\STX(\SUBD Indexes of the public imported files in the dependency list above.\n\
+    \\EOT\EOT\SOH\STX\ETX\DC2\ETX[\STX(\SUBD Indexes of the public imported files in the dependency list above.\n\
     \\n\
     \\f\n\
-    \\ENQ\EOT\SOH\STX\ETX\EOT\DC2\ETXg\STX\n\
+    \\ENQ\EOT\SOH\STX\ETX\EOT\DC2\ETX[\STX\n\
     \\n\
     \\f\n\
-    \\ENQ\EOT\SOH\STX\ETX\ENQ\DC2\ETXg\v\DLE\n\
+    \\ENQ\EOT\SOH\STX\ETX\ENQ\DC2\ETX[\v\DLE\n\
     \\f\n\
-    \\ENQ\EOT\SOH\STX\ETX\SOH\DC2\ETXg\DC1\"\n\
+    \\ENQ\EOT\SOH\STX\ETX\SOH\DC2\ETX[\DC1\"\n\
     \\f\n\
-    \\ENQ\EOT\SOH\STX\ETX\ETX\DC2\ETXg%'\n\
+    \\ENQ\EOT\SOH\STX\ETX\ETX\DC2\ETX[%'\n\
     \z\n\
-    \\EOT\EOT\SOH\STX\EOT\DC2\ETXj\STX&\SUBm Indexes of the weak imported files in the dependency list.\n\
+    \\EOT\EOT\SOH\STX\EOT\DC2\ETX^\STX&\SUBm Indexes of the weak imported files in the dependency list.\n\
     \ For Google-internal migration only. Do not use.\n\
     \\n\
     \\f\n\
-    \\ENQ\EOT\SOH\STX\EOT\EOT\DC2\ETXj\STX\n\
+    \\ENQ\EOT\SOH\STX\EOT\EOT\DC2\ETX^\STX\n\
     \\n\
     \\f\n\
-    \\ENQ\EOT\SOH\STX\EOT\ENQ\DC2\ETXj\v\DLE\n\
+    \\ENQ\EOT\SOH\STX\EOT\ENQ\DC2\ETX^\v\DLE\n\
     \\f\n\
-    \\ENQ\EOT\SOH\STX\EOT\SOH\DC2\ETXj\DC1 \n\
+    \\ENQ\EOT\SOH\STX\EOT\SOH\DC2\ETX^\DC1 \n\
     \\f\n\
-    \\ENQ\EOT\SOH\STX\EOT\ETX\DC2\ETXj#%\n\
+    \\ENQ\EOT\SOH\STX\EOT\ETX\DC2\ETX^#%\n\
+    \\159\SOH\n\
+    \\EOT\EOT\SOH\STX\ENQ\DC2\ETXb\STX)\SUB\145\SOH Names of files imported by this file purely for the purpose of providing\n\
+    \ option extensions. These are excluded from the dependency list above.\n\
+    \\n\
+    \\f\n\
+    \\ENQ\EOT\SOH\STX\ENQ\EOT\DC2\ETXb\STX\n\
+    \\n\
+    \\f\n\
+    \\ENQ\EOT\SOH\STX\ENQ\ENQ\DC2\ETXb\v\DC1\n\
+    \\f\n\
+    \\ENQ\EOT\SOH\STX\ENQ\SOH\DC2\ETXb\DC2#\n\
+    \\f\n\
+    \\ENQ\EOT\SOH\STX\ENQ\ETX\DC2\ETXb&(\n\
     \6\n\
-    \\EOT\EOT\SOH\STX\ENQ\DC2\ETXm\STX,\SUB) All top-level definitions in this file.\n\
+    \\EOT\EOT\SOH\STX\ACK\DC2\ETXe\STX,\SUB) All top-level definitions in this file.\n\
     \\n\
     \\f\n\
-    \\ENQ\EOT\SOH\STX\ENQ\EOT\DC2\ETXm\STX\n\
+    \\ENQ\EOT\SOH\STX\ACK\EOT\DC2\ETXe\STX\n\
     \\n\
     \\f\n\
-    \\ENQ\EOT\SOH\STX\ENQ\ACK\DC2\ETXm\v\SUB\n\
+    \\ENQ\EOT\SOH\STX\ACK\ACK\DC2\ETXe\v\SUB\n\
     \\f\n\
-    \\ENQ\EOT\SOH\STX\ENQ\SOH\DC2\ETXm\ESC'\n\
+    \\ENQ\EOT\SOH\STX\ACK\SOH\DC2\ETXe\ESC'\n\
     \\f\n\
-    \\ENQ\EOT\SOH\STX\ENQ\ETX\DC2\ETXm*+\n\
+    \\ENQ\EOT\SOH\STX\ACK\ETX\DC2\ETXe*+\n\
     \\v\n\
-    \\EOT\EOT\SOH\STX\ACK\DC2\ETXn\STX-\n\
+    \\EOT\EOT\SOH\STX\a\DC2\ETXf\STX-\n\
     \\f\n\
-    \\ENQ\EOT\SOH\STX\ACK\EOT\DC2\ETXn\STX\n\
+    \\ENQ\EOT\SOH\STX\a\EOT\DC2\ETXf\STX\n\
     \\n\
     \\f\n\
-    \\ENQ\EOT\SOH\STX\ACK\ACK\DC2\ETXn\v\RS\n\
+    \\ENQ\EOT\SOH\STX\a\ACK\DC2\ETXf\v\RS\n\
     \\f\n\
-    \\ENQ\EOT\SOH\STX\ACK\SOH\DC2\ETXn\US(\n\
+    \\ENQ\EOT\SOH\STX\a\SOH\DC2\ETXf\US(\n\
     \\f\n\
-    \\ENQ\EOT\SOH\STX\ACK\ETX\DC2\ETXn+,\n\
+    \\ENQ\EOT\SOH\STX\a\ETX\DC2\ETXf+,\n\
     \\v\n\
-    \\EOT\EOT\SOH\STX\a\DC2\ETXo\STX.\n\
+    \\EOT\EOT\SOH\STX\b\DC2\ETXg\STX.\n\
     \\f\n\
-    \\ENQ\EOT\SOH\STX\a\EOT\DC2\ETXo\STX\n\
+    \\ENQ\EOT\SOH\STX\b\EOT\DC2\ETXg\STX\n\
     \\n\
     \\f\n\
-    \\ENQ\EOT\SOH\STX\a\ACK\DC2\ETXo\v!\n\
+    \\ENQ\EOT\SOH\STX\b\ACK\DC2\ETXg\v!\n\
     \\f\n\
-    \\ENQ\EOT\SOH\STX\a\SOH\DC2\ETXo\")\n\
+    \\ENQ\EOT\SOH\STX\b\SOH\DC2\ETXg\")\n\
     \\f\n\
-    \\ENQ\EOT\SOH\STX\a\ETX\DC2\ETXo,-\n\
+    \\ENQ\EOT\SOH\STX\b\ETX\DC2\ETXg,-\n\
     \\v\n\
-    \\EOT\EOT\SOH\STX\b\DC2\ETXp\STX.\n\
+    \\EOT\EOT\SOH\STX\t\DC2\ETXh\STX.\n\
     \\f\n\
-    \\ENQ\EOT\SOH\STX\b\EOT\DC2\ETXp\STX\n\
+    \\ENQ\EOT\SOH\STX\t\EOT\DC2\ETXh\STX\n\
     \\n\
     \\f\n\
-    \\ENQ\EOT\SOH\STX\b\ACK\DC2\ETXp\v\US\n\
+    \\ENQ\EOT\SOH\STX\t\ACK\DC2\ETXh\v\US\n\
     \\f\n\
-    \\ENQ\EOT\SOH\STX\b\SOH\DC2\ETXp )\n\
+    \\ENQ\EOT\SOH\STX\t\SOH\DC2\ETXh )\n\
     \\f\n\
-    \\ENQ\EOT\SOH\STX\b\ETX\DC2\ETXp,-\n\
+    \\ENQ\EOT\SOH\STX\t\ETX\DC2\ETXh,-\n\
     \\v\n\
-    \\EOT\EOT\SOH\STX\t\DC2\ETXr\STX#\n\
-    \\f\n\
-    \\ENQ\EOT\SOH\STX\t\EOT\DC2\ETXr\STX\n\
-    \\n\
-    \\f\n\
-    \\ENQ\EOT\SOH\STX\t\ACK\DC2\ETXr\v\SYN\n\
-    \\f\n\
-    \\ENQ\EOT\SOH\STX\t\SOH\DC2\ETXr\ETB\RS\n\
-    \\f\n\
-    \\ENQ\EOT\SOH\STX\t\ETX\DC2\ETXr!\"\n\
-    \\244\SOH\n\
     \\EOT\EOT\SOH\STX\n\
-    \\DC2\ETXx\STX/\SUB\230\SOH This field contains optional information about the original source code.\n\
+    \\DC2\ETXj\STX#\n\
+    \\f\n\
+    \\ENQ\EOT\SOH\STX\n\
+    \\EOT\DC2\ETXj\STX\n\
+    \\n\
+    \\f\n\
+    \\ENQ\EOT\SOH\STX\n\
+    \\ACK\DC2\ETXj\v\SYN\n\
+    \\f\n\
+    \\ENQ\EOT\SOH\STX\n\
+    \\SOH\DC2\ETXj\ETB\RS\n\
+    \\f\n\
+    \\ENQ\EOT\SOH\STX\n\
+    \\ETX\DC2\ETXj!\"\n\
+    \\244\SOH\n\
+    \\EOT\EOT\SOH\STX\v\DC2\ETXp\STX/\SUB\230\SOH This field contains optional information about the original source code.\n\
     \ You may safely remove this entire field without harming runtime\n\
     \ functionality of the descriptors -- the information is needed only by\n\
     \ development tools.\n\
     \\n\
     \\f\n\
-    \\ENQ\EOT\SOH\STX\n\
-    \\EOT\DC2\ETXx\STX\n\
+    \\ENQ\EOT\SOH\STX\v\EOT\DC2\ETXp\STX\n\
     \\n\
     \\f\n\
-    \\ENQ\EOT\SOH\STX\n\
-    \\ACK\DC2\ETXx\v\EM\n\
+    \\ENQ\EOT\SOH\STX\v\ACK\DC2\ETXp\v\EM\n\
     \\f\n\
-    \\ENQ\EOT\SOH\STX\n\
-    \\SOH\DC2\ETXx\SUB*\n\
+    \\ENQ\EOT\SOH\STX\v\SOH\DC2\ETXp\SUB*\n\
     \\f\n\
-    \\ENQ\EOT\SOH\STX\n\
-    \\ETX\DC2\ETXx-.\n\
-    \\165\SOH\n\
-    \\EOT\EOT\SOH\STX\v\DC2\ETX~\STX\RS\SUB\151\SOH The syntax of the proto file.\n\
+    \\ENQ\EOT\SOH\STX\v\ETX\DC2\ETXp-.\n\
+    \\248\STX\n\
+    \\EOT\EOT\SOH\STX\f\DC2\ETXy\STX\RS\SUB\234\STX The syntax of the proto file.\n\
     \ The supported values are \"proto2\", \"proto3\", and \"editions\".\n\
     \\n\
     \ If `edition` is present, this value must be \"editions\".\n\
+    \ WARNING: This field should only be used by protobuf plugins or special\n\
+    \ cases like the proto compiler. Other uses are discouraged and\n\
+    \ developers should rely on the protoreflect APIs for their client language.\n\
     \\n\
     \\f\n\
-    \\ENQ\EOT\SOH\STX\v\EOT\DC2\ETX~\STX\n\
+    \\ENQ\EOT\SOH\STX\f\EOT\DC2\ETXy\STX\n\
     \\n\
     \\f\n\
-    \\ENQ\EOT\SOH\STX\v\ENQ\DC2\ETX~\v\DC1\n\
+    \\ENQ\EOT\SOH\STX\f\ENQ\DC2\ETXy\v\DC1\n\
     \\f\n\
-    \\ENQ\EOT\SOH\STX\v\SOH\DC2\ETX~\DC2\CAN\n\
+    \\ENQ\EOT\SOH\STX\f\SOH\DC2\ETXy\DC2\CAN\n\
     \\f\n\
-    \\ENQ\EOT\SOH\STX\v\ETX\DC2\ETX~\ESC\GS\n\
-    \.\n\
-    \\EOT\EOT\SOH\STX\f\DC2\EOT\129\SOH\STX \SUB  The edition of the proto file.\n\
+    \\ENQ\EOT\SOH\STX\f\ETX\DC2\ETXy\ESC\GS\n\
+    \\129\STX\n\
+    \\EOT\EOT\SOH\STX\r\DC2\ETX\DEL\STX \SUB\243\SOH The edition of the proto file.\n\
+    \ WARNING: This field should only be used by protobuf plugins or special\n\
+    \ cases like the proto compiler. Other uses are discouraged and\n\
+    \ developers should rely on the protoreflect APIs for their client language.\n\
     \\n\
-    \\r\n\
-    \\ENQ\EOT\SOH\STX\f\EOT\DC2\EOT\129\SOH\STX\n\
+    \\f\n\
+    \\ENQ\EOT\SOH\STX\r\EOT\DC2\ETX\DEL\STX\n\
     \\n\
-    \\r\n\
-    \\ENQ\EOT\SOH\STX\f\ACK\DC2\EOT\129\SOH\v\DC2\n\
-    \\r\n\
-    \\ENQ\EOT\SOH\STX\f\SOH\DC2\EOT\129\SOH\DC3\SUB\n\
-    \\r\n\
-    \\ENQ\EOT\SOH\STX\f\ETX\DC2\EOT\129\SOH\GS\US\n\
+    \\f\n\
+    \\ENQ\EOT\SOH\STX\r\ACK\DC2\ETX\DEL\v\DC2\n\
+    \\f\n\
+    \\ENQ\EOT\SOH\STX\r\SOH\DC2\ETX\DEL\DC3\SUB\n\
+    \\f\n\
+    \\ENQ\EOT\SOH\STX\r\ETX\DC2\ETX\DEL\GS\US\n\
     \)\n\
-    \\STX\EOT\STX\DC2\ACK\133\SOH\NUL\165\SOH\SOH\SUB\ESC Describes a message type.\n\
+    \\STX\EOT\STX\DC2\ACK\131\SOH\NUL\166\SOH\SOH\SUB\ESC Describes a message type.\n\
     \\n\
     \\v\n\
-    \\ETX\EOT\STX\SOH\DC2\EOT\133\SOH\b\ETB\n\
+    \\ETX\EOT\STX\SOH\DC2\EOT\131\SOH\b\ETB\n\
     \\f\n\
-    \\EOT\EOT\STX\STX\NUL\DC2\EOT\134\SOH\STX\ESC\n\
+    \\EOT\EOT\STX\STX\NUL\DC2\EOT\132\SOH\STX\ESC\n\
     \\r\n\
-    \\ENQ\EOT\STX\STX\NUL\EOT\DC2\EOT\134\SOH\STX\n\
+    \\ENQ\EOT\STX\STX\NUL\EOT\DC2\EOT\132\SOH\STX\n\
     \\n\
     \\r\n\
-    \\ENQ\EOT\STX\STX\NUL\ENQ\DC2\EOT\134\SOH\v\DC1\n\
+    \\ENQ\EOT\STX\STX\NUL\ENQ\DC2\EOT\132\SOH\v\DC1\n\
     \\r\n\
-    \\ENQ\EOT\STX\STX\NUL\SOH\DC2\EOT\134\SOH\DC2\SYN\n\
+    \\ENQ\EOT\STX\STX\NUL\SOH\DC2\EOT\132\SOH\DC2\SYN\n\
     \\r\n\
-    \\ENQ\EOT\STX\STX\NUL\ETX\DC2\EOT\134\SOH\EM\SUB\n\
+    \\ENQ\EOT\STX\STX\NUL\ETX\DC2\EOT\132\SOH\EM\SUB\n\
     \\f\n\
-    \\EOT\EOT\STX\STX\SOH\DC2\EOT\136\SOH\STX*\n\
+    \\EOT\EOT\STX\STX\SOH\DC2\EOT\134\SOH\STX*\n\
     \\r\n\
-    \\ENQ\EOT\STX\STX\SOH\EOT\DC2\EOT\136\SOH\STX\n\
+    \\ENQ\EOT\STX\STX\SOH\EOT\DC2\EOT\134\SOH\STX\n\
     \\n\
     \\r\n\
-    \\ENQ\EOT\STX\STX\SOH\ACK\DC2\EOT\136\SOH\v\US\n\
+    \\ENQ\EOT\STX\STX\SOH\ACK\DC2\EOT\134\SOH\v\US\n\
     \\r\n\
-    \\ENQ\EOT\STX\STX\SOH\SOH\DC2\EOT\136\SOH %\n\
+    \\ENQ\EOT\STX\STX\SOH\SOH\DC2\EOT\134\SOH %\n\
     \\r\n\
-    \\ENQ\EOT\STX\STX\SOH\ETX\DC2\EOT\136\SOH()\n\
+    \\ENQ\EOT\STX\STX\SOH\ETX\DC2\EOT\134\SOH()\n\
     \\f\n\
-    \\EOT\EOT\STX\STX\STX\DC2\EOT\137\SOH\STX.\n\
+    \\EOT\EOT\STX\STX\STX\DC2\EOT\135\SOH\STX.\n\
     \\r\n\
-    \\ENQ\EOT\STX\STX\STX\EOT\DC2\EOT\137\SOH\STX\n\
+    \\ENQ\EOT\STX\STX\STX\EOT\DC2\EOT\135\SOH\STX\n\
     \\n\
     \\r\n\
-    \\ENQ\EOT\STX\STX\STX\ACK\DC2\EOT\137\SOH\v\US\n\
+    \\ENQ\EOT\STX\STX\STX\ACK\DC2\EOT\135\SOH\v\US\n\
     \\r\n\
-    \\ENQ\EOT\STX\STX\STX\SOH\DC2\EOT\137\SOH )\n\
+    \\ENQ\EOT\STX\STX\STX\SOH\DC2\EOT\135\SOH )\n\
     \\r\n\
-    \\ENQ\EOT\STX\STX\STX\ETX\DC2\EOT\137\SOH,-\n\
+    \\ENQ\EOT\STX\STX\STX\ETX\DC2\EOT\135\SOH,-\n\
     \\f\n\
-    \\EOT\EOT\STX\STX\ETX\DC2\EOT\139\SOH\STX+\n\
+    \\EOT\EOT\STX\STX\ETX\DC2\EOT\137\SOH\STX+\n\
     \\r\n\
-    \\ENQ\EOT\STX\STX\ETX\EOT\DC2\EOT\139\SOH\STX\n\
+    \\ENQ\EOT\STX\STX\ETX\EOT\DC2\EOT\137\SOH\STX\n\
     \\n\
     \\r\n\
-    \\ENQ\EOT\STX\STX\ETX\ACK\DC2\EOT\139\SOH\v\SUB\n\
+    \\ENQ\EOT\STX\STX\ETX\ACK\DC2\EOT\137\SOH\v\SUB\n\
     \\r\n\
-    \\ENQ\EOT\STX\STX\ETX\SOH\DC2\EOT\139\SOH\ESC&\n\
+    \\ENQ\EOT\STX\STX\ETX\SOH\DC2\EOT\137\SOH\ESC&\n\
     \\r\n\
-    \\ENQ\EOT\STX\STX\ETX\ETX\DC2\EOT\139\SOH)*\n\
+    \\ENQ\EOT\STX\STX\ETX\ETX\DC2\EOT\137\SOH)*\n\
     \\f\n\
-    \\EOT\EOT\STX\STX\EOT\DC2\EOT\140\SOH\STX-\n\
+    \\EOT\EOT\STX\STX\EOT\DC2\EOT\138\SOH\STX-\n\
     \\r\n\
-    \\ENQ\EOT\STX\STX\EOT\EOT\DC2\EOT\140\SOH\STX\n\
+    \\ENQ\EOT\STX\STX\EOT\EOT\DC2\EOT\138\SOH\STX\n\
     \\n\
     \\r\n\
-    \\ENQ\EOT\STX\STX\EOT\ACK\DC2\EOT\140\SOH\v\RS\n\
+    \\ENQ\EOT\STX\STX\EOT\ACK\DC2\EOT\138\SOH\v\RS\n\
     \\r\n\
-    \\ENQ\EOT\STX\STX\EOT\SOH\DC2\EOT\140\SOH\US(\n\
+    \\ENQ\EOT\STX\STX\EOT\SOH\DC2\EOT\138\SOH\US(\n\
     \\r\n\
-    \\ENQ\EOT\STX\STX\EOT\ETX\DC2\EOT\140\SOH+,\n\
+    \\ENQ\EOT\STX\STX\EOT\ETX\DC2\EOT\138\SOH+,\n\
     \\SO\n\
-    \\EOT\EOT\STX\ETX\NUL\DC2\ACK\142\SOH\STX\147\SOH\ETX\n\
+    \\EOT\EOT\STX\ETX\NUL\DC2\ACK\140\SOH\STX\145\SOH\ETX\n\
     \\r\n\
-    \\ENQ\EOT\STX\ETX\NUL\SOH\DC2\EOT\142\SOH\n\
+    \\ENQ\EOT\STX\ETX\NUL\SOH\DC2\EOT\140\SOH\n\
     \\CAN\n\
     \\FS\n\
-    \\ACK\EOT\STX\ETX\NUL\STX\NUL\DC2\EOT\143\SOH\EOT\GS\"\f Inclusive.\n\
+    \\ACK\EOT\STX\ETX\NUL\STX\NUL\DC2\EOT\141\SOH\EOT\GS\"\f Inclusive.\n\
     \\n\
     \\SI\n\
-    \\a\EOT\STX\ETX\NUL\STX\NUL\EOT\DC2\EOT\143\SOH\EOT\f\n\
+    \\a\EOT\STX\ETX\NUL\STX\NUL\EOT\DC2\EOT\141\SOH\EOT\f\n\
     \\SI\n\
-    \\a\EOT\STX\ETX\NUL\STX\NUL\ENQ\DC2\EOT\143\SOH\r\DC2\n\
+    \\a\EOT\STX\ETX\NUL\STX\NUL\ENQ\DC2\EOT\141\SOH\r\DC2\n\
     \\SI\n\
-    \\a\EOT\STX\ETX\NUL\STX\NUL\SOH\DC2\EOT\143\SOH\DC3\CAN\n\
+    \\a\EOT\STX\ETX\NUL\STX\NUL\SOH\DC2\EOT\141\SOH\DC3\CAN\n\
     \\SI\n\
-    \\a\EOT\STX\ETX\NUL\STX\NUL\ETX\DC2\EOT\143\SOH\ESC\FS\n\
+    \\a\EOT\STX\ETX\NUL\STX\NUL\ETX\DC2\EOT\141\SOH\ESC\FS\n\
     \\FS\n\
-    \\ACK\EOT\STX\ETX\NUL\STX\SOH\DC2\EOT\144\SOH\EOT\ESC\"\f Exclusive.\n\
+    \\ACK\EOT\STX\ETX\NUL\STX\SOH\DC2\EOT\142\SOH\EOT\ESC\"\f Exclusive.\n\
     \\n\
     \\SI\n\
-    \\a\EOT\STX\ETX\NUL\STX\SOH\EOT\DC2\EOT\144\SOH\EOT\f\n\
+    \\a\EOT\STX\ETX\NUL\STX\SOH\EOT\DC2\EOT\142\SOH\EOT\f\n\
     \\SI\n\
-    \\a\EOT\STX\ETX\NUL\STX\SOH\ENQ\DC2\EOT\144\SOH\r\DC2\n\
+    \\a\EOT\STX\ETX\NUL\STX\SOH\ENQ\DC2\EOT\142\SOH\r\DC2\n\
     \\SI\n\
-    \\a\EOT\STX\ETX\NUL\STX\SOH\SOH\DC2\EOT\144\SOH\DC3\SYN\n\
+    \\a\EOT\STX\ETX\NUL\STX\SOH\SOH\DC2\EOT\142\SOH\DC3\SYN\n\
     \\SI\n\
-    \\a\EOT\STX\ETX\NUL\STX\SOH\ETX\DC2\EOT\144\SOH\EM\SUB\n\
+    \\a\EOT\STX\ETX\NUL\STX\SOH\ETX\DC2\EOT\142\SOH\EM\SUB\n\
     \\SO\n\
-    \\ACK\EOT\STX\ETX\NUL\STX\STX\DC2\EOT\146\SOH\EOT/\n\
+    \\ACK\EOT\STX\ETX\NUL\STX\STX\DC2\EOT\144\SOH\EOT/\n\
     \\SI\n\
-    \\a\EOT\STX\ETX\NUL\STX\STX\EOT\DC2\EOT\146\SOH\EOT\f\n\
+    \\a\EOT\STX\ETX\NUL\STX\STX\EOT\DC2\EOT\144\SOH\EOT\f\n\
     \\SI\n\
-    \\a\EOT\STX\ETX\NUL\STX\STX\ACK\DC2\EOT\146\SOH\r\"\n\
+    \\a\EOT\STX\ETX\NUL\STX\STX\ACK\DC2\EOT\144\SOH\r\"\n\
     \\SI\n\
-    \\a\EOT\STX\ETX\NUL\STX\STX\SOH\DC2\EOT\146\SOH#*\n\
+    \\a\EOT\STX\ETX\NUL\STX\STX\SOH\DC2\EOT\144\SOH#*\n\
     \\SI\n\
-    \\a\EOT\STX\ETX\NUL\STX\STX\ETX\DC2\EOT\146\SOH-.\n\
+    \\a\EOT\STX\ETX\NUL\STX\STX\ETX\DC2\EOT\144\SOH-.\n\
     \\f\n\
-    \\EOT\EOT\STX\STX\ENQ\DC2\EOT\148\SOH\STX.\n\
+    \\EOT\EOT\STX\STX\ENQ\DC2\EOT\146\SOH\STX.\n\
     \\r\n\
-    \\ENQ\EOT\STX\STX\ENQ\EOT\DC2\EOT\148\SOH\STX\n\
+    \\ENQ\EOT\STX\STX\ENQ\EOT\DC2\EOT\146\SOH\STX\n\
     \\n\
     \\r\n\
-    \\ENQ\EOT\STX\STX\ENQ\ACK\DC2\EOT\148\SOH\v\EM\n\
+    \\ENQ\EOT\STX\STX\ENQ\ACK\DC2\EOT\146\SOH\v\EM\n\
     \\r\n\
-    \\ENQ\EOT\STX\STX\ENQ\SOH\DC2\EOT\148\SOH\SUB)\n\
+    \\ENQ\EOT\STX\STX\ENQ\SOH\DC2\EOT\146\SOH\SUB)\n\
     \\r\n\
-    \\ENQ\EOT\STX\STX\ENQ\ETX\DC2\EOT\148\SOH,-\n\
+    \\ENQ\EOT\STX\STX\ENQ\ETX\DC2\EOT\146\SOH,-\n\
     \\f\n\
-    \\EOT\EOT\STX\STX\ACK\DC2\EOT\150\SOH\STX/\n\
+    \\EOT\EOT\STX\STX\ACK\DC2\EOT\148\SOH\STX/\n\
     \\r\n\
-    \\ENQ\EOT\STX\STX\ACK\EOT\DC2\EOT\150\SOH\STX\n\
+    \\ENQ\EOT\STX\STX\ACK\EOT\DC2\EOT\148\SOH\STX\n\
     \\n\
     \\r\n\
-    \\ENQ\EOT\STX\STX\ACK\ACK\DC2\EOT\150\SOH\v\US\n\
+    \\ENQ\EOT\STX\STX\ACK\ACK\DC2\EOT\148\SOH\v\US\n\
     \\r\n\
-    \\ENQ\EOT\STX\STX\ACK\SOH\DC2\EOT\150\SOH *\n\
+    \\ENQ\EOT\STX\STX\ACK\SOH\DC2\EOT\148\SOH *\n\
     \\r\n\
-    \\ENQ\EOT\STX\STX\ACK\ETX\DC2\EOT\150\SOH-.\n\
+    \\ENQ\EOT\STX\STX\ACK\ETX\DC2\EOT\148\SOH-.\n\
     \\f\n\
-    \\EOT\EOT\STX\STX\a\DC2\EOT\152\SOH\STX&\n\
+    \\EOT\EOT\STX\STX\a\DC2\EOT\150\SOH\STX&\n\
     \\r\n\
-    \\ENQ\EOT\STX\STX\a\EOT\DC2\EOT\152\SOH\STX\n\
+    \\ENQ\EOT\STX\STX\a\EOT\DC2\EOT\150\SOH\STX\n\
     \\n\
     \\r\n\
-    \\ENQ\EOT\STX\STX\a\ACK\DC2\EOT\152\SOH\v\EM\n\
+    \\ENQ\EOT\STX\STX\a\ACK\DC2\EOT\150\SOH\v\EM\n\
     \\r\n\
-    \\ENQ\EOT\STX\STX\a\SOH\DC2\EOT\152\SOH\SUB!\n\
+    \\ENQ\EOT\STX\STX\a\SOH\DC2\EOT\150\SOH\SUB!\n\
     \\r\n\
-    \\ENQ\EOT\STX\STX\a\ETX\DC2\EOT\152\SOH$%\n\
+    \\ENQ\EOT\STX\STX\a\ETX\DC2\EOT\150\SOH$%\n\
     \\172\SOH\n\
-    \\EOT\EOT\STX\ETX\SOH\DC2\ACK\157\SOH\STX\160\SOH\ETX\SUB\155\SOH Range of reserved tag numbers. Reserved tag numbers may not be used by\n\
+    \\EOT\EOT\STX\ETX\SOH\DC2\ACK\155\SOH\STX\158\SOH\ETX\SUB\155\SOH Range of reserved tag numbers. Reserved tag numbers may not be used by\n\
     \ fields or extension ranges in the same message. Reserved ranges may\n\
     \ not overlap.\n\
     \\n\
     \\r\n\
-    \\ENQ\EOT\STX\ETX\SOH\SOH\DC2\EOT\157\SOH\n\
+    \\ENQ\EOT\STX\ETX\SOH\SOH\DC2\EOT\155\SOH\n\
     \\ETB\n\
     \\FS\n\
-    \\ACK\EOT\STX\ETX\SOH\STX\NUL\DC2\EOT\158\SOH\EOT\GS\"\f Inclusive.\n\
+    \\ACK\EOT\STX\ETX\SOH\STX\NUL\DC2\EOT\156\SOH\EOT\GS\"\f Inclusive.\n\
     \\n\
     \\SI\n\
-    \\a\EOT\STX\ETX\SOH\STX\NUL\EOT\DC2\EOT\158\SOH\EOT\f\n\
+    \\a\EOT\STX\ETX\SOH\STX\NUL\EOT\DC2\EOT\156\SOH\EOT\f\n\
     \\SI\n\
-    \\a\EOT\STX\ETX\SOH\STX\NUL\ENQ\DC2\EOT\158\SOH\r\DC2\n\
+    \\a\EOT\STX\ETX\SOH\STX\NUL\ENQ\DC2\EOT\156\SOH\r\DC2\n\
     \\SI\n\
-    \\a\EOT\STX\ETX\SOH\STX\NUL\SOH\DC2\EOT\158\SOH\DC3\CAN\n\
+    \\a\EOT\STX\ETX\SOH\STX\NUL\SOH\DC2\EOT\156\SOH\DC3\CAN\n\
     \\SI\n\
-    \\a\EOT\STX\ETX\SOH\STX\NUL\ETX\DC2\EOT\158\SOH\ESC\FS\n\
+    \\a\EOT\STX\ETX\SOH\STX\NUL\ETX\DC2\EOT\156\SOH\ESC\FS\n\
     \\FS\n\
-    \\ACK\EOT\STX\ETX\SOH\STX\SOH\DC2\EOT\159\SOH\EOT\ESC\"\f Exclusive.\n\
+    \\ACK\EOT\STX\ETX\SOH\STX\SOH\DC2\EOT\157\SOH\EOT\ESC\"\f Exclusive.\n\
     \\n\
     \\SI\n\
-    \\a\EOT\STX\ETX\SOH\STX\SOH\EOT\DC2\EOT\159\SOH\EOT\f\n\
+    \\a\EOT\STX\ETX\SOH\STX\SOH\EOT\DC2\EOT\157\SOH\EOT\f\n\
     \\SI\n\
-    \\a\EOT\STX\ETX\SOH\STX\SOH\ENQ\DC2\EOT\159\SOH\r\DC2\n\
+    \\a\EOT\STX\ETX\SOH\STX\SOH\ENQ\DC2\EOT\157\SOH\r\DC2\n\
     \\SI\n\
-    \\a\EOT\STX\ETX\SOH\STX\SOH\SOH\DC2\EOT\159\SOH\DC3\SYN\n\
+    \\a\EOT\STX\ETX\SOH\STX\SOH\SOH\DC2\EOT\157\SOH\DC3\SYN\n\
     \\SI\n\
-    \\a\EOT\STX\ETX\SOH\STX\SOH\ETX\DC2\EOT\159\SOH\EM\SUB\n\
+    \\a\EOT\STX\ETX\SOH\STX\SOH\ETX\DC2\EOT\157\SOH\EM\SUB\n\
     \\f\n\
-    \\EOT\EOT\STX\STX\b\DC2\EOT\161\SOH\STX,\n\
+    \\EOT\EOT\STX\STX\b\DC2\EOT\159\SOH\STX,\n\
     \\r\n\
-    \\ENQ\EOT\STX\STX\b\EOT\DC2\EOT\161\SOH\STX\n\
+    \\ENQ\EOT\STX\STX\b\EOT\DC2\EOT\159\SOH\STX\n\
     \\n\
     \\r\n\
-    \\ENQ\EOT\STX\STX\b\ACK\DC2\EOT\161\SOH\v\CAN\n\
+    \\ENQ\EOT\STX\STX\b\ACK\DC2\EOT\159\SOH\v\CAN\n\
     \\r\n\
-    \\ENQ\EOT\STX\STX\b\SOH\DC2\EOT\161\SOH\EM'\n\
+    \\ENQ\EOT\STX\STX\b\SOH\DC2\EOT\159\SOH\EM'\n\
     \\r\n\
-    \\ENQ\EOT\STX\STX\b\ETX\DC2\EOT\161\SOH*+\n\
+    \\ENQ\EOT\STX\STX\b\ETX\DC2\EOT\159\SOH*+\n\
     \\131\SOH\n\
-    \\EOT\EOT\STX\STX\t\DC2\EOT\164\SOH\STX%\SUBu Reserved field names, which may not be used by fields in the same message.\n\
+    \\EOT\EOT\STX\STX\t\DC2\EOT\162\SOH\STX%\SUBu Reserved field names, which may not be used by fields in the same message.\n\
     \ A given name may only be reserved once.\n\
     \\n\
     \\r\n\
-    \\ENQ\EOT\STX\STX\t\EOT\DC2\EOT\164\SOH\STX\n\
+    \\ENQ\EOT\STX\STX\t\EOT\DC2\EOT\162\SOH\STX\n\
     \\n\
     \\r\n\
-    \\ENQ\EOT\STX\STX\t\ENQ\DC2\EOT\164\SOH\v\DC1\n\
+    \\ENQ\EOT\STX\STX\t\ENQ\DC2\EOT\162\SOH\v\DC1\n\
     \\r\n\
-    \\ENQ\EOT\STX\STX\t\SOH\DC2\EOT\164\SOH\DC2\US\n\
+    \\ENQ\EOT\STX\STX\t\SOH\DC2\EOT\162\SOH\DC2\US\n\
     \\r\n\
-    \\ENQ\EOT\STX\STX\t\ETX\DC2\EOT\164\SOH\"$\n\
+    \\ENQ\EOT\STX\STX\t\ETX\DC2\EOT\162\SOH\"$\n\
+    \C\n\
+    \\EOT\EOT\STX\STX\n\
+    \\DC2\EOT\165\SOH\STX,\SUB5 Support for `export` and `local` keywords on enums.\n\
+    \\n\
+    \\r\n\
+    \\ENQ\EOT\STX\STX\n\
+    \\EOT\DC2\EOT\165\SOH\STX\n\
+    \\n\
+    \\r\n\
+    \\ENQ\EOT\STX\STX\n\
+    \\ACK\DC2\EOT\165\SOH\v\ESC\n\
+    \\r\n\
+    \\ENQ\EOT\STX\STX\n\
+    \\SOH\DC2\EOT\165\SOH\FS&\n\
+    \\r\n\
+    \\ENQ\EOT\STX\STX\n\
+    \\ETX\DC2\EOT\165\SOH)+\n\
     \\f\n\
-    \\STX\EOT\ETX\DC2\ACK\167\SOH\NUL\219\SOH\SOH\n\
+    \\STX\EOT\ETX\DC2\ACK\168\SOH\NUL\223\SOH\SOH\n\
     \\v\n\
-    \\ETX\EOT\ETX\SOH\DC2\EOT\167\SOH\b\GS\n\
+    \\ETX\EOT\ETX\SOH\DC2\EOT\168\SOH\b\GS\n\
+    \\146\SOH\n\
+    \\ETX\EOT\ETX\ENQ\DC2\EOT\171\SOH\STX\CAN\SUB\132\SOH Range reserved for first-class custom options defined by the Protobuf\n\
+    \ team. User custom options must use the 1000+ range instead.\n\
+    \\n\
+    \\f\n\
+    \\EOT\EOT\ETX\ENQ\NUL\DC2\EOT\171\SOH\r\ETB\n\
+    \\r\n\
+    \\ENQ\EOT\ETX\ENQ\NUL\SOH\DC2\EOT\171\SOH\r\DLE\n\
+    \\r\n\
+    \\ENQ\EOT\ETX\ENQ\NUL\STX\DC2\EOT\171\SOH\DC4\ETB\n\
     \O\n\
-    \\EOT\EOT\ETX\STX\NUL\DC2\EOT\169\SOH\STX:\SUBA The parser stores options it doesn't recognize here. See above.\n\
+    \\EOT\EOT\ETX\STX\NUL\DC2\EOT\173\SOH\STX:\SUBA The parser stores options it doesn't recognize here. See above.\n\
     \\n\
     \\r\n\
-    \\ENQ\EOT\ETX\STX\NUL\EOT\DC2\EOT\169\SOH\STX\n\
+    \\ENQ\EOT\ETX\STX\NUL\EOT\DC2\EOT\173\SOH\STX\n\
     \\n\
     \\r\n\
-    \\ENQ\EOT\ETX\STX\NUL\ACK\DC2\EOT\169\SOH\v\RS\n\
+    \\ENQ\EOT\ETX\STX\NUL\ACK\DC2\EOT\173\SOH\v\RS\n\
     \\r\n\
-    \\ENQ\EOT\ETX\STX\NUL\SOH\DC2\EOT\169\SOH\US3\n\
+    \\ENQ\EOT\ETX\STX\NUL\SOH\DC2\EOT\173\SOH\US3\n\
     \\r\n\
-    \\ENQ\EOT\ETX\STX\NUL\ETX\DC2\EOT\169\SOH69\n\
+    \\ENQ\EOT\ETX\STX\NUL\ETX\DC2\EOT\173\SOH69\n\
     \\SO\n\
-    \\EOT\EOT\ETX\ETX\NUL\DC2\ACK\171\SOH\STX\194\SOH\ETX\n\
+    \\EOT\EOT\ETX\ETX\NUL\DC2\ACK\175\SOH\STX\198\SOH\ETX\n\
     \\r\n\
-    \\ENQ\EOT\ETX\ETX\NUL\SOH\DC2\EOT\171\SOH\n\
+    \\ENQ\EOT\ETX\ETX\NUL\SOH\DC2\EOT\175\SOH\n\
     \\NAK\n\
     \K\n\
-    \\ACK\EOT\ETX\ETX\NUL\STX\NUL\DC2\EOT\173\SOH\EOT\RS\SUB; The extension number declared within the extension range.\n\
+    \\ACK\EOT\ETX\ETX\NUL\STX\NUL\DC2\EOT\177\SOH\EOT\RS\SUB; The extension number declared within the extension range.\n\
     \\n\
     \\SI\n\
-    \\a\EOT\ETX\ETX\NUL\STX\NUL\EOT\DC2\EOT\173\SOH\EOT\f\n\
+    \\a\EOT\ETX\ETX\NUL\STX\NUL\EOT\DC2\EOT\177\SOH\EOT\f\n\
     \\SI\n\
-    \\a\EOT\ETX\ETX\NUL\STX\NUL\ENQ\DC2\EOT\173\SOH\r\DC2\n\
+    \\a\EOT\ETX\ETX\NUL\STX\NUL\ENQ\DC2\EOT\177\SOH\r\DC2\n\
     \\SI\n\
-    \\a\EOT\ETX\ETX\NUL\STX\NUL\SOH\DC2\EOT\173\SOH\DC3\EM\n\
+    \\a\EOT\ETX\ETX\NUL\STX\NUL\SOH\DC2\EOT\177\SOH\DC3\EM\n\
     \\SI\n\
-    \\a\EOT\ETX\ETX\NUL\STX\NUL\ETX\DC2\EOT\173\SOH\FS\GS\n\
+    \\a\EOT\ETX\ETX\NUL\STX\NUL\ETX\DC2\EOT\177\SOH\FS\GS\n\
     \z\n\
-    \\ACK\EOT\ETX\ETX\NUL\STX\SOH\DC2\EOT\177\SOH\EOT\"\SUBj The fully-qualified name of the extension field. There must be a leading\n\
+    \\ACK\EOT\ETX\ETX\NUL\STX\SOH\DC2\EOT\181\SOH\EOT\"\SUBj The fully-qualified name of the extension field. There must be a leading\n\
     \ dot in front of the full name.\n\
     \\n\
     \\SI\n\
-    \\a\EOT\ETX\ETX\NUL\STX\SOH\EOT\DC2\EOT\177\SOH\EOT\f\n\
+    \\a\EOT\ETX\ETX\NUL\STX\SOH\EOT\DC2\EOT\181\SOH\EOT\f\n\
     \\SI\n\
-    \\a\EOT\ETX\ETX\NUL\STX\SOH\ENQ\DC2\EOT\177\SOH\r\DC3\n\
+    \\a\EOT\ETX\ETX\NUL\STX\SOH\ENQ\DC2\EOT\181\SOH\r\DC3\n\
     \\SI\n\
-    \\a\EOT\ETX\ETX\NUL\STX\SOH\SOH\DC2\EOT\177\SOH\DC4\GS\n\
+    \\a\EOT\ETX\ETX\NUL\STX\SOH\SOH\DC2\EOT\181\SOH\DC4\GS\n\
     \\SI\n\
-    \\a\EOT\ETX\ETX\NUL\STX\SOH\ETX\DC2\EOT\177\SOH !\n\
+    \\a\EOT\ETX\ETX\NUL\STX\SOH\ETX\DC2\EOT\181\SOH !\n\
     \\161\SOH\n\
-    \\ACK\EOT\ETX\ETX\NUL\STX\STX\DC2\EOT\182\SOH\EOT\GS\SUB\144\SOH The fully-qualified type name of the extension field. Unlike\n\
+    \\ACK\EOT\ETX\ETX\NUL\STX\STX\DC2\EOT\186\SOH\EOT\GS\SUB\144\SOH The fully-qualified type name of the extension field. Unlike\n\
     \ Metadata.type, Declaration.type must have a leading dot for messages\n\
     \ and enums.\n\
     \\n\
     \\SI\n\
-    \\a\EOT\ETX\ETX\NUL\STX\STX\EOT\DC2\EOT\182\SOH\EOT\f\n\
+    \\a\EOT\ETX\ETX\NUL\STX\STX\EOT\DC2\EOT\186\SOH\EOT\f\n\
     \\SI\n\
-    \\a\EOT\ETX\ETX\NUL\STX\STX\ENQ\DC2\EOT\182\SOH\r\DC3\n\
+    \\a\EOT\ETX\ETX\NUL\STX\STX\ENQ\DC2\EOT\186\SOH\r\DC3\n\
     \\SI\n\
-    \\a\EOT\ETX\ETX\NUL\STX\STX\SOH\DC2\EOT\182\SOH\DC4\CAN\n\
+    \\a\EOT\ETX\ETX\NUL\STX\STX\SOH\DC2\EOT\186\SOH\DC4\CAN\n\
     \\SI\n\
-    \\a\EOT\ETX\ETX\NUL\STX\STX\ETX\DC2\EOT\182\SOH\ESC\FS\n\
+    \\a\EOT\ETX\ETX\NUL\STX\STX\ETX\DC2\EOT\186\SOH\ESC\FS\n\
     \\206\SOH\n\
-    \\ACK\EOT\ETX\ETX\NUL\STX\ETX\DC2\EOT\187\SOH\EOT\US\SUB\189\SOH If true, indicates that the number is reserved in the extension range,\n\
+    \\ACK\EOT\ETX\ETX\NUL\STX\ETX\DC2\EOT\191\SOH\EOT\US\SUB\189\SOH If true, indicates that the number is reserved in the extension range,\n\
     \ and any extension field with the number will fail to compile. Set this\n\
     \ when a declared extension field is deleted.\n\
     \\n\
     \\SI\n\
-    \\a\EOT\ETX\ETX\NUL\STX\ETX\EOT\DC2\EOT\187\SOH\EOT\f\n\
+    \\a\EOT\ETX\ETX\NUL\STX\ETX\EOT\DC2\EOT\191\SOH\EOT\f\n\
     \\SI\n\
-    \\a\EOT\ETX\ETX\NUL\STX\ETX\ENQ\DC2\EOT\187\SOH\r\DC1\n\
+    \\a\EOT\ETX\ETX\NUL\STX\ETX\ENQ\DC2\EOT\191\SOH\r\DC1\n\
     \\SI\n\
-    \\a\EOT\ETX\ETX\NUL\STX\ETX\SOH\DC2\EOT\187\SOH\DC2\SUB\n\
+    \\a\EOT\ETX\ETX\NUL\STX\ETX\SOH\DC2\EOT\191\SOH\DC2\SUB\n\
     \\SI\n\
-    \\a\EOT\ETX\ETX\NUL\STX\ETX\ETX\DC2\EOT\187\SOH\GS\RS\n\
+    \\a\EOT\ETX\ETX\NUL\STX\ETX\ETX\DC2\EOT\191\SOH\GS\RS\n\
     \\138\SOH\n\
-    \\ACK\EOT\ETX\ETX\NUL\STX\EOT\DC2\EOT\191\SOH\EOT\US\SUBz If true, indicates that the extension must be defined as repeated.\n\
+    \\ACK\EOT\ETX\ETX\NUL\STX\EOT\DC2\EOT\195\SOH\EOT\US\SUBz If true, indicates that the extension must be defined as repeated.\n\
     \ Otherwise the extension must be defined as optional.\n\
     \\n\
     \\SI\n\
-    \\a\EOT\ETX\ETX\NUL\STX\EOT\EOT\DC2\EOT\191\SOH\EOT\f\n\
+    \\a\EOT\ETX\ETX\NUL\STX\EOT\EOT\DC2\EOT\195\SOH\EOT\f\n\
     \\SI\n\
-    \\a\EOT\ETX\ETX\NUL\STX\EOT\ENQ\DC2\EOT\191\SOH\r\DC1\n\
+    \\a\EOT\ETX\ETX\NUL\STX\EOT\ENQ\DC2\EOT\195\SOH\r\DC1\n\
     \\SI\n\
-    \\a\EOT\ETX\ETX\NUL\STX\EOT\SOH\DC2\EOT\191\SOH\DC2\SUB\n\
+    \\a\EOT\ETX\ETX\NUL\STX\EOT\SOH\DC2\EOT\195\SOH\DC2\SUB\n\
     \\SI\n\
-    \\a\EOT\ETX\ETX\NUL\STX\EOT\ETX\DC2\EOT\191\SOH\GS\RS\n\
+    \\a\EOT\ETX\ETX\NUL\STX\EOT\ETX\DC2\EOT\195\SOH\GS\RS\n\
     \$\n\
-    \\ENQ\EOT\ETX\ETX\NUL\t\DC2\EOT\193\SOH\EOT\SI\"\NAK removed is_repeated\n\
+    \\ENQ\EOT\ETX\ETX\NUL\t\DC2\EOT\197\SOH\EOT\SI\"\NAK removed is_repeated\n\
     \\n\
     \\SO\n\
-    \\ACK\EOT\ETX\ETX\NUL\t\NUL\DC2\EOT\193\SOH\r\SO\n\
+    \\ACK\EOT\ETX\ETX\NUL\t\NUL\DC2\EOT\197\SOH\r\SO\n\
     \\SI\n\
-    \\a\EOT\ETX\ETX\NUL\t\NUL\SOH\DC2\EOT\193\SOH\r\SO\n\
+    \\a\EOT\ETX\ETX\NUL\t\NUL\SOH\DC2\EOT\197\SOH\r\SO\n\
     \\SI\n\
-    \\a\EOT\ETX\ETX\NUL\t\NUL\STX\DC2\EOT\193\SOH\r\SO\n\
+    \\a\EOT\ETX\ETX\NUL\t\NUL\STX\DC2\EOT\197\SOH\r\SO\n\
     \\177\SOH\n\
-    \\EOT\EOT\ETX\STX\SOH\DC2\EOT\199\SOH\STXF\SUB\162\SOH For external users: DO NOT USE. We are in the process of open sourcing\n\
+    \\EOT\EOT\ETX\STX\SOH\DC2\EOT\203\SOH\STXF\SUB\162\SOH For external users: DO NOT USE. We are in the process of open sourcing\n\
     \ extension declaration and executing internal cleanups before it can be\n\
     \ used externally.\n\
     \\n\
     \\r\n\
-    \\ENQ\EOT\ETX\STX\SOH\EOT\DC2\EOT\199\SOH\STX\n\
+    \\ENQ\EOT\ETX\STX\SOH\EOT\DC2\EOT\203\SOH\STX\n\
     \\n\
     \\r\n\
-    \\ENQ\EOT\ETX\STX\SOH\ACK\DC2\EOT\199\SOH\v\SYN\n\
+    \\ENQ\EOT\ETX\STX\SOH\ACK\DC2\EOT\203\SOH\v\SYN\n\
     \\r\n\
-    \\ENQ\EOT\ETX\STX\SOH\SOH\DC2\EOT\199\SOH\ETB\"\n\
+    \\ENQ\EOT\ETX\STX\SOH\SOH\DC2\EOT\203\SOH\ETB\"\n\
     \\r\n\
-    \\ENQ\EOT\ETX\STX\SOH\ETX\DC2\EOT\199\SOH%&\n\
+    \\ENQ\EOT\ETX\STX\SOH\ETX\DC2\EOT\203\SOH%&\n\
     \\r\n\
-    \\ENQ\EOT\ETX\STX\SOH\b\DC2\EOT\199\SOH'E\n\
+    \\ENQ\EOT\ETX\STX\SOH\b\DC2\EOT\203\SOH'E\n\
     \\SO\n\
-    \\ACK\EOT\ETX\STX\SOH\b\DC1\DC2\EOT\199\SOH(D\n\
+    \\ACK\EOT\ETX\STX\SOH\b\DC1\DC2\EOT\203\SOH(D\n\
     \=\n\
-    \\EOT\EOT\ETX\STX\STX\DC2\EOT\202\SOH\STX$\SUB/ Any features defined in the specific edition.\n\
+    \\EOT\EOT\ETX\STX\STX\DC2\EOT\206\SOH\STX$\SUB/ Any features defined in the specific edition.\n\
     \\n\
     \\r\n\
-    \\ENQ\EOT\ETX\STX\STX\EOT\DC2\EOT\202\SOH\STX\n\
+    \\ENQ\EOT\ETX\STX\STX\EOT\DC2\EOT\206\SOH\STX\n\
     \\n\
     \\r\n\
-    \\ENQ\EOT\ETX\STX\STX\ACK\DC2\EOT\202\SOH\v\NAK\n\
+    \\ENQ\EOT\ETX\STX\STX\ACK\DC2\EOT\206\SOH\v\NAK\n\
     \\r\n\
-    \\ENQ\EOT\ETX\STX\STX\SOH\DC2\EOT\202\SOH\SYN\RS\n\
+    \\ENQ\EOT\ETX\STX\STX\SOH\DC2\EOT\206\SOH\SYN\RS\n\
     \\r\n\
-    \\ENQ\EOT\ETX\STX\STX\ETX\DC2\EOT\202\SOH!#\n\
+    \\ENQ\EOT\ETX\STX\STX\ETX\DC2\EOT\206\SOH!#\n\
     \@\n\
-    \\EOT\EOT\ETX\EOT\NUL\DC2\ACK\205\SOH\STX\209\SOH\ETX\SUB0 The verification state of the extension range.\n\
+    \\EOT\EOT\ETX\EOT\NUL\DC2\ACK\209\SOH\STX\213\SOH\ETX\SUB0 The verification state of the extension range.\n\
     \\n\
     \\r\n\
-    \\ENQ\EOT\ETX\EOT\NUL\SOH\DC2\EOT\205\SOH\a\CAN\n\
+    \\ENQ\EOT\ETX\EOT\NUL\SOH\DC2\EOT\209\SOH\a\CAN\n\
     \C\n\
-    \\ACK\EOT\ETX\EOT\NUL\STX\NUL\DC2\EOT\207\SOH\EOT\DC4\SUB3 All the extensions of the range must be declared.\n\
+    \\ACK\EOT\ETX\EOT\NUL\STX\NUL\DC2\EOT\211\SOH\EOT\DC4\SUB3 All the extensions of the range must be declared.\n\
     \\n\
     \\SI\n\
-    \\a\EOT\ETX\EOT\NUL\STX\NUL\SOH\DC2\EOT\207\SOH\EOT\SI\n\
+    \\a\EOT\ETX\EOT\NUL\STX\NUL\SOH\DC2\EOT\211\SOH\EOT\SI\n\
     \\SI\n\
-    \\a\EOT\ETX\EOT\NUL\STX\NUL\STX\DC2\EOT\207\SOH\DC2\DC3\n\
+    \\a\EOT\ETX\EOT\NUL\STX\NUL\STX\DC2\EOT\211\SOH\DC2\DC3\n\
     \\SO\n\
-    \\ACK\EOT\ETX\EOT\NUL\STX\SOH\DC2\EOT\208\SOH\EOT\DC3\n\
+    \\ACK\EOT\ETX\EOT\NUL\STX\SOH\DC2\EOT\212\SOH\EOT\DC3\n\
     \\SI\n\
-    \\a\EOT\ETX\EOT\NUL\STX\SOH\SOH\DC2\EOT\208\SOH\EOT\SO\n\
+    \\a\EOT\ETX\EOT\NUL\STX\SOH\SOH\DC2\EOT\212\SOH\EOT\SO\n\
     \\SI\n\
-    \\a\EOT\ETX\EOT\NUL\STX\SOH\STX\DC2\EOT\208\SOH\DC1\DC2\n\
+    \\a\EOT\ETX\EOT\NUL\STX\SOH\STX\DC2\EOT\212\SOH\DC1\DC2\n\
     \\142\SOH\n\
-    \\EOT\EOT\ETX\STX\ETX\DC2\ACK\214\SOH\STX\215\SOH;\SUB~ The verification state of the range.\n\
+    \\EOT\EOT\ETX\STX\ETX\DC2\ACK\218\SOH\STX\219\SOH;\SUB~ The verification state of the range.\n\
     \ TODO: flip the default to DECLARATION once all empty ranges\n\
     \ are marked as UNVERIFIED.\n\
     \\n\
     \\r\n\
-    \\ENQ\EOT\ETX\STX\ETX\EOT\DC2\EOT\214\SOH\STX\n\
+    \\ENQ\EOT\ETX\STX\ETX\EOT\DC2\EOT\218\SOH\STX\n\
     \\n\
     \\r\n\
-    \\ENQ\EOT\ETX\STX\ETX\ACK\DC2\EOT\214\SOH\v\FS\n\
+    \\ENQ\EOT\ETX\STX\ETX\ACK\DC2\EOT\218\SOH\v\FS\n\
     \\r\n\
-    \\ENQ\EOT\ETX\STX\ETX\SOH\DC2\EOT\214\SOH\GS)\n\
+    \\ENQ\EOT\ETX\STX\ETX\SOH\DC2\EOT\218\SOH\GS)\n\
     \\r\n\
-    \\ENQ\EOT\ETX\STX\ETX\ETX\DC2\EOT\214\SOH,-\n\
+    \\ENQ\EOT\ETX\STX\ETX\ETX\DC2\EOT\218\SOH,-\n\
     \\r\n\
-    \\ENQ\EOT\ETX\STX\ETX\b\DC2\EOT\215\SOH\ACK:\n\
+    \\ENQ\EOT\ETX\STX\ETX\b\DC2\EOT\219\SOH\ACK:\n\
     \\r\n\
-    \\ENQ\EOT\ETX\STX\ETX\a\DC2\EOT\215\SOH\DC1\ESC\n\
+    \\ENQ\EOT\ETX\STX\ETX\a\DC2\EOT\219\SOH\DC1\ESC\n\
     \\SO\n\
-    \\ACK\EOT\ETX\STX\ETX\b\DC1\DC2\EOT\215\SOH\GS9\n\
+    \\ACK\EOT\ETX\STX\ETX\b\DC1\DC2\EOT\219\SOH\GS9\n\
     \Z\n\
-    \\ETX\EOT\ETX\ENQ\DC2\EOT\218\SOH\STX\EM\SUBM Clients can define custom options in extensions of this message. See above.\n\
+    \\ETX\EOT\ETX\ENQ\DC2\EOT\222\SOH\STX\EM\SUBM Clients can define custom options in extensions of this message. See above.\n\
     \\n\
     \\f\n\
-    \\EOT\EOT\ETX\ENQ\NUL\DC2\EOT\218\SOH\r\CAN\n\
+    \\EOT\EOT\ETX\ENQ\SOH\DC2\EOT\222\SOH\r\CAN\n\
     \\r\n\
-    \\ENQ\EOT\ETX\ENQ\NUL\SOH\DC2\EOT\218\SOH\r\DC1\n\
+    \\ENQ\EOT\ETX\ENQ\SOH\SOH\DC2\EOT\222\SOH\r\DC1\n\
     \\r\n\
-    \\ENQ\EOT\ETX\ENQ\NUL\STX\DC2\EOT\218\SOH\NAK\CAN\n\
+    \\ENQ\EOT\ETX\ENQ\SOH\STX\DC2\EOT\222\SOH\NAK\CAN\n\
     \3\n\
-    \\STX\EOT\EOT\DC2\ACK\222\SOH\NUL\198\STX\SOH\SUB% Describes a field within a message.\n\
+    \\STX\EOT\EOT\DC2\ACK\226\SOH\NUL\202\STX\SOH\SUB% Describes a field within a message.\n\
     \\n\
     \\v\n\
-    \\ETX\EOT\EOT\SOH\DC2\EOT\222\SOH\b\FS\n\
+    \\ETX\EOT\EOT\SOH\DC2\EOT\226\SOH\b\FS\n\
     \\SO\n\
-    \\EOT\EOT\EOT\EOT\NUL\DC2\ACK\223\SOH\STX\255\SOH\ETX\n\
+    \\EOT\EOT\EOT\EOT\NUL\DC2\ACK\227\SOH\STX\131\STX\ETX\n\
     \\r\n\
-    \\ENQ\EOT\EOT\EOT\NUL\SOH\DC2\EOT\223\SOH\a\v\n\
+    \\ENQ\EOT\EOT\EOT\NUL\SOH\DC2\EOT\227\SOH\a\v\n\
     \S\n\
-    \\ACK\EOT\EOT\EOT\NUL\STX\NUL\DC2\EOT\226\SOH\EOT\DC4\SUBC 0 is reserved for errors.\n\
+    \\ACK\EOT\EOT\EOT\NUL\STX\NUL\DC2\EOT\230\SOH\EOT\DC4\SUBC 0 is reserved for errors.\n\
     \ Order is weird for historical reasons.\n\
     \\n\
     \\SI\n\
-    \\a\EOT\EOT\EOT\NUL\STX\NUL\SOH\DC2\EOT\226\SOH\EOT\SI\n\
+    \\a\EOT\EOT\EOT\NUL\STX\NUL\SOH\DC2\EOT\230\SOH\EOT\SI\n\
     \\SI\n\
-    \\a\EOT\EOT\EOT\NUL\STX\NUL\STX\DC2\EOT\226\SOH\DC2\DC3\n\
+    \\a\EOT\EOT\EOT\NUL\STX\NUL\STX\DC2\EOT\230\SOH\DC2\DC3\n\
     \\SO\n\
-    \\ACK\EOT\EOT\EOT\NUL\STX\SOH\DC2\EOT\227\SOH\EOT\DC3\n\
+    \\ACK\EOT\EOT\EOT\NUL\STX\SOH\DC2\EOT\231\SOH\EOT\DC3\n\
     \\SI\n\
-    \\a\EOT\EOT\EOT\NUL\STX\SOH\SOH\DC2\EOT\227\SOH\EOT\SO\n\
+    \\a\EOT\EOT\EOT\NUL\STX\SOH\SOH\DC2\EOT\231\SOH\EOT\SO\n\
     \\SI\n\
-    \\a\EOT\EOT\EOT\NUL\STX\SOH\STX\DC2\EOT\227\SOH\DC1\DC2\n\
+    \\a\EOT\EOT\EOT\NUL\STX\SOH\STX\DC2\EOT\231\SOH\DC1\DC2\n\
     \w\n\
-    \\ACK\EOT\EOT\EOT\NUL\STX\STX\DC2\EOT\230\SOH\EOT\DC3\SUBg Not ZigZag encoded.  Negative numbers take 10 bytes.  Use TYPE_SINT64 if\n\
+    \\ACK\EOT\EOT\EOT\NUL\STX\STX\DC2\EOT\234\SOH\EOT\DC3\SUBg Not ZigZag encoded.  Negative numbers take 10 bytes.  Use TYPE_SINT64 if\n\
     \ negative values are likely.\n\
     \\n\
     \\SI\n\
-    \\a\EOT\EOT\EOT\NUL\STX\STX\SOH\DC2\EOT\230\SOH\EOT\SO\n\
+    \\a\EOT\EOT\EOT\NUL\STX\STX\SOH\DC2\EOT\234\SOH\EOT\SO\n\
     \\SI\n\
-    \\a\EOT\EOT\EOT\NUL\STX\STX\STX\DC2\EOT\230\SOH\DC1\DC2\n\
+    \\a\EOT\EOT\EOT\NUL\STX\STX\STX\DC2\EOT\234\SOH\DC1\DC2\n\
     \\SO\n\
-    \\ACK\EOT\EOT\EOT\NUL\STX\ETX\DC2\EOT\231\SOH\EOT\DC4\n\
+    \\ACK\EOT\EOT\EOT\NUL\STX\ETX\DC2\EOT\235\SOH\EOT\DC4\n\
     \\SI\n\
-    \\a\EOT\EOT\EOT\NUL\STX\ETX\SOH\DC2\EOT\231\SOH\EOT\SI\n\
+    \\a\EOT\EOT\EOT\NUL\STX\ETX\SOH\DC2\EOT\235\SOH\EOT\SI\n\
     \\SI\n\
-    \\a\EOT\EOT\EOT\NUL\STX\ETX\STX\DC2\EOT\231\SOH\DC2\DC3\n\
+    \\a\EOT\EOT\EOT\NUL\STX\ETX\STX\DC2\EOT\235\SOH\DC2\DC3\n\
     \w\n\
-    \\ACK\EOT\EOT\EOT\NUL\STX\EOT\DC2\EOT\234\SOH\EOT\DC3\SUBg Not ZigZag encoded.  Negative numbers take 10 bytes.  Use TYPE_SINT32 if\n\
+    \\ACK\EOT\EOT\EOT\NUL\STX\EOT\DC2\EOT\238\SOH\EOT\DC3\SUBg Not ZigZag encoded.  Negative numbers take 10 bytes.  Use TYPE_SINT32 if\n\
     \ negative values are likely.\n\
     \\n\
     \\SI\n\
-    \\a\EOT\EOT\EOT\NUL\STX\EOT\SOH\DC2\EOT\234\SOH\EOT\SO\n\
+    \\a\EOT\EOT\EOT\NUL\STX\EOT\SOH\DC2\EOT\238\SOH\EOT\SO\n\
     \\SI\n\
-    \\a\EOT\EOT\EOT\NUL\STX\EOT\STX\DC2\EOT\234\SOH\DC1\DC2\n\
+    \\a\EOT\EOT\EOT\NUL\STX\EOT\STX\DC2\EOT\238\SOH\DC1\DC2\n\
     \\SO\n\
-    \\ACK\EOT\EOT\EOT\NUL\STX\ENQ\DC2\EOT\235\SOH\EOT\NAK\n\
+    \\ACK\EOT\EOT\EOT\NUL\STX\ENQ\DC2\EOT\239\SOH\EOT\NAK\n\
     \\SI\n\
-    \\a\EOT\EOT\EOT\NUL\STX\ENQ\SOH\DC2\EOT\235\SOH\EOT\DLE\n\
+    \\a\EOT\EOT\EOT\NUL\STX\ENQ\SOH\DC2\EOT\239\SOH\EOT\DLE\n\
     \\SI\n\
-    \\a\EOT\EOT\EOT\NUL\STX\ENQ\STX\DC2\EOT\235\SOH\DC3\DC4\n\
+    \\a\EOT\EOT\EOT\NUL\STX\ENQ\STX\DC2\EOT\239\SOH\DC3\DC4\n\
     \\SO\n\
-    \\ACK\EOT\EOT\EOT\NUL\STX\ACK\DC2\EOT\236\SOH\EOT\NAK\n\
+    \\ACK\EOT\EOT\EOT\NUL\STX\ACK\DC2\EOT\240\SOH\EOT\NAK\n\
     \\SI\n\
-    \\a\EOT\EOT\EOT\NUL\STX\ACK\SOH\DC2\EOT\236\SOH\EOT\DLE\n\
+    \\a\EOT\EOT\EOT\NUL\STX\ACK\SOH\DC2\EOT\240\SOH\EOT\DLE\n\
     \\SI\n\
-    \\a\EOT\EOT\EOT\NUL\STX\ACK\STX\DC2\EOT\236\SOH\DC3\DC4\n\
+    \\a\EOT\EOT\EOT\NUL\STX\ACK\STX\DC2\EOT\240\SOH\DC3\DC4\n\
     \\SO\n\
-    \\ACK\EOT\EOT\EOT\NUL\STX\a\DC2\EOT\237\SOH\EOT\DC2\n\
+    \\ACK\EOT\EOT\EOT\NUL\STX\a\DC2\EOT\241\SOH\EOT\DC2\n\
     \\SI\n\
-    \\a\EOT\EOT\EOT\NUL\STX\a\SOH\DC2\EOT\237\SOH\EOT\r\n\
+    \\a\EOT\EOT\EOT\NUL\STX\a\SOH\DC2\EOT\241\SOH\EOT\r\n\
     \\SI\n\
-    \\a\EOT\EOT\EOT\NUL\STX\a\STX\DC2\EOT\237\SOH\DLE\DC1\n\
+    \\a\EOT\EOT\EOT\NUL\STX\a\STX\DC2\EOT\241\SOH\DLE\DC1\n\
     \\SO\n\
-    \\ACK\EOT\EOT\EOT\NUL\STX\b\DC2\EOT\238\SOH\EOT\DC4\n\
+    \\ACK\EOT\EOT\EOT\NUL\STX\b\DC2\EOT\242\SOH\EOT\DC4\n\
     \\SI\n\
-    \\a\EOT\EOT\EOT\NUL\STX\b\SOH\DC2\EOT\238\SOH\EOT\SI\n\
+    \\a\EOT\EOT\EOT\NUL\STX\b\SOH\DC2\EOT\242\SOH\EOT\SI\n\
     \\SI\n\
-    \\a\EOT\EOT\EOT\NUL\STX\b\STX\DC2\EOT\238\SOH\DC2\DC3\n\
+    \\a\EOT\EOT\EOT\NUL\STX\b\STX\DC2\EOT\242\SOH\DC2\DC3\n\
     \\198\STX\n\
-    \\ACK\EOT\EOT\EOT\NUL\STX\t\DC2\EOT\244\SOH\EOT\DC4\SUB\181\STX Tag-delimited aggregate.\n\
+    \\ACK\EOT\EOT\EOT\NUL\STX\t\DC2\EOT\248\SOH\EOT\DC4\SUB\181\STX Tag-delimited aggregate.\n\
     \ Group type is deprecated and not supported after google.protobuf. However, Proto3\n\
     \ implementations should still be able to parse the group wire format and\n\
     \ treat group fields as unknown fields.  In Editions, the group wire format\n\
     \ can be enabled via the `message_encoding` feature.\n\
     \\n\
     \\SI\n\
-    \\a\EOT\EOT\EOT\NUL\STX\t\SOH\DC2\EOT\244\SOH\EOT\SO\n\
+    \\a\EOT\EOT\EOT\NUL\STX\t\SOH\DC2\EOT\248\SOH\EOT\SO\n\
     \\SI\n\
-    \\a\EOT\EOT\EOT\NUL\STX\t\STX\DC2\EOT\244\SOH\DC1\DC3\n\
+    \\a\EOT\EOT\EOT\NUL\STX\t\STX\DC2\EOT\248\SOH\DC1\DC3\n\
     \-\n\
     \\ACK\EOT\EOT\EOT\NUL\STX\n\
-    \\DC2\EOT\245\SOH\EOT\SYN\"\GS Length-delimited aggregate.\n\
+    \\DC2\EOT\249\SOH\EOT\SYN\"\GS Length-delimited aggregate.\n\
     \\n\
     \\SI\n\
     \\a\EOT\EOT\EOT\NUL\STX\n\
-    \\SOH\DC2\EOT\245\SOH\EOT\DLE\n\
+    \\SOH\DC2\EOT\249\SOH\EOT\DLE\n\
     \\SI\n\
     \\a\EOT\EOT\EOT\NUL\STX\n\
-    \\STX\DC2\EOT\245\SOH\DC3\NAK\n\
+    \\STX\DC2\EOT\249\SOH\DC3\NAK\n\
     \#\n\
-    \\ACK\EOT\EOT\EOT\NUL\STX\v\DC2\EOT\248\SOH\EOT\DC4\SUB\DC3 New in version 2.\n\
+    \\ACK\EOT\EOT\EOT\NUL\STX\v\DC2\EOT\252\SOH\EOT\DC4\SUB\DC3 New in version 2.\n\
     \\n\
     \\SI\n\
-    \\a\EOT\EOT\EOT\NUL\STX\v\SOH\DC2\EOT\248\SOH\EOT\SO\n\
+    \\a\EOT\EOT\EOT\NUL\STX\v\SOH\DC2\EOT\252\SOH\EOT\SO\n\
     \\SI\n\
-    \\a\EOT\EOT\EOT\NUL\STX\v\STX\DC2\EOT\248\SOH\DC1\DC3\n\
+    \\a\EOT\EOT\EOT\NUL\STX\v\STX\DC2\EOT\252\SOH\DC1\DC3\n\
     \\SO\n\
-    \\ACK\EOT\EOT\EOT\NUL\STX\f\DC2\EOT\249\SOH\EOT\NAK\n\
+    \\ACK\EOT\EOT\EOT\NUL\STX\f\DC2\EOT\253\SOH\EOT\NAK\n\
     \\SI\n\
-    \\a\EOT\EOT\EOT\NUL\STX\f\SOH\DC2\EOT\249\SOH\EOT\SI\n\
+    \\a\EOT\EOT\EOT\NUL\STX\f\SOH\DC2\EOT\253\SOH\EOT\SI\n\
     \\SI\n\
-    \\a\EOT\EOT\EOT\NUL\STX\f\STX\DC2\EOT\249\SOH\DC2\DC4\n\
+    \\a\EOT\EOT\EOT\NUL\STX\f\STX\DC2\EOT\253\SOH\DC2\DC4\n\
     \\SO\n\
-    \\ACK\EOT\EOT\EOT\NUL\STX\r\DC2\EOT\250\SOH\EOT\DC3\n\
+    \\ACK\EOT\EOT\EOT\NUL\STX\r\DC2\EOT\254\SOH\EOT\DC3\n\
     \\SI\n\
-    \\a\EOT\EOT\EOT\NUL\STX\r\SOH\DC2\EOT\250\SOH\EOT\r\n\
+    \\a\EOT\EOT\EOT\NUL\STX\r\SOH\DC2\EOT\254\SOH\EOT\r\n\
     \\SI\n\
-    \\a\EOT\EOT\EOT\NUL\STX\r\STX\DC2\EOT\250\SOH\DLE\DC2\n\
+    \\a\EOT\EOT\EOT\NUL\STX\r\STX\DC2\EOT\254\SOH\DLE\DC2\n\
     \\SO\n\
-    \\ACK\EOT\EOT\EOT\NUL\STX\SO\DC2\EOT\251\SOH\EOT\ETB\n\
+    \\ACK\EOT\EOT\EOT\NUL\STX\SO\DC2\EOT\255\SOH\EOT\ETB\n\
     \\SI\n\
-    \\a\EOT\EOT\EOT\NUL\STX\SO\SOH\DC2\EOT\251\SOH\EOT\DC1\n\
+    \\a\EOT\EOT\EOT\NUL\STX\SO\SOH\DC2\EOT\255\SOH\EOT\DC1\n\
     \\SI\n\
-    \\a\EOT\EOT\EOT\NUL\STX\SO\STX\DC2\EOT\251\SOH\DC4\SYN\n\
+    \\a\EOT\EOT\EOT\NUL\STX\SO\STX\DC2\EOT\255\SOH\DC4\SYN\n\
     \\SO\n\
-    \\ACK\EOT\EOT\EOT\NUL\STX\SI\DC2\EOT\252\SOH\EOT\ETB\n\
+    \\ACK\EOT\EOT\EOT\NUL\STX\SI\DC2\EOT\128\STX\EOT\ETB\n\
     \\SI\n\
-    \\a\EOT\EOT\EOT\NUL\STX\SI\SOH\DC2\EOT\252\SOH\EOT\DC1\n\
+    \\a\EOT\EOT\EOT\NUL\STX\SI\SOH\DC2\EOT\128\STX\EOT\DC1\n\
     \\SI\n\
-    \\a\EOT\EOT\EOT\NUL\STX\SI\STX\DC2\EOT\252\SOH\DC4\SYN\n\
+    \\a\EOT\EOT\EOT\NUL\STX\SI\STX\DC2\EOT\128\STX\DC4\SYN\n\
     \'\n\
-    \\ACK\EOT\EOT\EOT\NUL\STX\DLE\DC2\EOT\253\SOH\EOT\NAK\"\ETB Uses ZigZag encoding.\n\
+    \\ACK\EOT\EOT\EOT\NUL\STX\DLE\DC2\EOT\129\STX\EOT\NAK\"\ETB Uses ZigZag encoding.\n\
     \\n\
     \\SI\n\
-    \\a\EOT\EOT\EOT\NUL\STX\DLE\SOH\DC2\EOT\253\SOH\EOT\SI\n\
+    \\a\EOT\EOT\EOT\NUL\STX\DLE\SOH\DC2\EOT\129\STX\EOT\SI\n\
     \\SI\n\
-    \\a\EOT\EOT\EOT\NUL\STX\DLE\STX\DC2\EOT\253\SOH\DC2\DC4\n\
+    \\a\EOT\EOT\EOT\NUL\STX\DLE\STX\DC2\EOT\129\STX\DC2\DC4\n\
     \'\n\
-    \\ACK\EOT\EOT\EOT\NUL\STX\DC1\DC2\EOT\254\SOH\EOT\NAK\"\ETB Uses ZigZag encoding.\n\
+    \\ACK\EOT\EOT\EOT\NUL\STX\DC1\DC2\EOT\130\STX\EOT\NAK\"\ETB Uses ZigZag encoding.\n\
     \\n\
     \\SI\n\
-    \\a\EOT\EOT\EOT\NUL\STX\DC1\SOH\DC2\EOT\254\SOH\EOT\SI\n\
+    \\a\EOT\EOT\EOT\NUL\STX\DC1\SOH\DC2\EOT\130\STX\EOT\SI\n\
     \\SI\n\
-    \\a\EOT\EOT\EOT\NUL\STX\DC1\STX\DC2\EOT\254\SOH\DC2\DC4\n\
+    \\a\EOT\EOT\EOT\NUL\STX\DC1\STX\DC2\EOT\130\STX\DC2\DC4\n\
     \\SO\n\
-    \\EOT\EOT\EOT\EOT\SOH\DC2\ACK\129\STX\STX\137\STX\ETX\n\
+    \\EOT\EOT\EOT\EOT\SOH\DC2\ACK\133\STX\STX\141\STX\ETX\n\
     \\r\n\
-    \\ENQ\EOT\EOT\EOT\SOH\SOH\DC2\EOT\129\STX\a\f\n\
+    \\ENQ\EOT\EOT\EOT\SOH\SOH\DC2\EOT\133\STX\a\f\n\
     \*\n\
-    \\ACK\EOT\EOT\EOT\SOH\STX\NUL\DC2\EOT\131\STX\EOT\ETB\SUB\SUB 0 is reserved for errors\n\
+    \\ACK\EOT\EOT\EOT\SOH\STX\NUL\DC2\EOT\135\STX\EOT\ETB\SUB\SUB 0 is reserved for errors\n\
     \\n\
     \\SI\n\
-    \\a\EOT\EOT\EOT\SOH\STX\NUL\SOH\DC2\EOT\131\STX\EOT\DC2\n\
+    \\a\EOT\EOT\EOT\SOH\STX\NUL\SOH\DC2\EOT\135\STX\EOT\DC2\n\
     \\SI\n\
-    \\a\EOT\EOT\EOT\SOH\STX\NUL\STX\DC2\EOT\131\STX\NAK\SYN\n\
+    \\a\EOT\EOT\EOT\SOH\STX\NUL\STX\DC2\EOT\135\STX\NAK\SYN\n\
     \\SO\n\
-    \\ACK\EOT\EOT\EOT\SOH\STX\SOH\DC2\EOT\132\STX\EOT\ETB\n\
+    \\ACK\EOT\EOT\EOT\SOH\STX\SOH\DC2\EOT\136\STX\EOT\ETB\n\
     \\SI\n\
-    \\a\EOT\EOT\EOT\SOH\STX\SOH\SOH\DC2\EOT\132\STX\EOT\DC2\n\
+    \\a\EOT\EOT\EOT\SOH\STX\SOH\SOH\DC2\EOT\136\STX\EOT\DC2\n\
     \\SI\n\
-    \\a\EOT\EOT\EOT\SOH\STX\SOH\STX\DC2\EOT\132\STX\NAK\SYN\n\
+    \\a\EOT\EOT\EOT\SOH\STX\SOH\STX\DC2\EOT\136\STX\NAK\SYN\n\
     \\204\SOH\n\
-    \\ACK\EOT\EOT\EOT\SOH\STX\STX\DC2\EOT\136\STX\EOT\ETB\SUB\187\SOH The required label is only allowed in google.protobuf.  In proto3 and Editions\n\
+    \\ACK\EOT\EOT\EOT\SOH\STX\STX\DC2\EOT\140\STX\EOT\ETB\SUB\187\SOH The required label is only allowed in google.protobuf.  In proto3 and Editions\n\
     \ it's explicitly prohibited.  In Editions, the `field_presence` feature\n\
     \ can be used to get this behavior.\n\
     \\n\
     \\SI\n\
-    \\a\EOT\EOT\EOT\SOH\STX\STX\SOH\DC2\EOT\136\STX\EOT\DC2\n\
+    \\a\EOT\EOT\EOT\SOH\STX\STX\SOH\DC2\EOT\140\STX\EOT\DC2\n\
     \\SI\n\
-    \\a\EOT\EOT\EOT\SOH\STX\STX\STX\DC2\EOT\136\STX\NAK\SYN\n\
+    \\a\EOT\EOT\EOT\SOH\STX\STX\STX\DC2\EOT\140\STX\NAK\SYN\n\
     \\f\n\
-    \\EOT\EOT\EOT\STX\NUL\DC2\EOT\139\STX\STX\ESC\n\
+    \\EOT\EOT\EOT\STX\NUL\DC2\EOT\143\STX\STX\ESC\n\
     \\r\n\
-    \\ENQ\EOT\EOT\STX\NUL\EOT\DC2\EOT\139\STX\STX\n\
+    \\ENQ\EOT\EOT\STX\NUL\EOT\DC2\EOT\143\STX\STX\n\
     \\n\
     \\r\n\
-    \\ENQ\EOT\EOT\STX\NUL\ENQ\DC2\EOT\139\STX\v\DC1\n\
+    \\ENQ\EOT\EOT\STX\NUL\ENQ\DC2\EOT\143\STX\v\DC1\n\
     \\r\n\
-    \\ENQ\EOT\EOT\STX\NUL\SOH\DC2\EOT\139\STX\DC2\SYN\n\
+    \\ENQ\EOT\EOT\STX\NUL\SOH\DC2\EOT\143\STX\DC2\SYN\n\
     \\r\n\
-    \\ENQ\EOT\EOT\STX\NUL\ETX\DC2\EOT\139\STX\EM\SUB\n\
+    \\ENQ\EOT\EOT\STX\NUL\ETX\DC2\EOT\143\STX\EM\SUB\n\
     \\f\n\
-    \\EOT\EOT\EOT\STX\SOH\DC2\EOT\140\STX\STX\FS\n\
+    \\EOT\EOT\EOT\STX\SOH\DC2\EOT\144\STX\STX\FS\n\
     \\r\n\
-    \\ENQ\EOT\EOT\STX\SOH\EOT\DC2\EOT\140\STX\STX\n\
+    \\ENQ\EOT\EOT\STX\SOH\EOT\DC2\EOT\144\STX\STX\n\
     \\n\
     \\r\n\
-    \\ENQ\EOT\EOT\STX\SOH\ENQ\DC2\EOT\140\STX\v\DLE\n\
+    \\ENQ\EOT\EOT\STX\SOH\ENQ\DC2\EOT\144\STX\v\DLE\n\
     \\r\n\
-    \\ENQ\EOT\EOT\STX\SOH\SOH\DC2\EOT\140\STX\DC1\ETB\n\
+    \\ENQ\EOT\EOT\STX\SOH\SOH\DC2\EOT\144\STX\DC1\ETB\n\
     \\r\n\
-    \\ENQ\EOT\EOT\STX\SOH\ETX\DC2\EOT\140\STX\SUB\ESC\n\
+    \\ENQ\EOT\EOT\STX\SOH\ETX\DC2\EOT\144\STX\SUB\ESC\n\
     \\f\n\
-    \\EOT\EOT\EOT\STX\STX\DC2\EOT\141\STX\STX\ESC\n\
+    \\EOT\EOT\EOT\STX\STX\DC2\EOT\145\STX\STX\ESC\n\
     \\r\n\
-    \\ENQ\EOT\EOT\STX\STX\EOT\DC2\EOT\141\STX\STX\n\
+    \\ENQ\EOT\EOT\STX\STX\EOT\DC2\EOT\145\STX\STX\n\
     \\n\
     \\r\n\
-    \\ENQ\EOT\EOT\STX\STX\ACK\DC2\EOT\141\STX\v\DLE\n\
+    \\ENQ\EOT\EOT\STX\STX\ACK\DC2\EOT\145\STX\v\DLE\n\
     \\r\n\
-    \\ENQ\EOT\EOT\STX\STX\SOH\DC2\EOT\141\STX\DC1\SYN\n\
+    \\ENQ\EOT\EOT\STX\STX\SOH\DC2\EOT\145\STX\DC1\SYN\n\
     \\r\n\
-    \\ENQ\EOT\EOT\STX\STX\ETX\DC2\EOT\141\STX\EM\SUB\n\
+    \\ENQ\EOT\EOT\STX\STX\ETX\DC2\EOT\145\STX\EM\SUB\n\
     \\156\SOH\n\
-    \\EOT\EOT\EOT\STX\ETX\DC2\EOT\145\STX\STX\EM\SUB\141\SOH If type_name is set, this need not be set.  If both this and type_name\n\
+    \\EOT\EOT\EOT\STX\ETX\DC2\EOT\149\STX\STX\EM\SUB\141\SOH If type_name is set, this need not be set.  If both this and type_name\n\
     \ are set, this must be one of TYPE_ENUM, TYPE_MESSAGE or TYPE_GROUP.\n\
     \\n\
     \\r\n\
-    \\ENQ\EOT\EOT\STX\ETX\EOT\DC2\EOT\145\STX\STX\n\
+    \\ENQ\EOT\EOT\STX\ETX\EOT\DC2\EOT\149\STX\STX\n\
     \\n\
     \\r\n\
-    \\ENQ\EOT\EOT\STX\ETX\ACK\DC2\EOT\145\STX\v\SI\n\
+    \\ENQ\EOT\EOT\STX\ETX\ACK\DC2\EOT\149\STX\v\SI\n\
     \\r\n\
-    \\ENQ\EOT\EOT\STX\ETX\SOH\DC2\EOT\145\STX\DLE\DC4\n\
+    \\ENQ\EOT\EOT\STX\ETX\SOH\DC2\EOT\149\STX\DLE\DC4\n\
     \\r\n\
-    \\ENQ\EOT\EOT\STX\ETX\ETX\DC2\EOT\145\STX\ETB\CAN\n\
+    \\ENQ\EOT\EOT\STX\ETX\ETX\DC2\EOT\149\STX\ETB\CAN\n\
     \\183\STX\n\
-    \\EOT\EOT\EOT\STX\EOT\DC2\EOT\152\STX\STX \SUB\168\STX For message and enum types, this is the name of the type.  If the name\n\
+    \\EOT\EOT\EOT\STX\EOT\DC2\EOT\156\STX\STX \SUB\168\STX For message and enum types, this is the name of the type.  If the name\n\
     \ starts with a '.', it is fully-qualified.  Otherwise, C++-like scoping\n\
     \ rules are used to find the type (i.e. first the nested types within this\n\
     \ message are searched, then within the parent, on up to the root\n\
     \ namespace).\n\
     \\n\
     \\r\n\
-    \\ENQ\EOT\EOT\STX\EOT\EOT\DC2\EOT\152\STX\STX\n\
+    \\ENQ\EOT\EOT\STX\EOT\EOT\DC2\EOT\156\STX\STX\n\
     \\n\
     \\r\n\
-    \\ENQ\EOT\EOT\STX\EOT\ENQ\DC2\EOT\152\STX\v\DC1\n\
+    \\ENQ\EOT\EOT\STX\EOT\ENQ\DC2\EOT\156\STX\v\DC1\n\
     \\r\n\
-    \\ENQ\EOT\EOT\STX\EOT\SOH\DC2\EOT\152\STX\DC2\ESC\n\
+    \\ENQ\EOT\EOT\STX\EOT\SOH\DC2\EOT\156\STX\DC2\ESC\n\
     \\r\n\
-    \\ENQ\EOT\EOT\STX\EOT\ETX\DC2\EOT\152\STX\RS\US\n\
+    \\ENQ\EOT\EOT\STX\EOT\ETX\DC2\EOT\156\STX\RS\US\n\
     \~\n\
-    \\EOT\EOT\EOT\STX\ENQ\DC2\EOT\156\STX\STX\US\SUBp For extensions, this is the name of the type being extended.  It is\n\
+    \\EOT\EOT\EOT\STX\ENQ\DC2\EOT\160\STX\STX\US\SUBp For extensions, this is the name of the type being extended.  It is\n\
     \ resolved in the same manner as type_name.\n\
     \\n\
     \\r\n\
-    \\ENQ\EOT\EOT\STX\ENQ\EOT\DC2\EOT\156\STX\STX\n\
+    \\ENQ\EOT\EOT\STX\ENQ\EOT\DC2\EOT\160\STX\STX\n\
     \\n\
     \\r\n\
-    \\ENQ\EOT\EOT\STX\ENQ\ENQ\DC2\EOT\156\STX\v\DC1\n\
+    \\ENQ\EOT\EOT\STX\ENQ\ENQ\DC2\EOT\160\STX\v\DC1\n\
     \\r\n\
-    \\ENQ\EOT\EOT\STX\ENQ\SOH\DC2\EOT\156\STX\DC2\SUB\n\
+    \\ENQ\EOT\EOT\STX\ENQ\SOH\DC2\EOT\160\STX\DC2\SUB\n\
     \\r\n\
-    \\ENQ\EOT\EOT\STX\ENQ\ETX\DC2\EOT\156\STX\GS\RS\n\
+    \\ENQ\EOT\EOT\STX\ENQ\ETX\DC2\EOT\160\STX\GS\RS\n\
     \\145\STX\n\
-    \\EOT\EOT\EOT\STX\ACK\DC2\EOT\162\STX\STX$\SUB\130\STX For numeric types, contains the original text representation of the value.\n\
+    \\EOT\EOT\EOT\STX\ACK\DC2\EOT\166\STX\STX$\SUB\130\STX For numeric types, contains the original text representation of the value.\n\
     \ For booleans, \"true\" or \"false\".\n\
     \ For strings, contains the default text contents (not escaped in any way).\n\
     \ For bytes, contains the C escaped value.  All bytes >= 128 are escaped.\n\
     \\n\
     \\r\n\
-    \\ENQ\EOT\EOT\STX\ACK\EOT\DC2\EOT\162\STX\STX\n\
+    \\ENQ\EOT\EOT\STX\ACK\EOT\DC2\EOT\166\STX\STX\n\
     \\n\
     \\r\n\
-    \\ENQ\EOT\EOT\STX\ACK\ENQ\DC2\EOT\162\STX\v\DC1\n\
+    \\ENQ\EOT\EOT\STX\ACK\ENQ\DC2\EOT\166\STX\v\DC1\n\
     \\r\n\
-    \\ENQ\EOT\EOT\STX\ACK\SOH\DC2\EOT\162\STX\DC2\US\n\
+    \\ENQ\EOT\EOT\STX\ACK\SOH\DC2\EOT\166\STX\DC2\US\n\
     \\r\n\
-    \\ENQ\EOT\EOT\STX\ACK\ETX\DC2\EOT\162\STX\"#\n\
+    \\ENQ\EOT\EOT\STX\ACK\ETX\DC2\EOT\166\STX\"#\n\
     \\132\SOH\n\
-    \\EOT\EOT\EOT\STX\a\DC2\EOT\166\STX\STX!\SUBv If set, gives the index of a oneof in the containing type's oneof_decl\n\
+    \\EOT\EOT\EOT\STX\a\DC2\EOT\170\STX\STX!\SUBv If set, gives the index of a oneof in the containing type's oneof_decl\n\
     \ list.  This field is a member of that oneof.\n\
     \\n\
     \\r\n\
-    \\ENQ\EOT\EOT\STX\a\EOT\DC2\EOT\166\STX\STX\n\
+    \\ENQ\EOT\EOT\STX\a\EOT\DC2\EOT\170\STX\STX\n\
     \\n\
     \\r\n\
-    \\ENQ\EOT\EOT\STX\a\ENQ\DC2\EOT\166\STX\v\DLE\n\
+    \\ENQ\EOT\EOT\STX\a\ENQ\DC2\EOT\170\STX\v\DLE\n\
     \\r\n\
-    \\ENQ\EOT\EOT\STX\a\SOH\DC2\EOT\166\STX\DC1\FS\n\
+    \\ENQ\EOT\EOT\STX\a\SOH\DC2\EOT\170\STX\DC1\FS\n\
     \\r\n\
-    \\ENQ\EOT\EOT\STX\a\ETX\DC2\EOT\166\STX\US \n\
+    \\ENQ\EOT\EOT\STX\a\ETX\DC2\EOT\170\STX\US \n\
     \\250\SOH\n\
-    \\EOT\EOT\EOT\STX\b\DC2\EOT\172\STX\STX!\SUB\235\SOH JSON name of this field. The value is set by protocol compiler. If the\n\
+    \\EOT\EOT\EOT\STX\b\DC2\EOT\176\STX\STX!\SUB\235\SOH JSON name of this field. The value is set by protocol compiler. If the\n\
     \ user has set a \"json_name\" option on this field, that option's value\n\
     \ will be used. Otherwise, it's deduced from the field's name by converting\n\
     \ it to camelCase.\n\
     \\n\
     \\r\n\
-    \\ENQ\EOT\EOT\STX\b\EOT\DC2\EOT\172\STX\STX\n\
+    \\ENQ\EOT\EOT\STX\b\EOT\DC2\EOT\176\STX\STX\n\
     \\n\
     \\r\n\
-    \\ENQ\EOT\EOT\STX\b\ENQ\DC2\EOT\172\STX\v\DC1\n\
+    \\ENQ\EOT\EOT\STX\b\ENQ\DC2\EOT\176\STX\v\DC1\n\
     \\r\n\
-    \\ENQ\EOT\EOT\STX\b\SOH\DC2\EOT\172\STX\DC2\ESC\n\
+    \\ENQ\EOT\EOT\STX\b\SOH\DC2\EOT\176\STX\DC2\ESC\n\
     \\r\n\
-    \\ENQ\EOT\EOT\STX\b\ETX\DC2\EOT\172\STX\RS \n\
+    \\ENQ\EOT\EOT\STX\b\ETX\DC2\EOT\176\STX\RS \n\
     \\f\n\
-    \\EOT\EOT\EOT\STX\t\DC2\EOT\174\STX\STX$\n\
+    \\EOT\EOT\EOT\STX\t\DC2\EOT\178\STX\STX$\n\
     \\r\n\
-    \\ENQ\EOT\EOT\STX\t\EOT\DC2\EOT\174\STX\STX\n\
+    \\ENQ\EOT\EOT\STX\t\EOT\DC2\EOT\178\STX\STX\n\
     \\n\
     \\r\n\
-    \\ENQ\EOT\EOT\STX\t\ACK\DC2\EOT\174\STX\v\ETB\n\
+    \\ENQ\EOT\EOT\STX\t\ACK\DC2\EOT\178\STX\v\ETB\n\
     \\r\n\
-    \\ENQ\EOT\EOT\STX\t\SOH\DC2\EOT\174\STX\CAN\US\n\
+    \\ENQ\EOT\EOT\STX\t\SOH\DC2\EOT\178\STX\CAN\US\n\
     \\r\n\
-    \\ENQ\EOT\EOT\STX\t\ETX\DC2\EOT\174\STX\"#\n\
+    \\ENQ\EOT\EOT\STX\t\ETX\DC2\EOT\178\STX\"#\n\
     \\176\t\n\
     \\EOT\EOT\EOT\STX\n\
-    \\DC2\EOT\197\STX\STX%\SUB\161\t If true, this is a proto3 \"optional\". When a proto3 field is optional, it\n\
+    \\DC2\EOT\201\STX\STX%\SUB\161\t If true, this is a proto3 \"optional\". When a proto3 field is optional, it\n\
     \ tracks presence regardless of field type.\n\
     \\n\
     \ When proto3_optional is true, this field must belong to a oneof to signal\n\
@@ -15440,84 +16451,84 @@ packedFileDescriptor
     \\n\
     \\r\n\
     \\ENQ\EOT\EOT\STX\n\
-    \\EOT\DC2\EOT\197\STX\STX\n\
+    \\EOT\DC2\EOT\201\STX\STX\n\
     \\n\
     \\r\n\
     \\ENQ\EOT\EOT\STX\n\
-    \\ENQ\DC2\EOT\197\STX\v\SI\n\
+    \\ENQ\DC2\EOT\201\STX\v\SI\n\
     \\r\n\
     \\ENQ\EOT\EOT\STX\n\
-    \\SOH\DC2\EOT\197\STX\DLE\US\n\
+    \\SOH\DC2\EOT\201\STX\DLE\US\n\
     \\r\n\
     \\ENQ\EOT\EOT\STX\n\
-    \\ETX\DC2\EOT\197\STX\"$\n\
+    \\ETX\DC2\EOT\201\STX\"$\n\
     \\"\n\
-    \\STX\EOT\ENQ\DC2\ACK\201\STX\NUL\204\STX\SOH\SUB\DC4 Describes a oneof.\n\
+    \\STX\EOT\ENQ\DC2\ACK\205\STX\NUL\208\STX\SOH\SUB\DC4 Describes a oneof.\n\
     \\n\
     \\v\n\
-    \\ETX\EOT\ENQ\SOH\DC2\EOT\201\STX\b\FS\n\
+    \\ETX\EOT\ENQ\SOH\DC2\EOT\205\STX\b\FS\n\
     \\f\n\
-    \\EOT\EOT\ENQ\STX\NUL\DC2\EOT\202\STX\STX\ESC\n\
+    \\EOT\EOT\ENQ\STX\NUL\DC2\EOT\206\STX\STX\ESC\n\
     \\r\n\
-    \\ENQ\EOT\ENQ\STX\NUL\EOT\DC2\EOT\202\STX\STX\n\
+    \\ENQ\EOT\ENQ\STX\NUL\EOT\DC2\EOT\206\STX\STX\n\
     \\n\
     \\r\n\
-    \\ENQ\EOT\ENQ\STX\NUL\ENQ\DC2\EOT\202\STX\v\DC1\n\
+    \\ENQ\EOT\ENQ\STX\NUL\ENQ\DC2\EOT\206\STX\v\DC1\n\
     \\r\n\
-    \\ENQ\EOT\ENQ\STX\NUL\SOH\DC2\EOT\202\STX\DC2\SYN\n\
+    \\ENQ\EOT\ENQ\STX\NUL\SOH\DC2\EOT\206\STX\DC2\SYN\n\
     \\r\n\
-    \\ENQ\EOT\ENQ\STX\NUL\ETX\DC2\EOT\202\STX\EM\SUB\n\
+    \\ENQ\EOT\ENQ\STX\NUL\ETX\DC2\EOT\206\STX\EM\SUB\n\
     \\f\n\
-    \\EOT\EOT\ENQ\STX\SOH\DC2\EOT\203\STX\STX$\n\
+    \\EOT\EOT\ENQ\STX\SOH\DC2\EOT\207\STX\STX$\n\
     \\r\n\
-    \\ENQ\EOT\ENQ\STX\SOH\EOT\DC2\EOT\203\STX\STX\n\
+    \\ENQ\EOT\ENQ\STX\SOH\EOT\DC2\EOT\207\STX\STX\n\
     \\n\
     \\r\n\
-    \\ENQ\EOT\ENQ\STX\SOH\ACK\DC2\EOT\203\STX\v\ETB\n\
+    \\ENQ\EOT\ENQ\STX\SOH\ACK\DC2\EOT\207\STX\v\ETB\n\
     \\r\n\
-    \\ENQ\EOT\ENQ\STX\SOH\SOH\DC2\EOT\203\STX\CAN\US\n\
+    \\ENQ\EOT\ENQ\STX\SOH\SOH\DC2\EOT\207\STX\CAN\US\n\
     \\r\n\
-    \\ENQ\EOT\ENQ\STX\SOH\ETX\DC2\EOT\203\STX\"#\n\
+    \\ENQ\EOT\ENQ\STX\SOH\ETX\DC2\EOT\207\STX\"#\n\
     \'\n\
-    \\STX\EOT\ACK\DC2\ACK\207\STX\NUL\233\STX\SOH\SUB\EM Describes an enum type.\n\
+    \\STX\EOT\ACK\DC2\ACK\211\STX\NUL\240\STX\SOH\SUB\EM Describes an enum type.\n\
     \\n\
     \\v\n\
-    \\ETX\EOT\ACK\SOH\DC2\EOT\207\STX\b\ESC\n\
+    \\ETX\EOT\ACK\SOH\DC2\EOT\211\STX\b\ESC\n\
     \\f\n\
-    \\EOT\EOT\ACK\STX\NUL\DC2\EOT\208\STX\STX\ESC\n\
+    \\EOT\EOT\ACK\STX\NUL\DC2\EOT\212\STX\STX\ESC\n\
     \\r\n\
-    \\ENQ\EOT\ACK\STX\NUL\EOT\DC2\EOT\208\STX\STX\n\
+    \\ENQ\EOT\ACK\STX\NUL\EOT\DC2\EOT\212\STX\STX\n\
     \\n\
     \\r\n\
-    \\ENQ\EOT\ACK\STX\NUL\ENQ\DC2\EOT\208\STX\v\DC1\n\
+    \\ENQ\EOT\ACK\STX\NUL\ENQ\DC2\EOT\212\STX\v\DC1\n\
     \\r\n\
-    \\ENQ\EOT\ACK\STX\NUL\SOH\DC2\EOT\208\STX\DC2\SYN\n\
+    \\ENQ\EOT\ACK\STX\NUL\SOH\DC2\EOT\212\STX\DC2\SYN\n\
     \\r\n\
-    \\ENQ\EOT\ACK\STX\NUL\ETX\DC2\EOT\208\STX\EM\SUB\n\
+    \\ENQ\EOT\ACK\STX\NUL\ETX\DC2\EOT\212\STX\EM\SUB\n\
     \\f\n\
-    \\EOT\EOT\ACK\STX\SOH\DC2\EOT\210\STX\STX.\n\
+    \\EOT\EOT\ACK\STX\SOH\DC2\EOT\214\STX\STX.\n\
     \\r\n\
-    \\ENQ\EOT\ACK\STX\SOH\EOT\DC2\EOT\210\STX\STX\n\
+    \\ENQ\EOT\ACK\STX\SOH\EOT\DC2\EOT\214\STX\STX\n\
     \\n\
     \\r\n\
-    \\ENQ\EOT\ACK\STX\SOH\ACK\DC2\EOT\210\STX\v#\n\
+    \\ENQ\EOT\ACK\STX\SOH\ACK\DC2\EOT\214\STX\v#\n\
     \\r\n\
-    \\ENQ\EOT\ACK\STX\SOH\SOH\DC2\EOT\210\STX$)\n\
+    \\ENQ\EOT\ACK\STX\SOH\SOH\DC2\EOT\214\STX$)\n\
     \\r\n\
-    \\ENQ\EOT\ACK\STX\SOH\ETX\DC2\EOT\210\STX,-\n\
+    \\ENQ\EOT\ACK\STX\SOH\ETX\DC2\EOT\214\STX,-\n\
     \\f\n\
-    \\EOT\EOT\ACK\STX\STX\DC2\EOT\212\STX\STX#\n\
+    \\EOT\EOT\ACK\STX\STX\DC2\EOT\216\STX\STX#\n\
     \\r\n\
-    \\ENQ\EOT\ACK\STX\STX\EOT\DC2\EOT\212\STX\STX\n\
+    \\ENQ\EOT\ACK\STX\STX\EOT\DC2\EOT\216\STX\STX\n\
     \\n\
     \\r\n\
-    \\ENQ\EOT\ACK\STX\STX\ACK\DC2\EOT\212\STX\v\SYN\n\
+    \\ENQ\EOT\ACK\STX\STX\ACK\DC2\EOT\216\STX\v\SYN\n\
     \\r\n\
-    \\ENQ\EOT\ACK\STX\STX\SOH\DC2\EOT\212\STX\ETB\RS\n\
+    \\ENQ\EOT\ACK\STX\STX\SOH\DC2\EOT\216\STX\ETB\RS\n\
     \\r\n\
-    \\ENQ\EOT\ACK\STX\STX\ETX\DC2\EOT\212\STX!\"\n\
+    \\ENQ\EOT\ACK\STX\STX\ETX\DC2\EOT\216\STX!\"\n\
     \\175\STX\n\
-    \\EOT\EOT\ACK\ETX\NUL\DC2\ACK\220\STX\STX\223\STX\ETX\SUB\158\STX Range of reserved numeric values. Reserved values may not be used by\n\
+    \\EOT\EOT\ACK\ETX\NUL\DC2\ACK\224\STX\STX\227\STX\ETX\SUB\158\STX Range of reserved numeric values. Reserved values may not be used by\n\
     \ entries in the same enum. Reserved ranges may not overlap.\n\
     \\n\
     \ Note that this is distinct from DescriptorProto.ReservedRange in that it\n\
@@ -15525,219 +16536,245 @@ packedFileDescriptor
     \ domain.\n\
     \\n\
     \\r\n\
-    \\ENQ\EOT\ACK\ETX\NUL\SOH\DC2\EOT\220\STX\n\
+    \\ENQ\EOT\ACK\ETX\NUL\SOH\DC2\EOT\224\STX\n\
     \\ESC\n\
     \\FS\n\
-    \\ACK\EOT\ACK\ETX\NUL\STX\NUL\DC2\EOT\221\STX\EOT\GS\"\f Inclusive.\n\
+    \\ACK\EOT\ACK\ETX\NUL\STX\NUL\DC2\EOT\225\STX\EOT\GS\"\f Inclusive.\n\
     \\n\
     \\SI\n\
-    \\a\EOT\ACK\ETX\NUL\STX\NUL\EOT\DC2\EOT\221\STX\EOT\f\n\
+    \\a\EOT\ACK\ETX\NUL\STX\NUL\EOT\DC2\EOT\225\STX\EOT\f\n\
     \\SI\n\
-    \\a\EOT\ACK\ETX\NUL\STX\NUL\ENQ\DC2\EOT\221\STX\r\DC2\n\
+    \\a\EOT\ACK\ETX\NUL\STX\NUL\ENQ\DC2\EOT\225\STX\r\DC2\n\
     \\SI\n\
-    \\a\EOT\ACK\ETX\NUL\STX\NUL\SOH\DC2\EOT\221\STX\DC3\CAN\n\
+    \\a\EOT\ACK\ETX\NUL\STX\NUL\SOH\DC2\EOT\225\STX\DC3\CAN\n\
     \\SI\n\
-    \\a\EOT\ACK\ETX\NUL\STX\NUL\ETX\DC2\EOT\221\STX\ESC\FS\n\
+    \\a\EOT\ACK\ETX\NUL\STX\NUL\ETX\DC2\EOT\225\STX\ESC\FS\n\
     \\FS\n\
-    \\ACK\EOT\ACK\ETX\NUL\STX\SOH\DC2\EOT\222\STX\EOT\ESC\"\f Inclusive.\n\
+    \\ACK\EOT\ACK\ETX\NUL\STX\SOH\DC2\EOT\226\STX\EOT\ESC\"\f Inclusive.\n\
     \\n\
     \\SI\n\
-    \\a\EOT\ACK\ETX\NUL\STX\SOH\EOT\DC2\EOT\222\STX\EOT\f\n\
+    \\a\EOT\ACK\ETX\NUL\STX\SOH\EOT\DC2\EOT\226\STX\EOT\f\n\
     \\SI\n\
-    \\a\EOT\ACK\ETX\NUL\STX\SOH\ENQ\DC2\EOT\222\STX\r\DC2\n\
+    \\a\EOT\ACK\ETX\NUL\STX\SOH\ENQ\DC2\EOT\226\STX\r\DC2\n\
     \\SI\n\
-    \\a\EOT\ACK\ETX\NUL\STX\SOH\SOH\DC2\EOT\222\STX\DC3\SYN\n\
+    \\a\EOT\ACK\ETX\NUL\STX\SOH\SOH\DC2\EOT\226\STX\DC3\SYN\n\
     \\SI\n\
-    \\a\EOT\ACK\ETX\NUL\STX\SOH\ETX\DC2\EOT\222\STX\EM\SUB\n\
+    \\a\EOT\ACK\ETX\NUL\STX\SOH\ETX\DC2\EOT\226\STX\EM\SUB\n\
     \\170\SOH\n\
-    \\EOT\EOT\ACK\STX\ETX\DC2\EOT\228\STX\STX0\SUB\155\SOH Range of reserved numeric values. Reserved numeric values may not be used\n\
+    \\EOT\EOT\ACK\STX\ETX\DC2\EOT\232\STX\STX0\SUB\155\SOH Range of reserved numeric values. Reserved numeric values may not be used\n\
     \ by enum values in the same enum declaration. Reserved ranges may not\n\
     \ overlap.\n\
     \\n\
     \\r\n\
-    \\ENQ\EOT\ACK\STX\ETX\EOT\DC2\EOT\228\STX\STX\n\
+    \\ENQ\EOT\ACK\STX\ETX\EOT\DC2\EOT\232\STX\STX\n\
     \\n\
     \\r\n\
-    \\ENQ\EOT\ACK\STX\ETX\ACK\DC2\EOT\228\STX\v\FS\n\
+    \\ENQ\EOT\ACK\STX\ETX\ACK\DC2\EOT\232\STX\v\FS\n\
     \\r\n\
-    \\ENQ\EOT\ACK\STX\ETX\SOH\DC2\EOT\228\STX\GS+\n\
+    \\ENQ\EOT\ACK\STX\ETX\SOH\DC2\EOT\232\STX\GS+\n\
     \\r\n\
-    \\ENQ\EOT\ACK\STX\ETX\ETX\DC2\EOT\228\STX./\n\
+    \\ENQ\EOT\ACK\STX\ETX\ETX\DC2\EOT\232\STX./\n\
     \l\n\
-    \\EOT\EOT\ACK\STX\EOT\DC2\EOT\232\STX\STX$\SUB^ Reserved enum value names, which may not be reused. A given name may only\n\
+    \\EOT\EOT\ACK\STX\EOT\DC2\EOT\236\STX\STX$\SUB^ Reserved enum value names, which may not be reused. A given name may only\n\
     \ be reserved once.\n\
     \\n\
     \\r\n\
-    \\ENQ\EOT\ACK\STX\EOT\EOT\DC2\EOT\232\STX\STX\n\
+    \\ENQ\EOT\ACK\STX\EOT\EOT\DC2\EOT\236\STX\STX\n\
     \\n\
     \\r\n\
-    \\ENQ\EOT\ACK\STX\EOT\ENQ\DC2\EOT\232\STX\v\DC1\n\
+    \\ENQ\EOT\ACK\STX\EOT\ENQ\DC2\EOT\236\STX\v\DC1\n\
     \\r\n\
-    \\ENQ\EOT\ACK\STX\EOT\SOH\DC2\EOT\232\STX\DC2\US\n\
+    \\ENQ\EOT\ACK\STX\EOT\SOH\DC2\EOT\236\STX\DC2\US\n\
     \\r\n\
-    \\ENQ\EOT\ACK\STX\EOT\ETX\DC2\EOT\232\STX\"#\n\
+    \\ENQ\EOT\ACK\STX\EOT\ETX\DC2\EOT\236\STX\"#\n\
+    \C\n\
+    \\EOT\EOT\ACK\STX\ENQ\DC2\EOT\239\STX\STX+\SUB5 Support for `export` and `local` keywords on enums.\n\
+    \\n\
+    \\r\n\
+    \\ENQ\EOT\ACK\STX\ENQ\EOT\DC2\EOT\239\STX\STX\n\
+    \\n\
+    \\r\n\
+    \\ENQ\EOT\ACK\STX\ENQ\ACK\DC2\EOT\239\STX\v\ESC\n\
+    \\r\n\
+    \\ENQ\EOT\ACK\STX\ENQ\SOH\DC2\EOT\239\STX\FS&\n\
+    \\r\n\
+    \\ENQ\EOT\ACK\STX\ENQ\ETX\DC2\EOT\239\STX)*\n\
     \1\n\
-    \\STX\EOT\a\DC2\ACK\236\STX\NUL\241\STX\SOH\SUB# Describes a value within an enum.\n\
+    \\STX\EOT\a\DC2\ACK\243\STX\NUL\248\STX\SOH\SUB# Describes a value within an enum.\n\
     \\n\
     \\v\n\
-    \\ETX\EOT\a\SOH\DC2\EOT\236\STX\b \n\
+    \\ETX\EOT\a\SOH\DC2\EOT\243\STX\b \n\
     \\f\n\
-    \\EOT\EOT\a\STX\NUL\DC2\EOT\237\STX\STX\ESC\n\
+    \\EOT\EOT\a\STX\NUL\DC2\EOT\244\STX\STX\ESC\n\
     \\r\n\
-    \\ENQ\EOT\a\STX\NUL\EOT\DC2\EOT\237\STX\STX\n\
+    \\ENQ\EOT\a\STX\NUL\EOT\DC2\EOT\244\STX\STX\n\
     \\n\
     \\r\n\
-    \\ENQ\EOT\a\STX\NUL\ENQ\DC2\EOT\237\STX\v\DC1\n\
+    \\ENQ\EOT\a\STX\NUL\ENQ\DC2\EOT\244\STX\v\DC1\n\
     \\r\n\
-    \\ENQ\EOT\a\STX\NUL\SOH\DC2\EOT\237\STX\DC2\SYN\n\
+    \\ENQ\EOT\a\STX\NUL\SOH\DC2\EOT\244\STX\DC2\SYN\n\
     \\r\n\
-    \\ENQ\EOT\a\STX\NUL\ETX\DC2\EOT\237\STX\EM\SUB\n\
+    \\ENQ\EOT\a\STX\NUL\ETX\DC2\EOT\244\STX\EM\SUB\n\
     \\f\n\
-    \\EOT\EOT\a\STX\SOH\DC2\EOT\238\STX\STX\FS\n\
+    \\EOT\EOT\a\STX\SOH\DC2\EOT\245\STX\STX\FS\n\
     \\r\n\
-    \\ENQ\EOT\a\STX\SOH\EOT\DC2\EOT\238\STX\STX\n\
+    \\ENQ\EOT\a\STX\SOH\EOT\DC2\EOT\245\STX\STX\n\
     \\n\
     \\r\n\
-    \\ENQ\EOT\a\STX\SOH\ENQ\DC2\EOT\238\STX\v\DLE\n\
+    \\ENQ\EOT\a\STX\SOH\ENQ\DC2\EOT\245\STX\v\DLE\n\
     \\r\n\
-    \\ENQ\EOT\a\STX\SOH\SOH\DC2\EOT\238\STX\DC1\ETB\n\
+    \\ENQ\EOT\a\STX\SOH\SOH\DC2\EOT\245\STX\DC1\ETB\n\
     \\r\n\
-    \\ENQ\EOT\a\STX\SOH\ETX\DC2\EOT\238\STX\SUB\ESC\n\
+    \\ENQ\EOT\a\STX\SOH\ETX\DC2\EOT\245\STX\SUB\ESC\n\
     \\f\n\
-    \\EOT\EOT\a\STX\STX\DC2\EOT\240\STX\STX(\n\
+    \\EOT\EOT\a\STX\STX\DC2\EOT\247\STX\STX(\n\
     \\r\n\
-    \\ENQ\EOT\a\STX\STX\EOT\DC2\EOT\240\STX\STX\n\
+    \\ENQ\EOT\a\STX\STX\EOT\DC2\EOT\247\STX\STX\n\
     \\n\
     \\r\n\
-    \\ENQ\EOT\a\STX\STX\ACK\DC2\EOT\240\STX\v\ESC\n\
+    \\ENQ\EOT\a\STX\STX\ACK\DC2\EOT\247\STX\v\ESC\n\
     \\r\n\
-    \\ENQ\EOT\a\STX\STX\SOH\DC2\EOT\240\STX\FS#\n\
+    \\ENQ\EOT\a\STX\STX\SOH\DC2\EOT\247\STX\FS#\n\
     \\r\n\
-    \\ENQ\EOT\a\STX\STX\ETX\DC2\EOT\240\STX&'\n\
+    \\ENQ\EOT\a\STX\STX\ETX\DC2\EOT\247\STX&'\n\
     \$\n\
-    \\STX\EOT\b\DC2\ACK\244\STX\NUL\249\STX\SOH\SUB\SYN Describes a service.\n\
+    \\STX\EOT\b\DC2\ACK\251\STX\NUL\131\ETX\SOH\SUB\SYN Describes a service.\n\
     \\n\
     \\v\n\
-    \\ETX\EOT\b\SOH\DC2\EOT\244\STX\b\RS\n\
+    \\ETX\EOT\b\SOH\DC2\EOT\251\STX\b\RS\n\
     \\f\n\
-    \\EOT\EOT\b\STX\NUL\DC2\EOT\245\STX\STX\ESC\n\
+    \\EOT\EOT\b\STX\NUL\DC2\EOT\252\STX\STX\ESC\n\
     \\r\n\
-    \\ENQ\EOT\b\STX\NUL\EOT\DC2\EOT\245\STX\STX\n\
+    \\ENQ\EOT\b\STX\NUL\EOT\DC2\EOT\252\STX\STX\n\
     \\n\
     \\r\n\
-    \\ENQ\EOT\b\STX\NUL\ENQ\DC2\EOT\245\STX\v\DC1\n\
+    \\ENQ\EOT\b\STX\NUL\ENQ\DC2\EOT\252\STX\v\DC1\n\
     \\r\n\
-    \\ENQ\EOT\b\STX\NUL\SOH\DC2\EOT\245\STX\DC2\SYN\n\
+    \\ENQ\EOT\b\STX\NUL\SOH\DC2\EOT\252\STX\DC2\SYN\n\
     \\r\n\
-    \\ENQ\EOT\b\STX\NUL\ETX\DC2\EOT\245\STX\EM\SUB\n\
+    \\ENQ\EOT\b\STX\NUL\ETX\DC2\EOT\252\STX\EM\SUB\n\
     \\f\n\
-    \\EOT\EOT\b\STX\SOH\DC2\EOT\246\STX\STX,\n\
+    \\EOT\EOT\b\STX\SOH\DC2\EOT\253\STX\STX,\n\
     \\r\n\
-    \\ENQ\EOT\b\STX\SOH\EOT\DC2\EOT\246\STX\STX\n\
+    \\ENQ\EOT\b\STX\SOH\EOT\DC2\EOT\253\STX\STX\n\
     \\n\
     \\r\n\
-    \\ENQ\EOT\b\STX\SOH\ACK\DC2\EOT\246\STX\v \n\
+    \\ENQ\EOT\b\STX\SOH\ACK\DC2\EOT\253\STX\v \n\
     \\r\n\
-    \\ENQ\EOT\b\STX\SOH\SOH\DC2\EOT\246\STX!'\n\
+    \\ENQ\EOT\b\STX\SOH\SOH\DC2\EOT\253\STX!'\n\
     \\r\n\
-    \\ENQ\EOT\b\STX\SOH\ETX\DC2\EOT\246\STX*+\n\
+    \\ENQ\EOT\b\STX\SOH\ETX\DC2\EOT\253\STX*+\n\
     \\f\n\
-    \\EOT\EOT\b\STX\STX\DC2\EOT\248\STX\STX&\n\
+    \\EOT\EOT\b\STX\STX\DC2\EOT\255\STX\STX&\n\
     \\r\n\
-    \\ENQ\EOT\b\STX\STX\EOT\DC2\EOT\248\STX\STX\n\
+    \\ENQ\EOT\b\STX\STX\EOT\DC2\EOT\255\STX\STX\n\
     \\n\
     \\r\n\
-    \\ENQ\EOT\b\STX\STX\ACK\DC2\EOT\248\STX\v\EM\n\
+    \\ENQ\EOT\b\STX\STX\ACK\DC2\EOT\255\STX\v\EM\n\
     \\r\n\
-    \\ENQ\EOT\b\STX\STX\SOH\DC2\EOT\248\STX\SUB!\n\
+    \\ENQ\EOT\b\STX\STX\SOH\DC2\EOT\255\STX\SUB!\n\
     \\r\n\
-    \\ENQ\EOT\b\STX\STX\ETX\DC2\EOT\248\STX$%\n\
+    \\ENQ\EOT\b\STX\STX\ETX\DC2\EOT\255\STX$%\n\
+    \\v\n\
+    \\ETX\EOT\b\t\DC2\EOT\129\ETX\STX\r\n\
+    \\f\n\
+    \\EOT\EOT\b\t\NUL\DC2\EOT\129\ETX\v\f\n\
+    \\r\n\
+    \\ENQ\EOT\b\t\NUL\SOH\DC2\EOT\129\ETX\v\f\n\
+    \\r\n\
+    \\ENQ\EOT\b\t\NUL\STX\DC2\EOT\129\ETX\v\f\n\
+    \\v\n\
+    \\ETX\EOT\b\n\
+    \\DC2\EOT\130\ETX\STX\DC4\n\
+    \\f\n\
+    \\EOT\EOT\b\n\
+    \\NUL\DC2\EOT\130\ETX\v\DC3\n\
     \0\n\
-    \\STX\EOT\t\DC2\ACK\252\STX\NUL\138\ETX\SOH\SUB\" Describes a method of a service.\n\
+    \\STX\EOT\t\DC2\ACK\134\ETX\NUL\148\ETX\SOH\SUB\" Describes a method of a service.\n\
     \\n\
     \\v\n\
-    \\ETX\EOT\t\SOH\DC2\EOT\252\STX\b\GS\n\
+    \\ETX\EOT\t\SOH\DC2\EOT\134\ETX\b\GS\n\
     \\f\n\
-    \\EOT\EOT\t\STX\NUL\DC2\EOT\253\STX\STX\ESC\n\
+    \\EOT\EOT\t\STX\NUL\DC2\EOT\135\ETX\STX\ESC\n\
     \\r\n\
-    \\ENQ\EOT\t\STX\NUL\EOT\DC2\EOT\253\STX\STX\n\
+    \\ENQ\EOT\t\STX\NUL\EOT\DC2\EOT\135\ETX\STX\n\
     \\n\
     \\r\n\
-    \\ENQ\EOT\t\STX\NUL\ENQ\DC2\EOT\253\STX\v\DC1\n\
+    \\ENQ\EOT\t\STX\NUL\ENQ\DC2\EOT\135\ETX\v\DC1\n\
     \\r\n\
-    \\ENQ\EOT\t\STX\NUL\SOH\DC2\EOT\253\STX\DC2\SYN\n\
+    \\ENQ\EOT\t\STX\NUL\SOH\DC2\EOT\135\ETX\DC2\SYN\n\
     \\r\n\
-    \\ENQ\EOT\t\STX\NUL\ETX\DC2\EOT\253\STX\EM\SUB\n\
+    \\ENQ\EOT\t\STX\NUL\ETX\DC2\EOT\135\ETX\EM\SUB\n\
     \\151\SOH\n\
-    \\EOT\EOT\t\STX\SOH\DC2\EOT\129\ETX\STX!\SUB\136\SOH Input and output type names.  These are resolved in the same way as\n\
+    \\EOT\EOT\t\STX\SOH\DC2\EOT\139\ETX\STX!\SUB\136\SOH Input and output type names.  These are resolved in the same way as\n\
     \ FieldDescriptorProto.type_name, but must refer to a message type.\n\
     \\n\
     \\r\n\
-    \\ENQ\EOT\t\STX\SOH\EOT\DC2\EOT\129\ETX\STX\n\
+    \\ENQ\EOT\t\STX\SOH\EOT\DC2\EOT\139\ETX\STX\n\
     \\n\
     \\r\n\
-    \\ENQ\EOT\t\STX\SOH\ENQ\DC2\EOT\129\ETX\v\DC1\n\
+    \\ENQ\EOT\t\STX\SOH\ENQ\DC2\EOT\139\ETX\v\DC1\n\
     \\r\n\
-    \\ENQ\EOT\t\STX\SOH\SOH\DC2\EOT\129\ETX\DC2\FS\n\
+    \\ENQ\EOT\t\STX\SOH\SOH\DC2\EOT\139\ETX\DC2\FS\n\
     \\r\n\
-    \\ENQ\EOT\t\STX\SOH\ETX\DC2\EOT\129\ETX\US \n\
+    \\ENQ\EOT\t\STX\SOH\ETX\DC2\EOT\139\ETX\US \n\
     \\f\n\
-    \\EOT\EOT\t\STX\STX\DC2\EOT\130\ETX\STX\"\n\
+    \\EOT\EOT\t\STX\STX\DC2\EOT\140\ETX\STX\"\n\
     \\r\n\
-    \\ENQ\EOT\t\STX\STX\EOT\DC2\EOT\130\ETX\STX\n\
+    \\ENQ\EOT\t\STX\STX\EOT\DC2\EOT\140\ETX\STX\n\
     \\n\
     \\r\n\
-    \\ENQ\EOT\t\STX\STX\ENQ\DC2\EOT\130\ETX\v\DC1\n\
+    \\ENQ\EOT\t\STX\STX\ENQ\DC2\EOT\140\ETX\v\DC1\n\
     \\r\n\
-    \\ENQ\EOT\t\STX\STX\SOH\DC2\EOT\130\ETX\DC2\GS\n\
+    \\ENQ\EOT\t\STX\STX\SOH\DC2\EOT\140\ETX\DC2\GS\n\
     \\r\n\
-    \\ENQ\EOT\t\STX\STX\ETX\DC2\EOT\130\ETX !\n\
+    \\ENQ\EOT\t\STX\STX\ETX\DC2\EOT\140\ETX !\n\
     \\f\n\
-    \\EOT\EOT\t\STX\ETX\DC2\EOT\132\ETX\STX%\n\
+    \\EOT\EOT\t\STX\ETX\DC2\EOT\142\ETX\STX%\n\
     \\r\n\
-    \\ENQ\EOT\t\STX\ETX\EOT\DC2\EOT\132\ETX\STX\n\
+    \\ENQ\EOT\t\STX\ETX\EOT\DC2\EOT\142\ETX\STX\n\
     \\n\
     \\r\n\
-    \\ENQ\EOT\t\STX\ETX\ACK\DC2\EOT\132\ETX\v\CAN\n\
+    \\ENQ\EOT\t\STX\ETX\ACK\DC2\EOT\142\ETX\v\CAN\n\
     \\r\n\
-    \\ENQ\EOT\t\STX\ETX\SOH\DC2\EOT\132\ETX\EM \n\
+    \\ENQ\EOT\t\STX\ETX\SOH\DC2\EOT\142\ETX\EM \n\
     \\r\n\
-    \\ENQ\EOT\t\STX\ETX\ETX\DC2\EOT\132\ETX#$\n\
+    \\ENQ\EOT\t\STX\ETX\ETX\DC2\EOT\142\ETX#$\n\
     \E\n\
-    \\EOT\EOT\t\STX\EOT\DC2\EOT\135\ETX\STX7\SUB7 Identifies if client streams multiple client messages\n\
+    \\EOT\EOT\t\STX\EOT\DC2\EOT\145\ETX\STX7\SUB7 Identifies if client streams multiple client messages\n\
     \\n\
     \\r\n\
-    \\ENQ\EOT\t\STX\EOT\EOT\DC2\EOT\135\ETX\STX\n\
+    \\ENQ\EOT\t\STX\EOT\EOT\DC2\EOT\145\ETX\STX\n\
     \\n\
     \\r\n\
-    \\ENQ\EOT\t\STX\EOT\ENQ\DC2\EOT\135\ETX\v\SI\n\
+    \\ENQ\EOT\t\STX\EOT\ENQ\DC2\EOT\145\ETX\v\SI\n\
     \\r\n\
-    \\ENQ\EOT\t\STX\EOT\SOH\DC2\EOT\135\ETX\DLE \n\
+    \\ENQ\EOT\t\STX\EOT\SOH\DC2\EOT\145\ETX\DLE \n\
     \\r\n\
-    \\ENQ\EOT\t\STX\EOT\ETX\DC2\EOT\135\ETX#$\n\
+    \\ENQ\EOT\t\STX\EOT\ETX\DC2\EOT\145\ETX#$\n\
     \\r\n\
-    \\ENQ\EOT\t\STX\EOT\b\DC2\EOT\135\ETX%6\n\
+    \\ENQ\EOT\t\STX\EOT\b\DC2\EOT\145\ETX%6\n\
     \\r\n\
-    \\ENQ\EOT\t\STX\EOT\a\DC2\EOT\135\ETX05\n\
+    \\ENQ\EOT\t\STX\EOT\a\DC2\EOT\145\ETX05\n\
     \E\n\
-    \\EOT\EOT\t\STX\ENQ\DC2\EOT\137\ETX\STX7\SUB7 Identifies if server streams multiple server messages\n\
+    \\EOT\EOT\t\STX\ENQ\DC2\EOT\147\ETX\STX7\SUB7 Identifies if server streams multiple server messages\n\
     \\n\
     \\r\n\
-    \\ENQ\EOT\t\STX\ENQ\EOT\DC2\EOT\137\ETX\STX\n\
+    \\ENQ\EOT\t\STX\ENQ\EOT\DC2\EOT\147\ETX\STX\n\
     \\n\
     \\r\n\
-    \\ENQ\EOT\t\STX\ENQ\ENQ\DC2\EOT\137\ETX\v\SI\n\
+    \\ENQ\EOT\t\STX\ENQ\ENQ\DC2\EOT\147\ETX\v\SI\n\
     \\r\n\
-    \\ENQ\EOT\t\STX\ENQ\SOH\DC2\EOT\137\ETX\DLE \n\
+    \\ENQ\EOT\t\STX\ENQ\SOH\DC2\EOT\147\ETX\DLE \n\
     \\r\n\
-    \\ENQ\EOT\t\STX\ENQ\ETX\DC2\EOT\137\ETX#$\n\
+    \\ENQ\EOT\t\STX\ENQ\ETX\DC2\EOT\147\ETX#$\n\
     \\r\n\
-    \\ENQ\EOT\t\STX\ENQ\b\DC2\EOT\137\ETX%6\n\
+    \\ENQ\EOT\t\STX\ENQ\b\DC2\EOT\147\ETX%6\n\
     \\r\n\
-    \\ENQ\EOT\t\STX\ENQ\a\DC2\EOT\137\ETX05\n\
+    \\ENQ\EOT\t\STX\ENQ\a\DC2\EOT\147\ETX05\n\
     \\175\SO\n\
     \\STX\EOT\n\
-    \\DC2\ACK\172\ETX\NUL\168\EOT\SOH2N ===================================================================\n\
+    \\DC2\ACK\182\ETX\NUL\206\EOT\SOH2N ===================================================================\n\
     \ Options\n\
     \2\208\r Each of the definitions above may have \"options\" attached.  These are\n\
     \ just annotations which may cause code to be generated slightly differently\n\
@@ -15770,30 +16807,30 @@ packedFileDescriptor
     \\n\
     \\v\n\
     \\ETX\EOT\n\
-    \\SOH\DC2\EOT\172\ETX\b\DC3\n\
+    \\SOH\DC2\EOT\182\ETX\b\DC3\n\
     \\244\SOH\n\
     \\EOT\EOT\n\
-    \\STX\NUL\DC2\EOT\178\ETX\STX#\SUB\229\SOH Sets the Java package where classes generated from this .proto will be\n\
+    \\STX\NUL\DC2\EOT\188\ETX\STX#\SUB\229\SOH Sets the Java package where classes generated from this .proto will be\n\
     \ placed.  By default, the proto package is used, but this is often\n\
     \ inappropriate because proto packages do not normally start with backwards\n\
     \ domain names.\n\
     \\n\
     \\r\n\
     \\ENQ\EOT\n\
-    \\STX\NUL\EOT\DC2\EOT\178\ETX\STX\n\
+    \\STX\NUL\EOT\DC2\EOT\188\ETX\STX\n\
     \\n\
     \\r\n\
     \\ENQ\EOT\n\
-    \\STX\NUL\ENQ\DC2\EOT\178\ETX\v\DC1\n\
+    \\STX\NUL\ENQ\DC2\EOT\188\ETX\v\DC1\n\
     \\r\n\
     \\ENQ\EOT\n\
-    \\STX\NUL\SOH\DC2\EOT\178\ETX\DC2\RS\n\
+    \\STX\NUL\SOH\DC2\EOT\188\ETX\DC2\RS\n\
     \\r\n\
     \\ENQ\EOT\n\
-    \\STX\NUL\ETX\DC2\EOT\178\ETX!\"\n\
+    \\STX\NUL\ETX\DC2\EOT\188\ETX!\"\n\
     \\241\STX\n\
     \\EOT\EOT\n\
-    \\STX\SOH\DC2\EOT\185\ETX\STX+\SUB\226\STX Controls the name of the wrapper Java class generated for the .proto file.\n\
+    \\STX\SOH\DC2\EOT\195\ETX\STX+\SUB\226\STX Controls the name of the wrapper Java class generated for the .proto file.\n\
     \ That class will always contain the .proto file's getDescriptor() method as\n\
     \ well as any top-level extensions defined in the .proto file.\n\
     \ If java_multiple_files is disabled, then all the other classes from the\n\
@@ -15801,20 +16838,20 @@ packedFileDescriptor
     \\n\
     \\r\n\
     \\ENQ\EOT\n\
-    \\STX\SOH\EOT\DC2\EOT\185\ETX\STX\n\
+    \\STX\SOH\EOT\DC2\EOT\195\ETX\STX\n\
     \\n\
     \\r\n\
     \\ENQ\EOT\n\
-    \\STX\SOH\ENQ\DC2\EOT\185\ETX\v\DC1\n\
+    \\STX\SOH\ENQ\DC2\EOT\195\ETX\v\DC1\n\
     \\r\n\
     \\ENQ\EOT\n\
-    \\STX\SOH\SOH\DC2\EOT\185\ETX\DC2&\n\
+    \\STX\SOH\SOH\DC2\EOT\195\ETX\DC2&\n\
     \\r\n\
     \\ENQ\EOT\n\
-    \\STX\SOH\ETX\DC2\EOT\185\ETX)*\n\
-    \\166\ETX\n\
+    \\STX\SOH\ETX\DC2\EOT\195\ETX)*\n\
+    \\168\ETX\n\
     \\EOT\EOT\n\
-    \\STX\STX\DC2\EOT\193\ETX\STX;\SUB\151\ETX If enabled, then the Java code generator will generate a separate .java\n\
+    \\STX\STX\DC2\ACK\203\ETX\STX\213\ETX\EOT\SUB\151\ETX If enabled, then the Java code generator will generate a separate .java\n\
     \ file for each top-level message, enum, and service defined in the .proto\n\
     \ file.  Thus, these types will *not* be nested inside the wrapper class\n\
     \ named by java_outer_classname.  However, the wrapper class will still be\n\
@@ -15823,49 +16860,52 @@ packedFileDescriptor
     \\n\
     \\r\n\
     \\ENQ\EOT\n\
-    \\STX\STX\EOT\DC2\EOT\193\ETX\STX\n\
+    \\STX\STX\EOT\DC2\EOT\203\ETX\STX\n\
     \\n\
     \\r\n\
     \\ENQ\EOT\n\
-    \\STX\STX\ENQ\DC2\EOT\193\ETX\v\SI\n\
+    \\STX\STX\ENQ\DC2\EOT\203\ETX\v\SI\n\
     \\r\n\
     \\ENQ\EOT\n\
-    \\STX\STX\SOH\DC2\EOT\193\ETX\DLE#\n\
+    \\STX\STX\SOH\DC2\EOT\203\ETX\DLE#\n\
     \\r\n\
     \\ENQ\EOT\n\
-    \\STX\STX\ETX\DC2\EOT\193\ETX&(\n\
+    \\STX\STX\ETX\DC2\EOT\203\ETX&(\n\
+    \\SI\n\
+    \\ENQ\EOT\n\
+    \\STX\STX\b\DC2\ACK\203\ETX)\213\ETX\ETX\n\
     \\r\n\
     \\ENQ\EOT\n\
-    \\STX\STX\b\DC2\EOT\193\ETX):\n\
-    \\r\n\
-    \\ENQ\EOT\n\
-    \\STX\STX\a\DC2\EOT\193\ETX49\n\
+    \\STX\STX\a\DC2\EOT\204\ETX\SO\DC3\n\
+    \\DLE\n\
+    \\ACK\EOT\n\
+    \\STX\STX\b\SYN\DC2\ACK\205\ETX\EOT\212\ETX\ENQ\n\
     \)\n\
     \\EOT\EOT\n\
-    \\STX\ETX\DC2\EOT\196\ETX\STXE\SUB\ESC This option does nothing.\n\
+    \\STX\ETX\DC2\EOT\216\ETX\STXE\SUB\ESC This option does nothing.\n\
     \\n\
     \\r\n\
     \\ENQ\EOT\n\
-    \\STX\ETX\EOT\DC2\EOT\196\ETX\STX\n\
+    \\STX\ETX\EOT\DC2\EOT\216\ETX\STX\n\
     \\n\
     \\r\n\
     \\ENQ\EOT\n\
-    \\STX\ETX\ENQ\DC2\EOT\196\ETX\v\SI\n\
+    \\STX\ETX\ENQ\DC2\EOT\216\ETX\v\SI\n\
     \\r\n\
     \\ENQ\EOT\n\
-    \\STX\ETX\SOH\DC2\EOT\196\ETX\DLE-\n\
+    \\STX\ETX\SOH\DC2\EOT\216\ETX\DLE-\n\
     \\r\n\
     \\ENQ\EOT\n\
-    \\STX\ETX\ETX\DC2\EOT\196\ETX02\n\
+    \\STX\ETX\ETX\DC2\EOT\216\ETX02\n\
     \\r\n\
     \\ENQ\EOT\n\
-    \\STX\ETX\b\DC2\EOT\196\ETX3D\n\
+    \\STX\ETX\b\DC2\EOT\216\ETX3D\n\
     \\SO\n\
     \\ACK\EOT\n\
-    \\STX\ETX\b\ETX\DC2\EOT\196\ETX4C\n\
+    \\STX\ETX\b\ETX\DC2\EOT\216\ETX4C\n\
     \\207\ETX\n\
     \\EOT\EOT\n\
-    \\STX\EOT\DC2\EOT\208\ETX\STX>\SUB\192\ETX A proto2 file can set this to true to opt in to UTF-8 checking for Java,\n\
+    \\STX\EOT\DC2\EOT\228\ETX\STX>\SUB\192\ETX A proto2 file can set this to true to opt in to UTF-8 checking for Java,\n\
     \ which will throw an exception if invalid UTF-8 is parsed from the wire or\n\
     \ assigned to a string field.\n\
     \\n\
@@ -15878,86 +16918,86 @@ packedFileDescriptor
     \\n\
     \\r\n\
     \\ENQ\EOT\n\
-    \\STX\EOT\EOT\DC2\EOT\208\ETX\STX\n\
+    \\STX\EOT\EOT\DC2\EOT\228\ETX\STX\n\
     \\n\
     \\r\n\
     \\ENQ\EOT\n\
-    \\STX\EOT\ENQ\DC2\EOT\208\ETX\v\SI\n\
+    \\STX\EOT\ENQ\DC2\EOT\228\ETX\v\SI\n\
     \\r\n\
     \\ENQ\EOT\n\
-    \\STX\EOT\SOH\DC2\EOT\208\ETX\DLE&\n\
+    \\STX\EOT\SOH\DC2\EOT\228\ETX\DLE&\n\
     \\r\n\
     \\ENQ\EOT\n\
-    \\STX\EOT\ETX\DC2\EOT\208\ETX)+\n\
+    \\STX\EOT\ETX\DC2\EOT\228\ETX)+\n\
     \\r\n\
     \\ENQ\EOT\n\
-    \\STX\EOT\b\DC2\EOT\208\ETX,=\n\
+    \\STX\EOT\b\DC2\EOT\228\ETX,=\n\
     \\r\n\
     \\ENQ\EOT\n\
-    \\STX\EOT\a\DC2\EOT\208\ETX7<\n\
+    \\STX\EOT\a\DC2\EOT\228\ETX7<\n\
     \L\n\
     \\EOT\EOT\n\
-    \\EOT\NUL\DC2\ACK\211\ETX\STX\216\ETX\ETX\SUB< Generated classes can be optimized for speed or code size.\n\
+    \\EOT\NUL\DC2\ACK\231\ETX\STX\236\ETX\ETX\SUB< Generated classes can be optimized for speed or code size.\n\
     \\n\
     \\r\n\
     \\ENQ\EOT\n\
-    \\EOT\NUL\SOH\DC2\EOT\211\ETX\a\DC3\n\
+    \\EOT\NUL\SOH\DC2\EOT\231\ETX\a\DC3\n\
     \D\n\
     \\ACK\EOT\n\
-    \\EOT\NUL\STX\NUL\DC2\EOT\212\ETX\EOT\SO\"4 Generate complete code for parsing, serialization,\n\
+    \\EOT\NUL\STX\NUL\DC2\EOT\232\ETX\EOT\SO\"4 Generate complete code for parsing, serialization,\n\
     \\n\
     \\SI\n\
     \\a\EOT\n\
-    \\EOT\NUL\STX\NUL\SOH\DC2\EOT\212\ETX\EOT\t\n\
+    \\EOT\NUL\STX\NUL\SOH\DC2\EOT\232\ETX\EOT\t\n\
     \\SI\n\
     \\a\EOT\n\
-    \\EOT\NUL\STX\NUL\STX\DC2\EOT\212\ETX\f\r\n\
+    \\EOT\NUL\STX\NUL\STX\DC2\EOT\232\ETX\f\r\n\
     \G\n\
     \\ACK\EOT\n\
-    \\EOT\NUL\STX\SOH\DC2\EOT\214\ETX\EOT\DC2\SUB\ACK etc.\n\
+    \\EOT\NUL\STX\SOH\DC2\EOT\234\ETX\EOT\DC2\SUB\ACK etc.\n\
     \\"/ Use ReflectionOps to implement these methods.\n\
     \\n\
     \\SI\n\
     \\a\EOT\n\
-    \\EOT\NUL\STX\SOH\SOH\DC2\EOT\214\ETX\EOT\r\n\
+    \\EOT\NUL\STX\SOH\SOH\DC2\EOT\234\ETX\EOT\r\n\
     \\SI\n\
     \\a\EOT\n\
-    \\EOT\NUL\STX\SOH\STX\DC2\EOT\214\ETX\DLE\DC1\n\
+    \\EOT\NUL\STX\SOH\STX\DC2\EOT\234\ETX\DLE\DC1\n\
     \G\n\
     \\ACK\EOT\n\
-    \\EOT\NUL\STX\STX\DC2\EOT\215\ETX\EOT\NAK\"7 Generate code using MessageLite and the lite runtime.\n\
+    \\EOT\NUL\STX\STX\DC2\EOT\235\ETX\EOT\NAK\"7 Generate code using MessageLite and the lite runtime.\n\
     \\n\
     \\SI\n\
     \\a\EOT\n\
-    \\EOT\NUL\STX\STX\SOH\DC2\EOT\215\ETX\EOT\DLE\n\
+    \\EOT\NUL\STX\STX\SOH\DC2\EOT\235\ETX\EOT\DLE\n\
     \\SI\n\
     \\a\EOT\n\
-    \\EOT\NUL\STX\STX\STX\DC2\EOT\215\ETX\DC3\DC4\n\
+    \\EOT\NUL\STX\STX\STX\DC2\EOT\235\ETX\DC3\DC4\n\
     \\f\n\
     \\EOT\EOT\n\
-    \\STX\ENQ\DC2\EOT\217\ETX\STX;\n\
+    \\STX\ENQ\DC2\EOT\237\ETX\STX;\n\
     \\r\n\
     \\ENQ\EOT\n\
-    \\STX\ENQ\EOT\DC2\EOT\217\ETX\STX\n\
+    \\STX\ENQ\EOT\DC2\EOT\237\ETX\STX\n\
     \\n\
     \\r\n\
     \\ENQ\EOT\n\
-    \\STX\ENQ\ACK\DC2\EOT\217\ETX\v\ETB\n\
+    \\STX\ENQ\ACK\DC2\EOT\237\ETX\v\ETB\n\
     \\r\n\
     \\ENQ\EOT\n\
-    \\STX\ENQ\SOH\DC2\EOT\217\ETX\CAN$\n\
+    \\STX\ENQ\SOH\DC2\EOT\237\ETX\CAN$\n\
     \\r\n\
     \\ENQ\EOT\n\
-    \\STX\ENQ\ETX\DC2\EOT\217\ETX'(\n\
+    \\STX\ENQ\ETX\DC2\EOT\237\ETX'(\n\
     \\r\n\
     \\ENQ\EOT\n\
-    \\STX\ENQ\b\DC2\EOT\217\ETX):\n\
+    \\STX\ENQ\b\DC2\EOT\237\ETX):\n\
     \\r\n\
     \\ENQ\EOT\n\
-    \\STX\ENQ\a\DC2\EOT\217\ETX49\n\
+    \\STX\ENQ\a\DC2\EOT\237\ETX49\n\
     \\226\STX\n\
     \\EOT\EOT\n\
-    \\STX\ACK\DC2\EOT\224\ETX\STX\"\SUB\211\STX Sets the Go package where structs generated from this .proto will be\n\
+    \\STX\ACK\DC2\EOT\244\ETX\STX\"\SUB\211\STX Sets the Go package where structs generated from this .proto will be\n\
     \ placed. If omitted, the Go package will be derived from the following:\n\
     \   - The basename of the package import path, if provided.\n\
     \   - Otherwise, the package statement in the .proto file, if present.\n\
@@ -15965,20 +17005,20 @@ packedFileDescriptor
     \\n\
     \\r\n\
     \\ENQ\EOT\n\
-    \\STX\ACK\EOT\DC2\EOT\224\ETX\STX\n\
+    \\STX\ACK\EOT\DC2\EOT\244\ETX\STX\n\
     \\n\
     \\r\n\
     \\ENQ\EOT\n\
-    \\STX\ACK\ENQ\DC2\EOT\224\ETX\v\DC1\n\
+    \\STX\ACK\ENQ\DC2\EOT\244\ETX\v\DC1\n\
     \\r\n\
     \\ENQ\EOT\n\
-    \\STX\ACK\SOH\DC2\EOT\224\ETX\DC2\FS\n\
+    \\STX\ACK\SOH\DC2\EOT\244\ETX\DC2\FS\n\
     \\r\n\
     \\ENQ\EOT\n\
-    \\STX\ACK\ETX\DC2\EOT\224\ETX\US!\n\
+    \\STX\ACK\ETX\DC2\EOT\244\ETX\US!\n\
     \\212\EOT\n\
     \\EOT\EOT\n\
-    \\STX\a\DC2\EOT\236\ETX\STX;\SUB\197\EOT Should generic services be generated in each language?  \"Generic\" services\n\
+    \\STX\a\DC2\EOT\128\EOT\STX;\SUB\197\EOT Should generic services be generated in each language?  \"Generic\" services\n\
     \ are not specific to any particular RPC system.  They are generated by the\n\
     \ main code generators in each language (without additional plugins).\n\
     \ Generic services were the only kind of service generation supported by\n\
@@ -15991,92 +17031,92 @@ packedFileDescriptor
     \\n\
     \\r\n\
     \\ENQ\EOT\n\
-    \\STX\a\EOT\DC2\EOT\236\ETX\STX\n\
+    \\STX\a\EOT\DC2\EOT\128\EOT\STX\n\
     \\n\
     \\r\n\
     \\ENQ\EOT\n\
-    \\STX\a\ENQ\DC2\EOT\236\ETX\v\SI\n\
+    \\STX\a\ENQ\DC2\EOT\128\EOT\v\SI\n\
     \\r\n\
     \\ENQ\EOT\n\
-    \\STX\a\SOH\DC2\EOT\236\ETX\DLE#\n\
+    \\STX\a\SOH\DC2\EOT\128\EOT\DLE#\n\
     \\r\n\
     \\ENQ\EOT\n\
-    \\STX\a\ETX\DC2\EOT\236\ETX&(\n\
+    \\STX\a\ETX\DC2\EOT\128\EOT&(\n\
     \\r\n\
     \\ENQ\EOT\n\
-    \\STX\a\b\DC2\EOT\236\ETX):\n\
+    \\STX\a\b\DC2\EOT\128\EOT):\n\
     \\r\n\
     \\ENQ\EOT\n\
-    \\STX\a\a\DC2\EOT\236\ETX49\n\
+    \\STX\a\a\DC2\EOT\128\EOT49\n\
     \\f\n\
     \\EOT\EOT\n\
-    \\STX\b\DC2\EOT\237\ETX\STX=\n\
+    \\STX\b\DC2\EOT\129\EOT\STX=\n\
     \\r\n\
     \\ENQ\EOT\n\
-    \\STX\b\EOT\DC2\EOT\237\ETX\STX\n\
+    \\STX\b\EOT\DC2\EOT\129\EOT\STX\n\
     \\n\
     \\r\n\
     \\ENQ\EOT\n\
-    \\STX\b\ENQ\DC2\EOT\237\ETX\v\SI\n\
+    \\STX\b\ENQ\DC2\EOT\129\EOT\v\SI\n\
     \\r\n\
     \\ENQ\EOT\n\
-    \\STX\b\SOH\DC2\EOT\237\ETX\DLE%\n\
+    \\STX\b\SOH\DC2\EOT\129\EOT\DLE%\n\
     \\r\n\
     \\ENQ\EOT\n\
-    \\STX\b\ETX\DC2\EOT\237\ETX(*\n\
+    \\STX\b\ETX\DC2\EOT\129\EOT(*\n\
     \\r\n\
     \\ENQ\EOT\n\
-    \\STX\b\b\DC2\EOT\237\ETX+<\n\
+    \\STX\b\b\DC2\EOT\129\EOT+<\n\
     \\r\n\
     \\ENQ\EOT\n\
-    \\STX\b\a\DC2\EOT\237\ETX6;\n\
+    \\STX\b\a\DC2\EOT\129\EOT6;\n\
     \\f\n\
     \\EOT\EOT\n\
-    \\STX\t\DC2\EOT\238\ETX\STX;\n\
+    \\STX\t\DC2\EOT\130\EOT\STX;\n\
     \\r\n\
     \\ENQ\EOT\n\
-    \\STX\t\EOT\DC2\EOT\238\ETX\STX\n\
+    \\STX\t\EOT\DC2\EOT\130\EOT\STX\n\
     \\n\
     \\r\n\
     \\ENQ\EOT\n\
-    \\STX\t\ENQ\DC2\EOT\238\ETX\v\SI\n\
+    \\STX\t\ENQ\DC2\EOT\130\EOT\v\SI\n\
     \\r\n\
     \\ENQ\EOT\n\
-    \\STX\t\SOH\DC2\EOT\238\ETX\DLE#\n\
+    \\STX\t\SOH\DC2\EOT\130\EOT\DLE#\n\
     \\r\n\
     \\ENQ\EOT\n\
-    \\STX\t\ETX\DC2\EOT\238\ETX&(\n\
+    \\STX\t\ETX\DC2\EOT\130\EOT&(\n\
     \\r\n\
     \\ENQ\EOT\n\
-    \\STX\t\b\DC2\EOT\238\ETX):\n\
+    \\STX\t\b\DC2\EOT\130\EOT):\n\
     \\r\n\
     \\ENQ\EOT\n\
-    \\STX\t\a\DC2\EOT\238\ETX49\n\
+    \\STX\t\a\DC2\EOT\130\EOT49\n\
     \+\n\
     \\ETX\EOT\n\
-    \\t\DC2\EOT\239\ETX\STX\SO\"\RS removed php_generic_services\n\
+    \\t\DC2\EOT\131\EOT\STX\SO\"\RS removed php_generic_services\n\
     \\n\
     \\f\n\
     \\EOT\EOT\n\
-    \\t\NUL\DC2\EOT\239\ETX\v\r\n\
+    \\t\NUL\DC2\EOT\131\EOT\v\r\n\
     \\r\n\
     \\ENQ\EOT\n\
-    \\t\NUL\SOH\DC2\EOT\239\ETX\v\r\n\
+    \\t\NUL\SOH\DC2\EOT\131\EOT\v\r\n\
     \\r\n\
     \\ENQ\EOT\n\
-    \\t\NUL\STX\DC2\EOT\239\ETX\v\r\n\
+    \\t\NUL\STX\DC2\EOT\131\EOT\v\r\n\
     \\v\n\
     \\ETX\EOT\n\
     \\n\
-    \\DC2\EOT\240\ETX\STX\"\n\
+    \\DC2\EOT\132\EOT\STX\"\n\
     \\f\n\
     \\EOT\EOT\n\
     \\n\
-    \\NUL\DC2\EOT\240\ETX\v!\n\
+    \\NUL\DC2\EOT\132\EOT\v!\n\
     \\243\SOH\n\
     \\EOT\EOT\n\
     \\STX\n\
-    \\DC2\EOT\246\ETX\STX2\SUB\228\SOH Is this file deprecated?\n\
+    \\DC2\EOT\138\EOT\STX2\SUB\228\SOH Is this file deprecated?\n\
     \ Depending on the target platform, this can emit Deprecated annotations\n\
     \ for everything in the file, or it will be completely ignored; in the very\n\
     \ least, this is a formalization for deprecating files.\n\
@@ -16084,249 +17124,275 @@ packedFileDescriptor
     \\r\n\
     \\ENQ\EOT\n\
     \\STX\n\
-    \\EOT\DC2\EOT\246\ETX\STX\n\
+    \\EOT\DC2\EOT\138\EOT\STX\n\
     \\n\
     \\r\n\
     \\ENQ\EOT\n\
     \\STX\n\
-    \\ENQ\DC2\EOT\246\ETX\v\SI\n\
+    \\ENQ\DC2\EOT\138\EOT\v\SI\n\
     \\r\n\
     \\ENQ\EOT\n\
     \\STX\n\
-    \\SOH\DC2\EOT\246\ETX\DLE\SUB\n\
+    \\SOH\DC2\EOT\138\EOT\DLE\SUB\n\
     \\r\n\
     \\ENQ\EOT\n\
     \\STX\n\
-    \\ETX\DC2\EOT\246\ETX\GS\US\n\
+    \\ETX\DC2\EOT\138\EOT\GS\US\n\
     \\r\n\
     \\ENQ\EOT\n\
     \\STX\n\
-    \\b\DC2\EOT\246\ETX 1\n\
+    \\b\DC2\EOT\138\EOT 1\n\
     \\r\n\
     \\ENQ\EOT\n\
     \\STX\n\
-    \\a\DC2\EOT\246\ETX+0\n\
-    \\DEL\n\
+    \\a\DC2\EOT\138\EOT+0\n\
+    \\129\SOH\n\
     \\EOT\EOT\n\
-    \\STX\v\DC2\EOT\250\ETX\STX7\SUBq Enables the use of arenas for the proto messages in this file. This applies\n\
+    \\STX\v\DC2\ACK\142\EOT\STX\149\EOT\EOT\SUBq Enables the use of arenas for the proto messages in this file. This applies\n\
     \ only to generated classes for C++.\n\
     \\n\
     \\r\n\
     \\ENQ\EOT\n\
-    \\STX\v\EOT\DC2\EOT\250\ETX\STX\n\
+    \\STX\v\EOT\DC2\EOT\142\EOT\STX\n\
     \\n\
     \\r\n\
     \\ENQ\EOT\n\
-    \\STX\v\ENQ\DC2\EOT\250\ETX\v\SI\n\
+    \\STX\v\ENQ\DC2\EOT\142\EOT\v\SI\n\
     \\r\n\
     \\ENQ\EOT\n\
-    \\STX\v\SOH\DC2\EOT\250\ETX\DLE \n\
+    \\STX\v\SOH\DC2\EOT\142\EOT\DLE \n\
     \\r\n\
     \\ENQ\EOT\n\
-    \\STX\v\ETX\DC2\EOT\250\ETX#%\n\
+    \\STX\v\ETX\DC2\EOT\142\EOT#%\n\
+    \\SI\n\
+    \\ENQ\EOT\n\
+    \\STX\v\b\DC2\ACK\142\EOT&\149\EOT\ETX\n\
     \\r\n\
     \\ENQ\EOT\n\
-    \\STX\v\b\DC2\EOT\250\ETX&6\n\
-    \\r\n\
-    \\ENQ\EOT\n\
-    \\STX\v\a\DC2\EOT\250\ETX15\n\
+    \\STX\v\a\DC2\EOT\143\EOT\SO\DC2\n\
+    \\DLE\n\
+    \\ACK\EOT\n\
+    \\STX\v\b\SYN\DC2\ACK\144\EOT\EOT\148\EOT\ENQ\n\
     \\146\SOH\n\
     \\EOT\EOT\n\
-    \\STX\f\DC2\EOT\254\ETX\STX)\SUB\131\SOH Sets the objective c class prefix which is prepended to all objective c\n\
+    \\STX\f\DC2\EOT\153\EOT\STX)\SUB\131\SOH Sets the objective c class prefix which is prepended to all objective c\n\
     \ generated classes from this .proto. There is no default.\n\
     \\n\
     \\r\n\
     \\ENQ\EOT\n\
-    \\STX\f\EOT\DC2\EOT\254\ETX\STX\n\
+    \\STX\f\EOT\DC2\EOT\153\EOT\STX\n\
     \\n\
     \\r\n\
     \\ENQ\EOT\n\
-    \\STX\f\ENQ\DC2\EOT\254\ETX\v\DC1\n\
+    \\STX\f\ENQ\DC2\EOT\153\EOT\v\DC1\n\
     \\r\n\
     \\ENQ\EOT\n\
-    \\STX\f\SOH\DC2\EOT\254\ETX\DC2#\n\
+    \\STX\f\SOH\DC2\EOT\153\EOT\DC2#\n\
     \\r\n\
     \\ENQ\EOT\n\
-    \\STX\f\ETX\DC2\EOT\254\ETX&(\n\
+    \\STX\f\ETX\DC2\EOT\153\EOT&(\n\
     \I\n\
     \\EOT\EOT\n\
-    \\STX\r\DC2\EOT\129\EOT\STX(\SUB; Namespace for generated classes; defaults to the package.\n\
+    \\STX\r\DC2\EOT\156\EOT\STX(\SUB; Namespace for generated classes; defaults to the package.\n\
     \\n\
     \\r\n\
     \\ENQ\EOT\n\
-    \\STX\r\EOT\DC2\EOT\129\EOT\STX\n\
+    \\STX\r\EOT\DC2\EOT\156\EOT\STX\n\
     \\n\
     \\r\n\
     \\ENQ\EOT\n\
-    \\STX\r\ENQ\DC2\EOT\129\EOT\v\DC1\n\
+    \\STX\r\ENQ\DC2\EOT\156\EOT\v\DC1\n\
     \\r\n\
     \\ENQ\EOT\n\
-    \\STX\r\SOH\DC2\EOT\129\EOT\DC2\"\n\
+    \\STX\r\SOH\DC2\EOT\156\EOT\DC2\"\n\
     \\r\n\
     \\ENQ\EOT\n\
-    \\STX\r\ETX\DC2\EOT\129\EOT%'\n\
+    \\STX\r\ETX\DC2\EOT\156\EOT%'\n\
     \\145\STX\n\
     \\EOT\EOT\n\
-    \\STX\SO\DC2\EOT\135\EOT\STX$\SUB\130\STX By default Swift generators will take the proto package and CamelCase it\n\
+    \\STX\SO\DC2\EOT\162\EOT\STX$\SUB\130\STX By default Swift generators will take the proto package and CamelCase it\n\
     \ replacing '.' with underscore and use that to prefix the types/symbols\n\
     \ defined. When this options is provided, they will use this value instead\n\
     \ to prefix the types/symbols defined.\n\
     \\n\
     \\r\n\
     \\ENQ\EOT\n\
-    \\STX\SO\EOT\DC2\EOT\135\EOT\STX\n\
+    \\STX\SO\EOT\DC2\EOT\162\EOT\STX\n\
     \\n\
     \\r\n\
     \\ENQ\EOT\n\
-    \\STX\SO\ENQ\DC2\EOT\135\EOT\v\DC1\n\
+    \\STX\SO\ENQ\DC2\EOT\162\EOT\v\DC1\n\
     \\r\n\
     \\ENQ\EOT\n\
-    \\STX\SO\SOH\DC2\EOT\135\EOT\DC2\RS\n\
+    \\STX\SO\SOH\DC2\EOT\162\EOT\DC2\RS\n\
     \\r\n\
     \\ENQ\EOT\n\
-    \\STX\SO\ETX\DC2\EOT\135\EOT!#\n\
+    \\STX\SO\ETX\DC2\EOT\162\EOT!#\n\
     \~\n\
     \\EOT\EOT\n\
-    \\STX\SI\DC2\EOT\139\EOT\STX(\SUBp Sets the php class prefix which is prepended to all php generated classes\n\
+    \\STX\SI\DC2\EOT\166\EOT\STX(\SUBp Sets the php class prefix which is prepended to all php generated classes\n\
     \ from this .proto. Default is empty.\n\
     \\n\
     \\r\n\
     \\ENQ\EOT\n\
-    \\STX\SI\EOT\DC2\EOT\139\EOT\STX\n\
+    \\STX\SI\EOT\DC2\EOT\166\EOT\STX\n\
     \\n\
     \\r\n\
     \\ENQ\EOT\n\
-    \\STX\SI\ENQ\DC2\EOT\139\EOT\v\DC1\n\
+    \\STX\SI\ENQ\DC2\EOT\166\EOT\v\DC1\n\
     \\r\n\
     \\ENQ\EOT\n\
-    \\STX\SI\SOH\DC2\EOT\139\EOT\DC2\"\n\
+    \\STX\SI\SOH\DC2\EOT\166\EOT\DC2\"\n\
     \\r\n\
     \\ENQ\EOT\n\
-    \\STX\SI\ETX\DC2\EOT\139\EOT%'\n\
+    \\STX\SI\ETX\DC2\EOT\166\EOT%'\n\
     \\190\SOH\n\
     \\EOT\EOT\n\
-    \\STX\DLE\DC2\EOT\144\EOT\STX%\SUB\175\SOH Use this option to change the namespace of php generated classes. Default\n\
+    \\STX\DLE\DC2\EOT\171\EOT\STX%\SUB\175\SOH Use this option to change the namespace of php generated classes. Default\n\
     \ is empty. When this option is empty, the package name will be used for\n\
     \ determining the namespace.\n\
     \\n\
     \\r\n\
     \\ENQ\EOT\n\
-    \\STX\DLE\EOT\DC2\EOT\144\EOT\STX\n\
+    \\STX\DLE\EOT\DC2\EOT\171\EOT\STX\n\
     \\n\
     \\r\n\
     \\ENQ\EOT\n\
-    \\STX\DLE\ENQ\DC2\EOT\144\EOT\v\DC1\n\
+    \\STX\DLE\ENQ\DC2\EOT\171\EOT\v\DC1\n\
     \\r\n\
     \\ENQ\EOT\n\
-    \\STX\DLE\SOH\DC2\EOT\144\EOT\DC2\US\n\
+    \\STX\DLE\SOH\DC2\EOT\171\EOT\DC2\US\n\
     \\r\n\
     \\ENQ\EOT\n\
-    \\STX\DLE\ETX\DC2\EOT\144\EOT\"$\n\
+    \\STX\DLE\ETX\DC2\EOT\171\EOT\"$\n\
     \\202\SOH\n\
     \\EOT\EOT\n\
-    \\STX\DC1\DC2\EOT\149\EOT\STX.\SUB\187\SOH Use this option to change the namespace of php generated metadata classes.\n\
+    \\STX\DC1\DC2\EOT\176\EOT\STX.\SUB\187\SOH Use this option to change the namespace of php generated metadata classes.\n\
     \ Default is empty. When this option is empty, the proto file name will be\n\
     \ used for determining the namespace.\n\
     \\n\
     \\r\n\
     \\ENQ\EOT\n\
-    \\STX\DC1\EOT\DC2\EOT\149\EOT\STX\n\
+    \\STX\DC1\EOT\DC2\EOT\176\EOT\STX\n\
     \\n\
     \\r\n\
     \\ENQ\EOT\n\
-    \\STX\DC1\ENQ\DC2\EOT\149\EOT\v\DC1\n\
+    \\STX\DC1\ENQ\DC2\EOT\176\EOT\v\DC1\n\
     \\r\n\
     \\ENQ\EOT\n\
-    \\STX\DC1\SOH\DC2\EOT\149\EOT\DC2(\n\
+    \\STX\DC1\SOH\DC2\EOT\176\EOT\DC2(\n\
     \\r\n\
     \\ENQ\EOT\n\
-    \\STX\DC1\ETX\DC2\EOT\149\EOT+-\n\
+    \\STX\DC1\ETX\DC2\EOT\176\EOT+-\n\
     \\194\SOH\n\
     \\EOT\EOT\n\
-    \\STX\DC2\DC2\EOT\154\EOT\STX$\SUB\179\SOH Use this option to change the package of ruby generated classes. Default\n\
+    \\STX\DC2\DC2\EOT\181\EOT\STX$\SUB\179\SOH Use this option to change the package of ruby generated classes. Default\n\
     \ is empty. When this option is not set, the package name will be used for\n\
     \ determining the ruby package.\n\
     \\n\
     \\r\n\
     \\ENQ\EOT\n\
-    \\STX\DC2\EOT\DC2\EOT\154\EOT\STX\n\
+    \\STX\DC2\EOT\DC2\EOT\181\EOT\STX\n\
     \\n\
     \\r\n\
     \\ENQ\EOT\n\
-    \\STX\DC2\ENQ\DC2\EOT\154\EOT\v\DC1\n\
+    \\STX\DC2\ENQ\DC2\EOT\181\EOT\v\DC1\n\
     \\r\n\
     \\ENQ\EOT\n\
-    \\STX\DC2\SOH\DC2\EOT\154\EOT\DC2\RS\n\
+    \\STX\DC2\SOH\DC2\EOT\181\EOT\DC2\RS\n\
     \\r\n\
     \\ENQ\EOT\n\
-    \\STX\DC2\ETX\DC2\EOT\154\EOT!#\n\
-    \=\n\
+    \\STX\DC2\ETX\DC2\EOT\181\EOT!#\n\
+    \\145\STX\n\
     \\EOT\EOT\n\
-    \\STX\DC3\DC2\EOT\157\EOT\STX$\SUB/ Any features defined in the specific edition.\n\
+    \\STX\DC3\DC2\EOT\187\EOT\STX$\SUB\130\STX Any features defined in the specific edition.\n\
+    \ WARNING: This field should only be used by protobuf plugins or special\n\
+    \ cases like the proto compiler. Other uses are discouraged and\n\
+    \ developers should rely on the protoreflect APIs for their client language.\n\
     \\n\
     \\r\n\
     \\ENQ\EOT\n\
-    \\STX\DC3\EOT\DC2\EOT\157\EOT\STX\n\
+    \\STX\DC3\EOT\DC2\EOT\187\EOT\STX\n\
     \\n\
     \\r\n\
     \\ENQ\EOT\n\
-    \\STX\DC3\ACK\DC2\EOT\157\EOT\v\NAK\n\
+    \\STX\DC3\ACK\DC2\EOT\187\EOT\v\NAK\n\
     \\r\n\
     \\ENQ\EOT\n\
-    \\STX\DC3\SOH\DC2\EOT\157\EOT\SYN\RS\n\
+    \\STX\DC3\SOH\DC2\EOT\187\EOT\SYN\RS\n\
     \\r\n\
     \\ENQ\EOT\n\
-    \\STX\DC3\ETX\DC2\EOT\157\EOT!#\n\
+    \\STX\DC3\ETX\DC2\EOT\187\EOT!#\n\
+    \\148\SOH\n\
+    \\ETX\EOT\n\
+    \\ENQ\DC2\ACK\191\EOT\STX\195\EOT\ENQ\SUB\132\SOH Range reserved for first-class custom options defined by the Protobuf\n\
+    \ team. User custom options must use the 1000+ range instead.\n\
+    \\n\
+    \\f\n\
+    \\EOT\EOT\n\
+    \\ENQ\NUL\DC2\EOT\191\EOT\r\ETB\n\
+    \\r\n\
+    \\ENQ\EOT\n\
+    \\ENQ\NUL\SOH\DC2\EOT\191\EOT\r\DLE\n\
+    \\r\n\
+    \\ENQ\EOT\n\
+    \\ENQ\NUL\STX\DC2\EOT\191\EOT\DC4\ETB\n\
+    \\SI\n\
+    \\ENQ\EOT\n\
+    \\ENQ\NUL\ETX\DC2\ACK\191\EOT\CAN\195\EOT\EOT\n\
+    \\DC1\n\
+    \\a\EOT\n\
+    \\ENQ\NUL\ETX\STX\NUL\DC2\ACK\191\EOT\EM\195\EOT\ETX\n\
     \|\n\
     \\EOT\EOT\n\
-    \\STX\DC4\DC2\EOT\161\EOT\STX:\SUBn The parser stores options it doesn't recognize here.\n\
+    \\STX\DC4\DC2\EOT\199\EOT\STX:\SUBn The parser stores options it doesn't recognize here.\n\
     \ See the documentation for the \"Options\" section above.\n\
     \\n\
     \\r\n\
     \\ENQ\EOT\n\
-    \\STX\DC4\EOT\DC2\EOT\161\EOT\STX\n\
+    \\STX\DC4\EOT\DC2\EOT\199\EOT\STX\n\
     \\n\
     \\r\n\
     \\ENQ\EOT\n\
-    \\STX\DC4\ACK\DC2\EOT\161\EOT\v\RS\n\
+    \\STX\DC4\ACK\DC2\EOT\199\EOT\v\RS\n\
     \\r\n\
     \\ENQ\EOT\n\
-    \\STX\DC4\SOH\DC2\EOT\161\EOT\US3\n\
+    \\STX\DC4\SOH\DC2\EOT\199\EOT\US3\n\
     \\r\n\
     \\ENQ\EOT\n\
-    \\STX\DC4\ETX\DC2\EOT\161\EOT69\n\
+    \\STX\DC4\ETX\DC2\EOT\199\EOT69\n\
     \\135\SOH\n\
     \\ETX\EOT\n\
-    \\ENQ\DC2\EOT\165\EOT\STX\EM\SUBz Clients can define custom options in extensions of this message.\n\
+    \\ENQ\DC2\EOT\203\EOT\STX\EM\SUBz Clients can define custom options in extensions of this message.\n\
     \ See the documentation for the \"Options\" section above.\n\
     \\n\
     \\f\n\
     \\EOT\EOT\n\
-    \\ENQ\NUL\DC2\EOT\165\EOT\r\CAN\n\
+    \\ENQ\SOH\DC2\EOT\203\EOT\r\CAN\n\
     \\r\n\
     \\ENQ\EOT\n\
-    \\ENQ\NUL\SOH\DC2\EOT\165\EOT\r\DC1\n\
+    \\ENQ\SOH\SOH\DC2\EOT\203\EOT\r\DC1\n\
     \\r\n\
     \\ENQ\EOT\n\
-    \\ENQ\NUL\STX\DC2\EOT\165\EOT\NAK\CAN\n\
+    \\ENQ\SOH\STX\DC2\EOT\203\EOT\NAK\CAN\n\
     \\v\n\
     \\ETX\EOT\n\
-    \\t\DC2\EOT\167\EOT\STX\SO\n\
+    \\t\DC2\EOT\205\EOT\STX\SO\n\
     \\f\n\
     \\EOT\EOT\n\
-    \\t\SOH\DC2\EOT\167\EOT\v\r\n\
+    \\t\SOH\DC2\EOT\205\EOT\v\r\n\
     \\r\n\
     \\ENQ\EOT\n\
-    \\t\SOH\SOH\DC2\EOT\167\EOT\v\r\n\
+    \\t\SOH\SOH\DC2\EOT\205\EOT\v\r\n\
     \\r\n\
     \\ENQ\EOT\n\
-    \\t\SOH\STX\DC2\EOT\167\EOT\v\r\n\
+    \\t\SOH\STX\DC2\EOT\205\EOT\v\r\n\
     \\f\n\
-    \\STX\EOT\v\DC2\ACK\170\EOT\NUL\250\EOT\SOH\n\
+    \\STX\EOT\v\DC2\ACK\208\EOT\NUL\167\ENQ\SOH\n\
     \\v\n\
-    \\ETX\EOT\v\SOH\DC2\EOT\170\EOT\b\SYN\n\
+    \\ETX\EOT\v\SOH\DC2\EOT\208\EOT\b\SYN\n\
     \\216\ENQ\n\
-    \\EOT\EOT\v\STX\NUL\DC2\EOT\189\EOT\STX>\SUB\201\ENQ Set true to use the old proto1 MessageSet wire format for extensions.\n\
+    \\EOT\EOT\v\STX\NUL\DC2\EOT\227\EOT\STX>\SUB\201\ENQ Set true to use the old proto1 MessageSet wire format for extensions.\n\
     \ This is provided for backwards-compatibility with the MessageSet wire\n\
     \ format.  You should not use this for any other reason:  It's less\n\
     \ efficient, has fewer features, and is more complicated.\n\
@@ -16346,77 +17412,77 @@ packedFileDescriptor
     \ the protocol compiler.\n\
     \\n\
     \\r\n\
-    \\ENQ\EOT\v\STX\NUL\EOT\DC2\EOT\189\EOT\STX\n\
+    \\ENQ\EOT\v\STX\NUL\EOT\DC2\EOT\227\EOT\STX\n\
     \\n\
     \\r\n\
-    \\ENQ\EOT\v\STX\NUL\ENQ\DC2\EOT\189\EOT\v\SI\n\
+    \\ENQ\EOT\v\STX\NUL\ENQ\DC2\EOT\227\EOT\v\SI\n\
     \\r\n\
-    \\ENQ\EOT\v\STX\NUL\SOH\DC2\EOT\189\EOT\DLE'\n\
+    \\ENQ\EOT\v\STX\NUL\SOH\DC2\EOT\227\EOT\DLE'\n\
     \\r\n\
-    \\ENQ\EOT\v\STX\NUL\ETX\DC2\EOT\189\EOT*+\n\
+    \\ENQ\EOT\v\STX\NUL\ETX\DC2\EOT\227\EOT*+\n\
     \\r\n\
-    \\ENQ\EOT\v\STX\NUL\b\DC2\EOT\189\EOT,=\n\
+    \\ENQ\EOT\v\STX\NUL\b\DC2\EOT\227\EOT,=\n\
     \\r\n\
-    \\ENQ\EOT\v\STX\NUL\a\DC2\EOT\189\EOT7<\n\
+    \\ENQ\EOT\v\STX\NUL\a\DC2\EOT\227\EOT7<\n\
     \\235\SOH\n\
-    \\EOT\EOT\v\STX\SOH\DC2\EOT\194\EOT\STXF\SUB\220\SOH Disables the generation of the standard \"descriptor()\" accessor, which can\n\
+    \\EOT\EOT\v\STX\SOH\DC2\EOT\232\EOT\STXF\SUB\220\SOH Disables the generation of the standard \"descriptor()\" accessor, which can\n\
     \ conflict with a field of the same name.  This is meant to make migration\n\
     \ from proto1 easier; new code should avoid fields named \"descriptor\".\n\
     \\n\
     \\r\n\
-    \\ENQ\EOT\v\STX\SOH\EOT\DC2\EOT\194\EOT\STX\n\
+    \\ENQ\EOT\v\STX\SOH\EOT\DC2\EOT\232\EOT\STX\n\
     \\n\
     \\r\n\
-    \\ENQ\EOT\v\STX\SOH\ENQ\DC2\EOT\194\EOT\v\SI\n\
+    \\ENQ\EOT\v\STX\SOH\ENQ\DC2\EOT\232\EOT\v\SI\n\
     \\r\n\
-    \\ENQ\EOT\v\STX\SOH\SOH\DC2\EOT\194\EOT\DLE/\n\
+    \\ENQ\EOT\v\STX\SOH\SOH\DC2\EOT\232\EOT\DLE/\n\
     \\r\n\
-    \\ENQ\EOT\v\STX\SOH\ETX\DC2\EOT\194\EOT23\n\
+    \\ENQ\EOT\v\STX\SOH\ETX\DC2\EOT\232\EOT23\n\
     \\r\n\
-    \\ENQ\EOT\v\STX\SOH\b\DC2\EOT\194\EOT4E\n\
+    \\ENQ\EOT\v\STX\SOH\b\DC2\EOT\232\EOT4E\n\
     \\r\n\
-    \\ENQ\EOT\v\STX\SOH\a\DC2\EOT\194\EOT?D\n\
+    \\ENQ\EOT\v\STX\SOH\a\DC2\EOT\232\EOT?D\n\
     \\238\SOH\n\
-    \\EOT\EOT\v\STX\STX\DC2\EOT\200\EOT\STX1\SUB\223\SOH Is this message deprecated?\n\
+    \\EOT\EOT\v\STX\STX\DC2\EOT\238\EOT\STX1\SUB\223\SOH Is this message deprecated?\n\
     \ Depending on the target platform, this can emit Deprecated annotations\n\
     \ for the message, or it will be completely ignored; in the very least,\n\
     \ this is a formalization for deprecating messages.\n\
     \\n\
     \\r\n\
-    \\ENQ\EOT\v\STX\STX\EOT\DC2\EOT\200\EOT\STX\n\
+    \\ENQ\EOT\v\STX\STX\EOT\DC2\EOT\238\EOT\STX\n\
     \\n\
     \\r\n\
-    \\ENQ\EOT\v\STX\STX\ENQ\DC2\EOT\200\EOT\v\SI\n\
+    \\ENQ\EOT\v\STX\STX\ENQ\DC2\EOT\238\EOT\v\SI\n\
     \\r\n\
-    \\ENQ\EOT\v\STX\STX\SOH\DC2\EOT\200\EOT\DLE\SUB\n\
+    \\ENQ\EOT\v\STX\STX\SOH\DC2\EOT\238\EOT\DLE\SUB\n\
     \\r\n\
-    \\ENQ\EOT\v\STX\STX\ETX\DC2\EOT\200\EOT\GS\RS\n\
+    \\ENQ\EOT\v\STX\STX\ETX\DC2\EOT\238\EOT\GS\RS\n\
     \\r\n\
-    \\ENQ\EOT\v\STX\STX\b\DC2\EOT\200\EOT\US0\n\
+    \\ENQ\EOT\v\STX\STX\b\DC2\EOT\238\EOT\US0\n\
     \\r\n\
-    \\ENQ\EOT\v\STX\STX\a\DC2\EOT\200\EOT*/\n\
+    \\ENQ\EOT\v\STX\STX\a\DC2\EOT\238\EOT*/\n\
     \\v\n\
-    \\ETX\EOT\v\t\DC2\EOT\202\EOT\STX\DC3\n\
+    \\ETX\EOT\v\t\DC2\EOT\240\EOT\STX\DC3\n\
     \\f\n\
-    \\EOT\EOT\v\t\NUL\DC2\EOT\202\EOT\v\f\n\
+    \\EOT\EOT\v\t\NUL\DC2\EOT\240\EOT\v\f\n\
     \\r\n\
-    \\ENQ\EOT\v\t\NUL\SOH\DC2\EOT\202\EOT\v\f\n\
+    \\ENQ\EOT\v\t\NUL\SOH\DC2\EOT\240\EOT\v\f\n\
     \\r\n\
-    \\ENQ\EOT\v\t\NUL\STX\DC2\EOT\202\EOT\v\f\n\
+    \\ENQ\EOT\v\t\NUL\STX\DC2\EOT\240\EOT\v\f\n\
     \\f\n\
-    \\EOT\EOT\v\t\SOH\DC2\EOT\202\EOT\SO\SI\n\
+    \\EOT\EOT\v\t\SOH\DC2\EOT\240\EOT\SO\SI\n\
     \\r\n\
-    \\ENQ\EOT\v\t\SOH\SOH\DC2\EOT\202\EOT\SO\SI\n\
+    \\ENQ\EOT\v\t\SOH\SOH\DC2\EOT\240\EOT\SO\SI\n\
     \\r\n\
-    \\ENQ\EOT\v\t\SOH\STX\DC2\EOT\202\EOT\SO\SI\n\
+    \\ENQ\EOT\v\t\SOH\STX\DC2\EOT\240\EOT\SO\SI\n\
     \\f\n\
-    \\EOT\EOT\v\t\STX\DC2\EOT\202\EOT\DC1\DC2\n\
+    \\EOT\EOT\v\t\STX\DC2\EOT\240\EOT\DC1\DC2\n\
     \\r\n\
-    \\ENQ\EOT\v\t\STX\SOH\DC2\EOT\202\EOT\DC1\DC2\n\
+    \\ENQ\EOT\v\t\STX\SOH\DC2\EOT\240\EOT\DC1\DC2\n\
     \\r\n\
-    \\ENQ\EOT\v\t\STX\STX\DC2\EOT\202\EOT\DC1\DC2\n\
+    \\ENQ\EOT\v\t\STX\STX\DC2\EOT\240\EOT\DC1\DC2\n\
     \\160\ACK\n\
-    \\EOT\EOT\v\STX\ETX\DC2\EOT\225\EOT\STX\RS\SUB\145\ACK Whether the message is an automatically generated map entry type for the\n\
+    \\EOT\EOT\v\STX\ETX\DC2\EOT\135\ENQ\STX\RS\SUB\145\ACK Whether the message is an automatically generated map entry type for the\n\
     \ maps field.\n\
     \\n\
     \ For maps fields:\n\
@@ -16439,34 +17505,34 @@ packedFileDescriptor
     \ parser.\n\
     \\n\
     \\r\n\
-    \\ENQ\EOT\v\STX\ETX\EOT\DC2\EOT\225\EOT\STX\n\
+    \\ENQ\EOT\v\STX\ETX\EOT\DC2\EOT\135\ENQ\STX\n\
     \\n\
     \\r\n\
-    \\ENQ\EOT\v\STX\ETX\ENQ\DC2\EOT\225\EOT\v\SI\n\
+    \\ENQ\EOT\v\STX\ETX\ENQ\DC2\EOT\135\ENQ\v\SI\n\
     \\r\n\
-    \\ENQ\EOT\v\STX\ETX\SOH\DC2\EOT\225\EOT\DLE\EM\n\
+    \\ENQ\EOT\v\STX\ETX\SOH\DC2\EOT\135\ENQ\DLE\EM\n\
     \\r\n\
-    \\ENQ\EOT\v\STX\ETX\ETX\DC2\EOT\225\EOT\FS\GS\n\
+    \\ENQ\EOT\v\STX\ETX\ETX\DC2\EOT\135\ENQ\FS\GS\n\
     \$\n\
-    \\ETX\EOT\v\t\DC2\EOT\227\EOT\STX\r\"\ETB javalite_serializable\n\
+    \\ETX\EOT\v\t\DC2\EOT\137\ENQ\STX\r\"\ETB javalite_serializable\n\
     \\n\
     \\f\n\
-    \\EOT\EOT\v\t\ETX\DC2\EOT\227\EOT\v\f\n\
+    \\EOT\EOT\v\t\ETX\DC2\EOT\137\ENQ\v\f\n\
     \\r\n\
-    \\ENQ\EOT\v\t\ETX\SOH\DC2\EOT\227\EOT\v\f\n\
+    \\ENQ\EOT\v\t\ETX\SOH\DC2\EOT\137\ENQ\v\f\n\
     \\r\n\
-    \\ENQ\EOT\v\t\ETX\STX\DC2\EOT\227\EOT\v\f\n\
+    \\ENQ\EOT\v\t\ETX\STX\DC2\EOT\137\ENQ\v\f\n\
     \\US\n\
-    \\ETX\EOT\v\t\DC2\EOT\228\EOT\STX\r\"\DC2 javanano_as_lite\n\
+    \\ETX\EOT\v\t\DC2\EOT\138\ENQ\STX\r\"\DC2 javanano_as_lite\n\
     \\n\
     \\f\n\
-    \\EOT\EOT\v\t\EOT\DC2\EOT\228\EOT\v\f\n\
+    \\EOT\EOT\v\t\EOT\DC2\EOT\138\ENQ\v\f\n\
     \\r\n\
-    \\ENQ\EOT\v\t\EOT\SOH\DC2\EOT\228\EOT\v\f\n\
+    \\ENQ\EOT\v\t\EOT\SOH\DC2\EOT\138\ENQ\v\f\n\
     \\r\n\
-    \\ENQ\EOT\v\t\EOT\STX\DC2\EOT\228\EOT\v\f\n\
+    \\ENQ\EOT\v\t\EOT\STX\DC2\EOT\138\ENQ\v\f\n\
     \\221\ETX\n\
-    \\EOT\EOT\v\STX\EOT\DC2\EOT\240\EOT\STXP\SUB\206\ETX Enable the legacy handling of JSON field name conflicts.  This lowercases\n\
+    \\EOT\EOT\v\STX\EOT\DC2\EOT\150\ENQ\STXP\SUB\206\ETX Enable the legacy handling of JSON field name conflicts.  This lowercases\n\
     \ and strips underscored from the fields before comparison in proto3 only.\n\
     \ The new behavior takes `json_name` into account and applies to proto2 as\n\
     \ well.\n\
@@ -16478,57 +17544,70 @@ packedFileDescriptor
     \ teams have had time to migrate.\n\
     \\n\
     \\r\n\
-    \\ENQ\EOT\v\STX\EOT\EOT\DC2\EOT\240\EOT\STX\n\
+    \\ENQ\EOT\v\STX\EOT\EOT\DC2\EOT\150\ENQ\STX\n\
     \\n\
     \\r\n\
-    \\ENQ\EOT\v\STX\EOT\ENQ\DC2\EOT\240\EOT\v\SI\n\
+    \\ENQ\EOT\v\STX\EOT\ENQ\DC2\EOT\150\ENQ\v\SI\n\
     \\r\n\
-    \\ENQ\EOT\v\STX\EOT\SOH\DC2\EOT\240\EOT\DLE6\n\
+    \\ENQ\EOT\v\STX\EOT\SOH\DC2\EOT\150\ENQ\DLE6\n\
     \\r\n\
-    \\ENQ\EOT\v\STX\EOT\ETX\DC2\EOT\240\EOT9;\n\
+    \\ENQ\EOT\v\STX\EOT\ETX\DC2\EOT\150\ENQ9;\n\
     \\r\n\
-    \\ENQ\EOT\v\STX\EOT\b\DC2\EOT\240\EOT<O\n\
+    \\ENQ\EOT\v\STX\EOT\b\DC2\EOT\150\ENQ<O\n\
     \\SO\n\
-    \\ACK\EOT\v\STX\EOT\b\ETX\DC2\EOT\240\EOT=N\n\
-    \=\n\
-    \\EOT\EOT\v\STX\ENQ\DC2\EOT\243\EOT\STX$\SUB/ Any features defined in the specific edition.\n\
+    \\ACK\EOT\v\STX\EOT\b\ETX\DC2\EOT\150\ENQ=N\n\
+    \\145\STX\n\
+    \\EOT\EOT\v\STX\ENQ\DC2\EOT\156\ENQ\STX$\SUB\130\STX Any features defined in the specific edition.\n\
+    \ WARNING: This field should only be used by protobuf plugins or special\n\
+    \ cases like the proto compiler. Other uses are discouraged and\n\
+    \ developers should rely on the protoreflect APIs for their client language.\n\
     \\n\
     \\r\n\
-    \\ENQ\EOT\v\STX\ENQ\EOT\DC2\EOT\243\EOT\STX\n\
+    \\ENQ\EOT\v\STX\ENQ\EOT\DC2\EOT\156\ENQ\STX\n\
     \\n\
     \\r\n\
-    \\ENQ\EOT\v\STX\ENQ\ACK\DC2\EOT\243\EOT\v\NAK\n\
+    \\ENQ\EOT\v\STX\ENQ\ACK\DC2\EOT\156\ENQ\v\NAK\n\
     \\r\n\
-    \\ENQ\EOT\v\STX\ENQ\SOH\DC2\EOT\243\EOT\SYN\RS\n\
+    \\ENQ\EOT\v\STX\ENQ\SOH\DC2\EOT\156\ENQ\SYN\RS\n\
     \\r\n\
-    \\ENQ\EOT\v\STX\ENQ\ETX\DC2\EOT\243\EOT!#\n\
+    \\ENQ\EOT\v\STX\ENQ\ETX\DC2\EOT\156\ENQ!#\n\
+    \\146\SOH\n\
+    \\ETX\EOT\v\ENQ\DC2\EOT\160\ENQ\STX\CAN\SUB\132\SOH Range reserved for first-class custom options defined by the Protobuf\n\
+    \ team. User custom options must use the 1000+ range instead.\n\
+    \\n\
+    \\f\n\
+    \\EOT\EOT\v\ENQ\NUL\DC2\EOT\160\ENQ\r\ETB\n\
+    \\r\n\
+    \\ENQ\EOT\v\ENQ\NUL\SOH\DC2\EOT\160\ENQ\r\DLE\n\
+    \\r\n\
+    \\ENQ\EOT\v\ENQ\NUL\STX\DC2\EOT\160\ENQ\DC4\ETB\n\
     \O\n\
-    \\EOT\EOT\v\STX\ACK\DC2\EOT\246\EOT\STX:\SUBA The parser stores options it doesn't recognize here. See above.\n\
+    \\EOT\EOT\v\STX\ACK\DC2\EOT\163\ENQ\STX:\SUBA The parser stores options it doesn't recognize here. See above.\n\
     \\n\
     \\r\n\
-    \\ENQ\EOT\v\STX\ACK\EOT\DC2\EOT\246\EOT\STX\n\
+    \\ENQ\EOT\v\STX\ACK\EOT\DC2\EOT\163\ENQ\STX\n\
     \\n\
     \\r\n\
-    \\ENQ\EOT\v\STX\ACK\ACK\DC2\EOT\246\EOT\v\RS\n\
+    \\ENQ\EOT\v\STX\ACK\ACK\DC2\EOT\163\ENQ\v\RS\n\
     \\r\n\
-    \\ENQ\EOT\v\STX\ACK\SOH\DC2\EOT\246\EOT\US3\n\
+    \\ENQ\EOT\v\STX\ACK\SOH\DC2\EOT\163\ENQ\US3\n\
     \\r\n\
-    \\ENQ\EOT\v\STX\ACK\ETX\DC2\EOT\246\EOT69\n\
+    \\ENQ\EOT\v\STX\ACK\ETX\DC2\EOT\163\ENQ69\n\
     \Z\n\
-    \\ETX\EOT\v\ENQ\DC2\EOT\249\EOT\STX\EM\SUBM Clients can define custom options in extensions of this message. See above.\n\
+    \\ETX\EOT\v\ENQ\DC2\EOT\166\ENQ\STX\EM\SUBM Clients can define custom options in extensions of this message. See above.\n\
     \\n\
     \\f\n\
-    \\EOT\EOT\v\ENQ\NUL\DC2\EOT\249\EOT\r\CAN\n\
+    \\EOT\EOT\v\ENQ\SOH\DC2\EOT\166\ENQ\r\CAN\n\
     \\r\n\
-    \\ENQ\EOT\v\ENQ\NUL\SOH\DC2\EOT\249\EOT\r\DC1\n\
+    \\ENQ\EOT\v\ENQ\SOH\SOH\DC2\EOT\166\ENQ\r\DC1\n\
     \\r\n\
-    \\ENQ\EOT\v\ENQ\NUL\STX\DC2\EOT\249\EOT\NAK\CAN\n\
+    \\ENQ\EOT\v\ENQ\SOH\STX\DC2\EOT\166\ENQ\NAK\CAN\n\
     \\f\n\
-    \\STX\EOT\f\DC2\ACK\252\EOT\NUL\162\ACK\SOH\n\
+    \\STX\EOT\f\DC2\ACK\169\ENQ\NUL\216\ACK\SOH\n\
     \\v\n\
-    \\ETX\EOT\f\SOH\DC2\EOT\252\EOT\b\DC4\n\
+    \\ETX\EOT\f\SOH\DC2\EOT\169\ENQ\b\DC4\n\
     \\194\ETX\n\
-    \\EOT\EOT\f\STX\NUL\DC2\EOT\132\ENQ\STXE\SUB\179\ETX NOTE: ctype is deprecated. Use `features.(pb.cpp).string_type` instead.\n\
+    \\EOT\EOT\f\STX\NUL\DC2\EOT\177\ENQ\STXE\SUB\179\ETX NOTE: ctype is deprecated. Use `features.(pb.cpp).string_type` instead.\n\
     \ The ctype option instructs the C++ code generator to use a different\n\
     \ representation of the field than it normally would.  See the specific\n\
     \ options below.  This option is only implemented to support use of\n\
@@ -16537,32 +17616,32 @@ packedFileDescriptor
     \ TODO: make ctype actually deprecated.\n\
     \\n\
     \\r\n\
-    \\ENQ\EOT\f\STX\NUL\EOT\DC2\EOT\132\ENQ\STX\n\
+    \\ENQ\EOT\f\STX\NUL\EOT\DC2\EOT\177\ENQ\STX\n\
     \\n\
     \\r\n\
-    \\ENQ\EOT\f\STX\NUL\ACK\DC2\EOT\132\ENQ\v\DLE\n\
+    \\ENQ\EOT\f\STX\NUL\ACK\DC2\EOT\177\ENQ\v\DLE\n\
     \\r\n\
-    \\ENQ\EOT\f\STX\NUL\SOH\DC2\EOT\132\ENQ\DC1\SYN\n\
+    \\ENQ\EOT\f\STX\NUL\SOH\DC2\EOT\177\ENQ\DC1\SYN\n\
     \\r\n\
-    \\ENQ\EOT\f\STX\NUL\ETX\DC2\EOT\132\ENQ\EM\SUB\n\
+    \\ENQ\EOT\f\STX\NUL\ETX\DC2\EOT\177\ENQ\EM\SUB\n\
     \\r\n\
-    \\ENQ\EOT\f\STX\NUL\b\DC2\EOT\132\ENQ\ESCD\n\
+    \\ENQ\EOT\f\STX\NUL\b\DC2\EOT\177\ENQ\ESCD\n\
     \\r\n\
-    \\ENQ\EOT\f\STX\NUL\a\DC2\EOT\132\ENQ=C\n\
+    \\ENQ\EOT\f\STX\NUL\a\DC2\EOT\177\ENQ=C\n\
     \\SO\n\
-    \\EOT\EOT\f\EOT\NUL\DC2\ACK\133\ENQ\STX\146\ENQ\ETX\n\
+    \\EOT\EOT\f\EOT\NUL\DC2\ACK\178\ENQ\STX\191\ENQ\ETX\n\
     \\r\n\
-    \\ENQ\EOT\f\EOT\NUL\SOH\DC2\EOT\133\ENQ\a\f\n\
+    \\ENQ\EOT\f\EOT\NUL\SOH\DC2\EOT\178\ENQ\a\f\n\
     \\US\n\
-    \\ACK\EOT\f\EOT\NUL\STX\NUL\DC2\EOT\135\ENQ\EOT\SI\SUB\SI Default mode.\n\
+    \\ACK\EOT\f\EOT\NUL\STX\NUL\DC2\EOT\180\ENQ\EOT\SI\SUB\SI Default mode.\n\
     \\n\
     \\SI\n\
-    \\a\EOT\f\EOT\NUL\STX\NUL\SOH\DC2\EOT\135\ENQ\EOT\n\
+    \\a\EOT\f\EOT\NUL\STX\NUL\SOH\DC2\EOT\180\ENQ\EOT\n\
     \\n\
     \\SI\n\
-    \\a\EOT\f\EOT\NUL\STX\NUL\STX\DC2\EOT\135\ENQ\r\SO\n\
+    \\a\EOT\f\EOT\NUL\STX\NUL\STX\DC2\EOT\180\ENQ\r\SO\n\
     \\150\ETX\n\
-    \\ACK\EOT\f\EOT\NUL\STX\SOH\DC2\EOT\143\ENQ\EOT\r\SUB\133\ETX The option [ctype=CORD] may be applied to a non-repeated field of type\n\
+    \\ACK\EOT\f\EOT\NUL\STX\SOH\DC2\EOT\188\ENQ\EOT\r\SUB\133\ETX The option [ctype=CORD] may be applied to a non-repeated field of type\n\
     \ \"bytes\". It indicates that in C++, the data should be stored in a Cord\n\
     \ instead of a string.  For very large strings, this may reduce memory\n\
     \ fragmentation. It may also allow better performance when parsing from a\n\
@@ -16570,17 +17649,17 @@ packedFileDescriptor
     \ alias the original buffer.\n\
     \\n\
     \\SI\n\
-    \\a\EOT\f\EOT\NUL\STX\SOH\SOH\DC2\EOT\143\ENQ\EOT\b\n\
+    \\a\EOT\f\EOT\NUL\STX\SOH\SOH\DC2\EOT\188\ENQ\EOT\b\n\
     \\SI\n\
-    \\a\EOT\f\EOT\NUL\STX\SOH\STX\DC2\EOT\143\ENQ\v\f\n\
+    \\a\EOT\f\EOT\NUL\STX\SOH\STX\DC2\EOT\188\ENQ\v\f\n\
     \\SO\n\
-    \\ACK\EOT\f\EOT\NUL\STX\STX\DC2\EOT\145\ENQ\EOT\NAK\n\
+    \\ACK\EOT\f\EOT\NUL\STX\STX\DC2\EOT\190\ENQ\EOT\NAK\n\
     \\SI\n\
-    \\a\EOT\f\EOT\NUL\STX\STX\SOH\DC2\EOT\145\ENQ\EOT\DLE\n\
+    \\a\EOT\f\EOT\NUL\STX\STX\SOH\DC2\EOT\190\ENQ\EOT\DLE\n\
     \\SI\n\
-    \\a\EOT\f\EOT\NUL\STX\STX\STX\DC2\EOT\145\ENQ\DC3\DC4\n\
+    \\a\EOT\f\EOT\NUL\STX\STX\STX\DC2\EOT\190\ENQ\DC3\DC4\n\
     \\211\ETX\n\
-    \\EOT\EOT\f\STX\SOH\DC2\EOT\154\ENQ\STX\ESC\SUB\196\ETX The packed option can be enabled for repeated primitive fields to enable\n\
+    \\EOT\EOT\f\STX\SOH\DC2\EOT\199\ENQ\STX\ESC\SUB\196\ETX The packed option can be enabled for repeated primitive fields to enable\n\
     \ a more efficient representation on the wire. Rather than repeatedly\n\
     \ writing the tag and type for each element, the entire array is encoded as\n\
     \ a single length-delimited blob. In proto3, only explicit setting it to\n\
@@ -16589,16 +17668,16 @@ packedFileDescriptor
     \ the behavior.\n\
     \\n\
     \\r\n\
-    \\ENQ\EOT\f\STX\SOH\EOT\DC2\EOT\154\ENQ\STX\n\
+    \\ENQ\EOT\f\STX\SOH\EOT\DC2\EOT\199\ENQ\STX\n\
     \\n\
     \\r\n\
-    \\ENQ\EOT\f\STX\SOH\ENQ\DC2\EOT\154\ENQ\v\SI\n\
+    \\ENQ\EOT\f\STX\SOH\ENQ\DC2\EOT\199\ENQ\v\SI\n\
     \\r\n\
-    \\ENQ\EOT\f\STX\SOH\SOH\DC2\EOT\154\ENQ\DLE\SYN\n\
+    \\ENQ\EOT\f\STX\SOH\SOH\DC2\EOT\199\ENQ\DLE\SYN\n\
     \\r\n\
-    \\ENQ\EOT\f\STX\SOH\ETX\DC2\EOT\154\ENQ\EM\SUB\n\
+    \\ENQ\EOT\f\STX\SOH\ETX\DC2\EOT\199\ENQ\EM\SUB\n\
     \\154\ENQ\n\
-    \\EOT\EOT\f\STX\STX\DC2\EOT\167\ENQ\STX3\SUB\139\ENQ The jstype option determines the JavaScript type used for values of the\n\
+    \\EOT\EOT\f\STX\STX\DC2\EOT\212\ENQ\STX3\SUB\139\ENQ The jstype option determines the JavaScript type used for values of the\n\
     \ field.  The option is permitted only for 64 bit integral and fixed types\n\
     \ (int64, uint64, sint64, fixed64, sfixed64).  A field with jstype JS_STRING\n\
     \ is represented as JavaScript string, which avoids loss of precision that\n\
@@ -16611,46 +17690,46 @@ packedFileDescriptor
     \ goog.math.Integer.\n\
     \\n\
     \\r\n\
-    \\ENQ\EOT\f\STX\STX\EOT\DC2\EOT\167\ENQ\STX\n\
+    \\ENQ\EOT\f\STX\STX\EOT\DC2\EOT\212\ENQ\STX\n\
     \\n\
     \\r\n\
-    \\ENQ\EOT\f\STX\STX\ACK\DC2\EOT\167\ENQ\v\DC1\n\
+    \\ENQ\EOT\f\STX\STX\ACK\DC2\EOT\212\ENQ\v\DC1\n\
     \\r\n\
-    \\ENQ\EOT\f\STX\STX\SOH\DC2\EOT\167\ENQ\DC2\CAN\n\
+    \\ENQ\EOT\f\STX\STX\SOH\DC2\EOT\212\ENQ\DC2\CAN\n\
     \\r\n\
-    \\ENQ\EOT\f\STX\STX\ETX\DC2\EOT\167\ENQ\ESC\FS\n\
+    \\ENQ\EOT\f\STX\STX\ETX\DC2\EOT\212\ENQ\ESC\FS\n\
     \\r\n\
-    \\ENQ\EOT\f\STX\STX\b\DC2\EOT\167\ENQ\GS2\n\
+    \\ENQ\EOT\f\STX\STX\b\DC2\EOT\212\ENQ\GS2\n\
     \\r\n\
-    \\ENQ\EOT\f\STX\STX\a\DC2\EOT\167\ENQ(1\n\
+    \\ENQ\EOT\f\STX\STX\a\DC2\EOT\212\ENQ(1\n\
     \\SO\n\
-    \\EOT\EOT\f\EOT\SOH\DC2\ACK\168\ENQ\STX\177\ENQ\ETX\n\
+    \\EOT\EOT\f\EOT\SOH\DC2\ACK\213\ENQ\STX\222\ENQ\ETX\n\
     \\r\n\
-    \\ENQ\EOT\f\EOT\SOH\SOH\DC2\EOT\168\ENQ\a\r\n\
+    \\ENQ\EOT\f\EOT\SOH\SOH\DC2\EOT\213\ENQ\a\r\n\
     \'\n\
-    \\ACK\EOT\f\EOT\SOH\STX\NUL\DC2\EOT\170\ENQ\EOT\DC2\SUB\ETB Use the default type.\n\
+    \\ACK\EOT\f\EOT\SOH\STX\NUL\DC2\EOT\215\ENQ\EOT\DC2\SUB\ETB Use the default type.\n\
     \\n\
     \\SI\n\
-    \\a\EOT\f\EOT\SOH\STX\NUL\SOH\DC2\EOT\170\ENQ\EOT\r\n\
+    \\a\EOT\f\EOT\SOH\STX\NUL\SOH\DC2\EOT\215\ENQ\EOT\r\n\
     \\SI\n\
-    \\a\EOT\f\EOT\SOH\STX\NUL\STX\DC2\EOT\170\ENQ\DLE\DC1\n\
+    \\a\EOT\f\EOT\SOH\STX\NUL\STX\DC2\EOT\215\ENQ\DLE\DC1\n\
     \)\n\
-    \\ACK\EOT\f\EOT\SOH\STX\SOH\DC2\EOT\173\ENQ\EOT\DC2\SUB\EM Use JavaScript strings.\n\
+    \\ACK\EOT\f\EOT\SOH\STX\SOH\DC2\EOT\218\ENQ\EOT\DC2\SUB\EM Use JavaScript strings.\n\
     \\n\
     \\SI\n\
-    \\a\EOT\f\EOT\SOH\STX\SOH\SOH\DC2\EOT\173\ENQ\EOT\r\n\
+    \\a\EOT\f\EOT\SOH\STX\SOH\SOH\DC2\EOT\218\ENQ\EOT\r\n\
     \\SI\n\
-    \\a\EOT\f\EOT\SOH\STX\SOH\STX\DC2\EOT\173\ENQ\DLE\DC1\n\
+    \\a\EOT\f\EOT\SOH\STX\SOH\STX\DC2\EOT\218\ENQ\DLE\DC1\n\
     \)\n\
-    \\ACK\EOT\f\EOT\SOH\STX\STX\DC2\EOT\176\ENQ\EOT\DC2\SUB\EM Use JavaScript numbers.\n\
+    \\ACK\EOT\f\EOT\SOH\STX\STX\DC2\EOT\221\ENQ\EOT\DC2\SUB\EM Use JavaScript numbers.\n\
     \\n\
     \\SI\n\
-    \\a\EOT\f\EOT\SOH\STX\STX\SOH\DC2\EOT\176\ENQ\EOT\r\n\
+    \\a\EOT\f\EOT\SOH\STX\STX\SOH\DC2\EOT\221\ENQ\EOT\r\n\
     \\SI\n\
-    \\a\EOT\f\EOT\SOH\STX\STX\STX\DC2\EOT\176\ENQ\DLE\DC1\n\
+    \\a\EOT\f\EOT\SOH\STX\STX\STX\DC2\EOT\221\ENQ\DLE\DC1\n\
     \\153\n\
     \\n\
-    \\EOT\EOT\f\STX\ETX\DC2\EOT\201\ENQ\STX+\SUB\138\n\
+    \\EOT\EOT\f\STX\ETX\DC2\EOT\246\ENQ\STX+\SUB\138\n\
     \ Should this field be parsed lazily?  Lazy applies only to message-type\n\
     \ fields.  It means that when the outer message is initially parsed, the\n\
     \ inner message's contents will not be parsed but instead stored in encoded\n\
@@ -16675,447 +17754,485 @@ packedFileDescriptor
     \ uninitialized messages are acceptable).\n\
     \\n\
     \\r\n\
-    \\ENQ\EOT\f\STX\ETX\EOT\DC2\EOT\201\ENQ\STX\n\
+    \\ENQ\EOT\f\STX\ETX\EOT\DC2\EOT\246\ENQ\STX\n\
     \\n\
     \\r\n\
-    \\ENQ\EOT\f\STX\ETX\ENQ\DC2\EOT\201\ENQ\v\SI\n\
+    \\ENQ\EOT\f\STX\ETX\ENQ\DC2\EOT\246\ENQ\v\SI\n\
     \\r\n\
-    \\ENQ\EOT\f\STX\ETX\SOH\DC2\EOT\201\ENQ\DLE\DC4\n\
+    \\ENQ\EOT\f\STX\ETX\SOH\DC2\EOT\246\ENQ\DLE\DC4\n\
     \\r\n\
-    \\ENQ\EOT\f\STX\ETX\ETX\DC2\EOT\201\ENQ\ETB\CAN\n\
+    \\ENQ\EOT\f\STX\ETX\ETX\DC2\EOT\246\ENQ\ETB\CAN\n\
     \\r\n\
-    \\ENQ\EOT\f\STX\ETX\b\DC2\EOT\201\ENQ\EM*\n\
+    \\ENQ\EOT\f\STX\ETX\b\DC2\EOT\246\ENQ\EM*\n\
     \\r\n\
-    \\ENQ\EOT\f\STX\ETX\a\DC2\EOT\201\ENQ$)\n\
+    \\ENQ\EOT\f\STX\ETX\a\DC2\EOT\246\ENQ$)\n\
     \\175\SOH\n\
-    \\EOT\EOT\f\STX\EOT\DC2\EOT\206\ENQ\STX7\SUB\160\SOH unverified_lazy does no correctness checks on the byte stream. This should\n\
+    \\EOT\EOT\f\STX\EOT\DC2\EOT\251\ENQ\STX7\SUB\160\SOH unverified_lazy does no correctness checks on the byte stream. This should\n\
     \ only be used where lazy with verification is prohibitive for performance\n\
     \ reasons.\n\
     \\n\
     \\r\n\
-    \\ENQ\EOT\f\STX\EOT\EOT\DC2\EOT\206\ENQ\STX\n\
+    \\ENQ\EOT\f\STX\EOT\EOT\DC2\EOT\251\ENQ\STX\n\
     \\n\
     \\r\n\
-    \\ENQ\EOT\f\STX\EOT\ENQ\DC2\EOT\206\ENQ\v\SI\n\
+    \\ENQ\EOT\f\STX\EOT\ENQ\DC2\EOT\251\ENQ\v\SI\n\
     \\r\n\
-    \\ENQ\EOT\f\STX\EOT\SOH\DC2\EOT\206\ENQ\DLE\US\n\
+    \\ENQ\EOT\f\STX\EOT\SOH\DC2\EOT\251\ENQ\DLE\US\n\
     \\r\n\
-    \\ENQ\EOT\f\STX\EOT\ETX\DC2\EOT\206\ENQ\"$\n\
+    \\ENQ\EOT\f\STX\EOT\ETX\DC2\EOT\251\ENQ\"$\n\
     \\r\n\
-    \\ENQ\EOT\f\STX\EOT\b\DC2\EOT\206\ENQ%6\n\
+    \\ENQ\EOT\f\STX\EOT\b\DC2\EOT\251\ENQ%6\n\
     \\r\n\
-    \\ENQ\EOT\f\STX\EOT\a\DC2\EOT\206\ENQ05\n\
+    \\ENQ\EOT\f\STX\EOT\a\DC2\EOT\251\ENQ05\n\
     \\232\SOH\n\
-    \\EOT\EOT\f\STX\ENQ\DC2\EOT\212\ENQ\STX1\SUB\217\SOH Is this field deprecated?\n\
+    \\EOT\EOT\f\STX\ENQ\DC2\EOT\129\ACK\STX1\SUB\217\SOH Is this field deprecated?\n\
     \ Depending on the target platform, this can emit Deprecated annotations\n\
     \ for accessors, or it will be completely ignored; in the very least, this\n\
     \ is a formalization for deprecating fields.\n\
     \\n\
     \\r\n\
-    \\ENQ\EOT\f\STX\ENQ\EOT\DC2\EOT\212\ENQ\STX\n\
+    \\ENQ\EOT\f\STX\ENQ\EOT\DC2\EOT\129\ACK\STX\n\
     \\n\
     \\r\n\
-    \\ENQ\EOT\f\STX\ENQ\ENQ\DC2\EOT\212\ENQ\v\SI\n\
+    \\ENQ\EOT\f\STX\ENQ\ENQ\DC2\EOT\129\ACK\v\SI\n\
     \\r\n\
-    \\ENQ\EOT\f\STX\ENQ\SOH\DC2\EOT\212\ENQ\DLE\SUB\n\
+    \\ENQ\EOT\f\STX\ENQ\SOH\DC2\EOT\129\ACK\DLE\SUB\n\
     \\r\n\
-    \\ENQ\EOT\f\STX\ENQ\ETX\DC2\EOT\212\ENQ\GS\RS\n\
+    \\ENQ\EOT\f\STX\ENQ\ETX\DC2\EOT\129\ACK\GS\RS\n\
     \\r\n\
-    \\ENQ\EOT\f\STX\ENQ\b\DC2\EOT\212\ENQ\US0\n\
+    \\ENQ\EOT\f\STX\ENQ\b\DC2\EOT\129\ACK\US0\n\
     \\r\n\
-    \\ENQ\EOT\f\STX\ENQ\a\DC2\EOT\212\ENQ*/\n\
-    \?\n\
-    \\EOT\EOT\f\STX\ACK\DC2\EOT\215\ENQ\STX,\SUB1 For Google-internal migration only. Do not use.\n\
+    \\ENQ\EOT\f\STX\ENQ\a\DC2\EOT\129\ACK*/\n\
+    \X\n\
+    \\EOT\EOT\f\STX\ACK\DC2\EOT\133\ACK\STX?\SUBJ DEPRECATED. DO NOT USE!\n\
+    \ For Google-internal migration only. Do not use.\n\
     \\n\
     \\r\n\
-    \\ENQ\EOT\f\STX\ACK\EOT\DC2\EOT\215\ENQ\STX\n\
+    \\ENQ\EOT\f\STX\ACK\EOT\DC2\EOT\133\ACK\STX\n\
     \\n\
     \\r\n\
-    \\ENQ\EOT\f\STX\ACK\ENQ\DC2\EOT\215\ENQ\v\SI\n\
+    \\ENQ\EOT\f\STX\ACK\ENQ\DC2\EOT\133\ACK\v\SI\n\
     \\r\n\
-    \\ENQ\EOT\f\STX\ACK\SOH\DC2\EOT\215\ENQ\DLE\DC4\n\
+    \\ENQ\EOT\f\STX\ACK\SOH\DC2\EOT\133\ACK\DLE\DC4\n\
     \\r\n\
-    \\ENQ\EOT\f\STX\ACK\ETX\DC2\EOT\215\ENQ\ETB\EM\n\
+    \\ENQ\EOT\f\STX\ACK\ETX\DC2\EOT\133\ACK\ETB\EM\n\
     \\r\n\
-    \\ENQ\EOT\f\STX\ACK\b\DC2\EOT\215\ENQ\SUB+\n\
+    \\ENQ\EOT\f\STX\ACK\b\DC2\EOT\133\ACK\SUB>\n\
     \\r\n\
-    \\ENQ\EOT\f\STX\ACK\a\DC2\EOT\215\ENQ%*\n\
+    \\ENQ\EOT\f\STX\ACK\a\DC2\EOT\133\ACK%*\n\
+    \\SO\n\
+    \\ACK\EOT\f\STX\ACK\b\ETX\DC2\EOT\133\ACK,=\n\
     \\151\SOH\n\
-    \\EOT\EOT\f\STX\a\DC2\EOT\219\ENQ\STX4\SUB\136\SOH Indicate that the field value should not be printed out when using debug\n\
+    \\EOT\EOT\f\STX\a\DC2\EOT\137\ACK\STX4\SUB\136\SOH Indicate that the field value should not be printed out when using debug\n\
     \ formats, e.g. when the field contains sensitive credentials.\n\
     \\n\
     \\r\n\
-    \\ENQ\EOT\f\STX\a\EOT\DC2\EOT\219\ENQ\STX\n\
+    \\ENQ\EOT\f\STX\a\EOT\DC2\EOT\137\ACK\STX\n\
     \\n\
     \\r\n\
-    \\ENQ\EOT\f\STX\a\ENQ\DC2\EOT\219\ENQ\v\SI\n\
+    \\ENQ\EOT\f\STX\a\ENQ\DC2\EOT\137\ACK\v\SI\n\
     \\r\n\
-    \\ENQ\EOT\f\STX\a\SOH\DC2\EOT\219\ENQ\DLE\FS\n\
+    \\ENQ\EOT\f\STX\a\SOH\DC2\EOT\137\ACK\DLE\FS\n\
     \\r\n\
-    \\ENQ\EOT\f\STX\a\ETX\DC2\EOT\219\ENQ\US!\n\
+    \\ENQ\EOT\f\STX\a\ETX\DC2\EOT\137\ACK\US!\n\
     \\r\n\
-    \\ENQ\EOT\f\STX\a\b\DC2\EOT\219\ENQ\"3\n\
+    \\ENQ\EOT\f\STX\a\b\DC2\EOT\137\ACK\"3\n\
     \\r\n\
-    \\ENQ\EOT\f\STX\a\a\DC2\EOT\219\ENQ-2\n\
-    \\197\SOH\n\
-    \\EOT\EOT\f\EOT\STX\DC2\ACK\224\ENQ\STX\228\ENQ\ETX\SUB\180\SOH If set to RETENTION_SOURCE, the option will be omitted from the binary.\n\
-    \ Note: as of January 2023, support for this is in progress and does not yet\n\
-    \ have an effect (b/264593489).\n\
+    \\ENQ\EOT\f\STX\a\a\DC2\EOT\137\ACK-2\n\
+    \Y\n\
+    \\EOT\EOT\f\EOT\STX\DC2\ACK\140\ACK\STX\144\ACK\ETX\SUBI If set to RETENTION_SOURCE, the option will be omitted from the binary.\n\
     \\n\
     \\r\n\
-    \\ENQ\EOT\f\EOT\STX\SOH\DC2\EOT\224\ENQ\a\SYN\n\
+    \\ENQ\EOT\f\EOT\STX\SOH\DC2\EOT\140\ACK\a\SYN\n\
     \\SO\n\
-    \\ACK\EOT\f\EOT\STX\STX\NUL\DC2\EOT\225\ENQ\EOT\SUB\n\
+    \\ACK\EOT\f\EOT\STX\STX\NUL\DC2\EOT\141\ACK\EOT\SUB\n\
     \\SI\n\
-    \\a\EOT\f\EOT\STX\STX\NUL\SOH\DC2\EOT\225\ENQ\EOT\NAK\n\
+    \\a\EOT\f\EOT\STX\STX\NUL\SOH\DC2\EOT\141\ACK\EOT\NAK\n\
     \\SI\n\
-    \\a\EOT\f\EOT\STX\STX\NUL\STX\DC2\EOT\225\ENQ\CAN\EM\n\
+    \\a\EOT\f\EOT\STX\STX\NUL\STX\DC2\EOT\141\ACK\CAN\EM\n\
     \\SO\n\
-    \\ACK\EOT\f\EOT\STX\STX\SOH\DC2\EOT\226\ENQ\EOT\SUB\n\
+    \\ACK\EOT\f\EOT\STX\STX\SOH\DC2\EOT\142\ACK\EOT\SUB\n\
     \\SI\n\
-    \\a\EOT\f\EOT\STX\STX\SOH\SOH\DC2\EOT\226\ENQ\EOT\NAK\n\
+    \\a\EOT\f\EOT\STX\STX\SOH\SOH\DC2\EOT\142\ACK\EOT\NAK\n\
     \\SI\n\
-    \\a\EOT\f\EOT\STX\STX\SOH\STX\DC2\EOT\226\ENQ\CAN\EM\n\
+    \\a\EOT\f\EOT\STX\STX\SOH\STX\DC2\EOT\142\ACK\CAN\EM\n\
     \\SO\n\
-    \\ACK\EOT\f\EOT\STX\STX\STX\DC2\EOT\227\ENQ\EOT\EM\n\
+    \\ACK\EOT\f\EOT\STX\STX\STX\DC2\EOT\143\ACK\EOT\EM\n\
     \\SI\n\
-    \\a\EOT\f\EOT\STX\STX\STX\SOH\DC2\EOT\227\ENQ\EOT\DC4\n\
+    \\a\EOT\f\EOT\STX\STX\STX\SOH\DC2\EOT\143\ACK\EOT\DC4\n\
     \\SI\n\
-    \\a\EOT\f\EOT\STX\STX\STX\STX\DC2\EOT\227\ENQ\ETB\CAN\n\
+    \\a\EOT\f\EOT\STX\STX\STX\STX\DC2\EOT\143\ACK\ETB\CAN\n\
     \\f\n\
-    \\EOT\EOT\f\STX\b\DC2\EOT\230\ENQ\STX*\n\
+    \\EOT\EOT\f\STX\b\DC2\EOT\146\ACK\STX*\n\
     \\r\n\
-    \\ENQ\EOT\f\STX\b\EOT\DC2\EOT\230\ENQ\STX\n\
+    \\ENQ\EOT\f\STX\b\EOT\DC2\EOT\146\ACK\STX\n\
     \\n\
     \\r\n\
-    \\ENQ\EOT\f\STX\b\ACK\DC2\EOT\230\ENQ\v\SUB\n\
+    \\ENQ\EOT\f\STX\b\ACK\DC2\EOT\146\ACK\v\SUB\n\
     \\r\n\
-    \\ENQ\EOT\f\STX\b\SOH\DC2\EOT\230\ENQ\ESC$\n\
+    \\ENQ\EOT\f\STX\b\SOH\DC2\EOT\146\ACK\ESC$\n\
     \\r\n\
-    \\ENQ\EOT\f\STX\b\ETX\DC2\EOT\230\ENQ')\n\
-    \\173\STX\n\
-    \\EOT\EOT\f\EOT\ETX\DC2\ACK\236\ENQ\STX\247\ENQ\ETX\SUB\156\STX This indicates the types of entities that the field may apply to when used\n\
+    \\ENQ\EOT\f\STX\b\ETX\DC2\EOT\146\ACK')\n\
+    \\195\SOH\n\
+    \\EOT\EOT\f\EOT\ETX\DC2\ACK\151\ACK\STX\162\ACK\ETX\SUB\178\SOH This indicates the types of entities that the field may apply to when used\n\
     \ as an option. If it is unset, then the field may be freely used as an\n\
-    \ option on any kind of entity. Note: as of January 2023, support for this is\n\
-    \ in progress and does not yet have an effect (b/264593489).\n\
+    \ option on any kind of entity.\n\
     \\n\
     \\r\n\
-    \\ENQ\EOT\f\EOT\ETX\SOH\DC2\EOT\236\ENQ\a\ETB\n\
+    \\ENQ\EOT\f\EOT\ETX\SOH\DC2\EOT\151\ACK\a\ETB\n\
     \\SO\n\
-    \\ACK\EOT\f\EOT\ETX\STX\NUL\DC2\EOT\237\ENQ\EOT\FS\n\
+    \\ACK\EOT\f\EOT\ETX\STX\NUL\DC2\EOT\152\ACK\EOT\FS\n\
     \\SI\n\
-    \\a\EOT\f\EOT\ETX\STX\NUL\SOH\DC2\EOT\237\ENQ\EOT\ETB\n\
+    \\a\EOT\f\EOT\ETX\STX\NUL\SOH\DC2\EOT\152\ACK\EOT\ETB\n\
     \\SI\n\
-    \\a\EOT\f\EOT\ETX\STX\NUL\STX\DC2\EOT\237\ENQ\SUB\ESC\n\
+    \\a\EOT\f\EOT\ETX\STX\NUL\STX\DC2\EOT\152\ACK\SUB\ESC\n\
     \\SO\n\
-    \\ACK\EOT\f\EOT\ETX\STX\SOH\DC2\EOT\238\ENQ\EOT\EM\n\
+    \\ACK\EOT\f\EOT\ETX\STX\SOH\DC2\EOT\153\ACK\EOT\EM\n\
     \\SI\n\
-    \\a\EOT\f\EOT\ETX\STX\SOH\SOH\DC2\EOT\238\ENQ\EOT\DC4\n\
+    \\a\EOT\f\EOT\ETX\STX\SOH\SOH\DC2\EOT\153\ACK\EOT\DC4\n\
     \\SI\n\
-    \\a\EOT\f\EOT\ETX\STX\SOH\STX\DC2\EOT\238\ENQ\ETB\CAN\n\
+    \\a\EOT\f\EOT\ETX\STX\SOH\STX\DC2\EOT\153\ACK\ETB\CAN\n\
     \\SO\n\
-    \\ACK\EOT\f\EOT\ETX\STX\STX\DC2\EOT\239\ENQ\EOT$\n\
+    \\ACK\EOT\f\EOT\ETX\STX\STX\DC2\EOT\154\ACK\EOT$\n\
     \\SI\n\
-    \\a\EOT\f\EOT\ETX\STX\STX\SOH\DC2\EOT\239\ENQ\EOT\US\n\
+    \\a\EOT\f\EOT\ETX\STX\STX\SOH\DC2\EOT\154\ACK\EOT\US\n\
     \\SI\n\
-    \\a\EOT\f\EOT\ETX\STX\STX\STX\DC2\EOT\239\ENQ\"#\n\
+    \\a\EOT\f\EOT\ETX\STX\STX\STX\DC2\EOT\154\ACK\"#\n\
     \\SO\n\
-    \\ACK\EOT\f\EOT\ETX\STX\ETX\DC2\EOT\240\ENQ\EOT\FS\n\
+    \\ACK\EOT\f\EOT\ETX\STX\ETX\DC2\EOT\155\ACK\EOT\FS\n\
     \\SI\n\
-    \\a\EOT\f\EOT\ETX\STX\ETX\SOH\DC2\EOT\240\ENQ\EOT\ETB\n\
+    \\a\EOT\f\EOT\ETX\STX\ETX\SOH\DC2\EOT\155\ACK\EOT\ETB\n\
     \\SI\n\
-    \\a\EOT\f\EOT\ETX\STX\ETX\STX\DC2\EOT\240\ENQ\SUB\ESC\n\
+    \\a\EOT\f\EOT\ETX\STX\ETX\STX\DC2\EOT\155\ACK\SUB\ESC\n\
     \\SO\n\
-    \\ACK\EOT\f\EOT\ETX\STX\EOT\DC2\EOT\241\ENQ\EOT\SUB\n\
+    \\ACK\EOT\f\EOT\ETX\STX\EOT\DC2\EOT\156\ACK\EOT\SUB\n\
     \\SI\n\
-    \\a\EOT\f\EOT\ETX\STX\EOT\SOH\DC2\EOT\241\ENQ\EOT\NAK\n\
+    \\a\EOT\f\EOT\ETX\STX\EOT\SOH\DC2\EOT\156\ACK\EOT\NAK\n\
     \\SI\n\
-    \\a\EOT\f\EOT\ETX\STX\EOT\STX\DC2\EOT\241\ENQ\CAN\EM\n\
+    \\a\EOT\f\EOT\ETX\STX\EOT\STX\DC2\EOT\156\ACK\CAN\EM\n\
     \\SO\n\
-    \\ACK\EOT\f\EOT\ETX\STX\ENQ\DC2\EOT\242\ENQ\EOT\SUB\n\
+    \\ACK\EOT\f\EOT\ETX\STX\ENQ\DC2\EOT\157\ACK\EOT\SUB\n\
     \\SI\n\
-    \\a\EOT\f\EOT\ETX\STX\ENQ\SOH\DC2\EOT\242\ENQ\EOT\NAK\n\
+    \\a\EOT\f\EOT\ETX\STX\ENQ\SOH\DC2\EOT\157\ACK\EOT\NAK\n\
     \\SI\n\
-    \\a\EOT\f\EOT\ETX\STX\ENQ\STX\DC2\EOT\242\ENQ\CAN\EM\n\
+    \\a\EOT\f\EOT\ETX\STX\ENQ\STX\DC2\EOT\157\ACK\CAN\EM\n\
     \\SO\n\
-    \\ACK\EOT\f\EOT\ETX\STX\ACK\DC2\EOT\243\ENQ\EOT\EM\n\
+    \\ACK\EOT\f\EOT\ETX\STX\ACK\DC2\EOT\158\ACK\EOT\EM\n\
     \\SI\n\
-    \\a\EOT\f\EOT\ETX\STX\ACK\SOH\DC2\EOT\243\ENQ\EOT\DC4\n\
+    \\a\EOT\f\EOT\ETX\STX\ACK\SOH\DC2\EOT\158\ACK\EOT\DC4\n\
     \\SI\n\
-    \\a\EOT\f\EOT\ETX\STX\ACK\STX\DC2\EOT\243\ENQ\ETB\CAN\n\
+    \\a\EOT\f\EOT\ETX\STX\ACK\STX\DC2\EOT\158\ACK\ETB\CAN\n\
     \\SO\n\
-    \\ACK\EOT\f\EOT\ETX\STX\a\DC2\EOT\244\ENQ\EOT\US\n\
+    \\ACK\EOT\f\EOT\ETX\STX\a\DC2\EOT\159\ACK\EOT\US\n\
     \\SI\n\
-    \\a\EOT\f\EOT\ETX\STX\a\SOH\DC2\EOT\244\ENQ\EOT\SUB\n\
+    \\a\EOT\f\EOT\ETX\STX\a\SOH\DC2\EOT\159\ACK\EOT\SUB\n\
     \\SI\n\
-    \\a\EOT\f\EOT\ETX\STX\a\STX\DC2\EOT\244\ENQ\GS\RS\n\
+    \\a\EOT\f\EOT\ETX\STX\a\STX\DC2\EOT\159\ACK\GS\RS\n\
     \\SO\n\
-    \\ACK\EOT\f\EOT\ETX\STX\b\DC2\EOT\245\ENQ\EOT\FS\n\
+    \\ACK\EOT\f\EOT\ETX\STX\b\DC2\EOT\160\ACK\EOT\FS\n\
     \\SI\n\
-    \\a\EOT\f\EOT\ETX\STX\b\SOH\DC2\EOT\245\ENQ\EOT\ETB\n\
+    \\a\EOT\f\EOT\ETX\STX\b\SOH\DC2\EOT\160\ACK\EOT\ETB\n\
     \\SI\n\
-    \\a\EOT\f\EOT\ETX\STX\b\STX\DC2\EOT\245\ENQ\SUB\ESC\n\
+    \\a\EOT\f\EOT\ETX\STX\b\STX\DC2\EOT\160\ACK\SUB\ESC\n\
     \\SO\n\
-    \\ACK\EOT\f\EOT\ETX\STX\t\DC2\EOT\246\ENQ\EOT\ESC\n\
+    \\ACK\EOT\f\EOT\ETX\STX\t\DC2\EOT\161\ACK\EOT\ESC\n\
     \\SI\n\
-    \\a\EOT\f\EOT\ETX\STX\t\SOH\DC2\EOT\246\ENQ\EOT\SYN\n\
+    \\a\EOT\f\EOT\ETX\STX\t\SOH\DC2\EOT\161\ACK\EOT\SYN\n\
     \\SI\n\
-    \\a\EOT\f\EOT\ETX\STX\t\STX\DC2\EOT\246\ENQ\EM\SUB\n\
+    \\a\EOT\f\EOT\ETX\STX\t\STX\DC2\EOT\161\ACK\EM\SUB\n\
     \\f\n\
-    \\EOT\EOT\f\STX\t\DC2\EOT\249\ENQ\STX)\n\
+    \\EOT\EOT\f\STX\t\DC2\EOT\164\ACK\STX)\n\
     \\r\n\
-    \\ENQ\EOT\f\STX\t\EOT\DC2\EOT\249\ENQ\STX\n\
+    \\ENQ\EOT\f\STX\t\EOT\DC2\EOT\164\ACK\STX\n\
     \\n\
     \\r\n\
-    \\ENQ\EOT\f\STX\t\ACK\DC2\EOT\249\ENQ\v\ESC\n\
+    \\ENQ\EOT\f\STX\t\ACK\DC2\EOT\164\ACK\v\ESC\n\
     \\r\n\
-    \\ENQ\EOT\f\STX\t\SOH\DC2\EOT\249\ENQ\FS#\n\
+    \\ENQ\EOT\f\STX\t\SOH\DC2\EOT\164\ACK\FS#\n\
     \\r\n\
-    \\ENQ\EOT\f\STX\t\ETX\DC2\EOT\249\ENQ&(\n\
+    \\ENQ\EOT\f\STX\t\ETX\DC2\EOT\164\ACK&(\n\
     \\SO\n\
-    \\EOT\EOT\f\ETX\NUL\DC2\ACK\251\ENQ\STX\254\ENQ\ETX\n\
+    \\EOT\EOT\f\ETX\NUL\DC2\ACK\166\ACK\STX\169\ACK\ETX\n\
     \\r\n\
-    \\ENQ\EOT\f\ETX\NUL\SOH\DC2\EOT\251\ENQ\n\
+    \\ENQ\EOT\f\ETX\NUL\SOH\DC2\EOT\166\ACK\n\
     \\CAN\n\
     \\SO\n\
-    \\ACK\EOT\f\ETX\NUL\STX\NUL\DC2\EOT\252\ENQ\EOT!\n\
+    \\ACK\EOT\f\ETX\NUL\STX\NUL\DC2\EOT\167\ACK\EOT!\n\
     \\SI\n\
-    \\a\EOT\f\ETX\NUL\STX\NUL\EOT\DC2\EOT\252\ENQ\EOT\f\n\
+    \\a\EOT\f\ETX\NUL\STX\NUL\EOT\DC2\EOT\167\ACK\EOT\f\n\
     \\SI\n\
-    \\a\EOT\f\ETX\NUL\STX\NUL\ACK\DC2\EOT\252\ENQ\r\DC4\n\
+    \\a\EOT\f\ETX\NUL\STX\NUL\ACK\DC2\EOT\167\ACK\r\DC4\n\
     \\SI\n\
-    \\a\EOT\f\ETX\NUL\STX\NUL\SOH\DC2\EOT\252\ENQ\NAK\FS\n\
+    \\a\EOT\f\ETX\NUL\STX\NUL\SOH\DC2\EOT\167\ACK\NAK\FS\n\
     \\SI\n\
-    \\a\EOT\f\ETX\NUL\STX\NUL\ETX\DC2\EOT\252\ENQ\US \n\
+    \\a\EOT\f\ETX\NUL\STX\NUL\ETX\DC2\EOT\167\ACK\US \n\
     \\"\n\
-    \\ACK\EOT\f\ETX\NUL\STX\SOH\DC2\EOT\253\ENQ\EOT\RS\"\DC2 Textproto value.\n\
+    \\ACK\EOT\f\ETX\NUL\STX\SOH\DC2\EOT\168\ACK\EOT\RS\"\DC2 Textproto value.\n\
     \\n\
     \\SI\n\
-    \\a\EOT\f\ETX\NUL\STX\SOH\EOT\DC2\EOT\253\ENQ\EOT\f\n\
+    \\a\EOT\f\ETX\NUL\STX\SOH\EOT\DC2\EOT\168\ACK\EOT\f\n\
     \\SI\n\
-    \\a\EOT\f\ETX\NUL\STX\SOH\ENQ\DC2\EOT\253\ENQ\r\DC3\n\
+    \\a\EOT\f\ETX\NUL\STX\SOH\ENQ\DC2\EOT\168\ACK\r\DC3\n\
     \\SI\n\
-    \\a\EOT\f\ETX\NUL\STX\SOH\SOH\DC2\EOT\253\ENQ\DC4\EM\n\
+    \\a\EOT\f\ETX\NUL\STX\SOH\SOH\DC2\EOT\168\ACK\DC4\EM\n\
     \\SI\n\
-    \\a\EOT\f\ETX\NUL\STX\SOH\ETX\DC2\EOT\253\ENQ\FS\GS\n\
+    \\a\EOT\f\ETX\NUL\STX\SOH\ETX\DC2\EOT\168\ACK\FS\GS\n\
     \\f\n\
     \\EOT\EOT\f\STX\n\
-    \\DC2\EOT\255\ENQ\STX0\n\
+    \\DC2\EOT\170\ACK\STX0\n\
     \\r\n\
     \\ENQ\EOT\f\STX\n\
-    \\EOT\DC2\EOT\255\ENQ\STX\n\
+    \\EOT\DC2\EOT\170\ACK\STX\n\
     \\n\
     \\r\n\
     \\ENQ\EOT\f\STX\n\
-    \\ACK\DC2\EOT\255\ENQ\v\EM\n\
+    \\ACK\DC2\EOT\170\ACK\v\EM\n\
     \\r\n\
     \\ENQ\EOT\f\STX\n\
-    \\SOH\DC2\EOT\255\ENQ\SUB*\n\
+    \\SOH\DC2\EOT\170\ACK\SUB*\n\
     \\r\n\
     \\ENQ\EOT\f\STX\n\
-    \\ETX\DC2\EOT\255\ENQ-/\n\
-    \=\n\
-    \\EOT\EOT\f\STX\v\DC2\EOT\130\ACK\STX$\SUB/ Any features defined in the specific edition.\n\
+    \\ETX\DC2\EOT\170\ACK-/\n\
+    \\145\STX\n\
+    \\EOT\EOT\f\STX\v\DC2\EOT\176\ACK\STX$\SUB\130\STX Any features defined in the specific edition.\n\
+    \ WARNING: This field should only be used by protobuf plugins or special\n\
+    \ cases like the proto compiler. Other uses are discouraged and\n\
+    \ developers should rely on the protoreflect APIs for their client language.\n\
     \\n\
     \\r\n\
-    \\ENQ\EOT\f\STX\v\EOT\DC2\EOT\130\ACK\STX\n\
+    \\ENQ\EOT\f\STX\v\EOT\DC2\EOT\176\ACK\STX\n\
     \\n\
     \\r\n\
-    \\ENQ\EOT\f\STX\v\ACK\DC2\EOT\130\ACK\v\NAK\n\
+    \\ENQ\EOT\f\STX\v\ACK\DC2\EOT\176\ACK\v\NAK\n\
     \\r\n\
-    \\ENQ\EOT\f\STX\v\SOH\DC2\EOT\130\ACK\SYN\RS\n\
+    \\ENQ\EOT\f\STX\v\SOH\DC2\EOT\176\ACK\SYN\RS\n\
     \\r\n\
-    \\ENQ\EOT\f\STX\v\ETX\DC2\EOT\130\ACK!#\n\
+    \\ENQ\EOT\f\STX\v\ETX\DC2\EOT\176\ACK!#\n\
     \D\n\
-    \\EOT\EOT\f\ETX\SOH\DC2\ACK\133\ACK\STX\151\ACK\ETX\SUB4 Information about the support window of a feature.\n\
+    \\EOT\EOT\f\ETX\SOH\DC2\ACK\179\ACK\STX\201\ACK\ETX\SUB4 Information about the support window of a feature.\n\
     \\n\
     \\r\n\
-    \\ENQ\EOT\f\ETX\SOH\SOH\DC2\EOT\133\ACK\n\
+    \\ENQ\EOT\f\ETX\SOH\SOH\DC2\EOT\179\ACK\n\
     \\CAN\n\
     \\212\SOH\n\
-    \\ACK\EOT\f\ETX\SOH\STX\NUL\DC2\EOT\137\ACK\EOT,\SUB\195\SOH The edition that this feature was first available in.  In editions\n\
+    \\ACK\EOT\f\ETX\SOH\STX\NUL\DC2\EOT\183\ACK\EOT,\SUB\195\SOH The edition that this feature was first available in.  In editions\n\
     \ earlier than this one, the default assigned to EDITION_LEGACY will be\n\
     \ used, and proto files will not be able to override it.\n\
     \\n\
     \\SI\n\
-    \\a\EOT\f\ETX\SOH\STX\NUL\EOT\DC2\EOT\137\ACK\EOT\f\n\
+    \\a\EOT\f\ETX\SOH\STX\NUL\EOT\DC2\EOT\183\ACK\EOT\f\n\
     \\SI\n\
-    \\a\EOT\f\ETX\SOH\STX\NUL\ACK\DC2\EOT\137\ACK\r\DC4\n\
+    \\a\EOT\f\ETX\SOH\STX\NUL\ACK\DC2\EOT\183\ACK\r\DC4\n\
     \\SI\n\
-    \\a\EOT\f\ETX\SOH\STX\NUL\SOH\DC2\EOT\137\ACK\NAK'\n\
+    \\a\EOT\f\ETX\SOH\STX\NUL\SOH\DC2\EOT\183\ACK\NAK'\n\
     \\SI\n\
-    \\a\EOT\f\ETX\SOH\STX\NUL\ETX\DC2\EOT\137\ACK*+\n\
+    \\a\EOT\f\ETX\SOH\STX\NUL\ETX\DC2\EOT\183\ACK*+\n\
     \w\n\
-    \\ACK\EOT\f\ETX\SOH\STX\SOH\DC2\EOT\141\ACK\EOT,\SUBg The edition this feature becomes deprecated in.  Using this after this\n\
+    \\ACK\EOT\f\ETX\SOH\STX\SOH\DC2\EOT\187\ACK\EOT,\SUBg The edition this feature becomes deprecated in.  Using this after this\n\
     \ edition may trigger warnings.\n\
     \\n\
     \\SI\n\
-    \\a\EOT\f\ETX\SOH\STX\SOH\EOT\DC2\EOT\141\ACK\EOT\f\n\
+    \\a\EOT\f\ETX\SOH\STX\SOH\EOT\DC2\EOT\187\ACK\EOT\f\n\
     \\SI\n\
-    \\a\EOT\f\ETX\SOH\STX\SOH\ACK\DC2\EOT\141\ACK\r\DC4\n\
+    \\a\EOT\f\ETX\SOH\STX\SOH\ACK\DC2\EOT\187\ACK\r\DC4\n\
     \\SI\n\
-    \\a\EOT\f\ETX\SOH\STX\SOH\SOH\DC2\EOT\141\ACK\NAK'\n\
+    \\a\EOT\f\ETX\SOH\STX\SOH\SOH\DC2\EOT\187\ACK\NAK'\n\
     \\SI\n\
-    \\a\EOT\f\ETX\SOH\STX\SOH\ETX\DC2\EOT\141\ACK*+\n\
+    \\a\EOT\f\ETX\SOH\STX\SOH\ETX\DC2\EOT\187\ACK*+\n\
     \v\n\
-    \\ACK\EOT\f\ETX\SOH\STX\STX\DC2\EOT\145\ACK\EOT,\SUBf The deprecation warning text if this feature is used after the edition it\n\
+    \\ACK\EOT\f\ETX\SOH\STX\STX\DC2\EOT\191\ACK\EOT,\SUBf The deprecation warning text if this feature is used after the edition it\n\
     \ was marked deprecated in.\n\
     \\n\
     \\SI\n\
-    \\a\EOT\f\ETX\SOH\STX\STX\EOT\DC2\EOT\145\ACK\EOT\f\n\
+    \\a\EOT\f\ETX\SOH\STX\STX\EOT\DC2\EOT\191\ACK\EOT\f\n\
     \\SI\n\
-    \\a\EOT\f\ETX\SOH\STX\STX\ENQ\DC2\EOT\145\ACK\r\DC3\n\
+    \\a\EOT\f\ETX\SOH\STX\STX\ENQ\DC2\EOT\191\ACK\r\DC3\n\
     \\SI\n\
-    \\a\EOT\f\ETX\SOH\STX\STX\SOH\DC2\EOT\145\ACK\DC4'\n\
+    \\a\EOT\f\ETX\SOH\STX\STX\SOH\DC2\EOT\191\ACK\DC4'\n\
     \\SI\n\
-    \\a\EOT\f\ETX\SOH\STX\STX\ETX\DC2\EOT\145\ACK*+\n\
+    \\a\EOT\f\ETX\SOH\STX\STX\ETX\DC2\EOT\191\ACK*+\n\
     \\190\SOH\n\
-    \\ACK\EOT\f\ETX\SOH\STX\ETX\DC2\EOT\150\ACK\EOT)\SUB\173\SOH The edition this feature is no longer available in.  In editions after\n\
+    \\ACK\EOT\f\ETX\SOH\STX\ETX\DC2\EOT\196\ACK\EOT)\SUB\173\SOH The edition this feature is no longer available in.  In editions after\n\
     \ this one, the last default assigned will be used, and proto files will\n\
     \ not be able to override it.\n\
     \\n\
     \\SI\n\
-    \\a\EOT\f\ETX\SOH\STX\ETX\EOT\DC2\EOT\150\ACK\EOT\f\n\
+    \\a\EOT\f\ETX\SOH\STX\ETX\EOT\DC2\EOT\196\ACK\EOT\f\n\
     \\SI\n\
-    \\a\EOT\f\ETX\SOH\STX\ETX\ACK\DC2\EOT\150\ACK\r\DC4\n\
+    \\a\EOT\f\ETX\SOH\STX\ETX\ACK\DC2\EOT\196\ACK\r\DC4\n\
     \\SI\n\
-    \\a\EOT\f\ETX\SOH\STX\ETX\SOH\DC2\EOT\150\ACK\NAK$\n\
+    \\a\EOT\f\ETX\SOH\STX\ETX\SOH\DC2\EOT\196\ACK\NAK$\n\
     \\SI\n\
-    \\a\EOT\f\ETX\SOH\STX\ETX\ETX\DC2\EOT\150\ACK'(\n\
+    \\a\EOT\f\ETX\SOH\STX\ETX\ETX\DC2\EOT\196\ACK'(\n\
+    \f\n\
+    \\ACK\EOT\f\ETX\SOH\STX\EOT\DC2\EOT\200\ACK\EOT&\SUBV The removal error text if this feature is used after the edition it was\n\
+    \ removed in.\n\
+    \\n\
+    \\SI\n\
+    \\a\EOT\f\ETX\SOH\STX\EOT\EOT\DC2\EOT\200\ACK\EOT\f\n\
+    \\SI\n\
+    \\a\EOT\f\ETX\SOH\STX\EOT\ENQ\DC2\EOT\200\ACK\r\DC3\n\
+    \\SI\n\
+    \\a\EOT\f\ETX\SOH\STX\EOT\SOH\DC2\EOT\200\ACK\DC4!\n\
+    \\SI\n\
+    \\a\EOT\f\ETX\SOH\STX\EOT\ETX\DC2\EOT\200\ACK$%\n\
     \\f\n\
-    \\EOT\EOT\f\STX\f\DC2\EOT\152\ACK\STX/\n\
+    \\EOT\EOT\f\STX\f\DC2\EOT\202\ACK\STX/\n\
     \\r\n\
-    \\ENQ\EOT\f\STX\f\EOT\DC2\EOT\152\ACK\STX\n\
+    \\ENQ\EOT\f\STX\f\EOT\DC2\EOT\202\ACK\STX\n\
     \\n\
     \\r\n\
-    \\ENQ\EOT\f\STX\f\ACK\DC2\EOT\152\ACK\v\EM\n\
+    \\ENQ\EOT\f\STX\f\ACK\DC2\EOT\202\ACK\v\EM\n\
     \\r\n\
-    \\ENQ\EOT\f\STX\f\SOH\DC2\EOT\152\ACK\SUB)\n\
+    \\ENQ\EOT\f\STX\f\SOH\DC2\EOT\202\ACK\SUB)\n\
     \\r\n\
-    \\ENQ\EOT\f\STX\f\ETX\DC2\EOT\152\ACK,.\n\
+    \\ENQ\EOT\f\STX\f\ETX\DC2\EOT\202\ACK,.\n\
+    \\146\SOH\n\
+    \\ETX\EOT\f\ENQ\DC2\EOT\206\ACK\STX\CAN\SUB\132\SOH Range reserved for first-class custom options defined by the Protobuf\n\
+    \ team. User custom options must use the 1000+ range instead.\n\
+    \\n\
+    \\f\n\
+    \\EOT\EOT\f\ENQ\NUL\DC2\EOT\206\ACK\r\ETB\n\
+    \\r\n\
+    \\ENQ\EOT\f\ENQ\NUL\SOH\DC2\EOT\206\ACK\r\DLE\n\
+    \\r\n\
+    \\ENQ\EOT\f\ENQ\NUL\STX\DC2\EOT\206\ACK\DC4\ETB\n\
     \O\n\
-    \\EOT\EOT\f\STX\r\DC2\EOT\155\ACK\STX:\SUBA The parser stores options it doesn't recognize here. See above.\n\
+    \\EOT\EOT\f\STX\r\DC2\EOT\209\ACK\STX:\SUBA The parser stores options it doesn't recognize here. See above.\n\
     \\n\
     \\r\n\
-    \\ENQ\EOT\f\STX\r\EOT\DC2\EOT\155\ACK\STX\n\
+    \\ENQ\EOT\f\STX\r\EOT\DC2\EOT\209\ACK\STX\n\
     \\n\
     \\r\n\
-    \\ENQ\EOT\f\STX\r\ACK\DC2\EOT\155\ACK\v\RS\n\
+    \\ENQ\EOT\f\STX\r\ACK\DC2\EOT\209\ACK\v\RS\n\
     \\r\n\
-    \\ENQ\EOT\f\STX\r\SOH\DC2\EOT\155\ACK\US3\n\
+    \\ENQ\EOT\f\STX\r\SOH\DC2\EOT\209\ACK\US3\n\
     \\r\n\
-    \\ENQ\EOT\f\STX\r\ETX\DC2\EOT\155\ACK69\n\
+    \\ENQ\EOT\f\STX\r\ETX\DC2\EOT\209\ACK69\n\
     \Z\n\
-    \\ETX\EOT\f\ENQ\DC2\EOT\158\ACK\STX\EM\SUBM Clients can define custom options in extensions of this message. See above.\n\
+    \\ETX\EOT\f\ENQ\DC2\EOT\212\ACK\STX\EM\SUBM Clients can define custom options in extensions of this message. See above.\n\
     \\n\
     \\f\n\
-    \\EOT\EOT\f\ENQ\NUL\DC2\EOT\158\ACK\r\CAN\n\
+    \\EOT\EOT\f\ENQ\SOH\DC2\EOT\212\ACK\r\CAN\n\
     \\r\n\
-    \\ENQ\EOT\f\ENQ\NUL\SOH\DC2\EOT\158\ACK\r\DC1\n\
+    \\ENQ\EOT\f\ENQ\SOH\SOH\DC2\EOT\212\ACK\r\DC1\n\
     \\r\n\
-    \\ENQ\EOT\f\ENQ\NUL\STX\DC2\EOT\158\ACK\NAK\CAN\n\
+    \\ENQ\EOT\f\ENQ\SOH\STX\DC2\EOT\212\ACK\NAK\CAN\n\
     \\FS\n\
-    \\ETX\EOT\f\t\DC2\EOT\160\ACK\STX\r\"\SI removed jtype\n\
+    \\ETX\EOT\f\t\DC2\EOT\214\ACK\STX\r\"\SI removed jtype\n\
     \\n\
     \\f\n\
-    \\EOT\EOT\f\t\NUL\DC2\EOT\160\ACK\v\f\n\
+    \\EOT\EOT\f\t\NUL\DC2\EOT\214\ACK\v\f\n\
     \\r\n\
-    \\ENQ\EOT\f\t\NUL\SOH\DC2\EOT\160\ACK\v\f\n\
+    \\ENQ\EOT\f\t\NUL\SOH\DC2\EOT\214\ACK\v\f\n\
     \\r\n\
-    \\ENQ\EOT\f\t\NUL\STX\DC2\EOT\160\ACK\v\f\n\
+    \\ENQ\EOT\f\t\NUL\STX\DC2\EOT\214\ACK\v\f\n\
     \9\n\
-    \\ETX\EOT\f\t\DC2\EOT\161\ACK\STX\SO\", reserve target, target_obsolete_do_not_use\n\
+    \\ETX\EOT\f\t\DC2\EOT\215\ACK\STX\SO\", reserve target, target_obsolete_do_not_use\n\
     \\n\
     \\f\n\
-    \\EOT\EOT\f\t\SOH\DC2\EOT\161\ACK\v\r\n\
+    \\EOT\EOT\f\t\SOH\DC2\EOT\215\ACK\v\r\n\
     \\r\n\
-    \\ENQ\EOT\f\t\SOH\SOH\DC2\EOT\161\ACK\v\r\n\
+    \\ENQ\EOT\f\t\SOH\SOH\DC2\EOT\215\ACK\v\r\n\
     \\r\n\
-    \\ENQ\EOT\f\t\SOH\STX\DC2\EOT\161\ACK\v\r\n\
+    \\ENQ\EOT\f\t\SOH\STX\DC2\EOT\215\ACK\v\r\n\
     \\f\n\
-    \\STX\EOT\r\DC2\ACK\164\ACK\NUL\173\ACK\SOH\n\
+    \\STX\EOT\r\DC2\ACK\218\ACK\NUL\234\ACK\SOH\n\
     \\v\n\
-    \\ETX\EOT\r\SOH\DC2\EOT\164\ACK\b\DC4\n\
-    \=\n\
-    \\EOT\EOT\r\STX\NUL\DC2\EOT\166\ACK\STX#\SUB/ Any features defined in the specific edition.\n\
+    \\ETX\EOT\r\SOH\DC2\EOT\218\ACK\b\DC4\n\
+    \\145\STX\n\
+    \\EOT\EOT\r\STX\NUL\DC2\EOT\223\ACK\STX#\SUB\130\STX Any features defined in the specific edition.\n\
+    \ WARNING: This field should only be used by protobuf plugins or special\n\
+    \ cases like the proto compiler. Other uses are discouraged and\n\
+    \ developers should rely on the protoreflect APIs for their client language.\n\
     \\n\
     \\r\n\
-    \\ENQ\EOT\r\STX\NUL\EOT\DC2\EOT\166\ACK\STX\n\
+    \\ENQ\EOT\r\STX\NUL\EOT\DC2\EOT\223\ACK\STX\n\
     \\n\
     \\r\n\
-    \\ENQ\EOT\r\STX\NUL\ACK\DC2\EOT\166\ACK\v\NAK\n\
+    \\ENQ\EOT\r\STX\NUL\ACK\DC2\EOT\223\ACK\v\NAK\n\
     \\r\n\
-    \\ENQ\EOT\r\STX\NUL\SOH\DC2\EOT\166\ACK\SYN\RS\n\
+    \\ENQ\EOT\r\STX\NUL\SOH\DC2\EOT\223\ACK\SYN\RS\n\
     \\r\n\
-    \\ENQ\EOT\r\STX\NUL\ETX\DC2\EOT\166\ACK!\"\n\
+    \\ENQ\EOT\r\STX\NUL\ETX\DC2\EOT\223\ACK!\"\n\
+    \\146\SOH\n\
+    \\ETX\EOT\r\ENQ\DC2\EOT\227\ACK\STX\CAN\SUB\132\SOH Range reserved for first-class custom options defined by the Protobuf\n\
+    \ team. User custom options must use the 1000+ range instead.\n\
+    \\n\
+    \\f\n\
+    \\EOT\EOT\r\ENQ\NUL\DC2\EOT\227\ACK\r\ETB\n\
+    \\r\n\
+    \\ENQ\EOT\r\ENQ\NUL\SOH\DC2\EOT\227\ACK\r\DLE\n\
+    \\r\n\
+    \\ENQ\EOT\r\ENQ\NUL\STX\DC2\EOT\227\ACK\DC4\ETB\n\
     \O\n\
-    \\EOT\EOT\r\STX\SOH\DC2\EOT\169\ACK\STX:\SUBA The parser stores options it doesn't recognize here. See above.\n\
+    \\EOT\EOT\r\STX\SOH\DC2\EOT\230\ACK\STX:\SUBA The parser stores options it doesn't recognize here. See above.\n\
     \\n\
     \\r\n\
-    \\ENQ\EOT\r\STX\SOH\EOT\DC2\EOT\169\ACK\STX\n\
+    \\ENQ\EOT\r\STX\SOH\EOT\DC2\EOT\230\ACK\STX\n\
     \\n\
     \\r\n\
-    \\ENQ\EOT\r\STX\SOH\ACK\DC2\EOT\169\ACK\v\RS\n\
+    \\ENQ\EOT\r\STX\SOH\ACK\DC2\EOT\230\ACK\v\RS\n\
     \\r\n\
-    \\ENQ\EOT\r\STX\SOH\SOH\DC2\EOT\169\ACK\US3\n\
+    \\ENQ\EOT\r\STX\SOH\SOH\DC2\EOT\230\ACK\US3\n\
     \\r\n\
-    \\ENQ\EOT\r\STX\SOH\ETX\DC2\EOT\169\ACK69\n\
+    \\ENQ\EOT\r\STX\SOH\ETX\DC2\EOT\230\ACK69\n\
     \Z\n\
-    \\ETX\EOT\r\ENQ\DC2\EOT\172\ACK\STX\EM\SUBM Clients can define custom options in extensions of this message. See above.\n\
+    \\ETX\EOT\r\ENQ\DC2\EOT\233\ACK\STX\EM\SUBM Clients can define custom options in extensions of this message. See above.\n\
     \\n\
     \\f\n\
-    \\EOT\EOT\r\ENQ\NUL\DC2\EOT\172\ACK\r\CAN\n\
+    \\EOT\EOT\r\ENQ\SOH\DC2\EOT\233\ACK\r\CAN\n\
     \\r\n\
-    \\ENQ\EOT\r\ENQ\NUL\SOH\DC2\EOT\172\ACK\r\DC1\n\
+    \\ENQ\EOT\r\ENQ\SOH\SOH\DC2\EOT\233\ACK\r\DC1\n\
     \\r\n\
-    \\ENQ\EOT\r\ENQ\NUL\STX\DC2\EOT\172\ACK\NAK\CAN\n\
+    \\ENQ\EOT\r\ENQ\SOH\STX\DC2\EOT\233\ACK\NAK\CAN\n\
     \\f\n\
-    \\STX\EOT\SO\DC2\ACK\175\ACK\NUL\205\ACK\SOH\n\
+    \\STX\EOT\SO\DC2\ACK\236\ACK\NUL\145\a\SOH\n\
     \\v\n\
-    \\ETX\EOT\SO\SOH\DC2\EOT\175\ACK\b\DC3\n\
+    \\ETX\EOT\SO\SOH\DC2\EOT\236\ACK\b\DC3\n\
     \`\n\
-    \\EOT\EOT\SO\STX\NUL\DC2\EOT\179\ACK\STX \SUBR Set this option to true to allow mapping different tag names to the same\n\
+    \\EOT\EOT\SO\STX\NUL\DC2\EOT\240\ACK\STX \SUBR Set this option to true to allow mapping different tag names to the same\n\
     \ value.\n\
     \\n\
     \\r\n\
-    \\ENQ\EOT\SO\STX\NUL\EOT\DC2\EOT\179\ACK\STX\n\
+    \\ENQ\EOT\SO\STX\NUL\EOT\DC2\EOT\240\ACK\STX\n\
     \\n\
     \\r\n\
-    \\ENQ\EOT\SO\STX\NUL\ENQ\DC2\EOT\179\ACK\v\SI\n\
+    \\ENQ\EOT\SO\STX\NUL\ENQ\DC2\EOT\240\ACK\v\SI\n\
     \\r\n\
-    \\ENQ\EOT\SO\STX\NUL\SOH\DC2\EOT\179\ACK\DLE\ESC\n\
+    \\ENQ\EOT\SO\STX\NUL\SOH\DC2\EOT\240\ACK\DLE\ESC\n\
     \\r\n\
-    \\ENQ\EOT\SO\STX\NUL\ETX\DC2\EOT\179\ACK\RS\US\n\
+    \\ENQ\EOT\SO\STX\NUL\ETX\DC2\EOT\240\ACK\RS\US\n\
     \\229\SOH\n\
-    \\EOT\EOT\SO\STX\SOH\DC2\EOT\185\ACK\STX1\SUB\214\SOH Is this enum deprecated?\n\
+    \\EOT\EOT\SO\STX\SOH\DC2\EOT\246\ACK\STX1\SUB\214\SOH Is this enum deprecated?\n\
     \ Depending on the target platform, this can emit Deprecated annotations\n\
     \ for the enum, or it will be completely ignored; in the very least, this\n\
     \ is a formalization for deprecating enums.\n\
     \\n\
     \\r\n\
-    \\ENQ\EOT\SO\STX\SOH\EOT\DC2\EOT\185\ACK\STX\n\
+    \\ENQ\EOT\SO\STX\SOH\EOT\DC2\EOT\246\ACK\STX\n\
     \\n\
     \\r\n\
-    \\ENQ\EOT\SO\STX\SOH\ENQ\DC2\EOT\185\ACK\v\SI\n\
+    \\ENQ\EOT\SO\STX\SOH\ENQ\DC2\EOT\246\ACK\v\SI\n\
     \\r\n\
-    \\ENQ\EOT\SO\STX\SOH\SOH\DC2\EOT\185\ACK\DLE\SUB\n\
+    \\ENQ\EOT\SO\STX\SOH\SOH\DC2\EOT\246\ACK\DLE\SUB\n\
     \\r\n\
-    \\ENQ\EOT\SO\STX\SOH\ETX\DC2\EOT\185\ACK\GS\RS\n\
+    \\ENQ\EOT\SO\STX\SOH\ETX\DC2\EOT\246\ACK\GS\RS\n\
     \\r\n\
-    \\ENQ\EOT\SO\STX\SOH\b\DC2\EOT\185\ACK\US0\n\
+    \\ENQ\EOT\SO\STX\SOH\b\DC2\EOT\246\ACK\US0\n\
     \\r\n\
-    \\ENQ\EOT\SO\STX\SOH\a\DC2\EOT\185\ACK*/\n\
+    \\ENQ\EOT\SO\STX\SOH\a\DC2\EOT\246\ACK*/\n\
     \\US\n\
-    \\ETX\EOT\SO\t\DC2\EOT\187\ACK\STX\r\"\DC2 javanano_as_lite\n\
+    \\ETX\EOT\SO\t\DC2\EOT\248\ACK\STX\r\"\DC2 javanano_as_lite\n\
     \\n\
     \\f\n\
-    \\EOT\EOT\SO\t\NUL\DC2\EOT\187\ACK\v\f\n\
+    \\EOT\EOT\SO\t\NUL\DC2\EOT\248\ACK\v\f\n\
     \\r\n\
-    \\ENQ\EOT\SO\t\NUL\SOH\DC2\EOT\187\ACK\v\f\n\
+    \\ENQ\EOT\SO\t\NUL\SOH\DC2\EOT\248\ACK\v\f\n\
     \\r\n\
-    \\ENQ\EOT\SO\t\NUL\STX\DC2\EOT\187\ACK\v\f\n\
+    \\ENQ\EOT\SO\t\NUL\STX\DC2\EOT\248\ACK\v\f\n\
     \\200\STX\n\
-    \\EOT\EOT\SO\STX\STX\DC2\EOT\195\ACK\STXO\SUB\185\STX Enable the legacy handling of JSON field name conflicts.  This lowercases\n\
+    \\EOT\EOT\SO\STX\STX\DC2\EOT\128\a\STXO\SUB\185\STX Enable the legacy handling of JSON field name conflicts.  This lowercases\n\
     \ and strips underscored from the fields before comparison in proto3 only.\n\
     \ The new behavior takes `json_name` into account and applies to proto2 as\n\
     \ well.\n\
@@ -17123,155 +18240,188 @@ packedFileDescriptor
     \ had time to migrate.\n\
     \\n\
     \\r\n\
-    \\ENQ\EOT\SO\STX\STX\EOT\DC2\EOT\195\ACK\STX\n\
+    \\ENQ\EOT\SO\STX\STX\EOT\DC2\EOT\128\a\STX\n\
     \\n\
     \\r\n\
-    \\ENQ\EOT\SO\STX\STX\ENQ\DC2\EOT\195\ACK\v\SI\n\
+    \\ENQ\EOT\SO\STX\STX\ENQ\DC2\EOT\128\a\v\SI\n\
     \\r\n\
-    \\ENQ\EOT\SO\STX\STX\SOH\DC2\EOT\195\ACK\DLE6\n\
+    \\ENQ\EOT\SO\STX\STX\SOH\DC2\EOT\128\a\DLE6\n\
     \\r\n\
-    \\ENQ\EOT\SO\STX\STX\ETX\DC2\EOT\195\ACK9:\n\
+    \\ENQ\EOT\SO\STX\STX\ETX\DC2\EOT\128\a9:\n\
     \\r\n\
-    \\ENQ\EOT\SO\STX\STX\b\DC2\EOT\195\ACK;N\n\
+    \\ENQ\EOT\SO\STX\STX\b\DC2\EOT\128\a;N\n\
     \\SO\n\
-    \\ACK\EOT\SO\STX\STX\b\ETX\DC2\EOT\195\ACK<M\n\
-    \=\n\
-    \\EOT\EOT\SO\STX\ETX\DC2\EOT\198\ACK\STX#\SUB/ Any features defined in the specific edition.\n\
+    \\ACK\EOT\SO\STX\STX\b\ETX\DC2\EOT\128\a<M\n\
+    \\145\STX\n\
+    \\EOT\EOT\SO\STX\ETX\DC2\EOT\134\a\STX#\SUB\130\STX Any features defined in the specific edition.\n\
+    \ WARNING: This field should only be used by protobuf plugins or special\n\
+    \ cases like the proto compiler. Other uses are discouraged and\n\
+    \ developers should rely on the protoreflect APIs for their client language.\n\
     \\n\
     \\r\n\
-    \\ENQ\EOT\SO\STX\ETX\EOT\DC2\EOT\198\ACK\STX\n\
+    \\ENQ\EOT\SO\STX\ETX\EOT\DC2\EOT\134\a\STX\n\
     \\n\
     \\r\n\
-    \\ENQ\EOT\SO\STX\ETX\ACK\DC2\EOT\198\ACK\v\NAK\n\
+    \\ENQ\EOT\SO\STX\ETX\ACK\DC2\EOT\134\a\v\NAK\n\
     \\r\n\
-    \\ENQ\EOT\SO\STX\ETX\SOH\DC2\EOT\198\ACK\SYN\RS\n\
+    \\ENQ\EOT\SO\STX\ETX\SOH\DC2\EOT\134\a\SYN\RS\n\
     \\r\n\
-    \\ENQ\EOT\SO\STX\ETX\ETX\DC2\EOT\198\ACK!\"\n\
+    \\ENQ\EOT\SO\STX\ETX\ETX\DC2\EOT\134\a!\"\n\
+    \\146\SOH\n\
+    \\ETX\EOT\SO\ENQ\DC2\EOT\138\a\STX\CAN\SUB\132\SOH Range reserved for first-class custom options defined by the Protobuf\n\
+    \ team. User custom options must use the 1000+ range instead.\n\
+    \\n\
+    \\f\n\
+    \\EOT\EOT\SO\ENQ\NUL\DC2\EOT\138\a\r\ETB\n\
+    \\r\n\
+    \\ENQ\EOT\SO\ENQ\NUL\SOH\DC2\EOT\138\a\r\DLE\n\
+    \\r\n\
+    \\ENQ\EOT\SO\ENQ\NUL\STX\DC2\EOT\138\a\DC4\ETB\n\
     \O\n\
-    \\EOT\EOT\SO\STX\EOT\DC2\EOT\201\ACK\STX:\SUBA The parser stores options it doesn't recognize here. See above.\n\
+    \\EOT\EOT\SO\STX\EOT\DC2\EOT\141\a\STX:\SUBA The parser stores options it doesn't recognize here. See above.\n\
     \\n\
     \\r\n\
-    \\ENQ\EOT\SO\STX\EOT\EOT\DC2\EOT\201\ACK\STX\n\
+    \\ENQ\EOT\SO\STX\EOT\EOT\DC2\EOT\141\a\STX\n\
     \\n\
     \\r\n\
-    \\ENQ\EOT\SO\STX\EOT\ACK\DC2\EOT\201\ACK\v\RS\n\
+    \\ENQ\EOT\SO\STX\EOT\ACK\DC2\EOT\141\a\v\RS\n\
     \\r\n\
-    \\ENQ\EOT\SO\STX\EOT\SOH\DC2\EOT\201\ACK\US3\n\
+    \\ENQ\EOT\SO\STX\EOT\SOH\DC2\EOT\141\a\US3\n\
     \\r\n\
-    \\ENQ\EOT\SO\STX\EOT\ETX\DC2\EOT\201\ACK69\n\
+    \\ENQ\EOT\SO\STX\EOT\ETX\DC2\EOT\141\a69\n\
     \Z\n\
-    \\ETX\EOT\SO\ENQ\DC2\EOT\204\ACK\STX\EM\SUBM Clients can define custom options in extensions of this message. See above.\n\
+    \\ETX\EOT\SO\ENQ\DC2\EOT\144\a\STX\EM\SUBM Clients can define custom options in extensions of this message. See above.\n\
     \\n\
     \\f\n\
-    \\EOT\EOT\SO\ENQ\NUL\DC2\EOT\204\ACK\r\CAN\n\
+    \\EOT\EOT\SO\ENQ\SOH\DC2\EOT\144\a\r\CAN\n\
     \\r\n\
-    \\ENQ\EOT\SO\ENQ\NUL\SOH\DC2\EOT\204\ACK\r\DC1\n\
+    \\ENQ\EOT\SO\ENQ\SOH\SOH\DC2\EOT\144\a\r\DC1\n\
     \\r\n\
-    \\ENQ\EOT\SO\ENQ\NUL\STX\DC2\EOT\204\ACK\NAK\CAN\n\
+    \\ENQ\EOT\SO\ENQ\SOH\STX\DC2\EOT\144\a\NAK\CAN\n\
     \\f\n\
-    \\STX\EOT\SI\DC2\ACK\207\ACK\NUL\230\ACK\SOH\n\
+    \\STX\EOT\SI\DC2\ACK\147\a\NUL\181\a\SOH\n\
     \\v\n\
-    \\ETX\EOT\SI\SOH\DC2\EOT\207\ACK\b\CAN\n\
+    \\ETX\EOT\SI\SOH\DC2\EOT\147\a\b\CAN\n\
     \\247\SOH\n\
-    \\EOT\EOT\SI\STX\NUL\DC2\EOT\212\ACK\STX1\SUB\232\SOH Is this enum value deprecated?\n\
+    \\EOT\EOT\SI\STX\NUL\DC2\EOT\152\a\STX1\SUB\232\SOH Is this enum value deprecated?\n\
     \ Depending on the target platform, this can emit Deprecated annotations\n\
     \ for the enum value, or it will be completely ignored; in the very least,\n\
     \ this is a formalization for deprecating enum values.\n\
     \\n\
     \\r\n\
-    \\ENQ\EOT\SI\STX\NUL\EOT\DC2\EOT\212\ACK\STX\n\
+    \\ENQ\EOT\SI\STX\NUL\EOT\DC2\EOT\152\a\STX\n\
     \\n\
     \\r\n\
-    \\ENQ\EOT\SI\STX\NUL\ENQ\DC2\EOT\212\ACK\v\SI\n\
+    \\ENQ\EOT\SI\STX\NUL\ENQ\DC2\EOT\152\a\v\SI\n\
     \\r\n\
-    \\ENQ\EOT\SI\STX\NUL\SOH\DC2\EOT\212\ACK\DLE\SUB\n\
+    \\ENQ\EOT\SI\STX\NUL\SOH\DC2\EOT\152\a\DLE\SUB\n\
     \\r\n\
-    \\ENQ\EOT\SI\STX\NUL\ETX\DC2\EOT\212\ACK\GS\RS\n\
+    \\ENQ\EOT\SI\STX\NUL\ETX\DC2\EOT\152\a\GS\RS\n\
     \\r\n\
-    \\ENQ\EOT\SI\STX\NUL\b\DC2\EOT\212\ACK\US0\n\
+    \\ENQ\EOT\SI\STX\NUL\b\DC2\EOT\152\a\US0\n\
     \\r\n\
-    \\ENQ\EOT\SI\STX\NUL\a\DC2\EOT\212\ACK*/\n\
-    \=\n\
-    \\EOT\EOT\SI\STX\SOH\DC2\EOT\215\ACK\STX#\SUB/ Any features defined in the specific edition.\n\
+    \\ENQ\EOT\SI\STX\NUL\a\DC2\EOT\152\a*/\n\
+    \\145\STX\n\
+    \\EOT\EOT\SI\STX\SOH\DC2\EOT\158\a\STX#\SUB\130\STX Any features defined in the specific edition.\n\
+    \ WARNING: This field should only be used by protobuf plugins or special\n\
+    \ cases like the proto compiler. Other uses are discouraged and\n\
+    \ developers should rely on the protoreflect APIs for their client language.\n\
     \\n\
     \\r\n\
-    \\ENQ\EOT\SI\STX\SOH\EOT\DC2\EOT\215\ACK\STX\n\
+    \\ENQ\EOT\SI\STX\SOH\EOT\DC2\EOT\158\a\STX\n\
     \\n\
     \\r\n\
-    \\ENQ\EOT\SI\STX\SOH\ACK\DC2\EOT\215\ACK\v\NAK\n\
+    \\ENQ\EOT\SI\STX\SOH\ACK\DC2\EOT\158\a\v\NAK\n\
     \\r\n\
-    \\ENQ\EOT\SI\STX\SOH\SOH\DC2\EOT\215\ACK\SYN\RS\n\
+    \\ENQ\EOT\SI\STX\SOH\SOH\DC2\EOT\158\a\SYN\RS\n\
     \\r\n\
-    \\ENQ\EOT\SI\STX\SOH\ETX\DC2\EOT\215\ACK!\"\n\
+    \\ENQ\EOT\SI\STX\SOH\ETX\DC2\EOT\158\a!\"\n\
     \\174\SOH\n\
-    \\EOT\EOT\SI\STX\STX\DC2\EOT\220\ACK\STX3\SUB\159\SOH Indicate that fields annotated with this enum value should not be printed\n\
+    \\EOT\EOT\SI\STX\STX\DC2\EOT\163\a\STX3\SUB\159\SOH Indicate that fields annotated with this enum value should not be printed\n\
     \ out when using debug formats, e.g. when the field contains sensitive\n\
     \ credentials.\n\
     \\n\
     \\r\n\
-    \\ENQ\EOT\SI\STX\STX\EOT\DC2\EOT\220\ACK\STX\n\
+    \\ENQ\EOT\SI\STX\STX\EOT\DC2\EOT\163\a\STX\n\
     \\n\
     \\r\n\
-    \\ENQ\EOT\SI\STX\STX\ENQ\DC2\EOT\220\ACK\v\SI\n\
+    \\ENQ\EOT\SI\STX\STX\ENQ\DC2\EOT\163\a\v\SI\n\
     \\r\n\
-    \\ENQ\EOT\SI\STX\STX\SOH\DC2\EOT\220\ACK\DLE\FS\n\
+    \\ENQ\EOT\SI\STX\STX\SOH\DC2\EOT\163\a\DLE\FS\n\
     \\r\n\
-    \\ENQ\EOT\SI\STX\STX\ETX\DC2\EOT\220\ACK\US \n\
+    \\ENQ\EOT\SI\STX\STX\ETX\DC2\EOT\163\a\US \n\
     \\r\n\
-    \\ENQ\EOT\SI\STX\STX\b\DC2\EOT\220\ACK!2\n\
+    \\ENQ\EOT\SI\STX\STX\b\DC2\EOT\163\a!2\n\
     \\r\n\
-    \\ENQ\EOT\SI\STX\STX\a\DC2\EOT\220\ACK,1\n\
+    \\ENQ\EOT\SI\STX\STX\a\DC2\EOT\163\a,1\n\
     \H\n\
-    \\EOT\EOT\SI\STX\ETX\DC2\EOT\223\ACK\STX;\SUB: Information about the support window of a feature value.\n\
+    \\EOT\EOT\SI\STX\ETX\DC2\EOT\166\a\STX;\SUB: Information about the support window of a feature value.\n\
     \\n\
     \\r\n\
-    \\ENQ\EOT\SI\STX\ETX\EOT\DC2\EOT\223\ACK\STX\n\
+    \\ENQ\EOT\SI\STX\ETX\EOT\DC2\EOT\166\a\STX\n\
     \\n\
     \\r\n\
-    \\ENQ\EOT\SI\STX\ETX\ACK\DC2\EOT\223\ACK\v&\n\
+    \\ENQ\EOT\SI\STX\ETX\ACK\DC2\EOT\166\a\v&\n\
     \\r\n\
-    \\ENQ\EOT\SI\STX\ETX\SOH\DC2\EOT\223\ACK'6\n\
+    \\ENQ\EOT\SI\STX\ETX\SOH\DC2\EOT\166\a'6\n\
     \\r\n\
-    \\ENQ\EOT\SI\STX\ETX\ETX\DC2\EOT\223\ACK9:\n\
+    \\ENQ\EOT\SI\STX\ETX\ETX\DC2\EOT\166\a9:\n\
+    \\146\SOH\n\
+    \\ETX\EOT\SI\ENQ\DC2\ACK\170\a\STX\174\a\ENQ\SUB\130\SOH Range reserved for first-class extension options defined by the Protobuf\n\
+    \ team. Custom options must use the 1000+ range instead.\n\
+    \\n\
+    \\f\n\
+    \\EOT\EOT\SI\ENQ\NUL\DC2\EOT\170\a\r\ETB\n\
+    \\r\n\
+    \\ENQ\EOT\SI\ENQ\NUL\SOH\DC2\EOT\170\a\r\DLE\n\
+    \\r\n\
+    \\ENQ\EOT\SI\ENQ\NUL\STX\DC2\EOT\170\a\DC4\ETB\n\
+    \\SI\n\
+    \\ENQ\EOT\SI\ENQ\NUL\ETX\DC2\ACK\170\a\CAN\174\a\EOT\n\
+    \\DC1\n\
+    \\a\EOT\SI\ENQ\NUL\ETX\STX\NUL\DC2\ACK\170\a\EM\174\a\ETX\n\
     \O\n\
-    \\EOT\EOT\SI\STX\EOT\DC2\EOT\226\ACK\STX:\SUBA The parser stores options it doesn't recognize here. See above.\n\
+    \\EOT\EOT\SI\STX\EOT\DC2\EOT\177\a\STX:\SUBA The parser stores options it doesn't recognize here. See above.\n\
     \\n\
     \\r\n\
-    \\ENQ\EOT\SI\STX\EOT\EOT\DC2\EOT\226\ACK\STX\n\
+    \\ENQ\EOT\SI\STX\EOT\EOT\DC2\EOT\177\a\STX\n\
     \\n\
     \\r\n\
-    \\ENQ\EOT\SI\STX\EOT\ACK\DC2\EOT\226\ACK\v\RS\n\
+    \\ENQ\EOT\SI\STX\EOT\ACK\DC2\EOT\177\a\v\RS\n\
     \\r\n\
-    \\ENQ\EOT\SI\STX\EOT\SOH\DC2\EOT\226\ACK\US3\n\
+    \\ENQ\EOT\SI\STX\EOT\SOH\DC2\EOT\177\a\US3\n\
     \\r\n\
-    \\ENQ\EOT\SI\STX\EOT\ETX\DC2\EOT\226\ACK69\n\
+    \\ENQ\EOT\SI\STX\EOT\ETX\DC2\EOT\177\a69\n\
     \Z\n\
-    \\ETX\EOT\SI\ENQ\DC2\EOT\229\ACK\STX\EM\SUBM Clients can define custom options in extensions of this message. See above.\n\
+    \\ETX\EOT\SI\ENQ\DC2\EOT\180\a\STX\EM\SUBM Clients can define custom options in extensions of this message. See above.\n\
     \\n\
     \\f\n\
-    \\EOT\EOT\SI\ENQ\NUL\DC2\EOT\229\ACK\r\CAN\n\
+    \\EOT\EOT\SI\ENQ\SOH\DC2\EOT\180\a\r\CAN\n\
     \\r\n\
-    \\ENQ\EOT\SI\ENQ\NUL\SOH\DC2\EOT\229\ACK\r\DC1\n\
+    \\ENQ\EOT\SI\ENQ\SOH\SOH\DC2\EOT\180\a\r\DC1\n\
     \\r\n\
-    \\ENQ\EOT\SI\ENQ\NUL\STX\DC2\EOT\229\ACK\NAK\CAN\n\
+    \\ENQ\EOT\SI\ENQ\SOH\STX\DC2\EOT\180\a\NAK\CAN\n\
     \\f\n\
-    \\STX\EOT\DLE\DC2\ACK\232\ACK\NUL\253\ACK\SOH\n\
+    \\STX\EOT\DLE\DC2\ACK\183\a\NUL\211\a\SOH\n\
     \\v\n\
-    \\ETX\EOT\DLE\SOH\DC2\EOT\232\ACK\b\SYN\n\
-    \=\n\
-    \\EOT\EOT\DLE\STX\NUL\DC2\EOT\235\ACK\STX$\SUB/ Any features defined in the specific edition.\n\
+    \\ETX\EOT\DLE\SOH\DC2\EOT\183\a\b\SYN\n\
+    \\145\STX\n\
+    \\EOT\EOT\DLE\STX\NUL\DC2\EOT\189\a\STX$\SUB\130\STX Any features defined in the specific edition.\n\
+    \ WARNING: This field should only be used by protobuf plugins or special\n\
+    \ cases like the proto compiler. Other uses are discouraged and\n\
+    \ developers should rely on the protoreflect APIs for their client language.\n\
     \\n\
     \\r\n\
-    \\ENQ\EOT\DLE\STX\NUL\EOT\DC2\EOT\235\ACK\STX\n\
+    \\ENQ\EOT\DLE\STX\NUL\EOT\DC2\EOT\189\a\STX\n\
     \\n\
     \\r\n\
-    \\ENQ\EOT\DLE\STX\NUL\ACK\DC2\EOT\235\ACK\v\NAK\n\
+    \\ENQ\EOT\DLE\STX\NUL\ACK\DC2\EOT\189\a\v\NAK\n\
     \\r\n\
-    \\ENQ\EOT\DLE\STX\NUL\SOH\DC2\EOT\235\ACK\SYN\RS\n\
+    \\ENQ\EOT\DLE\STX\NUL\SOH\DC2\EOT\189\a\SYN\RS\n\
     \\r\n\
-    \\ENQ\EOT\DLE\STX\NUL\ETX\DC2\EOT\235\ACK!#\n\
+    \\ENQ\EOT\DLE\STX\NUL\ETX\DC2\EOT\189\a!#\n\
     \\217\ETX\n\
-    \\EOT\EOT\DLE\STX\SOH\DC2\EOT\246\ACK\STX2\SUB\223\SOH Is this service deprecated?\n\
+    \\EOT\EOT\DLE\STX\SOH\DC2\EOT\200\a\STX2\SUB\223\SOH Is this service deprecated?\n\
     \ Depending on the target platform, this can emit Deprecated annotations\n\
     \ for the service, or it will be completely ignored; in the very least,\n\
     \ this is a formalization for deprecating services.\n\
@@ -17281,45 +18431,55 @@ packedFileDescriptor
     \   Buffers.\n\
     \\n\
     \\r\n\
-    \\ENQ\EOT\DLE\STX\SOH\EOT\DC2\EOT\246\ACK\STX\n\
+    \\ENQ\EOT\DLE\STX\SOH\EOT\DC2\EOT\200\a\STX\n\
     \\n\
     \\r\n\
-    \\ENQ\EOT\DLE\STX\SOH\ENQ\DC2\EOT\246\ACK\v\SI\n\
+    \\ENQ\EOT\DLE\STX\SOH\ENQ\DC2\EOT\200\a\v\SI\n\
     \\r\n\
-    \\ENQ\EOT\DLE\STX\SOH\SOH\DC2\EOT\246\ACK\DLE\SUB\n\
+    \\ENQ\EOT\DLE\STX\SOH\SOH\DC2\EOT\200\a\DLE\SUB\n\
     \\r\n\
-    \\ENQ\EOT\DLE\STX\SOH\ETX\DC2\EOT\246\ACK\GS\US\n\
+    \\ENQ\EOT\DLE\STX\SOH\ETX\DC2\EOT\200\a\GS\US\n\
     \\r\n\
-    \\ENQ\EOT\DLE\STX\SOH\b\DC2\EOT\246\ACK 1\n\
+    \\ENQ\EOT\DLE\STX\SOH\b\DC2\EOT\200\a 1\n\
     \\r\n\
-    \\ENQ\EOT\DLE\STX\SOH\a\DC2\EOT\246\ACK+0\n\
+    \\ENQ\EOT\DLE\STX\SOH\a\DC2\EOT\200\a+0\n\
+    \\146\SOH\n\
+    \\ETX\EOT\DLE\ENQ\DC2\EOT\204\a\STX\CAN\SUB\132\SOH Range reserved for first-class custom options defined by the Protobuf\n\
+    \ team. User custom options must use the 1000+ range instead.\n\
+    \\n\
+    \\f\n\
+    \\EOT\EOT\DLE\ENQ\NUL\DC2\EOT\204\a\r\ETB\n\
+    \\r\n\
+    \\ENQ\EOT\DLE\ENQ\NUL\SOH\DC2\EOT\204\a\r\DLE\n\
+    \\r\n\
+    \\ENQ\EOT\DLE\ENQ\NUL\STX\DC2\EOT\204\a\DC4\ETB\n\
     \O\n\
-    \\EOT\EOT\DLE\STX\STX\DC2\EOT\249\ACK\STX:\SUBA The parser stores options it doesn't recognize here. See above.\n\
+    \\EOT\EOT\DLE\STX\STX\DC2\EOT\207\a\STX:\SUBA The parser stores options it doesn't recognize here. See above.\n\
     \\n\
     \\r\n\
-    \\ENQ\EOT\DLE\STX\STX\EOT\DC2\EOT\249\ACK\STX\n\
+    \\ENQ\EOT\DLE\STX\STX\EOT\DC2\EOT\207\a\STX\n\
     \\n\
     \\r\n\
-    \\ENQ\EOT\DLE\STX\STX\ACK\DC2\EOT\249\ACK\v\RS\n\
+    \\ENQ\EOT\DLE\STX\STX\ACK\DC2\EOT\207\a\v\RS\n\
     \\r\n\
-    \\ENQ\EOT\DLE\STX\STX\SOH\DC2\EOT\249\ACK\US3\n\
+    \\ENQ\EOT\DLE\STX\STX\SOH\DC2\EOT\207\a\US3\n\
     \\r\n\
-    \\ENQ\EOT\DLE\STX\STX\ETX\DC2\EOT\249\ACK69\n\
+    \\ENQ\EOT\DLE\STX\STX\ETX\DC2\EOT\207\a69\n\
     \Z\n\
-    \\ETX\EOT\DLE\ENQ\DC2\EOT\252\ACK\STX\EM\SUBM Clients can define custom options in extensions of this message. See above.\n\
+    \\ETX\EOT\DLE\ENQ\DC2\EOT\210\a\STX\EM\SUBM Clients can define custom options in extensions of this message. See above.\n\
     \\n\
     \\f\n\
-    \\EOT\EOT\DLE\ENQ\NUL\DC2\EOT\252\ACK\r\CAN\n\
+    \\EOT\EOT\DLE\ENQ\SOH\DC2\EOT\210\a\r\CAN\n\
     \\r\n\
-    \\ENQ\EOT\DLE\ENQ\NUL\SOH\DC2\EOT\252\ACK\r\DC1\n\
+    \\ENQ\EOT\DLE\ENQ\SOH\SOH\DC2\EOT\210\a\r\DC1\n\
     \\r\n\
-    \\ENQ\EOT\DLE\ENQ\NUL\STX\DC2\EOT\252\ACK\NAK\CAN\n\
+    \\ENQ\EOT\DLE\ENQ\SOH\STX\DC2\EOT\210\a\NAK\CAN\n\
     \\f\n\
-    \\STX\EOT\DC1\DC2\ACK\255\ACK\NUL\159\a\SOH\n\
+    \\STX\EOT\DC1\DC2\ACK\213\a\NUL\252\a\SOH\n\
     \\v\n\
-    \\ETX\EOT\DC1\SOH\DC2\EOT\255\ACK\b\NAK\n\
+    \\ETX\EOT\DC1\SOH\DC2\EOT\213\a\b\NAK\n\
     \\214\ETX\n\
-    \\EOT\EOT\DC1\STX\NUL\DC2\EOT\138\a\STX2\SUB\220\SOH Is this method deprecated?\n\
+    \\EOT\EOT\DC1\STX\NUL\DC2\EOT\224\a\STX2\SUB\220\SOH Is this method deprecated?\n\
     \ Depending on the target platform, this can emit Deprecated annotations\n\
     \ for the method, or it will be completely ignored; in the very least,\n\
     \ this is a formalization for deprecating methods.\n\
@@ -17329,95 +18489,108 @@ packedFileDescriptor
     \   Buffers.\n\
     \\n\
     \\r\n\
-    \\ENQ\EOT\DC1\STX\NUL\EOT\DC2\EOT\138\a\STX\n\
+    \\ENQ\EOT\DC1\STX\NUL\EOT\DC2\EOT\224\a\STX\n\
     \\n\
     \\r\n\
-    \\ENQ\EOT\DC1\STX\NUL\ENQ\DC2\EOT\138\a\v\SI\n\
+    \\ENQ\EOT\DC1\STX\NUL\ENQ\DC2\EOT\224\a\v\SI\n\
     \\r\n\
-    \\ENQ\EOT\DC1\STX\NUL\SOH\DC2\EOT\138\a\DLE\SUB\n\
+    \\ENQ\EOT\DC1\STX\NUL\SOH\DC2\EOT\224\a\DLE\SUB\n\
     \\r\n\
-    \\ENQ\EOT\DC1\STX\NUL\ETX\DC2\EOT\138\a\GS\US\n\
+    \\ENQ\EOT\DC1\STX\NUL\ETX\DC2\EOT\224\a\GS\US\n\
     \\r\n\
-    \\ENQ\EOT\DC1\STX\NUL\b\DC2\EOT\138\a 1\n\
+    \\ENQ\EOT\DC1\STX\NUL\b\DC2\EOT\224\a 1\n\
     \\r\n\
-    \\ENQ\EOT\DC1\STX\NUL\a\DC2\EOT\138\a+0\n\
+    \\ENQ\EOT\DC1\STX\NUL\a\DC2\EOT\224\a+0\n\
     \\240\SOH\n\
-    \\EOT\EOT\DC1\EOT\NUL\DC2\ACK\143\a\STX\147\a\ETX\SUB\223\SOH Is this method side-effect-free (or safe in HTTP parlance), or idempotent,\n\
+    \\EOT\EOT\DC1\EOT\NUL\DC2\ACK\229\a\STX\233\a\ETX\SUB\223\SOH Is this method side-effect-free (or safe in HTTP parlance), or idempotent,\n\
     \ or neither? HTTP based RPC implementation may choose GET verb for safe\n\
     \ methods, and PUT verb for idempotent methods instead of the default POST.\n\
     \\n\
     \\r\n\
-    \\ENQ\EOT\DC1\EOT\NUL\SOH\DC2\EOT\143\a\a\ETB\n\
+    \\ENQ\EOT\DC1\EOT\NUL\SOH\DC2\EOT\229\a\a\ETB\n\
     \\SO\n\
-    \\ACK\EOT\DC1\EOT\NUL\STX\NUL\DC2\EOT\144\a\EOT\FS\n\
+    \\ACK\EOT\DC1\EOT\NUL\STX\NUL\DC2\EOT\230\a\EOT\FS\n\
     \\SI\n\
-    \\a\EOT\DC1\EOT\NUL\STX\NUL\SOH\DC2\EOT\144\a\EOT\ETB\n\
+    \\a\EOT\DC1\EOT\NUL\STX\NUL\SOH\DC2\EOT\230\a\EOT\ETB\n\
     \\SI\n\
-    \\a\EOT\DC1\EOT\NUL\STX\NUL\STX\DC2\EOT\144\a\SUB\ESC\n\
+    \\a\EOT\DC1\EOT\NUL\STX\NUL\STX\DC2\EOT\230\a\SUB\ESC\n\
     \$\n\
-    \\ACK\EOT\DC1\EOT\NUL\STX\SOH\DC2\EOT\145\a\EOT\CAN\"\DC4 implies idempotent\n\
+    \\ACK\EOT\DC1\EOT\NUL\STX\SOH\DC2\EOT\231\a\EOT\CAN\"\DC4 implies idempotent\n\
     \\n\
     \\SI\n\
-    \\a\EOT\DC1\EOT\NUL\STX\SOH\SOH\DC2\EOT\145\a\EOT\DC3\n\
+    \\a\EOT\DC1\EOT\NUL\STX\SOH\SOH\DC2\EOT\231\a\EOT\DC3\n\
     \\SI\n\
-    \\a\EOT\DC1\EOT\NUL\STX\SOH\STX\DC2\EOT\145\a\SYN\ETB\n\
+    \\a\EOT\DC1\EOT\NUL\STX\SOH\STX\DC2\EOT\231\a\SYN\ETB\n\
     \7\n\
-    \\ACK\EOT\DC1\EOT\NUL\STX\STX\DC2\EOT\146\a\EOT\DC3\"' idempotent, but may have side effects\n\
+    \\ACK\EOT\DC1\EOT\NUL\STX\STX\DC2\EOT\232\a\EOT\DC3\"' idempotent, but may have side effects\n\
     \\n\
     \\SI\n\
-    \\a\EOT\DC1\EOT\NUL\STX\STX\SOH\DC2\EOT\146\a\EOT\SO\n\
+    \\a\EOT\DC1\EOT\NUL\STX\STX\SOH\DC2\EOT\232\a\EOT\SO\n\
     \\SI\n\
-    \\a\EOT\DC1\EOT\NUL\STX\STX\STX\DC2\EOT\146\a\DC1\DC2\n\
+    \\a\EOT\DC1\EOT\NUL\STX\STX\STX\DC2\EOT\232\a\DC1\DC2\n\
     \\SO\n\
-    \\EOT\EOT\DC1\STX\SOH\DC2\ACK\148\a\STX\149\a&\n\
+    \\EOT\EOT\DC1\STX\SOH\DC2\ACK\234\a\STX\235\a&\n\
     \\r\n\
-    \\ENQ\EOT\DC1\STX\SOH\EOT\DC2\EOT\148\a\STX\n\
+    \\ENQ\EOT\DC1\STX\SOH\EOT\DC2\EOT\234\a\STX\n\
     \\n\
     \\r\n\
-    \\ENQ\EOT\DC1\STX\SOH\ACK\DC2\EOT\148\a\v\ESC\n\
+    \\ENQ\EOT\DC1\STX\SOH\ACK\DC2\EOT\234\a\v\ESC\n\
     \\r\n\
-    \\ENQ\EOT\DC1\STX\SOH\SOH\DC2\EOT\148\a\FS-\n\
+    \\ENQ\EOT\DC1\STX\SOH\SOH\DC2\EOT\234\a\FS-\n\
     \\r\n\
-    \\ENQ\EOT\DC1\STX\SOH\ETX\DC2\EOT\148\a02\n\
+    \\ENQ\EOT\DC1\STX\SOH\ETX\DC2\EOT\234\a02\n\
     \\r\n\
-    \\ENQ\EOT\DC1\STX\SOH\b\DC2\EOT\149\a\ACK%\n\
+    \\ENQ\EOT\DC1\STX\SOH\b\DC2\EOT\235\a\ACK%\n\
     \\r\n\
-    \\ENQ\EOT\DC1\STX\SOH\a\DC2\EOT\149\a\DC1$\n\
-    \=\n\
-    \\EOT\EOT\DC1\STX\STX\DC2\EOT\152\a\STX$\SUB/ Any features defined in the specific edition.\n\
+    \\ENQ\EOT\DC1\STX\SOH\a\DC2\EOT\235\a\DC1$\n\
+    \\145\STX\n\
+    \\EOT\EOT\DC1\STX\STX\DC2\EOT\241\a\STX$\SUB\130\STX Any features defined in the specific edition.\n\
+    \ WARNING: This field should only be used by protobuf plugins or special\n\
+    \ cases like the proto compiler. Other uses are discouraged and\n\
+    \ developers should rely on the protoreflect APIs for their client language.\n\
     \\n\
     \\r\n\
-    \\ENQ\EOT\DC1\STX\STX\EOT\DC2\EOT\152\a\STX\n\
+    \\ENQ\EOT\DC1\STX\STX\EOT\DC2\EOT\241\a\STX\n\
     \\n\
     \\r\n\
-    \\ENQ\EOT\DC1\STX\STX\ACK\DC2\EOT\152\a\v\NAK\n\
+    \\ENQ\EOT\DC1\STX\STX\ACK\DC2\EOT\241\a\v\NAK\n\
     \\r\n\
-    \\ENQ\EOT\DC1\STX\STX\SOH\DC2\EOT\152\a\SYN\RS\n\
+    \\ENQ\EOT\DC1\STX\STX\SOH\DC2\EOT\241\a\SYN\RS\n\
     \\r\n\
-    \\ENQ\EOT\DC1\STX\STX\ETX\DC2\EOT\152\a!#\n\
-    \O\n\
-    \\EOT\EOT\DC1\STX\ETX\DC2\EOT\155\a\STX:\SUBA The parser stores options it doesn't recognize here. See above.\n\
-    \\n\
-    \\r\n\
-    \\ENQ\EOT\DC1\STX\ETX\EOT\DC2\EOT\155\a\STX\n\
-    \\n\
-    \\r\n\
-    \\ENQ\EOT\DC1\STX\ETX\ACK\DC2\EOT\155\a\v\RS\n\
-    \\r\n\
-    \\ENQ\EOT\DC1\STX\ETX\SOH\DC2\EOT\155\a\US3\n\
-    \\r\n\
-    \\ENQ\EOT\DC1\STX\ETX\ETX\DC2\EOT\155\a69\n\
-    \Z\n\
-    \\ETX\EOT\DC1\ENQ\DC2\EOT\158\a\STX\EM\SUBM Clients can define custom options in extensions of this message. See above.\n\
+    \\ENQ\EOT\DC1\STX\STX\ETX\DC2\EOT\241\a!#\n\
+    \\146\SOH\n\
+    \\ETX\EOT\DC1\ENQ\DC2\EOT\245\a\STX\CAN\SUB\132\SOH Range reserved for first-class custom options defined by the Protobuf\n\
+    \ team. User custom options must use the 1000+ range instead.\n\
     \\n\
     \\f\n\
-    \\EOT\EOT\DC1\ENQ\NUL\DC2\EOT\158\a\r\CAN\n\
+    \\EOT\EOT\DC1\ENQ\NUL\DC2\EOT\245\a\r\ETB\n\
     \\r\n\
-    \\ENQ\EOT\DC1\ENQ\NUL\SOH\DC2\EOT\158\a\r\DC1\n\
+    \\ENQ\EOT\DC1\ENQ\NUL\SOH\DC2\EOT\245\a\r\DLE\n\
     \\r\n\
-    \\ENQ\EOT\DC1\ENQ\NUL\STX\DC2\EOT\158\a\NAK\CAN\n\
+    \\ENQ\EOT\DC1\ENQ\NUL\STX\DC2\EOT\245\a\DC4\ETB\n\
+    \O\n\
+    \\EOT\EOT\DC1\STX\ETX\DC2\EOT\248\a\STX:\SUBA The parser stores options it doesn't recognize here. See above.\n\
+    \\n\
+    \\r\n\
+    \\ENQ\EOT\DC1\STX\ETX\EOT\DC2\EOT\248\a\STX\n\
+    \\n\
+    \\r\n\
+    \\ENQ\EOT\DC1\STX\ETX\ACK\DC2\EOT\248\a\v\RS\n\
+    \\r\n\
+    \\ENQ\EOT\DC1\STX\ETX\SOH\DC2\EOT\248\a\US3\n\
+    \\r\n\
+    \\ENQ\EOT\DC1\STX\ETX\ETX\DC2\EOT\248\a69\n\
+    \Z\n\
+    \\ETX\EOT\DC1\ENQ\DC2\EOT\251\a\STX\EM\SUBM Clients can define custom options in extensions of this message. See above.\n\
+    \\n\
+    \\f\n\
+    \\EOT\EOT\DC1\ENQ\SOH\DC2\EOT\251\a\r\CAN\n\
+    \\r\n\
+    \\ENQ\EOT\DC1\ENQ\SOH\SOH\DC2\EOT\251\a\r\DC1\n\
+    \\r\n\
+    \\ENQ\EOT\DC1\ENQ\SOH\STX\DC2\EOT\251\a\NAK\CAN\n\
     \\139\ETX\n\
-    \\STX\EOT\DC2\DC2\ACK\167\a\NUL\187\a\SOH\SUB\252\STX A message representing a option the parser does not recognize. This only\n\
+    \\STX\EOT\DC2\DC2\ACK\132\b\NUL\152\b\SOH\SUB\252\STX A message representing a option the parser does not recognize. This only\n\
     \ appears in options protos created by the compiler::Parser class.\n\
     \ DescriptorPool resolves these when building Descriptor objects. Therefore,\n\
     \ options protos in descriptor objects (e.g. returned by Descriptor::options(),\n\
@@ -17425,118 +18598,119 @@ packedFileDescriptor
     \ in them.\n\
     \\n\
     \\v\n\
-    \\ETX\EOT\DC2\SOH\DC2\EOT\167\a\b\ESC\n\
+    \\ETX\EOT\DC2\SOH\DC2\EOT\132\b\b\ESC\n\
     \\203\STX\n\
-    \\EOT\EOT\DC2\ETX\NUL\DC2\ACK\173\a\STX\176\a\ETX\SUB\186\STX The name of the uninterpreted option.  Each string represents a segment in\n\
+    \\EOT\EOT\DC2\ETX\NUL\DC2\ACK\138\b\STX\141\b\ETX\SUB\186\STX The name of the uninterpreted option.  Each string represents a segment in\n\
     \ a dot-separated name.  is_extension is true iff a segment represents an\n\
     \ extension (denoted with parentheses in options specs in .proto files).\n\
     \ E.g.,{ [\"foo\", false], [\"bar.baz\", true], [\"moo\", false] } represents\n\
     \ \"foo.(bar.baz).moo\".\n\
     \\n\
     \\r\n\
-    \\ENQ\EOT\DC2\ETX\NUL\SOH\DC2\EOT\173\a\n\
+    \\ENQ\EOT\DC2\ETX\NUL\SOH\DC2\EOT\138\b\n\
     \\DC2\n\
     \\SO\n\
-    \\ACK\EOT\DC2\ETX\NUL\STX\NUL\DC2\EOT\174\a\EOT\"\n\
+    \\ACK\EOT\DC2\ETX\NUL\STX\NUL\DC2\EOT\139\b\EOT\"\n\
     \\SI\n\
-    \\a\EOT\DC2\ETX\NUL\STX\NUL\EOT\DC2\EOT\174\a\EOT\f\n\
+    \\a\EOT\DC2\ETX\NUL\STX\NUL\EOT\DC2\EOT\139\b\EOT\f\n\
     \\SI\n\
-    \\a\EOT\DC2\ETX\NUL\STX\NUL\ENQ\DC2\EOT\174\a\r\DC3\n\
+    \\a\EOT\DC2\ETX\NUL\STX\NUL\ENQ\DC2\EOT\139\b\r\DC3\n\
     \\SI\n\
-    \\a\EOT\DC2\ETX\NUL\STX\NUL\SOH\DC2\EOT\174\a\DC4\GS\n\
+    \\a\EOT\DC2\ETX\NUL\STX\NUL\SOH\DC2\EOT\139\b\DC4\GS\n\
     \\SI\n\
-    \\a\EOT\DC2\ETX\NUL\STX\NUL\ETX\DC2\EOT\174\a !\n\
+    \\a\EOT\DC2\ETX\NUL\STX\NUL\ETX\DC2\EOT\139\b !\n\
     \\SO\n\
-    \\ACK\EOT\DC2\ETX\NUL\STX\SOH\DC2\EOT\175\a\EOT#\n\
+    \\ACK\EOT\DC2\ETX\NUL\STX\SOH\DC2\EOT\140\b\EOT#\n\
     \\SI\n\
-    \\a\EOT\DC2\ETX\NUL\STX\SOH\EOT\DC2\EOT\175\a\EOT\f\n\
+    \\a\EOT\DC2\ETX\NUL\STX\SOH\EOT\DC2\EOT\140\b\EOT\f\n\
     \\SI\n\
-    \\a\EOT\DC2\ETX\NUL\STX\SOH\ENQ\DC2\EOT\175\a\r\DC1\n\
+    \\a\EOT\DC2\ETX\NUL\STX\SOH\ENQ\DC2\EOT\140\b\r\DC1\n\
     \\SI\n\
-    \\a\EOT\DC2\ETX\NUL\STX\SOH\SOH\DC2\EOT\175\a\DC2\RS\n\
+    \\a\EOT\DC2\ETX\NUL\STX\SOH\SOH\DC2\EOT\140\b\DC2\RS\n\
     \\SI\n\
-    \\a\EOT\DC2\ETX\NUL\STX\SOH\ETX\DC2\EOT\175\a!\"\n\
+    \\a\EOT\DC2\ETX\NUL\STX\SOH\ETX\DC2\EOT\140\b!\"\n\
     \\f\n\
-    \\EOT\EOT\DC2\STX\NUL\DC2\EOT\177\a\STX\GS\n\
+    \\EOT\EOT\DC2\STX\NUL\DC2\EOT\142\b\STX\GS\n\
     \\r\n\
-    \\ENQ\EOT\DC2\STX\NUL\EOT\DC2\EOT\177\a\STX\n\
+    \\ENQ\EOT\DC2\STX\NUL\EOT\DC2\EOT\142\b\STX\n\
     \\n\
     \\r\n\
-    \\ENQ\EOT\DC2\STX\NUL\ACK\DC2\EOT\177\a\v\DC3\n\
+    \\ENQ\EOT\DC2\STX\NUL\ACK\DC2\EOT\142\b\v\DC3\n\
     \\r\n\
-    \\ENQ\EOT\DC2\STX\NUL\SOH\DC2\EOT\177\a\DC4\CAN\n\
+    \\ENQ\EOT\DC2\STX\NUL\SOH\DC2\EOT\142\b\DC4\CAN\n\
     \\r\n\
-    \\ENQ\EOT\DC2\STX\NUL\ETX\DC2\EOT\177\a\ESC\FS\n\
+    \\ENQ\EOT\DC2\STX\NUL\ETX\DC2\EOT\142\b\ESC\FS\n\
     \\156\SOH\n\
-    \\EOT\EOT\DC2\STX\SOH\DC2\EOT\181\a\STX'\SUB\141\SOH The value of the uninterpreted option, in whatever type the tokenizer\n\
+    \\EOT\EOT\DC2\STX\SOH\DC2\EOT\146\b\STX'\SUB\141\SOH The value of the uninterpreted option, in whatever type the tokenizer\n\
     \ identified it as during parsing. Exactly one of these should be set.\n\
     \\n\
     \\r\n\
-    \\ENQ\EOT\DC2\STX\SOH\EOT\DC2\EOT\181\a\STX\n\
+    \\ENQ\EOT\DC2\STX\SOH\EOT\DC2\EOT\146\b\STX\n\
     \\n\
     \\r\n\
-    \\ENQ\EOT\DC2\STX\SOH\ENQ\DC2\EOT\181\a\v\DC1\n\
+    \\ENQ\EOT\DC2\STX\SOH\ENQ\DC2\EOT\146\b\v\DC1\n\
     \\r\n\
-    \\ENQ\EOT\DC2\STX\SOH\SOH\DC2\EOT\181\a\DC2\"\n\
+    \\ENQ\EOT\DC2\STX\SOH\SOH\DC2\EOT\146\b\DC2\"\n\
     \\r\n\
-    \\ENQ\EOT\DC2\STX\SOH\ETX\DC2\EOT\181\a%&\n\
+    \\ENQ\EOT\DC2\STX\SOH\ETX\DC2\EOT\146\b%&\n\
     \\f\n\
-    \\EOT\EOT\DC2\STX\STX\DC2\EOT\182\a\STX)\n\
+    \\EOT\EOT\DC2\STX\STX\DC2\EOT\147\b\STX)\n\
     \\r\n\
-    \\ENQ\EOT\DC2\STX\STX\EOT\DC2\EOT\182\a\STX\n\
+    \\ENQ\EOT\DC2\STX\STX\EOT\DC2\EOT\147\b\STX\n\
     \\n\
     \\r\n\
-    \\ENQ\EOT\DC2\STX\STX\ENQ\DC2\EOT\182\a\v\DC1\n\
+    \\ENQ\EOT\DC2\STX\STX\ENQ\DC2\EOT\147\b\v\DC1\n\
     \\r\n\
-    \\ENQ\EOT\DC2\STX\STX\SOH\DC2\EOT\182\a\DC2$\n\
+    \\ENQ\EOT\DC2\STX\STX\SOH\DC2\EOT\147\b\DC2$\n\
     \\r\n\
-    \\ENQ\EOT\DC2\STX\STX\ETX\DC2\EOT\182\a'(\n\
+    \\ENQ\EOT\DC2\STX\STX\ETX\DC2\EOT\147\b'(\n\
     \\f\n\
-    \\EOT\EOT\DC2\STX\ETX\DC2\EOT\183\a\STX(\n\
+    \\EOT\EOT\DC2\STX\ETX\DC2\EOT\148\b\STX(\n\
     \\r\n\
-    \\ENQ\EOT\DC2\STX\ETX\EOT\DC2\EOT\183\a\STX\n\
+    \\ENQ\EOT\DC2\STX\ETX\EOT\DC2\EOT\148\b\STX\n\
     \\n\
     \\r\n\
-    \\ENQ\EOT\DC2\STX\ETX\ENQ\DC2\EOT\183\a\v\DLE\n\
+    \\ENQ\EOT\DC2\STX\ETX\ENQ\DC2\EOT\148\b\v\DLE\n\
     \\r\n\
-    \\ENQ\EOT\DC2\STX\ETX\SOH\DC2\EOT\183\a\DC1#\n\
+    \\ENQ\EOT\DC2\STX\ETX\SOH\DC2\EOT\148\b\DC1#\n\
     \\r\n\
-    \\ENQ\EOT\DC2\STX\ETX\ETX\DC2\EOT\183\a&'\n\
+    \\ENQ\EOT\DC2\STX\ETX\ETX\DC2\EOT\148\b&'\n\
     \\f\n\
-    \\EOT\EOT\DC2\STX\EOT\DC2\EOT\184\a\STX#\n\
+    \\EOT\EOT\DC2\STX\EOT\DC2\EOT\149\b\STX#\n\
     \\r\n\
-    \\ENQ\EOT\DC2\STX\EOT\EOT\DC2\EOT\184\a\STX\n\
+    \\ENQ\EOT\DC2\STX\EOT\EOT\DC2\EOT\149\b\STX\n\
     \\n\
     \\r\n\
-    \\ENQ\EOT\DC2\STX\EOT\ENQ\DC2\EOT\184\a\v\DC1\n\
+    \\ENQ\EOT\DC2\STX\EOT\ENQ\DC2\EOT\149\b\v\DC1\n\
     \\r\n\
-    \\ENQ\EOT\DC2\STX\EOT\SOH\DC2\EOT\184\a\DC2\RS\n\
+    \\ENQ\EOT\DC2\STX\EOT\SOH\DC2\EOT\149\b\DC2\RS\n\
     \\r\n\
-    \\ENQ\EOT\DC2\STX\EOT\ETX\DC2\EOT\184\a!\"\n\
+    \\ENQ\EOT\DC2\STX\EOT\ETX\DC2\EOT\149\b!\"\n\
     \\f\n\
-    \\EOT\EOT\DC2\STX\ENQ\DC2\EOT\185\a\STX\"\n\
+    \\EOT\EOT\DC2\STX\ENQ\DC2\EOT\150\b\STX\"\n\
     \\r\n\
-    \\ENQ\EOT\DC2\STX\ENQ\EOT\DC2\EOT\185\a\STX\n\
+    \\ENQ\EOT\DC2\STX\ENQ\EOT\DC2\EOT\150\b\STX\n\
     \\n\
     \\r\n\
-    \\ENQ\EOT\DC2\STX\ENQ\ENQ\DC2\EOT\185\a\v\DLE\n\
+    \\ENQ\EOT\DC2\STX\ENQ\ENQ\DC2\EOT\150\b\v\DLE\n\
     \\r\n\
-    \\ENQ\EOT\DC2\STX\ENQ\SOH\DC2\EOT\185\a\DC1\GS\n\
+    \\ENQ\EOT\DC2\STX\ENQ\SOH\DC2\EOT\150\b\DC1\GS\n\
     \\r\n\
-    \\ENQ\EOT\DC2\STX\ENQ\ETX\DC2\EOT\185\a !\n\
+    \\ENQ\EOT\DC2\STX\ENQ\ETX\DC2\EOT\150\b !\n\
     \\f\n\
-    \\EOT\EOT\DC2\STX\ACK\DC2\EOT\186\a\STX&\n\
+    \\EOT\EOT\DC2\STX\ACK\DC2\EOT\151\b\STX&\n\
     \\r\n\
-    \\ENQ\EOT\DC2\STX\ACK\EOT\DC2\EOT\186\a\STX\n\
+    \\ENQ\EOT\DC2\STX\ACK\EOT\DC2\EOT\151\b\STX\n\
     \\n\
     \\r\n\
-    \\ENQ\EOT\DC2\STX\ACK\ENQ\DC2\EOT\186\a\v\DC1\n\
+    \\ENQ\EOT\DC2\STX\ACK\ENQ\DC2\EOT\151\b\v\DC1\n\
     \\r\n\
-    \\ENQ\EOT\DC2\STX\ACK\SOH\DC2\EOT\186\a\DC2!\n\
+    \\ENQ\EOT\DC2\STX\ACK\SOH\DC2\EOT\151\b\DC2!\n\
     \\r\n\
-    \\ENQ\EOT\DC2\STX\ACK\ETX\DC2\EOT\186\a$%\n\
+    \\ENQ\EOT\DC2\STX\ACK\ETX\DC2\EOT\151\b$%\n\
     \\219\ETX\n\
-    \\STX\EOT\DC3\DC2\ACK\198\a\NUL\193\b\SOH\SUB\251\STX TODO Enums in C++ gencode (and potentially other languages) are\n\
+    \\STX\EOT\DC3\DC2\ACK\163\b\NUL\138\n\
+    \\SOH\SUB\251\STX TODO Enums in C++ gencode (and potentially other languages) are\n\
     \ not well scoped.  This means that each of the feature enums below can clash\n\
     \ with each other.  The short names we've chosen maximize call-site\n\
     \ readability, but leave us very open to this scenario.  A future feature will\n\
@@ -17546,458 +18720,746 @@ packedFileDescriptor
     \ Features\n\
     \\n\
     \\v\n\
-    \\ETX\EOT\DC3\SOH\DC2\EOT\198\a\b\DC2\n\
+    \\ETX\EOT\DC3\SOH\DC2\EOT\163\b\b\DC2\n\
     \\SO\n\
-    \\EOT\EOT\DC3\EOT\NUL\DC2\ACK\199\a\STX\204\a\ETX\n\
+    \\EOT\EOT\DC3\EOT\NUL\DC2\ACK\164\b\STX\169\b\ETX\n\
     \\r\n\
-    \\ENQ\EOT\DC3\EOT\NUL\SOH\DC2\EOT\199\a\a\DC4\n\
+    \\ENQ\EOT\DC3\EOT\NUL\SOH\DC2\EOT\164\b\a\DC4\n\
     \\SO\n\
-    \\ACK\EOT\DC3\EOT\NUL\STX\NUL\DC2\EOT\200\a\EOT\US\n\
+    \\ACK\EOT\DC3\EOT\NUL\STX\NUL\DC2\EOT\165\b\EOT\US\n\
     \\SI\n\
-    \\a\EOT\DC3\EOT\NUL\STX\NUL\SOH\DC2\EOT\200\a\EOT\SUB\n\
+    \\a\EOT\DC3\EOT\NUL\STX\NUL\SOH\DC2\EOT\165\b\EOT\SUB\n\
     \\SI\n\
-    \\a\EOT\DC3\EOT\NUL\STX\NUL\STX\DC2\EOT\200\a\GS\RS\n\
+    \\a\EOT\DC3\EOT\NUL\STX\NUL\STX\DC2\EOT\165\b\GS\RS\n\
     \\SO\n\
-    \\ACK\EOT\DC3\EOT\NUL\STX\SOH\DC2\EOT\201\a\EOT\DC1\n\
+    \\ACK\EOT\DC3\EOT\NUL\STX\SOH\DC2\EOT\166\b\EOT\DC1\n\
     \\SI\n\
-    \\a\EOT\DC3\EOT\NUL\STX\SOH\SOH\DC2\EOT\201\a\EOT\f\n\
+    \\a\EOT\DC3\EOT\NUL\STX\SOH\SOH\DC2\EOT\166\b\EOT\f\n\
     \\SI\n\
-    \\a\EOT\DC3\EOT\NUL\STX\SOH\STX\DC2\EOT\201\a\SI\DLE\n\
+    \\a\EOT\DC3\EOT\NUL\STX\SOH\STX\DC2\EOT\166\b\SI\DLE\n\
     \\SO\n\
-    \\ACK\EOT\DC3\EOT\NUL\STX\STX\DC2\EOT\202\a\EOT\DC1\n\
+    \\ACK\EOT\DC3\EOT\NUL\STX\STX\DC2\EOT\167\b\EOT\DC1\n\
     \\SI\n\
-    \\a\EOT\DC3\EOT\NUL\STX\STX\SOH\DC2\EOT\202\a\EOT\f\n\
+    \\a\EOT\DC3\EOT\NUL\STX\STX\SOH\DC2\EOT\167\b\EOT\f\n\
     \\SI\n\
-    \\a\EOT\DC3\EOT\NUL\STX\STX\STX\DC2\EOT\202\a\SI\DLE\n\
+    \\a\EOT\DC3\EOT\NUL\STX\STX\STX\DC2\EOT\167\b\SI\DLE\n\
     \\SO\n\
-    \\ACK\EOT\DC3\EOT\NUL\STX\ETX\DC2\EOT\203\a\EOT\CAN\n\
+    \\ACK\EOT\DC3\EOT\NUL\STX\ETX\DC2\EOT\168\b\EOT\CAN\n\
     \\SI\n\
-    \\a\EOT\DC3\EOT\NUL\STX\ETX\SOH\DC2\EOT\203\a\EOT\DC3\n\
+    \\a\EOT\DC3\EOT\NUL\STX\ETX\SOH\DC2\EOT\168\b\EOT\DC3\n\
     \\SI\n\
-    \\a\EOT\DC3\EOT\NUL\STX\ETX\STX\DC2\EOT\203\a\SYN\ETB\n\
+    \\a\EOT\DC3\EOT\NUL\STX\ETX\STX\DC2\EOT\168\b\SYN\ETB\n\
     \\SO\n\
-    \\EOT\EOT\DC3\STX\NUL\DC2\ACK\205\a\STX\215\a\EOT\n\
+    \\EOT\EOT\DC3\STX\NUL\DC2\ACK\170\b\STX\180\b\EOT\n\
     \\r\n\
-    \\ENQ\EOT\DC3\STX\NUL\EOT\DC2\EOT\205\a\STX\n\
+    \\ENQ\EOT\DC3\STX\NUL\EOT\DC2\EOT\170\b\STX\n\
     \\n\
     \\r\n\
-    \\ENQ\EOT\DC3\STX\NUL\ACK\DC2\EOT\205\a\v\CAN\n\
+    \\ENQ\EOT\DC3\STX\NUL\ACK\DC2\EOT\170\b\v\CAN\n\
     \\r\n\
-    \\ENQ\EOT\DC3\STX\NUL\SOH\DC2\EOT\205\a\EM'\n\
+    \\ENQ\EOT\DC3\STX\NUL\SOH\DC2\EOT\170\b\EM'\n\
     \\r\n\
-    \\ENQ\EOT\DC3\STX\NUL\ETX\DC2\EOT\205\a*+\n\
+    \\ENQ\EOT\DC3\STX\NUL\ETX\DC2\EOT\170\b*+\n\
     \\SI\n\
-    \\ENQ\EOT\DC3\STX\NUL\b\DC2\ACK\205\a,\215\a\ETX\n\
+    \\ENQ\EOT\DC3\STX\NUL\b\DC2\ACK\170\b,\180\b\ETX\n\
     \\SO\n\
-    \\ACK\EOT\DC3\STX\NUL\b\DC1\DC2\EOT\206\a\EOT!\n\
+    \\ACK\EOT\DC3\STX\NUL\b\DC1\DC2\EOT\171\b\EOT!\n\
     \\SI\n\
-    \\a\EOT\DC3\STX\NUL\b\DC3\NUL\DC2\EOT\207\a\EOT\US\n\
+    \\a\EOT\DC3\STX\NUL\b\DC3\NUL\DC2\EOT\172\b\EOT\US\n\
     \\SI\n\
-    \\a\EOT\DC3\STX\NUL\b\DC3\SOH\DC2\EOT\208\a\EOT\RS\n\
+    \\a\EOT\DC3\STX\NUL\b\DC3\SOH\DC2\EOT\173\b\EOT\RS\n\
     \\DLE\n\
-    \\ACK\EOT\DC3\STX\NUL\b\SYN\DC2\ACK\209\a\EOT\211\a\ENQ\n\
+    \\ACK\EOT\DC3\STX\NUL\b\SYN\DC2\ACK\174\b\EOT\176\b\ENQ\n\
     \\SI\n\
-    \\a\EOT\DC3\STX\NUL\b\DC4\NUL\DC2\EOT\212\a\EOTE\n\
+    \\a\EOT\DC3\STX\NUL\b\DC4\NUL\DC2\EOT\177\b\EOTE\n\
     \\SI\n\
-    \\a\EOT\DC3\STX\NUL\b\DC4\SOH\DC2\EOT\213\a\EOTE\n\
+    \\a\EOT\DC3\STX\NUL\b\DC4\SOH\DC2\EOT\178\b\EOTE\n\
     \\SI\n\
-    \\a\EOT\DC3\STX\NUL\b\DC4\STX\DC2\EOT\214\a\EOTC\n\
+    \\a\EOT\DC3\STX\NUL\b\DC4\STX\DC2\EOT\179\b\EOTC\n\
     \\SO\n\
-    \\EOT\EOT\DC3\EOT\SOH\DC2\ACK\217\a\STX\221\a\ETX\n\
+    \\EOT\EOT\DC3\EOT\SOH\DC2\ACK\182\b\STX\186\b\ETX\n\
     \\r\n\
-    \\ENQ\EOT\DC3\EOT\SOH\SOH\DC2\EOT\217\a\a\SI\n\
+    \\ENQ\EOT\DC3\EOT\SOH\SOH\DC2\EOT\182\b\a\SI\n\
     \\SO\n\
-    \\ACK\EOT\DC3\EOT\SOH\STX\NUL\DC2\EOT\218\a\EOT\SUB\n\
+    \\ACK\EOT\DC3\EOT\SOH\STX\NUL\DC2\EOT\183\b\EOT\SUB\n\
     \\SI\n\
-    \\a\EOT\DC3\EOT\SOH\STX\NUL\SOH\DC2\EOT\218\a\EOT\NAK\n\
+    \\a\EOT\DC3\EOT\SOH\STX\NUL\SOH\DC2\EOT\183\b\EOT\NAK\n\
     \\SI\n\
-    \\a\EOT\DC3\EOT\SOH\STX\NUL\STX\DC2\EOT\218\a\CAN\EM\n\
+    \\a\EOT\DC3\EOT\SOH\STX\NUL\STX\DC2\EOT\183\b\CAN\EM\n\
     \\SO\n\
-    \\ACK\EOT\DC3\EOT\SOH\STX\SOH\DC2\EOT\219\a\EOT\r\n\
+    \\ACK\EOT\DC3\EOT\SOH\STX\SOH\DC2\EOT\184\b\EOT\r\n\
     \\SI\n\
-    \\a\EOT\DC3\EOT\SOH\STX\SOH\SOH\DC2\EOT\219\a\EOT\b\n\
+    \\a\EOT\DC3\EOT\SOH\STX\SOH\SOH\DC2\EOT\184\b\EOT\b\n\
     \\SI\n\
-    \\a\EOT\DC3\EOT\SOH\STX\SOH\STX\DC2\EOT\219\a\v\f\n\
+    \\a\EOT\DC3\EOT\SOH\STX\SOH\STX\DC2\EOT\184\b\v\f\n\
     \\SO\n\
-    \\ACK\EOT\DC3\EOT\SOH\STX\STX\DC2\EOT\220\a\EOT\SI\n\
+    \\ACK\EOT\DC3\EOT\SOH\STX\STX\DC2\EOT\185\b\EOT\SI\n\
     \\SI\n\
-    \\a\EOT\DC3\EOT\SOH\STX\STX\SOH\DC2\EOT\220\a\EOT\n\
+    \\a\EOT\DC3\EOT\SOH\STX\STX\SOH\DC2\EOT\185\b\EOT\n\
     \\n\
     \\SI\n\
-    \\a\EOT\DC3\EOT\SOH\STX\STX\STX\DC2\EOT\220\a\r\SO\n\
+    \\a\EOT\DC3\EOT\SOH\STX\STX\STX\DC2\EOT\185\b\r\SO\n\
     \\SO\n\
-    \\EOT\EOT\DC3\STX\SOH\DC2\ACK\222\a\STX\231\a\EOT\n\
+    \\EOT\EOT\DC3\STX\SOH\DC2\ACK\187\b\STX\196\b\EOT\n\
     \\r\n\
-    \\ENQ\EOT\DC3\STX\SOH\EOT\DC2\EOT\222\a\STX\n\
+    \\ENQ\EOT\DC3\STX\SOH\EOT\DC2\EOT\187\b\STX\n\
     \\n\
     \\r\n\
-    \\ENQ\EOT\DC3\STX\SOH\ACK\DC2\EOT\222\a\v\DC3\n\
+    \\ENQ\EOT\DC3\STX\SOH\ACK\DC2\EOT\187\b\v\DC3\n\
     \\r\n\
-    \\ENQ\EOT\DC3\STX\SOH\SOH\DC2\EOT\222\a\DC4\GS\n\
+    \\ENQ\EOT\DC3\STX\SOH\SOH\DC2\EOT\187\b\DC4\GS\n\
     \\r\n\
-    \\ENQ\EOT\DC3\STX\SOH\ETX\DC2\EOT\222\a !\n\
+    \\ENQ\EOT\DC3\STX\SOH\ETX\DC2\EOT\187\b !\n\
     \\SI\n\
-    \\ENQ\EOT\DC3\STX\SOH\b\DC2\ACK\222\a\"\231\a\ETX\n\
+    \\ENQ\EOT\DC3\STX\SOH\b\DC2\ACK\187\b\"\196\b\ETX\n\
     \\SO\n\
-    \\ACK\EOT\DC3\STX\SOH\b\DC1\DC2\EOT\223\a\EOT!\n\
+    \\ACK\EOT\DC3\STX\SOH\b\DC1\DC2\EOT\188\b\EOT!\n\
     \\SI\n\
-    \\a\EOT\DC3\STX\SOH\b\DC3\NUL\DC2\EOT\224\a\EOT\RS\n\
+    \\a\EOT\DC3\STX\SOH\b\DC3\NUL\DC2\EOT\189\b\EOT\RS\n\
     \\SI\n\
-    \\a\EOT\DC3\STX\SOH\b\DC3\SOH\DC2\EOT\225\a\EOT\RS\n\
+    \\a\EOT\DC3\STX\SOH\b\DC3\SOH\DC2\EOT\190\b\EOT\RS\n\
     \\DLE\n\
-    \\ACK\EOT\DC3\STX\SOH\b\SYN\DC2\ACK\226\a\EOT\228\a\ENQ\n\
+    \\ACK\EOT\DC3\STX\SOH\b\SYN\DC2\ACK\191\b\EOT\193\b\ENQ\n\
     \\SI\n\
-    \\a\EOT\DC3\STX\SOH\b\DC4\NUL\DC2\EOT\229\a\EOTC\n\
+    \\a\EOT\DC3\STX\SOH\b\DC4\NUL\DC2\EOT\194\b\EOTC\n\
     \\SI\n\
-    \\a\EOT\DC3\STX\SOH\b\DC4\SOH\DC2\EOT\230\a\EOTA\n\
+    \\a\EOT\DC3\STX\SOH\b\DC4\SOH\DC2\EOT\195\b\EOTA\n\
     \\SO\n\
-    \\EOT\EOT\DC3\EOT\STX\DC2\ACK\233\a\STX\237\a\ETX\n\
+    \\EOT\EOT\DC3\EOT\STX\DC2\ACK\198\b\STX\202\b\ETX\n\
     \\r\n\
-    \\ENQ\EOT\DC3\EOT\STX\SOH\DC2\EOT\233\a\a\FS\n\
+    \\ENQ\EOT\DC3\EOT\STX\SOH\DC2\EOT\198\b\a\FS\n\
     \\SO\n\
-    \\ACK\EOT\DC3\EOT\STX\STX\NUL\DC2\EOT\234\a\EOT(\n\
+    \\ACK\EOT\DC3\EOT\STX\STX\NUL\DC2\EOT\199\b\EOT(\n\
     \\SI\n\
-    \\a\EOT\DC3\EOT\STX\STX\NUL\SOH\DC2\EOT\234\a\EOT#\n\
+    \\a\EOT\DC3\EOT\STX\STX\NUL\SOH\DC2\EOT\199\b\EOT#\n\
     \\SI\n\
-    \\a\EOT\DC3\EOT\STX\STX\NUL\STX\DC2\EOT\234\a&'\n\
+    \\a\EOT\DC3\EOT\STX\STX\NUL\STX\DC2\EOT\199\b&'\n\
     \\SO\n\
-    \\ACK\EOT\DC3\EOT\STX\STX\SOH\DC2\EOT\235\a\EOT\SI\n\
+    \\ACK\EOT\DC3\EOT\STX\STX\SOH\DC2\EOT\200\b\EOT\SI\n\
     \\SI\n\
-    \\a\EOT\DC3\EOT\STX\STX\SOH\SOH\DC2\EOT\235\a\EOT\n\
+    \\a\EOT\DC3\EOT\STX\STX\SOH\SOH\DC2\EOT\200\b\EOT\n\
     \\n\
     \\SI\n\
-    \\a\EOT\DC3\EOT\STX\STX\SOH\STX\DC2\EOT\235\a\r\SO\n\
+    \\a\EOT\DC3\EOT\STX\STX\SOH\STX\DC2\EOT\200\b\r\SO\n\
     \\SO\n\
-    \\ACK\EOT\DC3\EOT\STX\STX\STX\DC2\EOT\236\a\EOT\DC1\n\
+    \\ACK\EOT\DC3\EOT\STX\STX\STX\DC2\EOT\201\b\EOT\DC1\n\
     \\SI\n\
-    \\a\EOT\DC3\EOT\STX\STX\STX\SOH\DC2\EOT\236\a\EOT\f\n\
+    \\a\EOT\DC3\EOT\STX\STX\STX\SOH\DC2\EOT\201\b\EOT\f\n\
     \\SI\n\
-    \\a\EOT\DC3\EOT\STX\STX\STX\STX\DC2\EOT\236\a\SI\DLE\n\
+    \\a\EOT\DC3\EOT\STX\STX\STX\STX\DC2\EOT\201\b\SI\DLE\n\
     \\SO\n\
-    \\EOT\EOT\DC3\STX\STX\DC2\ACK\238\a\STX\247\a\EOT\n\
+    \\EOT\EOT\DC3\STX\STX\DC2\ACK\203\b\STX\212\b\EOT\n\
     \\r\n\
-    \\ENQ\EOT\DC3\STX\STX\EOT\DC2\EOT\238\a\STX\n\
+    \\ENQ\EOT\DC3\STX\STX\EOT\DC2\EOT\203\b\STX\n\
     \\n\
     \\r\n\
-    \\ENQ\EOT\DC3\STX\STX\ACK\DC2\EOT\238\a\v \n\
+    \\ENQ\EOT\DC3\STX\STX\ACK\DC2\EOT\203\b\v \n\
     \\r\n\
-    \\ENQ\EOT\DC3\STX\STX\SOH\DC2\EOT\238\a!8\n\
+    \\ENQ\EOT\DC3\STX\STX\SOH\DC2\EOT\203\b!8\n\
     \\r\n\
-    \\ENQ\EOT\DC3\STX\STX\ETX\DC2\EOT\238\a;<\n\
+    \\ENQ\EOT\DC3\STX\STX\ETX\DC2\EOT\203\b;<\n\
     \\SI\n\
-    \\ENQ\EOT\DC3\STX\STX\b\DC2\ACK\238\a=\247\a\ETX\n\
+    \\ENQ\EOT\DC3\STX\STX\b\DC2\ACK\203\b=\212\b\ETX\n\
     \\SO\n\
-    \\ACK\EOT\DC3\STX\STX\b\DC1\DC2\EOT\239\a\EOT!\n\
+    \\ACK\EOT\DC3\STX\STX\b\DC1\DC2\EOT\204\b\EOT!\n\
     \\SI\n\
-    \\a\EOT\DC3\STX\STX\b\DC3\NUL\DC2\EOT\240\a\EOT\US\n\
+    \\a\EOT\DC3\STX\STX\b\DC3\NUL\DC2\EOT\205\b\EOT\US\n\
     \\SI\n\
-    \\a\EOT\DC3\STX\STX\b\DC3\SOH\DC2\EOT\241\a\EOT\RS\n\
+    \\a\EOT\DC3\STX\STX\b\DC3\SOH\DC2\EOT\206\b\EOT\RS\n\
     \\DLE\n\
-    \\ACK\EOT\DC3\STX\STX\b\SYN\DC2\ACK\242\a\EOT\244\a\ENQ\n\
+    \\ACK\EOT\DC3\STX\STX\b\SYN\DC2\ACK\207\b\EOT\209\b\ENQ\n\
     \\SI\n\
-    \\a\EOT\DC3\STX\STX\b\DC4\NUL\DC2\EOT\245\a\EOTE\n\
+    \\a\EOT\DC3\STX\STX\b\DC4\NUL\DC2\EOT\210\b\EOTE\n\
     \\SI\n\
-    \\a\EOT\DC3\STX\STX\b\DC4\SOH\DC2\EOT\246\a\EOTC\n\
+    \\a\EOT\DC3\STX\STX\b\DC4\SOH\DC2\EOT\211\b\EOTC\n\
     \\SO\n\
-    \\EOT\EOT\DC3\EOT\ETX\DC2\ACK\249\a\STX\254\a\ETX\n\
+    \\EOT\EOT\DC3\EOT\ETX\DC2\ACK\214\b\STX\219\b\ETX\n\
     \\r\n\
-    \\ENQ\EOT\DC3\EOT\ETX\SOH\DC2\EOT\249\a\a\NAK\n\
+    \\ENQ\EOT\DC3\EOT\ETX\SOH\DC2\EOT\214\b\a\NAK\n\
     \\SO\n\
-    \\ACK\EOT\DC3\EOT\ETX\STX\NUL\DC2\EOT\250\a\EOT \n\
+    \\ACK\EOT\DC3\EOT\ETX\STX\NUL\DC2\EOT\215\b\EOT \n\
     \\SI\n\
-    \\a\EOT\DC3\EOT\ETX\STX\NUL\SOH\DC2\EOT\250\a\EOT\ESC\n\
+    \\a\EOT\DC3\EOT\ETX\STX\NUL\SOH\DC2\EOT\215\b\EOT\ESC\n\
     \\SI\n\
-    \\a\EOT\DC3\EOT\ETX\STX\NUL\STX\DC2\EOT\250\a\RS\US\n\
+    \\a\EOT\DC3\EOT\ETX\STX\NUL\STX\DC2\EOT\215\b\RS\US\n\
     \\SO\n\
-    \\ACK\EOT\DC3\EOT\ETX\STX\SOH\DC2\EOT\251\a\EOT\SI\n\
+    \\ACK\EOT\DC3\EOT\ETX\STX\SOH\DC2\EOT\216\b\EOT\SI\n\
     \\SI\n\
-    \\a\EOT\DC3\EOT\ETX\STX\SOH\SOH\DC2\EOT\251\a\EOT\n\
+    \\a\EOT\DC3\EOT\ETX\STX\SOH\SOH\DC2\EOT\216\b\EOT\n\
     \\n\
     \\SI\n\
-    \\a\EOT\DC3\EOT\ETX\STX\SOH\STX\DC2\EOT\251\a\r\SO\n\
+    \\a\EOT\DC3\EOT\ETX\STX\SOH\STX\DC2\EOT\216\b\r\SO\n\
     \\SO\n\
-    \\ACK\EOT\DC3\EOT\ETX\STX\STX\DC2\EOT\252\a\EOT\r\n\
+    \\ACK\EOT\DC3\EOT\ETX\STX\STX\DC2\EOT\217\b\EOT\r\n\
     \\SI\n\
-    \\a\EOT\DC3\EOT\ETX\STX\STX\SOH\DC2\EOT\252\a\EOT\b\n\
+    \\a\EOT\DC3\EOT\ETX\STX\STX\SOH\DC2\EOT\217\b\EOT\b\n\
     \\SI\n\
-    \\a\EOT\DC3\EOT\ETX\STX\STX\STX\DC2\EOT\252\a\v\f\n\
+    \\a\EOT\DC3\EOT\ETX\STX\STX\STX\DC2\EOT\217\b\v\f\n\
     \\r\n\
-    \\ENQ\EOT\DC3\EOT\ETX\EOT\DC2\EOT\253\a\EOT\SI\n\
+    \\ENQ\EOT\DC3\EOT\ETX\EOT\DC2\EOT\218\b\EOT\SI\n\
     \\SO\n\
-    \\ACK\EOT\DC3\EOT\ETX\EOT\NUL\DC2\EOT\253\a\r\SO\n\
+    \\ACK\EOT\DC3\EOT\ETX\EOT\NUL\DC2\EOT\218\b\r\SO\n\
     \\SI\n\
-    \\a\EOT\DC3\EOT\ETX\EOT\NUL\SOH\DC2\EOT\253\a\r\SO\n\
+    \\a\EOT\DC3\EOT\ETX\EOT\NUL\SOH\DC2\EOT\218\b\r\SO\n\
     \\SI\n\
-    \\a\EOT\DC3\EOT\ETX\EOT\NUL\STX\DC2\EOT\253\a\r\SO\n\
+    \\a\EOT\DC3\EOT\ETX\EOT\NUL\STX\DC2\EOT\218\b\r\SO\n\
     \\SO\n\
-    \\EOT\EOT\DC3\STX\ETX\DC2\ACK\255\a\STX\136\b\EOT\n\
+    \\EOT\EOT\DC3\STX\ETX\DC2\ACK\220\b\STX\229\b\EOT\n\
     \\r\n\
-    \\ENQ\EOT\DC3\STX\ETX\EOT\DC2\EOT\255\a\STX\n\
+    \\ENQ\EOT\DC3\STX\ETX\EOT\DC2\EOT\220\b\STX\n\
     \\n\
     \\r\n\
-    \\ENQ\EOT\DC3\STX\ETX\ACK\DC2\EOT\255\a\v\EM\n\
+    \\ENQ\EOT\DC3\STX\ETX\ACK\DC2\EOT\220\b\v\EM\n\
     \\r\n\
-    \\ENQ\EOT\DC3\STX\ETX\SOH\DC2\EOT\255\a\SUB)\n\
+    \\ENQ\EOT\DC3\STX\ETX\SOH\DC2\EOT\220\b\SUB)\n\
     \\r\n\
-    \\ENQ\EOT\DC3\STX\ETX\ETX\DC2\EOT\255\a,-\n\
+    \\ENQ\EOT\DC3\STX\ETX\ETX\DC2\EOT\220\b,-\n\
     \\SI\n\
-    \\ENQ\EOT\DC3\STX\ETX\b\DC2\ACK\255\a.\136\b\ETX\n\
+    \\ENQ\EOT\DC3\STX\ETX\b\DC2\ACK\220\b.\229\b\ETX\n\
     \\SO\n\
-    \\ACK\EOT\DC3\STX\ETX\b\DC1\DC2\EOT\128\b\EOT!\n\
+    \\ACK\EOT\DC3\STX\ETX\b\DC1\DC2\EOT\221\b\EOT!\n\
     \\SI\n\
-    \\a\EOT\DC3\STX\ETX\b\DC3\NUL\DC2\EOT\129\b\EOT\US\n\
+    \\a\EOT\DC3\STX\ETX\b\DC3\NUL\DC2\EOT\222\b\EOT\US\n\
     \\SI\n\
-    \\a\EOT\DC3\STX\ETX\b\DC3\SOH\DC2\EOT\130\b\EOT\RS\n\
+    \\a\EOT\DC3\STX\ETX\b\DC3\SOH\DC2\EOT\223\b\EOT\RS\n\
     \\DLE\n\
-    \\ACK\EOT\DC3\STX\ETX\b\SYN\DC2\ACK\131\b\EOT\133\b\ENQ\n\
+    \\ACK\EOT\DC3\STX\ETX\b\SYN\DC2\ACK\224\b\EOT\226\b\ENQ\n\
     \\SI\n\
-    \\a\EOT\DC3\STX\ETX\b\DC4\NUL\DC2\EOT\134\b\EOTA\n\
+    \\a\EOT\DC3\STX\ETX\b\DC4\NUL\DC2\EOT\227\b\EOTA\n\
     \\SI\n\
-    \\a\EOT\DC3\STX\ETX\b\DC4\SOH\DC2\EOT\135\b\EOTC\n\
+    \\a\EOT\DC3\STX\ETX\b\DC4\SOH\DC2\EOT\228\b\EOTC\n\
     \\SO\n\
-    \\EOT\EOT\DC3\EOT\EOT\DC2\ACK\138\b\STX\142\b\ETX\n\
+    \\EOT\EOT\DC3\EOT\EOT\DC2\ACK\231\b\STX\235\b\ETX\n\
     \\r\n\
-    \\ENQ\EOT\DC3\EOT\EOT\SOH\DC2\EOT\138\b\a\SYN\n\
+    \\ENQ\EOT\DC3\EOT\EOT\SOH\DC2\EOT\231\b\a\SYN\n\
     \\SO\n\
-    \\ACK\EOT\DC3\EOT\EOT\STX\NUL\DC2\EOT\139\b\EOT!\n\
+    \\ACK\EOT\DC3\EOT\EOT\STX\NUL\DC2\EOT\232\b\EOT!\n\
     \\SI\n\
-    \\a\EOT\DC3\EOT\EOT\STX\NUL\SOH\DC2\EOT\139\b\EOT\FS\n\
+    \\a\EOT\DC3\EOT\EOT\STX\NUL\SOH\DC2\EOT\232\b\EOT\FS\n\
     \\SI\n\
-    \\a\EOT\DC3\EOT\EOT\STX\NUL\STX\DC2\EOT\139\b\US \n\
+    \\a\EOT\DC3\EOT\EOT\STX\NUL\STX\DC2\EOT\232\b\US \n\
     \\SO\n\
-    \\ACK\EOT\DC3\EOT\EOT\STX\SOH\DC2\EOT\140\b\EOT\CAN\n\
+    \\ACK\EOT\DC3\EOT\EOT\STX\SOH\DC2\EOT\233\b\EOT\CAN\n\
     \\SI\n\
-    \\a\EOT\DC3\EOT\EOT\STX\SOH\SOH\DC2\EOT\140\b\EOT\DC3\n\
+    \\a\EOT\DC3\EOT\EOT\STX\SOH\SOH\DC2\EOT\233\b\EOT\DC3\n\
     \\SI\n\
-    \\a\EOT\DC3\EOT\EOT\STX\SOH\STX\DC2\EOT\140\b\SYN\ETB\n\
+    \\a\EOT\DC3\EOT\EOT\STX\SOH\STX\DC2\EOT\233\b\SYN\ETB\n\
     \\SO\n\
-    \\ACK\EOT\DC3\EOT\EOT\STX\STX\DC2\EOT\141\b\EOT\DC2\n\
+    \\ACK\EOT\DC3\EOT\EOT\STX\STX\DC2\EOT\234\b\EOT\DC2\n\
     \\SI\n\
-    \\a\EOT\DC3\EOT\EOT\STX\STX\SOH\DC2\EOT\141\b\EOT\r\n\
+    \\a\EOT\DC3\EOT\EOT\STX\STX\SOH\DC2\EOT\234\b\EOT\r\n\
     \\SI\n\
-    \\a\EOT\DC3\EOT\EOT\STX\STX\STX\DC2\EOT\141\b\DLE\DC1\n\
+    \\a\EOT\DC3\EOT\EOT\STX\STX\STX\DC2\EOT\234\b\DLE\DC1\n\
     \\SO\n\
-    \\EOT\EOT\DC3\STX\EOT\DC2\ACK\143\b\STX\151\b\EOT\n\
+    \\EOT\EOT\DC3\STX\EOT\DC2\ACK\236\b\STX\244\b\EOT\n\
     \\r\n\
-    \\ENQ\EOT\DC3\STX\EOT\EOT\DC2\EOT\143\b\STX\n\
+    \\ENQ\EOT\DC3\STX\EOT\EOT\DC2\EOT\236\b\STX\n\
     \\n\
     \\r\n\
-    \\ENQ\EOT\DC3\STX\EOT\ACK\DC2\EOT\143\b\v\SUB\n\
+    \\ENQ\EOT\DC3\STX\EOT\ACK\DC2\EOT\236\b\v\SUB\n\
     \\r\n\
-    \\ENQ\EOT\DC3\STX\EOT\SOH\DC2\EOT\143\b\ESC+\n\
+    \\ENQ\EOT\DC3\STX\EOT\SOH\DC2\EOT\236\b\ESC+\n\
     \\r\n\
-    \\ENQ\EOT\DC3\STX\EOT\ETX\DC2\EOT\143\b./\n\
+    \\ENQ\EOT\DC3\STX\EOT\ETX\DC2\EOT\236\b./\n\
     \\SI\n\
-    \\ENQ\EOT\DC3\STX\EOT\b\DC2\ACK\143\b0\151\b\ETX\n\
+    \\ENQ\EOT\DC3\STX\EOT\b\DC2\ACK\236\b0\244\b\ETX\n\
     \\SO\n\
-    \\ACK\EOT\DC3\STX\EOT\b\DC1\DC2\EOT\144\b\EOT!\n\
+    \\ACK\EOT\DC3\STX\EOT\b\DC1\DC2\EOT\237\b\EOT!\n\
     \\SI\n\
-    \\a\EOT\DC3\STX\EOT\b\DC3\NUL\DC2\EOT\145\b\EOT\US\n\
+    \\a\EOT\DC3\STX\EOT\b\DC3\NUL\DC2\EOT\238\b\EOT\US\n\
     \\SI\n\
-    \\a\EOT\DC3\STX\EOT\b\DC3\SOH\DC2\EOT\146\b\EOT\RS\n\
+    \\a\EOT\DC3\STX\EOT\b\DC3\SOH\DC2\EOT\239\b\EOT\RS\n\
     \\DLE\n\
-    \\ACK\EOT\DC3\STX\EOT\b\SYN\DC2\ACK\147\b\EOT\149\b\ENQ\n\
+    \\ACK\EOT\DC3\STX\EOT\b\SYN\DC2\ACK\240\b\EOT\242\b\ENQ\n\
     \\SI\n\
-    \\a\EOT\DC3\STX\EOT\b\DC4\NUL\DC2\EOT\150\b\EOTL\n\
+    \\a\EOT\DC3\STX\EOT\b\DC4\NUL\DC2\EOT\243\b\EOTL\n\
     \\SO\n\
-    \\EOT\EOT\DC3\EOT\ENQ\DC2\ACK\153\b\STX\157\b\ETX\n\
+    \\EOT\EOT\DC3\EOT\ENQ\DC2\ACK\246\b\STX\250\b\ETX\n\
     \\r\n\
-    \\ENQ\EOT\DC3\EOT\ENQ\SOH\DC2\EOT\153\b\a\DC1\n\
+    \\ENQ\EOT\DC3\EOT\ENQ\SOH\DC2\EOT\246\b\a\DC1\n\
     \\SO\n\
-    \\ACK\EOT\DC3\EOT\ENQ\STX\NUL\DC2\EOT\154\b\EOT\FS\n\
+    \\ACK\EOT\DC3\EOT\ENQ\STX\NUL\DC2\EOT\247\b\EOT\FS\n\
     \\SI\n\
-    \\a\EOT\DC3\EOT\ENQ\STX\NUL\SOH\DC2\EOT\154\b\EOT\ETB\n\
+    \\a\EOT\DC3\EOT\ENQ\STX\NUL\SOH\DC2\EOT\247\b\EOT\ETB\n\
     \\SI\n\
-    \\a\EOT\DC3\EOT\ENQ\STX\NUL\STX\DC2\EOT\154\b\SUB\ESC\n\
+    \\a\EOT\DC3\EOT\ENQ\STX\NUL\STX\DC2\EOT\247\b\SUB\ESC\n\
     \\SO\n\
-    \\ACK\EOT\DC3\EOT\ENQ\STX\SOH\DC2\EOT\155\b\EOT\SO\n\
+    \\ACK\EOT\DC3\EOT\ENQ\STX\SOH\DC2\EOT\248\b\EOT\SO\n\
     \\SI\n\
-    \\a\EOT\DC3\EOT\ENQ\STX\SOH\SOH\DC2\EOT\155\b\EOT\t\n\
+    \\a\EOT\DC3\EOT\ENQ\STX\SOH\SOH\DC2\EOT\248\b\EOT\t\n\
     \\SI\n\
-    \\a\EOT\DC3\EOT\ENQ\STX\SOH\STX\DC2\EOT\155\b\f\r\n\
+    \\a\EOT\DC3\EOT\ENQ\STX\SOH\STX\DC2\EOT\248\b\f\r\n\
     \\SO\n\
-    \\ACK\EOT\DC3\EOT\ENQ\STX\STX\DC2\EOT\156\b\EOT\ESC\n\
+    \\ACK\EOT\DC3\EOT\ENQ\STX\STX\DC2\EOT\249\b\EOT\ESC\n\
     \\SI\n\
-    \\a\EOT\DC3\EOT\ENQ\STX\STX\SOH\DC2\EOT\156\b\EOT\SYN\n\
+    \\a\EOT\DC3\EOT\ENQ\STX\STX\SOH\DC2\EOT\249\b\EOT\SYN\n\
     \\SI\n\
-    \\a\EOT\DC3\EOT\ENQ\STX\STX\STX\DC2\EOT\156\b\EM\SUB\n\
+    \\a\EOT\DC3\EOT\ENQ\STX\STX\STX\DC2\EOT\249\b\EM\SUB\n\
     \\SO\n\
-    \\EOT\EOT\DC3\STX\ENQ\DC2\ACK\158\b\STX\168\b\EOT\n\
+    \\EOT\EOT\DC3\STX\ENQ\DC2\ACK\251\b\STX\133\t\EOT\n\
     \\r\n\
-    \\ENQ\EOT\DC3\STX\ENQ\EOT\DC2\EOT\158\b\STX\n\
+    \\ENQ\EOT\DC3\STX\ENQ\EOT\DC2\EOT\251\b\STX\n\
     \\n\
     \\r\n\
-    \\ENQ\EOT\DC3\STX\ENQ\ACK\DC2\EOT\158\b\v\NAK\n\
+    \\ENQ\EOT\DC3\STX\ENQ\ACK\DC2\EOT\251\b\v\NAK\n\
     \\r\n\
-    \\ENQ\EOT\DC3\STX\ENQ\SOH\DC2\EOT\158\b\SYN!\n\
+    \\ENQ\EOT\DC3\STX\ENQ\SOH\DC2\EOT\251\b\SYN!\n\
     \\r\n\
-    \\ENQ\EOT\DC3\STX\ENQ\ETX\DC2\EOT\158\b$%\n\
+    \\ENQ\EOT\DC3\STX\ENQ\ETX\DC2\EOT\251\b$%\n\
     \\SI\n\
-    \\ENQ\EOT\DC3\STX\ENQ\b\DC2\ACK\158\b&\168\b\ETX\n\
+    \\ENQ\EOT\DC3\STX\ENQ\b\DC2\ACK\251\b&\133\t\ETX\n\
     \\SO\n\
-    \\ACK\EOT\DC3\STX\ENQ\b\DC1\DC2\EOT\159\b\EOT!\n\
+    \\ACK\EOT\DC3\STX\ENQ\b\DC1\DC2\EOT\252\b\EOT!\n\
     \\SI\n\
-    \\a\EOT\DC3\STX\ENQ\b\DC3\NUL\DC2\EOT\160\b\EOT!\n\
+    \\a\EOT\DC3\STX\ENQ\b\DC3\NUL\DC2\EOT\253\b\EOT!\n\
     \\SI\n\
-    \\a\EOT\DC3\STX\ENQ\b\DC3\SOH\DC2\EOT\161\b\EOT\RS\n\
+    \\a\EOT\DC3\STX\ENQ\b\DC3\SOH\DC2\EOT\254\b\EOT\RS\n\
     \\SI\n\
-    \\a\EOT\DC3\STX\ENQ\b\DC3\STX\DC2\EOT\162\b\EOT\RS\n\
+    \\a\EOT\DC3\STX\ENQ\b\DC3\STX\DC2\EOT\255\b\EOT\RS\n\
     \\DLE\n\
-    \\ACK\EOT\DC3\STX\ENQ\b\SYN\DC2\ACK\163\b\EOT\165\b\ENQ\n\
+    \\ACK\EOT\DC3\STX\ENQ\b\SYN\DC2\ACK\128\t\EOT\130\t\ENQ\n\
     \\SI\n\
-    \\a\EOT\DC3\STX\ENQ\b\DC4\NUL\DC2\EOT\166\b\EOTO\n\
+    \\a\EOT\DC3\STX\ENQ\b\DC4\NUL\DC2\EOT\131\t\EOTO\n\
     \\SI\n\
-    \\a\EOT\DC3\STX\ENQ\b\DC4\SOH\DC2\EOT\167\b\EOTB\n\
+    \\a\EOT\DC3\STX\ENQ\b\DC4\SOH\DC2\EOT\132\t\EOTB\n\
+    \\SO\n\
+    \\EOT\EOT\DC3\EOT\ACK\DC2\ACK\135\t\STX\140\t\ETX\n\
+    \\r\n\
+    \\ENQ\EOT\DC3\EOT\ACK\SOH\DC2\EOT\135\t\a\EM\n\
+    \\SO\n\
+    \\ACK\EOT\DC3\EOT\ACK\STX\NUL\DC2\EOT\136\t\EOT%\n\
+    \\SI\n\
+    \\a\EOT\DC3\EOT\ACK\STX\NUL\SOH\DC2\EOT\136\t\EOT \n\
+    \\SI\n\
+    \\a\EOT\DC3\EOT\ACK\STX\NUL\STX\DC2\EOT\136\t#$\n\
+    \\SO\n\
+    \\ACK\EOT\DC3\EOT\ACK\STX\SOH\DC2\EOT\137\t\EOT\DC2\n\
+    \\SI\n\
+    \\a\EOT\DC3\EOT\ACK\STX\SOH\SOH\DC2\EOT\137\t\EOT\r\n\
+    \\SI\n\
+    \\a\EOT\DC3\EOT\ACK\STX\SOH\STX\DC2\EOT\137\t\DLE\DC1\n\
+    \\SO\n\
+    \\ACK\EOT\DC3\EOT\ACK\STX\STX\DC2\EOT\138\t\EOT\NAK\n\
+    \\SI\n\
+    \\a\EOT\DC3\EOT\ACK\STX\STX\SOH\DC2\EOT\138\t\EOT\DLE\n\
+    \\SI\n\
+    \\a\EOT\DC3\EOT\ACK\STX\STX\STX\DC2\EOT\138\t\DC3\DC4\n\
+    \\SO\n\
+    \\ACK\EOT\DC3\EOT\ACK\STX\ETX\DC2\EOT\139\t\EOT\DC2\n\
+    \\SI\n\
+    \\a\EOT\DC3\EOT\ACK\STX\ETX\SOH\DC2\EOT\139\t\EOT\r\n\
+    \\SI\n\
+    \\a\EOT\DC3\EOT\ACK\STX\ETX\STX\DC2\EOT\139\t\DLE\DC1\n\
+    \\SO\n\
+    \\EOT\EOT\DC3\STX\ACK\DC2\ACK\141\t\STX\158\t\EOT\n\
+    \\r\n\
+    \\ENQ\EOT\DC3\STX\ACK\EOT\DC2\EOT\141\t\STX\n\
+    \\n\
+    \\r\n\
+    \\ENQ\EOT\DC3\STX\ACK\ACK\DC2\EOT\141\t\v\GS\n\
+    \\r\n\
+    \\ENQ\EOT\DC3\STX\ACK\SOH\DC2\EOT\141\t\RS2\n\
+    \\r\n\
+    \\ENQ\EOT\DC3\STX\ACK\ETX\DC2\EOT\141\t56\n\
+    \\SI\n\
+    \\ENQ\EOT\DC3\STX\ACK\b\DC2\ACK\141\t7\158\t\ETX\n\
+    \\SO\n\
+    \\ACK\EOT\DC3\STX\ACK\b\DC1\DC2\EOT\142\t\EOT \n\
+    \\SI\n\
+    \\a\EOT\DC3\STX\ACK\b\DC3\NUL\DC2\EOT\143\t\EOT\RS\n\
+    \\SI\n\
+    \\a\EOT\DC3\STX\ACK\b\DC3\SOH\DC2\EOT\144\t\EOT)\n\
+    \\SI\n\
+    \\a\EOT\DC3\STX\ACK\b\DC3\STX\DC2\EOT\145\t\EOT!\n\
+    \\SI\n\
+    \\a\EOT\DC3\STX\ACK\b\DC3\ETX\DC2\EOT\146\t\EOT\US\n\
+    \\SI\n\
+    \\a\EOT\DC3\STX\ACK\b\DC3\EOT\DC2\EOT\147\t\EOT\US\n\
+    \\SI\n\
+    \\a\EOT\DC3\STX\ACK\b\DC3\ENQ\DC2\EOT\148\t\EOT\RS\n\
+    \\SI\n\
+    \\a\EOT\DC3\STX\ACK\b\DC3\ACK\DC2\EOT\149\t\EOT$\n\
+    \\SI\n\
+    \\a\EOT\DC3\STX\ACK\b\DC3\a\DC2\EOT\150\t\EOT!\n\
+    \\SI\n\
+    \\a\EOT\DC3\STX\ACK\b\DC3\b\DC2\EOT\151\t\EOT \n\
+    \\DLE\n\
+    \\ACK\EOT\DC3\STX\ACK\b\SYN\DC2\ACK\152\t\EOT\154\t\ENQ\n\
+    \\SI\n\
+    \\a\EOT\DC3\STX\ACK\b\DC4\NUL\DC2\EOT\155\t\EOTI\n\
+    \\SI\n\
+    \\a\EOT\DC3\STX\ACK\b\DC4\SOH\DC2\EOT\156\t\EOTD\n\
+    \\SI\n\
+    \\a\EOT\DC3\STX\ACK\b\DC4\STX\DC2\EOT\157\t\EOTD\n\
+    \\SO\n\
+    \\EOT\EOT\DC3\ETX\NUL\DC2\ACK\160\t\STX\179\t\ETX\n\
+    \\r\n\
+    \\ENQ\EOT\DC3\ETX\NUL\SOH\DC2\EOT\160\t\n\
+    \\ESC\n\
+    \\DLE\n\
+    \\ACK\EOT\DC3\ETX\NUL\EOT\NUL\DC2\ACK\161\t\EOT\177\t\ENQ\n\
+    \\SI\n\
+    \\a\EOT\DC3\ETX\NUL\EOT\NUL\SOH\DC2\EOT\161\t\t \n\
+    \\DLE\n\
+    \\b\EOT\DC3\ETX\NUL\EOT\NUL\STX\NUL\DC2\EOT\162\t\ACK,\n\
+    \\DC1\n\
+    \\t\EOT\DC3\ETX\NUL\EOT\NUL\STX\NUL\SOH\DC2\EOT\162\t\ACK'\n\
+    \\DC1\n\
+    \\t\EOT\DC3\ETX\NUL\EOT\NUL\STX\NUL\STX\DC2\EOT\162\t*+\n\
+    \N\n\
+    \\b\EOT\DC3\ETX\NUL\EOT\NUL\STX\SOH\DC2\EOT\165\t\ACK\NAK\SUB< Default pre-EDITION_2024, all UNSET visibility are export.\n\
+    \\n\
+    \\DC1\n\
+    \\t\EOT\DC3\ETX\NUL\EOT\NUL\STX\SOH\SOH\DC2\EOT\165\t\ACK\DLE\n\
+    \\DC1\n\
+    \\t\EOT\DC3\ETX\NUL\EOT\NUL\STX\SOH\STX\DC2\EOT\165\t\DC3\DC4\n\
+    \U\n\
+    \\b\EOT\DC3\ETX\NUL\EOT\NUL\STX\STX\DC2\EOT\168\t\ACK\ESC\SUBC All top-level symbols default to export, nested default to local.\n\
+    \\n\
+    \\DC1\n\
+    \\t\EOT\DC3\ETX\NUL\EOT\NUL\STX\STX\SOH\DC2\EOT\168\t\ACK\SYN\n\
+    \\DC1\n\
+    \\t\EOT\DC3\ETX\NUL\EOT\NUL\STX\STX\STX\DC2\EOT\168\t\EM\SUB\n\
+    \1\n\
+    \\b\EOT\DC3\ETX\NUL\EOT\NUL\STX\ETX\DC2\EOT\171\t\ACK\DC4\SUB\US All symbols default to local.\n\
+    \\n\
+    \\DC1\n\
+    \\t\EOT\DC3\ETX\NUL\EOT\NUL\STX\ETX\SOH\DC2\EOT\171\t\ACK\SI\n\
+    \\DC1\n\
+    \\t\EOT\DC3\ETX\NUL\EOT\NUL\STX\ETX\STX\DC2\EOT\171\t\DC2\DC3\n\
+    \\201\SOH\n\
+    \\b\EOT\DC3\ETX\NUL\EOT\NUL\STX\EOT\DC2\EOT\176\t\ACK\DC1\SUB\182\SOH All symbols local by default. Nested types cannot be exported.\n\
+    \ With special case caveat for message { enum {} reserved 1 to max; }\n\
+    \ This is the recommended setting for new protos.\n\
+    \\n\
+    \\DC1\n\
+    \\t\EOT\DC3\ETX\NUL\EOT\NUL\STX\EOT\SOH\DC2\EOT\176\t\ACK\f\n\
+    \\DC1\n\
+    \\t\EOT\DC3\ETX\NUL\EOT\NUL\STX\EOT\STX\DC2\EOT\176\t\SI\DLE\n\
+    \\r\n\
+    \\ENQ\EOT\DC3\ETX\NUL\t\DC2\EOT\178\t\EOT\SYN\n\
+    \\SO\n\
+    \\ACK\EOT\DC3\ETX\NUL\t\NUL\DC2\EOT\178\t\r\NAK\n\
+    \\SI\n\
+    \\a\EOT\DC3\ETX\NUL\t\NUL\SOH\DC2\EOT\178\t\r\SO\n\
+    \\SI\n\
+    \\a\EOT\DC3\ETX\NUL\t\NUL\STX\DC2\EOT\178\t\DC2\NAK\n\
+    \\SO\n\
+    \\EOT\EOT\DC3\STX\a\DC2\ACK\180\t\STX\190\t\b\n\
+    \\r\n\
+    \\ENQ\EOT\DC3\STX\a\EOT\DC2\EOT\180\t\STX\n\
+    \\n\
+    \\r\n\
+    \\ENQ\EOT\DC3\STX\a\ACK\DC2\EOT\180\t\v4\n\
+    \\r\n\
+    \\ENQ\EOT\DC3\STX\a\SOH\DC2\EOT\180\t5N\n\
+    \\r\n\
+    \\ENQ\EOT\DC3\STX\a\ETX\DC2\EOT\181\t\ACK\a\n\
+    \\SI\n\
+    \\ENQ\EOT\DC3\STX\a\b\DC2\ACK\181\t\b\190\t\a\n\
+    \\SO\n\
+    \\ACK\EOT\DC3\STX\a\b\DC1\DC2\EOT\182\t\b$\n\
+    \\SI\n\
+    \\a\EOT\DC3\STX\a\b\DC3\NUL\DC2\EOT\183\t\b\"\n\
+    \\DLE\n\
+    \\ACK\EOT\DC3\STX\a\b\SYN\DC2\ACK\184\t\b\186\t\t\n\
+    \\SI\n\
+    \\a\EOT\DC3\STX\a\b\DC4\NUL\DC2\EOT\187\t\bK\n\
+    \\SI\n\
+    \\a\EOT\DC3\STX\a\b\DC4\SOH\DC2\EOT\188\t\bO\n\
+    \\SI\n\
+    \\a\EOT\DC3\STX\a\b\DC4\STX\DC2\EOT\189\t\bE\n\
+    \\SO\n\
+    \\EOT\EOT\DC3\ETX\SOH\DC2\ACK\192\t\STX\206\t\ETX\n\
+    \\r\n\
+    \\ENQ\EOT\DC3\ETX\SOH\SOH\DC2\EOT\192\t\n\
+    \\FS\n\
+    \\DLE\n\
+    \\ACK\EOT\DC3\ETX\SOH\EOT\NUL\DC2\ACK\193\t\EOT\205\t\ENQ\n\
+    \\SI\n\
+    \\a\EOT\DC3\ETX\SOH\EOT\NUL\SOH\DC2\EOT\193\t\t\ESC\n\
+    \\DLE\n\
+    \\b\EOT\DC3\ETX\SOH\EOT\NUL\STX\NUL\DC2\EOT\194\t\ACK\US\n\
+    \\DC1\n\
+    \\t\EOT\DC3\ETX\SOH\EOT\NUL\STX\NUL\SOH\DC2\EOT\194\t\ACK\SUB\n\
+    \\DC1\n\
+    \\t\EOT\DC3\ETX\SOH\EOT\NUL\STX\NUL\STX\DC2\EOT\194\t\GS\RS\n\
+    \\129\STX\n\
+    \\b\EOT\DC3\ETX\SOH\EOT\NUL\STX\SOH\DC2\EOT\200\t\ACK$\SUB\238\SOH Default pre-EDITION_2026: there are no limit enforcement at the protoc\n\
+    \ level. Practical limits still exist, but they will tend to fail while\n\
+    \ compiling protoc-generated code, and these limits tend to be language\n\
+    \ or toolchain specific.\n\
+    \\n\
+    \\DC1\n\
+    \\t\EOT\DC3\ETX\SOH\EOT\NUL\STX\SOH\SOH\DC2\EOT\200\t\ACK\US\n\
+    \\DC1\n\
+    \\t\EOT\DC3\ETX\SOH\EOT\NUL\STX\SOH\STX\DC2\EOT\200\t\"#\n\
+    \\159\SOH\n\
+    \\b\EOT\DC3\ETX\SOH\EOT\NUL\STX\STX\DC2\EOT\204\t\ACK\ESC\SUB\140\SOH A set of limits enforced by Edition 2026 by default. For a detailed\n\
+    \ list of all the limits please consult the Edition 2026 documentation.\n\
+    \\n\
+    \\DC1\n\
+    \\t\EOT\DC3\ETX\SOH\EOT\NUL\STX\STX\SOH\DC2\EOT\204\t\ACK\SYN\n\
+    \\DC1\n\
+    \\t\EOT\DC3\ETX\SOH\EOT\NUL\STX\STX\STX\DC2\EOT\204\t\EM\SUB\n\
+    \\SO\n\
+    \\EOT\EOT\DC3\STX\b\DC2\ACK\207\t\STX\221\t\EOT\n\
+    \\r\n\
+    \\ENQ\EOT\DC3\STX\b\EOT\DC2\EOT\207\t\STX\n\
+    \\n\
+    \\r\n\
+    \\ENQ\EOT\DC3\STX\b\ACK\DC2\EOT\207\t\v0\n\
+    \\r\n\
+    \\ENQ\EOT\DC3\STX\b\SOH\DC2\EOT\207\t1E\n\
+    \\r\n\
+    \\ENQ\EOT\DC3\STX\b\ETX\DC2\EOT\207\tHI\n\
+    \\SI\n\
+    \\ENQ\EOT\DC3\STX\b\b\DC2\ACK\207\tJ\221\t\ETX\n\
+    \\SO\n\
+    \\ACK\EOT\DC3\STX\b\b\DC1\DC2\EOT\208\t\EOT \n\
+    \\SI\n\
+    \\a\EOT\DC3\STX\b\b\DC3\NUL\DC2\EOT\209\t\EOT\RS\n\
+    \\SI\n\
+    \\a\EOT\DC3\STX\b\b\DC3\SOH\DC2\EOT\210\t\EOT!\n\
+    \\SI\n\
+    \\a\EOT\DC3\STX\b\b\DC3\STX\DC2\EOT\211\t\EOT\US\n\
+    \\SI\n\
+    \\a\EOT\DC3\STX\b\b\DC3\ETX\DC2\EOT\212\t\EOT\US\n\
+    \\DLE\n\
+    \\ACK\EOT\DC3\STX\b\b\SYN\DC2\ACK\213\t\EOT\215\t\ENQ\n\
+    \\DC1\n\
+    \\a\EOT\DC3\STX\b\b\DC4\NUL\DC2\ACK\216\t\EOT\219\t\ENQ\n\
+    \\SI\n\
+    \\a\EOT\DC3\STX\b\b\DC4\SOH\DC2\EOT\220\t\EOTK\n\
     \\v\n\
-    \\ETX\EOT\DC3\t\DC2\EOT\170\b\STX\SI\n\
+    \\ETX\EOT\DC3\t\DC2\EOT\223\t\STX\SI\n\
     \\f\n\
-    \\EOT\EOT\DC3\t\NUL\DC2\EOT\170\b\v\SO\n\
+    \\EOT\EOT\DC3\t\NUL\DC2\EOT\223\t\v\SO\n\
     \\r\n\
-    \\ENQ\EOT\DC3\t\NUL\SOH\DC2\EOT\170\b\v\SO\n\
+    \\ENQ\EOT\DC3\t\NUL\SOH\DC2\EOT\223\t\v\SO\n\
     \\r\n\
-    \\ENQ\EOT\DC3\t\NUL\STX\DC2\EOT\170\b\v\SO\n\
+    \\ENQ\EOT\DC3\t\NUL\STX\DC2\EOT\223\t\v\SO\n\
     \\r\n\
-    \\ETX\EOT\DC3\ENQ\DC2\ACK\172\b\STX\189\b\EOT\n\
+    \\ETX\EOT\DC3\ENQ\DC2\ACK\225\t\STX\134\n\
+    \\EOT\n\
     \\f\n\
-    \\EOT\EOT\DC3\ENQ\NUL\DC2\EOT\172\b\r\EM\n\
+    \\EOT\EOT\DC3\ENQ\NUL\DC2\EOT\225\t\r\EM\n\
     \\r\n\
-    \\ENQ\EOT\DC3\ENQ\NUL\SOH\DC2\EOT\172\b\r\DC1\n\
+    \\ENQ\EOT\DC3\ENQ\NUL\SOH\DC2\EOT\225\t\r\DC1\n\
     \\r\n\
-    \\ENQ\EOT\DC3\ENQ\NUL\STX\DC2\EOT\172\b\NAK\EM\n\
+    \\ENQ\EOT\DC3\ENQ\NUL\STX\DC2\EOT\225\t\NAK\EM\n\
+    \\SI\n\
+    \\ENQ\EOT\DC3\ENQ\NUL\ETX\DC2\ACK\225\t\SUB\134\n\
+    \\ETX\n\
+    \\DC1\n\
+    \\a\EOT\DC3\ENQ\NUL\ETX\STX\NUL\DC2\ACK\226\t\EOT\230\t\ENQ\n\
+    \\DC1\n\
+    \\a\EOT\DC3\ENQ\NUL\ETX\STX\SOH\DC2\ACK\231\t\EOT\235\t\ENQ\n\
+    \\SI\n\
+    \\a\EOT\DC3\ENQ\NUL\ETX\STX\STX\DC2\EOT\236\t\EOTO\n\
+    \\DC1\n\
+    \\a\EOT\DC3\ENQ\NUL\ETX\STX\ETX\DC2\ACK\237\t\EOT\241\t\ENQ\n\
+    \\DC1\n\
+    \\a\EOT\DC3\ENQ\NUL\ETX\STX\EOT\DC2\ACK\242\t\EOT\246\t\ENQ\n\
+    \\DC1\n\
+    \\a\EOT\DC3\ENQ\NUL\ETX\STX\ENQ\DC2\ACK\247\t\EOT\251\t\ENQ\n\
+    \\DC1\n\
+    \\a\EOT\DC3\ENQ\NUL\ETX\STX\ACK\DC2\ACK\252\t\EOT\128\n\
+    \\ENQ\n\
+    \\DC1\n\
+    \\a\EOT\DC3\ENQ\NUL\ETX\STX\a\DC2\ACK\129\n\
+    \\EOT\133\n\
+    \\ENQ\n\
     \#\n\
-    \\ETX\EOT\DC3\ENQ\DC2\EOT\191\b\STX\SUB\"\SYN For internal testing\n\
+    \\ETX\EOT\DC3\ENQ\DC2\EOT\136\n\
+    \\STX\SUB\"\SYN For internal testing\n\
     \\n\
     \\f\n\
-    \\EOT\EOT\DC3\ENQ\SOH\DC2\EOT\191\b\r\EM\n\
+    \\EOT\EOT\DC3\ENQ\SOH\DC2\EOT\136\n\
+    \\r\EM\n\
     \\r\n\
-    \\ENQ\EOT\DC3\ENQ\SOH\SOH\DC2\EOT\191\b\r\DC1\n\
+    \\ENQ\EOT\DC3\ENQ\SOH\SOH\DC2\EOT\136\n\
+    \\r\DC1\n\
     \\r\n\
-    \\ENQ\EOT\DC3\ENQ\SOH\STX\DC2\EOT\191\b\NAK\EM\n\
+    \\ENQ\EOT\DC3\ENQ\SOH\STX\DC2\EOT\136\n\
+    \\NAK\EM\n\
     \:\n\
-    \\ETX\EOT\DC3\ENQ\DC2\EOT\192\b\STX\DC3\"- for https://github.com/bufbuild/protobuf-es\n\
+    \\ETX\EOT\DC3\ENQ\DC2\EOT\137\n\
+    \\STX\DC3\"- for https://github.com/bufbuild/protobuf-es\n\
     \\n\
     \\f\n\
-    \\EOT\EOT\DC3\ENQ\STX\DC2\EOT\192\b\r\DC2\n\
+    \\EOT\EOT\DC3\ENQ\STX\DC2\EOT\137\n\
+    \\r\DC2\n\
     \\r\n\
-    \\ENQ\EOT\DC3\ENQ\STX\SOH\DC2\EOT\192\b\r\DC2\n\
+    \\ENQ\EOT\DC3\ENQ\STX\SOH\DC2\EOT\137\n\
+    \\r\DC2\n\
     \\r\n\
-    \\ENQ\EOT\DC3\ENQ\STX\STX\DC2\EOT\192\b\r\DC2\n\
+    \\ENQ\EOT\DC3\ENQ\STX\STX\DC2\EOT\137\n\
+    \\r\DC2\n\
     \\172\STX\n\
-    \\STX\EOT\DC4\DC2\ACK\199\b\NUL\225\b\SOH\SUB\157\STX A compiled specification for the defaults of a set of features.  These\n\
+    \\STX\EOT\DC4\DC2\ACK\144\n\
+    \\NUL\170\n\
+    \\SOH\SUB\157\STX A compiled specification for the defaults of a set of features.  These\n\
     \ messages are generated from FeatureSet extensions and can be used to seed\n\
     \ feature resolution. The resolution with this object becomes a simple search\n\
     \ for the closest matching edition, followed by proto merges.\n\
     \\n\
     \\v\n\
-    \\ETX\EOT\DC4\SOH\DC2\EOT\199\b\b\SUB\n\
+    \\ETX\EOT\DC4\SOH\DC2\EOT\144\n\
+    \\b\SUB\n\
     \\176\STX\n\
-    \\EOT\EOT\DC4\ETX\NUL\DC2\ACK\204\b\STX\215\b\ETX\SUB\159\STX A map from every known edition with a unique set of defaults to its\n\
+    \\EOT\EOT\DC4\ETX\NUL\DC2\ACK\149\n\
+    \\STX\160\n\
+    \\ETX\SUB\159\STX A map from every known edition with a unique set of defaults to its\n\
     \ defaults. Not all editions may be contained here.  For a given edition,\n\
     \ the defaults at the closest matching edition ordered at or before it should\n\
     \ be used.  This field must be in strict ascending order by edition.\n\
     \\n\
     \\r\n\
-    \\ENQ\EOT\DC4\ETX\NUL\SOH\DC2\EOT\204\b\n\
+    \\ENQ\EOT\DC4\ETX\NUL\SOH\DC2\EOT\149\n\
+    \\n\
     \\"\n\
     \\SO\n\
-    \\ACK\EOT\DC4\ETX\NUL\STX\NUL\DC2\EOT\205\b\EOT!\n\
+    \\ACK\EOT\DC4\ETX\NUL\STX\NUL\DC2\EOT\150\n\
+    \\EOT!\n\
     \\SI\n\
-    \\a\EOT\DC4\ETX\NUL\STX\NUL\EOT\DC2\EOT\205\b\EOT\f\n\
+    \\a\EOT\DC4\ETX\NUL\STX\NUL\EOT\DC2\EOT\150\n\
+    \\EOT\f\n\
     \\SI\n\
-    \\a\EOT\DC4\ETX\NUL\STX\NUL\ACK\DC2\EOT\205\b\r\DC4\n\
+    \\a\EOT\DC4\ETX\NUL\STX\NUL\ACK\DC2\EOT\150\n\
+    \\r\DC4\n\
     \\SI\n\
-    \\a\EOT\DC4\ETX\NUL\STX\NUL\SOH\DC2\EOT\205\b\NAK\FS\n\
+    \\a\EOT\DC4\ETX\NUL\STX\NUL\SOH\DC2\EOT\150\n\
+    \\NAK\FS\n\
     \\SI\n\
-    \\a\EOT\DC4\ETX\NUL\STX\NUL\ETX\DC2\EOT\205\b\US \n\
+    \\a\EOT\DC4\ETX\NUL\STX\NUL\ETX\DC2\EOT\150\n\
+    \\US \n\
     \N\n\
-    \\ACK\EOT\DC4\ETX\NUL\STX\SOH\DC2\EOT\208\b\EOT1\SUB> Defaults of features that can be overridden in this edition.\n\
+    \\ACK\EOT\DC4\ETX\NUL\STX\SOH\DC2\EOT\153\n\
+    \\EOT1\SUB> Defaults of features that can be overridden in this edition.\n\
     \\n\
     \\SI\n\
-    \\a\EOT\DC4\ETX\NUL\STX\SOH\EOT\DC2\EOT\208\b\EOT\f\n\
+    \\a\EOT\DC4\ETX\NUL\STX\SOH\EOT\DC2\EOT\153\n\
+    \\EOT\f\n\
     \\SI\n\
-    \\a\EOT\DC4\ETX\NUL\STX\SOH\ACK\DC2\EOT\208\b\r\ETB\n\
+    \\a\EOT\DC4\ETX\NUL\STX\SOH\ACK\DC2\EOT\153\n\
+    \\r\ETB\n\
     \\SI\n\
-    \\a\EOT\DC4\ETX\NUL\STX\SOH\SOH\DC2\EOT\208\b\CAN,\n\
+    \\a\EOT\DC4\ETX\NUL\STX\SOH\SOH\DC2\EOT\153\n\
+    \\CAN,\n\
     \\SI\n\
-    \\a\EOT\DC4\ETX\NUL\STX\SOH\ETX\DC2\EOT\208\b/0\n\
+    \\a\EOT\DC4\ETX\NUL\STX\SOH\ETX\DC2\EOT\153\n\
+    \/0\n\
     \P\n\
-    \\ACK\EOT\DC4\ETX\NUL\STX\STX\DC2\EOT\211\b\EOT+\SUB@ Defaults of features that can't be overridden in this edition.\n\
+    \\ACK\EOT\DC4\ETX\NUL\STX\STX\DC2\EOT\156\n\
+    \\EOT+\SUB@ Defaults of features that can't be overridden in this edition.\n\
     \\n\
     \\SI\n\
-    \\a\EOT\DC4\ETX\NUL\STX\STX\EOT\DC2\EOT\211\b\EOT\f\n\
+    \\a\EOT\DC4\ETX\NUL\STX\STX\EOT\DC2\EOT\156\n\
+    \\EOT\f\n\
     \\SI\n\
-    \\a\EOT\DC4\ETX\NUL\STX\STX\ACK\DC2\EOT\211\b\r\ETB\n\
+    \\a\EOT\DC4\ETX\NUL\STX\STX\ACK\DC2\EOT\156\n\
+    \\r\ETB\n\
     \\SI\n\
-    \\a\EOT\DC4\ETX\NUL\STX\STX\SOH\DC2\EOT\211\b\CAN&\n\
+    \\a\EOT\DC4\ETX\NUL\STX\STX\SOH\DC2\EOT\156\n\
+    \\CAN&\n\
     \\SI\n\
-    \\a\EOT\DC4\ETX\NUL\STX\STX\ETX\DC2\EOT\211\b)*\n\
+    \\a\EOT\DC4\ETX\NUL\STX\STX\ETX\DC2\EOT\156\n\
+    \)*\n\
     \\r\n\
-    \\ENQ\EOT\DC4\ETX\NUL\t\DC2\EOT\213\b\EOT\DC2\n\
+    \\ENQ\EOT\DC4\ETX\NUL\t\DC2\EOT\158\n\
+    \\EOT\DC2\n\
     \\SO\n\
-    \\ACK\EOT\DC4\ETX\NUL\t\NUL\DC2\EOT\213\b\r\SO\n\
+    \\ACK\EOT\DC4\ETX\NUL\t\NUL\DC2\EOT\158\n\
+    \\r\SO\n\
     \\SI\n\
-    \\a\EOT\DC4\ETX\NUL\t\NUL\SOH\DC2\EOT\213\b\r\SO\n\
+    \\a\EOT\DC4\ETX\NUL\t\NUL\SOH\DC2\EOT\158\n\
+    \\r\SO\n\
     \\SI\n\
-    \\a\EOT\DC4\ETX\NUL\t\NUL\STX\DC2\EOT\213\b\r\SO\n\
+    \\a\EOT\DC4\ETX\NUL\t\NUL\STX\DC2\EOT\158\n\
+    \\r\SO\n\
     \\SO\n\
-    \\ACK\EOT\DC4\ETX\NUL\t\SOH\DC2\EOT\213\b\DLE\DC1\n\
+    \\ACK\EOT\DC4\ETX\NUL\t\SOH\DC2\EOT\158\n\
+    \\DLE\DC1\n\
     \\SI\n\
-    \\a\EOT\DC4\ETX\NUL\t\SOH\SOH\DC2\EOT\213\b\DLE\DC1\n\
+    \\a\EOT\DC4\ETX\NUL\t\SOH\SOH\DC2\EOT\158\n\
+    \\DLE\DC1\n\
     \\SI\n\
-    \\a\EOT\DC4\ETX\NUL\t\SOH\STX\DC2\EOT\213\b\DLE\DC1\n\
+    \\a\EOT\DC4\ETX\NUL\t\SOH\STX\DC2\EOT\158\n\
+    \\DLE\DC1\n\
     \\r\n\
     \\ENQ\EOT\DC4\ETX\NUL\n\
-    \\DC2\EOT\214\b\EOT\CAN\n\
+    \\DC2\EOT\159\n\
+    \\EOT\CAN\n\
     \\SO\n\
     \\ACK\EOT\DC4\ETX\NUL\n\
-    \\NUL\DC2\EOT\214\b\r\ETB\n\
+    \\NUL\DC2\EOT\159\n\
+    \\r\ETB\n\
     \\f\n\
-    \\EOT\EOT\DC4\STX\NUL\DC2\EOT\216\b\STX1\n\
+    \\EOT\EOT\DC4\STX\NUL\DC2\EOT\161\n\
+    \\STX1\n\
     \\r\n\
-    \\ENQ\EOT\DC4\STX\NUL\EOT\DC2\EOT\216\b\STX\n\
+    \\ENQ\EOT\DC4\STX\NUL\EOT\DC2\EOT\161\n\
+    \\STX\n\
     \\n\
     \\r\n\
-    \\ENQ\EOT\DC4\STX\NUL\ACK\DC2\EOT\216\b\v#\n\
+    \\ENQ\EOT\DC4\STX\NUL\ACK\DC2\EOT\161\n\
+    \\v#\n\
     \\r\n\
-    \\ENQ\EOT\DC4\STX\NUL\SOH\DC2\EOT\216\b$,\n\
+    \\ENQ\EOT\DC4\STX\NUL\SOH\DC2\EOT\161\n\
+    \$,\n\
     \\r\n\
-    \\ENQ\EOT\DC4\STX\NUL\ETX\DC2\EOT\216\b/0\n\
+    \\ENQ\EOT\DC4\STX\NUL\ETX\DC2\EOT\161\n\
+    \/0\n\
     \\130\SOH\n\
-    \\EOT\EOT\DC4\STX\SOH\DC2\EOT\220\b\STX'\SUBt The minimum supported edition (inclusive) when this was constructed.\n\
+    \\EOT\EOT\DC4\STX\SOH\DC2\EOT\165\n\
+    \\STX'\SUBt The minimum supported edition (inclusive) when this was constructed.\n\
     \ Editions before this will not have defaults.\n\
     \\n\
     \\r\n\
-    \\ENQ\EOT\DC4\STX\SOH\EOT\DC2\EOT\220\b\STX\n\
+    \\ENQ\EOT\DC4\STX\SOH\EOT\DC2\EOT\165\n\
+    \\STX\n\
     \\n\
     \\r\n\
-    \\ENQ\EOT\DC4\STX\SOH\ACK\DC2\EOT\220\b\v\DC2\n\
+    \\ENQ\EOT\DC4\STX\SOH\ACK\DC2\EOT\165\n\
+    \\v\DC2\n\
     \\r\n\
-    \\ENQ\EOT\DC4\STX\SOH\SOH\DC2\EOT\220\b\DC3\"\n\
+    \\ENQ\EOT\DC4\STX\SOH\SOH\DC2\EOT\165\n\
+    \\DC3\"\n\
     \\r\n\
-    \\ENQ\EOT\DC4\STX\SOH\ETX\DC2\EOT\220\b%&\n\
+    \\ENQ\EOT\DC4\STX\SOH\ETX\DC2\EOT\165\n\
+    \%&\n\
     \\134\SOH\n\
-    \\EOT\EOT\DC4\STX\STX\DC2\EOT\224\b\STX'\SUBx The maximum known edition (inclusive) when this was constructed. Editions\n\
+    \\EOT\EOT\DC4\STX\STX\DC2\EOT\169\n\
+    \\STX'\SUBx The maximum known edition (inclusive) when this was constructed. Editions\n\
     \ after this will not have reliable defaults.\n\
     \\n\
     \\r\n\
-    \\ENQ\EOT\DC4\STX\STX\EOT\DC2\EOT\224\b\STX\n\
+    \\ENQ\EOT\DC4\STX\STX\EOT\DC2\EOT\169\n\
+    \\STX\n\
     \\n\
     \\r\n\
-    \\ENQ\EOT\DC4\STX\STX\ACK\DC2\EOT\224\b\v\DC2\n\
+    \\ENQ\EOT\DC4\STX\STX\ACK\DC2\EOT\169\n\
+    \\v\DC2\n\
     \\r\n\
-    \\ENQ\EOT\DC4\STX\STX\SOH\DC2\EOT\224\b\DC3\"\n\
+    \\ENQ\EOT\DC4\STX\STX\SOH\DC2\EOT\169\n\
+    \\DC3\"\n\
     \\r\n\
-    \\ENQ\EOT\DC4\STX\STX\ETX\DC2\EOT\224\b%&\n\
+    \\ENQ\EOT\DC4\STX\STX\ETX\DC2\EOT\169\n\
+    \%&\n\
     \\218\SOH\n\
-    \\STX\EOT\NAK\DC2\ACK\232\b\NUL\233\t\SOH\SUBj Encapsulates information about the original source file from which a\n\
+    \\STX\EOT\NAK\DC2\ACK\177\n\
+    \\NUL\202\v\SOH\SUBj Encapsulates information about the original source file from which a\n\
     \ FileDescriptorProto was generated.\n\
     \2` ===================================================================\n\
     \ Optional source code info\n\
     \\n\
     \\v\n\
-    \\ETX\EOT\NAK\SOH\DC2\EOT\232\b\b\SYN\n\
+    \\ETX\EOT\NAK\SOH\DC2\EOT\177\n\
+    \\b\SYN\n\
     \\130\DC1\n\
-    \\EOT\EOT\NAK\STX\NUL\DC2\EOT\148\t\STX!\SUB\243\DLE A Location identifies a piece of source code in a .proto file which\n\
+    \\EOT\EOT\NAK\STX\NUL\DC2\EOT\221\n\
+    \\STX!\SUB\243\DLE A Location identifies a piece of source code in a .proto file which\n\
     \ corresponds to a particular definition.  This information is intended\n\
     \ to be useful to IDEs, code indexers, documentation generators, and similar\n\
     \ tools.\n\
@@ -18042,21 +19504,27 @@ packedFileDescriptor
     \   be recorded in the future.\n\
     \\n\
     \\r\n\
-    \\ENQ\EOT\NAK\STX\NUL\EOT\DC2\EOT\148\t\STX\n\
+    \\ENQ\EOT\NAK\STX\NUL\EOT\DC2\EOT\221\n\
+    \\STX\n\
     \\n\
     \\r\n\
-    \\ENQ\EOT\NAK\STX\NUL\ACK\DC2\EOT\148\t\v\DC3\n\
+    \\ENQ\EOT\NAK\STX\NUL\ACK\DC2\EOT\221\n\
+    \\v\DC3\n\
     \\r\n\
-    \\ENQ\EOT\NAK\STX\NUL\SOH\DC2\EOT\148\t\DC4\FS\n\
+    \\ENQ\EOT\NAK\STX\NUL\SOH\DC2\EOT\221\n\
+    \\DC4\FS\n\
     \\r\n\
-    \\ENQ\EOT\NAK\STX\NUL\ETX\DC2\EOT\148\t\US \n\
+    \\ENQ\EOT\NAK\STX\NUL\ETX\DC2\EOT\221\n\
+    \\US \n\
     \\SO\n\
-    \\EOT\EOT\NAK\ETX\NUL\DC2\ACK\149\t\STX\232\t\ETX\n\
+    \\EOT\EOT\NAK\ETX\NUL\DC2\ACK\222\n\
+    \\STX\194\v\ETX\n\
     \\r\n\
-    \\ENQ\EOT\NAK\ETX\NUL\SOH\DC2\EOT\149\t\n\
+    \\ENQ\EOT\NAK\ETX\NUL\SOH\DC2\EOT\222\n\
+    \\n\
     \\DC2\n\
-    \\138\a\n\
-    \\ACK\EOT\NAK\ETX\NUL\STX\NUL\DC2\EOT\173\t\EOT,\SUB\249\ACK Identifies which part of the FileDescriptorProto was defined at this\n\
+    \\164\f\n\
+    \\ACK\EOT\NAK\ETX\NUL\STX\NUL\DC2\EOT\135\v\EOT,\SUB\147\f Identifies which part of the FileDescriptorProto was defined at this\n\
     \ location.\n\
     \\n\
     \ Each element is a field number or an index.  They form a path from\n\
@@ -18080,39 +19548,56 @@ packedFileDescriptor
     \ this path refers to the whole field declaration (from the beginning\n\
     \ of the label to the terminating semicolon).\n\
     \\n\
+    \ For options, the path refers to the interpreted option in the descriptor.\n\
+    \ E.g., for a custom option `(my_opt) = \"foo\"` on a message using extension\n\
+    \ number 10101, the path is:\n\
+    \   [ 4, 3, 7, 10101 ]\n\
+    \ refers to:\n\
+    \   file.message_type(3)     // 4, 3\n\
+    \       .options()           // 7\n\
+    \       .my_opt()            // 10101\n\
+    \\n\
+    \ Sub-locations corresponding to the interpreted option's corresponding\n\
+    \ `UninterpretedOption` are also appended to the interpreted option, which\n\
+    \ deviates from the actual FileDescriptorProto path. E.g.:\n\
+    \   [ 4, 3, 7, 10101, 2 ]\n\
+    \ refers to the option name `(my_opt)`, and:\n\
+    \   [ 4, 3, 7, 10101, 7 ]\n\
+    \ refers to the \"foo\" string value of the option.\n\
+    \\n\
     \\SI\n\
-    \\a\EOT\NAK\ETX\NUL\STX\NUL\EOT\DC2\EOT\173\t\EOT\f\n\
+    \\a\EOT\NAK\ETX\NUL\STX\NUL\EOT\DC2\EOT\135\v\EOT\f\n\
     \\SI\n\
-    \\a\EOT\NAK\ETX\NUL\STX\NUL\ENQ\DC2\EOT\173\t\r\DC2\n\
+    \\a\EOT\NAK\ETX\NUL\STX\NUL\ENQ\DC2\EOT\135\v\r\DC2\n\
     \\SI\n\
-    \\a\EOT\NAK\ETX\NUL\STX\NUL\SOH\DC2\EOT\173\t\DC3\ETB\n\
+    \\a\EOT\NAK\ETX\NUL\STX\NUL\SOH\DC2\EOT\135\v\DC3\ETB\n\
     \\SI\n\
-    \\a\EOT\NAK\ETX\NUL\STX\NUL\ETX\DC2\EOT\173\t\SUB\ESC\n\
+    \\a\EOT\NAK\ETX\NUL\STX\NUL\ETX\DC2\EOT\135\v\SUB\ESC\n\
     \\SI\n\
-    \\a\EOT\NAK\ETX\NUL\STX\NUL\b\DC2\EOT\173\t\FS+\n\
+    \\a\EOT\NAK\ETX\NUL\STX\NUL\b\DC2\EOT\135\v\FS+\n\
     \\DLE\n\
-    \\b\EOT\NAK\ETX\NUL\STX\NUL\b\STX\DC2\EOT\173\t\GS*\n\
+    \\b\EOT\NAK\ETX\NUL\STX\NUL\b\STX\DC2\EOT\135\v\GS*\n\
     \\210\STX\n\
-    \\ACK\EOT\NAK\ETX\NUL\STX\SOH\DC2\EOT\180\t\EOT,\SUB\193\STX Always has exactly three or four elements: start line, start column,\n\
+    \\ACK\EOT\NAK\ETX\NUL\STX\SOH\DC2\EOT\142\v\EOT,\SUB\193\STX Always has exactly three or four elements: start line, start column,\n\
     \ end line (optional, otherwise assumed same as start line), end column.\n\
     \ These are packed into a single field for efficiency.  Note that line\n\
     \ and column numbers are zero-based -- typically you will want to add\n\
     \ 1 to each before displaying to a user.\n\
     \\n\
     \\SI\n\
-    \\a\EOT\NAK\ETX\NUL\STX\SOH\EOT\DC2\EOT\180\t\EOT\f\n\
+    \\a\EOT\NAK\ETX\NUL\STX\SOH\EOT\DC2\EOT\142\v\EOT\f\n\
     \\SI\n\
-    \\a\EOT\NAK\ETX\NUL\STX\SOH\ENQ\DC2\EOT\180\t\r\DC2\n\
+    \\a\EOT\NAK\ETX\NUL\STX\SOH\ENQ\DC2\EOT\142\v\r\DC2\n\
     \\SI\n\
-    \\a\EOT\NAK\ETX\NUL\STX\SOH\SOH\DC2\EOT\180\t\DC3\ETB\n\
+    \\a\EOT\NAK\ETX\NUL\STX\SOH\SOH\DC2\EOT\142\v\DC3\ETB\n\
     \\SI\n\
-    \\a\EOT\NAK\ETX\NUL\STX\SOH\ETX\DC2\EOT\180\t\SUB\ESC\n\
+    \\a\EOT\NAK\ETX\NUL\STX\SOH\ETX\DC2\EOT\142\v\SUB\ESC\n\
     \\SI\n\
-    \\a\EOT\NAK\ETX\NUL\STX\SOH\b\DC2\EOT\180\t\FS+\n\
+    \\a\EOT\NAK\ETX\NUL\STX\SOH\b\DC2\EOT\142\v\FS+\n\
     \\DLE\n\
-    \\b\EOT\NAK\ETX\NUL\STX\SOH\b\STX\DC2\EOT\180\t\GS*\n\
+    \\b\EOT\NAK\ETX\NUL\STX\SOH\b\STX\DC2\EOT\142\v\GS*\n\
     \\165\f\n\
-    \\ACK\EOT\NAK\ETX\NUL\STX\STX\DC2\EOT\229\t\EOT)\SUB\148\f If this SourceCodeInfo represents a complete declaration, these are any\n\
+    \\ACK\EOT\NAK\ETX\NUL\STX\STX\DC2\EOT\191\v\EOT)\SUB\148\f If this SourceCodeInfo represents a complete declaration, these are any\n\
     \ comments appearing before and after the declaration which appear to be\n\
     \ attached to the declaration.\n\
     \\n\
@@ -18161,169 +19646,185 @@ packedFileDescriptor
     \   // ignored detached comments.\n\
     \\n\
     \\SI\n\
-    \\a\EOT\NAK\ETX\NUL\STX\STX\EOT\DC2\EOT\229\t\EOT\f\n\
+    \\a\EOT\NAK\ETX\NUL\STX\STX\EOT\DC2\EOT\191\v\EOT\f\n\
     \\SI\n\
-    \\a\EOT\NAK\ETX\NUL\STX\STX\ENQ\DC2\EOT\229\t\r\DC3\n\
+    \\a\EOT\NAK\ETX\NUL\STX\STX\ENQ\DC2\EOT\191\v\r\DC3\n\
     \\SI\n\
-    \\a\EOT\NAK\ETX\NUL\STX\STX\SOH\DC2\EOT\229\t\DC4$\n\
+    \\a\EOT\NAK\ETX\NUL\STX\STX\SOH\DC2\EOT\191\v\DC4$\n\
     \\SI\n\
-    \\a\EOT\NAK\ETX\NUL\STX\STX\ETX\DC2\EOT\229\t'(\n\
+    \\a\EOT\NAK\ETX\NUL\STX\STX\ETX\DC2\EOT\191\v'(\n\
     \\SO\n\
-    \\ACK\EOT\NAK\ETX\NUL\STX\ETX\DC2\EOT\230\t\EOT*\n\
+    \\ACK\EOT\NAK\ETX\NUL\STX\ETX\DC2\EOT\192\v\EOT*\n\
     \\SI\n\
-    \\a\EOT\NAK\ETX\NUL\STX\ETX\EOT\DC2\EOT\230\t\EOT\f\n\
+    \\a\EOT\NAK\ETX\NUL\STX\ETX\EOT\DC2\EOT\192\v\EOT\f\n\
     \\SI\n\
-    \\a\EOT\NAK\ETX\NUL\STX\ETX\ENQ\DC2\EOT\230\t\r\DC3\n\
+    \\a\EOT\NAK\ETX\NUL\STX\ETX\ENQ\DC2\EOT\192\v\r\DC3\n\
     \\SI\n\
-    \\a\EOT\NAK\ETX\NUL\STX\ETX\SOH\DC2\EOT\230\t\DC4%\n\
+    \\a\EOT\NAK\ETX\NUL\STX\ETX\SOH\DC2\EOT\192\v\DC4%\n\
     \\SI\n\
-    \\a\EOT\NAK\ETX\NUL\STX\ETX\ETX\DC2\EOT\230\t()\n\
+    \\a\EOT\NAK\ETX\NUL\STX\ETX\ETX\DC2\EOT\192\v()\n\
     \\SO\n\
-    \\ACK\EOT\NAK\ETX\NUL\STX\EOT\DC2\EOT\231\t\EOT2\n\
+    \\ACK\EOT\NAK\ETX\NUL\STX\EOT\DC2\EOT\193\v\EOT2\n\
     \\SI\n\
-    \\a\EOT\NAK\ETX\NUL\STX\EOT\EOT\DC2\EOT\231\t\EOT\f\n\
+    \\a\EOT\NAK\ETX\NUL\STX\EOT\EOT\DC2\EOT\193\v\EOT\f\n\
     \\SI\n\
-    \\a\EOT\NAK\ETX\NUL\STX\EOT\ENQ\DC2\EOT\231\t\r\DC3\n\
+    \\a\EOT\NAK\ETX\NUL\STX\EOT\ENQ\DC2\EOT\193\v\r\DC3\n\
     \\SI\n\
-    \\a\EOT\NAK\ETX\NUL\STX\EOT\SOH\DC2\EOT\231\t\DC4-\n\
+    \\a\EOT\NAK\ETX\NUL\STX\EOT\SOH\DC2\EOT\193\v\DC4-\n\
     \\SI\n\
-    \\a\EOT\NAK\ETX\NUL\STX\EOT\ETX\DC2\EOT\231\t01\n\
+    \\a\EOT\NAK\ETX\NUL\STX\EOT\ETX\DC2\EOT\193\v01\n\
+    \(\n\
+    \\ETX\EOT\NAK\ENQ\DC2\ACK\197\v\STX\201\v\ENQ\SUB\EM Extensions for tooling.\n\
+    \\n\
+    \\f\n\
+    \\EOT\EOT\NAK\ENQ\NUL\DC2\EOT\197\v\r\SYN\n\
+    \\r\n\
+    \\ENQ\EOT\NAK\ENQ\NUL\SOH\DC2\EOT\197\v\r\SYN\n\
+    \\r\n\
+    \\ENQ\EOT\NAK\ENQ\NUL\STX\DC2\EOT\197\v\r\SYN\n\
+    \\SI\n\
+    \\ENQ\EOT\NAK\ENQ\NUL\ETX\DC2\ACK\197\v\ETB\201\v\EOT\n\
+    \\DC1\n\
+    \\a\EOT\NAK\ENQ\NUL\ETX\STX\NUL\DC2\ACK\197\v\CAN\201\v\ETX\n\
     \\238\SOH\n\
-    \\STX\EOT\SYN\DC2\ACK\238\t\NUL\143\n\
-    \\SOH\SUB\223\SOH Describes the relationship between generated code and its original source\n\
+    \\STX\EOT\SYN\DC2\ACK\207\v\NUL\240\v\SOH\SUB\223\SOH Describes the relationship between generated code and its original source\n\
     \ file. A GeneratedCodeInfo message is associated with only one generated\n\
     \ source file, but may contain references to different source .proto files.\n\
     \\n\
     \\v\n\
-    \\ETX\EOT\SYN\SOH\DC2\EOT\238\t\b\EM\n\
+    \\ETX\EOT\SYN\SOH\DC2\EOT\207\v\b\EM\n\
     \x\n\
-    \\EOT\EOT\SYN\STX\NUL\DC2\EOT\241\t\STX%\SUBj An Annotation connects some span of text in generated code to an element\n\
+    \\EOT\EOT\SYN\STX\NUL\DC2\EOT\210\v\STX%\SUBj An Annotation connects some span of text in generated code to an element\n\
     \ of its generating .proto file.\n\
     \\n\
     \\r\n\
-    \\ENQ\EOT\SYN\STX\NUL\EOT\DC2\EOT\241\t\STX\n\
+    \\ENQ\EOT\SYN\STX\NUL\EOT\DC2\EOT\210\v\STX\n\
     \\n\
     \\r\n\
-    \\ENQ\EOT\SYN\STX\NUL\ACK\DC2\EOT\241\t\v\NAK\n\
+    \\ENQ\EOT\SYN\STX\NUL\ACK\DC2\EOT\210\v\v\NAK\n\
     \\r\n\
-    \\ENQ\EOT\SYN\STX\NUL\SOH\DC2\EOT\241\t\SYN \n\
+    \\ENQ\EOT\SYN\STX\NUL\SOH\DC2\EOT\210\v\SYN \n\
     \\r\n\
-    \\ENQ\EOT\SYN\STX\NUL\ETX\DC2\EOT\241\t#$\n\
+    \\ENQ\EOT\SYN\STX\NUL\ETX\DC2\EOT\210\v#$\n\
     \\SO\n\
-    \\EOT\EOT\SYN\ETX\NUL\DC2\ACK\242\t\STX\142\n\
-    \\ETX\n\
+    \\EOT\EOT\SYN\ETX\NUL\DC2\ACK\211\v\STX\239\v\ETX\n\
     \\r\n\
-    \\ENQ\EOT\SYN\ETX\NUL\SOH\DC2\EOT\242\t\n\
+    \\ENQ\EOT\SYN\ETX\NUL\SOH\DC2\EOT\211\v\n\
     \\DC4\n\
     \\143\SOH\n\
-    \\ACK\EOT\SYN\ETX\NUL\STX\NUL\DC2\EOT\245\t\EOT,\SUB\DEL Identifies the element in the original source .proto file. This field\n\
+    \\ACK\EOT\SYN\ETX\NUL\STX\NUL\DC2\EOT\214\v\EOT,\SUB\DEL Identifies the element in the original source .proto file. This field\n\
     \ is formatted the same as SourceCodeInfo.Location.path.\n\
     \\n\
     \\SI\n\
-    \\a\EOT\SYN\ETX\NUL\STX\NUL\EOT\DC2\EOT\245\t\EOT\f\n\
+    \\a\EOT\SYN\ETX\NUL\STX\NUL\EOT\DC2\EOT\214\v\EOT\f\n\
     \\SI\n\
-    \\a\EOT\SYN\ETX\NUL\STX\NUL\ENQ\DC2\EOT\245\t\r\DC2\n\
+    \\a\EOT\SYN\ETX\NUL\STX\NUL\ENQ\DC2\EOT\214\v\r\DC2\n\
     \\SI\n\
-    \\a\EOT\SYN\ETX\NUL\STX\NUL\SOH\DC2\EOT\245\t\DC3\ETB\n\
+    \\a\EOT\SYN\ETX\NUL\STX\NUL\SOH\DC2\EOT\214\v\DC3\ETB\n\
     \\SI\n\
-    \\a\EOT\SYN\ETX\NUL\STX\NUL\ETX\DC2\EOT\245\t\SUB\ESC\n\
+    \\a\EOT\SYN\ETX\NUL\STX\NUL\ETX\DC2\EOT\214\v\SUB\ESC\n\
     \\SI\n\
-    \\a\EOT\SYN\ETX\NUL\STX\NUL\b\DC2\EOT\245\t\FS+\n\
+    \\a\EOT\SYN\ETX\NUL\STX\NUL\b\DC2\EOT\214\v\FS+\n\
     \\DLE\n\
-    \\b\EOT\SYN\ETX\NUL\STX\NUL\b\STX\DC2\EOT\245\t\GS*\n\
+    \\b\EOT\SYN\ETX\NUL\STX\NUL\b\STX\DC2\EOT\214\v\GS*\n\
     \O\n\
-    \\ACK\EOT\SYN\ETX\NUL\STX\SOH\DC2\EOT\248\t\EOT$\SUB? Identifies the filesystem path to the original source .proto.\n\
+    \\ACK\EOT\SYN\ETX\NUL\STX\SOH\DC2\EOT\217\v\EOT$\SUB? Identifies the filesystem path to the original source .proto.\n\
     \\n\
     \\SI\n\
-    \\a\EOT\SYN\ETX\NUL\STX\SOH\EOT\DC2\EOT\248\t\EOT\f\n\
+    \\a\EOT\SYN\ETX\NUL\STX\SOH\EOT\DC2\EOT\217\v\EOT\f\n\
     \\SI\n\
-    \\a\EOT\SYN\ETX\NUL\STX\SOH\ENQ\DC2\EOT\248\t\r\DC3\n\
+    \\a\EOT\SYN\ETX\NUL\STX\SOH\ENQ\DC2\EOT\217\v\r\DC3\n\
     \\SI\n\
-    \\a\EOT\SYN\ETX\NUL\STX\SOH\SOH\DC2\EOT\248\t\DC4\US\n\
+    \\a\EOT\SYN\ETX\NUL\STX\SOH\SOH\DC2\EOT\217\v\DC4\US\n\
     \\SI\n\
-    \\a\EOT\SYN\ETX\NUL\STX\SOH\ETX\DC2\EOT\248\t\"#\n\
+    \\a\EOT\SYN\ETX\NUL\STX\SOH\ETX\DC2\EOT\217\v\"#\n\
     \w\n\
-    \\ACK\EOT\SYN\ETX\NUL\STX\STX\DC2\EOT\252\t\EOT\GS\SUBg Identifies the starting offset in bytes in the generated code\n\
+    \\ACK\EOT\SYN\ETX\NUL\STX\STX\DC2\EOT\221\v\EOT\GS\SUBg Identifies the starting offset in bytes in the generated code\n\
     \ that relates to the identified object.\n\
     \\n\
     \\SI\n\
-    \\a\EOT\SYN\ETX\NUL\STX\STX\EOT\DC2\EOT\252\t\EOT\f\n\
+    \\a\EOT\SYN\ETX\NUL\STX\STX\EOT\DC2\EOT\221\v\EOT\f\n\
     \\SI\n\
-    \\a\EOT\SYN\ETX\NUL\STX\STX\ENQ\DC2\EOT\252\t\r\DC2\n\
+    \\a\EOT\SYN\ETX\NUL\STX\STX\ENQ\DC2\EOT\221\v\r\DC2\n\
     \\SI\n\
-    \\a\EOT\SYN\ETX\NUL\STX\STX\SOH\DC2\EOT\252\t\DC3\CAN\n\
+    \\a\EOT\SYN\ETX\NUL\STX\STX\SOH\DC2\EOT\221\v\DC3\CAN\n\
     \\SI\n\
-    \\a\EOT\SYN\ETX\NUL\STX\STX\ETX\DC2\EOT\252\t\ESC\FS\n\
+    \\a\EOT\SYN\ETX\NUL\STX\STX\ETX\DC2\EOT\221\v\ESC\FS\n\
     \\219\SOH\n\
-    \\ACK\EOT\SYN\ETX\NUL\STX\ETX\DC2\EOT\129\n\
-    \\EOT\ESC\SUB\202\SOH Identifies the ending offset in bytes in the generated code that\n\
+    \\ACK\EOT\SYN\ETX\NUL\STX\ETX\DC2\EOT\226\v\EOT\ESC\SUB\202\SOH Identifies the ending offset in bytes in the generated code that\n\
     \ relates to the identified object. The end offset should be one past\n\
     \ the last relevant byte (so the length of the text = end - begin).\n\
     \\n\
     \\SI\n\
-    \\a\EOT\SYN\ETX\NUL\STX\ETX\EOT\DC2\EOT\129\n\
-    \\EOT\f\n\
+    \\a\EOT\SYN\ETX\NUL\STX\ETX\EOT\DC2\EOT\226\v\EOT\f\n\
     \\SI\n\
-    \\a\EOT\SYN\ETX\NUL\STX\ETX\ENQ\DC2\EOT\129\n\
-    \\r\DC2\n\
+    \\a\EOT\SYN\ETX\NUL\STX\ETX\ENQ\DC2\EOT\226\v\r\DC2\n\
     \\SI\n\
-    \\a\EOT\SYN\ETX\NUL\STX\ETX\SOH\DC2\EOT\129\n\
-    \\DC3\SYN\n\
+    \\a\EOT\SYN\ETX\NUL\STX\ETX\SOH\DC2\EOT\226\v\DC3\SYN\n\
     \\SI\n\
-    \\a\EOT\SYN\ETX\NUL\STX\ETX\ETX\DC2\EOT\129\n\
-    \\EM\SUB\n\
+    \\a\EOT\SYN\ETX\NUL\STX\ETX\ETX\DC2\EOT\226\v\EM\SUB\n\
     \j\n\
-    \\ACK\EOT\SYN\ETX\NUL\EOT\NUL\DC2\ACK\133\n\
-    \\EOT\140\n\
-    \\ENQ\SUBX Represents the identified object's effect on the element in the original\n\
+    \\ACK\EOT\SYN\ETX\NUL\EOT\NUL\DC2\ACK\230\v\EOT\237\v\ENQ\SUBX Represents the identified object's effect on the element in the original\n\
     \ .proto file.\n\
     \\n\
     \\SI\n\
-    \\a\EOT\SYN\ETX\NUL\EOT\NUL\SOH\DC2\EOT\133\n\
-    \\t\DC1\n\
+    \\a\EOT\SYN\ETX\NUL\EOT\NUL\SOH\DC2\EOT\230\v\t\DC1\n\
     \F\n\
-    \\b\EOT\SYN\ETX\NUL\EOT\NUL\STX\NUL\DC2\EOT\135\n\
-    \\ACK\SI\SUB4 There is no effect or the effect is indescribable.\n\
+    \\b\EOT\SYN\ETX\NUL\EOT\NUL\STX\NUL\DC2\EOT\232\v\ACK\SI\SUB4 There is no effect or the effect is indescribable.\n\
     \\n\
     \\DC1\n\
-    \\t\EOT\SYN\ETX\NUL\EOT\NUL\STX\NUL\SOH\DC2\EOT\135\n\
-    \\ACK\n\
+    \\t\EOT\SYN\ETX\NUL\EOT\NUL\STX\NUL\SOH\DC2\EOT\232\v\ACK\n\
     \\n\
     \\DC1\n\
-    \\t\EOT\SYN\ETX\NUL\EOT\NUL\STX\NUL\STX\DC2\EOT\135\n\
-    \\r\SO\n\
+    \\t\EOT\SYN\ETX\NUL\EOT\NUL\STX\NUL\STX\DC2\EOT\232\v\r\SO\n\
     \<\n\
-    \\b\EOT\SYN\ETX\NUL\EOT\NUL\STX\SOH\DC2\EOT\137\n\
-    \\ACK\SO\SUB* The element is set or otherwise mutated.\n\
+    \\b\EOT\SYN\ETX\NUL\EOT\NUL\STX\SOH\DC2\EOT\234\v\ACK\SO\SUB* The element is set or otherwise mutated.\n\
     \\n\
     \\DC1\n\
-    \\t\EOT\SYN\ETX\NUL\EOT\NUL\STX\SOH\SOH\DC2\EOT\137\n\
-    \\ACK\t\n\
+    \\t\EOT\SYN\ETX\NUL\EOT\NUL\STX\SOH\SOH\DC2\EOT\234\v\ACK\t\n\
     \\DC1\n\
-    \\t\EOT\SYN\ETX\NUL\EOT\NUL\STX\SOH\STX\DC2\EOT\137\n\
-    \\f\r\n\
+    \\t\EOT\SYN\ETX\NUL\EOT\NUL\STX\SOH\STX\DC2\EOT\234\v\f\r\n\
     \8\n\
-    \\b\EOT\SYN\ETX\NUL\EOT\NUL\STX\STX\DC2\EOT\139\n\
-    \\ACK\DLE\SUB& An alias to the element is returned.\n\
+    \\b\EOT\SYN\ETX\NUL\EOT\NUL\STX\STX\DC2\EOT\236\v\ACK\DLE\SUB& An alias to the element is returned.\n\
     \\n\
     \\DC1\n\
-    \\t\EOT\SYN\ETX\NUL\EOT\NUL\STX\STX\SOH\DC2\EOT\139\n\
-    \\ACK\v\n\
+    \\t\EOT\SYN\ETX\NUL\EOT\NUL\STX\STX\SOH\DC2\EOT\236\v\ACK\v\n\
     \\DC1\n\
-    \\t\EOT\SYN\ETX\NUL\EOT\NUL\STX\STX\STX\DC2\EOT\139\n\
-    \\SO\SI\n\
+    \\t\EOT\SYN\ETX\NUL\EOT\NUL\STX\STX\STX\DC2\EOT\236\v\SO\SI\n\
     \\SO\n\
-    \\ACK\EOT\SYN\ETX\NUL\STX\EOT\DC2\EOT\141\n\
-    \\EOT#\n\
+    \\ACK\EOT\SYN\ETX\NUL\STX\EOT\DC2\EOT\238\v\EOT#\n\
     \\SI\n\
-    \\a\EOT\SYN\ETX\NUL\STX\EOT\EOT\DC2\EOT\141\n\
-    \\EOT\f\n\
+    \\a\EOT\SYN\ETX\NUL\STX\EOT\EOT\DC2\EOT\238\v\EOT\f\n\
     \\SI\n\
-    \\a\EOT\SYN\ETX\NUL\STX\EOT\ACK\DC2\EOT\141\n\
-    \\r\NAK\n\
+    \\a\EOT\SYN\ETX\NUL\STX\EOT\ACK\DC2\EOT\238\v\r\NAK\n\
     \\SI\n\
-    \\a\EOT\SYN\ETX\NUL\STX\EOT\SOH\DC2\EOT\141\n\
-    \\SYN\RS\n\
+    \\a\EOT\SYN\ETX\NUL\STX\EOT\SOH\DC2\EOT\238\v\SYN\RS\n\
     \\SI\n\
-    \\a\EOT\SYN\ETX\NUL\STX\EOT\ETX\DC2\EOT\141\n\
-    \!\""
+    \\a\EOT\SYN\ETX\NUL\STX\EOT\ETX\DC2\EOT\238\v!\"\n\
+    \\216\STX\n\
+    \\STX\ENQ\SOH\DC2\ACK\247\v\NUL\251\v\SOH\SUB\201\STX Describes the 'visibility' of a symbol with respect to the proto import\n\
+    \ system. Symbols can only be imported when the visibility rules do not prevent\n\
+    \ it (ex: local symbols cannot be imported).  Visibility modifiers can only set\n\
+    \ on `message` and `enum` as they are the only types available to be referenced\n\
+    \ from other files.\n\
+    \\n\
+    \\v\n\
+    \\ETX\ENQ\SOH\SOH\DC2\EOT\247\v\ENQ\NAK\n\
+    \\f\n\
+    \\EOT\ENQ\SOH\STX\NUL\DC2\EOT\248\v\STX\ETB\n\
+    \\r\n\
+    \\ENQ\ENQ\SOH\STX\NUL\SOH\DC2\EOT\248\v\STX\DC2\n\
+    \\r\n\
+    \\ENQ\ENQ\SOH\STX\NUL\STX\DC2\EOT\248\v\NAK\SYN\n\
+    \\f\n\
+    \\EOT\ENQ\SOH\STX\SOH\DC2\EOT\249\v\STX\ETB\n\
+    \\r\n\
+    \\ENQ\ENQ\SOH\STX\SOH\SOH\DC2\EOT\249\v\STX\DC2\n\
+    \\r\n\
+    \\ENQ\ENQ\SOH\STX\SOH\STX\DC2\EOT\249\v\NAK\SYN\n\
+    \\f\n\
+    \\EOT\ENQ\SOH\STX\STX\DC2\EOT\250\v\STX\CAN\n\
+    \\r\n\
+    \\ENQ\ENQ\SOH\STX\STX\SOH\DC2\EOT\250\v\STX\DC3\n\
+    \\r\n\
+    \\ENQ\ENQ\SOH\STX\STX\STX\DC2\EOT\250\v\SYN\ETB"

@@ -1459,16 +1459,16 @@ packedFileDescriptor
     \\SOH\b\DC2\ETX\CAN\NUL-\n\
     \\t\n\
     \\STX\b\b\DC2\ETX\CAN\NUL-\n\
+    \\t\n\
+    \\STX\ETX\NUL\DC2\ETX\SUB\NUL*\n\
     \\b\n\
-    \\SOH\b\DC2\ETX\SUB\NUL5\n\
+    \\SOH\b\DC2\ETX\FS\NUL5\n\
     \\t\n\
-    \\STX\b%\DC2\ETX\SUB\NUL5\n\
+    \\STX\b%\DC2\ETX\FS\NUL5\n\
     \\b\n\
-    \\SOH\b\DC2\ETX\ESC\NUL@\n\
+    \\SOH\b\DC2\ETX\GS\NUL@\n\
     \\t\n\
-    \\STX\b\v\DC2\ETX\ESC\NUL@\n\
-    \\t\n\
-    \\STX\ETX\NUL\DC2\ETX\GS\NUL*\n\
+    \\STX\b\v\DC2\ETX\GS\NUL@\n\
     \6\n\
     \\STX\EOT\NUL\DC2\EOT \NUL'\SOH\SUB* The version number of protocol compiler.\n\
     \\n\

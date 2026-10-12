@@ -91,6 +91,13 @@ declaration ::
    Data.ProtoLens.Field.HasField s "declaration" a) =>
   Lens.Family2.LensLike' f s a
 declaration = Data.ProtoLens.Field.field @"declaration"
+defaultSymbolVisibility ::
+  forall f s a.
+  (Prelude.Functor f,
+   Data.ProtoLens.Field.HasField s "defaultSymbolVisibility" a) =>
+  Lens.Family2.LensLike' f s a
+defaultSymbolVisibility
+  = Data.ProtoLens.Field.field @"defaultSymbolVisibility"
 defaultValue ::
   forall f s a.
   (Prelude.Functor f,
@@ -169,6 +176,20 @@ end ::
   (Prelude.Functor f, Data.ProtoLens.Field.HasField s "end" a) =>
   Lens.Family2.LensLike' f s a
 end = Data.ProtoLens.Field.field @"end"
+enforceNamingStyle ::
+  forall f s a.
+  (Prelude.Functor f,
+   Data.ProtoLens.Field.HasField s "enforceNamingStyle" a) =>
+  Lens.Family2.LensLike' f s a
+enforceNamingStyle
+  = Data.ProtoLens.Field.field @"enforceNamingStyle"
+enforceProtoLimits ::
+  forall f s a.
+  (Prelude.Functor f,
+   Data.ProtoLens.Field.HasField s "enforceProtoLimits" a) =>
+  Lens.Family2.LensLike' f s a
+enforceProtoLimits
+  = Data.ProtoLens.Field.field @"enforceProtoLimits"
 enumType ::
   forall f s a.
   (Prelude.Functor f,
@@ -420,6 +441,13 @@ maybe'debugRedact ::
    Data.ProtoLens.Field.HasField s "maybe'debugRedact" a) =>
   Lens.Family2.LensLike' f s a
 maybe'debugRedact = Data.ProtoLens.Field.field @"maybe'debugRedact"
+maybe'defaultSymbolVisibility ::
+  forall f s a.
+  (Prelude.Functor f,
+   Data.ProtoLens.Field.HasField s "maybe'defaultSymbolVisibility" a) =>
+  Lens.Family2.LensLike' f s a
+maybe'defaultSymbolVisibility
+  = Data.ProtoLens.Field.field @"maybe'defaultSymbolVisibility"
 maybe'defaultValue ::
   forall f s a.
   (Prelude.Functor f,
@@ -487,6 +515,20 @@ maybe'end ::
    Data.ProtoLens.Field.HasField s "maybe'end" a) =>
   Lens.Family2.LensLike' f s a
 maybe'end = Data.ProtoLens.Field.field @"maybe'end"
+maybe'enforceNamingStyle ::
+  forall f s a.
+  (Prelude.Functor f,
+   Data.ProtoLens.Field.HasField s "maybe'enforceNamingStyle" a) =>
+  Lens.Family2.LensLike' f s a
+maybe'enforceNamingStyle
+  = Data.ProtoLens.Field.field @"maybe'enforceNamingStyle"
+maybe'enforceProtoLimits ::
+  forall f s a.
+  (Prelude.Functor f,
+   Data.ProtoLens.Field.HasField s "maybe'enforceProtoLimits" a) =>
+  Lens.Family2.LensLike' f s a
+maybe'enforceProtoLimits
+  = Data.ProtoLens.Field.field @"maybe'enforceProtoLimits"
 maybe'enumType ::
   forall f s a.
   (Prelude.Functor f,
@@ -788,6 +830,13 @@ maybe'pyGenericServices ::
   Lens.Family2.LensLike' f s a
 maybe'pyGenericServices
   = Data.ProtoLens.Field.field @"maybe'pyGenericServices"
+maybe'removalError ::
+  forall f s a.
+  (Prelude.Functor f,
+   Data.ProtoLens.Field.HasField s "maybe'removalError" a) =>
+  Lens.Family2.LensLike' f s a
+maybe'removalError
+  = Data.ProtoLens.Field.field @"maybe'removalError"
 maybe'repeated ::
   forall f s a.
   (Prelude.Functor f,
@@ -915,6 +964,12 @@ maybe'verification ::
   Lens.Family2.LensLike' f s a
 maybe'verification
   = Data.ProtoLens.Field.field @"maybe'verification"
+maybe'visibility ::
+  forall f s a.
+  (Prelude.Functor f,
+   Data.ProtoLens.Field.HasField s "maybe'visibility" a) =>
+  Lens.Family2.LensLike' f s a
+maybe'visibility = Data.ProtoLens.Field.field @"maybe'visibility"
 maybe'weak ::
   forall f s a.
   (Prelude.Functor f,
@@ -1010,6 +1065,12 @@ optimizeFor ::
    Data.ProtoLens.Field.HasField s "optimizeFor" a) =>
   Lens.Family2.LensLike' f s a
 optimizeFor = Data.ProtoLens.Field.field @"optimizeFor"
+optionDependency ::
+  forall f s a.
+  (Prelude.Functor f,
+   Data.ProtoLens.Field.HasField s "optionDependency" a) =>
+  Lens.Family2.LensLike' f s a
+optionDependency = Data.ProtoLens.Field.field @"optionDependency"
 options ::
   forall f s a.
   (Prelude.Functor f, Data.ProtoLens.Field.HasField s "options" a) =>
@@ -1086,6 +1147,12 @@ pyGenericServices ::
    Data.ProtoLens.Field.HasField s "pyGenericServices" a) =>
   Lens.Family2.LensLike' f s a
 pyGenericServices = Data.ProtoLens.Field.field @"pyGenericServices"
+removalError ::
+  forall f s a.
+  (Prelude.Functor f,
+   Data.ProtoLens.Field.HasField s "removalError" a) =>
+  Lens.Family2.LensLike' f s a
+removalError = Data.ProtoLens.Field.field @"removalError"
 repeated ::
   forall f s a.
   (Prelude.Functor f,
@@ -1336,6 +1403,13 @@ vec'oneofDecl ::
    Data.ProtoLens.Field.HasField s "vec'oneofDecl" a) =>
   Lens.Family2.LensLike' f s a
 vec'oneofDecl = Data.ProtoLens.Field.field @"vec'oneofDecl"
+vec'optionDependency ::
+  forall f s a.
+  (Prelude.Functor f,
+   Data.ProtoLens.Field.HasField s "vec'optionDependency" a) =>
+  Lens.Family2.LensLike' f s a
+vec'optionDependency
+  = Data.ProtoLens.Field.field @"vec'optionDependency"
 vec'path ::
   forall f s a.
   (Prelude.Functor f,
@@ -1405,6 +1479,12 @@ verification ::
    Data.ProtoLens.Field.HasField s "verification" a) =>
   Lens.Family2.LensLike' f s a
 verification = Data.ProtoLens.Field.field @"verification"
+visibility ::
+  forall f s a.
+  (Prelude.Functor f,
+   Data.ProtoLens.Field.HasField s "visibility" a) =>
+  Lens.Family2.LensLike' f s a
+visibility = Data.ProtoLens.Field.field @"visibility"
 weak ::
   forall f s a.
   (Prelude.Functor f, Data.ProtoLens.Field.HasField s "weak" a) =>
