@@ -237,6 +237,9 @@ tests:
   decode_delimited_test:
     main: decode_delimited_test.hs
     source-dirs: tests
+    ghc-options:
+      - -rtsopts
+      - -with-rtsopts=-M64M
     dependencies:
       - proto-lens-protobuf-types
       - proto-lens-tests

@@ -155,6 +155,7 @@ test-suite decode_delimited_test
       Proto.DecodeDelimited_Fields
   hs-source-dirs:
       tests
+  ghc-options: -rtsopts -with-rtsopts=-M64M
   build-tool-depends:
       proto-lens-protoc:proto-lens-protoc
   build-depends:
