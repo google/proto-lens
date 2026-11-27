@@ -65,7 +65,7 @@ import Data.Tree
     , Forest
     , flatten
     )
-import Lens.Family2 ((^.), (^..), toListOf)
+import Lens.Family2 ((^.), toListOf)
 import Proto.Google.Protobuf.Descriptor
     ( DescriptorProto
     , Edition(..)
@@ -81,6 +81,7 @@ import Proto.Google.Protobuf.Descriptor
     , FieldDescriptorProto'Type(..)
     , FileDescriptorProto
     , MethodDescriptorProto
+    , OneofDescriptorProto
     , ServiceDescriptorProto
     )
 import GHC.SourceGen
@@ -132,9 +133,13 @@ fileFeatures :: FileDescriptorProto -> Either Text FeatureSet
 fileFeatures f = do
   edition <- fileEdition f
   features <- featuresForEdition edition
-  return $ case f ^. #options . #maybe'features of
-             Just overrides -> overrides `mergedInto` features
-             Nothing -> features
+  return $ withOverrides (f ^. #options . #maybe'features) features
+
+{-| Applies the feature overrides set on a descriptor (if any) to the resolved
+features of its parent.
+-}
+withOverrides :: Maybe FeatureSet -> FeatureSet -> FeatureSet
+withOverrides = maybe id mergedInto
 
 data Definition n = Message (MessageInfo n) | Enum (EnumInfo n)
     deriving Functor
@@ -186,6 +191,9 @@ data PlainFieldInfo = PlainFieldInfo
 data FieldInfo = FieldInfo
     { fieldDescriptor  :: FieldDescriptorProto
     , fieldName :: FieldName
+    , fieldFeatures :: FeatureSet
+      -- ^ The resolved Protobuf Editions features of this field, including
+      -- the features inherited from its file, enclosing messages and oneof.
     }
 
 -- | How a field is stored inside of the proto message.
@@ -402,15 +410,17 @@ messageDefs features protoPrefix hsPrefix groups d
                  fromString $ hsPrefix ++ hsName (d ^. #name)
                                 ++ "'_constructor"
             , messageDescriptor = d
-            , messageFields =
-                  map (PlainFieldInfo <$>
-                              fieldKind features' mapEntries <*> fieldInfo hsPrefix')
-                      $ Map.findWithDefault [] Nothing allFields
-            , messageOneofFields = collectOneofFields hsPrefix' d allFields
+            , messageFields = plainFields
+            , messageOneofFields = oneofs
             , messageUnknownFields =
                   fromString $ "_" ++ hsPrefix' ++ "_unknownFields"
             , groupFieldNumber = Map.lookup protoName groups
             }
+    plainFields = map plainField $ Map.findWithDefault [] Nothing allFields
+    oneofs = collectOneofFields features' hsPrefix' d allFields
+    plainField f =
+        let info = fieldInfo features' hsPrefix' f
+        in PlainFieldInfo (fieldKind mapEntries info) info
     subDefs = messageAndEnumDefs
                     features'
                     (protoName <> ".")
@@ -422,9 +432,7 @@ messageDefs features protoPrefix hsPrefix groups d
     -- nested types, rather than recursively searching through all of them.
     mapEntries = collectMapEntries $ map rootLabel subDefs
     -- Include message-scope feature overrides.
-    features' = case d ^. #options . #maybe'features of
-      Just overrides -> overrides `mergedInto ` features
-      Nothing -> features
+    features' = withOverrides (d ^. #options . #maybe'features) features
 
 -- | If this type is a map entry, retrieves the relevant information
 -- along with the proto name of this type.
@@ -459,18 +467,22 @@ collectGroupFields fs = Map.fromList
       (f ^. #options . #features . #messageEncoding == FeatureSet'DELIMITED)
     ]
 
-fieldInfo :: String -> FieldDescriptorProto -> FieldInfo
-fieldInfo hsPrefix f = FieldInfo
-                            { fieldDescriptor = f
-                            , fieldName = mkFieldName hsPrefix $ f ^. #name
-                            }
+-- | Collects information about a field.
+fieldInfo ::
+    FeatureSet  -- ^ Resolved features of the parent message or oneof.
+    -> String -> FieldDescriptorProto -> FieldInfo
+fieldInfo parentFeatures hsPrefix f = FieldInfo
+    { fieldDescriptor = f
+    , fieldName = mkFieldName hsPrefix $ f ^. #name
+      -- Include field-scope feature overrides.
+    , fieldFeatures =
+          withOverrides (f ^. #options . #maybe'features) parentFeatures
+    }
 
-fieldKind ::
-    FeatureSet -> Map.Map Text MapEntryInfo -> FieldDescriptorProto
-    -> FieldKind
-fieldKind features mapEntries f = case f ^. #label of
+fieldKind :: Map.Map Text MapEntryInfo -> FieldInfo -> FieldKind
+fieldKind mapEntries info = case f ^. #label of
             FieldDescriptorProto'LABEL_OPTIONAL ->
-                case features' ^. #fieldPresence of
+                case features ^. #fieldPresence of
                   FeatureSet'IMPLICIT
                     | f ^. #type' /= FieldDescriptorProto'TYPE_MESSAGE
                       && not (f ^. #proto3Optional)
@@ -485,13 +497,16 @@ fieldKind features mapEntries f = case f ^. #label of
                     -> MapField entryInfo
                 | otherwise -> RepeatedField packed
   where
+    f = fieldDescriptor info
+    features = fieldFeatures info
+
     packed
         | f ^. #type' `elem` unpackableTypes = NotPackable
         | packedByDefault = Packed
         | otherwise = Packable
 
     packedByDefault =
-        fromMaybe (features' ^. #repeatedFieldEncoding == FeatureSet'PACKED)
+        fromMaybe (features ^. #repeatedFieldEncoding == FeatureSet'PACKED)
         $ f ^. #options . #maybe'packed
 
     unpackableTypes =
@@ -501,35 +516,34 @@ fieldKind features mapEntries f = case f ^. #label of
         , FieldDescriptorProto'TYPE_BYTES
         ]
 
-    -- Include field-scope feature overrides
-    features' = case f ^. #options . #maybe'features of
-      Just overrides -> overrides `mergedInto` features
-      Nothing -> features
-
 collectOneofFields
-    :: String -> DescriptorProto -> Map.Map (Maybe Int32) [FieldDescriptorProto]
+    :: FeatureSet -> String -> DescriptorProto
+    -> Map.Map (Maybe Int32) [FieldDescriptorProto]
     -> [OneofInfo]
-collectOneofFields hsPrefix d allFields
-    = catMaybes $ zipWith oneofMaybe [0..] $ d ^.. #oneofDecl . traverse . #name
+collectOneofFields features hsPrefix d allFields
+    = catMaybes $ zipWith oneofMaybe [0..] $ d ^. #oneofDecl
   where
-    oneofMaybe idx n =
+    oneofMaybe :: Int32 -> OneofDescriptorProto -> Maybe OneofInfo
+    oneofMaybe idx od =
       let fields = Map.findWithDefault [] (Just idx) allFields
+          -- Include oneof-scope feature overrides.
+          oneofFeatures = withOverrides (od ^. #options . #maybe'features) features
       in if isSynthetic fields
          then Nothing
-         else Just $ oneofInfo n fields
-    oneofInfo n fields = OneofInfo
+         else Just $ oneofInfo oneofFeatures (od ^. #name) fields
+    oneofInfo oneofFeatures n fields = OneofInfo
         { oneofFieldName = mkFieldName hsPrefix n
         , oneofTypeName = fromString $ hsPrefix ++ hsNameUnique subdefTypes n
-        , oneofCases = map oneofCase fields
+        , oneofCases = map (oneofCase oneofFeatures) fields
         }
     -- The oneof is synthetic if it contains a single proto3_optional field.
     isSynthetic :: [FieldDescriptorProto] -> Bool
     isSynthetic [f] = f ^. #proto3Optional
     isSynthetic _ = False
-    oneofCase f =
+    oneofCase oneofFeatures f =
         let consName = hsPrefix ++ hsNameUnique subdefCons (f ^. #name)
         in OneofCase
-            { caseField = fieldInfo hsPrefix f
+            { caseField = fieldInfo oneofFeatures hsPrefix f
             , caseConstructorName =
                   -- Note: oneof case constructors aren't prefixed
                   -- by the oneof name; field names (even inside
@@ -660,9 +674,7 @@ enumDef features protoPrefix hsPrefix d = let
       ('_':xs) -> 'X':xs
       xs       -> xs
     -- Include enum-scope feature overrides.
-    features' = case d ^. #options . #maybe'features of
-      Just overrides -> overrides `mergedInto` features
-      Nothing -> features
+    features' = withOverrides (d ^. #options . #maybe'features) features
     in (mkText (d ^. #name)
        , Enum EnumInfo
             { enumName = mkHsName (d ^. #name)

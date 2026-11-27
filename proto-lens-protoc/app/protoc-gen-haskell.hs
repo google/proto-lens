@@ -75,7 +75,8 @@ makeResponse dflags prog request = let
     preamble = defMessage
                & #supportedFeatures .~
                  foldl (.|.) zeroBits (fmap (toEnum . fromEnum) features)
-               -- Do not process actual Protobuf Editions files yet.
+               -- Keep in sync with the editions whose feature defaults
+               -- are known by Data.ProtoLens.Compiler.Editions.Defaults.
                & #minimumEdition .~ fromIntegral (fromEnum EDITION_PROTO2)
                & #maximumEdition .~ fromIntegral (fromEnum EDITION_2024)
     in case outputFiles of
