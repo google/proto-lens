@@ -1,0 +1,15 @@
+edition = "2026";
+
+package edition2026;
+
+// For testing that files in edition 2026 are supported.
+message Simple {
+  int32 int_field = 1;
+  string string_field = 2;
+
+  message Sub {
+    int32 foo = 1;
+  }
+  Sub sub = 3;
+  repeated int32 packed_field = 4;
+}

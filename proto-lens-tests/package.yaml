@@ -67,6 +67,15 @@ tests:
       - Proto.Edition2023Fileoptions
       - Proto.Edition2023Fileoptions_Fields
 
+  edition2026_test:
+    main: edition2026_test.hs
+    source-dirs: tests
+    dependencies:
+      - proto-lens-tests
+    generated-other-modules:
+      - Proto.Edition2026
+      - Proto.Edition2026_Fields
+
   group_test:
     main: group_test.hs
     source-dirs: tests

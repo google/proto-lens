@@ -75,10 +75,12 @@ makeResponse dflags prog request = let
     preamble = defMessage
                & #supportedFeatures .~
                  foldl (.|.) zeroBits (fmap (toEnum . fromEnum) features)
-               -- Keep in sync with the editions whose feature defaults
-               -- are known by Data.ProtoLens.Compiler.Editions.Defaults.
+               -- Editions after the last one in
+               -- Data.ProtoLens.Compiler.Editions.Defaults use its defaults.
+               -- Edition 2026 doesn't change the defaults of any feature
+               -- that proto-lens supports.
                & #minimumEdition .~ fromIntegral (fromEnum EDITION_PROTO2)
-               & #maximumEdition .~ fromIntegral (fromEnum EDITION_2024)
+               & #maximumEdition .~ fromIntegral (fromEnum EDITION_2026)
     in case outputFiles of
          Right fs -> preamble & #file .~
            [ defMessage

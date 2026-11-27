@@ -1,6 +1,7 @@
 # Changelog for `proto-lens-protoc`
 
 ## Unreleased
+- Support Protobuf Edition 2026.
 - Fully support Protobuf Editions:
   - Resolve features through the whole file > message > oneof > field
     hierarchy.  Previously `message_encoding` was only read from the
