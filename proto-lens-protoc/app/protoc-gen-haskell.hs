@@ -61,7 +61,8 @@ main = do
 
 makeResponse :: DynFlags -> String -> CodeGeneratorRequest -> CodeGeneratorResponse
 makeResponse dflags prog request = let
-    outputFiles = generateFiles dflags header
+    outputFiles = parseOptions (request ^. #parameter) >>= \opts ->
+                  generateFiles opts dflags header
                       (request ^. #protoFile)
                       (request ^. #fileToGenerate)
     header :: FileDescriptorProto -> Text
@@ -86,14 +87,29 @@ makeResponse dflags prog request = let
            ]
          Left e -> preamble & #error .~ e
 
-generateFiles :: DynFlags -> (FileDescriptorProto -> Text)
+-- | Parses the comma-separated plugin parameter, e.g. from
+-- @protoc --haskell_out=opt1,opt2:out_dir@.
+parseOptions :: Text -> Either Text GenerateOptions
+parseOptions = foldl (\o p -> o >>= parseOption p) (Right defaultGenerateOptions)
+               . filter (not . T.null) . map T.strip . T.splitOn ","
+  where
+    parseOption p opts = case T.breakOn "=" p of
+        ("experimental_strip_nonfunctional_codegen", v)
+            | v `elem` ["", "=true"] ->
+                Right opts { stripNonfunctionalCodegen = True }
+            | v == "=false" ->
+                Right opts { stripNonfunctionalCodegen = False }
+        -- Ignore other options, as this plugin always has.
+        _ -> Right opts
+
+generateFiles :: GenerateOptions -> DynFlags -> (FileDescriptorProto -> Text)
               -> [FileDescriptorProto] -> [ProtoFileName]
               -> Either Text [(Text, Text)]
-generateFiles dflags header files toGenerate = do
+generateFiles opts dflags header files toGenerate = do
   filesByName <- analyzeProtoFiles files
 
   let modulesToBuild f =
-        generateModule (haskellModule f) (descriptor f) imports
+        generateModule opts (haskellModule f) (descriptor f) imports
             (publicImports f)
             (definitions f)
             (collectEnvFromDeps deps filesByName)

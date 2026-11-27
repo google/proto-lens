@@ -1,5 +1,10 @@
 # Changelog for `proto-lens-protoc`
 
+## Unreleased
+- Support the `experimental_strip_nonfunctional_codegen` plugin parameter,
+  which omits embedded descriptors.  This lets the Editions migration tooling
+  check that migrating a `.proto` file doesn't change its generated code.
+
 ## v0.9.0.1
 - Support GHC 9.12.
 - Support GHC 9.14.
