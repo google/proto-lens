@@ -194,6 +194,16 @@ data FieldInfo = FieldInfo
     , fieldFeatures :: FeatureSet
       -- ^ The resolved Protobuf Editions features of this field, including
       -- the features inherited from its file, enclosing messages and oneof.
+    , fieldIsDelimitedMessage :: Bool
+      -- ^ Whether this is a message field that uses the tag-delimited wire
+      -- format because of @features.message_encoding = DELIMITED@.
+      -- (Legacy proto2 groups have type @TYPE_GROUP@ instead.)
+    , fieldIsGroupLike :: Bool
+      -- ^ Whether this is a DELIMITED message field that looks like a proto2
+      -- group: it is named after its type, which is nested in the same
+      -- message.  Such fields generate exactly the same code as the
+      -- equivalent proto2 group, so that migrating to Editions does not
+      -- change the generated code.
     }
 
 -- | How a field is stored inside of the proto message.
@@ -417,15 +427,30 @@ messageDefs features protoPrefix hsPrefix groups d
             , groupFieldNumber = Map.lookup protoName groups
             }
     plainFields = map plainField $ Map.findWithDefault [] Nothing allFields
-    oneofs = collectOneofFields features' hsPrefix' d allFields
+    oneofs = collectOneofFields features' protoName hsPrefix' d allFields
     plainField f =
-        let info = fieldInfo features' hsPrefix' f
-        in PlainFieldInfo (fieldKind mapEntries info) info
+        let info = fieldInfo features' protoName isMapEntry hsPrefix' f
+        in case fieldKind mapEntries info of
+            -- Map fields always use length-prefixed encoding,
+            -- even if the file sets message_encoding = DELIMITED.
+            kind@MapField{} ->
+                PlainFieldInfo kind info { fieldIsDelimitedMessage = False
+                                         , fieldIsGroupLike = False }
+            kind -> PlainFieldInfo kind info
+    isMapEntry = d ^. #options . #mapEntry
+    -- Group types nested in this message, mapped to the field that uses them.
+    groupFields = Map.fromList
+        [ (fieldDescriptor info ^. #typeName, fieldDescriptor info ^. #number)
+        | info <- map plainFieldInfo plainFields
+                    ++ [caseField c | o <- oneofs, c <- oneofCases o]
+        , fieldDescriptor info ^. #type' == FieldDescriptorProto'TYPE_GROUP
+          || fieldIsGroupLike info
+        ]
     subDefs = messageAndEnumDefs
                     features'
                     (protoName <> ".")
                     hsPrefix'
-                    (collectGroupFields $ d ^. #field)
+                    groupFields
                     (d ^. #nestedType)
                     (d ^. #enumType)
     -- For efficiency, only look for map entries within the immediate
@@ -456,28 +481,41 @@ collectMapEntries defs =
 -- | A map whose keys are the proto type names of the groups in a message,
 -- and values are the field numbers for those groups.
 -- (Every group corresponds to exactly one message field.)
+--
+-- This includes legacy proto2 groups and group-like DELIMITED fields
+-- (see 'fieldIsGroupLike'), whose message types encode their own END_GROUP
+-- tag.  Other DELIMITED fields may share their type with other fields, so
+-- their END_GROUP tag is handled by the field encoding instead.
 type GroupMap = Map.Map Text Int32
-
-collectGroupFields :: [FieldDescriptorProto] -> GroupMap
-collectGroupFields fs = Map.fromList
-    [ (f ^. #typeName, f ^. #number)
-    | f <- fs
-    , (f ^. #type' == FieldDescriptorProto'TYPE_GROUP) ||
-      -- Message fields with DELIMITED encoding are the same as proto2 groups.
-      (f ^. #options . #features . #messageEncoding == FeatureSet'DELIMITED)
-    ]
 
 -- | Collects information about a field.
 fieldInfo ::
     FeatureSet  -- ^ Resolved features of the parent message or oneof.
+    -> Text  -- ^ Proto name of the parent message, e.g. ".pkg.Msg".
+    -> Bool  -- ^ Whether the parent message is a map entry.
     -> String -> FieldDescriptorProto -> FieldInfo
-fieldInfo parentFeatures hsPrefix f = FieldInfo
+fieldInfo parentFeatures parentProtoName inMapEntry hsPrefix f = FieldInfo
     { fieldDescriptor = f
     , fieldName = mkFieldName hsPrefix $ f ^. #name
-      -- Include field-scope feature overrides.
-    , fieldFeatures =
-          withOverrides (f ^. #options . #maybe'features) parentFeatures
+    , fieldFeatures = features
+    , fieldIsDelimitedMessage = isDelimited
+    , fieldIsGroupLike = isDelimited && isGroupLike
     }
+  where
+    -- Include field-scope feature overrides.
+    features = withOverrides (f ^. #options . #maybe'features) parentFeatures
+    -- Matches protoc: the keys and values of map entries
+    -- are always length-prefixed.
+    isDelimited =
+        f ^. #type' == FieldDescriptorProto'TYPE_MESSAGE
+        && not inMapEntry
+        && features ^. #messageEncoding == FeatureSet'DELIMITED
+    -- Matches IsGroupLike in the C++ implementation: the field is named after
+    -- its type, which is nested in the same message (and thus file).
+    typeShortName = snd $ T.breakOnEnd "." $ f ^. #typeName
+    isGroupLike =
+        f ^. #name == toLower typeShortName
+        && f ^. #typeName == parentProtoName <> "." <> typeShortName
 
 fieldKind :: Map.Map Text MapEntryInfo -> FieldInfo -> FieldKind
 fieldKind mapEntries info = case f ^. #label of
@@ -517,10 +555,10 @@ fieldKind mapEntries info = case f ^. #label of
         ]
 
 collectOneofFields
-    :: FeatureSet -> String -> DescriptorProto
+    :: FeatureSet -> Text -> String -> DescriptorProto
     -> Map.Map (Maybe Int32) [FieldDescriptorProto]
     -> [OneofInfo]
-collectOneofFields features hsPrefix d allFields
+collectOneofFields features protoName hsPrefix d allFields
     = catMaybes $ zipWith oneofMaybe [0..] $ d ^. #oneofDecl
   where
     oneofMaybe :: Int32 -> OneofDescriptorProto -> Maybe OneofInfo
@@ -543,7 +581,8 @@ collectOneofFields features hsPrefix d allFields
     oneofCase oneofFeatures f =
         let consName = hsPrefix ++ hsNameUnique subdefCons (f ^. #name)
         in OneofCase
-            { caseField = fieldInfo oneofFeatures hsPrefix f
+            -- Map entries never contain oneofs.
+            { caseField = fieldInfo oneofFeatures protoName False hsPrefix f
             , caseConstructorName =
                   -- Note: oneof case constructors aren't prefixed
                   -- by the oneof name; field names (even inside

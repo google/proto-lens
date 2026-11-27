@@ -14,15 +14,18 @@ module Data.ProtoLens.Compiler.Generate.Field
     , fieldEncoding
     , lengthy
     , groupEnd
+    , delimited
     , isolatedLengthy
     ) where
 
+import Data.Int (Int32)
 import Data.Text (unpack)
 import Data.Word (Word8)
 import Lens.Family2
 import Proto.Google.Protobuf.Descriptor (FieldDescriptorProto'Type(..))
 
 import Data.ProtoLens.Compiler.Definitions
+import Data.ProtoLens.Encoding.Wire (joinTypeAndTag)
 
 import GHC.SourceGen
 
@@ -139,6 +142,27 @@ groupEnd = FieldEncoding
             , buildFieldType = var "Prelude.const" @@ var "Data.Monoid.mempty"
             , parseFieldType = var "Prelude.return" @@ unit
             }
+
+-- | A message field with the given field number that is encoded in the
+-- tag-delimited format, because of @features.message_encoding = DELIMITED@.
+--
+-- This uses the same wire format as a proto2 group.  However, since the
+-- message type may also be used by other fields, the terminating END_GROUP
+-- tag is handled here rather than by the message's own encoding.
+delimited :: Int32 -> FieldEncoding
+delimited num = FieldEncoding
+            { wireType = 3
+            , buildFieldType = lambda [msg]
+                $ var "Data.Monoid.<>"
+                    @@ (var "Data.ProtoLens.buildMessage" @@ msg)
+                    @@ (putVarInt' @@ int endTag)
+            , parseFieldType = var "Data.ProtoLens.Encoding.Wire.parseDelimited"
+                @@ (var "Data.ProtoLens.Encoding.Wire.Tag" @@ int (fromIntegral num))
+                @@ var "Data.ProtoLens.parseMessage"
+            }
+  where
+    msg = bvar "msg"
+    endTag = fromIntegral $ joinTypeAndTag (fromIntegral num) (wireType groupEnd)
 
 -- Wrap a field encoding  with Haskell functions that should always succeed.
 bijectField :: HsExpr' -> HsExpr' -> FieldEncoding -> FieldEncoding

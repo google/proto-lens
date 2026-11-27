@@ -1,0 +1,8 @@
+// A message type used by a DELIMITED field in message_encoding.proto.
+edition = "2023";
+
+package message_encoding_dep;
+
+message Dep {
+  int32 foo = 1;
+}

@@ -1028,33 +1028,43 @@ messageInstance opts env protoName m =
 -- | Get the name of the field when used in a text format proto. Groups are
 -- special because their text format field name is the name of their type,
 -- not the name of the field in the descriptor (e.g. "Foo", not "foo").
-textFormatFieldName :: Env RdrNameStr -> FieldDescriptorProto -> T.Text
-textFormatFieldName env descr = case descr ^. #type' of
-    FieldDescriptorProto'TYPE_GROUP
-        | Message msg <- definedFieldType descr env
-              -> messageDescriptor msg ^. #name
-        | otherwise -> error $ "expected TYPE_GROUP for type name"
-                           ++ T.unpack (descr ^. #typeName)
-    _ -> descr ^. #name
+--
+-- With Protobuf Editions, this also applies to group-like DELIMITED message
+-- fields, matching @IsGroupLike@ in the C++ implementation.
+textFormatFieldName :: Env RdrNameStr -> FieldInfo -> T.Text
+textFormatFieldName env info
+    | descr ^. #type' == FieldDescriptorProto'TYPE_GROUP
+      || fieldIsGroupLike info
+    = case definedFieldType descr env of
+        Message msg -> messageDescriptor msg ^. #name
+        _ -> error $ "expected a message type for group "
+                       ++ T.unpack (descr ^. #typeName)
+    | otherwise = descr ^. #name
+  where
+    descr = fieldDescriptor info
 
 fieldDescriptorExpr :: Env RdrNameStr -> OccNameStr -> PlainFieldInfo
                     -> HsExpr'
 fieldDescriptorExpr env n f =
     (var "Data.ProtoLens.FieldDescriptor"
         -- Record the original .proto name for text format
-        @@ string (T.unpack $ textFormatFieldName env fd)
+        @@ string (T.unpack $ textFormatFieldName env info)
         -- Force the type signature since it can't be inferred for Map entry
         -- types.
-        @@ (fieldTypeDescriptorExpr (fd ^. #type')
+        @@ (fieldTypeDescriptorExpr fieldType
                 @::@
                     (var "Data.ProtoLens.FieldTypeDescriptor"
-                        @@ hsFieldType env (plainFieldInfo f)))
+                        @@ hsFieldType env info))
         @@ fieldAccessorExpr f)
     -- TODO: why is this type sig needed?
     @::@
     (var "Data.ProtoLens.FieldDescriptor" @@ var (unqual n))
   where
-    fd = fieldDescriptor $ plainFieldInfo f
+    info = plainFieldInfo f
+    fieldType
+        -- DELIMITED message fields are encoded like groups.
+        | fieldIsDelimitedMessage info = FieldDescriptorProto'TYPE_GROUP
+        | otherwise = fieldDescriptor info ^. #type'
 
 fieldAccessorExpr :: PlainFieldInfo -> HsExpr'
 -- (PlainField Required foo), (OptionalField foo), etc...

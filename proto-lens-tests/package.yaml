@@ -76,6 +76,18 @@ tests:
       - Proto.Group
       - Proto.Group_Fields
 
+  message_encoding_test:
+    main: message_encoding_test.hs
+    source-dirs: tests
+    dependencies:
+      - containers
+      - proto-lens-tests
+    generated-other-modules:
+      - Proto.MessageEncoding
+      - Proto.MessageEncoding_Fields
+      - Proto.MessageEncodingDep
+      - Proto.MessageEncodingDep_Fields
+
   map_test:
     main: map_test.hs
     source-dirs: tests

@@ -1,6 +1,20 @@
 # Changelog for `proto-lens-protoc`
 
 ## Unreleased
+- Fully support Protobuf Editions:
+  - Resolve features through the whole file > message > oneof > field
+    hierarchy.  Previously `message_encoding` was only read from the
+    field's own options, so file-level `DELIMITED` was ignored.
+  - Encode `DELIMITED` message fields per field, so the message type can be
+    defined anywhere (including other files) and shared with other fields.
+    Requires `Data.ProtoLens.Encoding.Wire.parseDelimited` from `proto-lens`.
+  - Group-like `DELIMITED` fields (named after a type nested in the same
+    message, as produced by migrating proto2 groups) generate exactly the
+    same code as proto2 groups.
+  - Map fields and map entry fields always stay length-prefixed, matching
+    protoc.
+  - Use the type name in text format only for group-like `DELIMITED`
+    fields, matching protoc.
 - Support the `experimental_strip_nonfunctional_codegen` plugin parameter,
   which omits embedded descriptors.  This lets the Editions migration tooling
   check that migrating a `.proto` file doesn't change its generated code.
