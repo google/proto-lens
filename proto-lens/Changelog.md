@@ -1,5 +1,11 @@
 # Changelog for `proto-lens`
 
+## Unreleased
+- Add `Data.ProtoLens.Encoding.Wire.parseDelimited` for message fields with
+  the Protobuf Editions feature `message_encoding = DELIMITED`.
+- Add `skipBytes`, `bytesRemaining` and `lookAhead` to
+  `Data.ProtoLens.Encoding.Parser`.
+
 ## v0.7.1.7
 - Relax upper bounds for ghc-9.10.
 - Bump upper bound to allow ghc-prim-0.12 (ghc-9.10.2).

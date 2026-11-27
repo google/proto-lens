@@ -19,6 +19,7 @@ module Data.ProtoLens.Encoding.Wire
     , buildMessageSet
     , parseTaggedValueFromWire
     , parseMessageSetTaggedValueFromWire
+    , parseDelimited
     ) where
 
 import Control.DeepSeq (NFData(..))
@@ -30,6 +31,7 @@ import Data.Semigroup ((<>))
 import Data.Word (Word8, Word32, Word64)
 
 import Data.ProtoLens.Encoding.Bytes
+import Data.ProtoLens.Encoding.Parser (bytesRemaining, lookAhead, skipBytes)
 
 -- | A tag that identifies a particular field of the message when converting
 -- to/from the wire format.
@@ -120,6 +122,52 @@ parseMessageSetTaggedValueFromWire t =
                 _ -> fail "missing message"
             _ -> fail "missing field tag"
         _ -> return v
+
+-- | Parses a value encoded in the tag-delimited (\"group\") wire format,
+-- whose fields are terminated by an END_GROUP tag for the given field number.
+--
+-- This is the encoding of message fields with the Protobuf Editions feature
+-- @message_encoding = DELIMITED@.  Unlike legacy proto2 groups, the message
+-- type of such a field may be shared with other fields (including
+-- length-prefixed ones), so its own 'parseMessage' does not know about the
+-- terminating tag.
+--
+-- The input should be positioned just after the START_GROUP tag.  This
+-- function scans ahead (skipping nested groups) to find the matching
+-- END_GROUP tag, runs the given parser isolated to the bytes before it,
+-- and then consumes the END_GROUP tag.
+parseDelimited :: Tag -> Parser a -> Parser a
+parseDelimited tag p = do
+    len <- lookAhead $ do
+        start <- bytesRemaining
+        end <- skipGroupFields tag
+        return $! start - end
+    x <- isolate len p
+    -- Consume the END_GROUP tag, which was already validated above
+    -- (and skipped inside 'lookAhead', which rewound the input).
+    _ <- getVarInt
+    return x
+
+-- | Skips over the fields of a group with the given tag, including its
+-- END_GROUP tag.  Returns the number of bytes that remained just before
+-- the END_GROUP tag.
+skipGroupFields :: Tag -> Parser Int
+skipGroupFields tag = loop
+  where
+    loop = do
+        remaining <- bytesRemaining
+        (tag', w) <- splitTypeAndTag <$> getVarInt
+        case w of
+            0 -> getVarInt >> loop
+            1 -> skipBytes 8 >> loop
+            2 -> getVarInt >>= skipBytes . fromIntegral >> loop
+            3 -> skipGroupFields tag' >> loop
+            4 | tag' == tag -> return remaining
+              | otherwise -> fail $ "Mismatched group-end tag number "
+                                    ++ show (unTag tag') ++ ", expected "
+                                    ++ show (unTag tag)
+            5 -> skipBytes 4 >> loop
+            _ -> fail $ "Unknown wire type " ++ show w
 
 splitTypeAndTag :: Word64 -> (Tag, Word8)
 splitTypeAndTag w = (fromIntegral $ w `shiftR` 3, fromIntegral (w .&. 7))
