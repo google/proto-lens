@@ -67,6 +67,15 @@ tests:
       - Proto.Edition2023Fileoptions
       - Proto.Edition2023Fileoptions_Fields
 
+  edition2026_test:
+    main: edition2026_test.hs
+    source-dirs: tests
+    dependencies:
+      - proto-lens-tests
+    generated-other-modules:
+      - Proto.Edition2026
+      - Proto.Edition2026_Fields
+
   group_test:
     main: group_test.hs
     source-dirs: tests
@@ -75,6 +84,18 @@ tests:
     generated-other-modules:
       - Proto.Group
       - Proto.Group_Fields
+
+  message_encoding_test:
+    main: message_encoding_test.hs
+    source-dirs: tests
+    dependencies:
+      - containers
+      - proto-lens-tests
+    generated-other-modules:
+      - Proto.MessageEncoding
+      - Proto.MessageEncoding_Fields
+      - Proto.MessageEncodingDep
+      - Proto.MessageEncodingDep_Fields
 
   map_test:
     main: map_test.hs

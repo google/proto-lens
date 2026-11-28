@@ -1,0 +1,37 @@
+// Exercises the Protobuf Editions feature `message_encoding`, including
+// inheritance from the file.  See message_encoding_test.hs for the expected
+// behavior.
+edition = "2023";
+
+package message_encoding;
+
+import "message_encoding_dep.proto";
+
+// Inherited by every message field below unless overridden.
+option features.message_encoding = DELIMITED;
+
+message Inner {
+  int32 a = 1;
+}
+
+message Encodings {
+  // Delimited encoding inherited from the file.  `Inner` is a top-level type
+  // that is shared with length-prefixed fields.
+  Inner delimited = 1;
+  Inner length_prefixed = 2 [features.message_encoding = LENGTH_PREFIXED];
+  repeated Inner repeated_delimited = 3;
+  oneof choice {
+    Inner oneof_delimited = 4;
+    string oneof_string = 5;
+  }
+  // Map fields are always length-prefixed.
+  map<int32, Inner> inner_map = 6;
+  // A delimited field whose type is defined in another file.
+  message_encoding_dep.Dep other_file = 7;
+
+  // A group-like field: text format uses the type name.
+  message Group {
+    int32 b = 1;
+  }
+  Group group = 8;
+}

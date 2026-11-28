@@ -166,15 +166,8 @@ main = testMain
           (braced "message_encoding_delimited" $ keyedInt "foo" 7)
           (tagged 10 GroupStart <> tagged 1 (VarInt 7) <> tagged 10 GroupEnd)
 
-      , const (testCase "LENGTH_PREFIXED (skipped)" (pure ())) $
-        -- proto-lens sets DELIMITED encoding by message type, not field.
-        -- Full compatability with Protobuf Editions would require it to be
-        -- by field.  However, given the usual use case for DELIMITED encoding,
-        -- where it is to support legacy proto2 groups in which message types
-        -- and fields are tied toggether, this may not be worth fixing.
-        --
-        -- If this was done, we would stop ignoring this test case.
-        serializeTo "LENGTH_PREFIXED"
+      -- The message type is shared with the DELIMITED field above.
+      , serializeTo "LENGTH_PREFIXED"
           (defFeatures & messageEncodingLengthPrefixed . foo .~ 21)
           (braced "message_encoding_length_prefixed" $ keyedInt "foo" 21)
           (tagged 11 $ Lengthy $ tagged 1 $ VarInt 21)

@@ -12,6 +12,8 @@
 {-# LANGUAGE OverloadedStrings #-}
 module Data.ProtoLens.Compiler.Generate(
     generateModule,
+    GenerateOptions(..),
+    defaultGenerateOptions,
     ) where
 
 
@@ -74,6 +76,7 @@ import Data.ProtoLens.Compiler.Generate.Field
     )
 
 import Data.ProtoLens.Encoding (encodeMessage)
+import Data.ProtoLens.Message (Message)
 import qualified Data.ByteString as BS
 
 -- Whether to import the "Runtime" modules or the originals;
@@ -81,9 +84,32 @@ import qualified Data.ByteString as BS
 data UseRuntime = UseRuntime | UseOriginal
     deriving (Eq, Read)
 
+-- | Options that control code generation.
+newtype GenerateOptions = GenerateOptions
+    { stripNonfunctionalCodegen :: Bool
+      -- ^ Omit parts of the generated code that differ between equivalent
+      -- .proto files, such as embedded descriptors.  The resulting code is
+      -- only meant for comparisons, e.g. by the Protobuf Editions migration
+      -- tooling, which checks that migrating a file doesn't change its
+      -- generated code.  Set by the plugin parameter
+      -- @experimental_strip_nonfunctional_codegen@.
+    }
+
+defaultGenerateOptions :: GenerateOptions
+defaultGenerateOptions = GenerateOptions { stripNonfunctionalCodegen = False }
+
+-- | The contents of a serialized descriptor, as embedded in the generated
+-- code.  (The serialized form of equivalent proto2/proto3 and Editions
+-- files differs, e.g. in their syntax and features.)
+embeddedDescriptor :: Message msg => GenerateOptions -> msg -> String
+embeddedDescriptor opts
+    | stripNonfunctionalCodegen opts = const ""
+    | otherwise = fmap (toEnum . fromEnum) . BS.unpack . encodeMessage
+
 -- | Generate a Haskell module for the given input file(s).
 -- input contains all defined names, incl. those in this module
-generateModule :: ModuleNameStr
+generateModule :: GenerateOptions
+               -> ModuleNameStr
                -> FileDescriptorProto -- ^ The complete file descriptor
                -> [ModuleNameStr]  -- ^ The imported modules
                -> [ModuleNameStr]  -- ^ The publicly imported modules
@@ -91,7 +117,7 @@ generateModule :: ModuleNameStr
                -> Env RdrNameStr     -- ^ Definitions in the imported modules
                -> [ServiceInfo]
                -> [CommentedModule]
-generateModule modName fdesc imports publicImports definitions importedEnv services
+generateModule opts modName fdesc imports publicImports definitions importedEnv services
     = [ CommentedModule pragmas
             (module' (Just modName)
                 (Just $ serviceExports
@@ -102,7 +128,7 @@ generateModule modName fdesc imports publicImports definitions importedEnv servi
                     ++ map import' publicImports)
                 [])
           $ concatMap generateDecls (Map.toList definitions)
-         ++ map uncommented (concatMap (generateServiceDecls env) services)
+         ++ map uncommented (concatMap (generateServiceDecls opts env) services)
          ++ map uncommented packedFileDescriptorProto
       , CommentedModule pragmas
             (module' (Just fieldModName) Nothing
@@ -151,7 +177,7 @@ generateModule modName fdesc imports publicImports definitions importedEnv servi
               ]
     env = Map.union (unqualifyEnv definitions) importedEnv
     generateDecls (protoName, Message m)
-        = generateMessageDecls fieldModName env (stripDotPrefix protoName) m
+        = generateMessageDecls opts fieldModName env (stripDotPrefix protoName) m
        ++ map uncommented (concatMap (generatePrisms env) (messageOneofFields m))
     generateDecls (_, Enum e) = map uncommented $ generateEnumDecls e
     generateExports (Message m) = generateMessageExports m
@@ -175,7 +201,7 @@ generateModule modName fdesc imports publicImports definitions importedEnv servi
           valBind "packedFileDescriptor" $ string packedFDesc
           ]
       where
-        packedFDesc = fmap (toEnum . fromEnum) . BS.unpack . encodeMessage $ fdesc
+        packedFDesc = embeddedDescriptor opts fdesc
     -- The Env uses the convention that Message names are prefixed with '.'
     -- (since that's how the FileDescriptorProto refers to them).
     -- Strip that off when defining MessageDescriptor.messageName.
@@ -246,8 +272,8 @@ generateMessageExports m =
         : map (thingAll . unqual . oneofTypeName)
                 (messageOneofFields m)
 
-generateServiceDecls :: Env RdrNameStr -> ServiceInfo -> [HsDecl']
-generateServiceDecls env si =
+generateServiceDecls :: GenerateOptions -> Env RdrNameStr -> ServiceInfo -> [HsDecl']
+generateServiceDecls opts env si =
     -- data MyService = MyService
     [ data' serverDataName []
       [ recordCon serverDataName []
@@ -296,7 +322,7 @@ generateServiceDecls env si =
     , let instanceHead = stringTy (T.unpack $ methodIdent m)
     ]
   where
-    svcDescriptor = fmap (toEnum . fromEnum) . BS.unpack . encodeMessage $ serviceDescriptor si
+    svcDescriptor = embeddedDescriptor opts $ serviceDescriptor si
     serverDataName = fromString . T.unpack $ serviceName si
     serverRecordType = var $ unqual serverDataName
 
@@ -305,8 +331,8 @@ generateServiceDecls env si =
                        Enum _ -> error "Service must have a message type"
 
 
-generateMessageDecls :: ModuleNameStr -> Env RdrNameStr -> T.Text -> MessageInfo OccNameStr -> [CommentedDecl]
-generateMessageDecls fieldModName env protoName info =
+generateMessageDecls :: GenerateOptions -> ModuleNameStr -> Env RdrNameStr -> T.Text -> MessageInfo OccNameStr -> [CommentedDecl]
+generateMessageDecls opts fieldModName env protoName info =
     -- data Bar = Bar {
     --    foo :: Baz
     -- }
@@ -365,7 +391,7 @@ generateMessageDecls fieldModName env protoName info =
     ++
     -- instance Message.Message Bar where
     [ uncommented $ instance' (var "Data.ProtoLens.Message" @@ dataType)
-        $ messageInstance env protoName info
+        $ messageInstance opts env protoName info
     -- instance NFData Bar where
     , uncommented $ instance' (var "Control.DeepSeq.NFData" @@ dataType)
         [valBind "rnf" $ messageRnfExpr info]
@@ -948,8 +974,8 @@ oneofFieldAccessor o
     setter = lambda [wildP, bvar "y__"]
                 $ var "Prelude.fmap" @@ var (unqual consName) @@ var "y__"
 
-messageInstance :: Env RdrNameStr -> T.Text -> MessageInfo OccNameStr -> [RawInstDecl]
-messageInstance env protoName m =
+messageInstance :: GenerateOptions -> Env RdrNameStr -> T.Text -> MessageInfo OccNameStr -> [RawInstDecl]
+messageInstance opts env protoName m =
     [ funBind "messageName" $ match [wildP] $
           var "Data.Text.pack" @@ string (T.unpack protoName)
     , funBind "packedMessageDescriptor" $ match [wildP] $ string msgDescriptor
@@ -975,7 +1001,7 @@ messageInstance env protoName m =
     , valBind "buildMessage" $ generatedBuilder m
     ]
   where
-    msgDescriptor = fmap (toEnum . fromEnum) . BS.unpack . encodeMessage $ messageDescriptor m
+    msgDescriptor = embeddedDescriptor opts $ messageDescriptor m
     fieldsByTag =
         [tuple
               [ t, fieldDescriptorVar f ]
@@ -1002,33 +1028,43 @@ messageInstance env protoName m =
 -- | Get the name of the field when used in a text format proto. Groups are
 -- special because their text format field name is the name of their type,
 -- not the name of the field in the descriptor (e.g. "Foo", not "foo").
-textFormatFieldName :: Env RdrNameStr -> FieldDescriptorProto -> T.Text
-textFormatFieldName env descr = case descr ^. #type' of
-    FieldDescriptorProto'TYPE_GROUP
-        | Message msg <- definedFieldType descr env
-              -> messageDescriptor msg ^. #name
-        | otherwise -> error $ "expected TYPE_GROUP for type name"
-                           ++ T.unpack (descr ^. #typeName)
-    _ -> descr ^. #name
+--
+-- With Protobuf Editions, this also applies to group-like DELIMITED message
+-- fields, matching @IsGroupLike@ in the C++ implementation.
+textFormatFieldName :: Env RdrNameStr -> FieldInfo -> T.Text
+textFormatFieldName env info
+    | descr ^. #type' == FieldDescriptorProto'TYPE_GROUP
+      || fieldIsGroupLike info
+    = case definedFieldType descr env of
+        Message msg -> messageDescriptor msg ^. #name
+        _ -> error $ "expected a message type for group "
+                       ++ T.unpack (descr ^. #typeName)
+    | otherwise = descr ^. #name
+  where
+    descr = fieldDescriptor info
 
 fieldDescriptorExpr :: Env RdrNameStr -> OccNameStr -> PlainFieldInfo
                     -> HsExpr'
 fieldDescriptorExpr env n f =
     (var "Data.ProtoLens.FieldDescriptor"
         -- Record the original .proto name for text format
-        @@ string (T.unpack $ textFormatFieldName env fd)
+        @@ string (T.unpack $ textFormatFieldName env info)
         -- Force the type signature since it can't be inferred for Map entry
         -- types.
-        @@ (fieldTypeDescriptorExpr (fd ^. #type')
+        @@ (fieldTypeDescriptorExpr fieldType
                 @::@
                     (var "Data.ProtoLens.FieldTypeDescriptor"
-                        @@ hsFieldType env (plainFieldInfo f)))
+                        @@ hsFieldType env info))
         @@ fieldAccessorExpr f)
     -- TODO: why is this type sig needed?
     @::@
     (var "Data.ProtoLens.FieldDescriptor" @@ var (unqual n))
   where
-    fd = fieldDescriptor $ plainFieldInfo f
+    info = plainFieldInfo f
+    fieldType
+        -- DELIMITED message fields are encoded like groups.
+        | fieldIsDelimitedMessage info = FieldDescriptorProto'TYPE_GROUP
+        | otherwise = fieldDescriptor info ^. #type'
 
 fieldAccessorExpr :: PlainFieldInfo -> HsExpr'
 -- (PlainField Required foo), (OptionalField foo), etc...

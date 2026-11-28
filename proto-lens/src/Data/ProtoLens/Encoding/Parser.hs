@@ -10,6 +10,9 @@ module Data.ProtoLens.Encoding.Parser
     , getWord32le
     , getBytes
     , getText
+    , skipBytes
+    , bytesRemaining
+    , lookAhead
     , (<?>)
     ) where
 
@@ -74,6 +77,30 @@ getText n = do
   r <- withSized n "getText: Unexpected end of input" $ \pos ->
           decodeUtf8' <$> B.unsafePackCStringLen (castPtr pos, n)
   either (fail . show) pure r
+
+-- | Skip over the given number of bytes without copying them.
+--
+-- Fails the parse if given a negative length, or if there are fewer than
+-- that many bytes remaining.
+skipBytes :: Int -> Parser ()
+skipBytes n = withSized n "skipBytes: Unexpected end of input"
+                    $ \_ -> return ()
+
+-- | Returns the number of bytes of input that remain to be consumed
+-- (within the innermost call to 'isolate', if any).
+bytesRemaining :: Parser Int
+bytesRemaining = Parser $ \end pos ->
+    return $ ParseSuccess pos (end `minusPtr` pos)
+
+-- | Runs the given parser without consuming any input.
+--
+-- If the given parser fails, then so does 'lookAhead'.
+lookAhead :: Parser a -> Parser a
+lookAhead (Parser m) = Parser $ \end pos -> do
+    r <- m end pos
+    return $ case r of
+        ParseSuccess _ x -> ParseSuccess pos x
+        ParseFailure s -> ParseFailure s
 
 -- | Helper function for reading bytes from the current position and
 -- advancing the pointer.

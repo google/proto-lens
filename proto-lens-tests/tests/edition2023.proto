@@ -61,11 +61,8 @@ message Features {
   Sub message_encoding_delimited = 10 [features.message_encoding = DELIMITED];
   Sub message_encoding_length_prefixed = 11 [features.message_encoding = LENGTH_PREFIXED];
 
-  // Message encoding is supposed to be determined by field, but proto-lens
-  // currently does it by message type, so the previous LENGTH_PREFIXED field
-  // is still encoded like a group, i.e., with a DELIMITED encoding.
-  // Until this is changed, the following is for a working test where
-  // LENGTH_PREFIXED encoding is explicitly specified.
+  // A LENGTH_PREFIXED field whose message type isn't shared with a DELIMITED
+  // field.
   message LengthPrefixedSub {
     int32 foo = 1;
   }
